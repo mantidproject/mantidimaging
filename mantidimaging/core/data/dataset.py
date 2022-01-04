@@ -100,5 +100,9 @@ class Dataset(BaseDataset):
             self.dark_before = None
         elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
             self.dark_after = None
+        elif self.recons:
+            for recon in self.recons:
+                if recon.id == images_id:
+                    self.recons.remove(recon)
         else:
             raise KeyError(_delete_stack_error_message(images_id))
