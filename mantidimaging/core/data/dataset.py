@@ -100,7 +100,7 @@ class Dataset(BaseDataset):
             self.dark_before = None
         elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
             self.dark_after = None
-        elif self.recons:
+        elif images_id in [recon.id for recon in self.recons]:
             for recon in self.recons:
                 if recon.id == images_id:
                     self.recons.remove(recon)
