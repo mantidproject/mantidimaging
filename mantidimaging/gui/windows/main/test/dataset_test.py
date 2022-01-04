@@ -93,3 +93,15 @@ class DatasetTest(unittest.TestCase):
     def test_delete_dark_after(self):
         self.dataset.delete_stack(self.images[4].id)
         self.assertIsNone(self.dataset.dark_after)
+
+    def test_delete_recon(self):
+        recons = [generate_images() for _ in range(2)]
+        self.dataset.recons = recons.copy()
+
+        id_to_remove = recons[-1].id
+        self.dataset.delete_stack(id_to_remove)
+        self.assertNotIn(recons[-1], self.dataset.all)
+
+    def test_delete_failure(self):
+        with self.assertRaises(KeyError):
+            self.dataset.delete_stack("nonexistent-id")

@@ -349,3 +349,22 @@ class MainWindowModelTest(unittest.TestCase):
         ds = Dataset(generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIn(ds, self.model.datasets.values())
+
+    def test_image_ids(self):
+        all_ids = []
+        for _ in range(3):
+            images = [generate_images() for _ in range(3)]
+            all_ids += [image.id for image in images]
+            ds = Dataset(*images)
+            self.model.add_dataset_to_model(ds)
+        self.assertListEqual(all_ids, self.model.image_ids)
+
+    def test_add_recon_to_dataset(self):
+        sample = generate_images()
+        sample_id = sample.id
+        ds = Dataset(sample)
+
+        recon = generate_images()
+        self.model.add_dataset_to_model(ds)
+        self.model.add_recon_to_dataset(recon, sample_id)
+        self.assertIn(recon, ds.all)

@@ -571,6 +571,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack_tab.setVisible.assert_not_called()
         mock_stack_tab.raise_.assert_not_called()
 
+    def test_add_recon(self):
+        recon = generate_images()
+        stack_id = "stack-id"
+        self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
+        self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
+
 
 if __name__ == '__main__':
     unittest.main()
