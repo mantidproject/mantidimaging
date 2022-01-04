@@ -54,9 +54,13 @@ class StackDataset(BaseDataset):
         return self._stacks + self.recons
 
     def delete_stack(self, images_id: uuid.UUID):
-        for image in self.all:
+        for image in self._stacks:
             if image.id == images_id:
                 self._stacks.remove(image)
+                return
+        for recon in self.recons:
+            if recon.id == images_id:
+                self.recons.remove(recon)
                 return
         raise KeyError(_delete_stack_error_message(images_id))
 
