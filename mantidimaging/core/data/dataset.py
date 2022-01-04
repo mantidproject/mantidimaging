@@ -9,6 +9,10 @@ import numpy as np
 from mantidimaging.core.data import Images
 
 
+def _delete_stack_error_message(images_id: uuid.UUID) -> str:
+    return f"Unable to delete stack: Images with ID {images_id} not present in dataset."
+
+
 class BaseDataset:
     def __init__(self):
         self._id: uuid.UUID = uuid.uuid4()
@@ -29,6 +33,8 @@ class BaseDataset:
         for image in self.all:
             if image.id == images_id:
                 image.data = new_data
+                return
+        raise KeyError(f"Unable to replace: Images with ID {images_id} not present in dataset.")
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
         return any([image.id == images_id for image in self.all])
@@ -51,6 +57,8 @@ class StackDataset(BaseDataset):
         for image in self.all:
             if image.id == images_id:
                 self._stacks.remove(image)
+                return
+        raise KeyError(_delete_stack_error_message(images_id))
 
 
 @dataclass
@@ -92,3 +100,5 @@ class Dataset(BaseDataset):
             self.dark_before = None
         elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
             self.dark_after = None
+        else:
+            raise KeyError(_delete_stack_error_message(images_id))
