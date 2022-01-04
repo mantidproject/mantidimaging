@@ -161,7 +161,7 @@ class MainWindowModel(object):
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
-        return [image for image in images if image is not None]
+        return [image.id for image in images if image is not None]
 
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
         for dataset in self.datasets.values():
