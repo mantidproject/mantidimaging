@@ -111,20 +111,23 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.actionRecon.trigger()
 
     def _close_stack_tabs(self):
-        stack_tab_keys = self.main_window.presenter.stacks.keys()
-        for stack_key in list(stack_tab_keys):
-            last_stack_tab = self.main_window.presenter.stacks[stack_key]
-            QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
-            last_stack_tab.close()
-            QTest.qWait(SHOW_DELAY // 10)
-
-            # This should be replaced when it is possible to close an image stack from
-            # the dataset treeview
-            self.main_window.presenter.stacks.pop(last_stack_tab.id, None)
-            self.main_window.presenter.model.datasets.pop(last_stack_tab.id, None)
-            last_stack_tab.image_view.close()
-            last_stack_tab.presenter.delete_data()
-            try:
-                self.main_window.presenter.model.remove_container(last_stack_tab)
-            except Exception:
-                pass
+        while self.main_window.dataset_tree_widget.topLevelItemCount():
+            self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
+            self.main_window._delete_container()
+        # stack_tab_keys = self.main_window.presenter.stacks.keys()
+        # for stack_key in list(stack_tab_keys):
+        #     last_stack_tab = self.main_window.presenter.stacks[stack_key]
+        #     QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
+        #     last_stack_tab.close()
+        #     QTest.qWait(SHOW_DELAY // 10)
+        #
+        #     # This should be replaced when it is possible to close an image stack from
+        #     # the dataset treeview
+        #     self.main_window.presenter.stacks.pop(last_stack_tab.id, None)
+        #     self.main_window.presenter.model.datasets.pop(last_stack_tab.id, None)
+        #     last_stack_tab.image_view.close()
+        #     last_stack_tab.presenter.delete_data()
+        #     try:
+        #         self.main_window.presenter.model.remove_container(last_stack_tab)
+        #     except Exception:
+        #         pass
