@@ -148,7 +148,7 @@ class CILRecon(BaseRecon):
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = images.data.shape[2], images.data.shape[2], images.data.shape[1]
         recon_volume_size = full_size_KB(recon_volume_shape, images.dtype)
-        estimated_mem_required = 5 * projection_size + 25 * recon_volume_size
+        estimated_mem_required = 5 * projection_size + 13 * recon_volume_size
         free_mem = system_free_memory().kb()
 
         if (estimated_mem_required > free_mem):

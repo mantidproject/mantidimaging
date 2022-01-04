@@ -18,6 +18,8 @@ New Features
 - #1197 : Dataset Tree View : Show tab from treeview
 - #1200 : Default save option set to float32
 - #1235 : Improvements to input value defaults and spin box step sizes
+- #1230 : Update CIL to 21.3 reducing memory requirements
+
 
 Fixes
 -----
