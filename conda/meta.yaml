@@ -33,9 +33,9 @@ requirements:
     - h5py=3.4.*
     - sarepy=2020.07
     - psutil=5.8.*
-    - cil=21.2.*
-    - cil-astra=21.2.*
-    - ccpi-regulariser=20.9
+    - cil=21.3.*
+    - cil-astra=21.3.*
+    - ccpi-regulariser=21.0.*
 
 build:
   number: 1

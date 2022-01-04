@@ -6,6 +6,7 @@ channels:
   - conda-forge
   - ccpi
   - algotom
+  - intel
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
   - mantidimaging
