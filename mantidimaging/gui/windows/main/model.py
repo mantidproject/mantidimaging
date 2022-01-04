@@ -157,7 +157,7 @@ class MainWindowModel(object):
         self.datasets[dataset.id] = dataset
 
     @property
-    def image_ids(self) -> List[Images]:
+    def image_ids(self) -> List[uuid.UUID]:
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
