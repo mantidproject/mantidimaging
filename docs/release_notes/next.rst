@@ -30,6 +30,7 @@ Fixes
 - #1117 : Median operation preserves NaNs
 - #1151 : IndexError with sinograms and stripe tools
 - #1174 : TypeError in link_before_after_histogram_scales
+- #1161 : Remove run_ring_removal argument from Ring Removal operation and always run filter
 
 
 Developer Changes

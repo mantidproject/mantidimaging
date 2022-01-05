@@ -4,9 +4,6 @@
 import unittest
 from unittest.mock import Mock
 
-import numpy as np
-import numpy.testing as npt
-
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.ring_removal import RingRemovalFilter
 
@@ -19,16 +16,6 @@ class RingRemovalTest(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    def test_not_executed(self):
-        images = th.generate_images()
-
-        # invalid threshold
-        run_ring_removal = False
-
-        original = np.copy(images.data[0])
-        result = RingRemovalFilter.filter_func(images, run_ring_removal, cores=1)
-        npt.assert_equal(result.data[0], original)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
