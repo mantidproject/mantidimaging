@@ -24,10 +24,10 @@ class BaseDataset:
 
     @property
     def all(self):
-        return NotImplementedError()
+        raise NotImplementedError()
 
     def delete_stack(self, images_id: uuid.UUID):
-        return NotImplementedError()
+        raise NotImplementedError()
 
     def replace(self, images_id: uuid.UUID, new_data: np.ndarray):
         for image in self.all:
