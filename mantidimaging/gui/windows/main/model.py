@@ -2,12 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from logging import getLogger
-from typing import Dict, Optional, List, Union, Type
+from typing import Dict, Optional, List, Union
 
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset, StackDataset, BaseDataset
+from mantidimaging.core.data.dataset import Dataset, StackDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 
@@ -21,7 +21,7 @@ def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: 
 class MainWindowModel(object):
     def __init__(self):
         super().__init__()
-        self.datasets: Dict[uuid.UUID, Type[BaseDataset]] = {}
+        self.datasets: Dict[uuid.UUID, Union[StackDataset, Dataset]] = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
         for dataset in self.datasets.values():
