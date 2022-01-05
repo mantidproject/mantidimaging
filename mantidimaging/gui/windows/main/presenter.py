@@ -36,6 +36,7 @@ class Notification(Enum):
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
     FOCUS_TAB = auto()
+    ADD_RECON = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -63,6 +64,8 @@ class MainWindowPresenter(BasePresenter):
                 self.load_nexus_file()
             elif signal == Notification.FOCUS_TAB:
                 self._focus_tab(**baggage)
+            elif signal == Notification.ADD_RECON:
+                self._add_recon_to_dataset(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -109,8 +112,9 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self):
-        loading_dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
-        self.create_new_stack(self.model.convert_loading_dataset(loading_dataset), title)
+        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
+        self.model.add_dataset_to_model(dataset)
+        self.create_new_stack(dataset, title)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -170,7 +174,11 @@ class MainWindowPresenter(BasePresenter):
     def create_new_stack(self, container: Union[Images, Dataset], title: str):
         title = self.create_stack_name(title)
 
-        sample = container if isinstance(container, Images) else container.sample
+        if isinstance(container, Images):
+            sample = container
+        else:
+            sample = container.sample
+
         sample_stack_vis = self.view.create_stack_window(sample, title)
         self.stacks[sample_stack_vis.id] = sample_stack_vis
 
@@ -390,8 +398,11 @@ class MainWindowPresenter(BasePresenter):
         """
         if stack_id in self.model.datasets:
             return
-        if stack_id in self.model.images:
+        if stack_id in self.model.image_ids:
             self.stacks[stack_id].setVisible(True)
             self.stacks[stack_id].raise_()
         else:
             raise RuntimeError(f"Unable to find stack with ID {stack_id}")
+
+    def _add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
+        self.model.add_recon_to_dataset(recon_data, stack_id)

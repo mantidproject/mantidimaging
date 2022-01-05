@@ -15,6 +15,7 @@ from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogVie
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
+from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__name__)
 
@@ -229,7 +230,8 @@ class ReconstructWindowPresenter(BasePresenter):
         images: Images = task.result
         slice_idx = self._get_slice_index(None)
         if images is not None:
-            self.view.show_recon_volume(images)
+            assert isinstance(self.model.stack, StackVisualiserView)
+            self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
                                     'Slice Reconstruction',
                                     slice_idx=slice_idx,
@@ -280,7 +282,8 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        self.view.show_recon_volume(task.result)
+        assert isinstance(self.model.stack, StackVisualiserView)
+        self.view.show_recon_volume(task.result, self.model.stack_id)
         self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):

@@ -3,38 +3,21 @@
 
 import unittest
 
-from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
+from numpy import array_equal
+
+from mantidimaging.core.data.dataset import Dataset, _delete_stack_error_message
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+
+
+def test_delete_stack_error_message():
+    assert _delete_stack_error_message("stack-id") == "Unable to delete stack: Images with ID stack-id not present in" \
+                                                      " dataset."
 
 
 class DatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
         self.dataset = Dataset(*self.images)
-
-    def test_delete_flat_before(self):
-        self.images.pop(1)
-        self.assertIsNone(self.dataset.flat_before)
-
-    def test_delete_flat_after(self):
-        self.images.pop(2)
-        self.assertIsNone(self.dataset.flat_after)
-
-    def test_delete_dark_before(self):
-        self.images.pop(3)
-        self.assertIsNone(self.dataset.dark_before)
-
-    def test_delete_dark_after(self):
-        self.images.pop(4)
-        self.assertIsNone(self.dataset.dark_after)
-
-    def test_images_returned(self):
-        self.assertIsInstance(self.dataset.sample, Images)
-        self.assertIsInstance(self.dataset.flat_before, Images)
-        self.assertIsInstance(self.dataset.flat_after, Images)
-        self.assertIsInstance(self.dataset.dark_before, Images)
-        self.assertIsInstance(self.dataset.dark_after, Images)
 
     def test_attribute_not_set_returns_none(self):
         sample = generate_images()
@@ -44,6 +27,16 @@ class DatasetTest(unittest.TestCase):
         self.assertIsNone(dataset.flat_after)
         self.assertIsNone(dataset.dark_before)
         self.assertIsNone(dataset.dark_after)
+
+    def test_replace_success(self):
+        sample_id = self.images[0].id
+        new_sample_data = generate_images().data
+        self.dataset.replace(sample_id, new_sample_data)
+        assert array_equal(self.dataset.sample.data, new_sample_data)
+
+    def test_replace_failure(self):
+        with self.assertRaises(KeyError):
+            self.dataset.replace("nonexistent-id", generate_images().data)
 
     def test_cant_change_dataset_id(self):
         with self.assertRaises(Exception):
@@ -68,3 +61,47 @@ class DatasetTest(unittest.TestCase):
         dark_after = generate_images()
         self.dataset.dark_after = dark_after
         assert dark_after is self.dataset.dark_after
+
+    def test_all(self):
+        self.assertListEqual(self.dataset.all, self.images)
+
+    def test_all_images_ids(self):
+        self.assertListEqual(self.dataset.all_image_ids, [images.id for images in self.images])
+
+    def test_contains_returns_true(self):
+        assert self.images[2].id in self.dataset
+
+    def test_contains_returns_false(self):
+        assert not generate_images().id in self.dataset
+
+    def test_delete_sample(self):
+        self.dataset.delete_stack(self.images[0].id)
+        self.assertIsNone(self.dataset.sample)
+
+    def test_delete_flat_before(self):
+        self.dataset.delete_stack(self.images[1].id)
+        self.assertIsNone(self.dataset.flat_before)
+
+    def test_delete_flat_after(self):
+        self.dataset.delete_stack(self.images[2].id)
+        self.assertIsNone(self.dataset.flat_after)
+
+    def test_delete_dark_before(self):
+        self.dataset.delete_stack(self.images[3].id)
+        self.assertIsNone(self.dataset.dark_before)
+
+    def test_delete_dark_after(self):
+        self.dataset.delete_stack(self.images[4].id)
+        self.assertIsNone(self.dataset.dark_after)
+
+    def test_delete_recon(self):
+        recons = [generate_images() for _ in range(2)]
+        self.dataset.recons = recons.copy()
+
+        id_to_remove = recons[-1].id
+        self.dataset.delete_stack(id_to_remove)
+        self.assertNotIn(recons[-1], self.dataset.all)
+
+    def test_delete_failure(self):
+        with self.assertRaises(KeyError):
+            self.dataset.delete_stack("nonexistent-id")
