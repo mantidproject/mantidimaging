@@ -75,6 +75,7 @@ class ReconstructWindowView(BaseMainWindowView):
     messageIcon: QLabel
 
     changeColourPaletteButton: QPushButton
+    change_colour_palette_dialog: Optional[PaletteChangerView] = None
 
     stackSelector: StackSelectorWidgetView
 
@@ -467,10 +468,10 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         Opens the Palette Changer window when the "Auto" option has been clicked.
         """
-        change_colour_palette = PaletteChangerView(self, self.image_view.recon_hist, self.image_view.recon.image,
-                                                   [self.image_view.sinogram_hist, self.image_view.projection_hist],
-                                                   True)
-        change_colour_palette.show()
+        self.change_colour_palette_dialog = PaletteChangerView(
+            self, self.image_view.recon_hist, self.image_view.recon.image,
+            [self.image_view.sinogram_hist, self.image_view.projection_hist], True)
+        self.change_colour_palette_dialog.show()
 
     def show_status_message(self, msg: str):
         """
