@@ -46,7 +46,7 @@ class BaseDataset:
 
 class StackDataset(BaseDataset):
     def __init__(self, stacks: List[Images] = []):
-        super(StackDataset, self).__init__()
+        super().__init__()
         self._stacks = stacks
 
     @property
@@ -79,7 +79,7 @@ class Dataset(BaseDataset):
                  flat_after: Optional[Images] = None,
                  dark_before: Optional[Images] = None,
                  dark_after: Optional[Images] = None):
-        super(Dataset, self).__init__()
+        super().__init__()
         self.sample = sample
         self.flat_before = flat_before
         self.flat_after = flat_after
