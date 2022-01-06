@@ -27,7 +27,6 @@ class RingRemovalFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: Images,
-                    run_ring_removal=False,
                     center_mode="image center",
                     center_x=None,
                     center_y=None,
@@ -40,10 +39,9 @@ class RingRemovalFilter(BaseFilter):
                     chunksize=None,
                     progress=None):
         """
-        Removal of ring artifacts in reconstructed volume.
+        Removal of ring artifacts in reconstructed volume. Uses Wavelet-Fourier based ring removal
 
         :param images: Sample data which is to be processed. Expected in radiograms
-        :param run_ring_removal: Uses Wavelet-Fourier based ring removal
         :param center_mode: Whether to use the center of the image or a user-defined value
         :param center_x: (float, optional) abscissa location of center of rotation
         :param center_y: (float, optional) ordinate location of center of rotation
@@ -66,37 +64,36 @@ class RingRemovalFilter(BaseFilter):
         if center_mode != "manual":
             center_x = center_y = None
 
-        if run_ring_removal:
-            h.check_data_stack(images)
+        h.check_data_stack(images)
 
-            # COMPAT tomopy <= 1.10.1
-            # tomopy 1.10.1 and older will crash with "large" values of theta
-            # Catch these here for now
-            # https://github.com/tomopy/tomopy/issues/551
-            if center_mode == "manual":
-                min_dist_to_edge = min([center_x, center_y, images.width - center_x, images.height - center_y])
-            else:
-                min_dist_to_edge = min([images.width / 2, images.height / 2])
+        # COMPAT tomopy <= 1.10.1
+        # tomopy 1.10.1 and older will crash with "large" values of theta
+        # Catch these here for now
+        # https://github.com/tomopy/tomopy/issues/551
+        if center_mode == "manual":
+            min_dist_to_edge = min([center_x, center_y, images.width - center_x, images.height - center_y])
+        else:
+            min_dist_to_edge = min([images.width / 2, images.height / 2])
 
-            if theta_min >= 180 or theta_min > min_dist_to_edge:
-                raise ValueError("Theta should be in the range [0 - 180) and larger than the min distance from"
-                                 "from COR to edge.")
-            # end COMPAT
+        if theta_min >= 180 or theta_min > min_dist_to_edge:
+            raise ValueError("Theta should be in the range [0 - 180) and larger than the min distance from"
+                             "from COR to edge.")
+        # end COMPAT
 
-            with progress:
-                progress.update(msg="Ring Removal")
-                sample = images.data
-                tp.remove_ring(sample,
-                               center_x=center_x,
-                               center_y=center_y,
-                               thresh=thresh,
-                               thresh_max=thresh_max,
-                               thresh_min=thresh_min,
-                               theta_min=theta_min,
-                               rwidth=rwidth,
-                               ncore=cores,
-                               nchunk=chunksize,
-                               out=sample)
+        with progress:
+            progress.update(msg="Ring Removal")
+            sample = images.data
+            tp.remove_ring(sample,
+                           center_x=center_x,
+                           center_y=center_y,
+                           thresh=thresh,
+                           thresh_max=thresh_max,
+                           thresh_min=thresh_min,
+                           theta_min=theta_min,
+                           rwidth=rwidth,
+                           ncore=cores,
+                           nchunk=chunksize,
+                           out=sample)
 
         return images
 
@@ -196,7 +193,6 @@ class RingRemovalFilter(BaseFilter):
                         theta=None,
                         rwidth=None):
         return partial(RingRemovalFilter.filter_func,
-                       run_ring_removal=True,
                        center_mode=center_mode.currentText(),
                        center_x=x_field.value(),
                        center_y=y_field.value(),

@@ -52,3 +52,12 @@ class ReconstructionWindowTest(BaseEyesTest):
 
         self.imaging.show_recon_window()
         self.check_target(widget=self.imaging.recon)
+
+    def test_reconstruction_window_colour_palette_dialog(self):
+        self._load_data_set()
+
+        self.imaging.show_recon_window()
+        self.imaging.recon.image_view.recon.image = np.empty((512, 512))
+        self.imaging.recon.changeColourPaletteButton.click()
+
+        self.check_target(widget=self.imaging.recon.change_colour_palette_dialog)
