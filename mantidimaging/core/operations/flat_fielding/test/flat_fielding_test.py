@@ -20,9 +20,6 @@ class FlatFieldingTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def _make_images(self) -> Tuple[Images, Images, Images, Images, Images]:
         images = th.generate_images()
         flat_before = th.generate_images()
