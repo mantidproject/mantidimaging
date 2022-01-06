@@ -121,6 +121,8 @@ class Dataset(BaseDataset):
             self.dark_before = None
         elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
             self.dark_after = None
+        elif isinstance(self.proj180deg, Images) and self.proj180deg.id == images_id:
+            self.sample.clear_proj180deg()
         elif images_id in [recon.id for recon in self.recons]:
             for recon in self.recons:
                 if recon.id == images_id:
