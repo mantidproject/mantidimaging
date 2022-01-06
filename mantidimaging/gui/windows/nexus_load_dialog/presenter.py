@@ -243,11 +243,13 @@ class NexusLoadPresenter:
         :return: A tuple containing the Dataset and the data title string.
         """
         sample_images = self._create_sample_images()
-        return Dataset(sample=sample_images,
+        ds = Dataset(sample=sample_images,
                        flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
                        flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
                        dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
-                       dark_after=self._create_images_if_required(self.dark_after_array, "Dark After")), self.title
+                       dark_after=self._create_images_if_required(self.dark_after_array, "Dark After"))
+        ds.name = self.title
+        return ds, self.title
 
     def _create_sample_images(self):
         """
