@@ -31,6 +31,7 @@ Fixes
 - #1151 : IndexError with sinograms and stripe tools
 - #1174 : TypeError in link_before_after_histogram_scales
 - #1161 : Remove run_ring_removal argument from Ring Removal operation and always run filter
+- #1226 : AttributeError when trying to open reconstruction auto colour dialog
 
 
 Developer Changes
