@@ -50,5 +50,5 @@ class DatasetSelectorDialog(QDialog):
         self.setLayout(self.vertical_layout)
 
     def on_ok_clicked(self):
-        self.selected_dataset = self.dataset_selector_widget.current
+        self.selected_dataset = self.dataset_selector_widget.current()
         self.done(QDialog.DialogCode.Accepted)
