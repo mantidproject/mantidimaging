@@ -21,6 +21,7 @@ from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSelect
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
+from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -244,13 +245,13 @@ class MainWindowView(BaseMainWindowView):
                                 f"{stack_to_add_log_to}.")
 
     def load_180_deg_dialog(self):
-        stack_selector = StackSelectorDialog(main_window=self,
-                                             title="Stack Selector",
-                                             message="Which stack is the 180 degree projection being loaded for?")
+        dataset_selector = DatasetSelectorDialog(main_window=self,
+                                             title="Dataset Selector",
+                                             message="Which dataset is the 180 degree projection being loaded for?")
         # Was closed without accepting (e.g. via x button or ESC)
-        if QDialog.DialogCode.Accepted != stack_selector.exec():
+        if QDialog.DialogCode.Accepted != dataset_selector.exec():
             return
-        stack_to_add_180_deg_to = stack_selector.selected_stack
+        dataset_to_add_180_deg_to = dataset_selector.selected_dataset
 
         # Open file dialog
         selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
@@ -259,7 +260,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        _180_images = self.presenter.add_180_deg_to_dataset(stack_name=stack_to_add_180_deg_to,
+        _180_images = self.presenter.add_180_deg_to_dataset(dataset_id=dataset_to_add_180_deg_to,
                                                             _180_deg_file=selected_file)
         self.create_new_180_stack(_180_images, self.presenter.create_stack_name(selected_file))
 
@@ -323,6 +324,10 @@ class MainWindowView(BaseMainWindowView):
     @property
     def stack_list(self):
         return self.presenter.stack_list
+
+    @property
+    def dataset_list(self):
+        return self.presenter.dataset_list
 
     @property
     def stack_names(self):

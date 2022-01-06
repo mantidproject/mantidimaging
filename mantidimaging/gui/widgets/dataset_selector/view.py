@@ -48,12 +48,3 @@ class DatasetSelectorWidgetView(QComboBox):
 
     def current(self):
         return self.presenter.current_dataset
-
-    # def try_to_select_relevant_stack(self, name: str) -> None:
-    #     # Split based on whitespace
-    #     name_parts = name.split()
-    #     for i in range(self.count()):
-    #         # If widget text contains all name parts
-    #         if _string_contains_all_parts(self.itemText(i).lower(), name_parts):
-    #             self.setCurrentIndex(i)
-    #             break

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 
-class StackSelectorDialog(QDialog):
+class DatasetSelectorDialog(QDialog):
     def __init__(self,
                  main_window: Optional['MainWindowView'],
                  title: Optional[str] = None,
@@ -50,5 +50,5 @@ class StackSelectorDialog(QDialog):
         self.setLayout(self.vertical_layout)
 
     def on_ok_clicked(self):
-        self.selected_dataset = self.dataset_selector_widget.currentText()
+        self.selected_dataset = self.dataset_selector_widget.current
         self.done(QDialog.DialogCode.Accepted)

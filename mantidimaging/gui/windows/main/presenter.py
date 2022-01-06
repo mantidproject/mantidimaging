@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 StackId = namedtuple('StackId', ['id', 'name'])
+DatasetId = namedtuple('DatasetId', ['id', 'name'])
 logger = getLogger(__name__)
 
 
@@ -178,6 +179,7 @@ class MainWindowPresenter(BasePresenter):
             sample = container
         else:
             sample = container.sample
+            container.title = title
 
         sample_stack_vis = self.view.create_stack_window(sample, title)
         self.stacks[sample_stack_vis.id] = sample_stack_vis
@@ -256,6 +258,11 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
+    def dataset_list(self):
+        datasets = [DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values() if isinstance(dataset, Dataset)]
+        return sorted(datasets, key=lambda x: x.name)
+
+    @property
     def stack_names(self):
         return [widget.windowTitle() for widget in self.stacks.values()]
 
@@ -300,11 +307,8 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
-        stack_id = self.get_stack_id_by_name(stack_name)
-        if stack_id is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-        return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
+        return self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
 
     def create_stack_name(self, filename: str) -> str:
         """

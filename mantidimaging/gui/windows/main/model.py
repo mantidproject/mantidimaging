@@ -96,18 +96,20 @@ class MainWindowModel(object):
                 return
         self.raise_error_when_images_not_found(images_id)
 
-    def add_180_deg_to_dataset(self, images_id: uuid.UUID, _180_deg_file: str) -> Images:
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Images:
         """
         Loads to 180 projection and adds this to a given Images ID.
         :param images_id: The ID of the Images object.
         :param _180_deg_file: The location of the 180 projection.
         :return: The loaded 180 Image object.
         """
-        images = self.get_images_by_uuid(images_id)
-        if images is None:
-            self.raise_error_when_images_not_found(images_id)
+        try:
+            dataset = self.datasets[dataset_id]
+        except KeyError:
+            raise Exception()
+            # add proper warning here
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
-        images.proj180deg = _180_deg
+        dataset.sample.proj180deg = _180_deg
         return _180_deg
 
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
