@@ -85,13 +85,30 @@ class Dataset(BaseDataset):
         self.flat_after = flat_after
         self.dark_before = dark_before
         self.dark_after = dark_after
+        self._name = ""
 
     @property
     def all(self) -> List[Images]:
         image_stacks = [
-            self.sample, self.sample.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
+            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
         ]
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, arg: str):
+        self._name = arg
+
+    @property
+    def proj180deg(self):
+        return self.sample.proj180deg
+
+    @proj180deg.setter
+    def proj180deg(self, _180_deg: Images):
+        self.sample.proj180deg = _180_deg
 
     def delete_stack(self, images_id: uuid.UUID):
         if isinstance(self.sample, Images) and self.sample.id == images_id:
