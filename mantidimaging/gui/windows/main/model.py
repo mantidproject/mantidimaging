@@ -99,15 +99,14 @@ class MainWindowModel(object):
     def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Images:
         """
         Loads to 180 projection and adds this to a given Images ID.
-        :param images_id: The ID of the Images object.
+        :param dataset_id: The ID of the Dataset.
         :param _180_deg_file: The location of the 180 projection.
         :return: The loaded 180 Image object.
         """
-        try:
+        if dataset_id in self.datasets:
             dataset = self.datasets[dataset_id]
-        except KeyError:
-            raise Exception()
-            # add proper warning here
+        else:
+            raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
         dataset.sample.proj180deg = _180_deg
         return _180_deg
