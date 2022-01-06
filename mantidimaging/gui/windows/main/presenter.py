@@ -259,7 +259,10 @@ class MainWindowPresenter(BasePresenter):
 
     @property
     def dataset_list(self):
-        datasets = [DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values() if isinstance(dataset, Dataset)]
+        datasets = [
+            DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
+            if isinstance(dataset, Dataset)
+        ]
         return sorted(datasets, key=lambda x: x.name)
 
     @property
