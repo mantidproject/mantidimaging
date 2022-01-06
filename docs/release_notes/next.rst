@@ -18,6 +18,8 @@ New Features
 - #1197 : Dataset Tree View : Show tab from treeview
 - #1200 : Default save option set to float32
 - #1235 : Improvements to input value defaults and spin box step sizes
+- #1230 : Update CIL to 21.3 reducing memory requirements
+
 
 Fixes
 -----
@@ -28,6 +30,7 @@ Fixes
 - #1117 : Median operation preserves NaNs
 - #1151 : IndexError with sinograms and stripe tools
 - #1174 : TypeError in link_before_after_histogram_scales
+- #1161 : Remove run_ring_removal argument from Ring Removal operation and always run filter
 
 
 Developer Changes
@@ -45,3 +48,4 @@ Developer Changes
 - #1173 : Sometimes tests open many operations windows
 - #860  : Clean up super calls to use python 3 syntax
 - #1181 : Version check update command uses mamba if available
+- #1212 : Model Change: Put everything in datasets

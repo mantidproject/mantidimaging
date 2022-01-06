@@ -286,10 +286,8 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_nexus_load_success_calls_show_information(self):
         self.view.nexus_load_dialog = mock.Mock()
-        mock_loading_dataset = mock.Mock()
         data_title = "data tile"
-        self.view.nexus_load_dialog.presenter.get_dataset.return_value = mock_loading_dataset, data_title
-        self.model.convert_loading_dataset.return_value = self.dataset
+        self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
         self.presenter.create_new_stack = mock.Mock()
         self.presenter.load_nexus_file()
         self.presenter.create_new_stack.assert_called_once_with(self.dataset, data_title)
@@ -555,18 +553,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._delete_container("bad-id")
         self.view.model_changed.emit.assert_not_called()
 
-    def test_focus_tab_with_id_in_images(self):
-        stack_id = "stack-id"
-        self.model.images = [stack_id]
-        self.model.datasets = []
-        self.presenter.stacks[stack_id] = mock_stack_tab = mock.Mock()
-        self.presenter.notify(Notification.FOCUS_TAB, stack_id=stack_id)
-
-        mock_stack_tab.setVisible.assert_called_once_with(True)
-        mock_stack_tab.raise_.assert_called_once()
-
     def test_focus_tab_with_id_not_found(self):
-        self.model.images = []
+        self.model.image_ids = []
         self.model.datasets = []
 
         with self.assertRaises(Exception):
@@ -574,7 +562,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_focus_tab_with_id_in_dataset(self):
         stack_id = "stack-id"
-        self.model.images = []
+        self.model.image_ids = [stack_id]
         self.model.datasets = [stack_id]
         self.presenter.stacks = dict()
         self.presenter.stacks["other-id"] = mock_stack_tab = mock.Mock()
@@ -582,6 +570,12 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         mock_stack_tab.setVisible.assert_not_called()
         mock_stack_tab.raise_.assert_not_called()
+
+    def test_add_recon(self):
+        recon = generate_images()
+        stack_id = "stack-id"
+        self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
+        self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
 
 
 if __name__ == '__main__':

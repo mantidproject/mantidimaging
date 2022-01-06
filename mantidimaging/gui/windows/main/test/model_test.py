@@ -9,7 +9,6 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.data.loadingdataset import LoadingDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -40,10 +39,13 @@ class MainWindowModelTest(unittest.TestCase):
         self.stack_list_property = f"{self.model_class_name}.stack_list"
 
     def _add_mock_image(self):
+        dataset_mock = mock.Mock()
         image_mock = mock.Mock()
-        uid = uuid.uuid4()
-        self.model.images[uid] = image_mock
-        return uid, image_mock
+        dataset_mock.id = "dataset-id"
+        image_mock.id = images_id = "images-id"
+        dataset_mock.all = [image_mock]
+        self.model.datasets[dataset_mock.id] = dataset_mock
+        return images_id, image_mock
 
     def test_get_images_by_uuid(self):
         uid, image_mock = self._add_mock_image()
@@ -84,7 +86,9 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    def test_do_load_stack_sample_and_flat(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
+                                           load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
         lp.sample = sample_mock
@@ -103,6 +107,8 @@ class MainWindowModelTest(unittest.TestCase):
         flata_images_mock = mock.Mock()
         load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock]
 
+        ds_mock = dataset_mock.return_value
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -115,13 +121,16 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
-        assert self.model.images[sample_images_mock.id] is sample_images_mock
-        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
-        assert self.model.images[flata_images_mock.id] is flata_images_mock
+
+        dataset_mock.assert_called_with(sample_images_mock)
+        assert ds_mock.flat_before == flatb_images_mock
+        assert ds_mock.flat_after == flata_images_mock
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
+                                                               load_log_mock: mock.Mock):
         lp = LoadingParameters()
         sample_mock = mock.Mock()
         lp.sample = sample_mock
@@ -154,6 +163,8 @@ class MainWindowModelTest(unittest.TestCase):
             mock.Mock()
         ]
 
+        ds_mock = dataset_mock.return_value
+
         self.model.do_load_dataset(lp, progress_mock)
 
         load_p_mock.assert_has_calls([
@@ -170,11 +181,13 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock.log_file),
             mock.call(flat_after_mock.log_file)
         ])
-        assert self.model.images[sample_images_mock.id] is sample_images_mock
-        assert self.model.images[flatb_images_mock.id] is flatb_images_mock
-        assert self.model.images[flata_images_mock.id] is flata_images_mock
-        assert self.model.images[darkb_images_mock.id] is darkb_images_mock
-        assert self.model.images[darka_images_mock.id] is darka_images_mock
+
+        dataset_mock.assert_called_with(sample_images_mock)
+
+        assert ds_mock.flat_before == flatb_images_mock
+        assert ds_mock.flat_after == flata_images_mock
+        assert ds_mock.dark_before == darkb_images_mock
+        assert ds_mock.dark_after == darka_images_mock
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
@@ -210,7 +223,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
         images_id = "id"
-        self.model.images[images_id] = images_mock = mock.MagicMock()
+        images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = mock.Mock(return_value=images_mock)
 
         _180_stack = self.model.add_180_deg_to_dataset(images_id=images_id, _180_deg_file=_180_file)
@@ -264,8 +277,8 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
     def test_save_image(self, save_mock: mock.MagicMock):
-        images = generate_images()
-        self.model.images[images.id] = images
+        images_id, images_mock = self._add_mock_image()
+        images_mock.data = generate_images().data
 
         output_dir = "output"
         name_prefix = "prefix"
@@ -274,18 +287,18 @@ class MainWindowModelTest(unittest.TestCase):
         pixel_depth = "depth"
         progress = mock.Mock()
 
-        save_mock.return_value = filenames = ["filename" for _ in range(len(images.data))]
+        save_mock.return_value = filenames = ["filename" for _ in range(len(images_mock.data))]
 
-        result = self.model.do_images_saving(images.id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
+        result = self.model.do_images_saving(images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
                                              progress)
-        save_mock.assert_called_once_with(images,
+        save_mock.assert_called_once_with(images_mock,
                                           output_dir=output_dir,
                                           name_prefix=name_prefix,
                                           overwrite_all=overwrite,
                                           out_format=image_format,
                                           pixel_depth=pixel_depth,
                                           progress=progress)
-        self.assertListEqual(images.filenames, filenames)  # type: ignore
+        self.assertListEqual(images_mock.filenames, filenames)  # type: ignore
         assert result
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
@@ -298,61 +311,60 @@ class MainWindowModelTest(unittest.TestCase):
     def test_set_images_by_uuid_success(self):
         prev_images = generate_images()
         new_data = generate_images().data
-        self.model.images[prev_images.id] = prev_images
+        ds = Dataset(prev_images)
+        self.model.datasets[ds.id] = ds
 
         self.model.set_image_data_by_uuid(prev_images.id, new_data)
-        assert_array_equal(self.model.images[prev_images.id].data, new_data)
+        assert_array_equal(ds.sample.data, new_data)
 
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):
-            self.model.set_image_data_by_uuid(generate_images().id, generate_images())
-
-    def test_remove_image_stack_from_model(self):
-        images = generate_images()
-        self.model.images[images.id] = images
-        self.model.remove_container(images.id)
-        self.assertNotIn(images, self.model.images.values())
+            self.model.set_image_data_by_uuid("cant-find-this-id", generate_images())
 
     def test_remove_dataset_from_model(self):
-        ds_images = []
-        for _ in range(5):
-            images = generate_images()
-            ds_images.append(images)
-            self.model.images[images.id] = images
+        images = [generate_images() for _ in range(5)]
+        ids = [image_stack.id for image_stack in images]
 
-        ds = Dataset(*ds_images)
+        ds = Dataset(*images)
         self.model.datasets[ds.id] = ds
 
-        self.model.remove_container(ds.id)
+        stacks_to_close = self.model.remove_container(ds.id)
         self.assertNotIn(ds, self.model.datasets.values())
-
-        for image in ds_images:
-            self.assertNotIn(image, self.model.images.values())
+        self.assertListEqual(stacks_to_close, ids)
 
     def test_failed_remove_container(self):
         with self.assertRaises(RuntimeError):
             self.model.remove_container(uuid.uuid4())
 
-    def test_convert_dataset_with_additional_images(self):
-        images = [generate_images() for _ in range(5)]
-        loading_dataset = LoadingDataset(*images)
+    def test_remove_images_from_dataset(self):
+        images = [generate_images() for _ in range(2)]
+        ds = Dataset(*images)
+        self.model.datasets[ds.id] = ds
 
-        ds = self.model.convert_loading_dataset(loading_dataset)
+        self.assertIsNotNone(ds.flat_before)
+        self.model.remove_container(images[-1].id)
+        self.assertIsNone(ds.flat_before)
 
+    def test_add_dataset_to_model(self):
+        ds = Dataset(generate_images())
+        self.model.add_dataset_to_model(ds)
         self.assertIn(ds, self.model.datasets.values())
-        for image_stack in images:
-            self.assertIn(image_stack, self.model.images.values())
 
-        self.assertEqual(ds.sample, images[0])
-        self.assertEqual(ds.flat_before, images[1])
-        self.assertEqual(ds.flat_after, images[2])
-        self.assertEqual(ds.dark_before, images[3])
-        self.assertEqual(ds.dark_after, images[4])
+    def test_image_ids(self):
+        all_ids = []
+        for _ in range(3):
+            images = [generate_images() for _ in range(3)]
+            all_ids += [image.id for image in images]
+            ds = Dataset(*images)
+            self.model.add_dataset_to_model(ds)
+        self.assertListEqual(all_ids, self.model.image_ids)
 
-    def test_convert_dataset_without_additional_images(self):
+    def test_add_recon_to_dataset(self):
         sample = generate_images()
-        loading_dataset = LoadingDataset(sample)
+        sample_id = sample.id
+        ds = Dataset(sample)
 
-        ds = self.model.convert_loading_dataset(loading_dataset)
-        self.assertIn(ds, self.model.datasets.values())
-        self.assertIn(sample, self.model.images.values())
+        recon = generate_images()
+        self.model.add_dataset_to_model(ds)
+        self.model.add_recon_to_dataset(recon, sample_id)
+        self.assertIn(recon, ds.all)
