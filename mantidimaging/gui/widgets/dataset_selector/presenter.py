@@ -41,9 +41,9 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
             self.view.clear()
 
             # Get all the new stacks
-            stack_list: List[Tuple[UUID, str]] = self.view.main_window.dataset_list
+            dataset_list: List[Tuple[UUID, str]] = self.view.main_window.dataset_list
             self.dataset_uuids, user_friendly_names = \
-                zip(*stack_list) if stack_list else (None, [])
+                zip(*dataset_list) if dataset_list else (None, [])
             self.view.addItems(user_friendly_names)
 
             # If the previously selected window still exists with the same name,
