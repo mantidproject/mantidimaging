@@ -5,6 +5,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
+import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.gaussian import GaussianFilter
@@ -22,16 +23,14 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
-    def test_not_executed(self):
+    def test_exception_raised_for_invalid_size(self):
         images = th.generate_images()
 
         size = None
         mode = None
         order = None
 
-        original = np.copy(images.data[0])
-        result = GaussianFilter.filter_func(images, size, mode, order)
-        th.assert_not_equals(result.data, original)
+        npt.assert_raises(ValueError, GaussianFilter.filter_func, images, size, mode, order)
 
     def test_executed_parallel(self):
         images = th.generate_images()

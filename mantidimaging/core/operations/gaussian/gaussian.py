@@ -31,7 +31,7 @@ class GaussianFilter(BaseFilter):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
-        :param mode: The mode with which to handle the endges.
+        :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].
                      Modes are described in the `SciPy documentation
                      <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html>`_.
@@ -49,8 +49,10 @@ class GaussianFilter(BaseFilter):
         """
         h.check_data_stack(data)
 
-        if size and size > 1:
-            _execute(data.data, size, mode, order, cores, progress)
+        if not size or not size > 1:
+            raise ValueError(f'Size parameter must be greater than 1, but value provided was {0}', size)
+
+        _execute(data.data, size, mode, order, cores, progress)
         h.check_data_stack(data)
         return data
 
