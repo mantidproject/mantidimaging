@@ -310,8 +310,10 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
-        return self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Images:
+        _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
+        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+        return _180_deg
 
     def create_stack_name(self, filename: str) -> str:
         """
@@ -368,6 +370,15 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
                     return
+
+    def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str):
+        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
+        for i in range(top_level_item_count):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == parent_id:
+                self.view.create_child_tree_item(top_level_item, child_id, child_name)
+                return
+        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView):
         self.stacks[stack.id] = stack
