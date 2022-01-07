@@ -6,9 +6,18 @@ from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
+import pytest
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rebin import RebinFilter
+
+
+@pytest.mark.parametrize('val', [0, -1, (0, 1), (1, 0), (-1, 1), (1, -1)])
+def test_exception_raised_for_invalid_rebin_param(val):
+    images = th.generate_images()
+    mode = 'reflect'
+
+    npt.assert_raises(ValueError, RebinFilter.filter_func, images, val, mode)
 
 
 class RebinTest(unittest.TestCase):
@@ -17,26 +26,6 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
-    def test_not_executed_rebin_negative(self):
-        images = th.generate_images()
-
-        mode = 'reflect'
-        val = -1
-
-        result = RebinFilter.filter_func(images, val, mode)
-
-        npt.assert_equal(result, images)
-
-    def test_not_executed_rebin_zero(self):
-        images = th.generate_images()
-
-        mode = 'reflect'
-        val = 0
-
-        result = RebinFilter.filter_func(images, val, mode)
-
-        npt.assert_equal(result, images)
-
     def test_executed_uniform_par_2(self):
         self.do_execute_uniform(2.0)
 
@@ -116,9 +105,9 @@ class RebinTest(unittest.TestCase):
         rebin_by_factor_radio = mock.Mock()
         rebin_by_factor_radio.isChecked = mock.Mock(return_value=True)
         factor = mock.Mock()
-        factor.value = mock.Mock(return_value=0)
+        factor.value = mock.Mock(return_value=0.5)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=0)
+        mode_field.currentText = mock.Mock(return_value='reflect')
         execute_func = RebinFilter.execute_wrapper(rebin_to_dimensions_radio=rebin_to_dimensions_radio,
                                                    rebin_by_factor_radio=rebin_by_factor_radio,
                                                    factor=factor,
