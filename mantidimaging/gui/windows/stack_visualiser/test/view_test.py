@@ -20,9 +20,6 @@ class StackVisualiserViewTest(unittest.TestCase):
     test_data: Images
     window: MainWindowView
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def setUp(self):
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.window = MainWindowView()

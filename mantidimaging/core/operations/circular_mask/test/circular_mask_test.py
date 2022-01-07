@@ -14,9 +14,6 @@ class CircularMaskTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def test_executed(self):
         images = th.generate_images()
 

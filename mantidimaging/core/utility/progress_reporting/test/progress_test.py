@@ -10,9 +10,6 @@ from mantidimaging.core.utility.progress_reporting.progress import ProgressHisto
 
 
 class ProgressTest(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def test_basic_single_step(self):
         p = Progress(num_steps=2)
 

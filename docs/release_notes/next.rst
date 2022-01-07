@@ -50,3 +50,4 @@ Developer Changes
 - #860  : Clean up super calls to use python 3 syntax
 - #1181 : Version check update command uses mamba if available
 - #1212 : Model Change: Put everything in datasets
+- #1245 : Remove empty init methods from test classes

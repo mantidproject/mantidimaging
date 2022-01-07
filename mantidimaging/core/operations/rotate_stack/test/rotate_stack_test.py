@@ -16,9 +16,6 @@ class RotateStackTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def test_executed_par(self):
         self.do_execute()
 
