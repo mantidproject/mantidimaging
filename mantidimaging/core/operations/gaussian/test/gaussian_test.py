@@ -8,7 +8,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.gaussian import GaussianFilter
+from mantidimaging.core.operations.gaussian import GaussianFilter, modes
 
 
 class GaussianTest(unittest.TestCase):
@@ -36,7 +36,7 @@ class GaussianTest(unittest.TestCase):
         images = th.generate_images()
 
         size = 3
-        mode = 'reflect'
+        mode = modes()[0]
         order = 1
 
         original = np.copy(images.data[0])
@@ -49,9 +49,9 @@ class GaussianTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         size_field = mock.Mock()
-        size_field.value = mock.Mock(return_value=0)
+        size_field.value = mock.Mock(return_value=2)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=0)
+        mode_field.currentText = mock.Mock(return_value=modes()[0])
         order_field = mock.Mock()
         order_field.value = mock.Mock(return_value=0)
         execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)
