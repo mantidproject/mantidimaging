@@ -108,7 +108,7 @@ class MainWindowModel(object):
         else:
             raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
-        dataset.sample.proj180deg = _180_deg
+        dataset.proj180deg = _180_deg
         return _180_deg
 
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
