@@ -215,3 +215,17 @@ class ImagesTest(unittest.TestCase):
     def test_cant_change_id(self):
         with self.assertRaises(Exception):
             generate_images().id = "id"
+
+    def test_default_name(self):
+        imgs = Images(np.asarray([1]))
+        self.assertEqual(imgs.name, "untitled")
+
+    def test_name_from_filenames(self):
+        filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
+        imgs = Images(np.asarray([1]), filenames=filenames)
+        self.assertEqual(imgs.name, "tomo_0000")
+
+    def test_name_from_argument(self):
+        filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
+        imgs = Images(np.asarray([1]), filenames=filenames, name="given")
+        self.assertEqual(imgs.name, "given")
