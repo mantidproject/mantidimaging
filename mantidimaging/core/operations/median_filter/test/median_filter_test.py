@@ -22,16 +22,13 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def test_not_executed(self):
+    @parameterized.expand([("None", None), ("1", 1)])
+    def test_exception_raised_for_invalid_size(self, _, size):
         images = th.generate_images()
 
-        size = None
         mode = None
 
-        original = np.copy(images.data[0])
-        result = MedianFilter.filter_func(images, size, mode)
-
-        th.assert_not_equals(result.data, original)
+        npt.assert_raises(ValueError, MedianFilter.filter_func, images, size, mode)
 
     def test_executed_no_helper_parallel(self):
         images = th.generate_images()
@@ -75,9 +72,9 @@ class MedianTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         size_field = mock.Mock()
-        size_field.value = mock.Mock(return_value=0)
+        size_field.value = mock.Mock(return_value=3)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=0)
+        mode_field.currentText = mock.Mock(return_value='reflect')
         use_gpu_field = mock.Mock()
         use_gpu_field.isChecked = mock.Mock(return_value=False)
         execute_func = MedianFilter.execute_wrapper(size_field, mode_field, use_gpu_field)
