@@ -105,8 +105,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         # https://github.com/pyqtgraph/pyqtgraph/issues/1348
         self.vb.setAspectLocked(True)
         for view1, view2 in pairwise(chain([self], self.axis_siblings)):
-            view1.vb.linkView(ViewBox.XAxis, view2.vb)
-            view1.vb.linkView(ViewBox.YAxis, view2.vb)
+            view2.vb.linkView(ViewBox.XAxis, view1.vb)
+            view2.vb.linkView(ViewBox.YAxis, view1.vb)
             view2.vb.setAspectLocked(False)
 
     def unlink_sibling_axis(self):
