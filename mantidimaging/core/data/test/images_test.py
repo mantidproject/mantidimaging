@@ -229,3 +229,15 @@ class ImagesTest(unittest.TestCase):
         filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
         imgs = Images(np.asarray([1]), filenames=filenames, name="given")
         self.assertEqual(imgs.name, "given")
+
+    def test_name_unique_new(self):
+        existing = []
+        imgs = Images(np.asarray([1]), name="tomo")
+        imgs.make_name_unique(existing)
+        self.assertEqual(imgs.name, "tomo")
+
+    def test_name_unique_exists(self):
+        existing = ["tomo"]
+        imgs = Images(np.asarray([1]), name="tomo")
+        imgs.make_name_unique(existing)
+        self.assertEqual(imgs.name, "tomo_2")

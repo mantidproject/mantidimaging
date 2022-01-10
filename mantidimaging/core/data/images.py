@@ -305,3 +305,13 @@ class Images:
 
     def clear_proj180deg(self):
         self._proj180deg = None
+
+    def make_name_unique(self, existing_names: List[str]):
+        name = self.name
+        num = 1
+        while self.name in existing_names:
+            num += 1
+            self.name = f"{name}_{num}"
+
+            if num > 1000:
+                raise ValueError(f"Could not make unique name for: {name}")
