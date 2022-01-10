@@ -8,7 +8,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.operations.gaussian import GaussianFilter, modes
+from mantidimaging.core.operations.gaussian import GaussianFilter
 
 
 class GaussianTest(unittest.TestCase):
@@ -36,7 +36,7 @@ class GaussianTest(unittest.TestCase):
         images = th.generate_images()
 
         size = 3
-        mode = modes()[0]
+        mode = 'reflect'
         order = 1
 
         original = np.copy(images.data[0])
@@ -51,7 +51,7 @@ class GaussianTest(unittest.TestCase):
         size_field = mock.Mock()
         size_field.value = mock.Mock(return_value=2)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=modes()[0])
+        mode_field.currentText = mock.Mock(return_value='reflect')
         order_field = mock.Mock()
         order_field.value = mock.Mock(return_value=0)
         execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)
