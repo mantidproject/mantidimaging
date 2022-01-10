@@ -1,23 +1,15 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
-import pytest
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rebin import RebinFilter
-
-
-@pytest.mark.parametrize('val', [0, -1, (0, 1), (1, 0), (-1, 1), (1, -1)])
-def test_exception_raised_for_invalid_rebin_param(val):
-    images = th.generate_images()
-    mode = 'reflect'
-
-    npt.assert_raises(ValueError, RebinFilter.filter_func, images, val, mode)
 
 
 class RebinTest(unittest.TestCase):
@@ -26,6 +18,14 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
+    @parameterized.expand([("Zero", 0), ("Negative", -1), ("0,1", (0, 1)), ("1,0", (1, 0)), ("-1,1", (-1, 1)),
+                           ("1,-1", (1, -1))])
+    def test_exception_raised_for_invalid_rebin_param(self, _, val):
+        images = th.generate_images()
+        mode = 'reflect'
+
+        npt.assert_raises(ValueError, RebinFilter.filter_func, images, val, mode)
+
     def test_executed_uniform_par_2(self):
         self.do_execute_uniform(2.0)
 

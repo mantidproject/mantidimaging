@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -23,10 +24,10 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
-    def test_exception_raised_for_invalid_size(self):
+    @parameterized.expand([("None", None), ("1", 1)])
+    def test_exception_raised_for_invalid_size(self, _, size):
         images = th.generate_images()
 
-        size = None
         mode = None
         order = None
 
