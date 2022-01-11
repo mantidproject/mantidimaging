@@ -356,7 +356,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
         self.view.tabifyDockWidget.assert_called_once()
         self.view.model_changed.emit.assert_called_once()
-        tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
+        tab_bar_mock.setCurrentIndex.assert_called_once_with(3)
 
     def test_create_new_180_stack_with_no_visible_stacks(self):
         stacks = dict()
@@ -422,12 +422,12 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_add_180_deg_to_dataset_success(self):
         dataset_id = "dataset-id"
         filename_for_180 = "path/to/180"
-        _180_deg_mock = self.model.add_180_deg_to_dataset.return_value
+        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1,200,200))
         self.presenter.add_child_item_to_tree_view = mock.Mock()
 
         self.presenter.add_180_deg_to_dataset(dataset_id, filename_for_180)
         self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
-        self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg_mock.id, "180")
+        self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
 
     def test_add_180_deg_to_dataset_failure(self):
         self.model.add_180_deg_to_dataset.return_value = None
