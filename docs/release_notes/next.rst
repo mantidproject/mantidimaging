@@ -52,3 +52,4 @@ Developer Changes
 - #1181 : Version check update command uses mamba if available
 - #1212 : Model Change: Put everything in datasets
 - #1245 : Remove empty init methods from test classes
+- #1251 : System tests: test_correlate ValueError
