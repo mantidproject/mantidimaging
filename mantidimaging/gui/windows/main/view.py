@@ -261,7 +261,7 @@ class MainWindowView(BaseMainWindowView):
 
         _180_images = self.presenter.add_180_deg_to_dataset(stack_name=stack_to_add_180_deg_to,
                                                             _180_deg_file=selected_file)
-        self.create_new_180_stack(_180_images, self.presenter.create_stack_name(selected_file))
+        self.create_new_180_stack(_180_images)
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
@@ -346,8 +346,8 @@ class MainWindowView(BaseMainWindowView):
     def create_new_stack(self, images: Images):
         self.presenter.create_new_stack(images)
 
-    def create_new_180_stack(self, images: Images, title: str):
-        self.presenter.create_new_180_stack(images, title)
+    def create_new_180_stack(self, images: Images):
+        self.presenter.create_new_180_stack(images)
 
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)

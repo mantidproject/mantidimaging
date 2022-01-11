@@ -51,23 +51,8 @@ class MainWindowPresenterTest(unittest.TestCase):
             stacks[uuid.uuid4()] = stack_mock
         self.presenter.stacks = stacks
 
-    def test_create_unique_name(self):
-        self.assertEqual("apple", self.presenter.create_stack_name("apple"))
-
-    def test_create_name_one_duplicate_stack_loaded(self):
-        self.create_mock_stacks_with_names(["test"])
-        self.assertEqual(self.presenter.create_stack_name("test"), "test_2")
-
-    def test_create_name_multiple_duplicate_stacks_loaded(self):
-        stack_names = ["test", "test_2", "test_3"]
-        self.create_mock_stacks_with_names(stack_names)
-        self.assertEqual(self.presenter.create_stack_name("test"), "test_4")
-
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_names, [])
-
-    def test_create_name_strips_extension(self):
-        self.assertEqual(self.presenter.create_stack_name("test.tif"), "test")
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
@@ -348,9 +333,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.findChild.return_value = tab_bar_mock = mock.Mock()
 
         images_180 = generate_images()
-        title = "180-images"
 
-        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
         self.view.tabifyDockWidget.assert_called_once()
         self.view.model_changed.emit.assert_called_once()
         tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
@@ -366,9 +350,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
 
         images_180 = generate_images()
-        title = "180-images"
 
-        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
         self.view.tabifyDockWidget.assert_not_called()
         self.view.model_changed.emit.assert_called_once()
         self.view.findChild.assert_not_called()

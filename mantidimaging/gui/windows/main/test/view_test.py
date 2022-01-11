@@ -57,8 +57,6 @@ class MainWindowViewTest(unittest.TestCase):
         _180_dataset = mock.MagicMock()
         self.presenter.add_180_deg_to_dataset.return_value = _180_dataset
         self.view.create_new_180_stack = mock.MagicMock()  # type: ignore
-        selected_filename = "selected_file.tif"
-        self.presenter.create_stack_name = mock.MagicMock(return_value=selected_filename)
 
         self.view.load_180_deg_dialog()
 
@@ -71,8 +69,7 @@ class MainWindowViewTest(unittest.TestCase):
                                                    initialFilter="Image File (*.tif *.tiff)")
         self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
                                                                       _180_deg_file=selected_file)
-        self.presenter.create_stack_name.assert_called_once_with(selected_file)
-        self.view.create_new_180_stack.assert_called_once_with(_180_dataset, selected_filename)
+        self.view.create_new_180_stack.assert_called_once_with(_180_dataset)
 
     def test_execute_load(self):
         self.view.execute_load()

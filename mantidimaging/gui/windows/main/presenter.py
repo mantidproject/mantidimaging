@@ -151,9 +151,8 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]  # type:ignore
 
-    def create_new_180_stack(self, container: Images, title: str):
-        title = self.create_stack_name(title)
-        _180_stack_vis = self.view.create_stack_window(container, title)
+    def create_new_180_stack(self, container: Images):
+        _180_stack_vis = self.view.create_stack_window(container)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 1:
@@ -303,22 +302,6 @@ class MainWindowPresenter(BasePresenter):
         if stack_id is None:
             raise RuntimeError(f"Failed to get stack with name {stack_name}")
         return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
-
-    def create_stack_name(self, filename: str) -> str:
-        """
-        Creates a suitable name for a newly loaded stack.
-        """
-        # Avoid file extensions in names
-        filename = os.path.splitext(filename)[0]
-
-        # Avoid duplicate names
-        name = filename
-        num = 1
-        while name in self.stack_names:
-            num += 1
-            name = f"{filename}_{num}"
-
-        return name
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)
