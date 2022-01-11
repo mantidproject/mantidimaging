@@ -127,9 +127,9 @@ class MainWindowViewTest(unittest.TestCase):
 
     def test_create_new_stack(self):
         images = generate_images()
-        self.view.create_new_stack(images, "Test Title")
+        self.view.create_new_stack(images)
 
-        self.presenter.create_new_stack.assert_called_once_with(images, "Test Title")
+        self.presenter.create_new_stack.assert_called_once_with(images)
 
     def test_update_stack_with_images(self):
         images = generate_images()

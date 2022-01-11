@@ -114,7 +114,7 @@ class MainWindowPresenter(BasePresenter):
     def load_nexus_file(self):
         dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
-        self.create_new_stack(dataset, title)
+        self.create_new_stack(dataset)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -124,7 +124,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
-            self.create_new_stack(task.result, self.create_stack_name(task.kwargs['file_path']))
+            self.create_new_stack(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -133,8 +133,7 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            title = task.kwargs['parameters'].name
-            self.create_new_stack(task.result, title)
+            self.create_new_stack(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -171,7 +170,7 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
-    def create_new_stack(self, container: Union[Images, Dataset], title: str):
+    def create_new_stack(self, container: Union[Images, Dataset]):
 
         if isinstance(container, Images):
             sample = container
@@ -215,7 +214,7 @@ class MainWindowPresenter(BasePresenter):
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.sample.proj180deg = Images(np.reshape(closest_projection,
                                                                     (1, ) + closest_projection.shape),
-                                                         name=f"{title}_180")
+                                                         name=f"{sample.name}_180")
                     self._add_stack(container.sample.proj180deg, sample_stack_vis)
                     self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 

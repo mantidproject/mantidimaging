@@ -343,8 +343,8 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_history(stack_uuid)
 
-    def create_new_stack(self, images: Images, title: str):
-        self.presenter.create_new_stack(images, title)
+    def create_new_stack(self, images: Images):
+        self.presenter.create_new_stack(images)
 
     def create_new_180_stack(self, images: Images, title: str):
         self.presenter.create_new_180_stack(images, title)
