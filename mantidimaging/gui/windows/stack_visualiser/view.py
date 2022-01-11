@@ -39,6 +39,10 @@ class StackVisualiserView(QDockWidget):
         # dock is set as a parent the window will be an independent floating
         # window
         super().__init__(title, parent)
+        if title != images.name:
+            # confirm that we are not causing changes before removing title
+            raise ValueError(f"StackVisualiserView: {title=} does not match {images.name=}")
+
         self.central_widget = QWidget(self)
         self.layout = QVBoxLayout()
         self.central_widget.setLayout(self.layout)

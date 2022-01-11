@@ -123,6 +123,7 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
+            task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
             self.create_new_stack(task.result, self.create_stack_name(task.kwargs['file_path']))
             task.result = None
         else:
@@ -215,8 +216,9 @@ class MainWindowPresenter(BasePresenter):
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                    container.sample.proj180deg = Images(
-                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
+                    container.sample.proj180deg = Images(np.reshape(closest_projection,
+                                                                    (1, ) + closest_projection.shape),
+                                                         name=f"{title}_180")
                     self._add_stack(container.sample.proj180deg, f"{title}_180", sample_stack_vis)
                     self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 

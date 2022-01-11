@@ -360,6 +360,7 @@ class MainWindowView(BaseMainWindowView):
                             title: str,
                             position=Qt.DockWidgetArea.RightDockWidgetArea,
                             floating=False) -> StackVisualiserView:
+        stack.make_name_unique(self.stack_names)
         stack_vis = StackVisualiserView(self, title, stack)
 
         # this puts the new stack window into the centre of the window
