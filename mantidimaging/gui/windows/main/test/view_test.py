@@ -171,15 +171,14 @@ class MainWindowViewTest(unittest.TestCase):
                                  setCentralWidget: Mock = Mock(),
                                  addDockWidget: Mock = Mock()):
         images = generate_images()
-        title = "test_title"
         position = "test_position"
         floating = False
 
         self.view.splitter = splitter_mock = mock.Mock()
 
-        self.view.create_stack_window(images, title, position=position, floating=floating)
+        self.view.create_stack_window(images, position=position, floating=floating)
 
-        mock_sv.assert_called_once_with(self.view, title, images)
+        mock_sv.assert_called_once_with(self.view, images)
         dock = mock_sv.return_value
         setCentralWidget.assert_called_once_with(splitter_mock)
         addDockWidget.assert_called_once_with(position, dock)

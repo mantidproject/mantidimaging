@@ -357,11 +357,10 @@ class MainWindowView(BaseMainWindowView):
 
     def create_stack_window(self,
                             stack: Images,
-                            title: str,
-                            position=Qt.DockWidgetArea.RightDockWidgetArea,
-                            floating=False) -> StackVisualiserView:
+                            position: Qt.DockWidgetArea = Qt.DockWidgetArea.RightDockWidgetArea,
+                            floating: bool = False) -> StackVisualiserView:
         stack.make_name_unique(self.stack_names)
-        stack_vis = StackVisualiserView(self, title, stack)
+        stack_vis = StackVisualiserView(self, stack)
 
         # this puts the new stack window into the centre of the window
         self.splitter.addWidget(stack_vis)

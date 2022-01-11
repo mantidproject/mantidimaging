@@ -20,7 +20,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
-    name: Optional[str]
+    name: str
 
     def __init__(self,
                  data: np.ndarray,

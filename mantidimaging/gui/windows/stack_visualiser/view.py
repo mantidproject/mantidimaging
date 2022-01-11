@@ -29,7 +29,7 @@ class StackVisualiserView(QDockWidget):
     presenter: StackVisualiserPresenter
     layout: QVBoxLayout
 
-    def __init__(self, parent: 'MainWindowView', title: str, images: Images):
+    def __init__(self, parent: 'MainWindowView', images: Images):
         # enforce not showing a single image
         assert images.data.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.data.ndim)
@@ -38,10 +38,7 @@ class StackVisualiserView(QDockWidget):
         # having no parent, the window will be inside the QDockWidget. If the
         # dock is set as a parent the window will be an independent floating
         # window
-        super().__init__(title, parent)
-        if title != images.name:
-            # confirm that we are not causing changes before removing title
-            raise ValueError(f"StackVisualiserView: {title=} does not match {images.name=}")
+        super().__init__(images.name, parent)
 
         self.central_widget = QWidget(self)
         self.layout = QVBoxLayout()
