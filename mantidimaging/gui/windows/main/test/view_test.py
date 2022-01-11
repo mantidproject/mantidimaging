@@ -196,7 +196,7 @@ class MainWindowViewTest(unittest.TestCase):
                                     ProjectionAngleFileParser: Mock, QMessageBox: Mock):
         StackSelectorDialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         selected_stack = "selected_stack"
-        StackSelectorDialog.return_value.selected_dataset = selected_stack
+        StackSelectorDialog.return_value.selected_stack = selected_stack
 
         selected_file = "~/home/test/directory/selected_file.txt"
         getOpenFileName.return_value = (selected_file, None)
