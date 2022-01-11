@@ -86,7 +86,7 @@ class MedianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if not size or not size > 1:
-            raise ValueError(f'Size parameter must be greater than 1, but value provided was {0}', size)
+            raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
         if not force_cpu:
             data = _execute_gpu(data.data, size, mode, progress)

@@ -50,7 +50,7 @@ class GaussianFilter(BaseFilter):
         h.check_data_stack(data)
 
         if not size or not size > 1:
-            raise ValueError(f'Size parameter must be greater than 1, but value provided was {0}', size)
+            raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
         _execute(data.data, size, mode, order, cores, progress)
         h.check_data_stack(data)
