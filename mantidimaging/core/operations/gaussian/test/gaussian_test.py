@@ -6,7 +6,6 @@ import unittest
 from unittest import mock
 
 import numpy as np
-import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.gaussian import GaussianFilter
@@ -31,7 +30,7 @@ class GaussianTest(unittest.TestCase):
         mode = None
         order = None
 
-        npt.assert_raises(ValueError, GaussianFilter.filter_func, images, size, mode, order)
+        self.assertRaises(ValueError, GaussianFilter.filter_func, images, size, mode, order)
 
     def test_executed_parallel(self):
         images = th.generate_images()
