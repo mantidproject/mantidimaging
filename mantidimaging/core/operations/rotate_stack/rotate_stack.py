@@ -42,7 +42,11 @@ class RotateFilter(BaseFilter):
         """
         h.check_data_stack(data)
 
-        if angle:
+        if angle is None:
+            raise ValueError('Value must be provided for angle parameter')
+
+        # No need to run the filter for an angle of 0 as it won't have any effect
+        if not angle == 0:
             _execute(data.data, angle, cores, chunksize, progress)
 
         return data
