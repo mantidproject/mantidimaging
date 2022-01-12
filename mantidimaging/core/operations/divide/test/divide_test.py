@@ -1,10 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 import numpy as np
-import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import Images
@@ -12,13 +12,11 @@ from mantidimaging.core.operations.divide import DivideFilter
 
 
 class DivideTest(unittest.TestCase):
-    def test_divide_with_zero_does_nothing(self):
+    @parameterized.expand([("None", None), ("0", 0.00)])
+    def test_divide_with_invalid_value_raises_exception(self, _, value):
         images = th.generate_images()
-        copy = np.copy(images.data)
 
-        result = self.do_divide(images, 0.00)
-
-        npt.assert_equal(result.data, copy)
+        self.assertRaises(ValueError, self.do_divide, images, value)
 
     def test_divide(self):
         images = th.generate_images()
