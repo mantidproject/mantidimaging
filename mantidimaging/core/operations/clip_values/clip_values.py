@@ -48,27 +48,27 @@ class ClipValuesFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray.
         """
+        # We're using is None because 0.0 is a valid value
+        if clip_min is None and clip_max is None:
+            raise ValueError('At least one of clip_min or clip_max must be supplied')
+
         progress = Progress.ensure_instance(progress, num_steps=2, task_name='Clipping Values.')
+        with progress:
+            sample = data.data
+            progress.update(msg="Determining clip min and clip max")
+            clip_min = clip_min if clip_min is not None else sample.min()
+            clip_max = clip_max if clip_max is not None else sample.max()
 
-        # we're using is not None because if the value specified is 0.0 that
-        # evaluates to false
-        if clip_min is not None or clip_max is not None:
-            with progress:
-                sample = data.data
-                progress.update(msg="Determining clip min and clip max")
-                clip_min = clip_min if clip_min is not None else sample.min()
-                clip_max = clip_max if clip_max is not None else sample.max()
+            clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
 
-                clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
+            clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
 
-                clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
+            progress.update(msg=f"Clipping data with values min {clip_min} and max {clip_max}")
 
-                progress.update(msg=f"Clipping data with values min {clip_min} and max {clip_max}")
-
-                # this is the fastest way to clip the values, np.clip does not do
-                # the clipping in place and ends up copying the data
-                sample[sample < clip_min] = clip_min_new_value
-                sample[sample > clip_max] = clip_max_new_value
+            # this is the fastest way to clip the values, np.clip does not do
+            # the clipping in place and ends up copying the data
+            sample[sample < clip_min] = clip_min_new_value
+            sample[sample > clip_max] = clip_max_new_value
 
         return data
 
