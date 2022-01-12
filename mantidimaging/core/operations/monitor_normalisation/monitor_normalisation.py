@@ -33,7 +33,8 @@ class MonitorNormalisation(BaseFilter):
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
             # passed in doesn't have the logfile in it
-            return images
+            raise RuntimeError("No logfile available for this stack.")
+
         counts = images.counts()
 
         if counts is None:
