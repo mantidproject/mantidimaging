@@ -9,7 +9,7 @@ from unittest import mock
 
 import numpy as np
 
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.dataset import Dataset, StackDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -422,7 +422,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_add_180_deg_to_dataset_success(self):
         dataset_id = "dataset-id"
         filename_for_180 = "path/to/180"
-        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1,200,200))
+        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
         self.presenter.add_child_item_to_tree_view = mock.Mock()
 
         self.presenter.add_180_deg_to_dataset(dataset_id, filename_for_180)
@@ -575,6 +575,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_id = "stack-id"
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
+
+    def test_dataset_list(self):
+        dataset_1 = Dataset(generate_images())
+        dataset_1.name = "dataset-1"
+        dataset_2 = Dataset(generate_images())
+        dataset_2.name = "dataset-2"
+        stack_dataset = StackDataset([generate_images()])
+
+        self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": stack_dataset}
+
+        dataset_list = self.presenter.dataset_list
+        assert len(dataset_list) == 2
 
 
 if __name__ == '__main__':
