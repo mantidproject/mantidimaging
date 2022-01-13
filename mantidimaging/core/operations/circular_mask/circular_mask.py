@@ -38,11 +38,10 @@ class CircularMaskFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
-
         if not circular_mask_ratio or not circular_mask_ratio < 1:
             raise ValueError(f'circular_mask_ratio must be > 0 and < 1. Value provided was {circular_mask_ratio}')
 
+        progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
         tomopy = importer.do_importing('tomopy')
 
         with progress:
