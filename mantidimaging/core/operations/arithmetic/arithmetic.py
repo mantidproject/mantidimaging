@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import logging
 from functools import partial
 from typing import Callable, Dict, Optional
 
@@ -57,11 +56,10 @@ class ArithmeticFilter(BaseFilter):
         :param progress: The Progress object isn't used.
         :return: The processed Images object.
         """
-        if div_val != 0 and mult_val != 0:
-            _execute(images.data, div_val, mult_val, add_val, sub_val, cores, progress)
-        else:
-            logging.getLogger(__name__).error("Unable to proceed with operation because division/multiplication value "
-                                              "is zero.")
+        if div_val == 0 or mult_val == 0:
+            raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")
+
+        _execute(images.data, div_val, mult_val, add_val, sub_val, cores, progress)
         return images
 
     @staticmethod
