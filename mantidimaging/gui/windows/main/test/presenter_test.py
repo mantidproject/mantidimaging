@@ -588,6 +588,16 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_list = self.presenter.dataset_list
         assert len(dataset_list) == 2
 
+    def test_add_child_item_to_tree_view(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = dataset_id = "dataset-id"
+
+        child_id = "child-id"
+        child_name = "180"
+        self.presenter.add_child_item_to_tree_view(dataset_id, child_id, child_name)
+
+        self.view.create_child_tree_item.assert_called_once_with(top_level_item_mock, child_id, child_name)
 
 if __name__ == '__main__':
     unittest.main()
