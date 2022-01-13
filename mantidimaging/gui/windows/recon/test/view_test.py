@@ -256,7 +256,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.main_window.add_recon_to_dataset = add_to_dataset_mock = mock.Mock()
         stack_id = "id"
         self.view.show_recon_volume(data, stack_id)
-        create_new_stack_mock.assert_called_once_with(data, "Recon")
+        create_new_stack_mock.assert_called_once_with(data)
         add_to_dataset_mock.assert_called_once_with(data, stack_id)
 
     def test_get_stack_visualiser_when_uuid_is_none(self):

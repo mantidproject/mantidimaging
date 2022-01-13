@@ -51,23 +51,8 @@ class MainWindowPresenterTest(unittest.TestCase):
             stacks[uuid.uuid4()] = stack_mock
         self.presenter.stacks = stacks
 
-    def test_create_unique_name(self):
-        self.assertEqual("apple", self.presenter.create_stack_name("apple"))
-
-    def test_create_name_one_duplicate_stack_loaded(self):
-        self.create_mock_stacks_with_names(["test"])
-        self.assertEqual(self.presenter.create_stack_name("test"), "test_2")
-
-    def test_create_name_multiple_duplicate_stacks_loaded(self):
-        stack_names = ["test", "test_2", "test_3"]
-        self.create_mock_stacks_with_names(stack_names)
-        self.assertEqual(self.presenter.create_stack_name("test"), "test_4")
-
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_names, [])
-
-    def test_create_name_strips_extension(self):
-        self.assertEqual(self.presenter.create_stack_name("test.tif"), "test")
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
@@ -129,7 +114,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, "myfilename", sample_dock_mock)
+        self.presenter._add_stack(images, sample_dock_mock)
 
         self.assertEqual(1, len(self.presenter.stack_list))
         self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
@@ -145,8 +130,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, "myfilename", sample_dock_mock)
-        self.presenter._add_stack(images2, "myfilename2", sample_dock_mock)
+        self.presenter._add_stack(images, sample_dock_mock)
+        self.presenter._add_stack(images2, sample_dock_mock)
 
         self.assertEqual(2, self.view.create_stack_window.call_count)
         self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
@@ -155,7 +140,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_create_new_stack_images(self):
         self.view.model_changed.emit = mock.Mock()
         images = generate_images()
-        self.presenter.create_new_stack(images, "My title")
+        self.presenter.create_new_stack(images)
         self.assertEqual(1, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
 
@@ -173,11 +158,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.side_effect = [first_stack_window, second_stack_window]
 
         self.view.model_changed.emit = mock.Mock()
-        self.presenter.create_new_stack(first_images, "My title")
+        self.presenter.create_new_stack(first_images)
         self.assertEqual(1, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
 
-        self.presenter.create_new_stack(second_images, "My title")
+        self.presenter.create_new_stack(second_images)
         assert self.view.tabifyDockWidget.call_count == 2
         assert self.view.findChild.call_count == 1
         mock_tab_bar = self.view.findChild.return_value
@@ -200,7 +185,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
-        self.presenter.create_new_stack(self.dataset, "My title")
+        self.presenter.create_new_stack(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -222,7 +207,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset, "My title")
+        self.presenter.create_new_stack(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -242,7 +227,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset, "My title")
+        self.presenter.create_new_stack(self.dataset)
 
         self.assertEqual(5, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -262,7 +247,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = True
 
-        self.presenter.create_new_stack(self.dataset, "My title")
+        self.presenter.create_new_stack(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -287,7 +272,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
         self.presenter.create_new_stack = mock.Mock()
         self.presenter.load_nexus_file()
-        self.presenter.create_new_stack.assert_called_once_with(self.dataset, data_title)
+        self.presenter.create_new_stack.assert_called_once_with(self.dataset)
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
@@ -348,9 +333,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.findChild.return_value = tab_bar_mock = mock.Mock()
 
         images_180 = generate_images()
-        title = "180-images"
 
-        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
         self.view.tabifyDockWidget.assert_called_once()
         self.view.model_changed.emit.assert_called_once()
         tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
@@ -366,9 +350,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
 
         images_180 = generate_images()
-        title = "180-images"
 
-        self.assertIs(self.presenter.create_new_180_stack(images_180, title), stack_vis_180)
+        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
         self.view.tabifyDockWidget.assert_not_called()
         self.view.model_changed.emit.assert_called_once()
         self.view.findChild.assert_not_called()

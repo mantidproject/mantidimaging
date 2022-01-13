@@ -102,6 +102,7 @@ class StackVisualiserPresenter(BasePresenter):
         with operation_in_progress("Creating sinograms, copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_stack = self.images.copy(flip_axes=True)
+            new_stack.name = self.images.name + "_sino"
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
             self.view.parent_create_stack(new_stack, f"{self.view.name}_sino")
 
@@ -109,12 +110,14 @@ class StackVisualiserPresenter(BasePresenter):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy(flip_axes=False)
+            new_images.name = self.images.name
             self.view.parent_create_stack(new_images, self.view.name)
 
     def dupe_stack_roi(self):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
+            new_images.name = self.images.name
             self.view.parent_create_stack(new_images, self.view.name)
 
     def get_num_images(self) -> int:

@@ -3,6 +3,7 @@
 
 import datetime
 import json
+import os.path
 import uuid
 from copy import deepcopy
 from typing import List, Optional, Any, Dict, Union, TextIO
@@ -19,19 +20,22 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 class Images:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
+    name: str
 
     def __init__(self,
                  data: np.ndarray,
                  filenames: Optional[List[str]] = None,
                  indices: Union[List[int], Indices, None] = None,
                  metadata: Optional[Dict[str, Any]] = None,
-                 sinograms: bool = False):
+                 sinograms: bool = False,
+                 name: Optional[str] = None):
         """
 
         :param data: Images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
+        :param name: A name for the stack
         """
 
         self._data = data
@@ -46,6 +50,14 @@ class Images:
         self._proj180deg: Optional[Images] = None
         self._log_file: Optional[IMATLogFile] = None
         self._projection_angles: Optional[ProjectionAngles] = None
+
+        if name is None:
+            if filenames is not None:
+                self.name = os.path.splitext(os.path.basename(filenames[0]))[0]
+            else:
+                self.name = "untitled"
+        else:
+            self.name = name
 
     def __eq__(self, other):
         if isinstance(other, Images):
@@ -293,3 +305,13 @@ class Images:
 
     def clear_proj180deg(self):
         self._proj180deg = None
+
+    def make_name_unique(self, existing_names: List[str]):
+        name = self.name
+        num = 1
+        while self.name in existing_names:
+            num += 1
+            self.name = f"{name}_{num}"
+
+            if num > 1000:
+                raise ValueError(f"Could not make unique name for: {name}")

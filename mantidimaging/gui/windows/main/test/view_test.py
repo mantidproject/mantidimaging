@@ -57,8 +57,6 @@ class MainWindowViewTest(unittest.TestCase):
         _180_dataset = mock.MagicMock()
         self.presenter.add_180_deg_to_dataset.return_value = _180_dataset
         self.view.create_new_180_stack = mock.MagicMock()  # type: ignore
-        selected_filename = "selected_file.tif"
-        self.presenter.create_stack_name = mock.MagicMock(return_value=selected_filename)
 
         self.view.load_180_deg_dialog()
 
@@ -71,8 +69,7 @@ class MainWindowViewTest(unittest.TestCase):
                                                    initialFilter="Image File (*.tif *.tiff)")
         self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
                                                                       _180_deg_file=selected_file)
-        self.presenter.create_stack_name.assert_called_once_with(selected_file)
-        self.view.create_new_180_stack.assert_called_once_with(_180_dataset, selected_filename)
+        self.view.create_new_180_stack.assert_called_once_with(_180_dataset)
 
     def test_execute_load(self):
         self.view.execute_load()
@@ -127,9 +124,9 @@ class MainWindowViewTest(unittest.TestCase):
 
     def test_create_new_stack(self):
         images = generate_images()
-        self.view.create_new_stack(images, "Test Title")
+        self.view.create_new_stack(images)
 
-        self.presenter.create_new_stack.assert_called_once_with(images, "Test Title")
+        self.presenter.create_new_stack.assert_called_once_with(images)
 
     def test_update_stack_with_images(self):
         images = generate_images()
@@ -171,15 +168,14 @@ class MainWindowViewTest(unittest.TestCase):
                                  setCentralWidget: Mock = Mock(),
                                  addDockWidget: Mock = Mock()):
         images = generate_images()
-        title = "test_title"
         position = "test_position"
         floating = False
 
         self.view.splitter = splitter_mock = mock.Mock()
 
-        self.view.create_stack_window(images, title, position=position, floating=floating)
+        self.view.create_stack_window(images, position=position, floating=floating)
 
-        mock_sv.assert_called_once_with(self.view, title, images)
+        mock_sv.assert_called_once_with(self.view, images)
         dock = mock_sv.return_value
         setCentralWidget.assert_called_once_with(splitter_mock)
         addDockWidget.assert_called_once_with(position, dock)
