@@ -43,7 +43,8 @@ class ReconstructionWindowTest(BaseEyesTest):
 
     def test_negative_nan_overlay(self):
         images = generate_images(seed=10)
-        self.imaging.presenter.create_new_stack(images, "bad_data")
+        images.name = "bad_data"
+        self.imaging.presenter.create_new_stack(images)
         QApplication.sendPostedEvents()
 
         images.data[0:, 7:] = 0

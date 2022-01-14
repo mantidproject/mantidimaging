@@ -115,7 +115,7 @@ class MainWindowPresenter(BasePresenter):
     def load_nexus_file(self):
         dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
-        self.create_new_stack(dataset, title)
+        self.create_new_stack(dataset)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -124,7 +124,8 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.create_new_stack(task.result, self.create_stack_name(task.kwargs['file_path']))
+            task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
+            self.create_new_stack(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -133,8 +134,7 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            title = task.kwargs['parameters'].name
-            self.create_new_stack(task.result, title)
+            self.create_new_stack(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -144,18 +144,16 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _add_stack(self, images: Images, filename: str, sample_dock):
-        name = self.create_stack_name(os.path.basename(filename))
-        stack_visualiser = self.view.create_stack_window(images, title=f"{name}")
+    def _add_stack(self, images: Images, sample_dock):
+        stack_visualiser = self.view.create_stack_window(images)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
         self.stacks[images.id] = stack_visualiser
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]  # type:ignore
 
-    def create_new_180_stack(self, container: Images, title: str):
-        title = self.create_stack_name(title)
-        _180_stack_vis = self.view.create_stack_window(container, title)
+    def create_new_180_stack(self, container: Images):
+        _180_stack_vis = self.view.create_stack_window(container)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 1:
@@ -172,42 +170,39 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
-    def create_new_stack(self, container: Union[Images, Dataset], title: str):
-        title = self.create_stack_name(title)
+    def create_new_stack(self, container: Union[Images, Dataset]):
 
         if isinstance(container, Images):
             sample = container
         else:
             sample = container.sample
-            container.title = title
 
-        sample_stack_vis = self.view.create_stack_window(sample, title)
+        sample_stack_vis = self.view.create_stack_window(sample)
         self.stacks[sample_stack_vis.id] = sample_stack_vis
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 0:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
-        dataset_tree_item = self.view.create_dataset_tree_widget_item(title, container.id)
+        dataset_tree_item = self.view.create_dataset_tree_widget_item(sample.name, container.id)
 
         if isinstance(container, Dataset):
             self.view.create_child_tree_item(dataset_tree_item, container.sample.id, "Projections")
             if container.flat_before and container.flat_before.filenames:
-                self._add_stack(container.flat_before, container.flat_before.filenames[0], sample_stack_vis)
+                self._add_stack(container.flat_before, sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.flat_before.id, "Flat Before")
             if container.flat_after and container.flat_after.filenames:
-                self._add_stack(container.flat_after, container.flat_after.filenames[0], sample_stack_vis)
+                self._add_stack(container.flat_after, sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.flat_after.id, "Flat After")
             if container.dark_before and container.dark_before.filenames:
-                self._add_stack(container.dark_before, container.dark_before.filenames[0], sample_stack_vis)
+                self._add_stack(container.dark_before, sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.dark_before.id, "Dark Before")
             if container.dark_after and container.dark_after.filenames:
-                self._add_stack(container.dark_after, container.dark_after.filenames[0], sample_stack_vis)
+                self._add_stack(container.dark_after, sample_stack_vis)
                 self.view.create_child_tree_item(dataset_tree_item, container.dark_after.id, "Dark After")
             if container.sample.has_proj180deg() and container.sample.proj180deg.filenames:  # type: ignore
                 self._add_stack(
                     container.sample.proj180deg,  # type: ignore
-                    container.sample.proj180deg.filenames[0],  # type: ignore
                     sample_stack_vis)
                 self.view.create_child_tree_item(
                     dataset_tree_item,
@@ -217,9 +212,10 @@ class MainWindowPresenter(BasePresenter):
                 closest_projection, diff = find_projection_closest_to_180(sample.projections,
                                                                           sample.projection_angles().value)
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                    container.sample.proj180deg = Images(
-                        np.reshape(closest_projection, (1, ) + closest_projection.shape))
-                    self._add_stack(container.sample.proj180deg, f"{title}_180", sample_stack_vis)
+                    container.sample.proj180deg = Images(np.reshape(closest_projection,
+                                                                    (1, ) + closest_projection.shape),
+                                                         name=f"{sample.name}_180")
+                    self._add_stack(container.sample.proj180deg, sample_stack_vis)
                     self.view.create_child_tree_item(dataset_tree_item, container.sample.proj180deg.id, "180")
 
         if len(current_stack_visualisers) > 1:
@@ -316,22 +312,6 @@ class MainWindowPresenter(BasePresenter):
             return
         self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         return _180_deg
-
-    def create_stack_name(self, filename: str) -> str:
-        """
-        Creates a suitable name for a newly loaded stack.
-        """
-        # Avoid file extensions in names
-        filename = os.path.splitext(filename)[0]
-
-        # Avoid duplicate names
-        name = filename
-        num = 1
-        while name in self.stack_names:
-            num += 1
-            name = f"{filename}_{num}"
-
-        return name
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)

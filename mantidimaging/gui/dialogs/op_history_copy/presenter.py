@@ -49,7 +49,7 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
             history = self.history_with_new_ops(selected_ops)
             result.metadata = history
         if self.view.copy:
-            self.main_window.create_new_stack(result, "Result")
+            self.main_window.create_new_stack(result)
 
     def history_with_new_ops(self, applied_ops: Iterable[ImageOperation]) -> Dict[str, Any]:
         history = self.model.images.metadata.copy() if self.model.images.metadata else {}

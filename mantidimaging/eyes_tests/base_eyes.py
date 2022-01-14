@@ -94,7 +94,8 @@ class BaseEyesTest(unittest.TestCase):
 
     def _load_data_set(self):
         dataset = loader.load(file_names=[LOAD_SAMPLE])
-        vis = self.imaging.presenter.create_new_stack(dataset, "Stack 1")
+        dataset.sample.name = "Stack 1"
+        vis = self.imaging.presenter.create_new_stack(dataset)
 
         QApplication.sendPostedEvents()
 

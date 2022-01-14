@@ -231,6 +231,7 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self._get_slice_index(None)
         if images is not None:
             assert isinstance(self.model.stack, StackVisualiserView)
+            images.name = "Recon"
             self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
                                     'Slice Reconstruction',
@@ -283,6 +284,7 @@ class ReconstructWindowPresenter(BasePresenter):
             return
 
         assert isinstance(self.model.stack, StackVisualiserView)
+        task.result.name = "Recon"
         self.view.show_recon_volume(task.result, self.model.stack_id)
         self.view.recon_applied.emit()
 

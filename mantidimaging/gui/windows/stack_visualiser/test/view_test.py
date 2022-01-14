@@ -27,7 +27,8 @@ class StackVisualiserViewTest(unittest.TestCase):
 
     def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, Images]:
         test_data = th.generate_images()
-        self.window.create_new_stack(test_data, "Test Data")
+        test_data.name = "Test Data"
+        self.window.create_new_stack(test_data)
         view = self.window.get_stack_with_images(test_data)
         return view, test_data
 

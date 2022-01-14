@@ -417,7 +417,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def show_recon_volume(self, data: Images, stack_id: uuid.UUID):
         self.main_window.add_recon_to_dataset(data, stack_id)
-        self.main_window.create_new_stack(data, "Recon")
+        self.main_window.create_new_stack(data)
 
     def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
         if uuid is not None:
