@@ -21,9 +21,6 @@ class GPUTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     @unittest.skipIf(GPU_NOT_AVAIL, reason=GPU_SKIP_REASON)
     def test_numpy_pad_modes_match_scipy_median_modes(self):
         """

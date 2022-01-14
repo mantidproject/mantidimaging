@@ -97,7 +97,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         image = self.im.image
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
-            self.details.setText(f"{self.name}: {pixel_value:.6f}")
+            value_string = ("%.6f" % pixel_value)[:8]
+            self.details.setText(f"{self.name}: {value_string}")
 
     def link_sibling_axis(self):
         # Linking multiple viewboxes with locked aspect ratios causes
@@ -105,8 +106,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         # https://github.com/pyqtgraph/pyqtgraph/issues/1348
         self.vb.setAspectLocked(True)
         for view1, view2 in pairwise(chain([self], self.axis_siblings)):
-            view1.vb.linkView(ViewBox.XAxis, view2.vb)
-            view1.vb.linkView(ViewBox.YAxis, view2.vb)
+            view2.vb.linkView(ViewBox.XAxis, view1.vb)
+            view2.vb.linkView(ViewBox.YAxis, view1.vb)
             view2.vb.setAspectLocked(False)
 
     def unlink_sibling_axis(self):

@@ -30,9 +30,6 @@ def test_matching_dataset_attribute_returns_false_for_none():
 
 
 class MainWindowModelTest(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def setUp(self):
         self.model = MainWindowModel()
         self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"

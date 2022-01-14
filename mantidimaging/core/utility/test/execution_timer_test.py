@@ -8,9 +8,6 @@ from mantidimaging.core.utility import ExecutionTimer
 
 
 class ExecutionTimerTest(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def test_execute(self):
         t = ExecutionTimer()
         self.assertEqual(t.total_seconds, None)

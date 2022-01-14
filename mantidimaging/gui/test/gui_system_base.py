@@ -53,7 +53,8 @@ class GuiSystemBase(unittest.TestCase):
                         QTest.mouseClick(button, Qt.LeftButton)
                         return
                 button_texts = [button.text() for button in widget.buttons()]
-                raise ValueError(f"Could not find button '{button_text}' in {button_texts}")
+                raise ValueError(f"Could not find button '{button_text}' in {button_texts}.\n"
+                                 f"Message box: {widget.windowTitle()} {widget.text()}")
 
     @classmethod
     def _click_InputDialog(cls, set_int: Optional[int] = None):

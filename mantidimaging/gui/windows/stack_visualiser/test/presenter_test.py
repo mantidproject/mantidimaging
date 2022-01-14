@@ -18,9 +18,6 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter,
 class StackVisualiserPresenterTest(unittest.TestCase):
     test_data: Images
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def setUp(self):
         self.test_data = th.generate_images()
         # mock the view so it has the same methods

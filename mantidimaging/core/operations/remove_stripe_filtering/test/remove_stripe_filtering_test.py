@@ -14,9 +14,6 @@ class RemoveStripeFilteringTest(unittest.TestCase):
 
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def test_executed_1d(self):
         images = th.generate_images()
         control = images.copy()

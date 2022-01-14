@@ -17,9 +17,6 @@ class FiltersWindowModelTest(unittest.TestCase):
     APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
     ROI_PARAMETER = (4, 3, 2, 1)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     @classmethod
     def setUpClass(cls):
         cls.test_data = th.generate_images()

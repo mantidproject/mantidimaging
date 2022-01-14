@@ -19,9 +19,6 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class MainWindowPresenterTest(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
