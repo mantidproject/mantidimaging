@@ -123,6 +123,7 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self) -> None:
+        assert self.view.nexus_load_dialog is not None
         dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
         self.create_new_stack(dataset)
