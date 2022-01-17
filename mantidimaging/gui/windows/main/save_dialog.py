@@ -1,5 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import uuid
+from typing import Optional
 
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
@@ -19,6 +21,8 @@ def sort_by_tomo_and_recon(stack_id: StackId):
 
 
 class MWSaveDialog(QDialog):
+    selected_stack = Optional[uuid.UUID]
+
     def __init__(self, parent, stack_list):
         super().__init__(parent)
         compile_ui('gui/ui/save_dialog.ui', self)
@@ -50,23 +54,23 @@ class MWSaveDialog(QDialog):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
         self.parent().execute_save()
 
-    def save_path(self):
+    def save_path(self) -> str:
         """
             :return: The directory of the path as a Python string
         """
         return str(self.savePath.text())
 
-    def name_prefix(self):
+    def name_prefix(self) -> str:
         """
             :return: The directory of the path as a Python string
         """
         return str(self.namePrefix.text())
 
-    def overwrite(self):
+    def overwrite(self) -> bool:
         return self.overwriteAll.isChecked()
 
-    def image_format(self):
+    def image_format(self) -> str:
         return str(self.formats.currentText())
 
-    def pixel_depth(self):
+    def pixel_depth(self) -> str:
         return str(self.pixelDepth.currentText())
