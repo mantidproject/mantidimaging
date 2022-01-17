@@ -30,10 +30,33 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.presenter.notify(Notification.RELOAD_DATASETS)
         self.presenter.do_reload_datasets.assert_called_once()
 
-    def test_do_reload_datasets(self):
+    def test_do_reload_datasets_keep_old_selection(self):
         self.view.main_window = mock.Mock()
         self.view.datasets_updated.emit = mock.Mock()
         self.view.dataset_selected_uuid.emit = mock.Mock()
-        self.view.currentText.return_value = dataset_name = "dataset-name"
-        self.view.main_window.dataset_list = [("dataset-id", dataset_name)]
+        self.view.currentText.return_value = second_dataset_name = "second-dataset-name"
+        first_dataset_name = "first-dataset-name"
+        self.view.main_window.dataset_list = [("id-1", first_dataset_name), ("id-2", second_dataset_name)]
         self.presenter.do_reload_datasets()
+
+        self.view.clear.assert_called_once()
+        self.view.addItems.assert_called_once_with((
+            first_dataset_name,
+            second_dataset_name,
+        ))
+        self.view.setCurrentIndex.assert_called_once_with(1)
+        self.view.datasets_updated.emit.assert_called_once()
+
+    def test_do_reload_datasets_no_old_selection(self):
+        self.view.main_window = mock.Mock()
+        self.view.datasets_updated.emit = mock.Mock()
+        self.view.dataset_selected_uuid.emit = mock.Mock()
+        self.view.currentText.return_value = "second-dataset-name"
+        first_dataset_name = "first-dataset-name"
+        self.view.main_window.dataset_list = [("id-1", first_dataset_name)]
+        self.presenter.do_reload_datasets()
+
+        self.view.clear.assert_called_once()
+        self.view.addItems.assert_called_once_with((first_dataset_name, ))
+        self.view.setCurrentIndex.assert_called_once_with(0)
+        self.view.datasets_updated.emit.assert_called_once()
