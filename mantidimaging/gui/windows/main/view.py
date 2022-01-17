@@ -177,7 +177,7 @@ class MainWindowView(BaseMainWindowView):
         return None
 
     def update_shortcuts(self):
-        enabled = len(self.presenter.stacks.values()) > 0
+        enabled = len(self.presenter.stack_visualisers.values()) > 0
         self.actionSave.setEnabled(enabled)
         self.actionSampleLoadLog.setEnabled(enabled)
         self.actionLoad180deg.setEnabled(enabled)

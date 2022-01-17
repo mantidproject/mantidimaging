@@ -59,7 +59,7 @@ class MainWindowPresenter(BasePresenter):
     def __init__(self, view: 'MainWindowView'):
         super().__init__(view)
         self.model = MainWindowModel()
-        self.stacks: Dict[uuid.UUID, StackVisualiserView] = {}
+        self.stack_visualisers: Dict[uuid.UUID, StackVisualiserView] = {}
 
     def notify(self, signal: Notification, **baggage):
         try:
@@ -158,7 +158,7 @@ class MainWindowPresenter(BasePresenter):
     def _add_stack(self, images: Images, sample_dock) -> None:
         stack_visualiser = self.view.create_stack_window(images)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
-        self.stacks[images.id] = stack_visualiser
+        self.stack_visualisers[images.id] = stack_visualiser
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
@@ -189,7 +189,7 @@ class MainWindowPresenter(BasePresenter):
             sample = container.sample
 
         sample_stack_vis = self.view.create_stack_window(sample)
-        self.stacks[sample_stack_vis.id] = sample_stack_vis
+        self.stack_visualisers[sample_stack_vis.id] = sample_stack_vis
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 0:
@@ -275,7 +275,7 @@ class MainWindowPresenter(BasePresenter):
 
     @property
     def stack_names(self) -> List[str]:
-        return [widget.windowTitle() for widget in self.stacks.values()]
+        return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.active_stacks[stack_id]
@@ -285,10 +285,10 @@ class MainWindowPresenter(BasePresenter):
 
     @property
     def active_stacks(self) -> Dict[uuid.UUID, StackVisualiserView]:
-        return {stack_id: stack for (stack_id, stack) in self.stacks.items() if stack.isVisible()}
+        return {stack_id: stack for (stack_id, stack) in self.stack_visualisers.items() if stack.isVisible()}
 
     def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
-        return [stack for stack in self.stacks.values() if stack.presenter.images.has_proj180deg()]
+        return [stack for stack in self.stack_visualisers.values() if stack.presenter.images.has_proj180deg()]
 
     @property
     def have_active_stacks(self) -> bool:
@@ -300,14 +300,14 @@ class MainWindowPresenter(BasePresenter):
             sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
     def get_stack_with_images(self, images: Images) -> StackVisualiserView:
-        for _, sv in self.stacks.items():
+        for _, sv in self.stack_visualisers.items():
             if images is sv.presenter.images:
                 return sv
-        raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stacks.items()}")
+        raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stack_visualisers.items()}")
 
     def set_images_in_stack(self, stack_id: uuid.UUID, images: Images) -> None:
         self.model.set_image_data_by_uuid(stack_id, images.data)
-        stack = self.stacks[stack_id]
+        stack = self.stack_visualisers[stack_id]
         if not stack.presenter.images == images:  # todo - refactor
             stack.image_view.clear()
             stack.image_view.setImage(images.data)
@@ -372,7 +372,7 @@ class MainWindowPresenter(BasePresenter):
         raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
-        self.stacks[stack.id] = stack
+        self.stack_visualisers[stack.id] = stack
 
     def _delete_container(self, container_id: uuid.UUID) -> None:
         """
@@ -395,10 +395,10 @@ class MainWindowPresenter(BasePresenter):
         Deletes a stack and frees memory.
         :param stack_id: The ID of the stack to delete.
         """
-        self.stacks[stack_id].image_view.close()
-        self.stacks[stack_id].presenter.delete_data()
-        self.stacks[stack_id].deleteLater()
-        del self.stacks[stack_id]
+        self.stack_visualisers[stack_id].image_view.close()
+        self.stack_visualisers[stack_id].presenter.delete_data()
+        self.stack_visualisers[stack_id].deleteLater()
+        del self.stack_visualisers[stack_id]
 
     def _focus_tab(self, stack_id: uuid.UUID) -> None:
         """
@@ -408,8 +408,8 @@ class MainWindowPresenter(BasePresenter):
         if stack_id in self.model.datasets:
             return
         if stack_id in self.model.image_ids:
-            self.stacks[stack_id].setVisible(True)
-            self.stacks[stack_id].raise_()
+            self.stack_visualisers[stack_id].setVisible(True)
+            self.stack_visualisers[stack_id].raise_()
         else:
             raise RuntimeError(f"Unable to find stack with ID {stack_id}")
 
