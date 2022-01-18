@@ -5,7 +5,7 @@ from unittest import mock
 
 from PyQt5.QtWidgets import QWidget, QDialog
 
-from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
+from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.test_helpers import start_qapplication
 
 
@@ -16,45 +16,28 @@ class FakeMainWindowView(QWidget):
 
 
 @start_qapplication
-class StackSelectorDialogTest(unittest.TestCase):
-    def test_message_label_set_to_given_message(self):
-        given_message = "given_message"
-
-        diag = StackSelectorDialog(main_window=FakeMainWindowView(), message=given_message)
-
-        self.assertEqual(given_message, diag.message_label.text())
-
-    def test_message_label_set_to_default_given_none(self):
-        diag = StackSelectorDialog(main_window=FakeMainWindowView(), message=None)
-
-        self.assertEqual("Select the stack", diag.message_label.text())
-
+class DatasetSelectorDialogTest(unittest.TestCase):
     def test_title_set_when_not_none_given(self):
         given_message = "given_message"
-
-        diag = StackSelectorDialog(main_window=FakeMainWindowView(), title=given_message)
-
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), title=given_message)
         self.assertEqual(given_message, diag.windowTitle())
 
     def test_title_not_set_when_none_given(self):
-        diag = StackSelectorDialog(main_window=FakeMainWindowView(), title=None)
-
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), title=None)
         self.assertEqual("", diag.windowTitle())
 
-    def test_selected_stack_called_on_ok_clicked(self):
-        diag = StackSelectorDialog(main_window=FakeMainWindowView())
-        desired_stack = "Desired_stack"
-        diag.stack_selector_widget.currentText = mock.MagicMock(return_value=desired_stack)
+    def test_selected_dataset_called_on_ok_clicked(self):
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView())
+        dataset_id = "dataset-id"
+        diag.dataset_selector_widget.current = mock.MagicMock(return_value=dataset_id)
 
         diag.on_ok_clicked()
 
-        self.assertEqual(desired_stack, diag.selected_stack)
-        diag.stack_selector_widget.currentText.assert_called_once()
+        self.assertEqual(dataset_id, diag.selected_dataset)
+        diag.dataset_selector_widget.current.assert_called_once()
 
     def test_close_called_on_ok_clicked(self):
-        diag = StackSelectorDialog(main_window=FakeMainWindowView())
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView())
         diag.done = mock.MagicMock()
-
         diag.on_ok_clicked()
-
         diag.done.assert_called_once_with(QDialog.DialogCode.Accepted)
