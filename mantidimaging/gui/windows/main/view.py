@@ -322,7 +322,7 @@ class MainWindowView(BaseMainWindowView):
 
     @property
     def stack_list(self):
-        return self.presenter.stack_list
+        return self.presenter.stack_visualiser_list
 
     @property
     def dataset_list(self):

@@ -88,13 +88,13 @@ class MainWindowPresenter(BasePresenter):
         :param search_name: The name of the stack widget to find.
         :return: The QDockWidget if it could be found, None otherwise.
         """
-        for stack_id in self.stack_list:
+        for stack_id in self.stack_visualiser_list:
             if stack_id.name == search_name:
                 return self.active_stacks[stack_id.id]
         return None
 
     def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
-        for stack_id in self.stack_list:
+        for stack_id in self.stack_visualiser_list:
             if stack_id.name == search_name:
                 return stack_id.id
         return None
@@ -261,7 +261,7 @@ class MainWindowPresenter(BasePresenter):
             self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
 
     @property
-    def stack_list(self) -> List[StackId]:  # todo: rename?
+    def stack_visualiser_list(self) -> List[StackId]:
         stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
         return sorted(stacks, key=lambda x: x.name)
 
