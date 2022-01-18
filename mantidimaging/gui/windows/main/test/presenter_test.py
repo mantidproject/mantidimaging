@@ -52,7 +52,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.stack_visualisers = stacks
 
     def test_initial_stack_list(self):
-        self.assertEqual(self.presenter.stack_names, [])
+        self.assertEqual(self.presenter.stack_visualiser_names, [])
 
     def test_failed_attempt_to_load_shows_error(self):
         # Create a filed load async task
@@ -365,7 +365,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_stack_names(self):
         stack_names = [f"window title {str(i)}" for i in range(5)]
         self.create_mock_stacks_with_names(stack_names)
-        self.assertListEqual(self.presenter.stack_names, stack_names)
+        self.assertListEqual(self.presenter.stack_visualiser_names, stack_names)
 
     def test_get_stack_with_images_success(self):
         mock_stack = mock.Mock()

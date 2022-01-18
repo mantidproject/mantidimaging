@@ -330,7 +330,7 @@ class MainWindowView(BaseMainWindowView):
 
     @property
     def stack_names(self):
-        return self.presenter.stack_names
+        return self.presenter.stack_visualiser_names
 
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
