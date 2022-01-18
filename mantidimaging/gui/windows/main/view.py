@@ -345,7 +345,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()
 
     def get_stack_history(self, stack_uuid):
-        return self.presenter.get_stack_history(stack_uuid)
+        return self.presenter.get_stack_visualiser_history(stack_uuid)
 
     def create_new_stack(self, images: Images):
         self.presenter.create_new_stack(images)

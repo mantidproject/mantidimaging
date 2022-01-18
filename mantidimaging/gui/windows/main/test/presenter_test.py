@@ -471,7 +471,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack.presenter.images.metadata = metadata = {"metadata": 2}
         stack_id = "stack-id"
         self.presenter.stack_visualisers = {stack_id: mock_stack}
-        self.assertIs(self.presenter.get_stack_history(stack_id), metadata)
+        self.assertIs(self.presenter.get_stack_visualiser_history(stack_id), metadata)
 
     def test_get_all_stack_visualisers_with_180deg_proj(self):
         mock_stacks = [mock.Mock() for _ in range(3)]

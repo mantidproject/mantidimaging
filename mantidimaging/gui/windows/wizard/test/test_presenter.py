@@ -64,4 +64,4 @@ class WizardPresenterTest(unittest.TestCase):
         self.presenter.main_window_presenter.stack_visualiser_list = STACK_LIST
 
         self.presenter.handle_stack_change()
-        self.presenter.main_window_presenter.get_stack_history.assert_called_once_with("2222")
+        self.presenter.main_window_presenter.get_stack_visualiser_history.assert_called_once_with("2222")

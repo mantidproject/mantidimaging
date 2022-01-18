@@ -280,7 +280,7 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.active_stacks[stack_id]
 
-    def get_stack_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
+    def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata
 
     @property

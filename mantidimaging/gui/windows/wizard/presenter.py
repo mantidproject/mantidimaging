@@ -56,7 +56,7 @@ class WizardPresenter(BasePresenter):
             if "Tomo" not in name and "Recon" not in name:
                 continue
 
-            stack_history = self.main_window_presenter.get_stack_history(uuid)
+            stack_history = self.main_window_presenter.get_stack_visualiser_history(uuid)
             break
 
         for stage in self.view.stages.values():
