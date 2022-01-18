@@ -107,6 +107,10 @@ class MainWindowModel(object):
             dataset = self.datasets[dataset_id]
         else:
             raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
+
+        if not isinstance(dataset, Dataset):
+            raise RuntimeError(f"Wrong dataset type passed to add 180 method: {dataset_id}")
+
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
         dataset.proj180deg = _180_deg
         return _180_deg

@@ -309,7 +309,7 @@ class MainWindowPresenter(BasePresenter):
     def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Optional[Images]:
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
-            return
+            return None
         self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         return _180_deg
 
