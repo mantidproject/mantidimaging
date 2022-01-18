@@ -281,10 +281,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_window.windowTitle.return_value = stack_window_title = "stack window title"
         self.presenter.stack_visualisers[stack_window.id] = stack_window
 
-        self.assertIs(stack_window, self.presenter._get_stack_widget_by_name(stack_window_title))
+        self.assertIs(stack_window, self.presenter._get_stack_visualiser_by_name(stack_window_title))
 
     def test_get_stack_widget_by_name_failure(self):
-        self.assertIsNone(self.presenter._get_stack_widget_by_name("doesn't exist"))
+        self.assertIsNone(self.presenter._get_stack_visualiser_by_name("doesn't exist"))
 
     def test_get_stack_id_by_name_success(self):
         stack_window = mock.Mock()
@@ -296,7 +296,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIs(stack_id, self.presenter.get_stack_id_by_name(stack_window_title))
 
     def test_get_stack_id_by_name_failure(self):
-        self.assertIsNone(self.presenter._get_stack_widget_by_name("bad-id"))
+        self.assertIsNone(self.presenter._get_stack_visualiser_by_name("bad-id"))
 
     def test_add_log_to_sample_success(self):
         stack_window = mock.Mock()

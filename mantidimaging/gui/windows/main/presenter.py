@@ -82,7 +82,7 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def _get_stack_widget_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
+    def _get_stack_visualiser_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
         """
         Uses the stack name to retrieve the QDockWidget object.
         :param search_name: The name of the stack widget to find.
@@ -106,7 +106,7 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_log_to_sample(stack_id, log_file)
 
     def _do_rename_stack(self, current_name: str, new_name: str) -> None:
-        dock = self._get_stack_widget_by_name(current_name)
+        dock = self._get_stack_visualiser_by_name(current_name)
         if dock is not None:
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
