@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+import uuid
+from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox
@@ -46,5 +47,5 @@ class DatasetSelectorWidgetView(QComboBox):
         """
         self.presenter.notify(Notification.RELOAD_DATASETS)
 
-    def current(self):
+    def current(self) -> Optional[uuid.UUID]:
         return self.presenter.current_dataset
