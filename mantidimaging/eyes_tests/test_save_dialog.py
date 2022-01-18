@@ -14,7 +14,10 @@ class SaveDialogTest(BaseEyesTest):
 
     def test_save_dialog_opens_with_dataset(self):
         TestTuple = namedtuple('TestTuple', ['id', 'name'])
-        type(self.imaging).stack_list = mock.PropertyMock(return_value=[TestTuple('', 'Test Stack')])
-        self.imaging.actionSave.trigger()
+        stack_list = [TestTuple('', 'Test Stack')]
+        with mock.patch("mantidimaging.gui.windows.main.MainWindowView.stack_list",
+                        new_callable=mock.PropertyMock) as mock_stack_list:
+            mock_stack_list.return_value = stack_list
+            self.imaging.actionSave.trigger()
 
         self.check_target(widget=self.imaging.save_dialogue)
