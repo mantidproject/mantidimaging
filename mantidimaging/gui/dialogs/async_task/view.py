@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Set
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -59,7 +59,11 @@ class AsyncTaskDialogView(BaseDialogView):
             self.show()
 
 
-def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Callable, kwargs: Optional[Dict] = None):
+def start_async_task_view(parent: QMainWindow,
+                          task: Callable,
+                          on_complete: Callable,
+                          kwargs: Optional[Dict] = None,
+                          tracker: Optional[Set[Any]] = None):
     atd = AsyncTaskDialogView(parent, auto_close=True)
     if not kwargs:
         kwargs = {'progress': Progress()}
@@ -70,4 +74,6 @@ def start_async_task_view(parent: QMainWindow, task: Callable, on_complete: Call
     atd.presenter.set_task(task)
     atd.presenter.set_on_complete(on_complete)
     atd.presenter.set_parameters(**kwargs)
+    if tracker is not None:
+        atd.presenter.set_tracker(tracker)
     atd.presenter.do_start_processing()
