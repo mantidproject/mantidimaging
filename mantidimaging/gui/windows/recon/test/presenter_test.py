@@ -148,9 +148,11 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def test_do_reconstruct_volume(self, mock_async_task):
         self.presenter.do_reconstruct_volume()
         # kind of a pointless test, but at least it might capture some parameter change
-        mock_async_task.assert_called_once_with(self.view, self.presenter.model.run_full_recon,
+        mock_async_task.assert_called_once_with(self.view,
+                                                self.presenter.model.run_full_recon,
                                                 self.presenter._on_volume_recon_done,
-                                                {'recon_params': self.view.recon_params()})
+                                                {'recon_params': self.view.recon_params()},
+                                                tracker=self.presenter.async_tracker)
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
     def test_do_refine_selected_cor_declined(self, mock_corview):
