@@ -60,11 +60,7 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.load_180_deg_dialog()
 
-        dataset_selector_dialog.assert_called_once_with(
-            main_window=self.view,
-            title='Dataset Selector',
-            message='Which dataset is the 180 degree projection being loaded '
-            'for?')
+        dataset_selector_dialog.assert_called_once_with(main_window=self.view, title='Dataset Selector')
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
