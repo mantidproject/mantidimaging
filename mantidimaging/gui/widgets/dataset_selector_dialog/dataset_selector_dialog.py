@@ -31,14 +31,12 @@ class DatasetSelectorDialog(QDialog):
         self.vertical_layout.addWidget(self.dataset_selector_widget)
 
         # Button layout
-        self.button_layout = QHBoxLayout(self)
+        self.button_layout = QHBoxLayout()
         self.button_layout.addStretch()
         self.ok_button = QPushButton("Select")
         self.ok_button.clicked.connect(self.on_ok_clicked)
         self.button_layout.addWidget(self.ok_button)
         self.vertical_layout.addLayout(self.button_layout)
-
-        self.setLayout(self.vertical_layout)
 
     def on_ok_clicked(self):
         self.selected_dataset = self.dataset_selector_widget.current()
