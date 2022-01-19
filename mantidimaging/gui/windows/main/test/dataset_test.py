@@ -17,7 +17,11 @@ def test_delete_stack_error_message():
 class DatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
-        self.dataset = Dataset(*self.images)
+        self.dataset = Dataset(sample=self.images[0],
+                               flat_before=self.images[1],
+                               flat_after=self.images[2],
+                               dark_before=self.images[3],
+                               dark_after=self.images[4])
 
     def test_attribute_not_set_returns_none(self):
         sample = generate_images()
