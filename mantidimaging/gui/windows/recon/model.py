@@ -126,16 +126,17 @@ class ReconstructWindowModel(object):
                           recon_params: ReconstructionParameters,
                           progress: Progress = None) -> Optional[Images]:
         # Ensure we have some sample data
-        if self.images is None:
+        images = self.images
+        if images is None:
             return None
 
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        output_shape = (1, self.images.width, self.images.width)
-        recon: Images = Images.create_empty_images(output_shape, self.images.dtype, self.images.metadata)
-        recon.data[0] = reconstructor.single_sino(self.images.sino(slice_idx),
+        output_shape = (1, images.width, images.width)
+        recon: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
+        recon.data[0] = reconstructor.single_sino(images.sino(slice_idx),
                                                   cor,
-                                                  self.images.projection_angles(recon_params.max_projection_angle),
+                                                  images.projection_angles(recon_params.max_projection_angle),
                                                   recon_params,
                                                   progress=progress)
         recon = self._apply_pixel_size(recon, recon_params)
@@ -143,12 +144,13 @@ class ReconstructWindowModel(object):
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[Images]:
         # Ensure we have some sample data
-        if self.images is None:
+        images = self.images
+        if images is None:
             return None
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
-        recon = reconstructor.full(self.images, self.data_model.get_all_cors_from_regression(self.images.height),
-                                   recon_params, progress)
+        recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
+                                   progress)
 
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
