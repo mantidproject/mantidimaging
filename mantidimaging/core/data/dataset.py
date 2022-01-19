@@ -78,14 +78,19 @@ class Dataset(BaseDataset):
                  flat_before: Optional[Images] = None,
                  flat_after: Optional[Images] = None,
                  dark_before: Optional[Images] = None,
-                 dark_after: Optional[Images] = None):
+                 dark_after: Optional[Images] = None,
+                 name: str = ""):
         super().__init__()
         self.sample = sample
         self.flat_before = flat_before
         self.flat_after = flat_after
         self.dark_before = dark_before
         self.dark_after = dark_after
-        self._name = ""
+
+        if name:
+            self._name = name
+        else:
+            self._name = sample.name
 
     @property
     def all(self) -> List[Images]:
