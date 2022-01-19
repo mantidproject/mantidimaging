@@ -245,9 +245,7 @@ class MainWindowView(BaseMainWindowView):
                                 f"{stack_to_add_log_to}.")
 
     def load_180_deg_dialog(self):
-        dataset_selector = DatasetSelectorDialog(main_window=self,
-                                                 title="Dataset Selector",
-                                                 message="Which dataset is the 180 degree projection being loaded for?")
+        dataset_selector = DatasetSelectorDialog(main_window=self, title="Dataset Selector")
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != dataset_selector.exec():
             return

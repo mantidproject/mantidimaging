@@ -23,7 +23,7 @@ class DatasetSelectorDialog(QDialog):
             self.setWindowTitle(title)
 
         self.vertical_layout = QVBoxLayout(self)
-        self.vertical_layout.addWidget(QLabel("Select the dataset", self))
+        self.vertical_layout.addWidget(QLabel("What dataset is the 180 projection being loaded for?", self))
 
         # Dataset selector
         self.dataset_selector_widget = DatasetSelectorWidgetView(self)
