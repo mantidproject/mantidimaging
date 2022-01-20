@@ -115,8 +115,7 @@ class MainWindowPresenter(BasePresenter):
     def load_nexus_file(self):
         dataset, _ = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
-        self.create_dataset_stack_windows(dataset)
-        self.create_dataset_tree_view_items(dataset)
+        self._add_dataset_to_view(dataset)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -135,11 +134,20 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.create_dataset_stack_windows(task.result)  # TODO - how is this being added to the model?
-            self.create_dataset_tree_view_items(task.result)
+            self._add_dataset_to_view(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+
+    def _add_dataset_to_view(self, dataset: Dataset):
+        """
+        Takes a loaded dataset and tries to find a substitute 180 projection (if required) then creates the stack window
+        and dataset tree view items.
+        :param dataset: The loaded dataset.
+        """
+        self.check_dataset_180(dataset)
+        self.create_dataset_stack_windows(dataset)
+        self.create_dataset_tree_view_items(dataset)
 
     def _handle_task_error(self, base_message: str, log, task):
         msg = base_message.format(task.error)
@@ -172,6 +180,20 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
+    def check_dataset_180(self, dataset: Dataset):
+        """
+        Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
+        :param dataset: The loaded dataset.
+        """
+        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
+            return
+        else:
+            closest_projection, diff = find_projection_closest_to_180(dataset.sample.projections,
+                                                                      dataset.sample.projection_angles().value)
+            if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
+                dataset.proj180deg = Images(np.reshape(closest_projection, (1, ) + closest_projection.shape),
+                                            name=f"{dataset.name}_180")
+
     def create_dataset_stack_windows(self, container: Union[Images, Dataset]) -> StackVisualiserView:
         """
         Creates the stack widgets for the dataset.
@@ -203,13 +225,6 @@ class MainWindowPresenter(BasePresenter):
                 self._add_stack(
                     container.sample.proj180deg,  # type: ignore
                     sample_stack_vis)
-            else:
-                closest_projection, diff = find_projection_closest_to_180(sample.projections,
-                                                                          sample.projection_angles().value)
-                if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                    container.proj180deg = Images(np.reshape(closest_projection, (1, ) + closest_projection.shape),
-                                                  name=f"{sample.name}_180")
-                    self._add_stack(container.proj180deg, sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
