@@ -64,11 +64,11 @@ class MainWindowModel(object):
         self.datasets[ds.id] = ds
         return ds
 
-    def load_images(self, file_path: str, progress) -> Images:
+    def load_images(self, file_path: str, progress) -> StackDataset:
         images = loader.load_stack(file_path, progress)
         sd = StackDataset([images])
         self.datasets[sd.id] = sd
-        return images
+        return sd
 
     def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
         images = self.get_images_by_uuid(images_id)
