@@ -113,9 +113,10 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
     def load_nexus_file(self):
-        dataset, title = self.view.nexus_load_dialog.presenter.get_dataset()
+        dataset, _ = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
-        self.create_new_stack(dataset)
+        self.create_dataset_stack_windows(dataset)
+        self.create_dataset_tree_view_items(dataset)
 
     def load_image_stack(self, file_path: str):
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -125,7 +126,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
-            self.create_new_stack(task.result)
+            self.create_dataset_stack_windows(task.result)  # TODO - replace with method for creating single stack
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -134,7 +135,8 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            self.create_new_stack(task.result)
+            self.create_dataset_stack_windows(task.result)  # TODO - how is this being added to the model?
+            self.create_dataset_tree_view_items(task.result)
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -170,7 +172,7 @@ class MainWindowPresenter(BasePresenter):
 
         return _180_stack_vis
 
-    def create_new_stack(self, container: Union[Images, Dataset]):
+    def create_dataset_stack_windows(self, container: Union[Images, Dataset]):
 
         if isinstance(container, Images):
             sample = container
@@ -230,6 +232,28 @@ class MainWindowPresenter(BasePresenter):
         self.view.add_item_to_tree_view(dataset_tree_item)
 
         return sample_stack_vis
+
+    def create_dataset_tree_view_items(self, dataset: Dataset):
+        """
+        Creates the dataset tree view items for a dataset.
+        :param dataset: The loaded dataset.
+        """
+        dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
+        self.view.create_child_tree_item(dataset_tree_item, dataset.sample.id, "Projections")
+
+        if dataset.flat_before and dataset.flat_before.filenames:
+            self.view.create_child_tree_item(dataset_tree_item, dataset.flat_before.id, "Flat Before")
+        if dataset.flat_after and dataset.flat_after.filenames:
+            self.view.create_child_tree_item(dataset_tree_item, dataset.flat_after.id, "Flat After")
+        if dataset.dark_before and dataset.dark_before.filenames:
+            self.view.create_child_tree_item(dataset_tree_item, dataset.dark_before.id, "Dark Before")
+        if dataset.dark_after and dataset.dark_after.filenames:
+            self.view.create_child_tree_item(dataset_tree_item, dataset.dark_after.id, "Dark After")
+        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
+            self.view.create_child_tree_item(
+                dataset_tree_item,
+                dataset.sample.proj180deg.id,  # type: ignore
+                "180")
 
     def save(self):
         kwargs = {
