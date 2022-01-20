@@ -19,14 +19,12 @@ class ROINormalisationTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def test_not_executed_empty_params(self):
+    def test_exception_raised_for_empty_roi_param(self):
         images = th.generate_images()
 
         air = None
 
-        original = np.copy(images.data[0])
-        result = RoiNormalisationFilter.filter_func(images, air)
-        npt.assert_equal(result.data[0], original)
+        npt.assert_raises(ValueError, RoiNormalisationFilter.filter_func, images, air)
 
     def test_not_executed_invalid_shape(self):
         images = np.arange(100).reshape(10, 10)

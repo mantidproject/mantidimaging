@@ -60,13 +60,18 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        if diff and radius and diff > 0 and radius > 0:
-            func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
-            ps.shared_list = [images.data]
-            ps.execute(func,
-                       images.num_projections,
-                       progress=progress,
-                       msg=f"Outliers with threshold {diff} and kernel {radius}")
+        if not diff or not diff > 0:
+            raise ValueError(f'diff parameter must be greater than 0. Value provided was {diff}')
+
+        if not radius or not radius > 0:
+            raise ValueError(f'radius parameter must be greater than 0. Value provided was {radius}')
+
+        func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
+        ps.shared_list = [images.data]
+        ps.execute(func,
+                   images.num_projections,
+                   progress=progress,
+                   msg=f"Outliers with threshold {diff} and kernel {radius}")
         return images
 
     @staticmethod
@@ -74,7 +79,7 @@ class OutliersFilter(BaseFilter):
         _, diff_field = add_property_to_form('Difference',
                                              'float',
                                              1000,
-                                             valid_values=(0, 10000),
+                                             valid_values=(1e-7, 10000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="Difference between pixels that will be used to spot outliers.\n"
@@ -84,7 +89,7 @@ class OutliersFilter(BaseFilter):
 
         _, size_field = add_property_to_form('Median kernel',
                                              Type.INT,
-                                             3, (0, 1000),
+                                             3, (1, 1000),
                                              form=form,
                                              on_change=on_change,
                                              tooltip="The size of the median filter kernel used to find outliers.")

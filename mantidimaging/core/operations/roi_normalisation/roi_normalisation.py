@@ -80,17 +80,19 @@ class RoiNormalisationFilter(BaseFilter):
         if normalisation_mode == "Flat Field" and flat_field is None:
             raise ValueError('flat_field must provided if using normalisation_mode of "Flat Field"')
 
+        h.check_data_stack(images)
+
+        if not region_of_interest:
+            raise ValueError('region_of_interest must be provided')
+
         if flat_field is not None:
             flat_field_data = flat_field.data
         else:
             flat_field_data = None
 
-        h.check_data_stack(images)
-
         # just get data reference
-        if region_of_interest:
-            progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-            _execute(images.data, region_of_interest, normalisation_mode, flat_field_data, cores, chunksize, progress)
+        progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
+        _execute(images.data, region_of_interest, normalisation_mode, flat_field_data, cores, chunksize, progress)
         h.check_data_stack(images)
         return images
 

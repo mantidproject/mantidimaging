@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -14,6 +15,12 @@ class CircularMaskTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+    @parameterized.expand([("None", None), ("0", 0), ("1", 1)])
+    def test_exception_raised_for_invalid_ratio(self, _, ratio):
+        images = th.generate_images()
+
+        self.assertRaises(ValueError, CircularMaskFilter.filter_func, images, ratio)
+
     def test_executed(self):
         images = th.generate_images()
 
@@ -31,7 +38,7 @@ class CircularMaskTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         radius_field = mock.Mock()
-        radius_field.value = mock.Mock(return_value=0)
+        radius_field.value = mock.Mock(return_value=0.95)
         value_field = mock.Mock()
         value_field.value = mock.Mock(return_value=0)
         execute_func = CircularMaskFilter.execute_wrapper(radius_field, value_field)

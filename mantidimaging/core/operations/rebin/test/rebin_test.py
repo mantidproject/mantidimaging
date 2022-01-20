@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -17,25 +18,13 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
-    def test_not_executed_rebin_negative(self):
+    @parameterized.expand([("Zero", 0), ("Negative", -1), ("0,1", (0, 1)), ("1,0", (1, 0)), ("-1,1", (-1, 1)),
+                           ("1,-1", (1, -1))])
+    def test_exception_raised_for_invalid_rebin_param(self, _, val):
         images = th.generate_images()
-
         mode = 'reflect'
-        val = -1
 
-        result = RebinFilter.filter_func(images, val, mode)
-
-        npt.assert_equal(result, images)
-
-    def test_not_executed_rebin_zero(self):
-        images = th.generate_images()
-
-        mode = 'reflect'
-        val = 0
-
-        result = RebinFilter.filter_func(images, val, mode)
-
-        npt.assert_equal(result, images)
+        npt.assert_raises(ValueError, RebinFilter.filter_func, images, val, mode)
 
     def test_executed_uniform_par_2(self):
         self.do_execute_uniform(2.0)
@@ -116,9 +105,9 @@ class RebinTest(unittest.TestCase):
         rebin_by_factor_radio = mock.Mock()
         rebin_by_factor_radio.isChecked = mock.Mock(return_value=True)
         factor = mock.Mock()
-        factor.value = mock.Mock(return_value=0)
+        factor.value = mock.Mock(return_value=0.5)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=0)
+        mode_field.currentText = mock.Mock(return_value='reflect')
         execute_func = RebinFilter.execute_wrapper(rebin_to_dimensions_radio=rebin_to_dimensions_radio,
                                                    rebin_by_factor_radio=rebin_by_factor_radio,
                                                    factor=factor,

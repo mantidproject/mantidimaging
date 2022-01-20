@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -20,6 +21,22 @@ class OutliersTest(unittest.TestCase):
 
     Tests return value only.
     """
+    @parameterized.expand([("None", None), ("0", 0)])
+    def test_raises_exception_for_invalid_diff(self, _, diff):
+        images = th.generate_images()
+
+        radius = 3
+
+        self.assertRaises(ValueError, OutliersFilter.filter_func, images, diff, radius)
+
+    @parameterized.expand([("None", None), ("0", 0)])
+    def test_raises_exception_for_invalid_radius(self, _, radius):
+        images = th.generate_images()
+
+        diff = 1
+
+        self.assertRaises(ValueError, OutliersFilter.filter_func, images, diff, radius)
+
     def test_executed(self):
         images = th.generate_images()
 
@@ -36,9 +53,9 @@ class OutliersTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         diff_field = mock.Mock()
-        diff_field.value = mock.Mock(return_value=0)
+        diff_field.value = mock.Mock(return_value=1)
         size_field = mock.Mock()
-        size_field.value = mock.Mock(return_value=0)
+        size_field.value = mock.Mock(return_value=1)
         mode_field = mock.Mock()
         mode_field.currentText = mock.Mock(return_value=OUTLIERS_BRIGHT)
         execute_func = OutliersFilter.execute_wrapper(diff_field, size_field, mode_field)
@@ -59,10 +76,10 @@ class OutliersTest(unittest.TestCase):
         # use sets because dictionary order isn't guaranteed in Python 3
         self.assertEqual({'diff_field', 'size_field', 'mode_field'}, set(gui_dict.keys()))
 
-    def test_gui_diff_spin_box_min_is_0(self):
+    def test_gui_diff_spin_box_min_is_correct(self):
         gui_dict = OutliersFilter.register_gui(mock.MagicMock(), mock.MagicMock(), mock.MagicMock())
 
-        self.assertEqual(0, gui_dict["diff_field"].minimum())
+        self.assertEqual(1e-7, gui_dict["diff_field"].minimum())
 
     def test_gui_diff_spin_box_max_is_10000(self):
         gui_dict = OutliersFilter.register_gui(mock.MagicMock(), mock.MagicMock(), mock.MagicMock())

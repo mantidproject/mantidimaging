@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from unittest import mock
 
@@ -22,16 +23,14 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
-    def test_not_executed(self):
+    @parameterized.expand([("None", None), ("1", 1)])
+    def test_exception_raised_for_invalid_size(self, _, size):
         images = th.generate_images()
 
-        size = None
         mode = None
         order = None
 
-        original = np.copy(images.data[0])
-        result = GaussianFilter.filter_func(images, size, mode, order)
-        th.assert_not_equals(result.data, original)
+        self.assertRaises(ValueError, GaussianFilter.filter_func, images, size, mode, order)
 
     def test_executed_parallel(self):
         images = th.generate_images()
@@ -50,9 +49,9 @@ class GaussianTest(unittest.TestCase):
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
         size_field = mock.Mock()
-        size_field.value = mock.Mock(return_value=0)
+        size_field.value = mock.Mock(return_value=2)
         mode_field = mock.Mock()
-        mode_field.currentText = mock.Mock(return_value=0)
+        mode_field.currentText = mock.Mock(return_value='reflect')
         order_field = mock.Mock()
         order_field.value = mock.Mock(return_value=0)
         execute_func = GaussianFilter.execute_wrapper(size_field, order_field, mode_field)

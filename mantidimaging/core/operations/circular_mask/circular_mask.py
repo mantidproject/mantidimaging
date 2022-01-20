@@ -38,17 +38,18 @@ class CircularMaskFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
+        if not circular_mask_ratio or not circular_mask_ratio < 1:
+            raise ValueError(f'circular_mask_ratio must be > 0 and < 1. Value provided was {circular_mask_ratio}')
+
         progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
+        tomopy = importer.do_importing('tomopy')
 
-        if circular_mask_ratio and 0 < circular_mask_ratio < 1:
-            tomopy = importer.do_importing('tomopy')
+        with progress:
+            progress.update(msg="Applying circular mask")
 
-            with progress:
-                progress.update(msg="Applying circular mask")
-
-                # for some reason this doesn't like the ncore param, even though
-                # it's in the official tomopy docs
-                tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value, ncore=cores)
+            # for some reason this doesn't like the ncore param, even though
+            # it's in the official tomopy docs
+            tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value, ncore=cores)
 
         return data
 
@@ -58,7 +59,7 @@ class CircularMaskFilter(BaseFilter):
 
         _, radius_field = add_property_to_form('Radius',
                                                Type.FLOAT,
-                                               0.95, (0.0, 1.0),
+                                               0.95, (0.01, 0.99),
                                                form=form,
                                                on_change=on_change,
                                                tooltip="Radius [0, 1] of image that should be left untouched.")

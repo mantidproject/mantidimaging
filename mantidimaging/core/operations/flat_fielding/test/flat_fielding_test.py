@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from parameterized import parameterized
 import unittest
 from typing import Tuple
 from unittest import mock
@@ -27,6 +28,12 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after = th.generate_images()
         dark_after = th.generate_images()
         return images, flat_before, dark_before, flat_after, dark_after
+
+    @parameterized.expand([("None", None), ("Invalid", "invalid")])
+    def test_raises_exception_for_invalid_method(self, _, method):
+        images = th.generate_images()
+
+        self.assertRaises(ValueError, FlatFieldFilter.filter_func, images, selected_flat_fielding=method)
 
     def test_real_result_before_only(self):
         # the calculation here was designed on purpose to have a value

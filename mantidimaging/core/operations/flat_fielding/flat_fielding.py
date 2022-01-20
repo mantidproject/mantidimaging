@@ -79,7 +79,7 @@ class FlatFieldFilter(BaseFilter):
         :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
         :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged
         :param dark_before: Dark image to use in normalization, collected before the sample was imaged
-        :param dark_after: Dark image to use in normalization, collected before the sample was imaged
+        :param dark_after: Dark image to use in normalization, collected after the sample was imaged
         :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
                                        stacks or combined.
         :param use_dark: Whether to use dark frame subtraction
@@ -89,40 +89,39 @@ class FlatFieldFilter(BaseFilter):
         """
         h.check_data_stack(images)
 
-        if selected_flat_fielding is not None:
-            if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
-                    and dark_after is not None and dark_before is not None:
-                flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
-                if use_dark:
-                    dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
-            elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
-                flat_avg = flat_before.data.mean(axis=0)
-                if use_dark:
-                    dark_avg = dark_before.data.mean(axis=0)
-            elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
-                flat_avg = flat_after.data.mean(axis=0)
-                if use_dark:
-                    dark_avg = dark_after.data.mean(axis=0)
-            else:
-                raise ValueError("selected_flat_fielding not in:", valid_methods)
+        if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
+                and dark_after is not None and dark_before is not None:
+            flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
+            if use_dark:
+                dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
+        elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
+            flat_avg = flat_before.data.mean(axis=0)
+            if use_dark:
+                dark_avg = dark_before.data.mean(axis=0)
+        elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
+            flat_avg = flat_after.data.mean(axis=0)
+            if use_dark:
+                dark_avg = dark_after.data.mean(axis=0)
+        else:
+            raise ValueError("selected_flat_fielding not in:", valid_methods)
 
-            if not use_dark:
-                dark_avg = np.zeros_like(flat_avg)
+        if not use_dark:
+            dark_avg = np.zeros_like(flat_avg)
 
-            if flat_avg is not None and dark_avg is not None:
-                if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
-                    raise ValueError(
-                        f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
-                        which should match the shape of the sample images ({images.data.shape})")
+        if flat_avg is not None and dark_avg is not None:
+            if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
+                raise ValueError(
+                    f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
+                    which should match the shape of the sample images ({images.data.shape})")
 
-                if not images.data.shape[1:] == flat_avg.shape == dark_avg.shape:
-                    raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
-                                     f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
+            if not images.data.shape[1:] == flat_avg.shape == dark_avg.shape:
+                raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
+                                 f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
-                progress = Progress.ensure_instance(progress,
-                                                    num_steps=images.data.shape[0],
-                                                    task_name='Background Correction')
-                _execute(images.data, flat_avg, dark_avg, cores, chunksize, progress)
+            progress = Progress.ensure_instance(progress,
+                                                num_steps=images.data.shape[0],
+                                                task_name='Background Correction')
+            _execute(images.data, flat_avg, dark_avg, cores, chunksize, progress)
 
         h.check_data_stack(images)
         return images
