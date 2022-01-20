@@ -9,7 +9,7 @@ from unittest import mock
 
 import numpy as np
 
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.dataset import Dataset, StackDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -337,7 +337,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
         self.view.tabifyDockWidget.assert_called_once()
         self.view.model_changed.emit.assert_called_once()
-        tab_bar_mock.setCurrentIndex.assert_called_once_with(2)
+        tab_bar_mock.setCurrentIndex.assert_called_once_with(3)
 
     def test_create_new_180_stack_with_no_visible_stacks(self):
         stacks = dict()
@@ -400,19 +400,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.stacks[old_images.id].presenter.images, old_images)
 
     def test_add_180_deg_to_dataset_success(self):
-        mock_stack = mock.Mock()
-        mock_stack.windowTitle.return_value = window_title = "window title"
-        stack_id = "stack-id"
-        self.presenter.stacks[stack_id] = mock_stack
+        dataset_id = "dataset-id"
         filename_for_180 = "path/to/180"
+        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
+        self.presenter.add_child_item_to_tree_view = mock.Mock()
 
-        self.presenter.add_180_deg_to_dataset(window_title, filename_for_180)
-        self.model.add_180_deg_to_dataset.assert_called_once_with(stack_id, filename_for_180)
+        self.presenter.add_180_deg_to_dataset(dataset_id, filename_for_180)
+        self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
+        self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
 
     def test_add_180_deg_to_dataset_failure(self):
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_180_deg_to_dataset("doesn't-exist", "path/to/180")
-        self.model.add_180_deg_to_dataset.assert_not_called()
+        self.model.add_180_deg_to_dataset.return_value = None
+        self.assertIsNone(self.presenter.add_180_deg_to_dataset("doesn't-exist", "path/to/180"))
 
     def test_add_projection_angles_to_stack_success(self):
         mock_stack = mock.Mock()
@@ -556,6 +555,36 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_id = "stack-id"
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
+
+    def test_dataset_list(self):
+        dataset_1 = Dataset(generate_images())
+        dataset_1.name = "dataset-1"
+        dataset_2 = Dataset(generate_images())
+        dataset_2.name = "dataset-2"
+        stack_dataset = StackDataset([generate_images()])
+
+        self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": stack_dataset}
+
+        dataset_list = self.presenter.dataset_list
+        assert len(dataset_list) == 2
+
+    def test_add_child_item_to_tree_view_success(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = dataset_id = "dataset-id"
+
+        child_id = "child-id"
+        child_name = "180"
+        self.presenter.add_child_item_to_tree_view(dataset_id, child_id, child_name)
+        self.view.create_child_tree_item.assert_called_once_with(top_level_item_mock, child_id, child_name)
+
+    def test_add_child_item_to_tree_view_failure(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = "different-id"
+
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
 
 
 if __name__ == '__main__':

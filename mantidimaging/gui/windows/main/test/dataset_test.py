@@ -17,7 +17,11 @@ def test_delete_stack_error_message():
 class DatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
-        self.dataset = Dataset(*self.images)
+        self.dataset = Dataset(sample=self.images[0],
+                               flat_before=self.images[1],
+                               flat_after=self.images[2],
+                               dark_before=self.images[3],
+                               dark_after=self.images[4])
 
     def test_attribute_not_set_returns_none(self):
         sample = generate_images()
@@ -105,3 +109,20 @@ class DatasetTest(unittest.TestCase):
     def test_delete_failure(self):
         with self.assertRaises(KeyError):
             self.dataset.delete_stack("nonexistent-id")
+
+    def test_name(self):
+        self.dataset.name = dataset_name = "name"
+        assert self.dataset.name == dataset_name
+
+    def test_set_180(self):
+        _180 = generate_images((1, 200, 200))
+        self.dataset.proj180deg = _180
+        assert self.dataset.proj180deg is _180
+        assert self.dataset.sample.proj180deg is _180
+
+    def test_remove_180(self):
+        _180 = generate_images((1, 200, 200))
+        self.dataset.proj180deg = _180
+        self.dataset.delete_stack(_180.id)
+        self.assertIsNone(self.dataset.proj180deg)
+        self.assertIsNone(self.dataset.sample.proj180deg)
