@@ -7,7 +7,7 @@ from typing import Dict, Optional, List, Union
 import numpy as np
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset, StackDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 
@@ -21,7 +21,7 @@ def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: 
 class MainWindowModel(object):
     def __init__(self):
         super().__init__()
-        self.datasets: Dict[uuid.UUID, Union[StackDataset, Dataset]] = {}
+        self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID):
         for dataset in self.datasets.values():
@@ -30,9 +30,9 @@ class MainWindowModel(object):
                     return image
         return None
 
-    def do_load_dataset(self, parameters: LoadingParameters, progress) -> Dataset:
+    def do_load_dataset(self, parameters: LoadingParameters, progress) -> StrictDataset:
         sample = loader.load_p(parameters.sample, parameters.dtype, progress)
-        ds = Dataset(sample)
+        ds = StrictDataset(sample)
 
         sample._is_sinograms = parameters.sinograms
         sample.pixel_size = parameters.pixel_size
@@ -64,9 +64,9 @@ class MainWindowModel(object):
         self.datasets[ds.id] = ds
         return ds
 
-    def load_images(self, file_path: str, progress) -> StackDataset:
+    def load_images(self, file_path: str, progress) -> MixedDataset:
         images = loader.load_stack(file_path, progress)
-        sd = StackDataset([images])
+        sd = MixedDataset([images])
         self.datasets[sd.id] = sd
         return sd
 
@@ -108,7 +108,7 @@ class MainWindowModel(object):
         else:
             raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
 
-        if not isinstance(dataset, Dataset):
+        if not isinstance(dataset, StrictDataset):
             raise RuntimeError(f"Wrong dataset type passed to add 180 method: {dataset_id}")
 
         _180_deg = loader.load(file_names=[_180_deg_file]).sample
@@ -158,7 +158,7 @@ class MainWindowModel(object):
         self.raise_error_when_images_not_found(container_id)
         return None
 
-    def add_dataset_to_model(self, dataset: Union[Dataset, StackDataset]):
+    def add_dataset_to_model(self, dataset: Union[StrictDataset, MixedDataset]):
         self.datasets[dataset.id] = dataset
 
     @property

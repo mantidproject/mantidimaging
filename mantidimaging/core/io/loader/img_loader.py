@@ -8,7 +8,7 @@ from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 import numpy as np
 
-from ...data.dataset import Dataset
+from ...data.dataset import StrictDataset
 
 if TYPE_CHECKING:
     import numpy.typing as npt
@@ -30,7 +30,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             img_format: str,
             dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
-            progress: Optional[Progress] = None) -> Dataset:
+            progress: Optional[Progress] = None) -> StrictDataset:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -78,7 +78,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     else:
         sample_images = sample_data
 
-    return Dataset(
+    return StrictDataset(
         sample_images,
         flat_before=Images(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
         flat_after=Images(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
