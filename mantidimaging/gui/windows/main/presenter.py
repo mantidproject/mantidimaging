@@ -126,6 +126,7 @@ class MainWindowPresenter(BasePresenter):
         if task.was_successful():
             task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
             self.create_dataset_stack_windows(task.result)  # TODO - replace with method for creating single stack
+            self.view.model_changed.emit()
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -148,6 +149,7 @@ class MainWindowPresenter(BasePresenter):
         self.check_dataset_180(dataset)
         self.create_dataset_stack_windows(dataset)
         self.create_dataset_tree_view_items(dataset)
+        self.view.model_changed.emit()
 
     def _handle_task_error(self, base_message: str, log, task):
         msg = base_message.format(task.error)
@@ -175,8 +177,6 @@ class MainWindowPresenter(BasePresenter):
                 # make Qt process the addition of the dock onto the main window
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
-
-        self.view.model_changed.emit()
 
         return _180_stack_vis
 
@@ -234,9 +234,10 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
 
-        self.view.model_changed.emit()  # todo - remove
-
         return sample_stack_vis
+
+    def create_loose_dataset_windows(self):
+        pass
 
     def create_dataset_tree_view_items(self, dataset: Dataset):
         """
@@ -337,11 +338,12 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Optional[Images]:
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID,
+                               _180_deg_file: str) -> Optional[Images]:  # todo - break method
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
             return None
-        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+        self.view.model_changed.emit()
         return _180_deg
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
