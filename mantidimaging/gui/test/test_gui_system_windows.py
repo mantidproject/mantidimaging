@@ -40,6 +40,7 @@ class TestGuiSystemWindows(GuiSystemBase):
         self.assertIsNotNone(self.main_window.recon)
         self.assertTrue(self.main_window.recon.isVisible())
         QTest.qWait(SHOW_DELAY)
+        self._wait_until(lambda: len(self.main_window.recon.presenter.async_tracker) == 0)
         self.main_window.recon.close()
         QTest.qWait(SHOW_DELAY)
         self._close_stack_tabs()

@@ -4,7 +4,7 @@
 import traceback
 from enum import Enum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING, Dict, List, Optional, Callable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
 
 from PyQt5.QtWidgets import QWidget
 
@@ -63,6 +63,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.main_window = main_window
 
         self.recon_is_running = False
+        self.async_tracker: Set[Any] = set()
 
     def notify(self, notification, slice_idx=None):
         try:
@@ -181,18 +182,23 @@ class ReconstructWindowPresenter(BasePresenter):
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
         self.recon_is_running = True
-        start_async_task_view(self.view, self.model.run_full_recon, self._on_volume_recon_done,
-                              {'recon_params': self.view.recon_params()})
+        start_async_task_view(self.view,
+                              self.model.run_full_recon,
+                              self._on_volume_recon_done, {'recon_params': self.view.recon_params()},
+                              tracker=self.async_tracker)
 
     def _get_reconstruct_slice(self, cor, slice_idx: int, call_back: Callable[[TaskWorkerThread], None]) -> None:
         # If no COR is provided and there are regression results then calculate
         # the COR for the selected preview slice
         cor = self.model.get_me_a_cor(cor)
-        start_async_task_view(self.view, self.model.run_preview_recon, call_back, {
-            'slice_idx': slice_idx,
-            'cor': cor,
-            'recon_params': self.view.recon_params()
-        })
+        start_async_task_view(self.view,
+                              self.model.run_preview_recon,
+                              call_back, {
+                                  'slice_idx': slice_idx,
+                                  'cor': cor,
+                                  'recon_params': self.view.recon_params()
+                              },
+                              tracker=self.async_tracker)
 
     def _get_slice_index(self, slice_idx: Optional[int]) -> int:
         if slice_idx is None:
@@ -335,7 +341,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.recon_is_running = False
 
         self.view.set_correlate_buttons_enabled(False)
-        start_async_task_view(self.view, self.model.auto_find_correlation, completed)
+        start_async_task_view(self.view, self.model.auto_find_correlation, completed, tracker=self.async_tracker)
 
     def _auto_find_minimisation_square_sum(self):
         num_cors = self.view.get_number_of_cors()
@@ -361,11 +367,14 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_correlate_buttons_enabled(True)
 
         self.view.set_correlate_buttons_enabled(False)
-        start_async_task_view(self.view, self.model.auto_find_minimisation_sqsum, _completed_finding_cors, {
-            'slices': slice_indices,
-            'recon_params': self.view.recon_params(),
-            'initial_cor': initial_cor
-        })
+        start_async_task_view(self.view,
+                              self.model.auto_find_minimisation_sqsum,
+                              _completed_finding_cors, {
+                                  'slices': slice_indices,
+                                  'recon_params': self.view.recon_params(),
+                                  'initial_cor': initial_cor
+                              },
+                              tracker=self.async_tracker)
 
     def proj_180_degree_shape_matches_images(self, images):
         return self.model.proj_180_degree_shape_matches_images(images)
