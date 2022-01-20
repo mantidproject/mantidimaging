@@ -146,7 +146,7 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _add_stack(self, images: Images, sample_dock):
+    def _add_stack(self, images: Images, sample_dock: StackVisualiserView):
         stack_visualiser = self.view.create_stack_window(images)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
         self.stacks[images.id] = stack_visualiser
@@ -209,7 +209,7 @@ class MainWindowPresenter(BasePresenter):
                 if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                     container.proj180deg = Images(np.reshape(closest_projection, (1, ) + closest_projection.shape),
                                                   name=f"{sample.name}_180")
-                    self._add_stack(container.sample.proj180deg, sample_stack_vis)
+                    self._add_stack(container.proj180deg, sample_stack_vis)
 
         if len(current_stack_visualisers) > 1:
             tab_bar = self.view.findChild(QTabBar)
@@ -219,7 +219,7 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
 
-        self.view.model_changed.emit()
+        self.view.model_changed.emit()  # todo - remove
 
         return sample_stack_vis
 
