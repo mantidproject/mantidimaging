@@ -23,6 +23,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self._wait_until(lambda: self.recon_window.presenter.model.stack is not None, max_retry=600)
 
     def tearDown(self) -> None:
+        self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
         self.recon_window.close()
         assert isinstance(self.main_window.recon, ReconstructWindowView)
         self.assertFalse(self.main_window.recon.isVisible())
@@ -33,9 +34,9 @@ class TestGuiSystemReconstruction(GuiSystemBase):
     def test_correlate(self):
         for _ in range(5):
             QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
-
             QTest.qWait(SHORT_DELAY)
             self._wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
+            self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
     def test_minimise(self):
         for i in range(2, 6):
@@ -44,6 +45,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
             QTest.qWait(SHORT_DELAY)
             self._wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+            self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
             QTest.qWait(SHORT_DELAY)
 
     @classmethod
@@ -80,5 +82,6 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY * 2)
+            self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
         QTest.qWait(SHOW_DELAY)

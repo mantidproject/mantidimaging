@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
 
 StackId = namedtuple('StackId', ['id', 'name'])
+DatasetId = namedtuple('DatasetId', ['id', 'name'])
 logger = getLogger(__name__)
 
 
@@ -160,7 +161,7 @@ class MainWindowPresenter(BasePresenter):
 
             tab_bar = self.view.findChild(QTabBar)
             if tab_bar is not None:
-                last_stack_pos = len(current_stack_visualisers) - 1
+                last_stack_pos = len(current_stack_visualisers)
                 # make Qt process the addition of the dock onto the main window
                 QApplication.sendPostedEvents()
                 tab_bar.setCurrentIndex(last_stack_pos)
@@ -253,6 +254,14 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
+    def dataset_list(self):
+        datasets = [
+            DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
+            if isinstance(dataset, Dataset)
+        ]
+        return sorted(datasets, key=lambda x: x.name)
+
+    @property
     def stack_names(self):
         return [widget.windowTitle() for widget in self.stacks.values()]
 
@@ -297,11 +306,12 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_to_dataset(self, stack_name: str, _180_deg_file: str):
-        stack_id = self.get_stack_id_by_name(stack_name)
-        if stack_id is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
-        return self.model.add_180_deg_to_dataset(stack_id, _180_deg_file)  # todo: assumes the stack is the sample?
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Optional[Images]:
+        _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
+        if not isinstance(_180_deg, Images):
+            return None
+        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+        return _180_deg
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles):
         stack_id = self.get_stack_id_by_name(stack_name)
@@ -342,6 +352,15 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
                     return
+
+    def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str):
+        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
+        for i in range(top_level_item_count):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == parent_id:
+                self.view.create_child_tree_item(top_level_item, child_id, child_name)
+                return
+        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView):
         self.stacks[stack.id] = stack

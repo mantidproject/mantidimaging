@@ -19,6 +19,7 @@ New Features
 - #1200 : Default save option set to float32
 - #1235 : Improvements to input value defaults and spin box step sizes
 - #1230 : Update CIL to 21.3 reducing memory requirements
+- #1191 : Loading 180 should only show datasets
 
 
 Fixes

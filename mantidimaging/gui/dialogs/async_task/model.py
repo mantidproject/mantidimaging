@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-from typing import Callable, Optional
+from typing import Callable, Optional, Set
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
@@ -21,6 +21,11 @@ class AsyncTaskDialogModel(QObject):
         self.task.finished.connect(self._on_task_exit)
 
         self.on_complete_function: Optional[Callable] = None
+        self.tracker: Optional[Set] = None
+
+    def set_tracker(self, tracker: Set):
+        self.tracker = tracker
+        self.tracker.add(self)
 
     def do_execute_async(self):
         """
@@ -51,3 +56,9 @@ class AsyncTaskDialogModel(QObject):
             except Exception:
                 log.exception("Failed to run task completion callback")
                 raise
+            finally:
+                if self.tracker is not None:
+                    self.tracker.remove(self)
+        else:
+            if self.tracker is not None:
+                self.tracker.remove(self)

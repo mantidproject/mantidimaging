@@ -219,14 +219,13 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
-        images_id = "id"
-        images_mock = mock.MagicMock()
-        self.model.get_images_by_uuid = mock.Mock(return_value=images_mock)
-
-        _180_stack = self.model.add_180_deg_to_dataset(images_id=images_id, _180_deg_file=_180_file)
+        dataset_id = "id"
+        self.model.datasets[dataset_id] = dataset_mock = Dataset(generate_images())
+        load.return_value.sample = _180_stack = generate_images()
+        self.model.add_180_deg_to_dataset(dataset_id=dataset_id, _180_deg_file=_180_file)
 
         load.assert_called_with(file_names=[_180_file])
-        self.assertEqual(_180_stack, images_mock.proj180deg)
+        self.assertEqual(_180_stack, dataset_mock.proj180deg)
 
     @mock.patch('mantidimaging.core.io.loader.load')
     def test_add_180_deg_to_dataset_no_dataset(self, load: mock.Mock):
@@ -234,10 +233,11 @@ class MainWindowModelTest(unittest.TestCase):
         Test in add_180_deg_to_stack when get_images_by_uuid returns None
         """
         _180_file = "180 file"
-        images_id = "id"
-        self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=None)
-        self.assertRaises(RuntimeError, self.model.add_180_deg_to_dataset, images_id=images_id, _180_deg_file=_180_file)
-        get_images_mock.assert_called_with(images_id)
+        dataset_id = "id"
+        self.assertRaises(RuntimeError,
+                          self.model.add_180_deg_to_dataset,
+                          dataset_id=dataset_id,
+                          _180_deg_file=_180_file)
 
     def test_add_projection_angles_to_sample_no_stack(self):
         proj_angles = ProjectionAngles(np.arange(0, 10))

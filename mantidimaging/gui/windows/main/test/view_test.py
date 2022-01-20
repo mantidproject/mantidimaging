@@ -46,12 +46,12 @@ class MainWindowViewTest(unittest.TestCase):
         self.presenter.get_stack_with_images.assert_called_once_with(images)
         self.assertEqual(return_value, self.presenter.get_stack_with_images.return_value.name)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
+    @mock.patch("mantidimaging.gui.windows.main.view.DatasetSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
-    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, stack_selector_dialog: mock.Mock):
-        stack_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
-        selected_stack = "selected_stack"
-        stack_selector_dialog.return_value.selected_stack = selected_stack
+    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, dataset_selector_dialog: mock.Mock):
+        dataset_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
+        dataset_id = "dataset-id"
+        dataset_selector_dialog.return_value.selected_dataset = dataset_id
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
@@ -60,14 +60,11 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.load_180_deg_dialog()
 
-        stack_selector_dialog.assert_called_once_with(main_window=self.view,
-                                                      title='Stack Selector',
-                                                      message='Which stack is the 180 degree projection being loaded '
-                                                      'for?')
+        dataset_selector_dialog.assert_called_once_with(main_window=self.view, title='Dataset Selector')
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
-        self.presenter.add_180_deg_to_dataset.assert_called_once_with(stack_name=selected_stack,
+        self.presenter.add_180_deg_to_dataset.assert_called_once_with(dataset_id=dataset_id,
                                                                       _180_deg_file=selected_file)
         self.view.create_new_180_stack.assert_called_once_with(_180_dataset)
 
