@@ -28,12 +28,14 @@ class DivideFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: Images, value: Union[int, float] = 0, unit="micron", progress=None) -> Images:
+        h.check_data_stack(images)
+        if not value:
+            raise ValueError('value parameter must not equal 0 or None')
+
         if unit == "micron":
             value *= 1e-4
 
-        h.check_data_stack(images)
-        if value != 0:
-            images.data /= value
+        images.data /= value
         return images
 
     @staticmethod
@@ -42,6 +44,8 @@ class DivideFilter(BaseFilter):
 
         _, value_widget = add_property_to_form("Divide by",
                                                Type.FLOAT,
+                                               default_value=1,
+                                               valid_values=[1e-7, 10000],
                                                form=form,
                                                on_change=on_change,
                                                tooltip="Value the data will be divided by")

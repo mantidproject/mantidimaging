@@ -11,16 +11,18 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_
 from ..monitor_normalisation import MonitorNormalisation
 
 
+def test_one_projection():
+    images = generate_images((1, 1, 1))
+    images._log_file = mock.Mock()
+    images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
+    npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
+
+
 def test_no_counts():
-    images = generate_images()
-    original = images.copy()
-    filter_threw = False
-    try:
-        MonitorNormalisation.filter_func(images)
-    except RuntimeError:
-        filter_threw = True
-    assert filter_threw
-    npt.assert_equal(original.data, images.data)
+    images = generate_images((2, 2, 2))
+    images._log_file = mock.Mock()
+    images._log_file.counts = mock.Mock(return_value=None)
+    npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
 
 
 def test_execute():

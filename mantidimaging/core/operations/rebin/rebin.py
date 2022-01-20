@@ -48,21 +48,19 @@ class RebinFilter(BaseFilter):
         else:
             param_valid = rebin_param > 0
 
-        if param_valid:
-            sample = images.data
-            empty_resized_data = _create_reshaped_array(images, rebin_param)
+        if not param_valid:
+            raise ValueError('Rebin parameter must be greater than 0')
 
-            f = ps.create_partial(skimage.transform.resize,
-                                  ps.return_to_second_at_i,
-                                  mode=mode,
-                                  output_shape=empty_resized_data.shape[1:])
-            ps.shared_list = [sample, empty_resized_data]
-            ps.execute(partial_func=f,
-                       num_operations=sample.shape[0],
-                       cores=cores,
-                       msg="Applying Rebin",
-                       progress=progress)
-            images.data = empty_resized_data
+        sample = images.data
+        empty_resized_data = _create_reshaped_array(images, rebin_param)
+
+        f = ps.create_partial(skimage.transform.resize,
+                              ps.return_to_second_at_i,
+                              mode=mode,
+                              output_shape=empty_resized_data.shape[1:])
+        ps.shared_list = [sample, empty_resized_data]
+        ps.execute(partial_func=f, num_operations=sample.shape[0], cores=cores, msg="Applying Rebin", progress=progress)
+        images.data = empty_resized_data
 
         return images
 
@@ -71,17 +69,17 @@ class RebinFilter(BaseFilter):
         # Rebin by uniform factor options
         _, factor = add_property_to_form('Factor',
                                          'float',
-                                         0.5, (0.0, 1.0),
+                                         0.5, (0.01, 4.0),
                                          on_change=on_change,
                                          tooltip="Factor by which the data will be rebinned, "
                                          "e.g. 0.5 is 50% reduced size",
                                          single_step_size=0.05)
 
         # Rebin to target shape options
-        shape_range = (0, 9999)
+        shape_range = (1, 9999)
 
-        _, shape_x = add_property_to_form('X', Type.INT, valid_values=shape_range, on_change=on_change)
-        _, shape_y = add_property_to_form('Y', Type.INT, valid_values=shape_range, on_change=on_change)
+        _, shape_x = add_property_to_form('X', Type.INT, 100, shape_range, on_change=on_change)
+        _, shape_y = add_property_to_form('Y', Type.INT, 100, shape_range, on_change=on_change)
 
         from PyQt5.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
         shape_fields = QHBoxLayout()
