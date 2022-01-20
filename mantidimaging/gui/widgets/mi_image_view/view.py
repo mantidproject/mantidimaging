@@ -127,7 +127,7 @@ class MIImageView(ImageView, BadDataOverlay):
             # For a 3 dimensional image, we need to specify which axes we are providing and their indices in the
             # array's shape attribute
             # If we don't do this then it is interpreted incorrectly for very small images by ImageView.setImage
-            # Note that, for our purposes, the t axes corresponds to angle data
+            # Note that, for our purposes, the t axis corresponds to angle data
             kwargs['axes'] = kwargs.get('axes', {'t': 0, 'x': 2, 'y': 1, 'c': None})
         ImageView.setImage(self, *args, **kwargs)
         self.check_for_bad_data()
