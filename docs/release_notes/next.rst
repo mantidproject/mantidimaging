@@ -35,6 +35,7 @@ Fixes
 - #1226 : AttributeError when trying to open reconstruction auto colour dialog
 - #1236 : Aspect ratio not preserved in COR inspector or operations window
 - #1162 : Raise exceptions when invalid parameter values are passed to filter functions
+- #1248 : Rebin operations not working for small image dimensions
 
 
 Developer Changes
