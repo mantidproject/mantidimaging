@@ -19,12 +19,12 @@ class TestGuiSystemLoading(GuiSystemBase):
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def _load_images(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
-        initial_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
+        initial_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
 
         self.main_window.actionLoadImages.trigger()
 
         def test_func() -> bool:
-            current_stacks = len(self.main_window.presenter.model.get_active_stack_visualisers())
+            current_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
             return (current_stacks - initial_stacks) >= 1
 
         self._wait_until(test_func, max_retry=600)
@@ -42,6 +42,9 @@ class TestGuiSystemLoading(GuiSystemBase):
                     raise RuntimeError("Timed out waiting for DatasetSelectorDialog to populate")
 
                 widget.ok_button.click()
+
+    def test_load_images(self):
+        self._load_images()
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def test_load_180(self, mocked_select_file):
