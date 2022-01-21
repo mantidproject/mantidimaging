@@ -9,7 +9,7 @@ from unittest import mock
 
 import numpy as np
 
-from mantidimaging.core.data.dataset import Dataset, StackDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
@@ -24,11 +24,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
         self.images = [generate_images() for _ in range(5)]
-        self.dataset = Dataset(sample=self.images[0],
-                               flat_before=self.images[1],
-                               flat_after=self.images[2],
-                               dark_before=self.images[3],
-                               dark_after=self.images[4])
+        self.dataset = StrictDataset(sample=self.images[0],
+                                     flat_before=self.images[1],
+                                     flat_after=self.images[2],
+                                     dark_before=self.images[3],
+                                     dark_after=self.images[4])
         self.presenter.model = self.model = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
@@ -140,7 +140,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_create_new_stack_images(self):
         self.view.model_changed.emit = mock.Mock()
         images = generate_images()
-        self.presenter.create_new_stack(images)
+        self.presenter.create_strict_dataset_stack_windows(images)
         self.assertEqual(1, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
 
@@ -158,11 +158,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.side_effect = [first_stack_window, second_stack_window]
 
         self.view.model_changed.emit = mock.Mock()
-        self.presenter.create_new_stack(first_images)
+        self.presenter.create_strict_dataset_stack_windows(first_images)
         self.assertEqual(1, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
 
-        self.presenter.create_new_stack(second_images)
+        self.presenter.create_strict_dataset_stack_windows(second_images)
         assert self.view.tabifyDockWidget.call_count == 2
         assert self.view.findChild.call_count == 1
         mock_tab_bar = self.view.findChild.return_value
@@ -185,7 +185,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
-        self.presenter.create_new_stack(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -207,7 +207,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -227,7 +227,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(5, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -247,7 +247,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = True
 
-        self.presenter.create_new_stack(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stacks))
         self.view.model_changed.emit.assert_called_once()
@@ -270,9 +270,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.nexus_load_dialog = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
-        self.presenter.create_new_stack = mock.Mock()
+        self.presenter.create_strict_dataset_stack_windows = mock.Mock()
         self.presenter.load_nexus_file()
-        self.presenter.create_new_stack.assert_called_once_with(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows.assert_called_once_with(self.dataset)
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
@@ -557,11 +557,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
 
     def test_dataset_list(self):
-        dataset_1 = Dataset(generate_images())
+        dataset_1 = StrictDataset(generate_images())
         dataset_1.name = "dataset-1"
-        dataset_2 = Dataset(generate_images())
+        dataset_2 = StrictDataset(generate_images())
         dataset_2.name = "dataset-2"
-        stack_dataset = StackDataset([generate_images()])
+        stack_dataset = MixedDataset([generate_images()])
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": stack_dataset}
 

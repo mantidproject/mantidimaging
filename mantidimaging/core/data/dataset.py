@@ -44,7 +44,7 @@ class BaseDataset:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
 
-class StackDataset(BaseDataset):
+class MixedDataset(BaseDataset):
     def __init__(self, stacks: List[Images] = []):
         super().__init__()
         self._stacks = stacks
@@ -66,7 +66,7 @@ class StackDataset(BaseDataset):
 
 
 @dataclass
-class Dataset(BaseDataset):
+class StrictDataset(BaseDataset):
     sample: Images
     flat_before: Optional[Images] = None
     flat_after: Optional[Images] = None

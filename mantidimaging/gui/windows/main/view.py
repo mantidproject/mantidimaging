@@ -260,6 +260,7 @@ class MainWindowView(BaseMainWindowView):
 
         _180_images = self.presenter.add_180_deg_to_dataset(dataset_id=dataset_to_add_180_deg_to,
                                                             _180_deg_file=selected_file)
+        self.add_child_item_to_tree_view(dataset_to_add_180_deg_to, _180_images.id, "180")
         self.create_new_180_stack(_180_images)
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
@@ -347,7 +348,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_stack_history(stack_uuid)
 
     def create_new_stack(self, images: Images):
-        self.presenter.create_new_stack(images)
+        self.presenter.create_strict_dataset_stack_windows(images)  # TODO - replace with single stack method call
 
     def create_new_180_stack(self, images: Images):
         self.presenter.create_new_180_stack(images)
