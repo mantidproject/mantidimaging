@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
+from typing import Callable, Optional
 
 from PyQt5.QtCore import QThread
 
@@ -24,6 +25,10 @@ class TaskWorkerThread(QThread):
         t.result
         t.error
     """
+
+    task_function = Optional[Callable]
+    error = Optional[Exception]
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -34,7 +39,7 @@ class TaskWorkerThread(QThread):
         self.result = None
         self.error = None
 
-    def run(self):
+    def run(self) -> None:
         log = getLogger(__name__)
 
         try:
@@ -48,7 +53,7 @@ class TaskWorkerThread(QThread):
             self.result = None
             self.error = e
 
-    def was_successful(self):
+    def was_successful(self) -> bool:
         """
         Inspects the result and error values of the async task.
 

@@ -32,6 +32,7 @@ class NexusLoadDialog(QDialog):
     stackedWidget: QStackedWidget
     previewPushButton: QStackedWidget
     allPushButton: QStackedWidget
+    presenter: NexusLoadPresenter
 
     def __init__(self, parent):
         super().__init__(parent)

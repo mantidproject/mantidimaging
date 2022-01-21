@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from logging import getLogger
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional, List, Union, NoReturn
 
 import numpy as np
 
@@ -23,7 +23,7 @@ class MainWindowModel(object):
         super().__init__()
         self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
 
-    def get_images_by_uuid(self, images_uuid: uuid.UUID):
+    def get_images_by_uuid(self, images_uuid: uuid.UUID) -> Optional[Images]:
         for dataset in self.datasets.values():
             for image in dataset.all:
                 if images_uuid == image.id:
@@ -84,7 +84,7 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray):
+    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray) -> None:
         """
         Updates the data of an existing dataset/images object.
         :param images_id: The id of the image to update.
@@ -121,7 +121,7 @@ class MainWindowModel(object):
             self.raise_error_when_images_not_found(images_id)
         images.set_projection_angles(proj_angles)
 
-    def raise_error_when_images_not_found(self, images_id: uuid.UUID):
+    def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
@@ -158,7 +158,7 @@ class MainWindowModel(object):
         self.raise_error_when_images_not_found(container_id)
         return None
 
-    def add_dataset_to_model(self, dataset: Union[StrictDataset, MixedDataset]):
+    def add_dataset_to_model(self, dataset: Union[StrictDataset, MixedDataset]) -> None:
         self.datasets[dataset.id] = dataset
 
     @property

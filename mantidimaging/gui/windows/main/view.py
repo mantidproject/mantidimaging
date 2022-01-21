@@ -79,8 +79,9 @@ class MainWindowView(BaseMainWindowView):
 
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
+    nexus_load_dialog: Optional[NexusLoadDialog] = None
 
-    def __init__(self, open_dialogs=True):
+    def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
 
         self.setWindowTitle("Mantid Imaging")
