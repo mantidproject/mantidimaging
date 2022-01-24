@@ -405,13 +405,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
         self.presenter.add_child_item_to_tree_view = mock.Mock()
 
-        self.presenter.add_180_deg_to_dataset(dataset_id, filename_for_180)
+        self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
         self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
         self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
-
-    def test_add_180_deg_to_dataset_failure(self):
-        self.model.add_180_deg_to_dataset.return_value = None
-        self.assertIsNone(self.presenter.add_180_deg_to_dataset("doesn't-exist", "path/to/180"))
 
     def test_add_projection_angles_to_stack_success(self):
         mock_stack = mock.Mock()
