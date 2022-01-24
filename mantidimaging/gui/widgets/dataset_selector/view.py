@@ -13,6 +13,13 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
 
 
+def _string_contains_all_parts(string: str, parts: list) -> bool:
+    for part in parts:
+        if part.lower() not in string:
+            return False
+    return True
+
+
 class DatasetSelectorWidgetView(QComboBox):
     datasets_updated = pyqtSignal()
     dataset_selected_uuid = pyqtSignal('PyQt_PyObject')
@@ -52,3 +59,12 @@ class DatasetSelectorWidgetView(QComboBox):
 
     def current(self) -> Optional[uuid.UUID]:
         return self.presenter.current_dataset
+
+    def try_to_select_relevant_stack(self, name: str) -> None:
+        # Split based on whitespace
+        name_parts = name.split()
+        for i in range(self.count()):
+            # If widget text contains all name parts
+            if _string_contains_all_parts(self.itemText(i).lower(), name_parts):
+                self.setCurrentIndex(i)
+                break

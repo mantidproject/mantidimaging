@@ -37,3 +37,16 @@ class DatasetSelectorWidgetViewTest(unittest.TestCase):
 
     def test_current(self):
         assert self.view.current() is self.presenter.current_dataset
+
+    def _add_items(self):
+        self.view.addItems(["flat_0001", "dark_0001", "tomo_0001"])
+
+    def test_try_to_select_relevant_stack(self):
+        self._add_items()
+        self.view.try_to_select_relevant_stack("dark")
+        self.assertEqual(self.view.currentIndex(), 1)
+        self.assertEqual(self.view.currentText(), "dark_0001")
+
+        self.view.try_to_select_relevant_stack("flat")
+        self.assertEqual(self.view.currentIndex(), 0)
+        self.assertEqual(self.view.currentText(), "flat_0001")
