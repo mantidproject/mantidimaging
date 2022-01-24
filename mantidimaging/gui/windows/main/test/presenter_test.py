@@ -272,7 +272,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_stack_names(self):
         stack_names = [f"window title {str(i)}" for i in range(5)]
         self.create_mock_stacks_with_names(stack_names)
-        self.assertListEqual(self.presenter.stack_names, stack_names)
+        self.assertListEqual(self.presenter.stack_visualiser_names, stack_names)
 
     def test_get_stack_with_images_success(self):
         mock_stack = mock.Mock()
@@ -374,7 +374,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack.presenter.images.metadata = metadata = {"metadata": 2}
         stack_id = "stack-id"
         self.presenter.stack_visualisers = {stack_id: mock_stack}
-        self.assertIs(self.presenter.get_stack_history(stack_id), metadata)
+        self.assertIs(self.presenter.get_stack_visualiser_history(stack_id), metadata)
 
     def test_get_all_stack_visualisers_with_180deg_proj(self):
         mock_stacks = [mock.Mock() for _ in range(3)]
