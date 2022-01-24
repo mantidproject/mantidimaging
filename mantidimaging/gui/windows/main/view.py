@@ -177,7 +177,7 @@ class MainWindowView(BaseMainWindowView):
         return None
 
     def update_shortcuts(self):
-        enabled = len(self.presenter.stacks.values()) > 0
+        enabled = len(self.presenter.stack_visualisers.values()) > 0
         self.actionSave.setEnabled(enabled)
         self.actionSampleLoadLog.setEnabled(enabled)
         self.actionLoad180deg.setEnabled(enabled)
@@ -322,7 +322,7 @@ class MainWindowView(BaseMainWindowView):
 
     @property
     def stack_list(self):
-        return self.presenter.stack_list
+        return self.presenter.stack_visualiser_list
 
     @property
     def dataset_list(self):
@@ -330,7 +330,7 @@ class MainWindowView(BaseMainWindowView):
 
     @property
     def stack_names(self):
-        return self.presenter.stack_names
+        return self.presenter.stack_visualiser_names
 
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
@@ -345,7 +345,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()
 
     def get_stack_history(self, stack_uuid):
-        return self.presenter.get_stack_history(stack_uuid)
+        return self.presenter.get_stack_visualiser_history(stack_uuid)
 
     def create_new_stack(self, images: Images):
         self.presenter.create_new_stack(images)
