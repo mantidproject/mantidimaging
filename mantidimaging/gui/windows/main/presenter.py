@@ -159,7 +159,7 @@ class MainWindowPresenter(BasePresenter):
         and dataset tree view items.
         :param dataset: The loaded dataset.
         """
-        self.check_dataset_180(dataset)
+        self.check_dataset_has_180(dataset)
         self.create_strict_dataset_stack_windows(dataset)
         self.create_dataset_tree_view_items(dataset)
 
@@ -181,7 +181,7 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
 
-    def check_dataset_180(self, dataset: StrictDataset):
+    def check_dataset_has_180(self, dataset: StrictDataset):
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
