@@ -373,12 +373,19 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Optional[Images]:
+    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
+        """
+        Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.
+        :param dataset_id: The ID of the dataset to update.
+        :param _180_deg_file: The filename for the 180 file.
+        :return: The 180 Images object if loading was successful, None otherwise.
+        """
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
-            return None
+            return
+        self.create_single_images_stack(_180_deg)
+        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         self.view.model_changed.emit()
-        return _180_deg
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles) -> None:
         stack_id = self.get_stack_id_by_name(stack_name)
@@ -421,6 +428,12 @@ class MainWindowPresenter(BasePresenter):
                     return
 
     def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str):
+        """
+        Adds a child item to the tree view.
+        :param parent_id: The ID of the parent dataset.
+        :param child_id: The ID of the corresponding Images object.
+        :param child_name: The name that should appear in the tree view.
+        """
         top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)

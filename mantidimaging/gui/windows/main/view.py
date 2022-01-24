@@ -259,10 +259,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        _180_images = self.presenter.add_180_deg_file_to_dataset(dataset_id=dataset_to_add_180_deg_to,
-                                                                 _180_deg_file=selected_file)
-        self.add_child_item_to_tree_view(dataset_to_add_180_deg_to, _180_images.id, "180")
-        self.create_new_180_stack(_180_images)
+        self.presenter.add_180_deg_file_to_dataset(dataset_id=dataset_to_add_180_deg_to, _180_deg_file=selected_file)
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
