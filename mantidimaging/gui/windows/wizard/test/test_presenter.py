@@ -61,7 +61,7 @@ class WizardPresenterTest(unittest.TestCase):
 
     def test_handle_stack_change(self):
         STACK_LIST = [["1111", "Dark"], ["2222", "Tomo"]]
-        self.presenter.main_window_presenter.stack_list = STACK_LIST
+        self.presenter.main_window_presenter.stack_visualiser_list = STACK_LIST
 
         self.presenter.handle_stack_change()
-        self.presenter.main_window_presenter.get_stack_history.assert_called_once_with("2222")
+        self.presenter.main_window_presenter.get_stack_visualiser_history.assert_called_once_with("2222")

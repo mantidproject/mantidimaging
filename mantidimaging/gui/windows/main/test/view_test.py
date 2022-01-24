@@ -209,7 +209,7 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.stacks = {"a": mock.Mock(), "b": mock.Mock()}
+        self.presenter.stack_visualisers = {"a": mock.Mock(), "b": mock.Mock()}
 
         self._update_shortcuts_test(False, True)
         self._update_shortcuts_test(True, True)

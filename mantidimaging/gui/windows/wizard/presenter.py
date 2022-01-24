@@ -51,12 +51,12 @@ class WizardPresenter(BasePresenter):
 
     def handle_stack_change(self):
         stack_history = None
-        stack_list = self.main_window_presenter.stack_list
+        stack_list = self.main_window_presenter.stack_visualiser_list
         for uuid, name in stack_list:
             if "Tomo" not in name and "Recon" not in name:
                 continue
 
-            stack_history = self.main_window_presenter.get_stack_history(uuid)
+            stack_history = self.main_window_presenter.get_stack_visualiser_history(uuid)
             break
 
         for stage in self.view.stages.values():
