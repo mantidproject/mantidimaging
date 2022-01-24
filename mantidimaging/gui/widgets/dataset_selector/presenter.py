@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 class Notification(Enum):
     RELOAD_DATASETS = 0
+    SELECT_ELIGIBLE_STACK = 1
 
 
 class DatasetSelectorWidgetPresenter(BasePresenter):
@@ -31,6 +32,8 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
         try:
             if signal == Notification.RELOAD_DATASETS:
                 self.do_reload_datasets()
+            elif signal == Notification.SELECT_ELIGIBLE_STACK:
+                self.do_select_eligible_stack()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -76,3 +79,10 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
     def handle_selection(self, index):
         self.current_dataset = self.view.itemData(index)
         self.view.dataset_selected_uuid.emit(self.current_dataset)
+
+    def do_select_eligible_stack(self):
+        for i in range(self.view.count()):
+            name = self.view.itemText(i).lower()
+            if "dark" not in name and "flat" not in name and "180deg" not in name:
+                self.view.setCurrentIndex(i)
+                break

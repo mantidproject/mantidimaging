@@ -68,3 +68,6 @@ class DatasetSelectorWidgetView(QComboBox):
             if _string_contains_all_parts(self.itemText(i).lower(), name_parts):
                 self.setCurrentIndex(i)
                 break
+
+    def select_eligible_stack(self):
+        self.presenter.notify(Notification.SELECT_ELIGIBLE_STACK)
