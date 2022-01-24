@@ -114,7 +114,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
 
         self.assertEqual(1, len(self.presenter.stack_list))
         self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
@@ -130,8 +130,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, sample_dock_mock)
-        self.presenter._add_stack(images2, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images2, sample_dock_mock)
 
         self.assertEqual(2, self.view.create_stack_window.call_count)
         self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
