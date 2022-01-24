@@ -389,8 +389,7 @@ class MainWindowPresenter(BasePresenter):
             # Free previous images stack before reassignment
             stack.presenter.images.data = images.data
 
-    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID,
-                               _180_deg_file: str) -> Optional[Images]:  # todo - break method
+    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Optional[Images]:
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
             return None
