@@ -127,6 +127,7 @@ class MainWindowPresenter(BasePresenter):
         dataset, _ = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
         self._add_strict_dataset_to_view(dataset)
+        self.view.model_changed.emit()
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -147,6 +148,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             self._add_strict_dataset_to_view(task.result)
+            self.view.model_changed.emit()
             task.result = None
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
@@ -160,17 +162,21 @@ class MainWindowPresenter(BasePresenter):
         self.check_dataset_180(dataset)
         self.create_strict_dataset_stack_windows(dataset)
         self.create_dataset_tree_view_items(dataset)
-        self.view.model_changed.emit()
 
     def _handle_task_error(self, base_message: str, log: Logger, task: 'TaskWorkerThread') -> None:
         msg = base_message.format(task.error)
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _add_stack(self, images: Images, sample_dock: StackVisualiserView) -> None:
-        stack_visualiser = self.view.create_stack_window(images)
+    def _create_and_tabify_stack_window(self, images: Images, sample_dock: StackVisualiserView) -> None:
+        """
+        Creates a new stack window with a given Images object then makes sure it is placed on top of a sample/original
+        stack window.
+        :param images: The Images object for the new stack window.
+        :param sample_dock: The existing stack window that the new one should be placed on top of.
+        """
+        stack_visualiser = self._create_lone_stack_window(images)
         self.view.tabifyDockWidget(sample_dock, stack_visualiser)
-        self.stacks[images.id] = stack_visualiser
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
@@ -211,55 +217,80 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The loaded dataset.
         :return: The stack widget for the sample.
         """
-        sample_stack_vis = self.view.create_stack_window(dataset.sample)
-        self.stacks[sample_stack_vis.id] = sample_stack_vis
+        sample_stack_vis = self._create_lone_stack_window(dataset.sample)
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 0:
             self.view.tabifyDockWidget(current_stack_visualisers[0], sample_stack_vis)
 
         if dataset.flat_before and dataset.flat_before.filenames:
-            self._add_stack(dataset.flat_before, sample_stack_vis)
+            self._create_and_tabify_stack_window(dataset.flat_before, sample_stack_vis)
         if dataset.flat_after and dataset.flat_after.filenames:
-            self._add_stack(dataset.flat_after, sample_stack_vis)
+            self._create_and_tabify_stack_window(dataset.flat_after, sample_stack_vis)
         if dataset.dark_before and dataset.dark_before.filenames:
-            self._add_stack(dataset.dark_before, sample_stack_vis)
+            self._create_and_tabify_stack_window(dataset.dark_before, sample_stack_vis)
         if dataset.dark_after and dataset.dark_after.filenames:
-            self._add_stack(dataset.dark_after, sample_stack_vis)
+            self._create_and_tabify_stack_window(dataset.dark_after, sample_stack_vis)
         if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
-            self._add_stack(
+            self._create_and_tabify_stack_window(
                 dataset.sample.proj180deg,  # type: ignore
                 sample_stack_vis)
 
-        if len(current_stack_visualisers) > 1:
-            tab_bar = self.view.findChild(QTabBar)
-            if tab_bar is not None:
-                last_stack_pos = len(current_stack_visualisers)
-                # make Qt process the addition of the dock onto the main window
-                QApplication.sendPostedEvents()
-                tab_bar.setCurrentIndex(last_stack_pos)
-
+        self._focus_on_newest_stack_window()
         return sample_stack_vis
 
+    def _focus_on_newest_stack_window(self) -> None:
+        """
+        Focuses on the newest stack when there is more than one being displayed.
+        """
+        n_stack_visualisers = len(self.get_active_stack_visualisers())
+        if n_stack_visualisers <= 1:
+            return
+
+        tab_bar = self.view.findChild(QTabBar)
+        if tab_bar is not None:
+            last_stack_pos = n_stack_visualisers
+            # make Qt process the addition of the dock onto the main window
+            QApplication.sendPostedEvents()
+            tab_bar.setCurrentIndex(last_stack_pos)
+
     def create_mixed_dataset_stack_windows(self, dataset: MixedDataset) -> StackVisualiserView:
-        first_stack_vis = self.view.create_stack_window(dataset.all[0])
+        first_stack_vis = self._create_lone_stack_window(dataset.all[0])
 
         current_stack_visualisers = self.get_active_stack_visualisers()
         if len(current_stack_visualisers) > 0:
             self.view.tabifyDockWidget(current_stack_visualisers[0], first_stack_vis)
 
         for i in range(1, len(dataset.all)):
-            self._add_stack(dataset.all[i], first_stack_vis)
+            self._create_and_tabify_stack_window(dataset.all[i], first_stack_vis)
 
-        if len(current_stack_visualisers) > 1:
-            tab_bar = self.view.findChild(QTabBar)
-            if tab_bar is not None:
-                last_stack_pos = len(current_stack_visualisers)
-                # make Qt process the addition of the dock onto the main window
-                QApplication.sendPostedEvents()
-                tab_bar.setCurrentIndex(last_stack_pos)
-
+        self._focus_on_newest_stack_window()
         return first_stack_vis
+
+    def create_single_images_stack(self, images: Images) -> StackVisualiserView:
+        """
+        Creates a stack for a single Images object and focuses on it.
+        :param images: The Images object for the new stack window.
+        :return: The new StackVisualiserView.
+        """
+        stack_vis = self._create_lone_stack_window(images)
+
+        current_stack_visualisers = self.get_active_stack_visualisers()
+        if len(current_stack_visualisers) > 0:
+            self.view.tabifyDockWidget(current_stack_visualisers[0], stack_vis)
+
+        self._focus_on_newest_stack_window()
+        return stack_vis
+
+    def _create_lone_stack_window(self, images: Images):
+        """
+        Creates a stack window and adds it to the stack list without tabifying.
+        :param images: The Images array for the stack window to display.
+        :return: The new stack window.
+        """
+        stack_vis = self.view.create_stack_window(images)
+        self.stacks[stack_vis.id] = stack_vis
+        return stack_vis
 
     def create_dataset_tree_view_items(self, dataset: StrictDataset):
         """
