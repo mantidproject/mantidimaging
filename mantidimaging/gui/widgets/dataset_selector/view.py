@@ -23,13 +23,14 @@ def _string_contains_all_parts(string: str, parts: list) -> bool:
 class DatasetSelectorWidgetView(QComboBox):
     datasets_updated = pyqtSignal()
     dataset_selected_uuid = pyqtSignal('PyQt_PyObject')
+    stack_selected_uuid = pyqtSignal('PyQt_PyObject')
 
     main_window: 'MainWindowView'
 
-    def __init__(self, parent):
+    def __init__(self, parent, show_stacks=False):
         super().__init__(parent)
 
-        self.presenter = DatasetSelectorWidgetPresenter(self)
+        self.presenter = DatasetSelectorWidgetPresenter(self, show_stacks=show_stacks)
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
     def subscribe_to_main_window(self, main_window: 'MainWindowView'):

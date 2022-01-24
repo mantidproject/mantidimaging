@@ -21,12 +21,13 @@ class Notification(Enum):
 
 class DatasetSelectorWidgetPresenter(BasePresenter):
     view: 'DatasetSelectorWidgetView'
+    show_stacks: bool
 
-    def __init__(self, view):
+    def __init__(self, view, show_stacks=False):
         super().__init__(view)
 
         self.current_dataset = None
-        self.show_stacks = False
+        self.show_stacks = show_stacks
 
     def notify(self, signal):
         try:
@@ -78,7 +79,10 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
 
     def handle_selection(self, index):
         self.current_dataset = self.view.itemData(index)
-        self.view.dataset_selected_uuid.emit(self.current_dataset)
+        if self.show_stacks:
+            self.view.stack_selected_uuid.emit(self.current_dataset)
+        else:
+            self.view.dataset_selected_uuid.emit(self.current_dataset)
 
     def do_select_eligible_stack(self):
         for i in range(self.view.count()):

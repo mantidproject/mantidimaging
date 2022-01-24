@@ -90,7 +90,7 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.view.main_window.presenter.datasets = [self.ds1, self.ds2]
         self.presenter.show_stacks = True
         self.view.datasets_updated.emit = mock.Mock()
-        self.view.dataset_selected_uuid.emit = mock.Mock()
+        self.view.stack_selected_uuid.emit = mock.Mock()
 
         self.presenter.do_reload_datasets()
         self.assertEqual(self.view.addItem.call_count, 3)
