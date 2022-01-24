@@ -5,13 +5,13 @@ import traceback
 import uuid
 from enum import Enum, auto
 from logging import getLogger, Logger
-from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple
+from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.dataset import Dataset, StackDataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
@@ -264,6 +264,10 @@ class MainWindowPresenter(BasePresenter):
     def stack_visualiser_list(self) -> List[StackId]:
         stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
         return sorted(stacks, key=lambda x: x.name)
+
+    @property
+    def datasets(self) -> Iterable[Union[StackDataset, Dataset]]:
+        return self.model.datasets.values()
 
     @property
     def dataset_list(self) -> List[DatasetId]:

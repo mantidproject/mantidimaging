@@ -25,6 +25,7 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
         super().__init__(view)
 
         self.current_dataset = None
+        self.show_stacks = False
 
     def notify(self, signal):
         try:
@@ -43,7 +44,7 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
             self.view.clear()
 
             # Get all the new stacks
-            dataset_list: List[Tuple[UUID, str]] = self.view.main_window.dataset_list
+            dataset_list: List[Tuple[UUID, str]] = self._get_dataset_list(self.show_stacks)
             user_friendly_names = [item[1] for item in dataset_list]
 
             for uuid, name in dataset_list:
@@ -60,6 +61,17 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
 
         self.view.datasets_updated.emit()
         self.handle_selection(new_selected_index)
+
+    def _get_dataset_list(self, stacks=False) -> List[Tuple[UUID, str]]:
+        result: List[Tuple[UUID, str]] = []
+        for dataset in self.view.main_window.presenter.datasets:
+            if not stacks:
+                result.append((dataset.id, dataset.name))
+            else:
+                for stack in dataset.all:
+                    result.append((stack.id, stack.name))
+
+        return result
 
     def handle_selection(self, index):
         self.current_dataset = self.view.itemData(index)
