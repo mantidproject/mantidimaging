@@ -145,49 +145,27 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
-        first_images = generate_images()
-        second_images = generate_images()
-
-        first_stack_window = mock.Mock()
-        second_stack_window = mock.Mock()
-
-        first_stack_window.id = first_images.id
-        second_stack_window.id = second_images.id
-
-        self.view.create_stack_window.side_effect = [first_stack_window, second_stack_window]
-
-        self.view.model_changed.emit = mock.Mock()
-        self.presenter.create_strict_dataset_stack_windows(first_images)
-        self.assertEqual(1, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
-
-        self.presenter.create_strict_dataset_stack_windows(second_images)
-        assert self.view.tabifyDockWidget.call_count == 2
-        assert self.view.findChild.call_count == 1
-        mock_tab_bar = self.view.findChild.return_value
-        expected_position = 2
-        mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
-        mock_QApp.sendPostedEvents.assert_called_once()
+        pass
 
     def test_create_new_stack_with_180_in_sample(self):
-        dock_mock = self.view.create_stack_window.return_value
-        stack_visualiser_mock = mock.Mock()
-        self.dataset.sample.proj180deg = generate_images(shape=(1, 20, 20))
-        self.dataset.sample.proj180deg.filenames = ["filename"]
-
-        dock_mock.widget.return_value = stack_visualiser_mock
-        dock_mock.windowTitle.return_value = "somename"
-        self.view.model_changed.emit = mock.Mock()
+        self.dataset.proj180deg = generate_images(shape=(1, 20, 20))
+        self.dataset.proj180deg.filenames = ["filename"]
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
+        stack_mocks = []
+        for id in self.dataset.all_image_ids:
+            stack_mock = mock.Mock()
+            stack_mock.id = id
+            stack_mocks.append(stack_mock)
+
+        self.view.create_stack_window.side_effect = stack_mocks
         self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_use_threshold_180(self):
         self.dataset.sample.set_projection_angles(
