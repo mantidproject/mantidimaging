@@ -14,13 +14,22 @@ def _delete_stack_error_message(images_id: uuid.UUID) -> str:
 
 
 class BaseDataset:
-    def __init__(self):
+    def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
         self.recons: List[Images] = []
+        self._name = name
 
     @property
     def id(self) -> uuid.UUID:
         return self._id
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, arg: str):
+        self._name = arg
 
     @property
     def all(self):
@@ -45,8 +54,8 @@ class BaseDataset:
 
 
 class StackDataset(BaseDataset):
-    def __init__(self, stacks: List[Images] = []):
-        super().__init__()
+    def __init__(self, stacks: List[Images] = [], name=""):
+        super().__init__(name=name)
         self._stacks = stacks
 
     @property
@@ -80,16 +89,14 @@ class Dataset(BaseDataset):
                  dark_before: Optional[Images] = None,
                  dark_after: Optional[Images] = None,
                  name: str = ""):
-        super().__init__()
+        super().__init__(name=name)
         self.sample = sample
         self.flat_before = flat_before
         self.flat_after = flat_after
         self.dark_before = dark_before
         self.dark_after = dark_after
 
-        if name:
-            self._name = name
-        else:
+        if self.name == "":
             self._name = sample.name
 
     @property
@@ -98,14 +105,6 @@ class Dataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
         ]
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, arg: str):
-        self._name = arg
 
     @property
     def proj180deg(self):
