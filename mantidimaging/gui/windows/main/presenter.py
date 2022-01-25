@@ -270,11 +270,13 @@ class MainWindowPresenter(BasePresenter):
                              stack_window: StackVisualiserView,
                              tabify_stack: Optional[StackVisualiserView] = None):
         current_stack_visualisers = self.get_active_stack_visualisers()
-        if len(current_stack_visualisers) > 0:
-            if tabify_stack is None:
-                self.view.tabifyDockWidget(current_stack_visualisers[0], stack_window)
-            else:
-                self.view.tabifyDockWidget(tabify_stack, stack_window)
+        if tabify_stack is None and len(current_stack_visualisers) > 0:
+            for stack in current_stack_visualisers:
+                if stack_window is not stack:
+                    self.view.tabifyDockWidget(stack, stack_window)
+                    break
+        if tabify_stack is not None:
+            self.view.tabifyDockWidget(tabify_stack, stack_window)
 
     def create_dataset_tree_view_items(self, dataset: StrictDataset):
         """
