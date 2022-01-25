@@ -74,7 +74,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
             elif signal == Notification.FOCUS_TAB:
-                self._focus_tab(**baggage)
+                self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
                 self._add_recon_to_dataset(**baggage)
 
@@ -159,9 +159,9 @@ class MainWindowPresenter(BasePresenter):
         and dataset tree view items.
         :param dataset: The loaded dataset.
         """
-        self.check_dataset_has_180(dataset)
         self.create_strict_dataset_stack_windows(dataset)
         self.create_dataset_tree_view_items(dataset)
+        self.check_dataset_has_180(dataset)
 
     def _handle_task_error(self, base_message: str, log: Logger, task: 'TaskWorkerThread') -> None:
         msg = base_message.format(task.error)
@@ -217,10 +217,10 @@ class MainWindowPresenter(BasePresenter):
                 dataset.sample.proj180deg,  # type: ignore
                 sample_stack_vis)
 
-        self._focus_on_newest_stack_window()
+        self._focus_on_newest_stack_tab()
         return sample_stack_vis
 
-    def _focus_on_newest_stack_window(self) -> None:
+    def _focus_on_newest_stack_tab(self) -> None:
         """
         Focuses on the newest stack when there is more than one being displayed.
         """
@@ -236,13 +236,18 @@ class MainWindowPresenter(BasePresenter):
             tab_bar.setCurrentIndex(last_stack_pos)
 
     def create_mixed_dataset_stack_windows(self, dataset: MixedDataset) -> StackVisualiserView:
+        """
+        Creates stack windows for a mixed dataset.
+        :param dataset: The dataset object.
+        :return: The first stack visualiser from the dataset.
+        """
         first_stack_vis = self._create_lone_stack_window(dataset.all[0])
         self._tabify_stack_window(first_stack_vis)
 
         for i in range(1, len(dataset.all)):
             self._create_and_tabify_stack_window(dataset.all[i], first_stack_vis)
 
-        self._focus_on_newest_stack_window()
+        self._focus_on_newest_stack_tab()
         return first_stack_vis
 
     def create_single_images_stack(self, images: Images) -> StackVisualiserView:
@@ -253,7 +258,7 @@ class MainWindowPresenter(BasePresenter):
         """
         stack_vis = self._create_lone_stack_window(images)
         self._tabify_stack_window(stack_vis)
-        self._focus_on_newest_stack_window()
+        self._focus_on_newest_stack_tab()
         return stack_vis
 
     def _create_lone_stack_window(self, images: Images):
@@ -269,6 +274,12 @@ class MainWindowPresenter(BasePresenter):
     def _tabify_stack_window(self,
                              stack_window: StackVisualiserView,
                              tabify_stack: Optional[StackVisualiserView] = None):
+        """
+        Places the newly created stack window into a tab.
+        :param stack_window: The new stack window.
+        :param tabify_stack: The optional existing stack tab that needs to be
+        :return:
+        """
         current_stack_visualisers = self.get_active_stack_visualisers()
         if tabify_stack is None and len(current_stack_visualisers) > 0:
             for stack in current_stack_visualisers:
@@ -473,7 +484,7 @@ class MainWindowPresenter(BasePresenter):
         self.stack_visualisers[stack_id].deleteLater()
         del self.stack_visualisers[stack_id]
 
-    def _focus_tab(self, stack_id: uuid.UUID) -> None:
+    def _restore_and_focus_tab(self, stack_id: uuid.UUID) -> None:
         """
         Makes a stack tab visible and brings it to the front. If dataset ID is given then nothing happens.
         :param stack_id: The ID of the stack tab to focus on.

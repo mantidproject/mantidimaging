@@ -440,7 +440,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.datasets = []
 
         with self.assertRaises(Exception):
-            self.presenter._focus_tab(stack_id="not-in-the-stacks-dict")
+            self.presenter._restore_and_focus_tab(stack_id="not-in-the-stacks-dict")
 
     def test_focus_tab_with_id_in_dataset(self):
         stack_id = "stack-id"
