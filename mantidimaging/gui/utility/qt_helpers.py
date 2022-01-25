@@ -192,8 +192,8 @@ def add_property_to_form(label: str,
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
     elif dtype == 'stack' or dtype == Type.STACK:
-        from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
-        right_widget = StackSelectorWidgetView(filters_view)
+        from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+        right_widget = DatasetSelectorWidgetView(filters_view, show_stacks=True)
         if on_change is not None:
             right_widget.currentIndexChanged[int].connect(lambda: on_change())
 
