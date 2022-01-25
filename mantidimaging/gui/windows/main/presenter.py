@@ -278,7 +278,6 @@ class MainWindowPresenter(BasePresenter):
         Places the newly created stack window into a tab.
         :param stack_window: The new stack window.
         :param tabify_stack: The optional existing stack tab that needs to be
-        :return:
         """
         current_stack_visualisers = self.get_active_stack_visualisers()
         if tabify_stack is None and len(current_stack_visualisers) > 0:
@@ -396,7 +395,8 @@ class MainWindowPresenter(BasePresenter):
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
             return
-        self.create_single_images_stack(_180_deg)
+        stack = self.create_single_images_stack(_180_deg)
+        stack.raise_()
         self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         self.view.model_changed.emit()
 
