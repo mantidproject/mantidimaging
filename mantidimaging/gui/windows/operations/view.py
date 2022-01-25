@@ -123,6 +123,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter.set_stack(None)
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
+        self.presenter.view = None
         self.presenter = None
 
     def show(self):
