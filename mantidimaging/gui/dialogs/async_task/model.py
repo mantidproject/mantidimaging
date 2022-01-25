@@ -37,6 +37,12 @@ class AsyncTaskDialogModel(QObject):
     def task_is_running(self) -> bool:
         return self.task.isRunning()
 
+    def _cleanup(self):
+        if self.tracker is not None:
+            self.tracker.remove(self)
+        self.on_complete_function = None
+        self.task.task_function = None
+
     def _on_task_exit(self):
         """
         Handler for task thread completion.
@@ -57,8 +63,6 @@ class AsyncTaskDialogModel(QObject):
                 log.exception("Failed to run task completion callback")
                 raise
             finally:
-                if self.tracker is not None:
-                    self.tracker.remove(self)
+                self._cleanup()
         else:
-            if self.tracker is not None:
-                self.tracker.remove(self)
+            self._cleanup()
