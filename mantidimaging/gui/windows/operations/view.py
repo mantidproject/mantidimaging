@@ -120,6 +120,7 @@ class FiltersWindowView(BaseMainWindowView):
         if self.roi_view is not None:
             self.roi_view.close()
             self.roi_view = None
+        self.presenter.set_stack(None)
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
         self.presenter = None
