@@ -2,6 +2,12 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+# Checks the license comment block at the top of files
+#
+# Reads the license content from .licenserc.json and checks if the files passed in as arguments have matching
+# license lines. Written primarily for use as a pre-commit check, so the pre-commit configuration limits the check to
+# only Python files and the passed in arguments will be the files staged for commit.
+
 import json
 import sys
 from typing import List, Dict
