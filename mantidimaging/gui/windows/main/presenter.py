@@ -163,6 +163,9 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
 
+    def get_all_stacks(self) -> List[Images]:
+        return self.model.images
+
     def create_new_180_stack(self, container: Images) -> StackVisualiserView:
         _180_stack_vis = self.view.create_stack_window(container)
 
@@ -283,6 +286,12 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.active_stacks[stack_id]
+
+    def get_stack(self, stack_id: uuid.UUID) -> Images:
+        images = self.model.get_images_by_uuid(stack_id)
+        if images is None:
+            raise RuntimeError(f"Stack not found: {stack_id}")
+        return images
 
     def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata

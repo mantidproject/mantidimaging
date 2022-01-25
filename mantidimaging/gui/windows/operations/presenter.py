@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import traceback
+import uuid
 from enum import Enum, auto
 from functools import partial
 from itertools import groupby
@@ -19,7 +20,6 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
-from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
 
 from .model import FiltersWindowModel
@@ -89,7 +89,7 @@ def _group_consecutive_values(slices: List[int]) -> List[str]:
 
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
-    stack: Optional[StackVisualiserView] = None
+    stack: Optional[Images] = None
     divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
@@ -132,13 +132,16 @@ class FiltersWindowPresenter(BasePresenter):
 
     @property
     def max_preview_image_idx(self):
-        num_images = self.stack.presenter.images.num_images if self.stack is not None else 0
+        num_images = self.stack.num_images if self.stack is not None else 0
         return max(num_images - 1, 0)
 
-    def set_stack_uuid(self, uuid):
-        self.set_stack(self.main_window.get_stack_visualiser(uuid) if uuid is not None else None)
+    def set_stack_uuid(self, uuid: Optional[uuid.UUID]):
+        if uuid is not None:
+            self.set_stack(self.main_window.get_stack(uuid))
+        else:
+            self.set_stack(None)
 
-    def set_stack(self, stack):
+    def set_stack(self, stack: Optional[Images]):
         self.stack = stack
 
         # Update the preview image index
@@ -200,7 +203,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
-                self.original_images_stack = self.stack.presenter.images.copy()
+                self.original_images_stack = self.stack.copy()
 
         # if is a 180degree stack and a user says no, cancel apply filter.
         if self.is_a_proj180deg(self.stack) and not self.view.ask_confirmation(APPLY_TO_180_MSG):
@@ -214,12 +217,12 @@ class FiltersWindowPresenter(BasePresenter):
         confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
         if not confirmed:
             return
-        stacks = self.main_window.get_all_stack_visualisers()
+        stacks = self.main_window.get_all_stacks()
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
                 self.original_images_stack = []
                 for stack in stacks:
-                    self.original_images_stack.append((stack.presenter.images.copy(), stack.id))
+                    self.original_images_stack.append((stack.copy(), stack.id))
 
         if len(stacks) > 0:
             self.applying_to_all = True
@@ -238,20 +241,20 @@ class FiltersWindowPresenter(BasePresenter):
 
         return stack_choice.use_new_data
 
-    def is_a_proj180deg(self, stack_to_check: StackVisualiserView):
-        if stack_to_check.presenter.images.has_proj180deg():
+    def is_a_proj180deg(self, stack_to_check: Images):
+        if stack_to_check.has_proj180deg():
             return False
-        stacks = self.main_window.get_all_stack_visualisers()
+        stacks = self.main_window.get_all_stacks()
         for stack in stacks:
-            if stack.presenter.images.proj180deg is not None:
-                stack_proj180deg = stack.presenter.images.proj180deg
+            if stack.proj180deg is not None:
+                stack_proj180deg = stack.proj180deg
             else:
-                stack_proj180deg = stack.presenter.images
-            if stack_proj180deg == stack_to_check.presenter.images:
+                stack_proj180deg = stack
+            if stack_proj180deg == stack_to_check:
                 return True
         return False
 
-    def _post_filter(self, updated_stacks: List[StackVisualiserView], task):
+    def _post_filter(self, updated_stacks: List[Images], task):
         try:
             use_new_data = True
             attempt_repair = task.error is not None
@@ -260,26 +263,22 @@ class FiltersWindowPresenter(BasePresenter):
                 # If the operation encountered an error during processing,
                 # try to restore the original data else continue processing as usual
                 if attempt_repair:
-                    self.main_window.presenter.set_images_in_stack(stack.id, stack.presenter.images)
+                    self.main_window.presenter.set_images_in_stack(stack.id, stack)
                 # Ensure there is no error if we are to continue with safe apply and 180 degree.
                 elif task.error is None:
                     # otherwise check with user which one to keep
                     if self.view.safeApply.isChecked():
-                        use_new_data = self._wait_for_stack_choice(stack.presenter.images, stack.id)
+                        use_new_data = self._wait_for_stack_choice(stack, stack.id)
                     # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
-                    if stack.presenter.images.has_proj180deg() and use_new_data and not self.applying_to_all:
+                    if stack.has_proj180deg() and use_new_data and not self.applying_to_all:
                         self.view.clear_previews()
                         # Apply to proj180 synchronously - this function is already running async
                         # and running another async instance causes a race condition in the parallel module
                         # where the shared data can be removed in the middle of the operation of another operation
-                        self._do_apply_filter_sync([
-                            self.view.main_window.get_stack_with_images(
-                                stack.presenter.images.proj180deg)  # type: ignore
-                        ])
-                        self.view.main_window.update_stack_with_images(
-                            stack.presenter.images.proj180deg)  # type: ignore
-                    self.view.main_window.update_stack_with_images(stack.presenter.images)
-                if np.any(stack.presenter.images.data < 0):
+                        self._do_apply_filter_sync([stack.proj180deg])
+                        self.view.main_window.update_stack_with_images(stack.proj180deg)  # type: ignore
+                    self.view.main_window.update_stack_with_images(stack)
+                if np.any(stack.data < 0):
                     negative_stacks.append(stack)
 
             if self.view.roi_view is not None:
@@ -307,7 +306,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.filter_applied.emit()
             self.filter_is_running = False
 
-    def _do_apply_filter(self, apply_to):
+    def _do_apply_filter(self, apply_to: List[Images]):
         self.filter_is_running = True
         # Record the previous button states
         self.prev_apply_single_state = self.view.applyButton.isEnabled()
@@ -326,8 +325,7 @@ class FiltersWindowPresenter(BasePresenter):
             if lock_scale:
                 self.view.previews.record_histogram_regions()
 
-            stack_presenter = self.stack.presenter
-            subset: Images = stack_presenter.get_image(self.model.preview_image_idx)
+            subset: Images = self.stack.index_as_images(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
 
             try:
@@ -395,10 +393,10 @@ class FiltersWindowPresenter(BasePresenter):
         """
         if self.view.filterSelector.currentText() != FLAT_FIELDING:
             return False
-        if OPERATION_HISTORY not in self.stack.presenter.images.metadata:
+        if OPERATION_HISTORY not in self.stack.metadata:
             return False
         return any(operation[OPERATION_DISPLAY_NAME] == FLAT_FIELDING
-                   for operation in self.stack.presenter.images.metadata[OPERATION_HISTORY])
+                   for operation in self.stack.metadata[OPERATION_HISTORY])
 
     def _set_apply_buttons_enabled(self, apply_single_enabled: bool, apply_all_enabled: bool):
         """
@@ -418,15 +416,15 @@ class FiltersWindowPresenter(BasePresenter):
         if self.stack is None:
             return
 
-        larger = np.greater(self.stack.presenter.images.data[0].shape, (200, 200))
+        larger = np.greater(self.stack.data[0].shape, (200, 200))
         if all(larger):
             return
-        x = min(self.stack.presenter.images.data[0].shape[0], 200)
-        y = min(self.stack.presenter.images.data[0].shape[1], 200)
+        x = min(self.stack.data[0].shape[0], 200)
+        y = min(self.stack.data[0].shape[1], 200)
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
 
-    def _show_negative_values_error(self, negative_stacks: List[StackVisualiserView]):
+    def _show_negative_values_error(self, negative_stacks: List[Images]):
         """
         Shows information on the view and in the log about negative values in the output.
         :param negative_stacks: A list of stacks with negative values in the data.
@@ -436,11 +434,11 @@ class FiltersWindowPresenter(BasePresenter):
 
         for stack in negative_stacks:
             negative_slices = []
-            for i in range(len(stack.presenter.images.data)):
-                if np.any(stack.presenter.images.data[i] < 0):
+            for i in range(len(stack.data)):
+                if np.any(stack.data[i] < 0):
                     negative_slices.append(i)
             stack_msg = f'Slices containing negative values in {stack.name}: '
-            if len(negative_slices) == len(stack.presenter.images.data):
+            if len(negative_slices) == len(stack.data):
                 slices_msg = stack_msg + "all slices."
                 gui_error.append(slices_msg)
             else:

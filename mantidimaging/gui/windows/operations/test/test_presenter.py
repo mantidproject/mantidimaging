@@ -5,6 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 from functools import partial
+from typing import List
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
@@ -17,6 +18,7 @@ from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
     _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
+from mantidimaging.core.data import Images
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
@@ -27,11 +29,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
-        self.mock_stack_visualisers = []
+        self.mock_stacks: List[Images] = []
         for _ in range(2):
-            mock_stack_visualiser = mock.Mock()
-            mock_stack_visualiser.presenter.images.data = np.array([i for i in range(3)])
-            self.mock_stack_visualisers.append(mock_stack_visualiser)
+            mock_stack = mock.Mock()
+            mock_stack.data = np.zeros([3, 3, 3])
+            mock_stack.has_proj180deg = mock.Mock(return_value=True)
+            self.mock_stacks.append(mock_stack)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_register_active_filter(self, filter_reg_mock: mock.Mock):
@@ -61,9 +64,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
     def test_apply_filter(self, apply_filter_mock: mock.Mock):
         stack = mock.Mock()
-        presenter = mock.Mock()
-        stack.presenter = presenter
-        presenter.images.has_proj180deg.return_value = False
+        stack.has_proj180deg.return_value = False
         self.presenter.stack = stack
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.do_apply_filter()
@@ -82,15 +83,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_confirmation.reset_mock()
         self.view.ask_confirmation.return_value = True
-        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
+        mock_stacks = [mock.Mock(), mock.Mock()]
         self.presenter._main_window = mock.Mock()
-        self.presenter._main_window.get_all_stack_visualisers = mock.Mock()
-        self.presenter._main_window.get_all_stack_visualisers.return_value = mock_stack_visualisers
+        self.presenter._main_window.get_all_stacks = mock.Mock()
+        self.presenter._main_window.get_all_stacks.return_value = mock_stacks
 
         self.presenter.do_apply_filter_to_all()
 
-        assert_called_once_with(apply_filter_mock, mock_stack_visualisers,
-                                partial(self.presenter._post_filter, mock_stack_visualisers))
+        assert_called_once_with(apply_filter_mock, mock_stacks, partial(self.presenter._post_filter, mock_stacks))
 
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,
@@ -106,7 +106,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_task = mock.Mock()
         mock_task.error = None
-        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(self.mock_stacks, mock_task)
 
         do_update_previews.assert_called_once()
         _wait_for_stack_choice.assert_not_called()
@@ -127,7 +127,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.main_window.presenter = mock.Mock()
         mock_task = mock.Mock()
         mock_task.error = 123
-        self.presenter._post_filter(self.mock_stack_visualisers[:1], mock_task)
+        self.presenter._post_filter(self.mock_stacks[:1], mock_task)
 
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
@@ -149,7 +149,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_task.error = None
         _wait_for_stack_choice.return_value = False  # user clicked keep original
 
-        self.presenter._post_filter(self.mock_stack_visualisers[0:1], mock_task)
+        self.presenter._post_filter(self.mock_stacks[0:1], mock_task)
 
         do_update_previews.assert_called_once()
         _wait_for_stack_choice.assert_called_once()
@@ -175,7 +175,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         do_update_previews.side_effect = ValueError
         self.presenter.filter_is_running = True
 
-        self.assertRaises(ValueError, self.presenter._post_filter, self.mock_stack_visualisers, mock_task)
+        self.assertRaises(ValueError, self.presenter._post_filter, self.mock_stacks, mock_task)
         self.assertFalse(self.presenter.filter_is_running)
 
     @mock.patch.multiple(
@@ -194,13 +194,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.applying_to_all = False
         mock_stack = mock.MagicMock()
-        mock_stack.presenter.images.has_proj180deg.return_value = True
-        mock_stack.presenter.images.data = np.array([i for i in range(3)])
-        mock_stack_visualisers = [mock_stack]
+        mock_stack.has_proj180deg.return_value = True
+        mock_stack.data = np.array([i for i in range(3)])
+        mock_stacks: List[Images] = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
 
-        self.presenter._post_filter(mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(mock_stacks, mock_task)
 
         _do_apply_filter.assert_not_called()
         _do_apply_filter_sync.assert_called_once()
@@ -213,15 +213,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
-        presenter = mock.Mock()
-        stack.presenter = presenter
         images = generate_images()
-        presenter.get_image.return_value = images
+        stack.index_as_images.return_value = images
         self.presenter.stack = stack
 
         self.presenter.do_update_previews()
 
-        presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.index_as_images.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         apply_mock.assert_called_once()
 
@@ -229,16 +227,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
     def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        presenter = mock.Mock()
-        stack.presenter = presenter
         images = generate_images()
-        presenter.get_image.return_value = images
+        stack.index_as_images.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = False
         self.view.lockScaleCheckBox.isChecked.return_value = False
         self.presenter.do_update_previews()
 
-        presenter.get_image.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.index_as_images.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
@@ -251,10 +247,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_auto_range_called_when_locks_are_checked(self, apply_mock: mock.Mock,
                                                       update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        presenter = mock.Mock()
-        stack.presenter = presenter
         images = generate_images()
-        presenter.get_image.return_value = images
+        stack.index_as_images.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
@@ -290,7 +284,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         task = mock.MagicMock()
         task.error = None
 
-        self.presenter._post_filter(self.mock_stack_visualisers, task)
+        self.presenter._post_filter(self.mock_stacks, task)
 
         self.assertEqual(2, stack_choice_presenter.call_count)
         self.assertEqual(2, stack_choice_presenter.return_value.show.call_count)
@@ -303,7 +297,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter = mock.MagicMock()
         task = mock.MagicMock()
         task.error = None
-        self.presenter._post_filter(self.mock_stack_visualisers, task)
+        self.presenter._post_filter(self.mock_stacks, task)
 
         stack_choice_presenter.assert_not_called()
 
@@ -312,12 +306,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         stack = mock.MagicMock()
         self.presenter.stack = stack
         stack_data = "THIS IS USEFUL STACK DATA"
-        stack.presenter.images.copy.return_value = stack_data
+        stack.copy.return_value = stack_data
         self.presenter._do_apply_filter = mock.MagicMock()
 
         self.presenter.do_apply_filter()
 
-        stack.presenter.images.copy.assert_called_once()
+        stack.copy.assert_called_once()
         self.assertEqual(stack_data, self.presenter.original_images_stack)
 
     def test_set_filter_by_name(self):
@@ -332,11 +326,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {
-            OPERATION_HISTORY: [{
-                OPERATION_DISPLAY_NAME: "Flat-fielding"
-            }]
-        }
+        self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_called_once_with(REPEAT_FLAT_FIELDING_MSG)
@@ -371,11 +361,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {
-            OPERATION_HISTORY: [{
-                OPERATION_DISPLAY_NAME: "Remove Outliers"
-            }]
-        }
+        self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Remove Outliers"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
         self.view.ask_confirmation.assert_not_called()
@@ -387,11 +373,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         self.view.filterSelector.currentText.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
-        self.presenter.stack.presenter.images.metadata = {
-            OPERATION_HISTORY: [{
-                OPERATION_DISPLAY_NAME: "Flat-fielding"
-            }]
-        }
+        self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.view.ask_confirmation.return_value = False
         self.presenter.do_apply_filter()
@@ -421,7 +403,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_init_crop_coords_does_nothing_when_image_is_greater_than_200_by_200(self):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.presenter.images.data = np.ones((2, 201, 201))
+        self.presenter.stack.data = np.ones((2, 201, 201))
         self.presenter.init_crop_coords(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
@@ -429,7 +411,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_set_text_called_when_image_not_greater_than_200_by_200(self, shape_x, shape_y, expected):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.presenter.images.data = np.ones((2, shape_x, shape_y))
+        self.presenter.stack.data = np.ones((2, shape_x, shape_y))
         self.presenter.init_crop_coords(mock_roi_field)
         mock_roi_field.setText.assert_called_once_with(expected)
 
@@ -446,12 +428,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         images.data[4, 0, 0] = -1
         images.data[5, 0, 0] = -1
         images.data[7, 0, 0] = -1
-        self.mock_stack_visualisers[0].presenter.images = images
-        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+        self.mock_stacks[0] = images
+        self.mock_stacks[0].name = negative_stack_name = "StackWithNegativeValues"
 
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
-            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.presenter._post_filter(self.mock_stacks, mock_task)
             error_msg = f"Slices containing negative values in {negative_stack_name}: 0-2, 4-5, 7"
             self.assertIn(error_msg, mock_logger.output[0])
 
@@ -467,13 +449,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         images = generate_images()
         images.data[:, 0, 0] = -1
 
-        self.mock_stack_visualisers[0].presenter.images = images
-        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+        self.mock_stacks[0] = images
+        self.mock_stacks[0].name = negative_stack_name = "StackWithNegativeValues"
 
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
             error_msg = f"Slices containing negative values in {negative_stack_name}: all slices"
-            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.presenter._post_filter(self.mock_stacks, mock_task)
             self.assertIn(error_msg, mock_logger.output[0])
 
         self.assertIn(error_msg, self.view.show_error_dialog.call_args[0][0])
@@ -488,8 +470,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         images = generate_images(shape=(25, 8, 10))
         images.data[::2, 0, 0] = -1
 
-        self.mock_stack_visualisers[0].presenter.images = images
-        self.mock_stack_visualisers[0].name = negative_stack_name = "StackWithNegativeValues"
+        self.mock_stacks[0] = images
+        self.mock_stacks[0].name = negative_stack_name = "StackWithNegativeValues"
 
         error_msg = f"Slices containing negative values in {negative_stack_name}: "
         range_strings = [str(i) for i in range(0, 25, 2)]
@@ -497,7 +479,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         with self.assertLogs(logging.getLogger('mantidimaging.gui.windows.operations.presenter'),
                              level="ERROR") as mock_logger:
             log_msg = error_msg + ", ".join(range_strings)
-            self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+            self.presenter._post_filter(self.mock_stacks, mock_task)
             self.assertIn(log_msg, mock_logger.output[0])
 
         gui_msg = error_msg + ", ".join(range_strings[:10]) + f" ... {range_strings[-1]}"
@@ -510,24 +492,23 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
-        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(self.mock_stacks, mock_task)
         self.view.show_error_dialog.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_no_negative_values_after_not_running_flat_fielding_shows_no_error(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.mock_stack_visualisers[0].presenter.images.data = np.array([-1 for _ in range(3)])
+        self.mock_stacks[0].data = np.array([-1 for _ in range(3)])
         mock_task = mock.Mock()
         mock_task.error = None
-        self.presenter._post_filter(self.mock_stack_visualisers, mock_task)
+        self.presenter._post_filter(self.mock_stacks, mock_task)
         self.view.show_error_dialog.assert_not_called()
 
     def test_negative_values_preview_message(self):
         self.presenter.model.preview_image_idx = slice_idx = 14
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.presenter.get_image.return_value.data = np.array([[-1 for _ in range(3)]
-                                                                               for _ in range(3)])
+        self.presenter.stack.index_as_images.return_value.data = np.array([[-1 for _ in range(3)] for _ in range(3)])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_called_once_with(
@@ -536,7 +517,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_negative_values_preview_message(self):
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.presenter.get_image.return_value.data = np.array([[1 for _ in range(3)] for _ in range(3)])
+        self.presenter.stack.index_as_images.return_value.data = np.array([[1 for _ in range(3)] for _ in range(3)])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()
