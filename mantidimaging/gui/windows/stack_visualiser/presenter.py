@@ -13,6 +13,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
 from ...utility.common import operation_in_progress
+from mantidimaging.core.data.dataset import StackDataset
 
 if TYPE_CHECKING:
     from .view import StackVisualiserView  # pragma: no cover
@@ -105,6 +106,8 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack.name = self.images.name + "_sino"
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
             self.view.parent_create_stack(new_stack)
+            new_dataset = StackDataset([new_stack], new_stack.name)
+            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
 
     def dupe_stack(self):
         with operation_in_progress("Copying data, this may take a while",
@@ -112,6 +115,8 @@ class StackVisualiserPresenter(BasePresenter):
             new_images = self.images.copy(flip_axes=False)
             new_images.name = self.images.name
             self.view.parent_create_stack(new_images)
+            new_dataset = StackDataset([new_images], new_images.name)
+            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
 
     def dupe_stack_roi(self):
         with operation_in_progress("Copying data, this may take a while",
@@ -119,6 +124,8 @@ class StackVisualiserPresenter(BasePresenter):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             new_images.name = self.images.name
             self.view.parent_create_stack(new_images)
+            new_dataset = StackDataset([new_images], new_images.name)
+            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
 
     def get_num_images(self) -> int:
         return self.images.num_projections
