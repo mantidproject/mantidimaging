@@ -183,7 +183,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.ask_to_use_closest_to_180.return_value = False
 
         self.dataset.sample.clear_proj180deg()
-        self.presenter.check_dataset_has_180(self.dataset)
+        self.presenter.add_alternative_180_if_required(self.dataset)
         self.assertIsNotNone(self.dataset.proj180deg)
 
     def test_create_new_stack_dataset_and_reject_180(self):
@@ -195,7 +195,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.ask_to_use_closest_to_180.return_value = False
 
         self.dataset.sample.clear_proj180deg()
-        self.presenter.check_dataset_has_180(self.dataset)
+        self.presenter.add_alternative_180_if_required(self.dataset)
         self.assertIsNone(self.dataset.proj180deg)
 
     def test_wizard_action_load(self):

@@ -165,7 +165,7 @@ class MainWindowPresenter(BasePresenter):
         """
         self.create_strict_dataset_stack_windows(dataset)
         self.create_dataset_tree_view_items(dataset)
-        self.check_dataset_has_180(dataset)
+        self.add_alternative_180_if_required(dataset)
 
     def _handle_task_error(self, base_message: str, log: Logger, task: 'TaskWorkerThread') -> None:
         msg = base_message.format(task.error)
@@ -188,7 +188,7 @@ class MainWindowPresenter(BasePresenter):
     def get_all_stacks(self) -> List[Images]:
         return self.model.images
 
-    def check_dataset_has_180(self, dataset: StrictDataset):
+    def add_alternative_180_if_required(self, dataset: StrictDataset):
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
