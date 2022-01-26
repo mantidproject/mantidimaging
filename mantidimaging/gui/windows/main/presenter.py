@@ -472,25 +472,24 @@ class MainWindowPresenter(BasePresenter):
                 return
         raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
 
-    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, recon_no: int):
+    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, recon_count: int):
         """
         Adds a recon item to the tree view.
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding Images object.
-        :param recon_no: The number of the recon in the dataset. Zero indicates the first recon that has been added.
-        :return:
+        :param recon_count: The number of the recon in the dataset. Zero indicates the first recon that has been added.
         """
         top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == parent_id:
-                if recon_no == 0:
+                if recon_count == 0:
                     recon_group = self.view.add_recon_group(top_level_item)
                     name = "Recon"
                 else:
                     recon_group = self.view.get_recon_group(top_level_item)
-                    name = _generate_recon_item_name(recon_no)
-                self.view.add_recon_item(recon_group, child_id, name)
+                    name = _generate_recon_item_name(recon_count)
+                self.view.create_child_tree_item(recon_group, child_id, name)
                 return
         raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
 
