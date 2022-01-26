@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 # Update license comment block at the top files
@@ -9,7 +9,7 @@
 # identified by being leading comments containing "Copyright" or "License".
 
 import glob
-import json
+import CheckLicensesInFiles
 
 update_count = 0
 
@@ -23,17 +23,13 @@ def update_copyright_file(filepath, copyright_string):
     global update_count
     copyright_lines = copyright_string.split("\n")
     lines = open(filepath).readlines()
-    if lines[0].startswith("#!"):
+    if CheckLicensesInFiles.has_shebang_line(lines):
         shebang_line = lines.pop(0)
     else:
         shebang_line = ""
 
     # Check if the copyright is already correct
-    is_good = True
-    for i in range(len(copyright_lines)):
-        if lines[i].strip() != copyright_lines[i].strip():
-            is_good = False
-    if is_good:
+    if CheckLicensesInFiles.has_correct_copyright_lines(lines, copyright_lines):
         return
 
     # Remove any existing copyright lines
@@ -55,7 +51,7 @@ def update_copyright_file(filepath, copyright_string):
 
 
 if __name__ == "__main__":
-    copyright_strings = json.load(open(".licenserc.json"))
+    copyright_strings = CheckLicensesInFiles.load_copyright_header()
 
     for globpattern, copyright_string in copyright_strings.items():
         update_copyrights_glob(globpattern, copyright_string)

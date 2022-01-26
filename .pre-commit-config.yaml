@@ -12,3 +12,11 @@ repos:
     rev: 3.9.2
     hooks:
     -   id: flake8
+-   repo: local
+    hooks:
+    -   id: check-licenses
+        name: Check Licenses
+        description: Checks that all files have correct copyright licenses
+        entry: python3 -m CheckLicensesInFiles
+        language: python
+        types: [python]
