@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
@@ -12,7 +12,7 @@ from mantidimaging.core.data import Images
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
     from mantidimaging.gui.mvp_base import BaseMainWindowView  # pragma: no cover
-    from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+    from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 
 class FilterGroup(Enum):
@@ -88,13 +88,16 @@ class BaseFilter:
         return FilterGroup.NoGroup
 
     @staticmethod
-    def get_images_from_stack(widget: "StackSelectorWidgetView", msg: str) -> Optional[Images]:
+    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> Optional[Images]:
+        stack_uuid = widget.current()
+        if stack_uuid is None:
+            raise ValueError(f"No stack for {msg}")
         try:
-            stack = widget.main_window.get_stack_visualiser(widget.current())
+            stack = widget.main_window.get_stack(stack_uuid)
         except KeyError:
             # Can happen if stack is closed while selected in the form
             raise ValueError(f"Selected stack for {msg} does not exist")
-        return stack.presenter.images
+        return stack
 
 
 def raise_not_implemented(function_name):

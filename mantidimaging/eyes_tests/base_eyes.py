@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import os
@@ -96,6 +96,7 @@ class BaseEyesTest(unittest.TestCase):
         dataset = loader.load(file_names=[LOAD_SAMPLE])
         dataset.sample.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
+        self.imaging.presenter.model.add_dataset_to_model(dataset)
 
         QApplication.sendPostedEvents()
 

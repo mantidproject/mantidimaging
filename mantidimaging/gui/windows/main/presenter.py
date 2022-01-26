@@ -1,11 +1,11 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import traceback
 import uuid
 from enum import Enum, auto
 from logging import getLogger, Logger
-from typing import TYPE_CHECKING, Optional, Dict, List, Any, NamedTuple
+from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
@@ -181,6 +181,9 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
 
+    def get_all_stacks(self) -> List[Images]:
+        return self.model.images
+
     def check_dataset_has_180(self, dataset: StrictDataset):
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
@@ -334,6 +337,10 @@ class MainWindowPresenter(BasePresenter):
     def stack_visualiser_list(self) -> List[StackId]:
         stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
         return sorted(stacks, key=lambda x: x.name)
+
+    @property
+    def datasets(self) -> Iterable[Union[MixedDataset, StrictDataset]]:
+        return self.model.datasets.values()
 
     @property
     def dataset_list(self) -> List[DatasetId]:

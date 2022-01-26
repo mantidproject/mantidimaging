@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
@@ -10,7 +10,8 @@ import numpy as np
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
 from mantidimaging.gui.windows.operations import FiltersWindowModel
-from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter, SVParameters)
+from mantidimaging.gui.windows.stack_visualiser import SVParameters
+from mantidimaging.core.data import Images
 
 
 class FiltersWindowModelTest(unittest.TestCase):
@@ -22,11 +23,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         cls.test_data = th.generate_images()
 
     def setUp(self):
-        self.sv_view = mock.create_autospec(StackVisualiserView)
-        self.sv_view.current_roi = self.ROI_PARAMETER
-
-        self.sv_presenter = StackVisualiserPresenter(self.sv_view, self.test_data)
-        self.sv_view.presenter = self.sv_presenter
+        self.stack = Images(np.zeros([3, 3, 3]))
 
         self.model = FiltersWindowModel(mock.MagicMock())
 
@@ -74,7 +71,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
         execute = mock.MagicMock(return_value=partial(self.execute_mock))
         originals = self.setup_mocks(execute)
-        self.model.do_apply_filter([self.sv_view], callback)
+        self.model.do_apply_filter([self.stack], callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
@@ -92,7 +89,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute = mock.MagicMock(return_value=partial(self.execute_mock_with_roi))
         originals = self.setup_mocks(execute)
         self.model.selected_filter.params = lambda: {'roi': SVParameters.ROI}
-        self.model.do_apply_filter([self.sv_view], callback)
+        self.model.do_apply_filter([self.stack], callback)
         self.reset_filter_model(*originals)
 
         execute.assert_called_once()
@@ -101,7 +98,7 @@ class FiltersWindowModelTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.operations.model.start_async_task_view")
     def test_operation_recorded_in_image_history(self, mocked_start_view):
         mocked_start_view.side_effect = lambda _, task, on_complete: self.run_without_gui(task, on_complete)
-        self.sv_presenter.images.metadata = {}
+        self.stack.metadata = {}
 
         callback_mock = mock.Mock()
 
@@ -113,10 +110,10 @@ class FiltersWindowModelTest(unittest.TestCase):
         execute.keywords = {"kwarg": "kwarg"}
         originals = self.setup_mocks(execute)
 
-        self.model.do_apply_filter([self.sv_view], callback)
+        self.model.do_apply_filter([self.stack], callback)
         self.reset_filter_model(*originals)
 
-        op_history = self.sv_presenter.images.metadata['operation_history']
+        op_history = self.stack.metadata['operation_history']
         self.assertEqual(len(op_history), 1, "One operation should have been recorded")
         self.assertEqual(op_history[0][const.OPERATION_KEYWORD_ARGS], {"kwarg": "kwarg"})
         # Recorded operation should not be a qualified module name.
@@ -125,15 +122,14 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_images")
     def test_apply_filter_to_stacks(self, apply_to_images_mock: mock.Mock):
-        mock_stack_visualisers = [mock.Mock(), mock.Mock()]
+        mock_stacks = [mock.Mock(), mock.Mock()]
         mock_progress = mock.Mock()
 
-        self.model.apply_to_stacks(mock_stack_visualisers, mock_progress)
+        self.model.apply_to_stacks(mock_stacks, mock_progress)
 
-        apply_to_images_mock.assert_has_calls([
-            mock.call(mock_stack_visualisers[0].presenter.images, progress=mock_progress),
-            mock.call(mock_stack_visualisers[1].presenter.images, progress=mock_progress)
-        ])
+        apply_to_images_mock.assert_has_calls(
+            [mock.call(mock_stacks[0], progress=mock_progress),
+             mock.call(mock_stacks[1], progress=mock_progress)])
 
     def test_apply_filter_to_images(self):
         """

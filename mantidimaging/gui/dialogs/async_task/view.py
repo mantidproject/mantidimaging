@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from typing import Any, Callable, Dict, Optional, Set
@@ -15,7 +15,6 @@ class AsyncTaskDialogView(BaseDialogView):
     def __init__(self, parent: QMainWindow, auto_close: bool = False):
         super().__init__(parent, 'gui/ui/async_task_dialog.ui')
 
-        self.parent_view = parent
         self.presenter = AsyncTaskDialogPresenter(self)
         self.auto_close = auto_close
 
@@ -41,6 +40,8 @@ class AsyncTaskDialogView(BaseDialogView):
         # If auto close is enabled and the task was successful then hide the UI
         if self.auto_close:
             self.hide()
+
+        self.presenter.progress = None
 
     def set_progress(self, progress: float, message: str):
         # Set status message

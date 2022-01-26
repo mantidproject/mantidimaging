@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from logging import getLogger
@@ -167,6 +167,13 @@ class MainWindowModel(object):
         for dataset in self.datasets.values():
             images += dataset.all
         return [image.id for image in images if image is not None]
+
+    @property
+    def images(self) -> List[Images]:
+        images = []
+        for dataset in self.datasets.values():
+            images += dataset.all
+        return images
 
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
         for dataset in self.datasets.values():

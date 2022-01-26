@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
@@ -13,7 +13,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9
@@ -173,25 +173,25 @@ class FlatFieldFilter(BaseFilter):
                                                     on_change=on_change,
                                                     tooltip="Dark images to be used for subtracting the background.")
 
-        assert isinstance(flat_before_widget, StackSelectorWidgetView)
+        assert isinstance(flat_before_widget, DatasetSelectorWidgetView)
         flat_before_widget.setMaximumWidth(375)
         flat_before_widget.subscribe_to_main_window(view.main_window)
         flat_before_widget.try_to_select_relevant_stack("Flat")
         flat_before_widget.try_to_select_relevant_stack("Flat Before")
 
-        assert isinstance(flat_after_widget, StackSelectorWidgetView)
+        assert isinstance(flat_after_widget, DatasetSelectorWidgetView)
         flat_after_widget.setMaximumWidth(375)
         flat_after_widget.subscribe_to_main_window(view.main_window)
         flat_after_widget.try_to_select_relevant_stack("Flat After")
         flat_after_widget.setEnabled(False)
 
-        assert isinstance(dark_before_widget, StackSelectorWidgetView)
+        assert isinstance(dark_before_widget, DatasetSelectorWidgetView)
         dark_before_widget.setMaximumWidth(375)
         dark_before_widget.subscribe_to_main_window(view.main_window)
         dark_before_widget.try_to_select_relevant_stack("Dark")
         dark_before_widget.try_to_select_relevant_stack("Dark Before")
 
-        assert isinstance(dark_after_widget, StackSelectorWidgetView)
+        assert isinstance(dark_after_widget, DatasetSelectorWidgetView)
         dark_after_widget.setMaximumWidth(375)
         dark_after_widget.subscribe_to_main_window(view.main_window)
         dark_after_widget.try_to_select_relevant_stack("Dark After")
@@ -219,8 +219,8 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def execute_wrapper(  # type: ignore
-            flat_before_widget: StackSelectorWidgetView, flat_after_widget: StackSelectorWidgetView,
-            dark_before_widget: StackSelectorWidgetView, dark_after_widget: StackSelectorWidgetView,
+            flat_before_widget: DatasetSelectorWidgetView, flat_after_widget: DatasetSelectorWidgetView,
+            dark_before_widget: DatasetSelectorWidgetView, dark_after_widget: DatasetSelectorWidgetView,
             selected_flat_fielding_widget: QComboBox, use_dark_widget: QCheckBox) -> partial:
 
         flat_before_images = BaseFilter.get_images_from_stack(flat_before_widget, "flat before")
@@ -250,10 +250,10 @@ class FlatFieldFilter(BaseFilter):
         if 'flat_before_widget' not in kwargs and 'dark_before_widget' not in kwargs or\
                 'flat_after_widget' not in kwargs and 'dark_after_widget' not in kwargs:
             return False
-        assert isinstance(kwargs["flat_before_widget"], StackSelectorWidgetView)
-        assert isinstance(kwargs["flat_after_widget"], StackSelectorWidgetView)
-        assert isinstance(kwargs["dark_before_widget"], StackSelectorWidgetView)
-        assert isinstance(kwargs["dark_after_widget"], StackSelectorWidgetView)
+        assert isinstance(kwargs["flat_before_widget"], DatasetSelectorWidgetView)
+        assert isinstance(kwargs["flat_after_widget"], DatasetSelectorWidgetView)
+        assert isinstance(kwargs["dark_before_widget"], DatasetSelectorWidgetView)
+        assert isinstance(kwargs["dark_after_widget"], DatasetSelectorWidgetView)
         return True
 
     @staticmethod

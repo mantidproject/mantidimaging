@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from parameterized import parameterized
@@ -99,20 +99,15 @@ class FlatFieldingTest(unittest.TestCase):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
         """
-        fake_presenter = mock.MagicMock()
-        fake_presenter.presenter.images = th.generate_images()
+        fake_images = th.generate_images()
         flat_before_widget = mock.Mock()
-        flat_before_widget.main_window.get_stack_visualiser = mock.Mock()
-        flat_before_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        flat_before_widget.main_window.get_stack = mock.Mock(return_value=fake_images)
         flat_after_widget = mock.Mock()
-        flat_after_widget.main_window.get_stack_visualiser = mock.Mock()
-        flat_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        flat_after_widget.main_window.get_stack = mock.Mock(return_value=fake_images)
         dark_before_widget = mock.Mock()
-        dark_before_widget.main_window.get_stack_visualiser = mock.Mock()
-        dark_before_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        dark_before_widget.main_window.get_stack = mock.Mock(return_value=fake_images)
         dark_after_widget = mock.Mock()
-        dark_after_widget.main_window.get_stack_visualiser = mock.Mock()
-        dark_after_widget.main_window.get_stack_visualiser.return_value = fake_presenter
+        dark_after_widget.main_window.get_stack = mock.Mock(return_value=fake_images)
         selected_flat_fielding_widget = mock.Mock()
         selected_flat_fielding_widget.currentText = mock.Mock(return_value="Only Before")
         use_dark_widget = mock.Mock()
