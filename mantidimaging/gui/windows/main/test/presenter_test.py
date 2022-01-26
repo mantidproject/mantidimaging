@@ -6,6 +6,7 @@ import uuid
 from typing import List
 
 from unittest import mock
+from unittest.mock import patch
 
 import numpy as np
 
@@ -513,6 +514,15 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._on_dataset_load_done(task)
         self.presenter._add_strict_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
+
+    @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")
+    def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
+        dataset = StrictDataset(generate_images())
+        dataset.proj180deg = generate_images((1, 20, 20))
+        dataset.proj180deg.filenames = ["filename"]
+
+        self.presenter.add_alternative_180_if_required(dataset)
+        find_180_mock.assert_not_called()
 
 
 if __name__ == '__main__':
