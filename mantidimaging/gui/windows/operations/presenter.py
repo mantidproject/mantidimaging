@@ -20,7 +20,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from .model import FiltersWindowModel
 
@@ -151,8 +151,8 @@ class FiltersWindowPresenter(BasePresenter):
 
             for row_id in range(self.view.filterPropertiesLayout.count()):
                 widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()
-                if isinstance(widget, StackSelectorWidgetView):
-                    widget._handle_loaded_stacks_changed()
+                if isinstance(widget, DatasetSelectorWidgetView):
+                    widget._handle_loaded_datasets_changed()
 
         self.do_update_previews()
 
