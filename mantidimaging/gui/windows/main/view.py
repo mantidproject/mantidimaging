@@ -511,5 +511,6 @@ class MainWindowView(BaseMainWindowView):
     @staticmethod
     def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
         for i in range(dataset_item.childCount()):
-            if dataset_item.child(i).text() == RECON_GROUP_TEXT:
+            if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
                 return dataset_item.child(i)
+        raise RuntimeError()
