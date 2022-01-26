@@ -543,5 +543,5 @@ class MainWindowPresenter(BasePresenter):
         """
         parent_id = self.model.add_recon_to_dataset(recon_data, stack_id)
         self.view.create_new_stack(recon_data)
-        self.add_child_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
+        self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons) - 1)
         self.view.model_changed.emit()
