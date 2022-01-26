@@ -55,8 +55,7 @@ class MainWindowViewTest(unittest.TestCase):
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
-        self.presenter.add_180_deg_to_dataset.return_value = _180_dataset
-        self.view.create_new_180_stack = mock.MagicMock()  # type: ignore
+        self.presenter.add_180_deg_file_to_dataset.return_value = _180_dataset
 
         self.view.load_180_deg_dialog()
 
@@ -64,9 +63,8 @@ class MainWindowViewTest(unittest.TestCase):
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
-        self.presenter.add_180_deg_to_dataset.assert_called_once_with(dataset_id=dataset_id,
-                                                                      _180_deg_file=selected_file)
-        self.view.create_new_180_stack.assert_called_once_with(_180_dataset)
+        self.presenter.add_180_deg_file_to_dataset.assert_called_once_with(dataset_id=dataset_id,
+                                                                           _180_deg_file=selected_file)
 
     def test_execute_load(self):
         self.view.execute_load()
@@ -123,7 +121,7 @@ class MainWindowViewTest(unittest.TestCase):
         images = generate_images()
         self.view.create_new_stack(images)
 
-        self.presenter.create_new_stack.assert_called_once_with(images)
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(images)
 
     def test_update_stack_with_images(self):
         images = generate_images()

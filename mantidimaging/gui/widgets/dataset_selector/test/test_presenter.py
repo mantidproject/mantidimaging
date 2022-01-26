@@ -4,9 +4,9 @@
 import unittest
 from unittest import mock
 
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.widgets.dataset_selector.presenter import DatasetSelectorWidgetPresenter, Notification
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
-from mantidimaging.core.data.dataset import Dataset
 
 
 class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
@@ -25,9 +25,9 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.img2.proj180deg = None
         self.img3 = mock.Mock(id="img3")
         self.img3.name = "Image 3"
-        self.ds1 = Dataset(sample=self.img1)
+        self.ds1 = StrictDataset(sample=self.img1)
         self.ds1.name = "Dataset 1"
-        self.ds2 = Dataset(sample=self.img2, flat_before=self.img3)
+        self.ds2 = StrictDataset(sample=self.img2, flat_before=self.img3)
         self.ds2.name = "Dataset 2"
 
     def test_handle_selection_no_matching_index_found(self):
