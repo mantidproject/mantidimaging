@@ -18,6 +18,10 @@ from mantidimaging.gui.windows.main.presenter import Notification, _generate_rec
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
+def test_generate_recon_item_name():
+    assert _generate_recon_item_name(4) == "Recon 4"
+
+
 class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
@@ -489,9 +493,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
 
-    def test_generate_recon_item_name(self):
-        assert _generate_recon_item_name(4) == "Recon 4"
-
     def test_on_stack_load_done_success(self):
         task = mock.Mock()
         task.result = result_mock = mock.Mock()
@@ -501,6 +502,16 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter._on_stack_load_done(task)
         self.presenter.create_mixed_dataset_stack_windows.assert_called_once_with(result_mock)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_on_dataset_load_done_success(self):
+        task = mock.Mock()
+        task.result = result_mock = mock.Mock()
+        task.was_successful.return_value = True
+        self.presenter._add_strict_dataset_to_view = mock.Mock()
+
+        self.presenter._on_dataset_load_done(task)
+        self.presenter._add_strict_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 
 
