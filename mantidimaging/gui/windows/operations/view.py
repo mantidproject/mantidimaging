@@ -229,8 +229,8 @@ class FiltersWindowView(BaseMainWindowView):
     def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
         try:
-            images = self.presenter.stack.presenter.get_image(self.presenter.model.preview_image_idx)
-        except Exception:
+            images = self.presenter.stack.index_as_images(self.presenter.model.preview_image_idx)
+        except IndexError:
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return
 
@@ -243,7 +243,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.setWindowTitle("Select ROI for operation")
 
         def set_averaged_image():
-            averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
+            averaged_images = np.sum(self.presenter.stack.data, axis=0)
             self.roi_view.setImage(averaged_images.reshape((1, averaged_images.shape[0], averaged_images.shape[1])))
             self.roi_view_averaged = True
 
