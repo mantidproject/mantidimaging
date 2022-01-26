@@ -357,6 +357,12 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.active_stacks[stack_id]
 
+    def get_stack(self, stack_id: uuid.UUID) -> Images:
+        images = self.model.get_images_by_uuid(stack_id)
+        if images is None:
+            raise RuntimeError(f"Stack not found: {stack_id}")
+        return images
+
     def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata
 
