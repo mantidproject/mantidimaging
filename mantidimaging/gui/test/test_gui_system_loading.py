@@ -5,10 +5,12 @@ from pathlib import Path
 from unittest import mock
 
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtTest import QTest
+from PyQt5.QtWidgets import QApplication, QDialogButtonBox
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
+from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 
 
 class TestGuiSystemLoading(GuiSystemBase):
@@ -74,3 +76,18 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(len(stacks_after), 5)
         self.assertIn(stacks[0], stacks_after)
         self.assertTrue(stacks[0].presenter.images.has_proj180deg())
+
+    def test_save_images(self):
+        self._load_images()
+
+        self.main_window.show_save_dialogue()
+
+        with mock.patch("mantidimaging.gui.windows.main.MainWindowModel.do_images_saving") as mock_save:
+            self._wait_for_widget_visible(MWSaveDialog)
+            QApplication.processEvents()
+
+            ok_button = self.main_window.save_dialogue.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
+            QTest.mouseClick(ok_button, Qt.LeftButton)
+
+            QApplication.processEvents()
+            mock_save.assert_called_once()
