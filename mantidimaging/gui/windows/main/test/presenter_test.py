@@ -14,7 +14,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import Notification
+from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -488,6 +488,20 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
+
+    def test_generate_recon_item_name(self):
+        assert _generate_recon_item_name(4) == "Recon 4"
+
+    def test_on_stack_load_done_success(self):
+        task = mock.Mock()
+        task.result = result_mock = mock.Mock()
+        task.was_successful.return_value = True
+        task.kwargs = {'file_path': "a/stack/path"}
+        self.presenter.create_mixed_dataset_stack_windows = mock.Mock()
+
+        self.presenter._on_stack_load_done(task)
+        self.presenter.create_mixed_dataset_stack_windows.assert_called_once_with(result_mock)
+        self.view.model_changed.emit.assert_called_once()
 
 
 if __name__ == '__main__':
