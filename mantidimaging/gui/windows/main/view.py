@@ -346,10 +346,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 
     def create_new_stack(self, images: Images):
-        self.presenter.create_strict_dataset_stack_windows(images)  # TODO - replace with single stack method call
-
-    def create_new_180_stack(self, images: Images):
-        self.presenter.create_new_180_stack(images)
+        self.presenter.create_single_tabbed_images_stack(images)
 
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)

@@ -250,7 +250,7 @@ class MainWindowPresenter(BasePresenter):
         self._focus_on_newest_stack_tab()
         return first_stack_vis
 
-    def create_single_images_stack(self, images: Images) -> StackVisualiserView:
+    def create_single_tabbed_images_stack(self, images: Images) -> StackVisualiserView:
         """
         Creates a stack for a single Images object and focuses on it.
         :param images: The Images object for the new stack window.
@@ -395,7 +395,7 @@ class MainWindowPresenter(BasePresenter):
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         if not isinstance(_180_deg, Images):
             return
-        stack = self.create_single_images_stack(_180_deg)
+        stack = self.create_single_tabbed_images_stack(_180_deg)
         stack.raise_()
         self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         self.view.model_changed.emit()
