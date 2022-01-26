@@ -35,6 +35,8 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
+RECON_GROUP_TEXT = "Recons"
+
 LOG = getLogger(__file__)
 
 
@@ -498,3 +500,16 @@ class MainWindowView(BaseMainWindowView):
 
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
         self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)
+
+    @staticmethod
+    def add_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        recon_group = QTreeDatasetWidgetItem(dataset_item, None)
+        recon_group.setText(0, RECON_GROUP_TEXT)
+        dataset_item.addChild(recon_group)
+        return recon_group
+
+    @staticmethod
+    def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        for i in range(dataset_item.childCount()):
+            if dataset_item.child(i).text() == RECON_GROUP_TEXT:
+                return dataset_item.child(i)
