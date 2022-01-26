@@ -5,13 +5,13 @@ import traceback
 import uuid
 from enum import Enum, auto
 from logging import getLogger, Logger
-from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple
+from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.dataset import Dataset, StackDataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
@@ -163,6 +163,9 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
 
+    def get_all_stacks(self) -> List[Images]:
+        return self.model.images
+
     def create_new_180_stack(self, container: Images) -> StackVisualiserView:
         _180_stack_vis = self.view.create_stack_window(container)
 
@@ -266,6 +269,10 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
+    def datasets(self) -> Iterable[Union[StackDataset, Dataset]]:
+        return self.model.datasets.values()
+
+    @property
     def dataset_list(self) -> List[DatasetId]:
         datasets = [
             DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
@@ -279,6 +286,12 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.active_stacks[stack_id]
+
+    def get_stack(self, stack_id: uuid.UUID) -> Images:
+        images = self.model.get_images_by_uuid(stack_id)
+        if images is None:
+            raise RuntimeError(f"Stack not found: {stack_id}")
+        return images
 
     def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata

@@ -57,3 +57,4 @@ Developer Changes
 - #1245 : Remove empty init methods from test classes
 - #1251 : System tests: test_correlate ValueError
 - #1259 : Update license year in code files and add pre-commit check
+- #1243 : Stack selector based on datasets

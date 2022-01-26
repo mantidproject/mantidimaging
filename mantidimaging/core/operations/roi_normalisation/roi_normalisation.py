@@ -16,7 +16,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 
 def modes() -> List[str]:
@@ -123,7 +123,7 @@ class RoiNormalisationFilter(BaseFilter):
                                                     on_change=on_change,
                                                     tooltip="Flat images to be used for normalising.")
 
-        assert isinstance(flat_field_widget, StackSelectorWidgetView)
+        assert isinstance(flat_field_widget, DatasetSelectorWidgetView)
         flat_field_widget.setMaximumWidth(375)
         flat_field_widget.subscribe_to_main_window(view.main_window)
         flat_field_widget.try_to_select_relevant_stack("Flat")

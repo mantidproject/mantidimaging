@@ -4,7 +4,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 
 import numpy as np
@@ -335,11 +335,17 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
+    def get_stack(self, stack_uuid: uuid.UUID) -> Images:
+        return self.presenter.get_stack(stack_uuid)
+
     def get_images_from_stack_uuid(self, stack_uuid) -> Images:
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
     def get_all_stack_visualisers(self):
         return self.presenter.get_active_stack_visualisers()
+
+    def get_all_stacks(self) -> List[Images]:
+        return self.presenter.get_all_stacks()
 
     def get_all_stack_visualisers_with_180deg_proj(self):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()

@@ -13,7 +13,7 @@ from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import delete_all_widgets_from_layout
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter
@@ -47,7 +47,7 @@ class FiltersWindowView(BaseMainWindowView):
 
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
-    stackSelector: StackSelectorWidgetView
+    stackSelector: DatasetSelectorWidgetView
 
     notification_icon: QLabel
     notification_text: QLabel
@@ -74,6 +74,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterSelector.currentTextChanged.connect(self._update_apply_all_button)
 
         # Handle stack selection
+        self.stackSelector.presenter.show_stacks = True
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
         self.stackSelector.stack_selected_uuid.connect(self.auto_update_triggered.emit)
 
@@ -119,8 +120,10 @@ class FiltersWindowView(BaseMainWindowView):
         if self.roi_view is not None:
             self.roi_view.close()
             self.roi_view = None
+        self.presenter.set_stack(None)
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
+        self.presenter.view = None
         self.presenter = None
 
     def show(self):
@@ -226,8 +229,8 @@ class FiltersWindowView(BaseMainWindowView):
     def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
         try:
-            images = self.presenter.stack.presenter.get_image(self.presenter.model.preview_image_idx)
-        except Exception:
+            images = self.presenter.stack.index_as_images(self.presenter.model.preview_image_idx)
+        except IndexError:
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return
 
@@ -240,7 +243,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.setWindowTitle("Select ROI for operation")
 
         def set_averaged_image():
-            averaged_images = np.sum(self.presenter.stack.presenter.images.data, axis=0)
+            averaged_images = np.sum(self.presenter.stack.data, axis=0)
             self.roi_view.setImage(averaged_images.reshape((1, averaged_images.shape[0], averaged_images.shape[1])))
             self.roi_view_averaged = True
 
