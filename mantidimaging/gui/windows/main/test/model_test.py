@@ -83,7 +83,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
                                            load_log_mock: mock.Mock):
         lp = LoadingParameters()
@@ -125,7 +125,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
                                                                load_log_mock: mock.Mock):
         lp = LoadingParameters()
