@@ -4,11 +4,11 @@
 import inspect
 import os
 from tempfile import mkdtemp
-import time
 from unittest import mock
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtTest import QTest
 from applitools.common import BatchInfo, MatchLevel
 from applitools.images import Eyes
 
@@ -87,7 +87,7 @@ class EyesManager:
         if not isinstance(widget, QWidget):
             raise ValueError("widget is not a QWidget")
 
-        time.sleep(0.2)
+        QTest.qWaitForWindowExposed(widget)
         QApplication.processEvents()
         window_image = widget.grab()
 
