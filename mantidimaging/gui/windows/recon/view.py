@@ -18,7 +18,7 @@ from mantidimaging.core.utility.data_containers import Degrees, ReconstructionPa
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
 from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
@@ -77,7 +77,7 @@ class ReconstructWindowView(BaseMainWindowView):
     changeColourPaletteButton: QPushButton
     change_colour_palette_dialog: Optional[PaletteChangerView] = None
 
-    stackSelector: StackSelectorWidgetView
+    stackSelector: DatasetSelectorWidgetView
 
     recon_applied = pyqtSignal()
 
@@ -95,6 +95,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.algorithmName.setEnabled(True)
 
         self.update_recon_hist_needed = False
+        self.stackSelector.presenter.show_stacks = True
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle preview image selection
