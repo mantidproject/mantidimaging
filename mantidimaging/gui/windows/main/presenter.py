@@ -20,10 +20,10 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
+from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
-    from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
     from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
 
