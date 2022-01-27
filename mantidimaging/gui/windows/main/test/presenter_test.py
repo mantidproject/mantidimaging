@@ -6,10 +6,11 @@ import uuid
 from typing import List
 
 from unittest import mock
-from unittest.mock import patch
+from unittest.mock import patch, call
 
 import numpy as np
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
@@ -21,6 +22,15 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 def test_generate_recon_item_name():
     assert _generate_recon_item_name(4) == "Recon 4"
+
+
+def generate_images_with_filenames(n_images: int) -> List[Images]:
+    images = []
+    for _ in range(n_images):
+        im = generate_images()
+        im.filenames = ["filename"] * im.data.shape[0]
+        images.append(im)
+    return images
 
 
 class MainWindowPresenterTest(unittest.TestCase):
@@ -548,8 +558,21 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._tabify_stack_window(new_stack)
         self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
 
-    def test_create_dataset_tree_view_items(self):
-        pass
+    def test_create_strict_dataset_tree_view_items(self):
+        dataset = StrictDataset(*generate_images_with_filenames(5))
+        dataset.proj180deg = generate_images((1, 20, 20))
+        dataset.proj180deg.filenames = ["filename"]
+
+        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+        self.presenter.create_strict_dataset_tree_view_items(dataset)
+
+        s_call = call(dataset_tree_item_mock, dataset.sample.id, "Projections")
+        fb_call = call(dataset_tree_item_mock, dataset.flat_before.id, "Flat Before")
+        fa_call = call(dataset_tree_item_mock, dataset.flat_after.id, "Flat After")
+        db_call = call(dataset_tree_item_mock, dataset.dark_before.id, "Dark Before")
+        da_call = call(dataset_tree_item_mock, dataset.dark_after.id, "Dark After")
+
+        self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call])
 
 
 if __name__ == '__main__':
