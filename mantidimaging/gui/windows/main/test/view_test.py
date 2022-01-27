@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QDialog
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -383,3 +384,37 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.operation.return_value = ""
         MainWindowView()
         recon_window.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QTreeDatasetWidgetItem")
+    def test_add_recon_group(self, dataset_widget_item_mock):
+        dataset_item_mock = mock.Mock()
+
+        recon_group_mock = self.view.add_recon_group(dataset_item_mock)
+        dataset_widget_item_mock.assert_called_once_with(dataset_item_mock, None)
+        recon_group_mock.setText.assert_called_once_with(0, RECON_GROUP_TEXT)
+        dataset_item_mock.addChild.assert_called_once_with(recon_group_mock)
+
+    def test_get_recon_group_success(self):
+        dataset_item_mock = mock.Mock()
+        dataset_item_mock.childCount.return_value = n_children = 3
+        item_mocks = [mock.Mock() for _ in range(n_children)]
+        dataset_item_mock.child.side_effect = lambda i: item_mocks[i]
+        item_mocks[0].text.return_value = "Projections"
+        item_mocks[1].text.return_value = "Flat Before"
+        item_mocks[2].text.return_value = RECON_GROUP_TEXT
+        recon_item_mock = item_mocks[2]
+
+        returned_item = self.view.get_recon_group(dataset_item_mock)
+        assert returned_item is recon_item_mock
+
+    def test_get_recon_group_failure(self):
+        dataset_item_mock = mock.Mock()
+        dataset_item_mock.childCount.return_value = n_children = 3
+        item_mocks = [mock.Mock() for _ in range(n_children)]
+        dataset_item_mock.child.side_effect = lambda i: item_mocks[i]
+        item_mocks[0].text.return_value = "Projections"
+        item_mocks[1].text.return_value = "Flat Before"
+        item_mocks[2].text.return_value = "Flat After"
+
+        with self.assertRaises(RuntimeError):
+            self.view.get_recon_group(dataset_item_mock)
