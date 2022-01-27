@@ -473,9 +473,19 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_recon(self):
         recon = generate_images()
+        self.dataset.recons.append(recon)
         stack_id = "stack-id"
+        parent_id = "parent-id"
+        self.model.datasets = dict()
+        self.model.datasets[parent_id] = self.dataset
+        self.model.add_recon_to_dataset.return_value = parent_id
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
+
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
+        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, 0)
+        self.view.create_new_stack.assert_called_once_with(recon)
+        self.view.model_changed.emit.assert_called_once()
 
     def test_dataset_list(self):
         dataset_1 = StrictDataset(generate_images())
