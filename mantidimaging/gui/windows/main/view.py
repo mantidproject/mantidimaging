@@ -503,6 +503,11 @@ class MainWindowView(BaseMainWindowView):
 
     @staticmethod
     def add_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        """
+        Adds a recon group to a dataset item in the tree view.
+        :param dataset_item: The dataset item.
+        :return: The recon group that was added.
+        """
         recon_group = QTreeDatasetWidgetItem(dataset_item, None)
         recon_group.setText(0, RECON_GROUP_TEXT)
         dataset_item.addChild(recon_group)
@@ -510,7 +515,12 @@ class MainWindowView(BaseMainWindowView):
 
     @staticmethod
     def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        """
+        Looks for an existing recon group in a dataset tree view item.
+        :param dataset_item: The dataset item to look for the recon group in.
+        :return: The recon group if found.
+        """
         for i in range(dataset_item.childCount()):
             if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
                 return dataset_item.child(i)
-        raise RuntimeError()
+        raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
