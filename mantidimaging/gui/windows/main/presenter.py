@@ -164,7 +164,7 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The loaded dataset.
         """
         self.create_strict_dataset_stack_windows(dataset)
-        self.create_dataset_tree_view_items(dataset)
+        self.create_strict_dataset_tree_view_items(dataset)
         self.add_alternative_180_if_required(dataset)
 
     def _handle_task_error(self, base_message: str, log: Logger, task: 'TaskWorkerThread') -> None:
@@ -295,7 +295,7 @@ class MainWindowPresenter(BasePresenter):
         if tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 
-    def create_dataset_tree_view_items(self, dataset: StrictDataset):
+    def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
         """
         Creates the dataset tree view items for a dataset.
         :param dataset: The loaded dataset.
@@ -410,8 +410,6 @@ class MainWindowPresenter(BasePresenter):
         :return: The 180 Images object if loading was successful, None otherwise.
         """
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
-        if not isinstance(_180_deg, Images):
-            return
         stack = self.create_single_tabbed_images_stack(_180_deg)
         stack.raise_()
         self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
