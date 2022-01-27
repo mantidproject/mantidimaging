@@ -7,7 +7,7 @@ from mantidimaging.core.data.dataset import MixedDataset
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
-class StackDatasetTest(unittest.TestCase):
+class MixedDatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.image_stacks = [generate_images() for _ in range(3)]
         self.stack_dataset = MixedDataset(self.image_stacks)
