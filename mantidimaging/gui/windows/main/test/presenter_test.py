@@ -571,8 +571,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         fa_call = call(dataset_tree_item_mock, dataset.flat_after.id, "Flat After")
         db_call = call(dataset_tree_item_mock, dataset.dark_before.id, "Dark Before")
         da_call = call(dataset_tree_item_mock, dataset.dark_after.id, "Dark After")
+        _180_call = call(dataset_tree_item_mock, dataset.proj180deg.id, "180")
 
-        self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call])
+        self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
+        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
 
 if __name__ == '__main__':
