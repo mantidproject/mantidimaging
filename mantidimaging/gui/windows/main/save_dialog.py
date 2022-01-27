@@ -1,17 +1,19 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
 from mantidimaging.gui.utility import (compile_ui, select_directory)
-from mantidimaging.gui.windows.main.presenter import StackId
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main.presenter import StackId
 
 
-def sort_by_tomo_and_recon(stack_id: StackId):
+def sort_by_tomo_and_recon(stack_id: "StackId"):
     if "Recon" in stack_id.name:
         return 1
     elif "Tomo" in stack_id.name:
