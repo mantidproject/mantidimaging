@@ -175,7 +175,7 @@ class MainWindowModel(object):
             images += dataset.all
         return images
 
-    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> Optional[uuid.UUID]:
+    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> uuid.UUID:
         """
         Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.
         :param recon_data: The recon data.
