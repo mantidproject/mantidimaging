@@ -609,6 +609,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.get_recon_group.assert_called_once_with(top_level_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 1")
 
+    def test_add_recon_item_to_tree_view_failed(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = "different-id"
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_recon_item_to_tree_view("parent-id", "child-id", 0)
+
 
 if __name__ == '__main__':
     unittest.main()
