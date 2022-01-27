@@ -534,8 +534,19 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_mixed_dataset_stack_windows(dataset)
         assert len(self.presenter.stack_visualisers) == n_stacks
 
-    def test_tabify_stack_window_to_item_from_stack_list(self):
-        pass
+    def test_tabify_stack_window_to_sample_stack(self):
+        new_stack = mock.Mock()
+        sample_stack = mock.Mock()
+        self.presenter.stack_visualisers = {"new-id": new_stack, "sample-id": sample_stack}
+        self.presenter._tabify_stack_window(new_stack, sample_stack)
+        self.view.tabifyDockWidget.assert_called_once_with(sample_stack, new_stack)
+
+    def test_tabify_stack_window_to_item_in_list(self):
+        new_stack = mock.Mock()
+        other_stack = mock.Mock()
+        self.presenter.stack_visualisers = {"new-id": new_stack, "other-id": other_stack}
+        self.presenter._tabify_stack_window(new_stack)
+        self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
 
     def test_create_dataset_tree_view_items(self):
         pass
