@@ -36,6 +36,7 @@ Fixes
 - #1236 : Aspect ratio not preserved in COR inspector or operations window
 - #1162 : Raise exceptions when invalid parameter values are passed to filter functions
 - #1248 : Rebin operations not working for small image dimensions
+- #1190 : Add recon item to right part of tree view
 
 
 Developer Changes
