@@ -291,7 +291,7 @@ class MainWindowPresenter(BasePresenter):
             for stack in current_stack_visualisers:
                 if stack_window is not stack:
                     self.view.tabifyDockWidget(stack, stack_window)
-                    break
+                    return
         if tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 

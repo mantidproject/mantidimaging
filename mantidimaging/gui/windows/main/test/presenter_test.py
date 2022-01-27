@@ -56,6 +56,14 @@ class MainWindowPresenterTest(unittest.TestCase):
             stacks[uuid.uuid4()] = stack_mock
         self.presenter.stack_visualisers = stacks
 
+    def create_stack_mocks(self, dataset):
+        stack_mocks = []
+        for images_id in dataset.all_image_ids:
+            stack_mock = mock.Mock()
+            stack_mock.id = images_id
+            stack_mocks.append(stack_mock)
+        self.view.create_stack_window.side_effect = stack_mocks
+
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_visualiser_names, [])
 
@@ -161,13 +169,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
-        stack_mocks = []
-        for id in self.dataset.all_image_ids:
-            stack_mock = mock.Mock()
-            stack_mock.id = id
-            stack_mocks.append(stack_mock)
+        self.create_stack_mocks(self.dataset)
 
-        self.view.create_stack_window.side_effect = stack_mocks
         self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
@@ -523,6 +526,19 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.add_alternative_180_if_required(dataset)
         find_180_mock.assert_not_called()
+
+    def test_create_mixed_dataset_stack_windows(self):
+        n_stacks = 3
+        dataset = MixedDataset([generate_images() for _ in range(n_stacks)], "cool-name")
+        self.create_stack_mocks(dataset)
+        self.presenter.create_mixed_dataset_stack_windows(dataset)
+        assert len(self.presenter.stack_visualisers) == n_stacks
+
+    def test_tabify_stack_window_to_item_from_stack_list(self):
+        pass
+
+    def test_create_dataset_tree_view_items(self):
+        pass
 
 
 if __name__ == '__main__':
