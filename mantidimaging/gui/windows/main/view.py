@@ -36,6 +36,7 @@ from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPres
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 RECON_GROUP_TEXT = "Recons"
+RECON_ID = uuid.uuid4()
 
 LOG = getLogger(__file__)
 
@@ -508,7 +509,7 @@ class MainWindowView(BaseMainWindowView):
         :param dataset_item: The dataset item.
         :return: The recon group that was added.
         """
-        recon_group = QTreeDatasetWidgetItem(dataset_item, None)
+        recon_group = QTreeDatasetWidgetItem(dataset_item, RECON_ID)
         recon_group.setText(0, RECON_GROUP_TEXT)
         dataset_item.addChild(recon_group)
         return recon_group
@@ -524,3 +525,7 @@ class MainWindowView(BaseMainWindowView):
             if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
                 return dataset_item.child(i)
         raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
+
+    @property
+    def recon_id(self) -> uuid.UUID:
+        return RECON_ID
