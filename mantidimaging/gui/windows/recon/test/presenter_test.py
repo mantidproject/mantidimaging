@@ -11,29 +11,23 @@ from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
 from mantidimaging.gui.windows.recon.presenter import Notifications as PresNotification
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView
 
 TEST_PIXEL_SIZE = 1443
 
 
 class ReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
-        # Mock view
         self.make_view()
 
         self.presenter = ReconstructWindowPresenter(self.view, None)
 
-        # Mock stack
-        self.sv_view = mock.create_autospec(StackVisualiserView)
+        self.data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.data.pixel_size = TEST_PIXEL_SIZE
 
-        data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
-        data.pixel_size = TEST_PIXEL_SIZE
-        self.sv_view.presenter = StackVisualiserPresenter(self.sv_view, data)
+        self.presenter.model.initial_select_data(self.data)
+        self.view.get_stack = mock.Mock(return_value=self.data)
 
-        self.presenter.model.initial_select_data(self.sv_view)
-        self.view.get_stack_visualiser = mock.Mock(return_value=self.sv_view)
-
-        self.uuid = data.id
+        self.uuid = self.data.id
 
     def make_view(self):
         self.view = mock.create_autospec(ReconstructWindowView)
@@ -58,7 +52,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.set_stack_uuid(self.uuid)
 
         mock_start_async.assert_called_once()
-        self.view.get_stack_visualiser.assert_called_once_with(self.uuid)
+        self.view.get_stack.assert_called_once_with(self.uuid)
 
         self.view.update_projection.assert_called_once()
         self.view.clear_cor_table.assert_called_once()
@@ -67,8 +61,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         # calling again with the same stack shouldn't re-do everything
         self.presenter.set_stack_uuid(self.uuid)
-        self.assertEqual(self.view.get_stack_visualiser.call_count, 2)
-        self.view.get_stack_visualiser.assert_has_calls([mock.call(self.uuid), mock.call(self.uuid)])
+        self.assertEqual(self.view.get_stack.call_count, 2)
+        self.view.get_stack.assert_has_calls([mock.call(self.uuid), mock.call(self.uuid)])
 
         self.view.update_projection.assert_called_once()
         self.view.clear_cor_table.assert_called_once()
@@ -77,7 +71,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
-        self.presenter.model.stack = None
+        self.presenter.model._images = None
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
         mock_start_async.assert_called_once()

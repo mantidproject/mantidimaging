@@ -115,18 +115,18 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.change_refine_iterations()
 
     def set_stack_uuid(self, uuid):
-        stack = self.view.get_stack_visualiser(uuid)
+        images = self.view.get_stack(uuid)
         if self.model.is_current_stack(uuid):
             return
 
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        self.model.initial_select_data(stack)
+        self.model.initial_select_data(images)
         self.view.rotation_centre = self.model.last_cor.value
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
-        if stack is None:
+        if images is None:
             return
         self.do_preview_reconstruct_slice()
         self._do_nan_zero_negative_check()

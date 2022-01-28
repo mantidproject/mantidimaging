@@ -27,7 +27,6 @@ from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
-    from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # pragma: no cover
 
 LOG = getLogger(__name__)
 
@@ -419,9 +418,9 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: Images, stack_id: uuid.UUID):
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
+    def get_stack(self, uuid) -> Optional['Images']:
         if uuid is not None:
-            return self.main_window.get_stack_visualiser(uuid)
+            return self.main_window.get_stack(uuid)
         return None
 
     def hide_tilt(self):

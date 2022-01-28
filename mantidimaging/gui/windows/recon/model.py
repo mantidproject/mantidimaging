@@ -17,7 +17,6 @@ from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 if TYPE_CHECKING:
     import uuid
@@ -27,7 +26,7 @@ LOG = getLogger(__name__)
 
 class ReconstructWindowModel(object):
     def __init__(self, data_model: CorTiltPointQtModel):
-        self.stack: Optional['StackVisualiserView'] = None
+        self._images: Optional[Images] = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
         self._selected_row = 0
@@ -84,16 +83,16 @@ class ReconstructWindowModel(object):
 
     @property
     def images(self):
-        return self.stack.presenter.images if self.stack else None
+        return self._images
 
     @property
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, stack: 'StackVisualiserView'):
+    def initial_select_data(self, images: 'Images'):
         self.data_model.clear_results()
 
-        self.stack = stack
+        self._images = images
         slice_idx, cor = self.find_initial_cor()
         self.last_cor = cor
         self.preview_projection_idx = 0

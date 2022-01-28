@@ -14,7 +14,6 @@ from mantidimaging.core.reconstruct.cil_recon import allowed_recon_kwargs as cil
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
-from mantidimaging.gui.windows.stack_visualiser import (StackVisualiserView, StackVisualiserPresenter)
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 
 
@@ -22,16 +21,12 @@ class ReconWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
-        # Mock stack
-        self.stack = mock.create_autospec(StackVisualiserView)
-        data = Images(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
-        self.stack.presenter = StackVisualiserPresenter(self.stack, data)
-
-        self.model.initial_select_data(self.stack)
+        self.data = Images(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
+        self.model.initial_select_data(self.data)
 
     def test_empty_init(self):
         m = ReconstructWindowModel(CorTiltPointQtModel())
-        self.assertIsNone(m.stack)
+        self.assertIsNone(m.images)
         self.assertIsNone(m.last_result)
 
     def test_find_initial_cor_returns_0_0_without_data(self):
@@ -41,7 +36,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertEqual(initial_cor.value, 0)
 
     def test_find_initial_cor_returns_middle_with_data(self):
-        self.model.initial_select_data(self.stack)
+        self.model.initial_select_data(self.data)
         first_slice, initial_cor = self.model.find_initial_cor()
         self.assertEqual(first_slice, 64)
         self.assertEqual(initial_cor.value, 128)
@@ -83,7 +78,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model.preview_slice_idx = 150
         self.model.set_precalculated(test_cor, test_tilt)
 
-        self.model.initial_select_data(self.stack)
+        self.model.initial_select_data(self.data)
 
         self.assertNotEqual(test_cor, self.model.last_cor)
         self.assertNotEqual(test_tilt, self.model.tilt_angle)
