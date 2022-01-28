@@ -634,7 +634,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
     def test_cant_focus_on_recon_group(self):
-        pass
+        self.presenter.stack_visualisers = dict()
+        self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
+        self.view.recon_groups_id = recon_id = "recon-id"
+
+        self.presenter._restore_and_focus_tab(recon_id)
+        stack_mock.setVisible.assert_not_called()
+        stack_mock._raise.assert_not_called()
 
 
 if __name__ == '__main__':
