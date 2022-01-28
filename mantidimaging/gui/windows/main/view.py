@@ -527,5 +527,10 @@ class MainWindowView(BaseMainWindowView):
         raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
 
     @property
-    def recon_id(self) -> uuid.UUID:
+    def recon_groups_id(self) -> uuid.UUID:
+        """
+        Returns the ID given to all the recon group headers in the dataset tree view. Used so that double-clicks are
+        ignored.
+        :return: The recon group ID.
+        """
         return RECON_ID
