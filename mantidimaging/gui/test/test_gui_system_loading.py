@@ -90,4 +90,6 @@ class TestGuiSystemLoading(GuiSystemBase):
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()
+            self._wait_until(lambda: mock_save.call_count == 1)
+            # Confirm that save has been called only once
             mock_save.assert_called_once()
