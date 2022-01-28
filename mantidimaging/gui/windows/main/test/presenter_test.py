@@ -635,6 +635,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_cant_focus_on_recon_group(self):
         self.presenter.stack_visualisers = dict()
+        self.model.datasets = []
         self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
         self.view.recon_groups_id = recon_id = "recon-id"
 
