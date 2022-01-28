@@ -616,6 +616,26 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.add_recon_item_to_tree_view("parent-id", "child-id", 0)
 
+    def test_created_mixed_dataset_tree_view_items(self):
+        n_images = 3
+        dataset = MixedDataset([generate_images() for _ in range(n_images)])
+        dataset.name = dataset_name = "mixed-dataset"
+        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+
+        calls = []
+        for i in range(n_images):
+            dataset.all[i].name = f"name-{i}"
+            calls.append(call(dataset_tree_item_mock, dataset.all[i].id, dataset.all[i].name))
+
+        self.presenter.create_mixed_dataset_tree_view_items(dataset)
+
+        self.view.create_dataset_tree_widget_item.assert_called_once_with(dataset_name, dataset.id)
+        self.view.create_child_tree_item.assert_has_calls(calls)
+        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
+
+    def test_cant_focus_on_recon_group(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
