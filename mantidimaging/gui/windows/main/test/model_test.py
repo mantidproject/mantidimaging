@@ -8,7 +8,7 @@ from unittest import mock
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -83,7 +83,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
                                            load_log_mock: mock.Mock):
         lp = LoadingParameters()
@@ -125,7 +125,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
-    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
                                                                load_log_mock: mock.Mock):
         lp = LoadingParameters()
@@ -220,7 +220,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
         dataset_id = "id"
-        self.model.datasets[dataset_id] = dataset_mock = Dataset(generate_images())
+        self.model.datasets[dataset_id] = dataset_mock = StrictDataset(generate_images())
         load.return_value.sample = _180_stack = generate_images()
         self.model.add_180_deg_to_dataset(dataset_id=dataset_id, _180_deg_file=_180_file)
 
@@ -308,7 +308,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_set_images_by_uuid_success(self):
         prev_images = generate_images()
         new_data = generate_images().data
-        ds = Dataset(prev_images)
+        ds = StrictDataset(prev_images)
         self.model.datasets[ds.id] = ds
 
         self.model.set_image_data_by_uuid(prev_images.id, new_data)
@@ -322,7 +322,7 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(5)]
         ids = [image_stack.id for image_stack in images]
 
-        ds = Dataset(*images)
+        ds = StrictDataset(*images)
         self.model.datasets[ds.id] = ds
 
         stacks_to_close = self.model.remove_container(ds.id)
@@ -335,7 +335,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_images_from_dataset(self):
         images = [generate_images() for _ in range(2)]
-        ds = Dataset(*images)
+        ds = StrictDataset(*images)
         self.model.datasets[ds.id] = ds
 
         self.assertIsNotNone(ds.flat_before)
@@ -343,7 +343,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertIsNone(ds.flat_before)
 
     def test_add_dataset_to_model(self):
-        ds = Dataset(generate_images())
+        ds = StrictDataset(generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIn(ds, self.model.datasets.values())
 
@@ -352,14 +352,14 @@ class MainWindowModelTest(unittest.TestCase):
         for _ in range(3):
             images = [generate_images() for _ in range(3)]
             all_ids += [image.id for image in images]
-            ds = Dataset(*images)
+            ds = StrictDataset(*images)
             self.model.add_dataset_to_model(ds)
         self.assertListEqual(all_ids, self.model.image_ids)
 
     def test_add_recon_to_dataset(self):
         sample = generate_images()
         sample_id = sample.id
-        ds = Dataset(sample)
+        ds = StrictDataset(sample)
 
         recon = generate_images()
         self.model.add_dataset_to_model(ds)

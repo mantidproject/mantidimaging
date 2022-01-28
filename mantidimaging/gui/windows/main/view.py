@@ -35,6 +35,9 @@ from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
+RECON_GROUP_TEXT = "Recons"
+RECON_ID = uuid.uuid4()
+
 LOG = getLogger(__file__)
 
 
@@ -259,9 +262,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        _180_images = self.presenter.add_180_deg_to_dataset(dataset_id=dataset_to_add_180_deg_to,
-                                                            _180_deg_file=selected_file)
-        self.create_new_180_stack(_180_images)
+        self.presenter.add_180_deg_file_to_dataset(dataset_id=dataset_to_add_180_deg_to, _180_deg_file=selected_file)
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
@@ -354,10 +355,7 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 
     def create_new_stack(self, images: Images):
-        self.presenter.create_new_stack(images)
-
-    def create_new_180_stack(self, images: Images):
-        self.presenter.create_new_180_stack(images)
+        self.presenter.create_single_tabbed_images_stack(images)
 
     def update_stack_with_images(self, images: Images):
         self.presenter.update_stack_with_images(images)
@@ -503,3 +501,36 @@ class MainWindowView(BaseMainWindowView):
 
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
         self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)
+
+    @staticmethod
+    def add_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        """
+        Adds a recon group to a dataset item in the tree view.
+        :param dataset_item: The dataset item.
+        :return: The recon group that was added.
+        """
+        recon_group = QTreeDatasetWidgetItem(dataset_item, RECON_ID)
+        recon_group.setText(0, RECON_GROUP_TEXT)
+        dataset_item.addChild(recon_group)
+        return recon_group
+
+    @staticmethod
+    def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        """
+        Looks for an existing recon group in a dataset tree view item.
+        :param dataset_item: The dataset item to look for the recon group in.
+        :return: The recon group if found.
+        """
+        for i in range(dataset_item.childCount()):
+            if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
+                return dataset_item.child(i)
+        raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
+
+    @property
+    def recon_groups_id(self) -> uuid.UUID:
+        """
+        Returns the ID given to all the recon group headers in the dataset tree view. Used so that double-clicks are
+        ignored.
+        :return: The recon group ID.
+        """
+        return RECON_ID

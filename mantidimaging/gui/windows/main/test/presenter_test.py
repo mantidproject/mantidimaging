@@ -6,16 +6,31 @@ import uuid
 from typing import List
 
 from unittest import mock
+from unittest.mock import patch, call
 
 import numpy as np
 
-from mantidimaging.core.data.dataset import Dataset, StackDataset
+from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import Notification
+from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+
+
+def test_generate_recon_item_name():
+    assert _generate_recon_item_name(4) == "Recon 4"
+
+
+def generate_images_with_filenames(n_images: int) -> List[Images]:
+    images = []
+    for _ in range(n_images):
+        im = generate_images()
+        im.filenames = ["filename"] * im.data.shape[0]
+        images.append(im)
+    return images
 
 
 class MainWindowPresenterTest(unittest.TestCase):
@@ -24,11 +39,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
         self.images = [generate_images() for _ in range(5)]
-        self.dataset = Dataset(sample=self.images[0],
-                               flat_before=self.images[1],
-                               flat_after=self.images[2],
-                               dark_before=self.images[3],
-                               dark_after=self.images[4])
+        self.dataset = StrictDataset(sample=self.images[0],
+                                     flat_before=self.images[1],
+                                     flat_after=self.images[2],
+                                     dark_before=self.images[3],
+                                     dark_after=self.images[4])
         self.presenter.model = self.model = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
@@ -50,6 +65,14 @@ class MainWindowPresenterTest(unittest.TestCase):
             stack_mock.windowTitle.return_value = name
             stacks[uuid.uuid4()] = stack_mock
         self.presenter.stack_visualisers = stacks
+
+    def create_stack_mocks(self, dataset):
+        stack_mocks = []
+        for images_id in dataset.all_image_ids:
+            stack_mock = mock.Mock()
+            stack_mock.id = images_id
+            stack_mocks.append(stack_mock)
+        self.view.create_stack_window.side_effect = stack_mocks
 
     def test_initial_stack_list(self):
         self.assertEqual(self.presenter.stack_visualiser_names, [])
@@ -114,7 +137,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
 
         self.assertEqual(1, len(self.presenter.stack_visualiser_list))
         self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
@@ -130,8 +153,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
 
-        self.presenter._add_stack(images, sample_dock_mock)
-        self.presenter._add_stack(images2, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images2, sample_dock_mock)
 
         self.assertEqual(2, self.view.create_stack_window.call_count)
         self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
@@ -140,66 +163,32 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_create_new_stack_images(self):
         self.view.model_changed.emit = mock.Mock()
         images = generate_images()
-        self.presenter.create_new_stack(images)
+        self.presenter._create_lone_stack_window(images)
         self.assertEqual(1, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
     def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
-        first_images = generate_images()
-        second_images = generate_images()
-
-        first_stack_window = mock.Mock()
-        second_stack_window = mock.Mock()
-
-        first_stack_window.id = first_images.id
-        second_stack_window.id = second_images.id
-
-        self.view.create_stack_window.side_effect = [first_stack_window, second_stack_window]
-
-        self.view.model_changed.emit = mock.Mock()
-        self.presenter.create_new_stack(first_images)
-        self.assertEqual(1, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
-
-        self.presenter.create_new_stack(second_images)
-        assert self.view.tabifyDockWidget.call_count == 2
-        assert self.view.findChild.call_count == 1
-        mock_tab_bar = self.view.findChild.return_value
-        expected_position = 2
-        mock_tab_bar.setCurrentIndex.assert_called_once_with(expected_position)
-        mock_QApp.sendPostedEvents.assert_called_once()
+        pass
 
     def test_create_new_stack_with_180_in_sample(self):
-        dock_mock = self.view.create_stack_window.return_value
-        stack_visualiser_mock = mock.Mock()
-        self.dataset.sample.proj180deg = generate_images(shape=(1, 20, 20))
-        self.dataset.sample.proj180deg.filenames = ["filename"]
-
-        dock_mock.widget.return_value = stack_visualiser_mock
-        dock_mock.windowTitle.return_value = "somename"
-        self.view.model_changed.emit = mock.Mock()
+        self.dataset.proj180deg = generate_images(shape=(1, 20, 20))
+        self.dataset.proj180deg.filenames = ["filename"]
 
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
         self.dataset.dark_after.filenames = ["filename"] * 10
 
-        self.presenter.create_new_stack(self.dataset)
+        self.create_stack_mocks(self.dataset)
+
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
 
     def test_create_new_stack_dataset_and_use_threshold_180(self):
-        dock_mock = self.view.create_stack_window.return_value
-        stack_visualiser_mock = mock.Mock()
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
-        dock_mock.widget.return_value = stack_visualiser_mock
-        dock_mock.windowTitle.return_value = "somename"
-        self.view.model_changed.emit = mock.Mock()
-
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
@@ -207,19 +196,11 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset)
-
-        self.assertEqual(6, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
+        self.dataset.sample.clear_proj180deg()
+        self.presenter.add_alternative_180_if_required(self.dataset)
+        self.assertIsNotNone(self.dataset.proj180deg)
 
     def test_create_new_stack_dataset_and_reject_180(self):
-        dock_mock = self.view.create_stack_window.return_value
-        stack_visualiser_mock = mock.Mock()
-
-        dock_mock.widget.return_value = stack_visualiser_mock
-        dock_mock.windowTitle.return_value = "somename"
-        self.view.model_changed.emit = mock.Mock()
-
         self.dataset.flat_before.filenames = ["filename"] * 10
         self.dataset.dark_before.filenames = ["filename"] * 10
         self.dataset.flat_after.filenames = ["filename"] * 10
@@ -227,30 +208,9 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.presenter.create_new_stack(self.dataset)
-
-        self.assertEqual(5, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
-
-    def test_create_new_stack_dataset_and_accept_180(self):
-        dock_mock = self.view.create_stack_window.return_value
-        stack_visualiser_mock = mock.Mock()
-
-        dock_mock.widget.return_value = stack_visualiser_mock
-        dock_mock.windowTitle.return_value = "somename"
-        self.view.model_changed.emit = mock.Mock()
-
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
-
-        self.view.ask_to_use_closest_to_180.return_value = True
-
-        self.presenter.create_new_stack(self.dataset)
-
-        self.assertEqual(6, len(self.presenter.stack_visualisers))
-        self.view.model_changed.emit.assert_called_once()
+        self.dataset.sample.clear_proj180deg()
+        self.presenter.add_alternative_180_if_required(self.dataset)
+        self.assertIsNone(self.dataset.proj180deg)
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
@@ -270,9 +230,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.nexus_load_dialog = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
-        self.presenter.create_new_stack = mock.Mock()
+        self.presenter.create_strict_dataset_stack_windows = mock.Mock()
         self.presenter.load_nexus_file()
-        self.presenter.create_new_stack.assert_called_once_with(self.dataset)
+        self.presenter.create_strict_dataset_stack_windows.assert_called_once_with(self.dataset)
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
@@ -320,41 +280,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._do_rename_stack(previous_title, new_title)
         mock_stack.setWindowTitle.assert_called_once_with(new_title)
         self.view.model_changed.emit.assert_called_once()
-
-    def test_create_new_180_stack_with_multiple_visible_stacks(self):
-        stacks = dict()
-        for _ in range(3):
-            stack = mock.Mock()
-            stack.isVisible.return_value = True
-            stacks[uuid.uuid4()] = stack
-
-        self.presenter.stack_visualisers = stacks
-        self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
-        self.view.findChild.return_value = tab_bar_mock = mock.Mock()
-
-        images_180 = generate_images()
-
-        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
-        self.view.tabifyDockWidget.assert_called_once()
-        self.view.model_changed.emit.assert_called_once()
-        tab_bar_mock.setCurrentIndex.assert_called_once_with(3)
-
-    def test_create_new_180_stack_with_no_visible_stacks(self):
-        stacks = dict()
-        for _ in range(3):
-            stack = mock.Mock()
-            stack.isVisible.return_value = False
-            stacks[uuid.uuid4()] = stack
-
-        self.presenter.stack_visualisers = stacks
-        self.view.create_stack_window.return_value = stack_vis_180 = mock.Mock()
-
-        images_180 = generate_images()
-
-        self.assertIs(self.presenter.create_new_180_stack(images_180), stack_vis_180)
-        self.view.tabifyDockWidget.assert_not_called()
-        self.view.model_changed.emit.assert_called_once()
-        self.view.findChild.assert_not_called()
 
     def test_get_stack_visualiser_success(self):
         stack_id = "stack-id"
@@ -405,13 +330,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
         self.presenter.add_child_item_to_tree_view = mock.Mock()
 
-        self.presenter.add_180_deg_to_dataset(dataset_id, filename_for_180)
+        self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
         self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
         self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
-
-    def test_add_180_deg_to_dataset_failure(self):
-        self.model.add_180_deg_to_dataset.return_value = None
-        self.assertIsNone(self.presenter.add_180_deg_to_dataset("doesn't-exist", "path/to/180"))
 
     def test_add_projection_angles_to_stack_success(self):
         mock_stack = mock.Mock()
@@ -537,7 +458,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.datasets = []
 
         with self.assertRaises(Exception):
-            self.presenter._focus_tab(stack_id="not-in-the-stacks-dict")
+            self.presenter._restore_and_focus_tab(stack_id="not-in-the-stacks-dict")
 
     def test_focus_tab_with_id_in_dataset(self):
         stack_id = "stack-id"
@@ -552,18 +473,28 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_recon(self):
         recon = generate_images()
+        self.dataset.recons.append(recon)
         stack_id = "stack-id"
+        parent_id = "parent-id"
+        self.model.datasets = dict()
+        self.model.datasets[parent_id] = self.dataset
+        self.model.add_recon_to_dataset.return_value = parent_id
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
+
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
+        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, 0)
+        self.view.create_new_stack.assert_called_once_with(recon)
+        self.view.model_changed.emit.assert_called_once()
 
     def test_dataset_list(self):
-        dataset_1 = Dataset(generate_images())
+        dataset_1 = StrictDataset(generate_images())
         dataset_1.name = "dataset-1"
-        dataset_2 = Dataset(generate_images())
+        dataset_2 = StrictDataset(generate_images())
         dataset_2.name = "dataset-2"
-        stack_dataset = StackDataset([generate_images()])
+        mixed_dataset = MixedDataset([generate_images()])
 
-        self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": stack_dataset}
+        self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
         dataset_list = self.presenter.dataset_list
         assert len(dataset_list) == 2
@@ -585,6 +516,132 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
+
+    def test_on_stack_load_done_success(self):
+        task = mock.Mock()
+        task.result = result_mock = mock.Mock()
+        task.was_successful.return_value = True
+        task.kwargs = {'file_path': "a/stack/path"}
+        self.presenter.create_mixed_dataset_stack_windows = mock.Mock()
+
+        self.presenter._on_stack_load_done(task)
+        self.presenter.create_mixed_dataset_stack_windows.assert_called_once_with(result_mock)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_on_dataset_load_done_success(self):
+        task = mock.Mock()
+        task.result = result_mock = mock.Mock()
+        task.was_successful.return_value = True
+        self.presenter._add_strict_dataset_to_view = mock.Mock()
+
+        self.presenter._on_dataset_load_done(task)
+        self.presenter._add_strict_dataset_to_view.assert_called_once_with(result_mock)
+        self.view.model_changed.emit.assert_called_once()
+
+    @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")
+    def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
+        dataset = StrictDataset(generate_images())
+        dataset.proj180deg = generate_images((1, 20, 20))
+        dataset.proj180deg.filenames = ["filename"]
+
+        self.presenter.add_alternative_180_if_required(dataset)
+        find_180_mock.assert_not_called()
+
+    def test_create_mixed_dataset_stack_windows(self):
+        n_stacks = 3
+        dataset = MixedDataset([generate_images() for _ in range(n_stacks)], "cool-name")
+        self.create_stack_mocks(dataset)
+        self.presenter.create_mixed_dataset_stack_windows(dataset)
+        assert len(self.presenter.stack_visualisers) == n_stacks
+
+    def test_tabify_stack_window_to_sample_stack(self):
+        new_stack = mock.Mock()
+        sample_stack = mock.Mock()
+        self.presenter.stack_visualisers = {"new-id": new_stack, "sample-id": sample_stack}
+        self.presenter._tabify_stack_window(new_stack, sample_stack)
+        self.view.tabifyDockWidget.assert_called_once_with(sample_stack, new_stack)
+
+    def test_tabify_stack_window_to_item_in_list(self):
+        new_stack = mock.Mock()
+        other_stack = mock.Mock()
+        self.presenter.stack_visualisers = {"new-id": new_stack, "other-id": other_stack}
+        self.presenter._tabify_stack_window(new_stack)
+        self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
+
+    def test_create_strict_dataset_tree_view_items(self):
+        dataset = StrictDataset(*generate_images_with_filenames(5))
+        dataset.proj180deg = generate_images((1, 20, 20))
+        dataset.proj180deg.filenames = ["filename"]
+
+        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+        self.presenter.create_strict_dataset_tree_view_items(dataset)
+
+        s_call = call(dataset_tree_item_mock, dataset.sample.id, "Projections")
+        fb_call = call(dataset_tree_item_mock, dataset.flat_before.id, "Flat Before")
+        fa_call = call(dataset_tree_item_mock, dataset.flat_after.id, "Flat After")
+        db_call = call(dataset_tree_item_mock, dataset.dark_before.id, "Dark Before")
+        da_call = call(dataset_tree_item_mock, dataset.dark_after.id, "Dark After")
+        _180_call = call(dataset_tree_item_mock, dataset.proj180deg.id, "180")
+
+        self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
+        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
+
+    def test_add_first_recon_item_to_tree_view(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = parent_id = "parent-id"
+        child_id = "child-id"
+        recon_group_mock = self.view.add_recon_group.return_value
+
+        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 0)
+        self.view.add_recon_group.assert_called_once_with(top_level_item_mock)
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
+
+    def test_add_additional_recon_item_to_tree_view(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = parent_id = "parent-id"
+        child_id = "child-id"
+        recon_group_mock = self.view.get_recon_group.return_value
+        recon_count = 1
+
+        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, recon_count)
+        self.view.get_recon_group.assert_called_once_with(top_level_item_mock)
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 1")
+
+    def test_add_recon_item_to_tree_view_failed(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
+        top_level_item_mock.id = "different-id"
+        with self.assertRaises(RuntimeError):
+            self.presenter.add_recon_item_to_tree_view("parent-id", "child-id", 0)
+
+    def test_created_mixed_dataset_tree_view_items(self):
+        n_images = 3
+        dataset = MixedDataset([generate_images() for _ in range(n_images)])
+        dataset.name = dataset_name = "mixed-dataset"
+        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+
+        calls = []
+        for i in range(n_images):
+            dataset.all[i].name = f"name-{i}"
+            calls.append(call(dataset_tree_item_mock, dataset.all[i].id, dataset.all[i].name))
+
+        self.presenter.create_mixed_dataset_tree_view_items(dataset)
+
+        self.view.create_dataset_tree_widget_item.assert_called_once_with(dataset_name, dataset.id)
+        self.view.create_child_tree_item.assert_has_calls(calls)
+        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
+
+    def test_cant_focus_on_recon_group(self):
+        self.presenter.stack_visualisers = dict()
+        self.model.datasets = []
+        self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
+        self.view.recon_groups_id = recon_id = "recon-id"
+
+        self.presenter._restore_and_focus_tab(recon_id)
+        stack_mock.setVisible.assert_not_called()
+        stack_mock._raise.assert_not_called()
 
 
 if __name__ == '__main__':
