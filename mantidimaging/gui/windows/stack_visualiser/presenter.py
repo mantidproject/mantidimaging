@@ -105,27 +105,28 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack = self.images.copy(flip_axes=True)
             new_stack.name = self.images.name + "_sino"
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
-            self.view.parent_create_stack(new_stack)
-            new_dataset = MixedDataset([new_stack], new_stack.name)
-            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
+            self.add_mixed_dataset_to_model_and_update_view(new_stack)
 
     def dupe_stack(self):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy(flip_axes=False)
             new_images.name = self.images.name
-            self.view.parent_create_stack(new_images)
-            new_dataset = MixedDataset([new_images], new_images.name)
-            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
+            self.add_mixed_dataset_to_model_and_update_view(new_images)
 
     def dupe_stack_roi(self):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             new_images.name = self.images.name
-            self.view.parent_create_stack(new_images)
-            new_dataset = MixedDataset([new_images], new_images.name)
-            self.view._main_window.presenter.model.add_dataset_to_model(new_dataset)
+            self.add_mixed_dataset_to_model_and_update_view(new_images)
+
+    def add_mixed_dataset_to_model_and_update_view(self, images: Images):
+        dataset = MixedDataset([images], images.name)
+        self.view._main_window.presenter.model.add_dataset_to_model(dataset)
+        self.view._main_window.presenter.create_mixed_dataset_tree_view_items(dataset)
+        self.view._main_window.presenter.create_mixed_dataset_stack_windows(dataset)
+        self.view._main_window.model_changed.emit()
 
     def get_num_images(self) -> int:
         return self.images.num_projections
