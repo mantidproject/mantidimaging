@@ -15,7 +15,6 @@ from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogVie
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__name__)
 
@@ -117,7 +116,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def set_stack_uuid(self, uuid):
         stack = self.view.get_stack_visualiser(uuid)
-        if self.model.is_current_stack(stack):
+        if self.model.is_current_stack(uuid):
             return
 
         self.view.reset_image_recon_preview()
@@ -236,7 +235,7 @@ class ReconstructWindowPresenter(BasePresenter):
         images: Images = task.result
         slice_idx = self._get_slice_index(None)
         if images is not None:
-            assert isinstance(self.model.stack, StackVisualiserView)
+            assert self.model.images is not None
             images.name = "Recon"
             self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
@@ -289,7 +288,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        assert isinstance(self.model.stack, StackVisualiserView)
+        assert self.model.images is not None
         task.result.name = "Recon"
         self.view.show_recon_volume(task.result, self.model.stack_id)
         self.view.recon_applied.emit()

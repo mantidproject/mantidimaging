@@ -33,8 +33,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.initial_select_data(self.sv_view)
         self.view.get_stack_visualiser = mock.Mock(return_value=self.sv_view)
 
-        import uuid
-        self.uuid = uuid.uuid4()
+        self.uuid = data.id
 
     def make_view(self):
         self.view = mock.create_autospec(ReconstructWindowView)
