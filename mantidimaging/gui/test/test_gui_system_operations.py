@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.core.data import Images
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
-from mantidimaging.gui.windows.stack_choice.view import StackChoiceView
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 
 OP_LIST = [
@@ -72,17 +71,6 @@ class TestGuiSystemOperations(GuiSystemBase):
                     return widget_item.widget()
 
         raise ValueError(f"Could not find '{param_name}' in form")
-
-    @classmethod
-    def _click_stack_selector(cls, keep_new: bool):
-        cls._wait_for_widget_visible(StackChoiceView)
-        QTest.qWait(SHOW_DELAY)
-        for widget in cls.app.topLevelWidgets():
-            if isinstance(widget, StackChoiceView):
-                if keep_new:
-                    QTest.mouseClick(widget.newDataButton, Qt.MouseButton.LeftButton)
-                else:
-                    QTest.mouseClick(widget.originalDataButton, Qt.MouseButton.LeftButton)
 
     @parameterized.expand(OP_LIST)
     def test_run_operation_stack(self, op_name, params):
