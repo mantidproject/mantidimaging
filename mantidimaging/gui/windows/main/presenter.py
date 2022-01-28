@@ -297,7 +297,7 @@ class MainWindowPresenter(BasePresenter):
 
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
         """
-        Creates the dataset tree view items for a dataset.
+        Creates the tree view items for a strict dataset.
         :param dataset: The loaded dataset.
         """
         dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
@@ -316,6 +316,18 @@ class MainWindowPresenter(BasePresenter):
                 dataset_tree_item,
                 dataset.sample.proj180deg.id,  # type: ignore
                 "180")
+
+        self.view.add_item_to_tree_view(dataset_tree_item)
+
+    def create_mixed_dataset_tree_view_items(self, dataset: MixedDataset):
+        """
+        Creates the tree view items for a mixed dataset.
+        :param dataset: The loaded dataset.
+        """
+        dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
+
+        for i in range(len(dataset.all)):
+            self.view.create_child_tree_item(dataset_tree_item, dataset.all[i].id, dataset.all[i].name)
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 
