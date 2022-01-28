@@ -58,3 +58,4 @@ Developer Changes
 - #1251 : System tests: test_correlate ValueError
 - #1259 : Update license year in code files and add pre-commit check
 - #1243 : Stack selector based on datasets
+- #1184 : Make more use of QTest in gui testing
