@@ -519,10 +519,8 @@ class MainWindowPresenter(BasePresenter):
         ids_to_remove = self.model.remove_container(container_id)
         if ids_to_remove is None:
             return
-        if len(ids_to_remove) == 1:
-            self._delete_stack(container_id)
-        else:
-            for stack_id in ids_to_remove:
+        for stack_id in ids_to_remove:
+            if stack_id in self.stack_visualisers:
                 self._delete_stack(stack_id)
         self.remove_item_from_tree_view(container_id)
         self.view.model_changed.emit()
