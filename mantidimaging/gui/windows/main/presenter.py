@@ -141,6 +141,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
+            self.create_mixed_dataset_tree_view_items(task.result)
             self.create_mixed_dataset_stack_windows(task.result)
             self.view.model_changed.emit()
             task.result = None
