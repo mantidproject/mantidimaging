@@ -202,6 +202,10 @@ class MainWindowPresenter(BasePresenter):
                 dataset.proj180deg = Images(np.reshape(closest_projection, (1, ) + closest_projection.shape),
                                             name=f"{dataset.name}_180")
 
+                self.add_child_item_to_tree_view(dataset.id, dataset.proj180deg.id, "180")
+                sample_vis = self.get_stack_visualiser(dataset.sample.id)
+                self._create_and_tabify_stack_window(dataset.proj180deg, sample_vis)
+
     def create_strict_dataset_stack_windows(self, dataset: StrictDataset) -> StackVisualiserView:
         """
         Creates the stack widgets for the strict dataset.
@@ -371,7 +375,7 @@ class MainWindowPresenter(BasePresenter):
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
-        return self.active_stacks[stack_id]
+        return self.stack_visualisers[stack_id]
 
     def get_stack(self, stack_id: uuid.UUID) -> Images:
         images = self.model.get_images_by_uuid(stack_id)

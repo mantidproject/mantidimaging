@@ -185,7 +185,9 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
 
-    def test_create_new_stack_dataset_and_use_threshold_180(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser")
+    def test_create_new_stack_dataset_and_use_threshold_180(self, mock_get_stack, mock_add_child):
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
@@ -226,7 +228,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
 
-    def test_nexus_load_success_calls_show_information(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required")
+    def test_nexus_load_success_calls_show_information(self, _):
         self.view.nexus_load_dialog = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
