@@ -15,7 +15,6 @@ from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogVie
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 
 LOG = getLogger(__name__)
 
@@ -116,18 +115,18 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.change_refine_iterations()
 
     def set_stack_uuid(self, uuid):
-        stack = self.view.get_stack_visualiser(uuid)
-        if self.model.is_current_stack(stack):
+        images = self.view.get_stack(uuid)
+        if self.model.is_current_stack(uuid):
             return
 
         self.view.reset_image_recon_preview()
         self.view.clear_cor_table()
-        self.model.initial_select_data(stack)
+        self.model.initial_select_data(images)
         self.view.rotation_centre = self.model.last_cor.value
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
-        if stack is None:
+        if images is None:
             return
         self.do_preview_reconstruct_slice()
         self._do_nan_zero_negative_check()
@@ -236,7 +235,7 @@ class ReconstructWindowPresenter(BasePresenter):
         images: Images = task.result
         slice_idx = self._get_slice_index(None)
         if images is not None:
-            assert isinstance(self.model.stack, StackVisualiserView)
+            assert self.model.images is not None
             images.name = "Recon"
             self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
@@ -289,7 +288,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        assert isinstance(self.model.stack, StackVisualiserView)
+        assert self.model.images is not None
         task.result.name = "Recon"
         self.view.show_recon_volume(task.result, self.model.stack_id)
         self.view.recon_applied.emit()

@@ -66,7 +66,7 @@
               </property>
               <layout class="QFormLayout" name="formLayout">
                <item row="0" column="0" colspan="2">
-                <widget class="StackSelectorWidgetView" name="stackSelector"/>
+                <widget class="DatasetSelectorWidgetView" name="stackSelector"/>
                </item>
               </layout>
              </widget>
@@ -820,9 +820,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>StackSelectorWidgetView</class>
+   <class>DatasetSelectorWidgetView</class>
    <extends>QComboBox</extends>
-   <header>mantidimaging.gui.widgets.stack_selector</header>
+   <header>mantidimaging.gui.widgets.dataset_selector</header>
   </customwidget>
   <customwidget>
    <class>RemovableRowTableView</class>

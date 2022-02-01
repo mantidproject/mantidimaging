@@ -1,7 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from logging import getLogger
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
 
@@ -17,14 +17,16 @@ from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import (Degrees, ReconstructionParameters, ScalarCoR, Slope)
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.windows.recon.point_table_model import CorTiltPointQtModel
-from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
+
+if TYPE_CHECKING:
+    import uuid
 
 LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
     def __init__(self, data_model: CorTiltPointQtModel):
-        self.stack: Optional['StackVisualiserView'] = None
+        self._images: Optional[Images] = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
         self._selected_row = 0
@@ -81,16 +83,16 @@ class ReconstructWindowModel(object):
 
     @property
     def images(self):
-        return self.stack.presenter.images if self.stack else None
+        return self._images
 
     @property
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, stack: 'StackVisualiserView'):
+    def initial_select_data(self, images: 'Images'):
         self.data_model.clear_results()
 
-        self.stack = stack
+        self._images = images
         slice_idx, cor = self.find_initial_cor()
         self.last_cor = cor
         self.preview_projection_idx = 0
@@ -106,7 +108,7 @@ class ReconstructWindowModel(object):
 
     def do_fit(self):
         # Ensure we have some sample data
-        if self.stack is None:
+        if self.images is None:
             raise ValueError('No image stack is provided')
 
         self.data_model.linear_regression()
@@ -217,8 +219,8 @@ class ReconstructWindowModel(object):
         self.data_model.set_precalculated(cor, tilt)
         self.last_result = self.data_model.stack_properties
 
-    def is_current_stack(self, stack):
-        return self.stack == stack
+    def is_current_stack(self, uuid: "uuid.UUID"):
+        return self.stack_id == uuid
 
     def get_slice_indices(self, num_cors: int) -> Tuple[int, Union[np.ndarray, Tuple[np.ndarray, Optional[float]]]]:
         # used to crop off 20% off the top and bottom, which is usually noise/empty
@@ -277,6 +279,6 @@ class ReconstructWindowModel(object):
 
     @property
     def stack_id(self):
-        if isinstance(self.stack, StackVisualiserView):
-            return self.stack.id
+        if self.images is not None:
+            return self.images.id
         return None

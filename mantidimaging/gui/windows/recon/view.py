@@ -18,7 +18,7 @@ from mantidimaging.core.utility.data_containers import Degrees, ReconstructionPa
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
-from mantidimaging.gui.widgets.stack_selector import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.point_table_model import Column, CorTiltPointQtModel
 from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
@@ -27,7 +27,6 @@ from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
-    from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView  # pragma: no cover
 
 LOG = getLogger(__name__)
 
@@ -77,7 +76,7 @@ class ReconstructWindowView(BaseMainWindowView):
     changeColourPaletteButton: QPushButton
     change_colour_palette_dialog: Optional[PaletteChangerView] = None
 
-    stackSelector: StackSelectorWidgetView
+    stackSelector: DatasetSelectorWidgetView
 
     recon_applied = pyqtSignal()
 
@@ -95,6 +94,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.algorithmName.setEnabled(True)
 
         self.update_recon_hist_needed = False
+        self.stackSelector.presenter.show_stacks = True
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle preview image selection
@@ -418,9 +418,9 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: Images, stack_id: uuid.UUID):
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack_visualiser(self, uuid) -> Optional['StackVisualiserView']:
+    def get_stack(self, uuid) -> Optional['Images']:
         if uuid is not None:
-            return self.main_window.get_stack_visualiser(uuid)
+            return self.main_window.get_stack(uuid)
         return None
 
     def hide_tilt(self):

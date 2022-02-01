@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.core.data.dataset import MixedDataset
 
 
 class ReconstructionWindowTest(BaseEyesTest):
@@ -44,6 +45,8 @@ class ReconstructionWindowTest(BaseEyesTest):
     def test_negative_nan_overlay(self):
         images = generate_images(seed=10)
         images.name = "bad_data"
+        ds = MixedDataset([images])
+        self.imaging.presenter.model.add_dataset_to_model(ds)
         self.imaging.presenter.create_single_tabbed_images_stack(images)
         QApplication.sendPostedEvents()
 

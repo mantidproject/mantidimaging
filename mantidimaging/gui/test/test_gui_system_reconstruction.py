@@ -20,7 +20,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         assert isinstance(self.main_window.recon, ReconstructWindowView)  # for yapf
         self.assertTrue(self.main_window.recon.isVisible())
         self.recon_window = self.main_window.recon
-        self._wait_until(lambda: self.recon_window.presenter.model.stack is not None, max_retry=600)
+        self._wait_until(lambda: self.recon_window.presenter.model.images is not None, max_retry=600)
 
     def tearDown(self) -> None:
         self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
