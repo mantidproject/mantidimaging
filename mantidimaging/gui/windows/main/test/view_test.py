@@ -418,7 +418,3 @@ class MainWindowViewTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.view.get_recon_group(dataset_item_mock)
-
-    def test_get_all_recons(self):
-        self.view.get_all_recons()
-        self.presenter.get_all_recons.assert_called_once()

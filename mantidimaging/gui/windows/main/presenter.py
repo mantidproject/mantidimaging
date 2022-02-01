@@ -188,9 +188,6 @@ class MainWindowPresenter(BasePresenter):
     def get_all_stacks(self) -> List[Images]:
         return self.model.images
 
-    def get_all_recons(self) -> List[Images]:
-        return self.model.recons
-
     def get_all_180_projections(self) -> List[Images]:
         return self.model.proj180s
 

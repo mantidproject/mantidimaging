@@ -176,13 +176,6 @@ class MainWindowModel(object):
         return images
 
     @property
-    def recons(self) -> List[Images]:
-        recons = []
-        for dataset in self.datasets.values():
-            recons += dataset.recons
-        return recons
-
-    @property
     def proj180s(self) -> List[Images]:
         proj180s = []
         for dataset in self.datasets.values():
