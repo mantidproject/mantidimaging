@@ -520,7 +520,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
 
-    def test_on_stack_load_done_success(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items")
+    def test_on_stack_load_done_success(self, _):
         task = mock.Mock()
         task.result = result_mock = mock.Mock()
         task.was_successful.return_value = True
