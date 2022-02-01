@@ -495,13 +495,13 @@ class MainWindowPresenter(BasePresenter):
         Adds a recon item to the tree view.
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding Images object.
-        :param recon_count: The number of the recon in the dataset. Zero indicates the first recon that has been added.
+        :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
         """
         top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == parent_id:
-                if recon_count == 0:
+                if recon_count == 1:
                     recon_group = self.view.add_recon_group(top_level_item)
                     name = "Recon"
                 else:
@@ -561,5 +561,5 @@ class MainWindowPresenter(BasePresenter):
         """
         parent_id = self.model.add_recon_to_dataset(recon_data, stack_id)
         self.view.create_new_stack(recon_data)
-        self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons) - 1)
+        self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
         self.view.model_changed.emit()

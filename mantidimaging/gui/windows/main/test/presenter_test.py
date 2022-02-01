@@ -486,7 +486,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
-        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, 0)
+        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, 1)
         self.view.create_new_stack.assert_called_once_with(recon)
         self.view.model_changed.emit.assert_called_once()
 
@@ -597,7 +597,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         child_id = "child-id"
         recon_group_mock = self.view.add_recon_group.return_value
 
-        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 0)
+        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
         self.view.add_recon_group.assert_called_once_with(top_level_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
 
@@ -607,11 +607,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         top_level_item_mock.id = parent_id = "parent-id"
         child_id = "child-id"
         recon_group_mock = self.view.get_recon_group.return_value
-        recon_count = 1
+        recon_count = 2
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, recon_count)
         self.view.get_recon_group.assert_called_once_with(top_level_item_mock)
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 1")
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 2")
 
     def test_add_recon_item_to_tree_view_failed(self):
         self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
