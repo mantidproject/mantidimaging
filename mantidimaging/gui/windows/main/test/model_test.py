@@ -8,7 +8,7 @@ from unittest import mock
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -365,3 +365,16 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds)
         self.model.add_recon_to_dataset(recon, sample_id)
         self.assertIn(recon, ds.all)
+
+    def test_recons(self):
+        recons = [generate_images() for _ in range(2)]
+
+        mixed_ds = MixedDataset([generate_images()])
+        mixed_ds.recons.append(recons[0])
+        strict_ds = StrictDataset(generate_images())
+        strict_ds.recons.append(recons[1])
+
+        self.model.add_dataset_to_model(mixed_ds)
+        self.model.add_dataset_to_model(strict_ds)
+
+        self.assertListEqual(self.model.recons, recons)
