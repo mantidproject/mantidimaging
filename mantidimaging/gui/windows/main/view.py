@@ -515,6 +515,7 @@ class MainWindowView(BaseMainWindowView):
         recon_group = QTreeDatasetWidgetItem(dataset_item, RECON_ID)
         recon_group.setText(0, RECON_GROUP_TEXT)
         dataset_item.addChild(recon_group)
+        recon_group.setExpanded(True)
         return recon_group
 
     @staticmethod
