@@ -30,6 +30,7 @@ class AutoCorMethod(Enum):
 class Notifications(Enum):
     RECONSTRUCT_VOLUME = auto()
     RECONSTRUCT_PREVIEW_SLICE = auto()
+    RECONSTRUCT_PREVIEW_USER_CLICK = auto()
     RECONSTRUCT_STACK_SLICE = auto()
     RECONSTRUCT_USER_CLICK = auto()
     COR_FIT = auto()
@@ -70,6 +71,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_reconstruct_volume()
             elif notification == Notifications.RECONSTRUCT_PREVIEW_SLICE:
                 self.do_preview_reconstruct_slice()
+            elif notification == Notifications.RECONSTRUCT_PREVIEW_USER_CLICK:
+                self.do_preview_reconstruct_slice(force_update=True)
             elif notification == Notifications.RECONSTRUCT_STACK_SLICE:
                 self.do_stack_reconstruct_slice()
             elif notification == Notifications.RECONSTRUCT_USER_CLICK:
@@ -206,13 +209,13 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.preview_slice_idx = slice_idx
         return slice_idx
 
-    def do_preview_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
+    def do_preview_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None, force_update: bool = False):
         if self.model.images is None:
             return
 
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
-        if self.view.is_auto_update_preview():
+        if self.view.is_auto_update_preview() or force_update:
             self._get_reconstruct_slice(cor, slice_idx, self._on_preview_reconstruct_slice_done)
 
     def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread):

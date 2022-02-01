@@ -93,3 +93,10 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
         QTest.mouseClick(self.recon_window.previewAutoUpdate, Qt.MouseButton.LeftButton)
         self._wait_until(lambda: mock_do_preview_reconstruct_slice.call_count == 1)
+
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._get_reconstruct_slice")
+    def test_clicking_update_now_btn_triggers_preview(self, mock_get_reconstruct_slice):
+        self.recon_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
+
+        QTest.mouseClick(self.recon_window.updatePreviewButton, Qt.MouseButton.LeftButton)
+        self._wait_until(lambda: mock_get_reconstruct_slice.call_count == 1)

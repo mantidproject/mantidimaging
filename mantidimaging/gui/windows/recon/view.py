@@ -186,6 +186,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
+        self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
 
         # Preparing the auto change colour map UI
         self.auto_colour_action = QAction("Auto")

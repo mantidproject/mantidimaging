@@ -736,6 +736,13 @@
              </property>
             </widget>
            </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="updatePreviewButton">
+             <property name="text">
+              <string>Update Now</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
