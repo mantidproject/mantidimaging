@@ -531,3 +531,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         slices = [i for i in range(8)] + [i for i in range(10, 15)]
         ranges = _group_consecutive_values(slices)
         self.assertListEqual(ranges, ["0-7", "10-14"])
+
+    def test_is_a_proj180deg_returns_true(self):
+        _180_images = generate_images()
+        self.main_window.get_all_180_projections.return_value = [_180_images]
+        assert self.presenter.is_a_proj180deg(_180_images)
+
+    def test_is_a_proj180deg_returns_false(self):
+        self.main_window.get_all_180_projections.return_value = [generate_images() for _ in range(5)]
+        assert not self.presenter.is_a_proj180deg(generate_images())

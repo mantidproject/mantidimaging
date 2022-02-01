@@ -191,6 +191,9 @@ class MainWindowPresenter(BasePresenter):
     def get_all_recons(self) -> List[Images]:
         return self.model.recons
 
+    def get_all_180_projections(self) -> List[Images]:
+        return self.model.proj180s
+
     def add_alternative_180_if_required(self, dataset: StrictDataset):
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
