@@ -212,7 +212,8 @@ class ReconstructWindowPresenter(BasePresenter):
 
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
-        self._get_reconstruct_slice(cor, slice_idx, self._on_preview_reconstruct_slice_done)
+        if self.view.is_auto_update_preview():
+            self._get_reconstruct_slice(cor, slice_idx, self._on_preview_reconstruct_slice_done)
 
     def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread):
         if task.error is not None:
