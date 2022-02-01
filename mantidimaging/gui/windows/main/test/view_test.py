@@ -418,3 +418,6 @@ class MainWindowViewTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.view.get_recon_group(dataset_item_mock)
+
+    def test_get_all_180_projections(self):
+        self.assertIs(self.view.get_all_180_projections(), self.presenter.get_all_180_projections.return_value)

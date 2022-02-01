@@ -25,7 +25,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operation_window_after_data_was_processed(self):
-        self._load_data_set()
+        self._load_data_set(set_180=True)
 
         self.imaging.show_filters_window()
         self.imaging.filters.ask_confirmation = mock.MagicMock(return_value=True)

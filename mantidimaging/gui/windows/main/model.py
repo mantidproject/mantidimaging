@@ -175,6 +175,14 @@ class MainWindowModel(object):
             images += dataset.all
         return images
 
+    @property
+    def proj180s(self) -> List[Images]:
+        proj180s = []
+        for dataset in self.datasets.values():
+            if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:
+                proj180s.append(dataset.proj180deg)
+        return proj180s
+
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> uuid.UUID:
         """
         Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.
