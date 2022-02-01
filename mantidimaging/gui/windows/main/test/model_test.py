@@ -8,7 +8,8 @@ from unittest import mock
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -366,15 +367,16 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_recon_to_dataset(recon, sample_id)
         self.assertIn(recon, ds.all)
 
-    def test_recons(self):
-        recons = [generate_images() for _ in range(2)]
+    def test_proj180s(self):
 
-        mixed_ds = MixedDataset([generate_images()])
-        mixed_ds.recons.append(recons[0])
-        strict_ds = StrictDataset(generate_images())
-        strict_ds.recons.append(recons[1])
+        ds1 = StrictDataset(generate_images())
+        ds2 = StrictDataset(generate_images())
 
-        self.model.add_dataset_to_model(mixed_ds)
-        self.model.add_dataset_to_model(strict_ds)
+        proj180s = [Images(ds1.sample.data[0]), Images(ds2.sample.data[0])]
+        ds1.proj180deg = proj180s[0]
+        ds2.proj180deg = proj180s[1]
 
-        self.assertListEqual(self.model.recons, recons)
+        self.model.add_dataset_to_model(ds1)
+        self.model.add_dataset_to_model(ds2)
+
+        self.assertListEqual(self.model.proj180s, proj180s)
