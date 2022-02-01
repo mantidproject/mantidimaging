@@ -12,6 +12,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
+from mantidimaging.core.data import Images
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
@@ -92,11 +93,16 @@ class BaseEyesTest(unittest.TestCase):
         menu_location = widget.menuBar().rect().bottomLeft()
         menu.popup(widget.mapFromGlobal(menu_location))
 
-    def _load_data_set(self):
+    def _load_data_set(self, set_180: bool = False):
         dataset = loader.load(file_names=[LOAD_SAMPLE])
         dataset.sample.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
+
+        if set_180:
+            dataset.sample.proj180deg = _180_proj = Images(dataset.sample.data[0:1])
+            self.imaging.presenter.create_single_tabbed_images_stack(_180_proj)
+
         self.imaging.presenter.model.add_dataset_to_model(dataset)
 
         QApplication.sendPostedEvents()
