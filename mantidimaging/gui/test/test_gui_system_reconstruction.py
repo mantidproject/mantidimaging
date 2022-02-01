@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from unittest import mock
 
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt, QTimer
@@ -85,3 +86,10 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             self._wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
         QTest.qWait(SHOW_DELAY)
+
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_preview_reconstruct_slice")
+    def test_selecting_auto_update_triggers_preview(self, mock_do_preview_reconstruct_slice):
+        self.recon_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
+
+        QTest.mouseClick(self.recon_window.previewAutoUpdate, Qt.MouseButton.LeftButton)
+        self._wait_until(lambda: mock_do_preview_reconstruct_slice.call_count == 1)
