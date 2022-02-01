@@ -244,6 +244,8 @@ class FiltersWindowPresenter(BasePresenter):
     def is_a_proj180deg(self, stack_to_check: Images):
         if stack_to_check.has_proj180deg():
             return False
+        if stack_to_check in self.main_window.get_all_recons():
+            return False
         stacks = self.main_window.get_all_stacks()
         for stack in stacks:
             if stack.proj180deg is not None:

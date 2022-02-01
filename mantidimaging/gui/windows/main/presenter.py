@@ -188,6 +188,9 @@ class MainWindowPresenter(BasePresenter):
     def get_all_stacks(self) -> List[Images]:
         return self.model.images
 
+    def get_all_recons(self) -> List[Images]:
+        return self.model.recons
+
     def add_alternative_180_if_required(self, dataset: StrictDataset):
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.

@@ -348,6 +348,9 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stacks(self) -> List[Images]:
         return self.presenter.get_all_stacks()
 
+    def get_all_recons(self) -> List[Images]:
+        return self.presenter.get_all_recons()
+
     def get_all_stack_visualisers_with_180deg_proj(self):
         return self.presenter.get_all_stack_visualisers_with_180deg_proj()
 
