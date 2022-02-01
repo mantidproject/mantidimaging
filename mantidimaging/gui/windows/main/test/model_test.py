@@ -9,7 +9,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data import Images
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -371,6 +371,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         ds1 = StrictDataset(generate_images())
         ds2 = StrictDataset(generate_images())
+        ds3 = MixedDataset([generate_images()])
 
         proj180s = [Images(ds1.sample.data[0]), Images(ds2.sample.data[0])]
         ds1.proj180deg = proj180s[0]
@@ -378,5 +379,6 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.add_dataset_to_model(ds1)
         self.model.add_dataset_to_model(ds2)
+        self.model.add_dataset_to_model(ds3)
 
         self.assertListEqual(self.model.proj180s, proj180s)

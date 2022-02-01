@@ -179,7 +179,7 @@ class MainWindowModel(object):
     def proj180s(self) -> List[Images]:
         proj180s = []
         for dataset in self.datasets.values():
-            if dataset.proj180deg is not None:
+            if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:
                 proj180s.append(dataset.proj180deg)
         return proj180s
 
