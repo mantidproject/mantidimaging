@@ -130,3 +130,8 @@ class DatasetTest(unittest.TestCase):
     def test_sinograms(self):
         self.dataset.sinograms = sinograms = generate_images()
         self.assertIs(self.dataset.sinograms, sinograms)
+
+    def test_delete_sinograms(self):
+        self.dataset.sinograms = sinograms = generate_images()
+        self.dataset.delete_stack(sinograms.id)
+        self.assertIsNone(self.dataset.sinograms)
