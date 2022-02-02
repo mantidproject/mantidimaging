@@ -364,8 +364,9 @@ class MainWindowModelTest(unittest.TestCase):
 
         recon = generate_images()
         self.model.add_dataset_to_model(ds)
-        self.model.add_recon_to_dataset(recon, sample_id)
+        parent_id = self.model.add_recon_to_dataset(recon, sample_id)
         self.assertIn(recon, ds.all)
+        assert parent_id == ds.id
 
     def test_proj180s(self):
 
