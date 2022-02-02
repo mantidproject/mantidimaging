@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QDialog
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, RECON_ID
+from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, RECON_ID, SINO_TEXT
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -421,3 +421,15 @@ class MainWindowViewTest(unittest.TestCase):
 
     def test_get_all_180_projections(self):
         self.assertIs(self.view.get_all_180_projections(), self.presenter.get_all_180_projections.return_value)
+
+    def test_get_sinograms_item(self):
+        n_children = 3
+        children = [mock.Mock() for _ in range(n_children)]
+        children[0].text.return_value = children[1].text.return_value = "Not Sinograms"
+        children[2].text.return_value = SINO_TEXT
+
+        parent_mock = mock.Mock()
+        parent_mock.childCount.return_value = n_children
+        parent_mock.child.side_effect = children
+
+        self.assertIs(self.view.get_sinograms_item(parent_mock), children[2])
