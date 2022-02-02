@@ -125,7 +125,7 @@ class MainWindowModel(object):
         raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find dataset containing Images with ID {images_id}")
+        raise RuntimeError(f"Failed to find strict dataset containing Images with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)
