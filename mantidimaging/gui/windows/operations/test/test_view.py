@@ -31,3 +31,25 @@ class OperationsWindowsViewTest(unittest.TestCase):
         self.assertEqual(">>", self.window.collapseToggleButton.text())
         # check that left column is 0 as expected as it has been collapsed
         self.assertEqual(0, self.window.splitter.sizes()[0])
+
+    def test_on_auto_update_triggered_with_auto_selected(self):
+        self.window.previewAutoUpdate = mock.Mock()
+        self.window.previewAutoUpdate.isChecked.return_value = True
+        self.window.isVisible = mock.Mock()
+        self.window.isVisible.return_value = True
+
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")\
+                as mock_do_update_previews:
+            self.window.on_auto_update_triggered()
+            mock_do_update_previews.assert_called_once()
+
+    def test_on_auto_update_triggered_with_auto_not_selected(self):
+        self.window.previewAutoUpdate = mock.Mock()
+        self.window.previewAutoUpdate.isChecked.return_value = False
+        self.window.isVisible = mock.Mock()
+        self.window.isVisible.return_value = True
+
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")\
+                as mock_do_update_previews:
+            self.window.on_auto_update_triggered()
+            mock_do_update_previews.assert_not_called()

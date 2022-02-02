@@ -144,3 +144,10 @@ class TestGuiSystemOperations(GuiSystemBase):
 
         QTest.mouseClick(self.op_window.previewAutoUpdate, Qt.MouseButton.LeftButton)
         self._wait_until(lambda: mock_do_update_previews.call_count == 1)
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
+    def test_clicking_update_now_btn_triggers_preview(self, mock_do_update_previews):
+        self.op_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
+
+        QTest.mouseClick(self.op_window.updatePreviewButton, Qt.MouseButton.LeftButton)
+        self._wait_until(lambda: mock_do_update_previews.call_count == 1)
