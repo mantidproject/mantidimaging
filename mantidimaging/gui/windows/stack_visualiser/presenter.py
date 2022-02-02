@@ -105,7 +105,7 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack = self.images.copy(flip_axes=True)
             new_stack.name = self.images.name + "_sino"
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
-            self.add_singograms_to_model_and_update_view(new_stack)
+            self.add_sinograms_to_model_and_update_view(new_stack)
 
     def dupe_stack(self):
         with operation_in_progress("Copying data, this may take a while",
@@ -138,5 +138,5 @@ class StackVisualiserPresenter(BasePresenter):
                 return index
         return len(self.images.projection_angles().value)
 
-    def add_singograms_to_model_and_update_view(self, new_stack: Images):
+    def add_sinograms_to_model_and_update_view(self, new_stack: Images):
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)
