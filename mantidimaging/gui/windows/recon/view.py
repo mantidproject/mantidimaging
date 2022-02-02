@@ -185,6 +185,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
+        self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
+        self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
+
         # Preparing the auto change colour map UI
         self.auto_colour_action = QAction("Auto")
         self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
@@ -278,6 +281,13 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def update_sinogram(self, image_data):
         self.image_view.update_sinogram(image_data)
+
+    def is_auto_update_preview(self) -> bool:
+        return self.previewAutoUpdate.isChecked()
+
+    def handle_auto_update_preview_selection(self):
+        if self.previewAutoUpdate.isChecked():
+            self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
     def update_recon_preview(self, image_data: numpy.ndarray):
         """
