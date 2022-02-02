@@ -482,13 +482,8 @@ class MainWindowPresenter(BasePresenter):
         :param child_id: The ID of the corresponding Images object.
         :param child_name: The name that should appear in the tree view.
         """
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
-        for i in range(top_level_item_count):
-            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == parent_id:
-                self.view.create_child_tree_item(top_level_item, child_id, child_name)
-                return
-        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
+        self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
     def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, recon_count: int):
         """
@@ -497,19 +492,14 @@ class MainWindowPresenter(BasePresenter):
         :param child_id: The ID of the corresponding Images object.
         :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
         """
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
-        for i in range(top_level_item_count):
-            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == parent_id:
-                if recon_count == 1:
-                    recon_group = self.view.add_recon_group(top_level_item)
-                    name = "Recon"
-                else:
-                    recon_group = self.view.get_recon_group(top_level_item)
-                    name = _generate_recon_item_name(recon_count)
-                self.view.create_child_tree_item(recon_group, child_id, name)
-                return
-        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
+        if recon_count == 1:
+            recon_group = self.view.add_recon_group(dataset_item)
+            name = "Recon"
+        else:
+            recon_group = self.view.get_recon_group(dataset_item)
+            name = _generate_recon_item_name(recon_count)
+        self.view.create_child_tree_item(recon_group, child_id, name)
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
         self.stack_visualisers[stack.id] = stack
@@ -581,14 +571,9 @@ class MainWindowPresenter(BasePresenter):
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding Images object.
         """
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
-        for i in range(top_level_item_count):
-            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == parent_id:
-                sinograms_item = self.view.get_sinograms_item(top_level_item)
-                if sinograms_item is None:
-                    self.view.create_child_tree_item(top_level_item, sino_id, self.view.sino_text)
-                else:
-                    sinograms_item._id = sino_id
-                return
-        raise RuntimeError(f"Unable to add sinogram item to dataset tree item with ID {parent_id}")
+        dataset_item = self.view.find_dataset_tree_view_item(parent_id)
+        sinograms_item = self.view.get_sinograms_item(dataset_item)
+        if sinograms_item is None:
+            self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
+        else:
+            sinograms_item._id = sino_id
