@@ -563,3 +563,28 @@ class MainWindowPresenter(BasePresenter):
         self.view.create_new_stack(recon_data)
         self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
         self.view.model_changed.emit()
+
+    def add_sinograms_to_dataset_and_update_view(self, sino_stack: Images, original_stack_id: uuid.UUID):
+        """
+        Adds sinograms to a dataset.
+        :param sino_stack: The sinogram stack.
+        :param original_stack_id: The ID of a stack in the dataset.
+        """
+        parent_id = self.model.add_sinograms_to_dataset(sino_stack, original_stack_id)
+        self._add_sinograms_to_tree_view(sino_stack.id, parent_id)
+        self.create_single_tabbed_images_stack(sino_stack)
+        self.view.model_changed.emit()
+
+    def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID):
+        """
+        Adds a sinograms item to the tree view.
+        :param parent_id: The ID of the parent dataset.
+        :param child_id: The ID of the corresponding Images object.
+        """
+        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
+        for i in range(top_level_item_count):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == parent_id:
+                self.view.create_child_tree_item(top_level_item, sino_id, "Sinograms")
+                return
+        raise RuntimeError(f"Unable to add sinogram item to dataset tree item with ID {parent_id}")

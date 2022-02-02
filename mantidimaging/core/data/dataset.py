@@ -95,6 +95,7 @@ class StrictDataset(BaseDataset):
         self.flat_after = flat_after
         self.dark_before = dark_before
         self.dark_after = dark_after
+        self._sinograms = None
 
         if self.name == "":
             self._name = sample.name
@@ -102,7 +103,8 @@ class StrictDataset(BaseDataset):
     @property
     def all(self) -> List[Images]:
         image_stacks = [
-            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
+            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
+            self._sinograms
         ]
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
 
@@ -113,6 +115,14 @@ class StrictDataset(BaseDataset):
     @proj180deg.setter
     def proj180deg(self, _180_deg: Images):
         self.sample.proj180deg = _180_deg
+
+    @property
+    def sinograms(self) -> Images:
+        return self._sinograms
+
+    @sinograms.setter
+    def sinograms(self, sino: Images):
+        self._sinograms = sino
 
     def delete_stack(self, images_id: uuid.UUID):
         if isinstance(self.sample, Images) and self.sample.id == images_id:
@@ -127,6 +137,8 @@ class StrictDataset(BaseDataset):
             self.dark_after = None
         elif isinstance(self.proj180deg, Images) and self.proj180deg.id == images_id:
             self.sample.clear_proj180deg()
+        elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
+            self._sinograms = None
         elif images_id in [recon.id for recon in self.recons]:
             for recon in self.recons:
                 if recon.id == images_id:
