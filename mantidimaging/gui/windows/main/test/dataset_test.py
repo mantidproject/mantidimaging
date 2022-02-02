@@ -126,3 +126,7 @@ class DatasetTest(unittest.TestCase):
         self.dataset.delete_stack(_180.id)
         self.assertIsNone(self.dataset.proj180deg)
         self.assertIsNone(self.dataset.sample.proj180deg)
+
+    def test_sinograms(self):
+        self.dataset.sinograms = sinograms = generate_images()
+        self.assertIs(self.dataset.sinograms, sinograms)
