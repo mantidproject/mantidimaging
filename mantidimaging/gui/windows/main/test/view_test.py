@@ -32,6 +32,7 @@ class MainWindowViewTest(unittest.TestCase):
                 self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
+        self.view.dataset_tree_widget = self.dataset_tree_widget = mock.Mock()
 
     def test_execute_save(self):
         self.view.execute_save()
@@ -433,3 +434,14 @@ class MainWindowViewTest(unittest.TestCase):
         parent_mock.child.side_effect = children
 
         self.assertIs(self.view.get_sinograms_item(parent_mock), children[2])
+
+    def test_get_dataset_tree_view_item_success(self):
+        self.dataset_tree_widget.topLevelItemCount.return_value = 1
+        dataset_tree_view_item_mock = self.dataset_tree_widget.topLevelItem.return_value
+        dataset_tree_view_item_mock.id = dataset_id = "dataset-id"
+        self.assertIs(dataset_tree_view_item_mock, self.view.get_dataset_tree_view_item(dataset_id))
+
+    def test_get_dataset_tree_view_item_failure(self):
+        self.dataset_tree_widget.topLevelItemCount.return_value = 1
+        with self.assertRaises(RuntimeError):
+            self.view.get_dataset_tree_view_item("bad-dataset-id")
