@@ -36,6 +36,7 @@ from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPres
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 RECON_GROUP_TEXT = "Recons"
+SINO_TEXT = "Sinograms"
 RECON_ID = uuid.uuid4()
 
 LOG = getLogger(__file__)
@@ -550,3 +551,10 @@ class MainWindowView(BaseMainWindowView):
         :return: The recon group ID.
         """
         return RECON_ID
+
+    @property
+    def sino_text(self) -> str:
+        """
+        :return: The sinogram entry text. Used to avoid circular imports.
+        """
+        return SINO_TEXT
