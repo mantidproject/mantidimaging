@@ -396,5 +396,6 @@ class MainWindowModelTest(unittest.TestCase):
         ds = StrictDataset(generate_images())
         self.model.add_dataset_to_model(ds)
 
-        self.model.add_sinograms_to_dataset(sinograms, ds.sample.id)
+        parent_id = self.model.add_sinograms_to_dataset(sinograms, ds.sample.id)
         self.assertIs(sinograms, ds.sinograms)
+        assert parent_id == ds.id
