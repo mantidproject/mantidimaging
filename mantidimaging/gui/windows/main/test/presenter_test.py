@@ -602,23 +602,17 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
 
     def test_add_additional_recon_item_to_tree_view(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = parent_id = "parent-id"
+        parent_id = "parent-id"
+        self.view.find_dataset_tree_view_item = mock.Mock()
+        dataset_item_mock = self.view.find_dataset_tree_view_item.return_value
         child_id = "child-id"
         recon_group_mock = self.view.get_recon_group.return_value
         recon_count = 2
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, recon_count)
-        self.view.get_recon_group.assert_called_once_with(top_level_item_mock)
+        self.view.find_dataset_tree_view_item.assert_called_once_with(parent_id)
+        self.view.get_recon_group.assert_called_once_with(dataset_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 2")
-
-    def test_add_recon_item_to_tree_view_failed(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = "different-id"
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_recon_item_to_tree_view("parent-id", "child-id", 0)
 
     def test_created_mixed_dataset_tree_view_items(self):
         n_images = 3
