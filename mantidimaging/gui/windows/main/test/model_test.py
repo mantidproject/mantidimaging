@@ -382,3 +382,11 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds3)
 
         self.assertListEqual(self.model.proj180s, proj180s)
+
+    def test_exception_when_dataset_for_sinograms_not_found(self):
+        with self.assertRaises(RuntimeError):
+            self.model.add_sinograms_to_dataset(generate_images(), "bad-id")
+
+    def test_exception_when_dataset_for_recons_not_found(self):
+        with self.assertRaises(RuntimeError):
+            self.model.add_recon_to_dataset(generate_images(), "bad-id")
