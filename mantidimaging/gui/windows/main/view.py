@@ -543,6 +543,19 @@ class MainWindowView(BaseMainWindowView):
                 return dataset_item.child(i)
         raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
 
+    def get_dataset_tree_view_item(self, dataset_id: uuid.UUID) -> QTreeDatasetWidgetItem:
+        """
+        Looks for the dataset tree view item matching a given ID.
+        :param dataset_id: The dataset ID.
+        :return: The tree view item if found.
+        """
+        top_level_item_count = self.dataset_tree_widget.topLevelItemCount()
+        for i in range(top_level_item_count):
+            top_level_item = self.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == dataset_id:
+                return top_level_item
+        raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
+
     @property
     def recon_groups_id(self) -> uuid.UUID:
         """
