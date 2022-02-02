@@ -469,10 +469,22 @@ class MainWindowView(BaseMainWindowView):
         return dataset_tree_item
 
     @staticmethod
-    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, name: str):
+    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str):
         child = QTreeDatasetWidgetItem(parent, dataset_id)
         child.setText(0, name)
         parent.addChild(child)
+
+    @staticmethod
+    def get_sinograms_item(parent: QTreeDatasetWidgetItem) -> Optional[QTreeDatasetWidgetItem]:
+        """
+        Tries to look for a sinograms entry in a dataset tree view item.
+        :return: The sinograms entry if found, None otherwise.
+        """
+        for i in range(parent.childCount()):
+            child = parent.child(i)
+            if child.text(0) == SINO_TEXT:
+                return child
+        return None
 
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)

@@ -585,6 +585,10 @@ class MainWindowPresenter(BasePresenter):
         for i in range(top_level_item_count):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == parent_id:
-                self.view.create_child_tree_item(top_level_item, sino_id, "Sinograms")
+                sinograms_item = self.view.get_sinograms_item(top_level_item)
+                if sinograms_item is None:
+                    self.view.create_child_tree_item(top_level_item, sino_id, self.view.sino_text)
+                else:
+                    sinograms_item._id = sino_id
                 return
         raise RuntimeError(f"Unable to add sinogram item to dataset tree item with ID {parent_id}")
