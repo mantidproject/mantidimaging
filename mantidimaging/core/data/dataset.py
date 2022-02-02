@@ -95,7 +95,7 @@ class StrictDataset(BaseDataset):
         self.flat_after = flat_after
         self.dark_before = dark_before
         self.dark_after = dark_after
-        self._sinograms = None
+        self._sinograms: Optional[Images] = None
 
         if self.name == "":
             self._name = sample.name
@@ -117,7 +117,7 @@ class StrictDataset(BaseDataset):
         self.sample.proj180deg = _180_deg
 
     @property
-    def sinograms(self) -> Images:
+    def sinograms(self) -> Optional[Images]:
         return self._sinograms
 
     @sinograms.setter
