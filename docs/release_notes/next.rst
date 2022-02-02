@@ -20,6 +20,7 @@ New Features
 - #1235 : Improvements to input value defaults and spin box step sizes
 - #1230 : Update CIL to 21.3 reducing memory requirements
 - #1191 : Loading 180 should only show datasets
+- #1273 : Move sinograms into the Dataset
 
 
 Fixes
