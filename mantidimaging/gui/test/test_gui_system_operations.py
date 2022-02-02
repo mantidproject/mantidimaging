@@ -137,3 +137,10 @@ class TestGuiSystemOperations(GuiSystemBase):
             self._wait_until(lambda: self.op_window.presenter.filter_is_running is False)
             self.main_window.filters.close()
             QTest.qWait(SHOW_DELAY)
+
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
+    def test_selecting_auto_update_triggers_preview(self, mock_do_update_previews):
+        self.op_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
+
+        QTest.mouseClick(self.op_window.previewAutoUpdate, Qt.MouseButton.LeftButton)
+        self._wait_until(lambda: mock_do_update_previews.call_count == 1)
