@@ -571,7 +571,7 @@ class MainWindowPresenter(BasePresenter):
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding Images object.
         """
-        dataset_item = self.view.find_dataset_tree_view_item(parent_id)
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         sinograms_item = self.view.get_sinograms_item(dataset_item)
         if sinograms_item is None:
             self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
