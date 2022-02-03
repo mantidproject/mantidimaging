@@ -556,7 +556,7 @@ class MainWindowPresenter(BasePresenter):
 
     def add_sinograms_to_dataset_and_update_view(self, sino_stack: Images, original_stack_id: uuid.UUID):
         """
-        Adds sinograms to a dataset.
+        Adds sinograms to a dataset or replaces an existing one.
         :param sino_stack: The sinogram stack.
         :param original_stack_id: The ID of a stack in the dataset.
         """
@@ -571,7 +571,7 @@ class MainWindowPresenter(BasePresenter):
 
     def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID):
         """
-        Adds a sinograms item to the tree view.
+        Adds a sinograms item to the tree view or updates the id of an existing one.
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding Images object.
         """
