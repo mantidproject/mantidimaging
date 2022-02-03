@@ -98,6 +98,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
+        self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
 
         self.stackSelector.subscribe_to_main_window(main_window)
@@ -165,6 +166,10 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Enable the spinbox widget once the preview has been created
         self.previewImageIndex.setEnabled(True)
+
+    def handle_auto_update_preview_selection(self):
+        if self.previewAutoUpdate.isChecked():
+            self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
     def clear_previews(self, clear_before: bool = True):
         self.previews.clear_items(clear_before=clear_before)

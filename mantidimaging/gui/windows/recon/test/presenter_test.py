@@ -120,6 +120,16 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_start_async_task_view.assert_called_once()
         self.view.recon_params.assert_called_once()
 
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._get_reconstruct_slice')
+    def test_do_preview_reconstruct_slice_no_auto_update(self, mock_get_reconstruct_slice):
+        self.view.is_auto_update_preview.return_value = False
+        self.presenter.model.preview_slice_idx = 0
+
+        self.presenter.do_preview_reconstruct_slice()
+
+        self.view.update_sinogram.assert_called_once()
+        mock_get_reconstruct_slice.assert_not_called()
+
     def test_do_preview_reconstruct_slice_done(self):
         image_mock = mock.Mock()
         result_mock = mock.Mock(data=[image_mock])
