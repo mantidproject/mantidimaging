@@ -387,3 +387,20 @@ class MainWindowModelTest(unittest.TestCase):
     def test_exception_when_dataset_for_recons_not_found(self):
         with self.assertRaises(RuntimeError):
             self.model.add_recon_to_dataset(generate_images(), "bad-id")
+
+    def test_get_parent_strict_dataset_success(self):
+        ds = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(ds)
+        self.assertIs(self.model.get_parent_strict_dataset(ds.sample.id), ds.id)
+
+    def test_get_parent_strict_dataset_finds_stack_in_mixed_dataset(self):
+        ds = MixedDataset([generate_images()])
+        self.model.add_dataset_to_model(ds)
+        with self.assertRaises(RuntimeError):
+            self.model.get_parent_strict_dataset(ds.all[0].id)
+
+    def test_get_parent_strict_dataset_doesnt_find_any_parent(self):
+        ds = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(ds)
+        with self.assertRaises(RuntimeError):
+            self.model.get_parent_strict_dataset("unrecognised-id")
