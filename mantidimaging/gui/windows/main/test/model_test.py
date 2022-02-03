@@ -384,19 +384,6 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertListEqual(self.model.proj180s, proj180s)
 
-    def test_exception_when_dataset_for_sinograms_not_found(self):
-        with self.assertRaises(RuntimeError):
-            self.model.add_sinograms_to_dataset(generate_images(), "bad-id")
-
     def test_exception_when_dataset_for_recons_not_found(self):
         with self.assertRaises(RuntimeError):
             self.model.add_recon_to_dataset(generate_images(), "bad-id")
-
-    def test_add_sinograms_to_dataset(self):
-        sinograms = generate_images()
-        ds = StrictDataset(generate_images())
-        self.model.add_dataset_to_model(ds)
-
-        parent_id = self.model.add_sinograms_to_dataset(sinograms, ds.sample.id)
-        self.assertIs(sinograms, ds.sinograms)
-        assert parent_id == ds.id
