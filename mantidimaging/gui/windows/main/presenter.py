@@ -561,10 +561,10 @@ class MainWindowPresenter(BasePresenter):
         :param original_stack_id: The ID of a stack in the dataset.
         """
         parent_id = self.model.get_parent_strict_dataset(original_stack_id)
-        prev_sino = self.model.datasets[parent_id].sinograms
+        prev_sino = self.model.datasets[parent_id].sinograms  # type: ignore
         if prev_sino is not None:
             self._delete_stack(prev_sino.id)
-        self.model.datasets[parent_id].sinograms = sino_stack
+        self.model.datasets[parent_id].sinograms = sino_stack  # type: ignore
         self._add_sinograms_to_tree_view(sino_stack.id, parent_id)
         self.create_single_tabbed_images_stack(sino_stack)
         self.view.model_changed.emit()
@@ -573,7 +573,7 @@ class MainWindowPresenter(BasePresenter):
         """
         Adds a sinograms item to the tree view or updates the id of an existing one.
         :param parent_id: The ID of the parent dataset.
-        :param child_id: The ID of the corresponding Images object.
+        :param sino_id: The ID of the corresponding Images object.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         sinograms_item = self.view.get_sinograms_item(dataset_item)
