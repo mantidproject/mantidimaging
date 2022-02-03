@@ -637,39 +637,45 @@ class MainWindowPresenterTest(unittest.TestCase):
         ds = StrictDataset(generate_images())
         self.model.datasets = dict()
         self.model.datasets[ds.id] = ds
-        self.model.add_sinograms_to_dataset.return_value = ds.id
+        self.model.get_parent_strict_dataset.return_value = ds.id
 
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         dataset_item_mock.id = ds.id
         self.view.get_sinograms_item.return_value = None
         self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
 
         self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
-        self.model.add_sinograms_to_dataset.assert_called_once_with(sinograms, ds.sample.id)
+        self.model.get_parent_strict_dataset.assert_called_once_with(ds.sample.id)
+        self.presenter._delete_stack.assert_not_called()
+        self.assertIs(ds.sinograms, sinograms)
         self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
         self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, sinograms.id, self.view.sino_text)
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(sinograms)
         self.view.model_changed.emit.assert_called_once()
 
-    def test_add_sinograms_to_dataset_with_existing_sinograms(self):
-        sinograms = generate_images()
+    def test_add_sinograms_to_dataset_with_existing_sinograms_and_update_view(self):
+        new_sinograms = generate_images()
         ds = StrictDataset(generate_images())
         self.model.datasets = dict()
         self.model.datasets[ds.id] = ds
-        self.model.add_sinograms_to_dataset.return_value = ds.id
+        self.model.get_parent_strict_dataset.return_value = ds.id
+        ds.sinograms = existing_sinograms = generate_images()
 
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         dataset_item_mock.id = ds.id
         sinograms_item_mock = self.view.get_sinograms_item.return_value
         self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
 
-        self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
-        self.model.add_sinograms_to_dataset.assert_called_once_with(sinograms, ds.sample.id)
+        self.presenter.add_sinograms_to_dataset_and_update_view(new_sinograms, ds.sample.id)
+        self.presenter._delete_stack.assert_called_once_with(existing_sinograms.id)
+        self.assertIs(ds.sinograms, new_sinograms)
         self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
         self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
-        assert sinograms_item_mock._id == sinograms.id
-        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(sinograms)
+        assert sinograms_item_mock._id == new_sinograms.id
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_sinograms)
         self.view.model_changed.emit.assert_called_once()
 
 
