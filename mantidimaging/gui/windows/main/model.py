@@ -186,6 +186,20 @@ class MainWindowModel(object):
                 proj180s.append(dataset.proj180deg)
         return proj180s
 
+    def get_parent_strict_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
+        """
+        Takes the ID of an image stack and returns the ID of its parent strict dataset.
+        :param member_id: The ID of the image stack.
+        :return: The ID of the parent dataset if found.
+        """
+        for dataset in self.datasets.values():
+            if member_id in dataset:
+                if isinstance(dataset, StrictDataset):
+                    return dataset.id
+                else:
+                    break
+        self.raise_error_when_parent_dataset_not_found(member_id)
+
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> uuid.UUID:
         """
         Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.
