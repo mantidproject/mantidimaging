@@ -212,16 +212,3 @@ class MainWindowModel(object):
                 dataset.recons.append(recon_data)
                 return dataset.id
         self.raise_error_when_parent_dataset_not_found(stack_id)
-
-    def add_sinograms_to_dataset(self, sino_stack: Images, original_stack_id: uuid.UUID) -> uuid.UUID:
-        """
-        Adds a sinogram to a dataset using the sino stack and an ID from one of the stacks in the dataset.
-        :param sino_stack: The sinogram data.
-        :param original_stack_id: The ID of one of the member stacks.
-        :return: The ID of the parent dataset if found.
-        """
-        for dataset in self.datasets.values():
-            if original_stack_id in dataset and isinstance(dataset, StrictDataset):
-                dataset.sinograms = sino_stack
-                return dataset.id
-        self.raise_error_when_parent_dataset_not_found(original_stack_id)
