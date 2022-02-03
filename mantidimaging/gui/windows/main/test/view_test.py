@@ -435,6 +435,17 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.assertIs(self.view.get_sinograms_item(parent_mock), children[2])
 
+    def test_get_sinograms_item_returns_none(self):
+        n_children = 3
+        children = [mock.Mock() for _ in range(n_children)]
+        children[0].text.return_value = children[1].text.return_value = children[2].text.return_value = "Not Sinograms"
+
+        parent_mock = mock.Mock()
+        parent_mock.childCount.return_value = n_children
+        parent_mock.child.side_effect = children
+
+        self.assertIsNone(self.view.get_sinograms_item(parent_mock))
+
     def test_get_dataset_tree_view_item_success(self):
         self.dataset_tree_widget.topLevelItemCount.return_value = 1
         dataset_tree_view_item_mock = self.dataset_tree_widget.topLevelItem.return_value
