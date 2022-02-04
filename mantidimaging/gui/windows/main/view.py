@@ -36,6 +36,7 @@ from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPres
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 RECON_GROUP_TEXT = "Recons"
+SINO_TEXT = "Sinograms"
 RECON_ID = uuid.uuid4()
 
 LOG = getLogger(__file__)
@@ -469,10 +470,22 @@ class MainWindowView(BaseMainWindowView):
         return dataset_tree_item
 
     @staticmethod
-    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: UUID, name: str):
+    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str):
         child = QTreeDatasetWidgetItem(parent, dataset_id)
         child.setText(0, name)
         parent.addChild(child)
+
+    @staticmethod
+    def get_sinograms_item(parent: QTreeDatasetWidgetItem) -> Optional[QTreeDatasetWidgetItem]:
+        """
+        Tries to look for a sinograms entry in a dataset tree view item.
+        :return: The sinograms entry if found, None otherwise.
+        """
+        for i in range(parent.childCount()):
+            child = parent.child(i)
+            if child.text(0) == SINO_TEXT:
+                return child
+        return None
 
     def add_item_to_tree_view(self, item: QTreeWidgetItem):
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
@@ -530,6 +543,19 @@ class MainWindowView(BaseMainWindowView):
                 return dataset_item.child(i)
         raise RuntimeError(f"Unable to find recon group in dataset tree item for dataset {dataset_item.id}")
 
+    def get_dataset_tree_view_item(self, dataset_id: uuid.UUID) -> QTreeDatasetWidgetItem:
+        """
+        Looks for the dataset tree view item matching a given ID.
+        :param dataset_id: The dataset ID.
+        :return: The tree view item if found.
+        """
+        top_level_item_count = self.dataset_tree_widget.topLevelItemCount()
+        for i in range(top_level_item_count):
+            top_level_item = self.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == dataset_id:
+                return top_level_item
+        raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
+
     @property
     def recon_groups_id(self) -> uuid.UUID:
         """
@@ -538,3 +564,10 @@ class MainWindowView(BaseMainWindowView):
         :return: The recon group ID.
         """
         return RECON_ID
+
+    @property
+    def sino_text(self) -> str:
+        """
+        :return: The sinogram entry text. Used to avoid circular imports.
+        """
+        return SINO_TEXT

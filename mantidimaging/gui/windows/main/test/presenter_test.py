@@ -49,6 +49,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
         self.view.model_changed = mock.Mock()
         self.view.dataset_tree_widget = mock.Mock()
+        self.view.get_dataset_tree_view_item = mock.Mock()
 
         def stack_id():
             return uuid.uuid4()
@@ -502,23 +503,14 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_list = self.presenter.dataset_list
         assert len(dataset_list) == 2
 
-    def test_add_child_item_to_tree_view_success(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = dataset_id = "dataset-id"
+    def test_add_child_item_to_tree_view(self):
+        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_item_mock.id = dataset_id = "dataset-id"
 
         child_id = "child-id"
         child_name = "180"
         self.presenter.add_child_item_to_tree_view(dataset_id, child_id, child_name)
-        self.view.create_child_tree_item.assert_called_once_with(top_level_item_mock, child_id, child_name)
-
-    def test_add_child_item_to_tree_view_failure(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = "different-id"
-
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_child_item_to_tree_view("nonexistent-id", "child-id", "180")
+        self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, child_id, child_name)
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items")
     def test_on_stack_load_done_success(self, _):
@@ -591,34 +583,27 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
     def test_add_first_recon_item_to_tree_view(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = parent_id = "parent-id"
+        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_item_mock.id = parent_id = "parent-id"
         child_id = "child-id"
         recon_group_mock = self.view.add_recon_group.return_value
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
-        self.view.add_recon_group.assert_called_once_with(top_level_item_mock)
+        self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
+        self.view.add_recon_group.assert_called_once_with(dataset_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
 
     def test_add_additional_recon_item_to_tree_view(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = parent_id = "parent-id"
+        parent_id = "parent-id"
+        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         child_id = "child-id"
         recon_group_mock = self.view.get_recon_group.return_value
         recon_count = 2
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, recon_count)
-        self.view.get_recon_group.assert_called_once_with(top_level_item_mock)
+        self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
+        self.view.get_recon_group.assert_called_once_with(dataset_item_mock)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 2")
-
-    def test_add_recon_item_to_tree_view_failed(self):
-        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
-        top_level_item_mock = self.view.dataset_tree_widget.topLevelItem.return_value
-        top_level_item_mock.id = "different-id"
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_recon_item_to_tree_view("parent-id", "child-id", 0)
 
     def test_created_mixed_dataset_tree_view_items(self):
         n_images = 3
@@ -646,6 +631,52 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._restore_and_focus_tab(recon_id)
         stack_mock.setVisible.assert_not_called()
         stack_mock._raise.assert_not_called()
+
+    def test_add_sinograms_to_dataset_with_no_sinograms_and_update_view(self):
+        sinograms = generate_images()
+        ds = StrictDataset(generate_images())
+        self.model.datasets = dict()
+        self.model.datasets[ds.id] = ds
+        self.model.get_parent_dataset.return_value = ds.id
+
+        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_item_mock.id = ds.id
+        self.view.get_sinograms_item.return_value = None
+        self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
+
+        self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
+        self.model.get_parent_dataset.assert_called_once_with(ds.sample.id)
+        self.presenter._delete_stack.assert_not_called()
+        self.assertIs(ds.sinograms, sinograms)
+        self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
+        self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
+        self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, sinograms.id, self.view.sino_text)
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(sinograms)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_add_sinograms_to_dataset_with_existing_sinograms_and_update_view(self):
+        new_sinograms = generate_images()
+        ds = StrictDataset(generate_images())
+        self.model.datasets = dict()
+        self.model.datasets[ds.id] = ds
+        self.model.get_parent_dataset.return_value = ds.id
+        ds.sinograms = existing_sinograms = generate_images()
+
+        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_item_mock.id = ds.id
+        sinograms_item_mock = self.view.get_sinograms_item.return_value
+        self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
+
+        self.presenter.add_sinograms_to_dataset_and_update_view(new_sinograms, ds.sample.id)
+        self.presenter._delete_stack.assert_called_once_with(existing_sinograms.id)
+        self.assertIs(ds.sinograms, new_sinograms)
+        self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
+        self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
+        assert sinograms_item_mock._id == new_sinograms.id
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_sinograms)
+        self.view.model_changed.emit.assert_called_once()
 
 
 if __name__ == '__main__':

@@ -24,6 +24,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(StackVisualiserView)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
         self.presenter.model = mock.Mock()
+        self.view._main_window = mock.Mock()
 
     def test_get_image(self):
         index = 3
@@ -107,6 +108,12 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def test_get_parameter_value_raises_value_error(self):
         with self.assertRaises(ValueError):
             self.presenter.get_parameter_value(7)
+
+    def test_add_sinograms_to_model_and_update_view(self):
+        sinograms = th.generate_images()
+        self.presenter.add_sinograms_to_model_and_update_view(sinograms)
+        self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view.assert_called_once_with(
+            sinograms, self.presenter.images.id)
 
 
 if __name__ == '__main__':

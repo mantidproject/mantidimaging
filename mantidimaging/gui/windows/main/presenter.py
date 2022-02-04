@@ -482,13 +482,8 @@ class MainWindowPresenter(BasePresenter):
         :param child_id: The ID of the corresponding Images object.
         :param child_name: The name that should appear in the tree view.
         """
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
-        for i in range(top_level_item_count):
-            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == parent_id:
-                self.view.create_child_tree_item(top_level_item, child_id, child_name)
-                return
-        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
+        self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
     def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, recon_count: int):
         """
@@ -497,19 +492,14 @@ class MainWindowPresenter(BasePresenter):
         :param child_id: The ID of the corresponding Images object.
         :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
         """
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
-        for i in range(top_level_item_count):
-            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == parent_id:
-                if recon_count == 1:
-                    recon_group = self.view.add_recon_group(top_level_item)
-                    name = "Recon"
-                else:
-                    recon_group = self.view.get_recon_group(top_level_item)
-                    name = _generate_recon_item_name(recon_count)
-                self.view.create_child_tree_item(recon_group, child_id, name)
-                return
-        raise RuntimeError(f"Unable to add 180 item to dataset tree item with ID {parent_id}")
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
+        if recon_count == 1:
+            recon_group = self.view.add_recon_group(dataset_item)
+            name = "Recon"
+        else:
+            recon_group = self.view.get_recon_group(dataset_item)
+            name = _generate_recon_item_name(recon_count)
+        self.view.create_child_tree_item(recon_group, child_id, name)
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
         self.stack_visualisers[stack.id] = stack
@@ -563,3 +553,31 @@ class MainWindowPresenter(BasePresenter):
         self.view.create_new_stack(recon_data)
         self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
         self.view.model_changed.emit()
+
+    def add_sinograms_to_dataset_and_update_view(self, sino_stack: Images, original_stack_id: uuid.UUID):
+        """
+        Adds sinograms to a dataset or replaces an existing one.
+        :param sino_stack: The sinogram stack.
+        :param original_stack_id: The ID of a stack in the dataset.
+        """
+        parent_id = self.model.get_parent_dataset(original_stack_id)
+        prev_sino = self.model.datasets[parent_id].sinograms
+        if prev_sino is not None:
+            self._delete_stack(prev_sino.id)
+        self.model.datasets[parent_id].sinograms = sino_stack
+        self._add_sinograms_to_tree_view(sino_stack.id, parent_id)
+        self.create_single_tabbed_images_stack(sino_stack)
+        self.view.model_changed.emit()
+
+    def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID):
+        """
+        Adds a sinograms item to the tree view or updates the id of an existing one.
+        :param parent_id: The ID of the parent dataset.
+        :param sino_id: The ID of the corresponding Images object.
+        """
+        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
+        sinograms_item = self.view.get_sinograms_item(dataset_item)
+        if sinograms_item is None:
+            self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
+        else:
+            sinograms_item._id = sino_id
