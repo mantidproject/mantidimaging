@@ -127,6 +127,9 @@ class MainWindowModel(object):
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to find dataset containing Images with ID {images_id}")
 
+    def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
+        raise RuntimeError(f"Failed to find strict dataset containing Images with ID {images_id}")
+
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)
         if images is None:
@@ -208,4 +211,4 @@ class MainWindowModel(object):
             if stack_id in dataset:
                 dataset.recons.append(recon_data)
                 return dataset.id
-        self.raise_error_when_parent_dataset_not_found(stack_id)
+        self.raise_error_when_parent_strict_dataset_not_found(stack_id)
