@@ -637,7 +637,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         ds = StrictDataset(generate_images())
         self.model.datasets = dict()
         self.model.datasets[ds.id] = ds
-        self.model.get_parent_strict_dataset.return_value = ds.id
+        self.model.get_parent_dataset.return_value = ds.id
 
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         dataset_item_mock.id = ds.id
@@ -646,7 +646,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._delete_stack = mock.Mock()
 
         self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
-        self.model.get_parent_strict_dataset.assert_called_once_with(ds.sample.id)
+        self.model.get_parent_dataset.assert_called_once_with(ds.sample.id)
         self.presenter._delete_stack.assert_not_called()
         self.assertIs(ds.sinograms, sinograms)
         self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
@@ -660,7 +660,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         ds = StrictDataset(generate_images())
         self.model.datasets = dict()
         self.model.datasets[ds.id] = ds
-        self.model.get_parent_strict_dataset.return_value = ds.id
+        self.model.get_parent_dataset.return_value = ds.id
         ds.sinograms = existing_sinograms = generate_images()
 
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value

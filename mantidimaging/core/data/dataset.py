@@ -69,7 +69,10 @@ class MixedDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        return self._stacks + self.recons + [self.sinograms]
+        all_images = self._stacks + self.recons
+        if self.sinograms is None:
+            return all_images
+        return all_images + [self.sinograms]
 
     def delete_stack(self, images_id: uuid.UUID):
         for image in self._stacks:
