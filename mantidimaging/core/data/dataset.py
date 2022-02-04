@@ -83,6 +83,9 @@ class MixedDataset(BaseDataset):
             if recon.id == images_id:
                 self.recons.remove(recon)
                 return
+        if self.sinograms is not None and self.sinograms.id == images_id:
+            self.sinograms = None
+            return
         raise KeyError(_delete_stack_error_message(images_id))
 
 
