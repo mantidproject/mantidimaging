@@ -251,5 +251,5 @@ class MIImageView(ImageView, BadDataOverlay):
         """
         Opens the Palette Changer window when the "Auto" option has been clicked.
         """
-        change_colour_palette = PaletteChangerView(parent=None, main_hist=self.ui.histogram.item, image=self.image)
+        change_colour_palette = PaletteChangerView(parent=self, main_hist=self.ui.histogram.item, image=self.image)
         change_colour_palette.show()
