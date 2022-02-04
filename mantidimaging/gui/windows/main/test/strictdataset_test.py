@@ -5,7 +5,7 @@ import unittest
 
 from numpy import array_equal
 
-from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -14,7 +14,7 @@ def test_delete_stack_error_message():
                                                       " dataset."
 
 
-class DatasetTest(unittest.TestCase):
+class StrictDatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
         self.strict_dataset = StrictDataset(sample=self.images[0],
@@ -22,7 +22,6 @@ class DatasetTest(unittest.TestCase):
                                             flat_after=self.images[2],
                                             dark_before=self.images[3],
                                             dark_after=self.images[4])
-        self.mixed_dataset = MixedDataset([generate_images()])
 
     def test_attribute_not_set_returns_none(self):
         sample = generate_images()
@@ -136,8 +135,3 @@ class DatasetTest(unittest.TestCase):
         self.strict_dataset.sinograms = sinograms = generate_images()
         self.strict_dataset.delete_stack(sinograms.id)
         self.assertIsNone(self.strict_dataset.sinograms)
-
-    def test_sinograms_in_mixed_dataset_all(self):
-        self.assertListEqual(self.mixed_dataset._stacks, self.mixed_dataset.all)
-        self.mixed_dataset.sinograms = sinograms = generate_images()
-        self.assertListEqual(self.mixed_dataset._stacks + [sinograms], self.mixed_dataset.all)
