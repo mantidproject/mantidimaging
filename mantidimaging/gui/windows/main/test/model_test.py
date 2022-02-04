@@ -364,8 +364,9 @@ class MainWindowModelTest(unittest.TestCase):
 
         recon = generate_images()
         self.model.add_dataset_to_model(ds)
-        self.model.add_recon_to_dataset(recon, sample_id)
+        parent_id = self.model.add_recon_to_dataset(recon, sample_id)
         self.assertIn(recon, ds.all)
+        assert parent_id == ds.id
 
     def test_proj180s(self):
 
@@ -382,3 +383,18 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds3)
 
         self.assertListEqual(self.model.proj180s, proj180s)
+
+    def test_exception_when_dataset_for_recons_not_found(self):
+        with self.assertRaises(RuntimeError):
+            self.model.add_recon_to_dataset(generate_images(), "bad-id")
+
+    def test_get_parent_strict_dataset_success(self):
+        ds = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(ds)
+        self.assertIs(self.model.get_parent_dataset(ds.sample.id), ds.id)
+
+    def test_get_parent_dataset_doesnt_find_any_parent(self):
+        ds = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(ds)
+        with self.assertRaises(RuntimeError):
+            self.model.get_parent_dataset("unrecognised-id")

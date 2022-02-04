@@ -18,6 +18,7 @@ class BaseDataset:
         self._id: uuid.UUID = uuid.uuid4()
         self.recons: List[Images] = []
         self._name = name
+        self._sinograms: Optional[Images] = None
 
     @property
     def id(self) -> uuid.UUID:
@@ -30,6 +31,14 @@ class BaseDataset:
     @name.setter
     def name(self, arg: str):
         self._name = arg
+
+    @property
+    def sinograms(self) -> Optional[Images]:
+        return self._sinograms
+
+    @sinograms.setter
+    def sinograms(self, sino: Optional[Images]):
+        self._sinograms = sino
 
     @property
     def all(self):
@@ -60,7 +69,10 @@ class MixedDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        return self._stacks + self.recons
+        all_images = self._stacks + self.recons
+        if self.sinograms is None:
+            return all_images
+        return all_images + [self.sinograms]
 
     def delete_stack(self, images_id: uuid.UUID):
         for image in self._stacks:
@@ -71,6 +83,9 @@ class MixedDataset(BaseDataset):
             if recon.id == images_id:
                 self.recons.remove(recon)
                 return
+        if self.sinograms is not None and self.sinograms.id == images_id:
+            self.sinograms = None
+            return
         raise KeyError(_delete_stack_error_message(images_id))
 
 
@@ -102,7 +117,8 @@ class StrictDataset(BaseDataset):
     @property
     def all(self) -> List[Images]:
         image_stacks = [
-            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after
+            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
+            self.sinograms
         ]
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
 
@@ -127,6 +143,8 @@ class StrictDataset(BaseDataset):
             self.dark_after = None
         elif isinstance(self.proj180deg, Images) and self.proj180deg.id == images_id:
             self.sample.clear_proj180deg()
+        elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
+            self.sinograms = None
         elif images_id in [recon.id for recon in self.recons]:
             for recon in self.recons:
                 if recon.id == images_id:
