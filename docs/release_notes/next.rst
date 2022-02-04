@@ -21,6 +21,7 @@ New Features
 - #1230 : Update CIL to 21.3 reducing memory requirements
 - #1191 : Loading 180 should only show datasets
 - #1279 : Add auto update checkbox option to turn off live reconstruction
+- #1220 : Make reconstruction window side bar scrollable for smaller screens
 
 
 Fixes
