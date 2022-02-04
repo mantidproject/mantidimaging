@@ -125,7 +125,7 @@ class MainWindowModel(object):
         raise RuntimeError(f"Failed to get Images with ID {images_id}")
 
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find strict dataset containing Images with ID {images_id}")
+        raise RuntimeError(f"Failed to find dataset containing Images with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)
@@ -186,7 +186,7 @@ class MainWindowModel(object):
                 proj180s.append(dataset.proj180deg)
         return proj180s
 
-    def get_parent_strict_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
+    def get_parent_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
         """
         Takes the ID of an image stack and returns the ID of its parent strict dataset.
         :param member_id: The ID of the image stack.
@@ -194,10 +194,7 @@ class MainWindowModel(object):
         """
         for dataset in self.datasets.values():
             if member_id in dataset:
-                if isinstance(dataset, StrictDataset):
-                    return dataset.id
-                else:
-                    break
+                return dataset.id
         self.raise_error_when_parent_dataset_not_found(member_id)
 
     def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> uuid.UUID:
