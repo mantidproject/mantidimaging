@@ -477,11 +477,18 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.id == self.view.recon_groups_id:
                     if self._remove_recon_item_from_tree_view(child_item, uuid_remove):
                         if child_item.childCount() == 0:
+                            # Delete recon group when last recon item has been removed
                             top_level_item.takeChild(j)
                         return
 
     @staticmethod
-    def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> None:
+    def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> bool:
+        """
+        Removes a recon item from the recon group in the tree view.
+        :param recon_group: The recon group.
+        :param uuid_remove: The ID of the recon data to remove.
+        :return: True if a recon with a matching ID was removed, False otherwise.
+        """
         recon_count = recon_group.childCount()
         for i in range(recon_count):
             recon_item = recon_group.child(i)
