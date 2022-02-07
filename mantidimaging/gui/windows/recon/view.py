@@ -9,7 +9,7 @@ import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QMessageBox, QAction, QTextEdit, QLabel, QApplication, QStyle,
                              QCheckBox)
-from PyQt5.QtCore import pyqtSignal, QSignalBlocker
+from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
@@ -77,8 +77,6 @@ class ReconstructWindowView(BaseMainWindowView):
     change_colour_palette_dialog: Optional[PaletteChangerView] = None
 
     stackSelector: DatasetSelectorWidgetView
-
-    recon_applied = pyqtSignal()
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/recon_window.ui')

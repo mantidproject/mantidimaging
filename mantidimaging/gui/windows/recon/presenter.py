@@ -295,7 +295,6 @@ class ReconstructWindowPresenter(BasePresenter):
         assert self.model.images is not None
         task.result.name = "Recon"
         self.view.show_recon_volume(task.result, self.model.stack_id)
-        self.view.recon_applied.emit()
 
     def do_clear_all_cors(self):
         self.view.clear_cor_table()
