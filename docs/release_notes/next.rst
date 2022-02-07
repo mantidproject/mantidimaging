@@ -46,7 +46,6 @@ Fixes
 - #1294 : Dataset Tree View: Allow for deleting recons
 
 
-
 Developer Changes
 -----------------
 
