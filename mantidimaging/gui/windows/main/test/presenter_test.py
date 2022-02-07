@@ -711,6 +711,24 @@ class MainWindowPresenterTest(unittest.TestCase):
         recon_group_mock.takeChild.assert_called_once_with(0)
         top_level_item_mock.takeChild.assert_called_once_with(0)
 
+    def test_nothing_removed_from_recon_group(self):
+        top_level_item_mock = mock.Mock()
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
+        top_level_item_mock.childCount.return_value = 2
+        recon_group_mock = mock.Mock()
+        other_data_mock = mock.Mock()
+        other_data_mock.id = item_to_delete_id = "item-to-delete-id"
+        top_level_item_mock.child.side_effect = [recon_group_mock, other_data_mock]
+        recon_group_mock.id = self.view.recon_groups_id
+
+        recon_group_mock.childCount.return_value = 1
+        recon_group_mock.child.return_value = mock.Mock()
+
+        self.presenter.remove_item_from_tree_view(item_to_delete_id)
+        recon_group_mock.takeChild.assert_not_called()
+        top_level_item_mock.takeChild.assert_called_once_with(1)
+
 
 if __name__ == '__main__':
     unittest.main()
