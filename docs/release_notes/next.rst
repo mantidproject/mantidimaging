@@ -42,6 +42,7 @@ Fixes
 - #1190 : Add recon item to right part of tree view
 - #1239 : 180 warning when applying ring removal to recon
 - #1297 : Auto colour dialog not working in compare images
+- #1292 : Attribute error if apply filter after closing and re-opening Operations window
 
 
 Developer Changes
