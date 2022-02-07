@@ -474,6 +474,17 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
                     return
+                if child_item.id == self.view.recon_groups_id:
+                    self._remove_recon_item_from_tree_view(child_item)
+
+    @staticmethod
+    def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> None:
+        recon_count = recon_group.childCount()
+        for i in range(recon_count):
+            recon_item = recon_group.child(i)
+            if recon_item.id == uuid_remove:
+                recon_group.takeChild(i)
+                return
 
     def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str):
         """
