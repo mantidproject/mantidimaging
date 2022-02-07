@@ -22,6 +22,7 @@ New Features
 - #1191 : Loading 180 should only show datasets
 - #1279 : Add auto update checkbox option to turn off live reconstruction
 - #1273 : Move sinograms into the Dataset
+- #1220 : Make reconstruction window side bar scrollable for smaller screens
 
 
 Fixes
