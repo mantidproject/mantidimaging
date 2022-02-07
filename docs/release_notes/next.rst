@@ -41,6 +41,7 @@ Fixes
 - #1248 : Rebin operations not working for small image dimensions
 - #1190 : Add recon item to right part of tree view
 - #1239 : 180 warning when applying ring removal to recon
+- #1297 : Auto colour dialog not working in compare images
 
 
 Developer Changes
