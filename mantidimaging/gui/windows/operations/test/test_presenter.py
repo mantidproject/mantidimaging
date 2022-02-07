@@ -24,7 +24,6 @@ from mantidimaging.core.data import Images
 class FiltersWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView)
-        self.main_window.filter_applied.connect = mock.Mock()
         self.view = mock.MagicMock()
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
