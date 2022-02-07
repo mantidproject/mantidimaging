@@ -678,6 +678,39 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_sinograms)
         self.view.model_changed.emit.assert_called_once()
 
+    def test_remove_item_from_recon_group_but_keep_group(self):
+        top_level_item_mock = mock.Mock()
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
+        top_level_item_mock.childCount.return_value = 1
+        top_level_item_mock.child.return_value = recon_group_mock = mock.Mock()
+        recon_group_mock.id = self.view.recon_groups_id
+
+        recon_group_mock.childCount.side_effect = [2, 1]
+        recon_to_delete = mock.Mock()
+        recon_to_delete.id = recon_to_delete_id = "recon-to-delete-id"
+        recon_group_mock.child.side_effect = [mock.Mock(), recon_to_delete]
+
+        self.presenter.remove_item_from_tree_view(recon_to_delete_id)
+        recon_group_mock.takeChild.assert_called_once_with(1)
+        top_level_item_mock.takeChild.assert_not_called()
+
+    def test_remove_item_from_recon_group_and_remove_group(self):
+        top_level_item_mock = mock.Mock()
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
+        top_level_item_mock.childCount.return_value = 1
+        top_level_item_mock.child.return_value = recon_group_mock = mock.Mock()
+        recon_group_mock.id = self.view.recon_groups_id
+
+        recon_group_mock.childCount.side_effect = [1, 0]
+        recon_group_mock.child.return_value = recon_to_delete = mock.Mock()
+        recon_to_delete.id = recon_to_delete_id = "recon-to-delete-id"
+
+        self.presenter.remove_item_from_tree_view(recon_to_delete_id)
+        recon_group_mock.takeChild.assert_called_once_with(0)
+        top_level_item_mock.takeChild.assert_called_once_with(0)
+
 
 if __name__ == '__main__':
     unittest.main()
