@@ -20,6 +20,7 @@ LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
+    from mantidimaging.gui.windows.main import MainWindowView
 
 
 class AutoCorMethod(Enum):
@@ -50,7 +51,7 @@ class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: 'ReconstructWindowView'
 
-    def __init__(self, view: 'ReconstructWindowView', main_window):
+    def __init__(self, view: 'ReconstructWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
         self.view = view
         self.model = ReconstructWindowModel(self.view.cor_table_model)
@@ -64,6 +65,9 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.recon_is_running = False
         self.async_tracker: Set[Any] = set()
+
+        self.main_window.stack_changed.connect(self.handle_stack_changed)
+        self.stack_changed_pending = False
 
     def notify(self, notification, slice_idx=None):
         try:
@@ -157,6 +161,13 @@ class ReconstructWindowPresenter(BasePresenter):
         if images is not None:
             img_data = images.projection(self.model.preview_projection_idx)
             self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
+
+    def handle_stack_changed(self):
+        if self.view.isVisible():
+            self.do_update_projection()
+            self.do_preview_reconstruct_slice()
+        else:
+            self.stack_changed_pending = True
 
     def _find_next_free_slice_index(self) -> int:
         slice_index = self.model.preview_slice_idx

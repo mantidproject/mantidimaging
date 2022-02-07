@@ -19,7 +19,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.make_view()
 
-        self.presenter = ReconstructWindowPresenter(self.view, None)
+        self.presenter = ReconstructWindowPresenter(self.view, mock.Mock())
 
         self.data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE

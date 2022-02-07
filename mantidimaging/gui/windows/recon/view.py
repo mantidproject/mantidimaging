@@ -199,6 +199,11 @@ class ReconstructWindowView(BaseMainWindowView):
             self.lbhc_enabled.toggled.connect(spinbox.setEnabled)
         self.lbhc_enabled.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
+    def showEvent(self, e):
+        if self.presenter.stack_changed_pending:
+            self.presenter.handle_stack_changed()
+            self.presenter.stack_changed_pending = False
+
     def closeEvent(self, e):
         if self.presenter.recon_is_running:
             e.ignore()
