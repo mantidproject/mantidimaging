@@ -104,8 +104,6 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.prev_apply_single_state = True
         self.prev_apply_all_state = True
-        self.main_window.filter_applied.connect(
-            lambda: self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state))
 
     @property
     def main_window(self) -> 'MainWindowView':
@@ -294,6 +292,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         finally:
             self.view.filter_applied.emit()
+            self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
             self.filter_is_running = False
 
     def _do_apply_filter(self, apply_to: List[Images]):
