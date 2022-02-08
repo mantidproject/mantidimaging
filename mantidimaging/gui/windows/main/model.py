@@ -161,6 +161,10 @@ class MainWindowModel(object):
                 if container_id in dataset:
                     dataset.delete_stack(container_id)
                     return [container_id]
+                if container_id == dataset.recons.id:
+                    ids_to_remove = dataset.recons.ids
+                    dataset.delete_recons()
+                    return ids_to_remove
         self.raise_error_when_images_not_found(container_id)
         return None
 
