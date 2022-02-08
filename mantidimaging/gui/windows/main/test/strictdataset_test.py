@@ -136,3 +136,8 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.sinograms = sinograms = generate_images()
         self.strict_dataset.delete_stack(sinograms.id)
         self.assertIsNone(self.strict_dataset.sinograms)
+
+    def test_delete_all_recons(self):
+        self.strict_dataset.recons = ReconList([generate_images() for _ in range(2)])
+        self.strict_dataset.delete_recons()
+        self.assertListEqual(self.strict_dataset.recons.data, [])
