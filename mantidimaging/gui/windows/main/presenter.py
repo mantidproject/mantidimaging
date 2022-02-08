@@ -474,7 +474,7 @@ class MainWindowPresenter(BasePresenter):
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
                     return
-                if child_item.id == self.view.recon_groups_id:
+                if child_item.childCount() > 0:
                     if self._remove_recon_item_from_tree_view(child_item, uuid_remove):
                         if child_item.childCount() == 0:
                             # Delete recon group when last recon item has been removed
@@ -516,7 +516,7 @@ class MainWindowPresenter(BasePresenter):
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         if recon_count == 1:
-            recon_group = self.view.add_recon_group(dataset_item)
+            recon_group = self.view.add_recon_group(dataset_item, self.model.datasets[parent_id].recons.id)
             name = "Recon"
         else:
             recon_group = self.view.get_recon_group(dataset_item)
