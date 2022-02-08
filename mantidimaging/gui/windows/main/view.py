@@ -55,9 +55,10 @@ class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
     UNCAUGHT_EXCEPTION = "Uncaught exception"
 
+    # Emitted when a new stack is created or an existing one deleted
     model_changed = pyqtSignal()
-    filter_applied = pyqtSignal()
-    recon_applied = pyqtSignal()
+    # Emitted when an existing stack is changed
+    stack_changed = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -305,7 +306,6 @@ class MainWindowView(BaseMainWindowView):
     def show_recon_window(self):
         if not self.recon:
             self.recon = ReconstructWindowView(self)
-            self.recon.recon_applied.connect(self.recon_applied.emit)
             self.recon.show()
         else:
             self.recon.activateWindow()
@@ -315,7 +315,7 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self):
         if not self.filters:
             self.filters = FiltersWindowView(self)
-            self.filters.filter_applied.connect(self.filter_applied.emit)
+            self.filters.filter_applied.connect(self.stack_changed.emit)
             self.filters.show()
         else:
             self.filters.activateWindow()

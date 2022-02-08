@@ -21,8 +21,7 @@ class WizardPresenter(BasePresenter):
         self.wizard_data = yaml.safe_load(wizard_data_file.open())
         self.populate()
         parent.model_changed.connect(self.handle_stack_change)
-        parent.filter_applied.connect(self.handle_stack_change)
-        parent.recon_applied.connect(self.handle_stack_change)
+        parent.stack_changed.connect(self.handle_stack_change)
         self.handle_stack_change()
         self.show()
 

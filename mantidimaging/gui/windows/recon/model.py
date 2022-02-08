@@ -90,9 +90,12 @@ class ReconstructWindowModel(object):
         return self.data_model.num_points
 
     def initial_select_data(self, images: 'Images'):
+        self._images = images
+        self.reset_cor_model()
+
+    def reset_cor_model(self):
         self.data_model.clear_results()
 
-        self._images = images
         slice_idx, cor = self.find_initial_cor()
         self.last_cor = cor
         self.preview_projection_idx = 0
