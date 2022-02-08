@@ -144,9 +144,16 @@ class CILRecon(BaseRecon):
         progress = Progress.ensure_instance(progress,
                                             task_name='CIL reconstruction',
                                             num_steps=recon_params.num_iter + 1)
+        shape = images.data.shape
+        if images.is_sinograms:
+            data_order = DataOrder.ASTRA_AG_LABELS
+            pixel_num_h, pixel_num_v = shape[2], shape[0]
+        else:
+            data_order = DataOrder.TIGRE_AG_LABELS
+            pixel_num_h, pixel_num_v = shape[2], shape[1]
 
         projection_size = full_size_KB(images.data.shape, images.dtype)
-        recon_volume_shape = images.data.shape[2], images.data.shape[2], images.data.shape[1]
+        recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
         recon_volume_size = full_size_KB(recon_volume_shape, images.dtype)
         estimated_mem_required = 5 * projection_size + 13 * recon_volume_size
         free_mem = system_free_memory().kb()
@@ -163,8 +170,7 @@ class CILRecon(BaseRecon):
         with cil_mutex:
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
             angles = images.projection_angles(recon_params.max_projection_angle).value
-            shape = images.data.shape
-            pixel_num_h, pixel_num_v = shape[2], shape[1]
+
             pixel_size = 1.
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
@@ -176,7 +182,7 @@ class CILRecon(BaseRecon):
                                                        rotation_axis_direction=rot_angle)
             ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
             ag.set_angles(angles=angles, angle_unit='radian')
-            ag.set_labels(DataOrder.TIGRE_AG_LABELS)
+            ag.set_labels(data_order)
 
             # stick it into an AcquisitionData
             data = ag.allocate(None)
