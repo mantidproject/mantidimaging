@@ -60,8 +60,16 @@ class WizardPresenterTest(unittest.TestCase):
         self.presenter.main_window_presenter.wizard_action_show_reconstruction.assert_called_once()
 
     def test_handle_stack_change(self):
-        STACK_LIST = [["1111", "Dark"], ["2222", "Tomo"]]
-        self.presenter.main_window_presenter.stack_visualiser_list = STACK_LIST
+        mock_stack_dark = mock.Mock()
+        mock_stack_dark.name = "Flat"
+        mock_stack_dark.metadata = "Flat_history"
+        mock_stack_tomo = mock.Mock()
+        mock_stack_tomo.name = "Tomo"
+        mock_stack_tomo.metadata = "Tomo_history"
+        self.presenter.main_window_presenter.get_all_stacks.return_value = [mock_stack_dark, mock_stack_tomo]
+
+        mock_stage = mock.Mock()
+        self.presenter.view.stages.values.return_value = [mock_stage]
 
         self.presenter.handle_stack_change()
-        self.presenter.main_window_presenter.get_stack_visualiser_history.assert_called_once_with("2222")
+        mock_stage.handle_stack_change.assert_called_with("Tomo_history")
