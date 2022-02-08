@@ -587,6 +587,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
         self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
+        self.model.get_recon_list_id.assert_called_once_with(parent_id)
         self.view.add_recon_group.assert_called_once_with(dataset_item_mock, recons_id)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
 
