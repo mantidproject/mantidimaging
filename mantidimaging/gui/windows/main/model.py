@@ -218,8 +218,8 @@ class MainWindowModel(object):
         self.raise_error_when_parent_strict_dataset_not_found(stack_id)
 
     @property
-    def recon_ids(self):
+    def recon_list_ids(self):
         return [dataset.recons.id for dataset in self.datasets.values()]
 
-    def get_recons_id(self, parent_id: uuid.UUID) -> uuid.UUID:
+    def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
         return self.datasets[parent_id].recons.id

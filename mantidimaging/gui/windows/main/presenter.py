@@ -516,7 +516,7 @@ class MainWindowPresenter(BasePresenter):
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         if recon_count == 1:
-            recon_group = self.view.add_recon_group(dataset_item, self.model.get_recons_id(parent_id))
+            recon_group = self.view.add_recon_group(dataset_item, self.model.get_recon_list_id(parent_id))
             name = "Recon"
         else:
             recon_group = self.view.get_recon_group(dataset_item)
@@ -557,7 +557,7 @@ class MainWindowPresenter(BasePresenter):
         """
         if stack_id in self.model.datasets:
             return
-        if stack_id in self.model.recon_ids:
+        if stack_id in self.model.recon_list_ids:
             return
         if stack_id in self.model.image_ids:
             self.stack_visualisers[stack_id].setVisible(True)
