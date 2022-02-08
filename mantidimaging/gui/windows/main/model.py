@@ -220,3 +220,6 @@ class MainWindowModel(object):
     @property
     def recon_ids(self):
         return [dataset.recons.id for dataset in self.datasets.values()]
+
+    def get_recons_id(self, parent_id: uuid.UUID) -> uuid.UUID:
+        return self.datasets[parent_id].recons.id

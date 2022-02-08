@@ -516,7 +516,7 @@ class MainWindowPresenter(BasePresenter):
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         if recon_count == 1:
-            recon_group = self.view.add_recon_group(dataset_item, self.model.datasets[parent_id].recons.id)
+            recon_group = self.view.add_recon_group(dataset_item, self.model.get_recons_id(parent_id))
             name = "Recon"
         else:
             recon_group = self.view.get_recon_group(dataset_item)
