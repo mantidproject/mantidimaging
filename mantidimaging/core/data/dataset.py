@@ -73,7 +73,7 @@ class MixedDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        all_images = self._stacks + self.recons
+        all_images = self._stacks + self.recons.data
         if self.sinograms is None:
             return all_images
         return all_images + [self.sinograms]

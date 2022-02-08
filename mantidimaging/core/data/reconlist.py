@@ -5,10 +5,12 @@ import uuid
 from collections import UserList
 from typing import List
 
+from mantidimaging.core.data import Images
+
 
 class ReconList(UserList):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, data: List[Images] = []):
+        super().__init__(data)
         self._id: uuid.UUID = uuid.UUID
 
     @property
