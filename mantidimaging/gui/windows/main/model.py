@@ -216,3 +216,7 @@ class MainWindowModel(object):
                 dataset.recons.append(recon_data)
                 return dataset.id
         self.raise_error_when_parent_strict_dataset_not_found(stack_id)
+
+    @property
+    def recon_ids(self):
+        return [dataset.recons.id for dataset in self.datasets.values()]
