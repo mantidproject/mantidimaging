@@ -408,3 +408,18 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertListEqual(self.model.remove_container(ds.recons.id), recon_ids)
         self.assertListEqual(ds.recons.data, [])
+
+    def test_get_all_recons_ids(self):
+        ds1 = MixedDataset()
+        ds2 = MixedDataset()
+
+        self.model.add_dataset_to_model(ds1)
+        self.model.add_dataset_to_model(ds2)
+
+        self.assertListEqual(self.model.recon_ids, [ds1.recons.id, ds2.recons.id])
+
+    def test_get_recons_id(self):
+        ds = MixedDataset()
+        self.model.add_dataset_to_model(ds)
+
+        assert self.model.get_recons_id(ds.id) == ds.recons.id
