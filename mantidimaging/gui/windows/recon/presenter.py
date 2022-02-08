@@ -164,6 +164,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def handle_stack_changed(self):
         if self.view.isVisible():
+            self.model.reset_cor_model()
             self.do_update_projection()
             self.do_preview_reconstruct_slice()
         else:
