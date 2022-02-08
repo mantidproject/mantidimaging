@@ -62,6 +62,9 @@ class BaseDataset:
     def all_image_ids(self) -> List[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
+    def delete_recons(self):
+        self.recons.clear()
+
 
 class MixedDataset(BaseDataset):
     def __init__(self, stacks: List[Images] = [], name=""):
@@ -80,9 +83,6 @@ class MixedDataset(BaseDataset):
             if image.id == images_id:
                 self._stacks.remove(image)
                 return
-        if images_id == self.recons.id:
-            self.recons.clear()
-            return
         for recon in self.recons:
             if recon.id == images_id:
                 self.recons.remove(recon)
@@ -149,9 +149,7 @@ class StrictDataset(BaseDataset):
             self.sample.clear_proj180deg()
         elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
             self.sinograms = None
-        elif images_id == self.recons.id:
-            self.recons.clear()
-        elif images_id in [recon.id for recon in self.recons]:
+        elif images_id in self.recons.ids:
             for recon in self.recons:
                 if recon.id == images_id:
                     self.recons.remove(recon)
