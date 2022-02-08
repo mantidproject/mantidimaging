@@ -532,8 +532,6 @@ class MainWindowPresenter(BasePresenter):
         :param container_id: The ID of the container to delete.
         """
         ids_to_remove = self.model.remove_container(container_id)
-        if ids_to_remove is None:
-            return
         for stack_id in ids_to_remove:
             if stack_id in self.stack_visualisers:
                 self._delete_stack(stack_id)

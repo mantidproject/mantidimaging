@@ -145,7 +145,7 @@ class MainWindowModel(object):
         """
         del self.datasets[dataset_id]
 
-    def remove_container(self, container_id: uuid.UUID) -> Optional[List[uuid.UUID]]:
+    def remove_container(self, container_id: uuid.UUID) -> List[uuid.UUID]:
         """
         Removes a container from the model.
         :param container_id: The ID of the dataset or image stack.
@@ -166,7 +166,6 @@ class MainWindowModel(object):
                     dataset.delete_recons()
                     return ids_to_remove
         self.raise_error_when_images_not_found(container_id)
-        return None
 
     def add_dataset_to_model(self, dataset: Union[StrictDataset, MixedDataset]) -> None:
         self.datasets[dataset.id] = dataset
