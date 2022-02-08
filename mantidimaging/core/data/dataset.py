@@ -124,7 +124,7 @@ class StrictDataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
+        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.data
 
     @property
     def proj180deg(self):
