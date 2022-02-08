@@ -3,8 +3,11 @@
 
 from logging import getLogger
 from pathlib import Path
+from typing import List
+
 import yaml
 
+from mantidimaging.core.data import Images
 from mantidimaging.gui.mvp_base.presenter import BasePresenter
 from mantidimaging.gui.windows.wizard.view import WizardView
 
@@ -50,12 +53,13 @@ class WizardPresenter(BasePresenter):
 
     def handle_stack_change(self):
         stack_history = None
-        stack_list = self.main_window_presenter.stack_visualiser_list
-        for uuid, name in stack_list:
-            if "Tomo" not in name and "Recon" not in name:
+        stack_list: List[Images] = self.main_window_presenter.get_all_stacks()
+
+        for stack in stack_list:
+            if "Tomo" not in stack.name and "Recon" not in stack.name:
                 continue
 
-            stack_history = self.main_window_presenter.get_stack_visualiser_history(uuid)
+            stack_history = stack.metadata
             break
 
         for stage in self.view.stages.values():
