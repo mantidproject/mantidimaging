@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QDialog
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, RECON_ID, SINO_TEXT
+from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, SINO_TEXT
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -389,9 +389,10 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.QTreeDatasetWidgetItem")
     def test_add_recon_group(self, dataset_widget_item_mock):
         dataset_item_mock = mock.Mock()
+        recons_id = "recon-id"
 
-        recon_group_mock = self.view.add_recon_group(dataset_item_mock)
-        dataset_widget_item_mock.assert_called_once_with(dataset_item_mock, RECON_ID)
+        recon_group_mock = self.view.add_recon_group(dataset_item_mock, recons_id)
+        dataset_widget_item_mock.assert_called_once_with(dataset_item_mock, recons_id)
         recon_group_mock.setText.assert_called_once_with(0, RECON_GROUP_TEXT)
         dataset_item_mock.addChild.assert_called_once_with(recon_group_mock)
 
