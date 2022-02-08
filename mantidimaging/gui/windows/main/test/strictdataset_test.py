@@ -6,6 +6,7 @@ import unittest
 from numpy import array_equal
 
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
+from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -99,7 +100,7 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertIsNone(self.strict_dataset.dark_after)
 
     def test_delete_recon(self):
-        recons = [generate_images() for _ in range(2)]
+        recons = ReconList([generate_images() for _ in range(2)])
         self.strict_dataset.recons = recons.copy()
 
         id_to_remove = recons[-1].id
