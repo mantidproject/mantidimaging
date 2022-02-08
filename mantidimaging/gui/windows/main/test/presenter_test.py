@@ -588,7 +588,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_item_mock.id = parent_id = "parent-id"
         child_id = "child-id"
         recon_group_mock = self.view.add_recon_group.return_value
-        self.model.get_recons_id.return_value = recons_id = "recons-id"
+        self.model.get_recon_list_id.return_value = recons_id = "recons-id"
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
         self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
@@ -629,7 +629,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.datasets = []
         self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
         recons_id = "recons-id"
-        self.model.recon_ids = [recons_id]
+        self.model.recon_list_ids = [recons_id]
 
         self.presenter._restore_and_focus_tab(recons_id)
         stack_mock.setVisible.assert_not_called()
