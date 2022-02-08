@@ -11,7 +11,7 @@ from mantidimaging.core.data import Images
 class ReconList(UserList):
     def __init__(self, data: List[Images] = []):
         super().__init__(data)
-        self._id: uuid.UUID = uuid.UUID
+        self._id: uuid.UUID = uuid.uuid4()
 
     @property
     def id(self) -> uuid.UUID:
