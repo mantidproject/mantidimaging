@@ -7,6 +7,7 @@ from typing import Optional, List
 import numpy as np
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.data.reconlist import ReconList
 
 
 def _delete_stack_error_message(images_id: uuid.UUID) -> str:
@@ -16,7 +17,7 @@ def _delete_stack_error_message(images_id: uuid.UUID) -> str:
 class BaseDataset:
     def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
-        self.recons: List[Images] = []
+        self.recons = ReconList()
         self._name = name
         self._sinograms: Optional[Images] = None
 
@@ -79,6 +80,9 @@ class MixedDataset(BaseDataset):
             if image.id == images_id:
                 self._stacks.remove(image)
                 return
+        if images_id == self.recons.id:
+            self.recons.clear()
+            return
         for recon in self.recons:
             if recon.id == images_id:
                 self.recons.remove(recon)
@@ -145,6 +149,8 @@ class StrictDataset(BaseDataset):
             self.sample.clear_proj180deg()
         elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
             self.sinograms = None
+        elif images_id == self.recons.id:
+            self.recons.clear()
         elif images_id in [recon.id for recon in self.recons]:
             for recon in self.recons:
                 if recon.id == images_id:
