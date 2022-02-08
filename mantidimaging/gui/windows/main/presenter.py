@@ -557,8 +557,8 @@ class MainWindowPresenter(BasePresenter):
         """
         if stack_id in self.model.datasets:
             return
-        # if stack_id is self.view.recon_groups_id:
-        #     return
+        if stack_id in self.model.recon_ids:
+            return
         if stack_id in self.model.image_ids:
             self.stack_visualisers[stack_id].setVisible(True)
             self.stack_visualisers[stack_id].raise_()
