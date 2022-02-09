@@ -429,11 +429,33 @@ class MainWindowPresenter(BasePresenter):
         :param _180_deg_file: The filename for the 180 file.
         :return: The 180 Images object if loading was successful, None otherwise.
         """
+        existing_180_id = self.model.get_existing_180_id(dataset_id)
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         stack = self.create_single_tabbed_images_stack(_180_deg)
         stack.raise_()
-        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+
+        if existing_180_id is None:
+            self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+        else:
+            self.replace_child_item_id(dataset_id, existing_180_id, _180_deg.id)
+            self._delete_stack(existing_180_id)
+
         self.view.model_changed.emit()
+
+    def replace_child_item_id(self, dataset_id: uuid.UUID, prev_id: uuid.UUID, new_id: uuid.UUID):
+        """
+        Replaces the ID in an existing child item.
+        :param dataset_id: The ID of the parent dataset.
+        :param prev_id: The previous ID of the tree view item.
+        :param new_id: The new ID that should be given to the tree view item.
+        """
+        dataset_item = self.view.get_dataset_tree_view_item(dataset_id)
+        for i in range(dataset_item.childCount()):
+            child = dataset_item.child(i)
+            if child.id == prev_id:
+                child._id = new_id
+                return
+        raise RuntimeError(f"Failed to get tree view item with ID {prev_id}")
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles) -> None:
         stack_id = self.get_stack_id_by_name(stack_name)
