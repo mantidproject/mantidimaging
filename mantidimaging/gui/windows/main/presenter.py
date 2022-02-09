@@ -482,16 +482,14 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def remove_item_from_tree_view(self, uuid_remove: uuid.UUID) -> None:
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
 
-        for i in range(top_level_item_count):
+        for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_remove:
                 self.view.dataset_tree_widget.takeTopLevelItem(i)
                 return
 
-            child_count = top_level_item.childCount()
-            for j in range(child_count):
+            for j in range(top_level_item.childCount()):
                 child_item = top_level_item.child(j)
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)
