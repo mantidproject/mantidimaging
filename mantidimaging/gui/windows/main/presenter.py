@@ -429,11 +429,33 @@ class MainWindowPresenter(BasePresenter):
         :param _180_deg_file: The filename for the 180 file.
         :return: The 180 Images object if loading was successful, None otherwise.
         """
+        existing_180_id = self.model.get_existing_180_id(dataset_id)
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
         stack = self.create_single_tabbed_images_stack(_180_deg)
         stack.raise_()
-        self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+
+        if existing_180_id is None:
+            self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
+        else:
+            self.replace_child_item_id(dataset_id, existing_180_id, _180_deg.id)
+            self._delete_stack(existing_180_id)
+
         self.view.model_changed.emit()
+
+    def replace_child_item_id(self, dataset_id: uuid.UUID, prev_id: uuid.UUID, new_id: uuid.UUID):
+        """
+        Replaces the ID in an existing child item.
+        :param dataset_id: The ID of the parent dataset.
+        :param prev_id: The previous ID of the tree view item.
+        :param new_id: The new ID that should be given to the tree view item.
+        """
+        dataset_item = self.view.get_dataset_tree_view_item(dataset_id)
+        for i in range(dataset_item.childCount()):
+            child = dataset_item.child(i)
+            if child.id == prev_id:
+                child._id = new_id
+                return
+        raise RuntimeError(f"Failed to get tree view item with ID {prev_id}")
 
     def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles) -> None:
         stack_id = self.get_stack_id_by_name(stack_name)
@@ -460,16 +482,14 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def remove_item_from_tree_view(self, uuid_remove: uuid.UUID) -> None:
-        top_level_item_count = self.view.dataset_tree_widget.topLevelItemCount()
 
-        for i in range(top_level_item_count):
+        for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_remove:
                 self.view.dataset_tree_widget.takeTopLevelItem(i)
                 return
 
-            child_count = top_level_item.childCount()
-            for j in range(child_count):
+            for j in range(top_level_item.childCount()):
                 child_item = top_level_item.child(j)
                 if child_item.id == uuid_remove:
                     top_level_item.takeChild(j)

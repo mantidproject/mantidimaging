@@ -96,6 +96,21 @@ class MainWindowModel(object):
                 return
         self.raise_error_when_images_not_found(images_id)
 
+    def get_existing_180_id(self, dataset_id: uuid.UUID) -> Optional[uuid.UUID]:
+        """
+        Gets the ID of the 180 projection object in a Dataset.
+        :param dataset_id: The Dataset ID.
+        :return: The 180 ID if found, None otherwise.
+        """
+        if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
+            dataset = self.datasets[dataset_id]
+        else:
+            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
+
+        if isinstance(dataset.proj180deg, Images):  # type: ignore
+            return dataset.proj180deg.id  # type: ignore
+        return None
+
     def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Images:
         """
         Loads to 180 projection and adds this to a given Images ID.

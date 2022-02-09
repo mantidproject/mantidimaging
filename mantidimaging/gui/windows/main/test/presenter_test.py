@@ -329,15 +329,53 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack.image_view.setImage.assert_not_called()
         self.assertEqual(self.presenter.stack_visualisers[old_images.id].presenter.images, old_images)
 
-    def test_add_180_deg_to_dataset_success(self):
+    def test_add_first_180_deg_to_dataset(self):
         dataset_id = "dataset-id"
         filename_for_180 = "path/to/180"
+        self.model.get_existing_180_id.return_value = None
         self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
         self.presenter.add_child_item_to_tree_view = mock.Mock()
 
         self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
         self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
         self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_replace_180_deg_in_dataset(self):
+        dataset_id = "dataset-id"
+        filename_for_180 = "path/to/180"
+        self.model.get_existing_180_id.return_value = existing_180_id = "prev-id"
+        self.presenter.stack_visualisers[existing_180_id] = existing_180_stack = mock.Mock()
+        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
+        self.presenter.replace_child_item_id = mock.Mock()
+
+        self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
+        self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
+        self.presenter.replace_child_item_id.assert_called_once_with(dataset_id, existing_180_id, _180_deg.id)
+        self.assertNotIn(existing_180_stack, self.presenter.stack_visualisers)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_replace_child_item_id_success(self):
+        dataset_tree_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_tree_item_mock.childCount.return_value = 1
+        child_item_mock = dataset_tree_item_mock.child.return_value
+        child_item_mock.id = id_to_replace = "id-to-replace"
+
+        dataset_id = "dataset-id"
+        new_id = "new-id"
+
+        self.presenter.replace_child_item_id(dataset_id, id_to_replace, new_id)
+        self.view.get_dataset_tree_view_item.assert_called_once_with(dataset_id)
+        dataset_tree_item_mock.childCount.assert_called_once()
+        dataset_tree_item_mock.child.assert_called_once_with(0)
+        assert child_item_mock._id == new_id
+
+    def test_replace_child_item_id_failure(self):
+        dataset_tree_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_tree_item_mock.childCount.return_value = 1
+
+        with self.assertRaises(RuntimeError):
+            self.presenter.replace_child_item_id("dataset-id", "bad-id", "new-id")
 
     def test_add_projection_angles_to_stack_success(self):
         mock_stack = mock.Mock()
