@@ -424,30 +424,26 @@ class MainWindowModelTest(unittest.TestCase):
 
         assert self.model.get_recon_list_id(ds.id) == ds.recons.id
 
+    def test_no_dataset_with_180_raises(self):
+        with self.assertRaises(RuntimeError):
+            self.model.get_existing_180_id("bad-id")
 
-def test_no_dataset_with_180_raises(self):
-    with self.assertRaises(RuntimeError):
-        self.model.get_existing_180_id("bad-id")
+    def test_wrong_dataset_type_for_180_raises(self):
+        md = MixedDataset()
+        self.model.add_dataset_to_model(md)
 
+        with self.assertRaises(RuntimeError):
+            self.model.get_existing_180_id(md.id)
 
-def test_wrong_dataset_type_for_180_raises(self):
-    md = MixedDataset()
-    self.model.add_dataset_to_model(md)
+    def test_get_existing_180_id_finds_id(self):
+        sd = StrictDataset(generate_images((5, 20, 20)))
+        sd.proj180deg = _180 = generate_images((1, 20, 20))
+        self.model.add_dataset_to_model(sd)
 
-    with self.assertRaises(RuntimeError):
-        self.model.get_existing_180_id(md.id)
+        assert self.model.get_existing_180_id(sd.id) == _180.id
 
+    def test_get_existing_id_returns_none_for_dataset_without_180(self):
+        sd = StrictDataset(generate_images((5, 20, 20)))
+        self.model.add_dataset_to_model(sd)
 
-def test_get_existing_180_id_finds_id(self):
-    sd = StrictDataset(generate_images((5, 20, 20)))
-    sd.proj180deg = _180 = generate_images((1, 20, 20))
-    self.model.add_dataset_to_model(sd)
-
-    assert self.model.get_existing_180_id(sd.id) == _180.id
-
-
-def test_get_existing_id_returns_none_for_dataset_without_180(self):
-    sd = StrictDataset(generate_images((5, 20, 20)))
-    self.model.add_dataset_to_model(sd)
-
-    self.assertIsNone(self.model.get_existing_180_id(sd.id))
+        self.assertIsNone(self.model.get_existing_180_id(sd.id))
