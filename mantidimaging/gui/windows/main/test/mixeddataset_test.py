@@ -4,6 +4,7 @@
 import unittest
 
 from mantidimaging.core.data.dataset import MixedDataset
+from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -21,7 +22,7 @@ class MixedDatasetTest(unittest.TestCase):
         self.assertListEqual(self.mixed_dataset.all, prev_stacks[:-1])
 
     def test_delete_stack_from_recons_list(self):
-        recons = [generate_images() for _ in range(2)]
+        recons = ReconList([generate_images() for _ in range(2)])
         self.mixed_dataset.recons = recons.copy()
 
         id_to_remove = recons[-1].id

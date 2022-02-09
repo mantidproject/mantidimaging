@@ -10,6 +10,7 @@ from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -398,3 +399,27 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds)
         with self.assertRaises(RuntimeError):
             self.model.get_parent_dataset("unrecognised-id")
+
+    def test_delete_all_recons_in_dataset(self):
+        ds = StrictDataset(generate_images())
+        ds.recons = ReconList([generate_images() for _ in range(3)])
+        recon_ids = ds.recons.ids
+        self.model.add_dataset_to_model(ds)
+
+        self.assertListEqual(self.model.remove_container(ds.recons.id), recon_ids)
+        self.assertListEqual(ds.recons.stacks, [])
+
+    def test_get_all_recon_list_ids(self):
+        ds1 = MixedDataset()
+        ds2 = MixedDataset()
+
+        self.model.add_dataset_to_model(ds1)
+        self.model.add_dataset_to_model(ds2)
+
+        self.assertListEqual(self.model.recon_list_ids, [ds1.recons.id, ds2.recons.id])
+
+    def test_get_recon_list_id(self):
+        ds = MixedDataset()
+        self.model.add_dataset_to_model(ds)
+
+        assert self.model.get_recon_list_id(ds.id) == ds.recons.id

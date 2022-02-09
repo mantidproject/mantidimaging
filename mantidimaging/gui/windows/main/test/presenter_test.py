@@ -45,6 +45,7 @@ class MainWindowPresenterTest(unittest.TestCase):
                                      dark_before=self.images[3],
                                      dark_after=self.images[4])
         self.presenter.model = self.model = mock.Mock()
+        self.model.get_recons_id = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
         self.view.model_changed = mock.Mock()
@@ -452,11 +453,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.remove_item_from_tree_view.assert_called_once_with(dataset_id)
         self.view.model_changed.emit.assert_called_once()
 
-    def test_delete_fails_then_presenter_does_nothing(self):
-        self.model.remove_container = mock.Mock(return_value=None)
-        self.presenter._delete_container("bad-id")
-        self.view.model_changed.emit.assert_not_called()
-
     def test_focus_tab_with_id_not_found(self):
         self.model.image_ids = []
         self.model.datasets = []
@@ -587,10 +583,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_item_mock.id = parent_id = "parent-id"
         child_id = "child-id"
         recon_group_mock = self.view.add_recon_group.return_value
+        self.model.get_recon_list_id.return_value = recons_id = "recons-id"
 
         self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
         self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
-        self.view.add_recon_group.assert_called_once_with(dataset_item_mock)
+        self.model.get_recon_list_id.assert_called_once_with(parent_id)
+        self.view.add_recon_group.assert_called_once_with(dataset_item_mock, recons_id)
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
 
     def test_add_additional_recon_item_to_tree_view(self):
@@ -626,9 +624,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.stack_visualisers = dict()
         self.model.datasets = []
         self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
-        self.view.recon_groups_id = recon_id = "recon-id"
+        recons_id = "recons-id"
+        self.model.recon_list_ids = [recons_id]
 
-        self.presenter._restore_and_focus_tab(recon_id)
+        self.presenter._restore_and_focus_tab(recons_id)
         stack_mock.setVisible.assert_not_called()
         stack_mock._raise.assert_not_called()
 
@@ -684,9 +683,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
         top_level_item_mock.childCount.return_value = 1
         top_level_item_mock.child.return_value = recon_group_mock = mock.Mock()
-        recon_group_mock.id = self.view.recon_groups_id
 
-        recon_group_mock.childCount.side_effect = [2, 1]
+        recon_group_mock.childCount.side_effect = [2, 2, 1]
         recon_to_delete = mock.Mock()
         recon_to_delete.id = recon_to_delete_id = "recon-to-delete-id"
         recon_group_mock.child.side_effect = [mock.Mock(), recon_to_delete]
@@ -701,9 +699,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget.topLevelItem.return_value = top_level_item_mock
         top_level_item_mock.childCount.return_value = 1
         top_level_item_mock.child.return_value = recon_group_mock = mock.Mock()
-        recon_group_mock.id = self.view.recon_groups_id
 
-        recon_group_mock.childCount.side_effect = [1, 0]
+        recon_group_mock.childCount.side_effect = [1, 1, 0]
         recon_group_mock.child.return_value = recon_to_delete = mock.Mock()
         recon_to_delete.id = recon_to_delete_id = "recon-to-delete-id"
 
@@ -720,7 +717,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         other_data_mock = mock.Mock()
         other_data_mock.id = item_to_delete_id = "item-to-delete-id"
         top_level_item_mock.child.side_effect = [recon_group_mock, other_data_mock]
-        recon_group_mock.id = self.view.recon_groups_id
 
         recon_group_mock.childCount.return_value = 1
         recon_group_mock.child.return_value = mock.Mock()
