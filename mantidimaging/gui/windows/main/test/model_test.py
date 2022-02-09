@@ -407,7 +407,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds)
 
         self.assertListEqual(self.model.remove_container(ds.recons.id), recon_ids)
-        self.assertListEqual(ds.recons.data, [])
+        self.assertListEqual(ds.recons.stacks, [])
 
     def test_get_all_recon_list_ids(self):
         ds1 = MixedDataset()

@@ -73,7 +73,7 @@ class MixedDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        all_images = self._stacks + self.recons.data
+        all_images = self._stacks + self.recons.stacks
         if self.sinograms is None:
             return all_images
         return all_images + [self.sinograms]
@@ -124,7 +124,7 @@ class StrictDataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.data
+        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
 
     @property
     def proj180deg(self):

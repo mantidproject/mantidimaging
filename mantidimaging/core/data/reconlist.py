@@ -20,3 +20,7 @@ class ReconList(UserList):
     @property
     def ids(self) -> List[uuid.UUID]:
         return [recon.id for recon in self.data]
+
+    @property
+    def stacks(self) -> List[Images]:
+        return self.data

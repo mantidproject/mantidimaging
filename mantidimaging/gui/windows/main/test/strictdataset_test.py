@@ -140,4 +140,4 @@ class StrictDatasetTest(unittest.TestCase):
     def test_delete_all_recons(self):
         self.strict_dataset.recons = ReconList([generate_images() for _ in range(2)])
         self.strict_dataset.delete_recons()
-        self.assertListEqual(self.strict_dataset.recons.data, [])
+        self.assertListEqual(self.strict_dataset.recons.stacks, [])
