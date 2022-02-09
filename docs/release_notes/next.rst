@@ -46,6 +46,7 @@ Fixes
 - #1294 : Dataset Tree View: Allow for deleting recons
 - #1289 : Trigger recon redraws when stack is modified
 - #1299 : CIL: when reconstructing from sinograms use right dimensions and ordering
+- #1305 : Delete recon group from tree view
 - #1285 : Error when load two 180 stacks
 
 

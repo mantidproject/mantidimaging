@@ -37,7 +37,6 @@ from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 
 RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
-RECON_ID = uuid.uuid4()
 
 LOG = getLogger(__file__)
 
@@ -519,13 +518,13 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)
 
     @staticmethod
-    def add_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+    def add_recon_group(dataset_item: QTreeDatasetWidgetItem, recon_id: uuid.UUID) -> QTreeDatasetWidgetItem:
         """
         Adds a recon group to a dataset item in the tree view.
         :param dataset_item: The dataset item.
         :return: The recon group that was added.
         """
-        recon_group = QTreeDatasetWidgetItem(dataset_item, RECON_ID)
+        recon_group = QTreeDatasetWidgetItem(dataset_item, recon_id)
         recon_group.setText(0, RECON_GROUP_TEXT)
         dataset_item.addChild(recon_group)
         recon_group.setExpanded(True)
@@ -555,15 +554,6 @@ class MainWindowView(BaseMainWindowView):
             if top_level_item.id == dataset_id:
                 return top_level_item
         raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
-
-    @property
-    def recon_groups_id(self) -> uuid.UUID:
-        """
-        Returns the ID given to all the recon group headers in the dataset tree view. Used so that double-clicks are
-        ignored.
-        :return: The recon group ID.
-        """
-        return RECON_ID
 
     @property
     def sino_text(self) -> str:

@@ -10,6 +10,7 @@ from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -399,26 +400,54 @@ class MainWindowModelTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.model.get_parent_dataset("unrecognised-id")
 
-    def test_no_dataset_with_180_raises(self):
-        with self.assertRaises(RuntimeError):
-            self.model.get_existing_180_id("bad-id")
+    def test_delete_all_recons_in_dataset(self):
+        ds = StrictDataset(generate_images())
+        ds.recons = ReconList([generate_images() for _ in range(3)])
+        recon_ids = ds.recons.ids
+        self.model.add_dataset_to_model(ds)
 
-    def test_wrong_dataset_type_for_180_raises(self):
-        md = MixedDataset()
-        self.model.add_dataset_to_model(md)
+        self.assertListEqual(self.model.remove_container(ds.recons.id), recon_ids)
+        self.assertListEqual(ds.recons.stacks, [])
 
-        with self.assertRaises(RuntimeError):
-            self.model.get_existing_180_id(md.id)
+    def test_get_all_recon_list_ids(self):
+        ds1 = MixedDataset()
+        ds2 = MixedDataset()
 
-    def test_get_existing_180_id_finds_id(self):
-        sd = StrictDataset(generate_images((5, 20, 20)))
-        sd.proj180deg = _180 = generate_images((1, 20, 20))
-        self.model.add_dataset_to_model(sd)
+        self.model.add_dataset_to_model(ds1)
+        self.model.add_dataset_to_model(ds2)
 
-        assert self.model.get_existing_180_id(sd.id) == _180.id
+        self.assertListEqual(self.model.recon_list_ids, [ds1.recons.id, ds2.recons.id])
 
-    def test_get_existing_id_returns_none_for_dataset_without_180(self):
-        sd = StrictDataset(generate_images((5, 20, 20)))
-        self.model.add_dataset_to_model(sd)
+    def test_get_recon_list_id(self):
+        ds = MixedDataset()
+        self.model.add_dataset_to_model(ds)
 
-        self.assertIsNone(self.model.get_existing_180_id(sd.id))
+        assert self.model.get_recon_list_id(ds.id) == ds.recons.id
+
+
+def test_no_dataset_with_180_raises(self):
+    with self.assertRaises(RuntimeError):
+        self.model.get_existing_180_id("bad-id")
+
+
+def test_wrong_dataset_type_for_180_raises(self):
+    md = MixedDataset()
+    self.model.add_dataset_to_model(md)
+
+    with self.assertRaises(RuntimeError):
+        self.model.get_existing_180_id(md.id)
+
+
+def test_get_existing_180_id_finds_id(self):
+    sd = StrictDataset(generate_images((5, 20, 20)))
+    sd.proj180deg = _180 = generate_images((1, 20, 20))
+    self.model.add_dataset_to_model(sd)
+
+    assert self.model.get_existing_180_id(sd.id) == _180.id
+
+
+def test_get_existing_id_returns_none_for_dataset_without_180(self):
+    sd = StrictDataset(generate_images((5, 20, 20)))
+    self.model.add_dataset_to_model(sd)
+
+    self.assertIsNone(self.model.get_existing_180_id(sd.id))

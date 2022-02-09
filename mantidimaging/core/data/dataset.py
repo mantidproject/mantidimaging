@@ -7,6 +7,7 @@ from typing import Optional, List
 import numpy as np
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.data.reconlist import ReconList
 
 
 def _delete_stack_error_message(images_id: uuid.UUID) -> str:
@@ -16,7 +17,7 @@ def _delete_stack_error_message(images_id: uuid.UUID) -> str:
 class BaseDataset:
     def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
-        self.recons: List[Images] = []
+        self.recons = ReconList()
         self._name = name
         self._sinograms: Optional[Images] = None
 
@@ -61,6 +62,9 @@ class BaseDataset:
     def all_image_ids(self) -> List[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
+    def delete_recons(self):
+        self.recons.clear()
+
 
 class MixedDataset(BaseDataset):
     def __init__(self, stacks: List[Images] = [], name=""):
@@ -69,7 +73,7 @@ class MixedDataset(BaseDataset):
 
     @property
     def all(self) -> List[Images]:
-        all_images = self._stacks + self.recons
+        all_images = self._stacks + self.recons.stacks
         if self.sinograms is None:
             return all_images
         return all_images + [self.sinograms]
@@ -120,7 +124,7 @@ class StrictDataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons
+        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
 
     @property
     def proj180deg(self):
@@ -145,7 +149,7 @@ class StrictDataset(BaseDataset):
             self.sample.clear_proj180deg()
         elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
             self.sinograms = None
-        elif images_id in [recon.id for recon in self.recons]:
+        elif images_id in self.recons.ids:
             for recon in self.recons:
                 if recon.id == images_id:
                     self.recons.remove(recon)
