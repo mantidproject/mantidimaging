@@ -369,6 +369,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_tree_item_mock.child.assert_called_once_with(0)
         assert child_item_mock._id == new_id
 
+    def test_replace_child_item_id_failure(self):
+        dataset_tree_item_mock = self.view.get_dataset_tree_view_item.return_value
+        dataset_tree_item_mock.childCount.return_value = 1
+
+        with self.assertRaises(RuntimeError):
+            self.presenter.replace_child_item_id("dataset-id", "bad-id", "new-id")
+
     def test_add_projection_angles_to_stack_success(self):
         mock_stack = mock.Mock()
         mock_stack.windowTitle.return_value = window_title = "window title"
