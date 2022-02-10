@@ -238,4 +238,4 @@ def find_projection_closest_to_180(projections: np.ndarray, projection_angles: n
     :return: The 180 projection/the closest non-180 projection and the difference between its angle and 180.
     """
     diff = np.abs(projection_angles - np.pi)
-    return projections[diff.argmin()], np.amin(diff)
+    return projections[diff.argmin()].copy(), np.amin(diff)
