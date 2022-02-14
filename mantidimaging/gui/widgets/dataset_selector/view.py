@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union, Tuple
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox
@@ -27,10 +27,12 @@ class DatasetSelectorWidgetView(QComboBox):
 
     main_window: 'MainWindowView'
 
-    def __init__(self, parent, show_stacks=False):
+    def __init__(self, parent, show_stacks=False, relevant_dataset_types: Union[type, Tuple[type]] = None):
         super().__init__(parent)
 
-        self.presenter = DatasetSelectorWidgetPresenter(self, show_stacks=show_stacks)
+        self.presenter = DatasetSelectorWidgetPresenter(self,
+                                                        show_stacks=show_stacks,
+                                                        relevant_dataset_types=relevant_dataset_types)
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
     def subscribe_to_main_window(self, main_window: 'MainWindowView'):
