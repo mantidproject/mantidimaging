@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import Images
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
@@ -181,13 +182,15 @@ class MainWindowView(BaseMainWindowView):
         return None
 
     def update_shortcuts(self):
-        enabled = len(self.presenter.stack_visualisers.values()) > 0
-        self.actionSave.setEnabled(enabled)
-        self.actionSampleLoadLog.setEnabled(enabled)
-        self.actionLoad180deg.setEnabled(enabled)
-        self.actionLoadProjectionAngles.setEnabled(enabled)
-        self.menuWorkflow.setEnabled(enabled)
-        self.menuImage.setEnabled(enabled)
+        has_datasets = len(self.presenter.datasets) > 0
+        has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
+
+        self.actionSave.setEnabled(has_datasets)
+        self.actionSampleLoadLog.setEnabled(has_datasets)
+        self.actionLoad180deg.setEnabled(has_strict_datasets)
+        self.actionLoadProjectionAngles.setEnabled(has_datasets)
+        self.menuWorkflow.setEnabled(has_datasets)
+        self.menuImage.setEnabled(has_datasets)
 
     @staticmethod
     def open_online_documentation():
