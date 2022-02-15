@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
@@ -26,7 +27,7 @@ class DatasetSelectorDialog(QDialog):
         self.vertical_layout.addWidget(QLabel("What dataset is the 180 projection being loaded for?", self))
 
         # Dataset selector
-        self.dataset_selector_widget = DatasetSelectorWidgetView(self)
+        self.dataset_selector_widget = DatasetSelectorWidgetView(self, relevant_dataset_types=StrictDataset)
         self.dataset_selector_widget.subscribe_to_main_window(main_window)  # type: ignore
         self.vertical_layout.addWidget(self.dataset_selector_widget)
 

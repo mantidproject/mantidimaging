@@ -4,7 +4,7 @@
 import unittest
 from unittest import mock
 
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.widgets.dataset_selector.presenter import DatasetSelectorWidgetPresenter, Notification
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
@@ -25,10 +25,14 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.img2.proj180deg = None
         self.img3 = mock.Mock(id="img3")
         self.img3.name = "Image 3"
+        self.img4 = mock.Mock(id="img4")
+        self.img4.name = "Image 4"
         self.ds1 = StrictDataset(sample=self.img1)
         self.ds1.name = "Dataset 1"
         self.ds2 = StrictDataset(sample=self.img2, flat_before=self.img3)
         self.ds2.name = "Dataset 2"
+        self.ds3 = MixedDataset(stacks=[self.img4])
+        self.ds3.name = "Dataset 3"
 
     def test_handle_selection_no_matching_index_found(self):
         self.view.dataset_selected_uuid.emit = mock.Mock()
@@ -87,8 +91,22 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         assert self.presenter.current_dataset == self.ds1.id
 
     def test_do_reload_datasets_stacks(self):
-        self.view.main_window.presenter.datasets = [self.ds1, self.ds2]
+        self.view.main_window.presenter.datasets = [self.ds1, self.ds2, self.ds3]
         self.presenter.show_stacks = True
+        self.view.datasets_updated.emit = mock.Mock()
+        self.view.stack_selected_uuid.emit = mock.Mock()
+
+        self.presenter.do_reload_datasets()
+        self.assertEqual(self.view.addItem.call_count, 4)
+        self.view.addItem.assert_any_call(self.img1.name, self.img1.id)
+        self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
+        self.view.addItem.assert_any_call(self.img3.name, self.img3.id)
+        self.view.addItem.assert_any_call(self.img4.name, self.img4.id)
+
+    def test_do_reload_datasets_by_dataset_type(self):
+        self.view.main_window.presenter.datasets = [self.ds1, self.ds2, self.ds3]
+        self.presenter.show_stacks = True
+        self.presenter.relevant_dataset_types = StrictDataset
         self.view.datasets_updated.emit = mock.Mock()
         self.view.stack_selected_uuid.emit = mock.Mock()
 

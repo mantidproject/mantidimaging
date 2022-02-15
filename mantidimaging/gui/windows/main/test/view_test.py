@@ -9,6 +9,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
 
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -209,18 +210,24 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.stack_visualisers = {"a": mock.Mock(), "b": mock.Mock()}
+        self.presenter.datasets = [StrictDataset(mock.Mock()), MixedDataset()]
 
-        self._update_shortcuts_test(False, True)
-        self._update_shortcuts_test(True, True)
+        self._update_shortcuts_test(False, True, True)
+        self._update_shortcuts_test(True, True, True)
+
+    def test_update_shortcuts_with_presenter_with_no_strict_datasets(self):
+        self.presenter.datasets = [MixedDataset(), MixedDataset()]
+
+        self._update_shortcuts_test(False, True, False)
+        self._update_shortcuts_test(True, True, False)
 
     def test_update_shortcuts_with_presenter_with_no_stacks(self):
-        self.presenter.stacks = dict()
+        self.presenter.datasets = []
 
-        self._update_shortcuts_test(False, False)
-        self._update_shortcuts_test(True, False)
+        self._update_shortcuts_test(False, False, False)
+        self._update_shortcuts_test(True, False, False)
 
-    def _update_shortcuts_test(self, original_state, expected_state):
+    def _update_shortcuts_test(self, original_state, has_stacks, has_strict_datasets):
         self.view.actionSave.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
         self.view.actionLoad180deg.setEnabled(original_state)
@@ -230,12 +237,12 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.update_shortcuts()
 
-        self.assertEqual(expected_state, self.view.actionSave.isEnabled())
-        self.assertEqual(expected_state, self.view.actionSampleLoadLog.isEnabled())
-        self.assertEqual(expected_state, self.view.actionLoad180deg.isEnabled())
-        self.assertEqual(expected_state, self.view.actionLoadProjectionAngles.isEnabled())
-        self.assertEqual(expected_state, self.view.menuWorkflow.isEnabled())
-        self.assertEqual(expected_state, self.view.menuImage.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionSave.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionSampleLoadLog.isEnabled())
+        self.assertEqual(has_strict_datasets, self.view.actionLoad180deg.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionLoadProjectionAngles.isEnabled())
+        self.assertEqual(has_stacks, self.view.menuWorkflow.isEnabled())
+        self.assertEqual(has_stacks, self.view.menuImage.isEnabled())
 
     @mock.patch("mantidimaging.gui.windows.main.view.populate_menu")
     def test_populate_image_menu_with_no_stack(self, populate_menu):
