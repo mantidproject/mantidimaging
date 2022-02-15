@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union, Tuple, List
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
 
 
-def _string_contains_all_parts(string: str, parts: list) -> bool:
+def _string_contains_all_parts(string: str, parts: List[str]) -> bool:
     for part in parts:
         if part.lower() not in string:
             return False
@@ -27,13 +27,15 @@ class DatasetSelectorWidgetView(QComboBox):
 
     main_window: 'MainWindowView'
 
-    def __init__(self, parent, show_stacks=False):
+    def __init__(self, parent, show_stacks: bool = False, relevant_dataset_types: Union[type, Tuple[type]] = None):
         super().__init__(parent)
 
-        self.presenter = DatasetSelectorWidgetPresenter(self, show_stacks=show_stacks)
+        self.presenter = DatasetSelectorWidgetPresenter(self,
+                                                        show_stacks=show_stacks,
+                                                        relevant_dataset_types=relevant_dataset_types)
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
-    def subscribe_to_main_window(self, main_window: 'MainWindowView'):
+    def subscribe_to_main_window(self, main_window: 'MainWindowView') -> None:
         self.main_window = main_window
 
         # Initial population of dataset list
@@ -42,7 +44,7 @@ class DatasetSelectorWidgetView(QComboBox):
         # Connect signal for auto update on stack change
         self.main_window.model_changed.connect(self._handle_loaded_datasets_changed)
 
-    def unsubscribe_from_main_window(self):
+    def unsubscribe_from_main_window(self) -> None:
         """
         Removes connections to main window.
 
@@ -52,7 +54,7 @@ class DatasetSelectorWidgetView(QComboBox):
             # Disconnect signal
             self.main_window.model_changed.disconnect(self._handle_loaded_datasets_changed)
 
-    def _handle_loaded_datasets_changed(self):
+    def _handle_loaded_datasets_changed(self) -> None:
         """
         Handle a change in loaded stacks.
         """
@@ -70,5 +72,5 @@ class DatasetSelectorWidgetView(QComboBox):
                 self.setCurrentIndex(i)
                 break
 
-    def select_eligible_stack(self):
+    def select_eligible_stack(self) -> None:
         self.presenter.notify(Notification.SELECT_ELIGIBLE_STACK)
