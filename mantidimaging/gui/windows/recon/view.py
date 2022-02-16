@@ -7,8 +7,7 @@ from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox, QAction, QTextEdit, QLabel, QApplication, QStyle,
-                             QCheckBox)
+                             QVBoxLayout, QWidget, QMessageBox, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
 from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import Images
@@ -187,12 +186,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
 
         # Preparing the auto change colour map UI
-        self.auto_colour_action = QAction("Auto")
+        self.auto_colour_action = self.image_view.imageview_recon.add_auto_color_action()
         self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
-
-        action = self.image_view.recon_hist.gradient.menu.actions()[12]
-        self.image_view.recon_hist.gradient.menu.insertAction(action, self.auto_colour_action)
-        self.image_view.recon_hist.gradient.menu.insertSeparator(self.auto_colour_action)
 
         for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
             spinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
