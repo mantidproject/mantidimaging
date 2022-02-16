@@ -50,6 +50,7 @@ Fixes
 - #1285 : Error when load two 180 stacks
 - #1278 : It should not be possible to attempt loading 180 projections to a MixedDataset
 - #1311 : Operation applied to 180 twice
+- #1310 : Disable Auto color menu item when no image shown
 
 
 Developer Changes

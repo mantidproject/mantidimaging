@@ -8,7 +8,6 @@ from typing import Optional
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
-from PyQt5.QtWidgets import QAction
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
@@ -92,10 +91,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
-        self.auto_colour_actions = []
-        self._add_auto_colour_action(self.image_before_hist, self.image_before)
-        self._add_auto_colour_action(self.image_after_hist, self.image_after)
-        self._add_auto_colour_action(self.image_difference_hist, self.image_difference)
+        self._add_auto_colour_action(self.imageview_before)
+        self._add_auto_colour_action(self.imageview_after)
+        self._add_auto_colour_action(self.imageview_difference)
 
         self.imageview_before.link_sibling_axis()
 
@@ -202,18 +200,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         set_histogram_log_scale(self.image_before_hist)
         set_histogram_log_scale(self.image_after_hist)
 
-    def _add_auto_colour_action(self, histogram: HistogramLUTItem, image: ImageItem):
+    def _add_auto_colour_action(self, img_view: MIMiniImageView):
         """
         Adds an "Auto" action to the histogram right-click menu.
-        :param histogram: The HistogramLUTItem
-        :param image: The ImageItem to have the Jenks/Otsu algorithm performed on it.
         """
-        self.auto_colour_actions.append(QAction("Auto"))
-        self.auto_colour_actions[-1].triggered.connect(lambda: self._on_change_colour_palette(histogram, image))
 
-        action = histogram.gradient.menu.actions()[12]
-        histogram.gradient.menu.insertAction(action, self.auto_colour_actions[-1])
-        histogram.gradient.menu.insertSeparator(self.auto_colour_actions[-1])
+        action = img_view.add_auto_color_action()
+        action.triggered.connect(lambda: self._on_change_colour_palette(img_view.hist, img_view.im))
 
     def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
         """

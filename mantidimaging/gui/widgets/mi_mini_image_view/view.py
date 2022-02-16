@@ -2,12 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from itertools import chain, tee
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
+from PyQt5.QtWidgets import QAction
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
@@ -49,6 +50,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
+        self.auto_action: Optional[QAction] = None
+
     @property
     def image_item(self) -> ImageItem:
         return self.im
@@ -59,10 +62,12 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
 
     def clear(self):
         self.im.clear()
+        self.set_auto_color_enabled(False)
 
     def setImage(self, *args, **kwargs):
         self.im.setImage(*args, **kwargs)
         self.check_for_bad_data()
+        self.set_auto_color_enabled(self.im.image is not None)
 
     @staticmethod
     def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):
@@ -136,3 +141,17 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         for img_view in self.histogram_siblings:
             with BlockQtSignals(img_view.hist):
                 img_view.hist.setLevels(*hist_range)
+
+    def add_auto_color_action(self) -> QAction:
+        self.auto_action = QAction("Auto", self)
+        place = self.hist.gradient.menu.actions()[12]
+
+        self.hist.gradient.menu.insertAction(place, self.auto_action)
+        self.hist.gradient.menu.insertSeparator(self.auto_action)
+        self.set_auto_color_enabled(False)
+
+        return self.auto_action
+
+    def set_auto_color_enabled(self, enabled: bool = True):
+        if self.auto_action is not None:
+            self.auto_action.setEnabled(enabled)
