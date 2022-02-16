@@ -202,7 +202,17 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.dataset.sample.clear_proj180deg()
         self.presenter.add_alternative_180_if_required(self.dataset)
-        self.assertIsNotNone(self.dataset.proj180deg)
+
+    def test_threshold_180_is_separate_data(self):
+        self.dataset.sample.set_projection_angles(
+            ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
+
+        self.presenter.get_stack_visualiser = mock.Mock()
+        self.presenter._create_and_tabify_stack_window = mock.Mock()
+        self.dataset.sample.clear_proj180deg()
+        self.presenter.add_alternative_180_if_required(self.dataset)
+
+        self.assertIsNone(self.dataset.proj180deg.data.base)
 
     def test_create_new_stack_dataset_and_reject_180(self):
         self.dataset.flat_before.filenames = ["filename"] * 10

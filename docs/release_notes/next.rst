@@ -49,6 +49,7 @@ Fixes
 - #1305 : Delete recon group from tree view
 - #1285 : Error when load two 180 stacks
 - #1278 : It should not be possible to attempt loading 180 projections to a MixedDataset
+- #1311 : Operation applied to 180 twice
 
 
 Developer Changes

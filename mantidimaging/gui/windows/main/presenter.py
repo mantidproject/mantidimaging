@@ -203,8 +203,8 @@ class MainWindowPresenter(BasePresenter):
             closest_projection, diff = find_projection_closest_to_180(dataset.sample.projections,
                                                                       dataset.sample.projection_angles().value)
             if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                dataset.proj180deg = Images(np.reshape(closest_projection, (1, ) + closest_projection.shape),
-                                            name=f"{dataset.name}_180")
+                _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
+                dataset.proj180deg = Images(_180_arr, name=f"{dataset.name}_180")
 
                 self.add_child_item_to_tree_view(dataset.id, dataset.proj180deg.id, "180")
                 sample_vis = self.get_stack_visualiser(dataset.sample.id)
