@@ -23,6 +23,7 @@ New Features
 - #1279 : Add auto update checkbox option to turn off live reconstruction
 - #1273 : Move sinograms into the Dataset
 - #1220 : Make reconstruction window side bar scrollable for smaller screens
+- #1280 : Don't display full file path for loaded images in the tree view
 
 
 Fixes

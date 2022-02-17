@@ -1,6 +1,5 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import os
 import traceback
 import uuid
 from enum import Enum, auto
@@ -140,7 +139,6 @@ class MainWindowPresenter(BasePresenter):
         log = getLogger(__name__)
 
         if task.was_successful():
-            task.result.name = os.path.splitext(task.kwargs['file_path'])[0]
             self.create_mixed_dataset_tree_view_items(task.result)
             self.create_mixed_dataset_stack_windows(task.result)
             self.view.model_changed.emit()
