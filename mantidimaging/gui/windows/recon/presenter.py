@@ -421,4 +421,3 @@ class ReconstructWindowPresenter(BasePresenter):
         :param images: The Images object.
         """
         images.data[np.isinf(images.data)] = np.nan
-        images.data[np.isneginf(images.data)] = np.nan
