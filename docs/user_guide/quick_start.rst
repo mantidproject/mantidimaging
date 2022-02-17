@@ -1,17 +1,5 @@
-User Guide
-==========
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
-
-   operations/index
-   gui/index
-   reconstructions/index
-
-
-Mantid Imaging User Guide: Example Reconstruction
--------------------------------------------------
+Quick start: Example Reconstruction
+-----------------------------------
 
 Written: November 2020
 
