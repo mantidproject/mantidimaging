@@ -348,3 +348,19 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter._do_nan_zero_negative_check()
         self.view.show_status_message.assert_called_once_with("")
+
+    def test_infs_removed_from_recon_volume(self):
+        task = mock.Mock()
+        task.error = None
+        task.result.data = np.array([np.inf, -np.inf])
+
+        self.presenter._on_volume_recon_done(task)
+        assert not np.isinf(self.view.show_recon_volume.call_args[0][0].data).any()
+
+    def test_infs_removed_from_recon_slice(self):
+        task = mock.Mock()
+        task.error = None
+        task.result.data = np.array([np.inf, -np.inf])
+
+        self.presenter._on_stack_reconstruct_slice_done(task)
+        assert not np.isinf(self.view.show_recon_volume.call_args[0][0].data).any()
