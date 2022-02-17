@@ -12,7 +12,7 @@ Example data that can be used for this tutorial can be downloaded from `github.c
 Loading Sample Stack
 ####################
 
-Firstly, let's load our projections. Go to "File" then "Load" or alternatively use the shortcut "Ctrl"+"o". This brings up the following loading screen:
+Firstly, let's load our projections. Go to "File" then "Load Dataset" or alternatively use the shortcut "Ctrl"+"o". This brings up the following loading screen:
 
 .. image:: ../_static/loading_screen.png
     :alt: Loading screen
@@ -20,7 +20,7 @@ Firstly, let's load our projections. Go to "File" then "Load" or alternatively u
     :align: center
 
 
-#. Click select on the sample row and go to the directory you want to load. We'll be working with the "Tilt 4 pre reco" data set.
+#. Click select on the sample row and go to the directory you want to load. We'll be working with the "IMAT00010675" flower data set which can be found in the ISIS/IMAT directory in the above download.
 #. Open one of the images with the prefix "Tomo".
 #. All images with the prefix "Tomo" in the same directory will be loaded
 
@@ -40,7 +40,7 @@ Project Window
 ##############
 
 
-.. image:: ../_static/project_view_guide.png
+.. image:: ../_static/gui_main_window.png
     :alt: View of the application window
     :align: center
 
