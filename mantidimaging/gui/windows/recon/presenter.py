@@ -254,7 +254,6 @@ class ReconstructWindowPresenter(BasePresenter):
         if images is not None:
             assert self.model.images is not None
             images.name = "Recon"
-
             self._replace_inf_nan(images)
             self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
