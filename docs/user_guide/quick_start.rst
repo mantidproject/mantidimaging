@@ -57,14 +57,15 @@ Next let's take the sample we loaded and let's tidy it up with operations. To op
     - The difference value is used to find outliers, and will have to be adjusted depending on the values in your data, and how aggressive you want the filter to be.
     - Safe Apply is enabled by default and it will show a window containing the original data and the processed data. This allows us to see the result of the operation before applying it. Choose the new data to proceed.
 
-2. **Flat Fielding** As we only have one set of flat and dark images we will set the flat fielding method to "Only Before". With safe apply checked running this operation opens the following window:
+2. **ROI Normalisation** After going to this operation we're able to click "Select ROI" and set our ROI to a space free of any sample. This operation will result in a much greater consistency between projections visible in the ROI viewer.
+
+3. **Flat Fielding** As we only have one set of flat and dark images we will set the flat fielding method to "Only Before". With safe apply checked running this operation opens the following window:
     - Safe Apply window showing before flat fielding on the left and after flat fielding on the right. Next select "Choose New Data" to apply operation.
 
 .. image:: ../_static/flat_fielding.png
    :alt: Flat fielding with Safe Apply option turned on
    :align: center
 
-3. **ROI Normalisation** After going to this operation we're able to click "Select ROI" and set our ROI to a space free of any sample. This operation will result in a much greater consistency between projections visible in the ROI viewer.
 4. **Crop Coordinates** Next we will crop the stack to contain the sample only by selecting a ROI as in the following.
 
 .. image:: ../_static/Crop.png
