@@ -6,6 +6,7 @@ from enum import Enum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
 
+import numpy as np
 from PyQt5.QtWidgets import QWidget
 
 from mantidimaging.core.data import Images
@@ -253,6 +254,8 @@ class ReconstructWindowPresenter(BasePresenter):
         if images is not None:
             assert self.model.images is not None
             images.name = "Recon"
+
+            self._replace_inf_nan(images)
             self.view.show_recon_volume(images, self.model.stack_id)
             images.record_operation('AstraRecon.single_sino',
                                     'Slice Reconstruction',
@@ -304,6 +307,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
+        self._replace_inf_nan(task.result)
         assert self.model.images is not None
         task.result.name = "Recon"
         self.view.show_recon_volume(task.result, self.model.stack_id)
@@ -410,3 +414,12 @@ class ReconstructWindowPresenter(BasePresenter):
         else:
             msg_list.insert(0, "Warning:")
             self.view.show_status_message(" ".join(msg_list))
+
+    @staticmethod
+    def _replace_inf_nan(images: Images):
+        """
+        Replaces infinity values in a data array with NaNs.
+        :param images: The Images object.
+        """
+        images.data[np.isinf(images.data)] = np.nan
+        images.data[np.isneginf(images.data)] = np.nan
