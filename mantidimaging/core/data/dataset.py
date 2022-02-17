@@ -67,7 +67,7 @@ class BaseDataset:
 
 
 class MixedDataset(BaseDataset):
-    def __init__(self, stacks: List[Images] = [], name=""):
+    def __init__(self, stacks: List[Images] = [], name: str = ""):
         super().__init__(name=name)
         self._stacks = stacks
 

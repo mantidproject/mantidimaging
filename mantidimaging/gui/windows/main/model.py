@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from logging import getLogger
-from typing import Dict, Optional, List, Union, NoReturn
+from typing import Dict, Optional, List, Union, NoReturn, TYPE_CHECKING
 
 import numpy as np
 
@@ -10,6 +10,9 @@ from mantidimaging.core.data import Images
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
+
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.progress_reporting import Progress
 
 logger = getLogger(__name__)
 
@@ -64,9 +67,9 @@ class MainWindowModel(object):
         self.datasets[ds.id] = ds
         return ds
 
-    def load_images(self, file_path: str, progress) -> MixedDataset:
+    def load_images(self, file_path: str, progress: 'Progress') -> MixedDataset:
         images = loader.load_stack(file_path, progress)
-        sd = MixedDataset([images])
+        sd = MixedDataset([images], images.name)
         self.datasets[sd.id] = sd
         return sd
 
