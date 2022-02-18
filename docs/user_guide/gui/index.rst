@@ -2,9 +2,10 @@ Graphical User Interface (GUI)
 ==============================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
    loading_saving
-   operations
    image_view
+   operations_window
+   recon_window
