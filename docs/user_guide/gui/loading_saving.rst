@@ -92,6 +92,8 @@ been found, then it will try to look for a projection that is <= 1 degree away f
 be asked if you wish to use the next closest image. Bear in mind that the absence of a 180 degree projection means that
 the "Correlate 0 and 180" algorithm will not be available for the reconstruction.
 
+A new 180 projection can be loaded with the :code:`Load 180 degree projection` option. This will override any already loaded 180 projection. This option will only work correctly with a stack loaded through the :ref:`Load dataset` method.
+
 Saving
 ------
 
