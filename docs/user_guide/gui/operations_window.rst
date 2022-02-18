@@ -29,14 +29,8 @@ and after** the filter was applied.
 
 There are several tickboxes to customise the behaviour of the preview area.
 
-Legend
-    Enables a legend in the histogram
-
 Link Images
     Links the pan and zoom between the before, after and difference views
-
-Combine Histograms
-    Use a single histogram to show before and after
 
 Overlay difference
     Highlights pixels that have changed in the after image
