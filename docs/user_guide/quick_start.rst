@@ -115,6 +115,8 @@ There are many filter options. Experiment with the filters by looking at the sli
 
 Then click "Reconstruct Volume" to complete the reconstruction. This should take about 5 minutes.
 
+For more details on the reconstruction GUI see :ref:`reconstruction window`
+
 Post-reconstruction
 ###################
 
