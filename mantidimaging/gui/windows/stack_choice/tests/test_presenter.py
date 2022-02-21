@@ -81,13 +81,16 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
         img1 = Images(np.zeros((3, 3, 3)) + 1)
+        img1.metadata = {"name": 1}
         img2 = Images(np.zeros((3, 3, 3)) + 2)
+        img2.metadata = {"name": 2}
         self.p.original_stack = img1
         self.p.new_stack = img2
 
         self.p.do_reapply_original_data()
 
         self.assertEqual(self.p.new_stack.data[0, 0, 0], 1)
+        self.assertEqual(self.p.new_stack.metadata["name"], 1)
         self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
