@@ -38,6 +38,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
             view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
 
         self.view = view
+        self.new_stack = new_stack
         self.stack_uuid = stack_uuid
         self.done = False
         self.use_new_data = False
@@ -68,7 +69,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
             self.operations_presenter.original_images_stack = None
 
     def do_reapply_original_data(self):
-        self.operations_presenter.main_window.presenter.set_images_in_stack(self.stack_uuid, self.original_stack)
+        self.new_stack.data = self.original_stack.data
         self._clean_up_original_images_stack()
         self.view.choice_made = True
         self.close_view()
