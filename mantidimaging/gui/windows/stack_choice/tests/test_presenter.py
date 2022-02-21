@@ -6,9 +6,12 @@ from unittest import mock
 from unittest.mock import DEFAULT, MagicMock, Mock, patch
 from uuid import uuid4
 
+import numpy as np
+
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.gui.windows.stack_choice.view import Notification
+from mantidimaging.core.data.images import Images
 
 
 class StackChoicePresenterTest(unittest.TestCase):
@@ -77,17 +80,23 @@ class StackChoicePresenterTest(unittest.TestCase):
     def test_do_reapply_original_data(self):
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
-        self.p.stack = 1
+        img1 = Images(np.zeros((3, 3, 3)) + 1)
+        img1.metadata = {"name": 1}
+        img2 = Images(np.zeros((3, 3, 3)) + 2)
+        img2.metadata = {"name": 2}
+        self.p.original_stack = img1
+        self.p.new_stack = img2
 
         self.p.do_reapply_original_data()
 
-        self.op_p.main_window.presenter.set_images_in_stack.assert_called_once_with(self.uuid, 1)
+        self.assertEqual(self.p.new_stack.data[0, 0, 0], 1)
+        self.assertEqual(self.p.new_stack.metadata["name"], 1)
         self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
 
     def test_do_clean_up_original_data(self):
-        self.p.stack = mock.MagicMock()
+        self.p.original_stack = mock.MagicMock()
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
 

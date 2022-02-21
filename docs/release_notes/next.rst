@@ -53,6 +53,7 @@ Fixes
 - #1311 : Operation applied to 180 twice
 - #1310 : Disable Auto color menu item when no image shown
 - #1295 : Failed recon still increments recon counter
+- #1313 : Restore metadata when choosing original
 
 
 Developer Changes

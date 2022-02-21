@@ -32,12 +32,13 @@ class StackChoicePresenter(StackChoicePresenterMixin):
         if view is None:
             # Check if multiple stacks to choose from
             if isinstance(original_stack, list):
-                self.stack = _get_stack_from_uuid(original_stack, stack_uuid)
+                self.original_stack = _get_stack_from_uuid(original_stack, stack_uuid)
             else:
-                self.stack = original_stack
-            view = StackChoiceView(self.stack, new_stack, self, parent=operations_presenter.view)
+                self.original_stack = original_stack
+            view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
 
         self.view = view
+        self.new_stack = new_stack
         self.stack_uuid = stack_uuid
         self.done = False
         self.use_new_data = False
@@ -68,7 +69,8 @@ class StackChoicePresenter(StackChoicePresenterMixin):
             self.operations_presenter.original_images_stack = None
 
     def do_reapply_original_data(self):
-        self.operations_presenter.main_window.presenter.set_images_in_stack(self.stack_uuid, self.stack)
+        self.new_stack.data = self.original_stack.data
+        self.new_stack.metadata = self.original_stack.metadata
         self._clean_up_original_images_stack()
         self.view.choice_made = True
         self.close_view()
@@ -80,7 +82,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
 
     def close_view(self):
         self.view.close()
-        self.stack = None
+        self.original_stack = None
         self.done = True
 
     def enable_nonpositive_check(self):
