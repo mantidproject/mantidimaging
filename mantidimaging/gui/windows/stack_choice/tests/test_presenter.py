@@ -77,7 +77,7 @@ class StackChoicePresenterTest(unittest.TestCase):
     def test_do_reapply_original_data(self):
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
-        self.p.stack = 1
+        self.p.original_stack = 1
 
         self.p.do_reapply_original_data()
 
@@ -87,7 +87,7 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.p.close_view.assert_called_once()
 
     def test_do_clean_up_original_data(self):
-        self.p.stack = mock.MagicMock()
+        self.p.original_stack = mock.MagicMock()
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
 
