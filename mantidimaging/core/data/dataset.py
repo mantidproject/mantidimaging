@@ -128,7 +128,10 @@ class StrictDataset(BaseDataset):
 
     @property
     def proj180deg(self):
-        return self.sample.proj180deg
+        if self.sample is not None:
+            return self.sample.proj180deg
+        else:
+            return None
 
     @proj180deg.setter
     def proj180deg(self, _180_deg: Images):
