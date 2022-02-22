@@ -32,7 +32,7 @@ class BadDataCheck:
         # cast any_bad to python bool to prevent DeprecationWarning
         self.indicator.setVisible(bool(any_bad))
 
-        self.overlay.setImage(bad_data)
+        self.overlay.setImage(bad_data, autoLevels=False)
 
     def setup_overlay(self):
         color = np.array([[0, 0, 0, 0], self.color], dtype=np.ubyte)
@@ -41,6 +41,7 @@ class BadDataCheck:
         lut = color_map.getLookupTable(0, 1, 2)
         self.overlay.setLookupTable(lut)
         self.overlay.setZValue(11)
+        self.overlay.setLevels([0, 1])
 
     def clear(self):
         self.overlay.getViewBox().removeItem(self.indicator)
