@@ -109,7 +109,7 @@ jobs:
           coveralls
 
       - name: publish 'unstable' package
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.event_name == 'push' }}  && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release'))
         uses: ./.github/actions/publish-package
         with:
           label: unstable
