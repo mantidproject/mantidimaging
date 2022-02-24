@@ -55,6 +55,7 @@ Fixes
 - #1295 : Failed recon still increments recon counter
 - #1313 : Restore metadata when choosing original
 - #1324 : Bad data overlay not showing with large files
+- #1332 : Load dataset dialog wont accept non standard names
 
 
 Developer Changes
