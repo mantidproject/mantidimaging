@@ -136,6 +136,25 @@ class LoadDialogPresenterTest(unittest.TestCase):
         find_images.assert_called_once_with(Path('/'), name, suffix, image_format='', logger=logger)
         field.set_images.assert_called_once_with(find_images.return_value)
 
+    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images")
+    def test_do_update_flat_or_dark_second_attempt(self, find_images):
+        file_name = "/aaa_0000.tiff"
+        name = "Name"
+        suffix = "Apples"
+        field = mock.MagicMock()
+        self.v.select_file.return_value = file_name
+        files_list = [file_name, "aaa_0001.tiff"]
+        find_images.side_effect = [[], files_list]
+
+        self.p.do_update_flat_or_dark(field, name, suffix)
+
+        calls = [
+            mock.call(Path('/'), name, suffix, image_format='', logger=logger),
+            mock.call(Path('/'), "aaa", "", image_format='', logger=logger)
+        ]
+        find_images.assert_has_calls(calls)
+        field.set_images.assert_called_once_with(files_list)
+
     def test_do_update_single_file(self):
         file_name = "file_name"
         name = "Name"
