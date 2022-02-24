@@ -1,7 +1,21 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.3
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some significant new features:
+
+Bad data indicators
+   Show pixel values that can cause issues during reconstruction, NaNs (not a number) caused by missing data or invalid math operations and non-positive values caused by noise or issues with dark frame subtraction.
+
+Beam hardening correction
+  Mantid Imaging now implements a linearization correction to compensate for the beam hardening effect.
+
+Dataset side-bar
+   The main window now shows a tree-view of loaded datasets and their stacks. Internally Mantid Imaging now has a more structured view of the loaded data, which will allow further user interface improvements.
+
+User interface improvements
+   The parameter controls in operations and reconstruction windows now have finer step sizes and better defaults. Auto preview in the reconstruction window can be disabled.
+
+There have also been many smaller changes and fixes which are listed below.
 
 New Features
 ------------
