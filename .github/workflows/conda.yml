@@ -90,7 +90,7 @@ jobs:
         timeout-minutes: 15
 
       - name: GUI Tests Screenshots Applitools
-        if: ${{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request'
         shell: bash -l {0}
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
@@ -109,7 +109,7 @@ jobs:
           coveralls
 
       - name: publish 'unstable' package
-        if: ${{ github.event_name == 'push' }}  && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release'))
+        if: github.event_name == 'push'  && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release'))
         uses: ./.github/actions/publish-package
         with:
           label: unstable

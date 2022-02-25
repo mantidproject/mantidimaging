@@ -21,7 +21,7 @@ authors:
   - family-names: Baust
     given-names: Rachel
 title: "Mantid Imaging"
-version: "2.2.0"
+version: "2.3.0"
 doi: 10.5281/zenodo.4728059
 date-released: 2021-04-29
 license: "GPL-3.0-or-later"
