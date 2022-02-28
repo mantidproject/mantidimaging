@@ -125,7 +125,7 @@ class LoadPresenter:
         selected_dir = Path(os.path.dirname(selected_file))
         images = find_images(selected_dir, name, suffix, image_format=self.image_format, logger=logger)
         if not images:
-            base_name = os.path.basename(selected_file).split("_")[0]
+            base_name = os.path.basename(selected_file).rpartition("_")[0]
             images = find_images(selected_dir, base_name, "", image_format=self.image_format, logger=logger)
         field.set_images(images)
 
