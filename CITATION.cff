@@ -21,10 +21,16 @@ authors:
   - family-names: Baust
     given-names: Rachel
 title: "Mantid Imaging"
+abstract: "Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutron tomography data.  It provides an easy-to-use graphical interface to a wide range of pre/post-processing operations, tilt correction and reconstruction algorithms, accommodating for tomography users with varying data complexity and image analysis background knowledge. It utilises a flexible plugin system that allows easy integration of external software, and has allowed us to re-use software widely known in the neutron tomography community."
 version: "2.3.0"
 doi: 10.5281/zenodo.4728059
-date-released: 2021-04-29
+date-released: 2022-02-25
 license: "GPL-3.0-or-later"
 repository-code: https://github.com/mantidproject/mantidimaging
 url: https://mantidproject.github.io/mantidimaging
 type: software
+keywords:
+  - Tomography
+  - Neutrons
+  - Imaging
+  - GUI
