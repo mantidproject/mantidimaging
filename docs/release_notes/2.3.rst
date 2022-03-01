@@ -92,3 +92,9 @@ Developer Changes
 - #1259 : Update license year in code files and add pre-commit check
 - #1243  #1276 : Stack selector based on datasets
 - #1184 : Make more use of QTest in gui testing
+
+
+2.3.1
+-----
+
+- #1332 : Load dataset dialog wont accept non standard names
