@@ -31,6 +31,6 @@ such as `Avizo
 
 Please cite as:
 
-Dimitar Tasev, Daniel Nixon, Samuel Jones, Sam Tygier, Dolica Akello-Egwel, & Will Taylor. (2021, January 15). MANTID Imaging. Zenodo. http://doi.org/10.5281/zenodo.4451978
+Tasev, Dimitar; Akello-Egwel, Dolica; Gigg, Martyn; Jones, Samuel; Nixon, Daniel; Taylor, Will; Tygier, Sam; & Baust, Rachel. (2021). Mantid Imaging (2.3.0), Zenodo https://doi.org/10.5281/zenodo.4728059
 
-(See `Zenodo <http://doi.org/10.5281/zenodo.4451978>`_ for citing specific versions).
+(See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).
