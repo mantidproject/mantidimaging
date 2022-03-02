@@ -113,7 +113,10 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress, ignore_substring: str) -> Images:
+def load_p(parameters: ImageParameters,
+           dtype: 'npt.DTypeLike',
+           progress: Progress,
+           ignore_substring: str = "deg") -> Images:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,

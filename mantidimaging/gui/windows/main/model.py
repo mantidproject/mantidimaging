@@ -34,7 +34,7 @@ class MainWindowModel(object):
         return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress) -> StrictDataset:
-        sample = loader.load_p(parameters.sample, parameters.dtype, progress, "deg")
+        sample = loader.load_p(parameters.sample, parameters.dtype, progress)
         ds = StrictDataset(sample)
 
         sample._is_sinograms = parameters.sinograms
@@ -62,7 +62,7 @@ class MainWindowModel(object):
             ds.dark_after = dark_after
 
         if parameters.proj_180deg:
-            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
+            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress, "")
 
         self.datasets[ds.id] = ds
         return ds
