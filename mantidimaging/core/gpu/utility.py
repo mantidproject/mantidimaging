@@ -10,7 +10,7 @@ CUPY_NOT_IMPORTED = False
 
 try:
     import cupy as cp
-    mempool = cp.get_default_memory_pool()
+    mempool = cp.get_default_pinned_memory_pool()
 except ModuleNotFoundError:
     # cupy not installed
     CUPY_NOT_IMPORTED = True
@@ -85,13 +85,15 @@ def _load_cuda_kernel(dtype):
     return cuda_kernel
 
 
-def _free_memory_pool(arrays=[]):
+def _delete_arrays_and_free_memory_pool(arrays, streams):
     """
     Delete any given GPU arrays and instruct the memory pool to free unused blocks.
     """
-    if arrays:
-        arrays.clear()
-    mempool.free_all_blocks()
+    for arr in arrays:
+        del arr
+
+    for stream in streams:
+        mempool.free_all_blocks(stream)
 
 
 def _create_pinned_memory(cpu_array):
@@ -140,7 +142,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
 
     except cp.cuda.memory.OutOfMemoryError:
         getLogger(__name__).error("Unable to send arrays to GPU. Median filter not performed.")
-        _free_memory_pool(gpu_arrays)
+        _delete_arrays_and_free_memory_pool(gpu_arrays, streams)
         return []
 
 
@@ -215,7 +217,7 @@ class CudaExecuter:
         self._cuda_single_image_median_filter(test_data, test_padding, filter_size, grid_size, block_size)
 
         # Clear the test arrays
-        _free_memory_pool([test_data, test_padding])
+        _delete_arrays_and_free_memory_pool([test_data, test_padding], [])
 
     def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size, grid_size, block_size):
         """
@@ -249,10 +251,6 @@ class CudaExecuter:
         :param progress: An object for displaying the filter progress.
         :return: Data with median filter applied on success, else unaltered input array
         """
-
-        # Try to free memory
-        _free_memory_pool()
-
         n_images = data.shape[0]
 
         # Set the maximum number of images that will be on the GPU at a time
@@ -308,6 +306,6 @@ class CudaExecuter:
         progress.mark_complete()
 
         # Free memory once the operation is complete
-        _free_memory_pool(gpu_data_slices + gpu_padded_data)
+        _delete_arrays_and_free_memory_pool(gpu_data_slices + gpu_padded_data, streams)
 
         return data
