@@ -172,7 +172,7 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_after_mock, lp.dtype, progress_mock),
             mock.call(dark_before_mock, lp.dtype, progress_mock),
             mock.call(dark_after_mock, lp.dtype, progress_mock),
-            mock.call(proj_180deg_mock, lp.dtype, progress_mock)
+            mock.call(proj_180deg_mock, lp.dtype, progress_mock, "")
         ])
 
         load_log_mock.assert_has_calls([
