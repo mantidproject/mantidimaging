@@ -35,6 +35,22 @@ class UtilityTest(FileOutputtingTestCase):
         # Expect to find the .tiff file
         self.assertEqual([tiff_filename], found_files)
 
+    def test_exclude_substring_filenames(self):
+        # Create test files
+        exclude_substring = "exclude-this"
+        tiff_filename = os.path.join(self.output_directory, 'test.tiff')
+        exclude_filename = os.path.join(self.output_directory, f'test-{exclude_substring}.tiff')
+
+        for test_filename in [tiff_filename, exclude_filename]:
+            with open(test_filename, 'wb') as tf:
+                tf.write(b'\0')
+
+        # Search for files with .tif extension
+        found_files = utility.get_file_names(self.output_directory, 'tif', ignore_substring=exclude_substring)
+
+        # Expect to find the .tiff file but not the excluded file
+        self.assertEqual([tiff_filename], found_files)
+
     def test_find_log(self):
         with open(os.path.join(self.output_directory, "../sample_log.txt"), 'w') as f:
             f.write("sample logs")
