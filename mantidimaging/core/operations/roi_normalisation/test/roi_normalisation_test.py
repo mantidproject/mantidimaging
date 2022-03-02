@@ -53,21 +53,10 @@ class ROINormalisationTest(unittest.TestCase):
         roi_mock = mock.Mock()
         roi_mock.text.return_value = "0, 0, 5, 5"
         mode_mock = mock.Mock()
-        mode_mock.currentText.return_value = "Preserve Max"
+        mode_mock.currentText.return_value = "Stack Average"
         flat_mock = mock.Mock()
         RoiNormalisationFilter.execute_wrapper(roi_mock, mode_mock, flat_mock)(images)
         roi_mock.text.assert_called_once()
-
-    def test_roi_normalisation_preserve_max(self):
-        images = th.generate_images(seed=2021)
-        images_max = images.data.max()
-
-        original = np.copy(images.data[0])
-        air = [3, 3, 4, 4]
-        result = RoiNormalisationFilter.filter_func(images, air, "Preserve Max")
-
-        th.assert_not_equals(result.data[0], original)
-        self.assertAlmostEqual(result.data.max(), images_max, places=6)
 
     def test_roi_normalisation_stack_average(self):
         air = [3, 3, 6, 8]
