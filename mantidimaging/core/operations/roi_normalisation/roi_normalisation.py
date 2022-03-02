@@ -20,7 +20,7 @@ from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 
 def modes() -> List[str]:
-    return ['Stack Average', 'Preserve Max', 'Flat Field']
+    return ['Stack Average', 'Flat Field']
 
 
 class RoiNormalisationFilter(BaseFilter):
@@ -59,8 +59,6 @@ class RoiNormalisationFilter(BaseFilter):
         region for which grey values are summed up and used for normalisation/scaling.
 
         :param normalisation_mode: Controls what the ROI counts are normalised to.
-            'Preserve Max' : Normalisation is scaled such that the maximum pixel value of the stack is equal before
-                             and after the operation.
             'Stack Average' : The mean value of the air region across all projections is preserved.
             'Flat Field' : The mean value of the air regions in the projections is made equal to the mean value of the
                            air region in the flat field image.
@@ -157,10 +155,6 @@ def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=Non
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
-def _calc_max(data):
-    return data.max()
-
-
 def _divide_by_air(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
@@ -193,22 +187,7 @@ def _execute(data: np.ndarray,
         ps.shared_list = [data, air_means]
         ps.execute(do_calculate_air_means, data.shape[0], progress, cores=cores)
 
-        if normalisation_mode == 'Preserve Max':
-            air_maxs = pu.create_array((img_num, ), data.dtype)
-            do_calculate_air_max = ps.create_partial(_calc_max, ps.return_to_second_at_i)
-
-            ps.shared_list = [data, air_maxs]
-            ps.execute(do_calculate_air_max, data.shape[0], progress, cores=cores)
-
-            if np.isnan(air_maxs).any():
-                raise ValueError("Image contains invalid (NaN) pixels")
-
-            # calculate the before and after maximum
-            init_max = air_maxs.max()
-            post_max = (air_maxs / air_means).max()
-            air_means *= post_max / init_max
-
-        elif normalisation_mode == 'Stack Average':
+        if normalisation_mode == 'Stack Average':
             air_means /= air_means.mean()
 
         elif normalisation_mode == 'Flat Field' and flat_field is not None:

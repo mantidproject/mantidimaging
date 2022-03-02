@@ -6,6 +6,8 @@ This contains changes for the next not yet released Mantid Imaging versions.
 New Features
 ------------
 
+- #1340 : ROI norm - remove preserve max option
+
 Fixes
 -----
 
