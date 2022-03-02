@@ -113,12 +113,13 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress) -> Images:
+def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress, ignore_substring: str) -> Images:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,
                 indices=parameters.indices,
                 dtype=dtype,
+                ignore_substring=ignore_substring,
                 progress=progress).sample
 
 
@@ -137,6 +138,7 @@ def load(input_path: Optional[str] = None,
          input_path_dark_after: Optional[str] = None,
          in_prefix: str = '',
          in_format: str = DEFAULT_IO_FILE_FORMAT,
+         ignore_substring: str = '',
          dtype: 'npt.DTypeLike' = np.float32,
          file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
@@ -169,7 +171,7 @@ def load(input_path: Optional[str] = None,
         raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
     if not file_names:
-        input_file_names = get_file_names(input_path, in_format, in_prefix)
+        input_file_names = get_file_names(input_path, in_format, ignore_substring, in_prefix)
     else:
         input_file_names = file_names
 

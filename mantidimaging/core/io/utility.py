@@ -58,6 +58,7 @@ def get_candidate_file_extensions(ext: str) -> List[str]:
 def get_file_names(path: Optional[Union[Path, str]],
                    img_format: str,
                    prefix: str = '',
+                   ignore_substring: str = '',
                    essential: bool = True) -> List[str]:
     """
     Get all file names in a directory with a specific format.
@@ -89,6 +90,9 @@ def get_file_names(path: Optional[Union[Path, str]],
 
     if len(files_match) == 0 and essential:
         raise RuntimeError(f"Could not find any image files in '{path}' with extensions: {extensions}")
+
+    if ignore_substring:
+        files_match = list(filter(lambda filename: ignore_substring not in filename, files_match))
 
     # This is a necessary step, otherwise the file order is not guaranteed to
     # be sequential and we get randomly ordered stack of names
