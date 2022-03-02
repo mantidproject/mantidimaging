@@ -155,10 +155,6 @@ def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=Non
     return data[air_top:air_bottom, air_left:air_right].mean()
 
 
-def _calc_max(data):
-    return data.max()
-
-
 def _divide_by_air(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
