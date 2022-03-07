@@ -36,7 +36,6 @@ jobs:
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
-          environment-file: environment-dev.yml
           activate-environment: mantidimaging-dev
           auto-activate-base: false
           use-only-tar-bz2: true # Need for cache
