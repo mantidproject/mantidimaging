@@ -23,6 +23,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection = MIMiniImageView(name="Projection")
         self.imageview_sinogram = MIMiniImageView(name="Sinogram")
         self.imageview_recon = MIMiniImageView(name="Recon")
+        # Set the three images as axis siblings so that auto colour palette changes will be applied to them all
+        MIMiniImageView.set_siblings([self.imageview_projection, self.imageview_sinogram, self.imageview_recon],
+                                     axis=True)
 
         self.projection, self.projection_vb, self.projection_hist = self.imageview_projection.get_parts()
         self.sinogram, self.sinogram_vb, self.sinogram_hist = self.imageview_sinogram.get_parts()

@@ -10,10 +10,8 @@ from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
-from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
-from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 LOG = getLogger(__name__)
@@ -91,9 +89,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
-        self._add_auto_colour_action(self.imageview_before)
-        self._add_auto_colour_action(self.imageview_after)
-        self._add_auto_colour_action(self.imageview_difference)
+        self.imageview_before.add_auto_color_action(self)
+        self.imageview_after.add_auto_color_action(self)
+        self.imageview_difference.add_auto_color_action(self)
 
         self.imageview_before.link_sibling_axis()
 
@@ -199,22 +197,3 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         set_histogram_log_scale(self.image_before_hist)
         set_histogram_log_scale(self.image_after_hist)
-
-    def _add_auto_colour_action(self, img_view: MIMiniImageView):
-        """
-        Adds an "Auto" action to the histogram right-click menu.
-        """
-
-        action = img_view.add_auto_color_action()
-        action.triggered.connect(lambda: self._on_change_colour_palette(img_view.hist, img_view.im))
-
-    def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
-        """
-        Creates a Palette Changer window when the "Auto" option has been selected.
-        :param main_histogram: The HistogramLUTItem.
-        :param image: The ImageItem.
-        """
-        other_histograms = self.all_histograms[:]
-        other_histograms.remove(main_histogram)
-        change_colour_palette = PaletteChangerView(self, main_histogram, image.image, other_histograms)
-        change_colour_palette.show()

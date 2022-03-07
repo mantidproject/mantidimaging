@@ -186,8 +186,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
 
         # Preparing the auto change colour map UI
-        self.auto_colour_action = self.image_view.imageview_recon.add_auto_color_action()
-        self.auto_colour_action.triggered.connect(self.on_change_colour_palette)
+        self.image_view.imageview_recon.add_auto_color_action(self, recon_mode=True)
 
         for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
             spinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
@@ -473,7 +472,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def on_change_colour_palette(self):
         """
-        Opens the Palette Changer window when the "Auto" option has been clicked.
+        Opens the Palette Changer window when the "Auto" button has been clicked.
         """
         self.change_colour_palette_dialog = PaletteChangerView(
             self, self.image_view.recon_hist, self.image_view.recon.image,
