@@ -15,3 +15,4 @@ Developer Changes
 -----------------
 
 - #1272: Consistent test class filenames
+- #1352 : Update astra-toolbox and cudatoolkit to allow windows installation
