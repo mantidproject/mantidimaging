@@ -31,7 +31,7 @@ class AutoColorMenu:
 
     @property
     def other_histograms(self) -> 'List[HistogramLUTItem]':
-        raise NotImplementedError('Required other_histograms property not implemented')
+        return []
 
     def add_auto_color_menu_action(self,
                                    parent: 'Optional[QWidget]',

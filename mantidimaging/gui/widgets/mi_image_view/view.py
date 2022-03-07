@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from time import sleep
-from typing import Callable, Optional, Tuple, TYPE_CHECKING, List
+from typing import Callable, Optional, Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
@@ -120,10 +120,6 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     @property
     def image_data(self) -> 'np.ndarray':
         return self.image
-
-    @property
-    def other_histograms(self) -> 'List[HistogramLUTItem]':
-        return []
 
     @property
     def image_item(self) -> ImageItem:
