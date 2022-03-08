@@ -34,9 +34,6 @@ def _data_valid_for_histogram(data):
 
 
 class FilterPreviews(GraphicsLayoutWidget):
-    image_before: ImageItem
-    image_after: ImageItem
-    image_diff: ImageItem
     histogram: Optional[PlotItem]
 
     def __init__(self, parent=None, **kwargs):
@@ -65,16 +62,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         MIMiniImageView.set_siblings(self.all_imageviews, axis=True)
         MIMiniImageView.set_siblings([self.imageview_before, self.imageview_after], hist=True)
 
-        self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
-        self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
-        self.image_difference, self.image_difference_vb, self.image_difference_hist = \
-            self.imageview_difference.get_parts()
-
-        self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
-
         self.image_diff_overlay = ImageItem()
         self.image_diff_overlay.setZValue(10)
-        self.image_after_vb.addItem(self.image_diff_overlay)
+        self.imageview_after.viewbox.addItem(self.image_diff_overlay)
 
         # Ensure images resize equally
         self.image_layout: GraphicsLayout = self.addLayout(colspan=3)
@@ -168,18 +158,18 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_after.enable_nonpositive_check(False)
 
     def auto_range(self):
-        # This will cause the previews to all show by just causing autorange on self.image_before_vb
-        self.image_before_vb.autoRange()
+        # This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox
+        self.imageview_before.viewbox.autoRange()
 
     def record_histogram_regions(self):
-        self.before_region = self.image_before_hist.region.getRegion()
-        self.diff_region = self.image_difference_hist.region.getRegion()
-        self.after_region = self.image_after_hist.region.getRegion()
+        self.before_region = self.imageview_before.histogram.region.getRegion()
+        self.diff_region = self.imageview_difference.histogram.region.getRegion()
+        self.after_region = self.imageview_after.histogram.region.getRegion()
 
     def restore_histogram_regions(self):
-        self.image_before_hist.region.setRegion(self.before_region)
-        self.image_difference_hist.region.setRegion(self.diff_region)
-        self.image_after_hist.region.setRegion(self.after_region)
+        self.imageview_before.histogram.region.setRegion(self.before_region)
+        self.imageview_difference.histogram.region.setRegion(self.diff_region)
+        self.imageview_after.histogram.region.setRegion(self.after_region)
 
     def link_before_after_histogram_scales(self, create_link: bool):
         """
@@ -195,5 +185,5 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         Sets the y-values of the before and after histogram plots to a log scale.
         """
-        set_histogram_log_scale(self.image_before_hist)
-        set_histogram_log_scale(self.image_after_hist)
+        set_histogram_log_scale(self.imageview_before.histogram)
+        set_histogram_log_scale(self.imageview_after.histogram)

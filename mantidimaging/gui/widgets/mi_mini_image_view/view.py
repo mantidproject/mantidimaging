@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from itertools import chain, tee
-from typing import List, Tuple, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
@@ -98,9 +98,6 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
     def add_hist_sibling(self, sibling: "MIMiniImageView"):
         self.histogram_siblings.add(sibling)
-
-    def get_parts(self) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
-        return self.im, self.vb, self.hist
 
     def mouse_over(self, ev):
         # Ignore events triggered by leaving window or right clicking

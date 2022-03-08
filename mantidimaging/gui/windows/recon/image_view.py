@@ -27,15 +27,11 @@ class ReconImagesView(GraphicsLayoutWidget):
         MIMiniImageView.set_siblings([self.imageview_projection, self.imageview_sinogram, self.imageview_recon],
                                      axis=True)
 
-        self.projection, self.projection_vb, self.projection_hist = self.imageview_projection.get_parts()
-        self.sinogram, self.sinogram_vb, self.sinogram_hist = self.imageview_sinogram.get_parts()
-        self.recon, self.recon_vb, self.recon_hist = self.imageview_recon.get_parts()
-
         self.slice_line = InfiniteLine(pos=1024,
                                        angle=0,
                                        bounds=[0, self.imageview_projection.image_item.width()],
                                        movable=True)
-        self.projection_vb.addItem(self.slice_line)
+        self.imageview_projection.viewbox.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
 
         self.addItem(self.imageview_projection, 0, 0)
@@ -60,27 +56,27 @@ class ReconImagesView(GraphicsLayoutWidget):
     def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
         self.imageview_projection.clear()
         self.imageview_projection.setImage(image_data)
-        self.projection_hist.imageChanged(autoLevel=True, autoRange=True)
+        self.imageview_projection.histogram.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         if tilt_angle:
             self.set_tilt(tilt_angle, image_data.shape[1] // 2)
         else:
             self.hide_tilt()
-        set_histogram_log_scale(self.projection_hist)
+        set_histogram_log_scale(self.imageview_projection.histogram)
 
     def update_sinogram(self, image):
         self.imageview_sinogram.clear()
         self.imageview_sinogram.setImage(image)
-        self.sinogram_hist.imageChanged(autoLevel=True, autoRange=True)
-        set_histogram_log_scale(self.sinogram_hist)
+        self.imageview_sinogram.histogram.imageChanged(autoLevel=True, autoRange=True)
+        set_histogram_log_scale(self.imageview_sinogram.histogram)
 
     def update_recon(self, image_data):
         self.imageview_recon.clear()
         self.imageview_recon.setImage(image_data, autoLevels=False)
-        set_histogram_log_scale(self.recon_hist)
+        set_histogram_log_scale(self.imageview_recon.histogram)
 
     def update_recon_hist(self):
-        self.recon_hist.imageChanged(autoLevel=True, autoRange=True)
+        self.imageview_recon.histogram.imageChanged(autoLevel=True, autoRange=True)
 
     def mouse_click(self, ev, line: InfiniteLine):
         line.setPos(ev.pos())
@@ -104,7 +100,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         :return:
         """
         if self.tilt_line.scene() is not None:
-            self.projection_vb.removeItem(self.tilt_line)
+            self.imageview_projection.viewbox.removeItem(self.tilt_line)
 
     def set_tilt(self, tilt: Degrees, pos: Optional[int] = None):
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
@@ -112,7 +108,7 @@ class ReconImagesView(GraphicsLayoutWidget):
                 self.tilt_line.setAngle(90)
                 self.tilt_line.setPos(pos)
             self.tilt_line.setAngle(90 + tilt.value)
-        self.projection_vb.addItem(self.tilt_line)
+        self.imageview_projection.viewbox.addItem(self.tilt_line)
 
     def reset_recon_histogram(self):
-        self.recon_hist.autoHistogramRange()
+        self.imageview_recon.histogram.autoHistogramRange()
