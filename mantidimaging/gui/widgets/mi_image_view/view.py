@@ -114,7 +114,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.scene.contextMenu = [item for item in self.scene.contextMenu if "export" not in item.text().lower()]
 
     @property
-    def main_histogram(self) -> 'HistogramLUTItem':
+    def histogram(self) -> 'HistogramLUTItem':
         return self.ui.histogram.item
 
     @property

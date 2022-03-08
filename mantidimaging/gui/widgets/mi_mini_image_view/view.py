@@ -55,7 +55,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
     @property
-    def main_histogram(self) -> HistogramLUTItem:
+    def histogram(self) -> HistogramLUTItem:
         return self.hist
 
     @property

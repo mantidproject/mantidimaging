@@ -22,8 +22,8 @@ class AutoColorMenu:
         self.auto_color_action: Optional[QAction] = None
 
     @property
-    def main_histogram(self) -> 'HistogramLUTItem':
-        raise NotImplementedError('Required main_histogram property not implemented')
+    def histogram(self) -> 'HistogramLUTItem':
+        raise NotImplementedError('Required histogram property not implemented')
 
     @property
     def image_data(self) -> 'np.ndarray':
@@ -39,10 +39,10 @@ class AutoColorMenu:
                                    index: int = DEFAULT_MENU_POSITION,
                                    set_enabled: bool = True) -> QAction:
         self.auto_color_action = QAction("Auto")
-        place = self.main_histogram.gradient.menu.actions()[index]
+        place = self.histogram.gradient.menu.actions()[index]
 
-        self.main_histogram.gradient.menu.insertAction(place, self.auto_color_action)
-        self.main_histogram.gradient.menu.insertSeparator(self.auto_color_action)
+        self.histogram.gradient.menu.insertAction(place, self.auto_color_action)
+        self.histogram.gradient.menu.insertSeparator(self.auto_color_action)
         self.set_auto_color_enabled(set_enabled)
         self.auto_color_action.triggered.connect(lambda: self._on_colour_change_palette(parent, recon_mode))
 
@@ -57,7 +57,7 @@ class AutoColorMenu:
         Opens the Palette Changer window
         """
         change_colour_palette = PaletteChangerView(parent=parent,
-                                                   main_hist=self.main_histogram,
+                                                   main_hist=self.histogram,
                                                    image=self.image_data,
                                                    other_hists=self.other_histograms,
                                                    recon_mode=recon_mode)
