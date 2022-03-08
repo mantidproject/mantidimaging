@@ -14,6 +14,7 @@ from mantidimaging.gui.windows.main import MainWindowView
 
 def setup_application():
     q_application = QApplication(sys.argv)
+    q_application.setStyle('Fusion')
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
