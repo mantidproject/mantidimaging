@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from logging import getLogger
 from threading import Lock
 from typing import Union, List, Optional, Tuple, Generator
+import time
 
 import astra
 import numpy as np
@@ -128,6 +129,7 @@ class AstraRecon(BaseRecon):
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> Images:
+        t0 = time.time()
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, images.width, images.width)
         output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
@@ -138,6 +140,8 @@ class AstraRecon(BaseRecon):
             output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
             progress.update(1, "Reconstructed slice")
 
+        t1 = time.time()
+        print(f"Astra_{recon_params.algorithm} {images.data.shape=} {t1-t0:.2f}")
         return output_images
 
     @staticmethod

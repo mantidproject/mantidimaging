@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import time
 from logging import getLogger
 from threading import Lock
 from typing import List, Optional
@@ -140,7 +140,7 @@ class CILRecon(BaseRecon):
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
         """
-
+        t0 = time.time()
         progress = Progress.ensure_instance(progress,
                                             task_name='CIL reconstruction',
                                             num_steps=recon_params.num_iter + 1)
@@ -214,6 +214,9 @@ class CILRecon(BaseRecon):
                     pdhg.next()
                 volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+
+            t1 = time.time()
+            print(f"CIL {images.data.shape=} {t1-t0:.2f}")
             return Images(volume)
 
 
