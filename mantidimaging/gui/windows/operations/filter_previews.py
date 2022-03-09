@@ -10,10 +10,8 @@ from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
-from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
-from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 LOG = getLogger(__name__)
@@ -36,9 +34,6 @@ def _data_valid_for_histogram(data):
 
 
 class FilterPreviews(GraphicsLayoutWidget):
-    image_before: ImageItem
-    image_after: ImageItem
-    image_diff: ImageItem
     histogram: Optional[PlotItem]
 
     def __init__(self, parent=None, **kwargs):
@@ -67,16 +62,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         MIMiniImageView.set_siblings(self.all_imageviews, axis=True)
         MIMiniImageView.set_siblings([self.imageview_before, self.imageview_after], hist=True)
 
-        self.image_before, self.image_before_vb, self.image_before_hist = self.imageview_before.get_parts()
-        self.image_after, self.image_after_vb, self.image_after_hist = self.imageview_after.get_parts()
-        self.image_difference, self.image_difference_vb, self.image_difference_hist = \
-            self.imageview_difference.get_parts()
-
-        self.all_histograms = [self.image_before_hist, self.image_after_hist, self.image_difference_hist]
-
         self.image_diff_overlay = ImageItem()
         self.image_diff_overlay.setZValue(10)
-        self.image_after_vb.addItem(self.image_diff_overlay)
+        self.imageview_after.viewbox.addItem(self.image_diff_overlay)
 
         # Ensure images resize equally
         self.image_layout: GraphicsLayout = self.addLayout(colspan=3)
@@ -91,9 +79,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
-        self._add_auto_colour_action(self.imageview_before)
-        self._add_auto_colour_action(self.imageview_after)
-        self._add_auto_colour_action(self.imageview_difference)
+        self.imageview_before.add_auto_color_action(self)
+        self.imageview_after.add_auto_color_action(self)
+        self.imageview_difference.add_auto_color_action(self)
 
         self.imageview_before.link_sibling_axis()
 
@@ -170,18 +158,18 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_after.enable_nonpositive_check(False)
 
     def auto_range(self):
-        # This will cause the previews to all show by just causing autorange on self.image_before_vb
-        self.image_before_vb.autoRange()
+        # This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox
+        self.imageview_before.viewbox.autoRange()
 
     def record_histogram_regions(self):
-        self.before_region = self.image_before_hist.region.getRegion()
-        self.diff_region = self.image_difference_hist.region.getRegion()
-        self.after_region = self.image_after_hist.region.getRegion()
+        self.before_region = self.imageview_before.histogram.region.getRegion()
+        self.diff_region = self.imageview_difference.histogram.region.getRegion()
+        self.after_region = self.imageview_after.histogram.region.getRegion()
 
     def restore_histogram_regions(self):
-        self.image_before_hist.region.setRegion(self.before_region)
-        self.image_difference_hist.region.setRegion(self.diff_region)
-        self.image_after_hist.region.setRegion(self.after_region)
+        self.imageview_before.histogram.region.setRegion(self.before_region)
+        self.imageview_difference.histogram.region.setRegion(self.diff_region)
+        self.imageview_after.histogram.region.setRegion(self.after_region)
 
     def link_before_after_histogram_scales(self, create_link: bool):
         """
@@ -197,24 +185,5 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         Sets the y-values of the before and after histogram plots to a log scale.
         """
-        set_histogram_log_scale(self.image_before_hist)
-        set_histogram_log_scale(self.image_after_hist)
-
-    def _add_auto_colour_action(self, img_view: MIMiniImageView):
-        """
-        Adds an "Auto" action to the histogram right-click menu.
-        """
-
-        action = img_view.add_auto_color_action()
-        action.triggered.connect(lambda: self._on_change_colour_palette(img_view.hist, img_view.im))
-
-    def _on_change_colour_palette(self, main_histogram: HistogramLUTItem, image: ImageItem):
-        """
-        Creates a Palette Changer window when the "Auto" option has been selected.
-        :param main_histogram: The HistogramLUTItem.
-        :param image: The ImageItem.
-        """
-        other_histograms = self.all_histograms[:]
-        other_histograms.remove(main_histogram)
-        change_colour_palette = PaletteChangerView(self, main_histogram, image.image, other_histograms)
-        change_colour_palette.show()
+        set_histogram_log_scale(self.imageview_before.histogram)
+        set_histogram_log_scale(self.imageview_after.histogram)

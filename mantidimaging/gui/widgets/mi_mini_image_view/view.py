@@ -2,17 +2,21 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from itertools import chain, tee
-from typing import List, Optional, Tuple
+from typing import List, TYPE_CHECKING, Optional
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
-from PyQt5.QtWidgets import QAction
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
+from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
 from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
+
+if TYPE_CHECKING:
+    import numpy as np
+    from PyQt5.QtWidgets import QAction, QWidget
 
 graveyard = []
 
@@ -26,7 +30,7 @@ def pairwise(iterable):
     return zip(a, b)
 
 
-class MIMiniImageView(GraphicsLayout, BadDataOverlay):
+class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     def __init__(self, name: str = "MIMiniImageView"):
         super().__init__()
 
@@ -50,7 +54,17 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
         self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
-        self.auto_action: Optional[QAction] = None
+    @property
+    def histogram(self) -> HistogramLUTItem:
+        return self.hist
+
+    @property
+    def image_data(self) -> 'np.ndarray':
+        return self.im.image
+
+    @property
+    def other_histograms(self) -> List[HistogramLUTItem]:
+        return [axis.hist for axis in self.axis_siblings]
 
     @property
     def image_item(self) -> ImageItem:
@@ -84,9 +98,6 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
 
     def add_hist_sibling(self, sibling: "MIMiniImageView"):
         self.histogram_siblings.add(sibling)
-
-    def get_parts(self) -> Tuple[ImageItem, ViewBox, HistogramLUTItem]:
-        return self.im, self.vb, self.hist
 
     def mouse_over(self, ev):
         # Ignore events triggered by leaving window or right clicking
@@ -142,16 +153,5 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay):
             with BlockQtSignals(img_view.hist):
                 img_view.hist.setLevels(*hist_range)
 
-    def add_auto_color_action(self) -> QAction:
-        self.auto_action = QAction("Auto", self)
-        place = self.hist.gradient.menu.actions()[12]
-
-        self.hist.gradient.menu.insertAction(place, self.auto_action)
-        self.hist.gradient.menu.insertSeparator(self.auto_action)
-        self.set_auto_color_enabled(False)
-
-        return self.auto_action
-
-    def set_auto_color_enabled(self, enabled: bool = True):
-        if self.auto_action is not None:
-            self.auto_action.setEnabled(enabled)
+    def add_auto_color_action(self, parent: 'Optional[QWidget]', recon_mode: bool = False) -> 'QAction':
+        return self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)

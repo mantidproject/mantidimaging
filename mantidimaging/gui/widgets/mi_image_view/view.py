@@ -2,19 +2,23 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from time import sleep
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple, TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QAction
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
-from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
+
+if TYPE_CHECKING:
+    from pyqtgraph import HistogramLUTItem
+    import numpy as np
 
 
 class UnrotateablePlotROI(ROI):
@@ -31,7 +35,7 @@ class UnrotateablePlotROI(ROI):
 graveyard = []
 
 
-class MIImageView(ImageView, BadDataOverlay):
+class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     details: QLabel
     roiString = None
     imageItem: ImageItem
@@ -104,15 +108,18 @@ class MIImageView(ImageView, BadDataOverlay):
         self.imageItem.sigImageChanged.connect(self._refresh_message)
         self.imageItem.sigImageChanged.connect(self.set_log_scale)
 
-        self.auto_colour_action = QAction("Auto")
-        self.auto_colour_action.triggered.connect(self.on_colour_change_palette)
-
-        action = self.ui.histogram.item.gradient.menu.actions()[12]
-        self.ui.histogram.item.gradient.menu.insertAction(action, self.auto_colour_action)
-        self.ui.histogram.item.gradient.menu.insertSeparator(self.auto_colour_action)
+        self.add_auto_color_menu_action(self)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene.contextMenu = [item for item in self.scene.contextMenu if "export" not in item.text().lower()]
+
+    @property
+    def histogram(self) -> 'HistogramLUTItem':
+        return self.ui.histogram.item
+
+    @property
+    def image_data(self) -> 'np.ndarray':
+        return self.image
 
     @property
     def image_item(self) -> ImageItem:
@@ -246,10 +253,3 @@ class MIImageView(ImageView, BadDataOverlay):
 
     def set_log_scale(self):
         set_histogram_log_scale(self.getHistogramWidget().item)
-
-    def on_colour_change_palette(self):
-        """
-        Opens the Palette Changer window when the "Auto" option has been clicked.
-        """
-        change_colour_palette = PaletteChangerView(parent=self, main_hist=self.ui.histogram.item, image=self.image)
-        change_colour_palette.show()
