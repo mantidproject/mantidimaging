@@ -7,7 +7,7 @@ from enum import IntEnum, auto
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -42,7 +42,7 @@ class SVImageMode(IntEnum):
 class StackVisualiserPresenter(BasePresenter):
     view: 'StackVisualiserView'
 
-    def __init__(self, view: 'StackVisualiserView', images: Images):
+    def __init__(self, view: 'StackVisualiserView', images: ImageStack):
         super().__init__(view)
         self.model = SVModel()
         self.images = images
@@ -69,7 +69,7 @@ class StackVisualiserPresenter(BasePresenter):
     def delete_data(self):
         self.images = None
 
-    def get_image(self, index) -> Images:
+    def get_image(self, index) -> ImageStack:
         return self.images.index_as_images(index)
 
     def refresh_image(self):
@@ -121,7 +121,7 @@ class StackVisualiserPresenter(BasePresenter):
             new_images.name = self.images.name
             self.add_mixed_dataset_to_model_and_update_view(new_images)
 
-    def add_mixed_dataset_to_model_and_update_view(self, images: Images):
+    def add_mixed_dataset_to_model_and_update_view(self, images: ImageStack):
         dataset = MixedDataset([images], images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.create_mixed_dataset_tree_view_items(dataset)
@@ -138,5 +138,5 @@ class StackVisualiserPresenter(BasePresenter):
                 return index
         return len(self.images.projection_angles().value)
 
-    def add_sinograms_to_model_and_update_view(self, new_stack: Images):
+    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack):
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)

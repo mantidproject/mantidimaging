@@ -6,7 +6,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.optional_imports import safe_import
@@ -18,7 +18,7 @@ tomopy = safe_import('tomopy')
 
 class TomopyRecon(BaseRecon):
     @staticmethod
-    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         return tomopy.find_center(images.sinograms,
                                   images.projection_angles(recon_params.max_projection_angle).value,
                                   ind=slice_idx,
@@ -42,7 +42,7 @@ class TomopyRecon(BaseRecon):
         return volume[0]
 
     @staticmethod
-    def full(images: Images,
+    def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None):
@@ -75,7 +75,7 @@ class TomopyRecon(BaseRecon):
             volume = tomopy.recon(**kwargs)
             LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
 
-        return Images(volume)
+        return ImageStack(volume)
 
     @staticmethod
     def allowed_filters() -> List[str]:

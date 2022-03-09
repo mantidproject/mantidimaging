@@ -13,7 +13,7 @@ from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -339,16 +339,16 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid):
         return self.presenter.get_stack_visualiser(stack_uuid)
 
-    def get_stack(self, stack_uuid: uuid.UUID) -> Images:
+    def get_stack(self, stack_uuid: uuid.UUID) -> ImageStack:
         return self.presenter.get_stack(stack_uuid)
 
-    def get_images_from_stack_uuid(self, stack_uuid) -> Images:
+    def get_images_from_stack_uuid(self, stack_uuid) -> ImageStack:
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
     def get_all_stack_visualisers(self):
         return self.presenter.get_active_stack_visualisers()
 
-    def get_all_stacks(self) -> List[Images]:
+    def get_all_stacks(self) -> List[ImageStack]:
         return self.presenter.get_all_stacks()
 
     def get_all_180_projections(self):
@@ -360,17 +360,17 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 
-    def create_new_stack(self, images: Images):
+    def create_new_stack(self, images: ImageStack):
         self.presenter.create_single_tabbed_images_stack(images)
 
-    def update_stack_with_images(self, images: Images):
+    def update_stack_with_images(self, images: ImageStack):
         self.presenter.update_stack_with_images(images)
 
-    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
+    def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
         return self.presenter.get_stack_with_images(images)
 
     def create_stack_window(self,
-                            stack: Images,
+                            stack: ImageStack,
                             position: Qt.DockWidgetArea = Qt.DockWidgetArea.RightDockWidgetArea,
                             floating: bool = False) -> StackVisualiserView:
         stack.make_name_unique(self.stack_names)
@@ -429,7 +429,7 @@ class MainWindowView(BaseMainWindowView):
 
             return stack_choice
 
-    def find_images_stack_title(self, images: Images) -> str:
+    def find_images_stack_title(self, images: ImageStack) -> str:
         return self.presenter.get_stack_with_images(images).name
 
     def dragEnterEvent(self, event: QDragEnterEvent):
@@ -517,7 +517,7 @@ class MainWindowView(BaseMainWindowView):
         """
         self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
 
-    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID):
+    def add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID):
         self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)
 
     @staticmethod

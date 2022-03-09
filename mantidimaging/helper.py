@@ -7,7 +7,7 @@ Module for commonly used functions across the modules.
 import logging
 import sys
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 _log_file_handler = None
 _log_formatter = None
@@ -41,7 +41,7 @@ def initialise_logging(default_level=logging.DEBUG):
     logging.getLogger('PyQt5').setLevel(logging.INFO)
 
 
-def check_data_stack(data, expected_dims=3, expected_class=Images):
+def check_data_stack(data, expected_dims=3, expected_class=ImageStack):
     """
     Make sure the data has expected dimensions and class.
     """

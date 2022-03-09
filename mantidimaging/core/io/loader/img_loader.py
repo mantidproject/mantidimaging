@@ -13,7 +13,7 @@ from ...data.dataset import StrictDataset
 if TYPE_CHECKING:
     import numpy.typing as npt
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import get_file_names, get_prefix
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -74,16 +74,16 @@ def execute(load_func: Callable[[str], np.ndarray],
     sample_data = il.load_sample_data(chosen_input_filenames)
 
     if isinstance(sample_data, np.ndarray):
-        sample_images = Images(sample_data, chosen_input_filenames, indices)
+        sample_images = ImageStack(sample_data, chosen_input_filenames, indices)
     else:
         sample_images = sample_data
 
     return StrictDataset(
         sample_images,
-        flat_before=Images(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
-        flat_after=Images(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
-        dark_before=Images(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
-        dark_after=Images(dark_after_data, dark_after_filenames) if dark_after_data is not None else None)
+        flat_before=ImageStack(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
+        flat_after=ImageStack(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
+        dark_before=ImageStack(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
+        dark_after=ImageStack(dark_after_data, dark_after_filenames) if dark_after_data is not None else None)
 
 
 class ImageLoader(object):
@@ -101,7 +101,7 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names: List[str]) -> Union[np.ndarray, Images]:
+    def load_sample_data(self, input_file_names: List[str]) -> Union[np.ndarray, ImageStack]:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image

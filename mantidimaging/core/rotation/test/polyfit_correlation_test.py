@@ -6,7 +6,7 @@ import numpy as np
 
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
-from ...data import Images
+from ...data import ImageStack
 from ...utility.progress_reporting import Progress
 
 
@@ -32,7 +32,7 @@ def test_do_search():
 def test_find_center():
     images = generate_images((10, 10, 10))
     images.data[0] = np.identity(10)
-    images.proj180deg = Images(np.fliplr(images.data))
+    images.proj180deg = ImageStack(np.fliplr(images.data))
     mock_progress = mock.create_autospec(Progress)
     res_cor, res_tilt = find_center(images, mock_progress)
     assert mock_progress.update.call_count == 11

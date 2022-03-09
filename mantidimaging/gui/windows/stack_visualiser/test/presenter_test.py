@@ -10,13 +10,13 @@ import numpy as np
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification, \
     SVImageMode
 
 
 class StackVisualiserPresenterTest(unittest.TestCase):
-    test_data: Images
+    test_data: ImageStack
 
     def setUp(self):
         self.test_data = th.generate_images()

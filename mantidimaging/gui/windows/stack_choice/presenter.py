@@ -5,7 +5,7 @@ import traceback
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 from uuid import UUID
 
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
 from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 
@@ -22,8 +22,8 @@ def _get_stack_from_uuid(original_stack, stack_uuid):
 
 class StackChoicePresenter(StackChoicePresenterMixin):
     def __init__(self,
-                 original_stack: Union[List[Tuple[Images, UUID]], Images],
-                 new_stack: Images,
+                 original_stack: Union[List[Tuple[ImageStack, UUID]], ImageStack],
+                 new_stack: ImageStack,
                  operations_presenter: 'FiltersWindowPresenter',
                  stack_uuid: Optional[UUID],
                  view: Optional[StackChoiceView] = None):

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import CORInspectionDialogModel
@@ -34,7 +34,7 @@ class CORInspectionDialogPresenter(BasePresenter):
 
     view: 'CORInspectionDialogView'
 
-    def __init__(self, view, images: Images, slice_index: int, initial_cor: ScalarCoR,
+    def __init__(self, view, images: ImageStack, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(view)
 

@@ -11,7 +11,7 @@ from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
@@ -67,7 +67,13 @@ class MedianFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images, size=None, mode="reflect", cores=None, chunksize=None, progress=None, force_cpu=True):
+    def filter_func(data: ImageStack,
+                    size=None,
+                    mode="reflect",
+                    cores=None,
+                    chunksize=None,
+                    progress=None,
+                    force_cpu=True):
         """
         :param data: Input data as an Images object.
         :param size: Size of the kernel
@@ -171,4 +177,4 @@ def _execute_gpu(data, size, mode, progress=None):
 
         data = cuda.median_filter(data, size, mode, progress)
 
-    return Images(data)
+    return ImageStack(data)

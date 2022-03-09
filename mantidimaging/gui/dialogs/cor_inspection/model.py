@@ -4,7 +4,7 @@ from dataclasses import replace
 from logging import getLogger
 from typing import Union
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from .types import ImageType
@@ -16,8 +16,8 @@ INIT_ITERS_STEP = 50
 
 
 class CORInspectionDialogModel(object):
-    def __init__(self, images: Images, slice_idx: int, initial_cor: ScalarCoR, recon_params: ReconstructionParameters,
-                 iters_mode: bool):
+    def __init__(self, images: ImageStack, slice_idx: int, initial_cor: ScalarCoR,
+                 recon_params: ReconstructionParameters, iters_mode: bool):
         self.image_width = images.width
         self.sino = images.sino(slice_idx)
 

@@ -6,7 +6,7 @@ from typing import Dict, Optional, List, Union, NoReturn, TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
-def _matching_dataset_attribute(dataset_attribute: Optional[Images], images_id: uuid.UUID) -> bool:
-    return isinstance(dataset_attribute, Images) and dataset_attribute.id == images_id
+def _matching_dataset_attribute(dataset_attribute: Optional[ImageStack], images_id: uuid.UUID) -> bool:
+    return isinstance(dataset_attribute, ImageStack) and dataset_attribute.id == images_id
 
 
 class MainWindowModel(object):
@@ -26,7 +26,7 @@ class MainWindowModel(object):
         super().__init__()
         self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
 
-    def get_images_by_uuid(self, images_uuid: uuid.UUID) -> Optional[Images]:
+    def get_images_by_uuid(self, images_uuid: uuid.UUID) -> Optional[ImageStack]:
         for dataset in self.datasets.values():
             for image in dataset.all:
                 if images_uuid == image.id:
@@ -110,11 +110,11 @@ class MainWindowModel(object):
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
-        if isinstance(dataset.proj180deg, Images):  # type: ignore
+        if isinstance(dataset.proj180deg, ImageStack):  # type: ignore
             return dataset.proj180deg.id  # type: ignore
         return None
 
-    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> Images:
+    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> ImageStack:
         """
         Loads to 180 projection and adds this to a given Images ID.
         :param dataset_id: The ID of the Dataset.
@@ -196,14 +196,14 @@ class MainWindowModel(object):
         return [image.id for image in images if image is not None]
 
     @property
-    def images(self) -> List[Images]:
+    def images(self) -> List[ImageStack]:
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
         return images
 
     @property
-    def proj180s(self) -> List[Images]:
+    def proj180s(self) -> List[ImageStack]:
         proj180s = []
         for dataset in self.datasets.values():
             if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:
@@ -221,7 +221,7 @@ class MainWindowModel(object):
                 return dataset.id
         self.raise_error_when_parent_dataset_not_found(member_id)
 
-    def add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> uuid.UUID:
+    def add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID) -> uuid.UUID:
         """
         Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.
         :param recon_data: The recon data.

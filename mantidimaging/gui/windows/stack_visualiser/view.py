@@ -7,7 +7,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
@@ -29,7 +29,7 @@ class StackVisualiserView(QDockWidget):
     presenter: StackVisualiserPresenter
     layout: QVBoxLayout
 
-    def __init__(self, parent: 'MainWindowView', images: Images):
+    def __init__(self, parent: 'MainWindowView', images: ImageStack):
         # enforce not showing a single image
         assert images.data.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.data.ndim)

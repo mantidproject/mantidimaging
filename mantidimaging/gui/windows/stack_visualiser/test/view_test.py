@@ -5,7 +5,7 @@ from typing import Tuple
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
@@ -17,7 +17,7 @@ versions._use_test_values()
 
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
-    test_data: Images
+    test_data: ImageStack
     window: MainWindowView
 
     def setUp(self):
@@ -25,7 +25,7 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.window = MainWindowView()
         self.view, self.test_data = self._add_stack_visualiser()
 
-    def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, Images]:
+    def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, ImageStack]:
         test_data = th.generate_images()
         test_data.name = "Test Data"
         self.window.create_new_stack(test_data)

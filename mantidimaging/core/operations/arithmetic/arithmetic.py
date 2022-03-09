@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 
@@ -38,13 +38,13 @@ class ArithmeticFilter(BaseFilter):
     filter_name = "Arithmetic"
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     div_val: float = 1.0,
                     mult_val: float = 1.0,
                     add_val: float = 0.0,
                     sub_val: float = 0.0,
                     cores: Optional[int] = None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """
         Apply arithmetic operations to the pixels.
         :param images: The Images object.

@@ -7,7 +7,7 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.divide import DivideFilter
 
 
@@ -26,7 +26,7 @@ class DivideTest(unittest.TestCase):
 
         th.assert_not_equals(result.data, copy)
 
-    def do_divide(self, images: Images, value: float) -> Images:
+    def do_divide(self, images: ImageStack, value: float) -> ImageStack:
         return DivideFilter.filter_func(images, value)
 
     def test_execute_wrapper_return_is_runnable(self):

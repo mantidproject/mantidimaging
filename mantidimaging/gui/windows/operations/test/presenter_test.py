@@ -18,7 +18,7 @@ from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
     _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
@@ -28,7 +28,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
-        self.mock_stacks: List[Images] = []
+        self.mock_stacks: List[ImageStack] = []
         for _ in range(2):
             mock_stack = mock.Mock()
             mock_stack.data = np.zeros([3, 3, 3])
@@ -195,7 +195,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_stack = mock.MagicMock()
         mock_stack.has_proj180deg.return_value = True
         mock_stack.data = np.array([i for i in range(3)])
-        mock_stacks: List[Images] = [mock_stack]
+        mock_stacks: List[ImageStack] = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
 

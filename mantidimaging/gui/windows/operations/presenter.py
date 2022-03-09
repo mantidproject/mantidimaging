@@ -14,7 +14,7 @@ import numpy as np
 from PyQt5.QtWidgets import QApplication, QLineEdit
 from pyqtgraph import ImageItem
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
@@ -89,7 +89,7 @@ def _group_consecutive_values(slices: List[int]) -> List[str]:
 
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
-    stack: Optional[Images] = None
+    stack: Optional[ImageStack] = None
     divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
@@ -98,7 +98,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.model = FiltersWindowModel(self)
         self._main_window = main_window
 
-        self.original_images_stack: Union[List[Tuple[Images, UUID]]] = []
+        self.original_images_stack: Union[List[Tuple[ImageStack, UUID]]] = []
         self.applying_to_all = False
         self.filter_is_running = False
 
@@ -139,7 +139,7 @@ class FiltersWindowPresenter(BasePresenter):
         else:
             self.set_stack(None)
 
-    def set_stack(self, stack: Optional[Images]):
+    def set_stack(self, stack: Optional[ImageStack]):
         self.stack = stack
 
         # Update the preview image index
@@ -226,7 +226,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.applying_to_all = True
         self._do_apply_filter(stacks)
 
-    def _wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
+    def _wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
         stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
         if self.model.show_negative_overlay():
             stack_choice.enable_nonpositive_check()
@@ -239,10 +239,10 @@ class FiltersWindowPresenter(BasePresenter):
 
         return stack_choice.use_new_data
 
-    def is_a_proj180deg(self, stack_to_check: Images):
+    def is_a_proj180deg(self, stack_to_check: ImageStack):
         return stack_to_check in self.main_window.get_all_180_projections()
 
-    def _post_filter(self, updated_stacks: List[Images], task):
+    def _post_filter(self, updated_stacks: List[ImageStack], task):
         try:
             use_new_data = True
             attempt_repair = task.error is not None
@@ -295,7 +295,7 @@ class FiltersWindowPresenter(BasePresenter):
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
             self.filter_is_running = False
 
-    def _do_apply_filter(self, apply_to: List[Images]):
+    def _do_apply_filter(self, apply_to: List[ImageStack]):
         self.filter_is_running = True
         # Record the previous button states
         self.prev_apply_single_state = self.view.applyButton.isEnabled()
@@ -314,7 +314,7 @@ class FiltersWindowPresenter(BasePresenter):
             if lock_scale:
                 self.view.previews.record_histogram_regions()
 
-            subset: Images = self.stack.index_as_images(self.model.preview_image_idx)
+            subset: ImageStack = self.stack.index_as_images(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
 
             try:
@@ -413,7 +413,7 @@ class FiltersWindowPresenter(BasePresenter):
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
 
-    def _show_negative_values_error(self, negative_stacks: List[Images]):
+    def _show_negative_values_error(self, negative_stacks: List[ImageStack]):
         """
         Shows information on the view and in the log about negative values in the output.
         :param negative_stacks: A list of stacks with negative values in the data.

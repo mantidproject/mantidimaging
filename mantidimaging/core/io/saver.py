@@ -8,7 +8,7 @@ from typing import List, Union, Optional, Dict, Callable
 import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from ..data.images import Images
+from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
 from ..utility.progress_reporting import Progress
@@ -53,7 +53,7 @@ def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.nd
         rangle[...] = projection_angles
 
 
-def save(images: Images,
+def save(images: ImageStack,
          output_dir: str,
          name_prefix: str = DEFAULT_NAME_PREFIX,
          swap_axes: bool = False,

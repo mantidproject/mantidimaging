@@ -6,7 +6,7 @@ from typing import List, Union
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection.presenter import CORInspectionDialogPresenter
 from mantidimaging.gui.dialogs.cor_inspection.recon_slice_view import CompareSlicesView
@@ -26,7 +26,7 @@ class CORInspectionDialogView(BaseDialogView):
 
     spin_box: Union[QSpinBox, QDoubleSpinBox]
 
-    def __init__(self, parent, images: Images, slice_index: int, initial_cor: ScalarCoR,
+    def __init__(self, parent, images: ImageStack, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
         super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
         self.iters_mode = iters_mode

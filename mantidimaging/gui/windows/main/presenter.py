@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
@@ -171,7 +171,7 @@ class MainWindowPresenter(BasePresenter):
         log.error(msg)
         self.show_error(msg, traceback.format_exc())
 
-    def _create_and_tabify_stack_window(self, images: Images, sample_dock: StackVisualiserView) -> None:
+    def _create_and_tabify_stack_window(self, images: ImageStack, sample_dock: StackVisualiserView) -> None:
         """
         Creates a new stack window with a given Images object then makes sure it is placed on top of a sample/original
         stack window.
@@ -184,10 +184,10 @@ class MainWindowPresenter(BasePresenter):
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
 
-    def get_all_stacks(self) -> List[Images]:
+    def get_all_stacks(self) -> List[ImageStack]:
         return self.model.images
 
-    def get_all_180_projections(self) -> List[Images]:
+    def get_all_180_projections(self) -> List[ImageStack]:
         return self.model.proj180s
 
     def add_alternative_180_if_required(self, dataset: StrictDataset):
@@ -202,7 +202,7 @@ class MainWindowPresenter(BasePresenter):
                                                                       dataset.sample.projection_angles().value)
             if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                 _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
-                dataset.proj180deg = Images(_180_arr, name=f"{dataset.name}_180")
+                dataset.proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
 
                 self.add_child_item_to_tree_view(dataset.id, dataset.proj180deg.id, "180")
                 sample_vis = self.get_stack_visualiser(dataset.sample.id)
@@ -263,7 +263,7 @@ class MainWindowPresenter(BasePresenter):
         self._focus_on_newest_stack_tab()
         return first_stack_vis
 
-    def create_single_tabbed_images_stack(self, images: Images) -> StackVisualiserView:
+    def create_single_tabbed_images_stack(self, images: ImageStack) -> StackVisualiserView:
         """
         Creates a stack for a single Images object and focuses on it.
         :param images: The Images object for the new stack window.
@@ -274,7 +274,7 @@ class MainWindowPresenter(BasePresenter):
         self._focus_on_newest_stack_tab()
         return stack_vis
 
-    def _create_lone_stack_window(self, images: Images):
+    def _create_lone_stack_window(self, images: ImageStack):
         """
         Creates a stack window and adds it to the stack list without tabifying.
         :param images: The Images array for the stack window to display.
@@ -379,7 +379,7 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.stack_visualisers[stack_id]
 
-    def get_stack(self, stack_id: uuid.UUID) -> Images:
+    def get_stack(self, stack_id: uuid.UUID) -> ImageStack:
         images = self.model.get_images_by_uuid(stack_id)
         if images is None:
             raise RuntimeError(f"Stack not found: {stack_id}")
@@ -399,18 +399,18 @@ class MainWindowPresenter(BasePresenter):
     def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
 
-    def update_stack_with_images(self, images: Images) -> None:
+    def update_stack_with_images(self, images: ImageStack) -> None:
         sv = self.get_stack_with_images(images)
         if sv is not None:
             sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
-    def get_stack_with_images(self, images: Images) -> StackVisualiserView:
+    def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
         for _, sv in self.stack_visualisers.items():
             if images is sv.presenter.images:
                 return sv
         raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stack_visualisers.items()}")
 
-    def set_images_in_stack(self, stack_id: uuid.UUID, images: Images) -> None:
+    def set_images_in_stack(self, stack_id: uuid.UUID, images: ImageStack) -> None:
         self.model.set_image_data_by_uuid(stack_id, images.data)
         stack = self.stack_visualisers[stack_id]
         if not stack.presenter.images == images:  # todo - refactor
@@ -581,7 +581,7 @@ class MainWindowPresenter(BasePresenter):
         else:
             raise RuntimeError(f"Unable to find stack with ID {stack_id}")
 
-    def _add_recon_to_dataset(self, recon_data: Images, stack_id: uuid.UUID) -> None:
+    def _add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID) -> None:
         """
         Adds a recon to the dataset and tree view and creates a stack image view.
         :param recon_data: The recon data.
@@ -592,7 +592,7 @@ class MainWindowPresenter(BasePresenter):
         self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
         self.view.model_changed.emit()
 
-    def add_sinograms_to_dataset_and_update_view(self, sino_stack: Images, original_stack_id: uuid.UUID):
+    def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID):
         """
         Adds sinograms to a dataset or replaces an existing one.
         :param sino_stack: The sinogram stack.

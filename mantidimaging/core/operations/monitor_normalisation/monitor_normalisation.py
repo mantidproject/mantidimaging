@@ -6,7 +6,7 @@ from typing import Callable, Dict, Any
 import numpy as np
 from PyQt5.QtWidgets import QFormLayout, QWidget
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -29,7 +29,7 @@ class MonitorNormalisation(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, cores=None, chunksize=None, progress=None) -> Images:
+    def filter_func(images: ImageStack, cores=None, chunksize=None, progress=None) -> ImageStack:
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
             # passed in doesn't have the logfile in it

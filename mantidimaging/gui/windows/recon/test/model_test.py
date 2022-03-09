@@ -6,7 +6,7 @@ import unittest
 from unittest import mock
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.reconstruct.astra_recon import allowed_recon_kwargs as astra_allowed_kwargs
 from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as tomopy_allowed_kwargs
@@ -21,7 +21,7 @@ class ReconWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
-        self.data = Images(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
+        self.data = ImageStack(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
         self.model.initial_select_data(self.data)
 
     def test_empty_init(self):

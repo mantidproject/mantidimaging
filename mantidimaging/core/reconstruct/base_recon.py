@@ -6,14 +6,14 @@ from typing import List, Optional
 import numpy as np
 from numpy.polynomial import Polynomial
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
 from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class BaseRecon:
     @staticmethod
-    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         raise NotImplementedError("Base class call")
 
     @staticmethod
@@ -50,10 +50,10 @@ class BaseRecon:
         raise NotImplementedError("Base class call")
 
     @staticmethod
-    def full(images: Images,
+    def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None) -> Images:
+             progress: Optional[Progress] = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

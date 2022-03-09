@@ -9,7 +9,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.median_filter import MedianFilter
 
@@ -59,7 +59,7 @@ class MedianTest(unittest.TestCase):
     def test_executed_par(self):
         self.do_execute(th.generate_images_for_parallel())
 
-    def do_execute(self, images: Images):
+    def do_execute(self, images: ImageStack):
         size = 3
         mode = 'reflect'
 

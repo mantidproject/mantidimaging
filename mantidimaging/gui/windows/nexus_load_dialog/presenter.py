@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Optional, Union, Tuple
 import h5py
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -273,7 +273,7 @@ class NexusLoadPresenter:
 
         return sample_images
 
-    def _create_images(self, data_array: np.ndarray, name: str) -> Images:
+    def _create_images(self, data_array: np.ndarray, name: str) -> ImageStack:
         """
         Use a data array to create an Images object.
         :param data_array: The images array obtained from the NeXus file.
@@ -282,9 +282,9 @@ class NexusLoadPresenter:
         """
         data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
         data[:] = data_array
-        return Images(data, [f"{name} {self.title}"])
+        return ImageStack(data, [f"{name} {self.title}"])
 
-    def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[Images]:
+    def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[ImageStack]:
         """
         Create the Images objects if the corresponding data was found in the NeXus file, and the user checked the
         "Use?" checkbox.

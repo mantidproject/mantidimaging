@@ -6,7 +6,7 @@ import unittest
 from unittest import mock
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
@@ -21,7 +21,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter = ReconstructWindowPresenter(self.view, mock.Mock())
 
-        self.data = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
 
         self.presenter.model.initial_select_data(self.data)
@@ -282,7 +282,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
             "projection to (10, 10)")
 
     def test_do_stack_reconstruct_slice(self):
-        test_data = Images(np.ndarray(shape=(200, 250), dtype=np.float32))
+        test_data = ImageStack(np.ndarray(shape=(200, 250), dtype=np.float32))
         test_data.record_operation = mock.Mock()
         task_mock = mock.Mock(result=test_data, error=None)
         self.presenter._get_slice_index = mock.Mock(return_value=7)

@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
-    from mantidimaging.core.data import Images  # pragma: no cover
+    from mantidimaging.core.data import ImageStack  # pragma: no cover
 
 
-def mark_cropped(images: 'Images', roi: SensibleROI):
+def mark_cropped(images: 'ImageStack', roi: SensibleROI):
     # avoids circular import error
     from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
     # not ideal.. but it will allow to replicate the result accurately

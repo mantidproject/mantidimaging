@@ -6,13 +6,13 @@ from unittest.mock import patch, MagicMock
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogModel
 
 
 class OpHistoryCopyDialogModelTest(unittest.TestCase):
     def setUp(self):
-        self.images = Images(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
+        self.images = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.images.data[:] = 100
         self.model = OpHistoryCopyDialogModel(self.images)
 

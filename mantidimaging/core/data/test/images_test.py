@@ -7,7 +7,7 @@ import unittest
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, generate_txt_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
@@ -20,7 +20,7 @@ class ImagesTest(unittest.TestCase):
         json_file = io.StringIO('{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
                                 '"three"], "a_float": 3.65e-05, "a_bool": true}')
 
-        imgs = Images(np.asarray([1]))
+        imgs = ImageStack(np.asarray([1]))
         imgs.load_metadata(json_file)
 
         def validate_prop(k, v):
@@ -32,7 +32,7 @@ class ImagesTest(unittest.TestCase):
         validate_prop('a_arr', ['one', 'two', 'three'])
 
     def test_record_parameters_in_metadata(self):
-        imgs = Images(np.asarray([1]))
+        imgs = ImageStack(np.asarray([1]))
 
         imgs.record_operation('test_func', 'A pretty name', this=765, that=495.0, roi=(1, 2, 3, 4))
 
@@ -156,7 +156,7 @@ class ImagesTest(unittest.TestCase):
         self.assertIsNotNone(images.data)
 
     def test_create_empty_images(self):
-        images = Images.create_empty_images((15, 10, 10), np.float32, {})
+        images = ImageStack.create_empty_images((15, 10, 10), np.float32, {})
         self.assertEqual(images.data.shape, (15, 10, 10))
 
     def test_get_projection_angles_from_logfile(self):
@@ -201,8 +201,8 @@ class ImagesTest(unittest.TestCase):
 
     def test_image_eq_method(self):
         data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
-        data_images = Images(data_array.copy())
-        data_images2 = Images(data_array.copy())
+        data_images = ImageStack(data_array.copy())
+        data_images2 = ImageStack(data_array.copy())
 
         self.assertEqual(data_images, data_array)
         self.assertEqual(data_images, data_images2)
@@ -217,27 +217,27 @@ class ImagesTest(unittest.TestCase):
             generate_images().id = "id"
 
     def test_default_name(self):
-        imgs = Images(np.asarray([1]))
+        imgs = ImageStack(np.asarray([1]))
         self.assertEqual(imgs.name, "untitled")
 
     def test_name_from_filenames(self):
         filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
-        imgs = Images(np.asarray([1]), filenames=filenames)
+        imgs = ImageStack(np.asarray([1]), filenames=filenames)
         self.assertEqual(imgs.name, "tomo_0000")
 
     def test_name_from_argument(self):
         filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
-        imgs = Images(np.asarray([1]), filenames=filenames, name="given")
+        imgs = ImageStack(np.asarray([1]), filenames=filenames, name="given")
         self.assertEqual(imgs.name, "given")
 
     def test_name_unique_new(self):
         existing = []
-        imgs = Images(np.asarray([1]), name="tomo")
+        imgs = ImageStack(np.asarray([1]), name="tomo")
         imgs.make_name_unique(existing)
         self.assertEqual(imgs.name, "tomo")
 
     def test_name_unique_exists(self):
         existing = ["tomo"]
-        imgs = Images(np.asarray([1]), name="tomo")
+        imgs = ImageStack(np.asarray([1]), name="tomo")
         imgs.make_name_unique(existing)
         self.assertEqual(imgs.name, "tomo_2")

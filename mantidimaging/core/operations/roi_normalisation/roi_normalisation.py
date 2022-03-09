@@ -8,7 +8,7 @@ from typing import List, Optional
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
@@ -39,10 +39,10 @@ class RoiNormalisationFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     region_of_interest: SensibleROI = None,
                     normalisation_mode: str = modes()[0],
-                    flat_field: Optional[Images] = None,
+                    flat_field: Optional[ImageStack] = None,
                     cores=None,
                     chunksize=None,
                     progress=None):

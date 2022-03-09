@@ -7,7 +7,7 @@ from enum import Enum, auto
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget  # noqa: F401   # pragma: no cover
@@ -33,7 +33,7 @@ class BaseFilter:
     which are optional.
     """
     @staticmethod
-    def filter_func(data: Images) -> Images:
+    def filter_func(data: ImageStack) -> ImageStack:
         """
         Executes the filter algorithm on a given set of image data with the given parameters.
 
@@ -42,7 +42,7 @@ class BaseFilter:
         :return: the image data after applying the filter
         """
         raise_not_implemented("filter_func")
-        return Images(np.asarray([]))
+        return ImageStack(np.asarray([]))
 
     @staticmethod
     def execute_wrapper(args) -> partial:  # type: ignore
@@ -88,7 +88,7 @@ class BaseFilter:
         return FilterGroup.NoGroup
 
     @staticmethod
-    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> Optional[Images]:
+    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> Optional[ImageStack]:
         stack_uuid = widget.current()
         if stack_uuid is None:
             raise ValueError(f"No stack for {msg}")

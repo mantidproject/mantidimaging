@@ -10,7 +10,7 @@ from unittest.mock import patch, call
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
@@ -24,7 +24,7 @@ def test_generate_recon_item_name():
     assert _generate_recon_item_name(4) == "Recon 4"
 
 
-def generate_images_with_filenames(n_images: int) -> List[Images]:
+def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
     images = []
     for _ in range(n_images):
         im = generate_images()

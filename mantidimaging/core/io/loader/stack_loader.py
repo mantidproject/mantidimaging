@@ -6,7 +6,7 @@ import numpy as np
 if TYPE_CHECKING:
     import numpy.typing as npt
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -40,7 +40,7 @@ def execute(load_func: Callable[[str], np.ndarray],
             dtype: 'npt.DTypeLike',
             name: str,
             indices: Union[List[int], Indices, None] = None,
-            progress: Optional[Progress] = None) -> Images:
+            progress: Optional[Progress] = None) -> ImageStack:
     """
     Load a single image FILE that is expected to be a stack of images.
 
@@ -73,4 +73,4 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here
-    return Images(data, [file_name])
+    return ImageStack(data, [file_name])
