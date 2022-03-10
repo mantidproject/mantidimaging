@@ -5,7 +5,6 @@ from unittest import mock
 from unittest.mock import patch
 
 from mantidimaging.core.utility import cuda_check
-from mantidimaging.core.utility.cuda_check import EXCEPTION_MSG, NVIDIA_SMI, LOCATE
 
 
 class TestCudaChecker(unittest.TestCase):
@@ -30,44 +29,28 @@ class TestCudaChecker(unittest.TestCase):
 
 
 class TestCudaCheckHelpers(unittest.TestCase):
-    @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_cuda_is_present_returns_true(self, check_output_mock):
-        check_output_mock.side_effect = [b"Driver Version", b"/usr/lib/path/to/libcuda.so\n"]
+    @patch("mantidimaging.core.utility.cuda_check._import_cupy")
+    def test_cuda_is_present_returns_true(self, _import_cupy_mock):
+        _import_cupy_mock.return_value = None
         assert cuda_check._cuda_is_present()
 
-    @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_cuda_is_present_returns_false(self, check_output_mock):
-        nvidia_error = "NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that " \
-                       "the latest NVIDIA driver is installed and running.\n "
-        check_output_mock.side_effect = [str.encode(nvidia_error), b"/path/to/libcuda.so\n"]
+    @patch("mantidimaging.core.utility.cuda_check._import_cupy")
+    def test_cuda_is_present_returns_false_no_cupy(self, _import_cupy_mock):
+        _import_cupy_mock.side_effect = ModuleNotFoundError
+        cupy_import_error = 'CuPy not installed'
 
         with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
             assert not cuda_check._cuda_is_present()
-        self.assertIn(nvidia_error, cuda_check_log.output[0])
+        self.assertIn(cupy_import_error, cuda_check_log.output[0])
 
-    @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_failed_libcuda_search_is_logged(self, check_output_mock):
-        check_output_mock.side_effect = [b"Driver Version", b""]
+    @patch("mantidimaging.core.utility.cuda_check._import_cupy")
+    def test_cuda_is_present_returns_false_no_CUDA(self, _import_cupy_mock):
+        _import_cupy_mock.side_effect = ImportError
+        cupy_import_error = 'CuPy installed, but unable to load CUDA'
+
         with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
             assert not cuda_check._cuda_is_present()
-        self.assertIn("Search for libcuda files returned no results.", cuda_check_log.output[0])
-
-    @patch("mantidimaging.core.utility.cuda_check.subprocess.check_output")
-    def test_cuda_is_present_returns_false_when_subprocess_raises_exception(self, check_output_mock):
-        with self.assertLogs(cuda_check.__name__, level='ERROR') as cuda_check_log:
-            check_output_mock.side_effect = PermissionError
-            assert not cuda_check._cuda_is_present()
-
-            check_output_mock.side_effect = FileNotFoundError
-            assert not cuda_check._cuda_is_present()
-
-        nvidia_exception_msg = f"{EXCEPTION_MSG} {NVIDIA_SMI}"
-        locate_exception_msg = f"{EXCEPTION_MSG} {LOCATE}"
-
-        self.assertIn(nvidia_exception_msg, cuda_check_log.output[0])
-        self.assertIn(locate_exception_msg, cuda_check_log.output[1])
-        self.assertIn(nvidia_exception_msg, cuda_check_log.output[2])
-        self.assertIn(locate_exception_msg, cuda_check_log.output[3])
+        self.assertIn(cupy_import_error, cuda_check_log.output[0])
 
     def test_not_found_message(self):
         short_msg, long_msg = cuda_check.not_found_message()

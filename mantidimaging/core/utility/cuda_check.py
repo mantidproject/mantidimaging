@@ -1,48 +1,30 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import subprocess
 from logging import getLogger
 from typing import Tuple
 
 LOG = getLogger(__name__)
 
-NVIDIA_SMI = "nvidia-smi"
-LOCATE = "locate"
-EXCEPTION_MSG = "Error when attempting to run"
 
-
-def _read_from_terminal(command: str) -> str:
-    """
-    Runs a terminal command and returns the output.
-    """
-    return subprocess.check_output(command + "; exit 0", shell=True, stderr=subprocess.STDOUT).decode("ascii")
+def _import_cupy() -> None:
+    import cupy  # noqa: F401
 
 
 def _cuda_is_present() -> bool:
     """
-    Checks if nvidia-smi is on the system + working, and that the libcuda files can be located.
+    Checks if we can import CuPy to confirm that there's a CUDA installation on the device that we can work with
     """
-    nvidia_smi_working = libcuda_files_found = True
-    try:
-        nvidia_smi_output = _read_from_terminal(NVIDIA_SMI)
-        if "Driver Version" not in nvidia_smi_output:
-            nvidia_smi_working = False
-            LOG.error(nvidia_smi_output)
-
-    except Exception as e:
-        LOG.error(f"{EXCEPTION_MSG} {NVIDIA_SMI}: {e}")
-        nvidia_smi_working = False
+    cuda_is_present = False
 
     try:
-        if _read_from_terminal(f"{LOCATE} --regex '^/usr/(lib|lib64)/(.*?)/libcuda.so'") == "":
-            libcuda_files_found = False
-            LOG.error("Search for libcuda files returned no results.")
+        _import_cupy()
+        cuda_is_present = True
+    except ModuleNotFoundError:
+        LOG.error('CuPy not installed')
+    except ImportError:
+        LOG.error('CuPy installed, but unable to load CUDA')
 
-    except Exception as e:
-        LOG.error(f"{EXCEPTION_MSG} {LOCATE}: {e}")
-        libcuda_files_found = False
-
-    return nvidia_smi_working and libcuda_files_found
+    return cuda_is_present
 
 
 def not_found_message() -> Tuple[str, str]:
