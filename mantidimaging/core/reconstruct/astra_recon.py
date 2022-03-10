@@ -130,7 +130,7 @@ class AstraRecon(BaseRecon):
              progress: Optional[Progress] = None) -> ImageStack:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, images.width, images.width)
-        output_images: ImageStack = ImageStack.create_empty_images(output_shape, images.dtype, images.metadata)
+        output_images: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Volume Reconstruction', **recon_params.to_dict())
 
         proj_angles = images.projection_angles(recon_params.max_projection_angle)

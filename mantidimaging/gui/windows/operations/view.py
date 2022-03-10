@@ -234,7 +234,7 @@ class FiltersWindowView(BaseMainWindowView):
     def roi_visualiser(self, roi_field):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
         try:
-            images = self.presenter.stack.index_as_images(self.presenter.model.preview_image_idx)
+            images = self.presenter.stack.index_as_image_stack(self.presenter.model.preview_image_idx)
         except IndexError:
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return

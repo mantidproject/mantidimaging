@@ -5,7 +5,6 @@ import unittest
 from unittest import mock
 from unittest.mock import patch
 
-import numpy.testing as npt
 import numpy as np
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
@@ -25,14 +24,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
         self.presenter.model = mock.Mock()
         self.view._main_window = mock.Mock()
-
-    def test_get_image(self):
-        index = 3
-
-        test_data = self.test_data
-
-        img = self.presenter.get_image(index)
-        npt.assert_equal(test_data.data[index], img.data[0])
 
     def test_delete_data(self):
         self.presenter.images = th.generate_images()

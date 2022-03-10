@@ -314,7 +314,7 @@ class FiltersWindowPresenter(BasePresenter):
             if lock_scale:
                 self.view.previews.record_histogram_regions()
 
-            subset: ImageStack = self.stack.index_as_images(self.model.preview_image_idx)
+            subset: ImageStack = self.stack.index_as_image_stack(self.model.preview_image_idx)
             before_image = np.copy(subset.data[0])
 
             try:

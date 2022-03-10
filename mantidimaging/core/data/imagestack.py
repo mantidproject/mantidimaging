@@ -156,7 +156,7 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def index_as_images(self, index) -> 'ImageStack':
+    def index_as_image_stack(self, index) -> 'ImageStack':
         return ImageStack(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
     @property
@@ -244,7 +244,7 @@ class ImageStack:
         return self._data.dtype
 
     @staticmethod
-    def create_empty_images(shape, dtype, metadata):
+    def create_empty_image_stack(shape, dtype, metadata) -> 'ImageStack':
         arr = pu.create_array(shape, dtype)
         return ImageStack(arr, metadata=metadata)
 

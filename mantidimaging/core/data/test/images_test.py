@@ -155,8 +155,8 @@ class ImagesTest(unittest.TestCase):
         images = generate_images((10, 100, 350))
         self.assertIsNotNone(images.data)
 
-    def test_create_empty_images(self):
-        images = ImageStack.create_empty_images((15, 10, 10), np.float32, {})
+    def test_create_empty_image_stack(self):
+        images = ImageStack.create_empty_image_stack((15, 10, 10), np.float32, {})
         self.assertEqual(images.data.shape, (15, 10, 10))
 
     def test_get_projection_angles_from_logfile(self):
