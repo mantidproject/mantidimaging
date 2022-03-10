@@ -18,9 +18,9 @@ class CompareSlicesView(GraphicsLayoutWidget):
         super().__init__(parent)
         self.parent = parent
 
-        self.imageview_less = MIMiniImageView(name="less")
-        self.imageview_current = MIMiniImageView(name="current")
-        self.imageview_more = MIMiniImageView(name="more")
+        self.imageview_less = MIMiniImageView(name="less", parent=parent, recon_mode=True)
+        self.imageview_current = MIMiniImageView(name="current", parent=parent, recon_mode=True)
+        self.imageview_more = MIMiniImageView(name="more", parent=parent, recon_mode=True)
         self.all_imageviews = [self.imageview_less, self.imageview_current, self.imageview_more]
         MIMiniImageView.set_siblings(self.all_imageviews, axis=True, hist=True)
 
