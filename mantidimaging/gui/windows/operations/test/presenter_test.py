@@ -186,7 +186,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                                                   _do_apply_filter: Mock = Mock(),
                                                                   _do_apply_filter_sync: Mock = Mock()):
         """
-        Test that when an `Images` stack is encountered which also has a
+        Test that when an `ImageStack` stack is encountered which also has a
         180deg projection stack reference, that 180deg stack is also processed
         with the same operation, to ensure consistency between the two images
         """

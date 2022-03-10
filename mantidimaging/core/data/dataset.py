@@ -11,7 +11,7 @@ from mantidimaging.core.data.reconlist import ReconList
 
 
 def _delete_stack_error_message(images_id: uuid.UUID) -> str:
-    return f"Unable to delete stack: Images with ID {images_id} not present in dataset."
+    return f"Unable to delete stack: ImageStack with ID {images_id} not present in dataset."
 
 
 class BaseDataset:
@@ -53,7 +53,7 @@ class BaseDataset:
             if image.id == images_id:
                 image.data = new_data
                 return
-        raise KeyError(f"Unable to replace: Images with ID {images_id} not present in dataset.")
+        raise KeyError(f"Unable to replace: ImageStack with ID {images_id} not present in dataset.")
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
         return any([image.id == images_id for image in self.all])

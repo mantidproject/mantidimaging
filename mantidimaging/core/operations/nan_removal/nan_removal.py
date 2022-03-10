@@ -52,7 +52,7 @@ class NaNRemovalFilter(BaseFilter):
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :param progress: The optional Progress object.
-        :return: The Images object with the NaNs replaced.
+        :return: The ImageStack object with the NaNs replaced.
         """
 
         sample = data.data

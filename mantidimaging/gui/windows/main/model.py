@@ -116,10 +116,10 @@ class MainWindowModel(object):
 
     def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> ImageStack:
         """
-        Loads to 180 projection and adds this to a given Images ID.
+        Loads the 180 projection and adds this to a given Dataset ID.
         :param dataset_id: The ID of the Dataset.
         :param _180_deg_file: The location of the 180 projection.
-        :return: The loaded 180 Image object.
+        :return: The loaded 180 ImageStack object.
         """
         if dataset_id in self.datasets:
             dataset = self.datasets[dataset_id]
@@ -140,13 +140,13 @@ class MainWindowModel(object):
         images.set_projection_angles(proj_angles)
 
     def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to get Images with ID {images_id}")
+        raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
 
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find dataset containing Images with ID {images_id}")
+        raise RuntimeError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
     def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find strict dataset containing Images with ID {images_id}")
+        raise RuntimeError(f"Failed to find strict dataset containing ImageStack with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
         images = self.get_images_by_uuid(images_id)

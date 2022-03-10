@@ -253,13 +253,13 @@ class NexusLoadPresenter:
 
     def _create_sample_images(self):
         """
-        Creates the sample Images object.
-        :return: An Images object containing projections. If given, projection angles, pixel size, and 180deg are also
-            set.
+        Creates the sample ImageStack object.
+        :return: An ImageStack object containing projections. If given, projection angles, pixel size, and 180deg are
+            also set.
         """
         assert self.sample_array is not None
 
-        # Create sample array and Images object
+        # Create sample array and ImageStack object
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
                                               step_widget.value()]
         sample_images = self._create_images(self.sample_array, "Projections")
@@ -275,10 +275,10 @@ class NexusLoadPresenter:
 
     def _create_images(self, data_array: np.ndarray, name: str) -> ImageStack:
         """
-        Use a data array to create an Images object.
+        Use a data array to create an ImageStack object.
         :param data_array: The images array obtained from the NeXus file.
         :param name: The name of the image dataset.
-        :return: An Images object.
+        :return: An ImageStack object.
         """
         data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
         data[:] = data_array
@@ -286,11 +286,11 @@ class NexusLoadPresenter:
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[ImageStack]:
         """
-        Create the Images objects if the corresponding data was found in the NeXus file, and the user checked the
+        Create the ImageStack objects if the corresponding data was found in the NeXus file, and the user checked the
         "Use?" checkbox.
         :param data_array: The images data array.
         :param name: The name of the images.
-        :return: An Images object or None.
+        :return: An ImageStack object or None.
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None

@@ -419,6 +419,6 @@ class ReconstructWindowPresenter(BasePresenter):
         """
         Replaces infinity values in a data array with NaNs. Used because pyqtgraph has programs with arrays containing
         inf.
-        :param images: The Images object.
+        :param images: The ImageStack object.
         """
         images.data[np.isinf(images.data)] = np.nan

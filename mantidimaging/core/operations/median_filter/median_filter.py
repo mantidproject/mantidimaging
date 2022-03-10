@@ -75,7 +75,7 @@ class MedianFilter(BaseFilter):
                     progress=None,
                     force_cpu=True):
         """
-        :param data: Input data as an Images object.
+        :param data: Input data as an ImageStack object.
         :param size: Size of the kernel
         :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].

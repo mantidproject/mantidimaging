@@ -46,7 +46,7 @@ def execute(load_func: Callable[[str], np.ndarray],
         '>f2' - float16
         '>f4' - float32
 
-    :returns: Images object
+    :returns: StrictDataset object
     """
 
     if not sample_path:

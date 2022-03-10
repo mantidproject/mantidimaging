@@ -47,14 +47,14 @@ class ArithmeticFilter(BaseFilter):
                     progress=None) -> ImageStack:
         """
         Apply arithmetic operations to the pixels.
-        :param images: The Images object.
+        :param images: The ImageStack object.
         :param mult_val: The multiplication value.
         :param div_val: The division value.
         :param add_val: The addition value.
         :param sub_val: The subtraction value.
         :param cores: The number of cores that will be used to process the data.
         :param progress: The Progress object isn't used.
-        :return: The processed Images object.
+        :return: The processed ImageStack object.
         """
         if div_val == 0 or mult_val == 0:
             raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")

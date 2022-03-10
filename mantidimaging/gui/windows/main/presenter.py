@@ -173,9 +173,9 @@ class MainWindowPresenter(BasePresenter):
 
     def _create_and_tabify_stack_window(self, images: ImageStack, sample_dock: StackVisualiserView) -> None:
         """
-        Creates a new stack window with a given Images object then makes sure it is placed on top of a sample/original
-        stack window.
-        :param images: The Images object for the new stack window.
+        Creates a new stack window with a given ImageStack object then makes sure it is placed on top of a
+        sample/original stack window.
+        :param images: The ImageStack object for the new stack window.
         :param sample_dock: The existing stack window that the new one should be placed on top of.
         """
         stack_visualiser = self._create_lone_stack_window(images)
@@ -265,8 +265,8 @@ class MainWindowPresenter(BasePresenter):
 
     def create_single_tabbed_images_stack(self, images: ImageStack) -> StackVisualiserView:
         """
-        Creates a stack for a single Images object and focuses on it.
-        :param images: The Images object for the new stack window.
+        Creates a stack for a single ImageStack object and focuses on it.
+        :param images: The ImageStack object for the new stack window.
         :return: The new StackVisualiserView.
         """
         stack_vis = self._create_lone_stack_window(images)
@@ -277,7 +277,7 @@ class MainWindowPresenter(BasePresenter):
     def _create_lone_stack_window(self, images: ImageStack):
         """
         Creates a stack window and adds it to the stack list without tabifying.
-        :param images: The Images array for the stack window to display.
+        :param images: The ImageStack array for the stack window to display.
         :return: The new stack window.
         """
         stack_vis = self.view.create_stack_window(images)
@@ -425,7 +425,6 @@ class MainWindowPresenter(BasePresenter):
         Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.
         :param dataset_id: The ID of the dataset to update.
         :param _180_deg_file: The filename for the 180 file.
-        :return: The 180 Images object if loading was successful, None otherwise.
         """
         existing_180_id = self.model.get_existing_180_id(dataset_id)
         _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
@@ -519,7 +518,7 @@ class MainWindowPresenter(BasePresenter):
         """
         Adds a child item to the tree view.
         :param parent_id: The ID of the parent dataset.
-        :param child_id: The ID of the corresponding Images object.
+        :param child_id: The ID of the corresponding ImageStack object.
         :param child_name: The name that should appear in the tree view.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
@@ -529,7 +528,7 @@ class MainWindowPresenter(BasePresenter):
         """
         Adds a recon item to the tree view.
         :param parent_id: The ID of the parent dataset.
-        :param child_id: The ID of the corresponding Images object.
+        :param child_id: The ID of the corresponding ImageStack object.
         :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
@@ -611,7 +610,7 @@ class MainWindowPresenter(BasePresenter):
         """
         Adds a sinograms item to the tree view or updates the id of an existing one.
         :param parent_id: The ID of the parent dataset.
-        :param sino_id: The ID of the corresponding Images object.
+        :param sino_id: The ID of the corresponding ImageStack object.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         sinograms_item = self.view.get_sinograms_item(dataset_item)
