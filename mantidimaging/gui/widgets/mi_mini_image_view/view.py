@@ -54,7 +54,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
 
-        self.add_auto_color_menu_action(parent if parent else self, recon_mode=recon_mode, set_enabled=False)
+        self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
 
     @property
     def histogram(self) -> HistogramLUTItem:
