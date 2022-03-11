@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Publish Mantid Imaging docs
 
 inputs:
@@ -7,11 +5,9 @@ inputs:
     description: 'Github API Token'
     required: true
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 runs:
   using: "composite"
 
-  # Steps represent a sequence of tasks that will be executed as part of the job
   steps:
   - name: Publish docs
     shell: bash -l {0}
