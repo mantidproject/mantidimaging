@@ -55,9 +55,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addLabel("Image difference")
         self.nextRow()
 
-        self.imageview_before = MIMiniImageView(name="before")
-        self.imageview_after = MIMiniImageView(name="after")
-        self.imageview_difference = MIMiniImageView(name="difference")
+        self.imageview_before = MIMiniImageView(name="before", parent=self)
+        self.imageview_after = MIMiniImageView(name="after", parent=self)
+        self.imageview_difference = MIMiniImageView(name="difference", parent=self)
         self.all_imageviews = [self.imageview_before, self.imageview_after, self.imageview_difference]
         MIMiniImageView.set_siblings(self.all_imageviews, axis=True)
         MIMiniImageView.set_siblings([self.imageview_before, self.imageview_after], hist=True)
@@ -78,10 +78,6 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
-
-        self.imageview_before.add_auto_color_action(self)
-        self.imageview_after.add_auto_color_action(self)
-        self.imageview_difference.add_auto_color_action(self)
 
         self.imageview_before.link_sibling_axis()
 

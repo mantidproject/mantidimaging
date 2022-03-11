@@ -16,7 +16,7 @@ from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataO
 
 if TYPE_CHECKING:
     import numpy as np
-    from PyQt5.QtWidgets import QAction, QWidget
+    from PyQt5.QtWidgets import QWidget
 
 graveyard = []
 
@@ -31,7 +31,7 @@ def pairwise(iterable):
 
 
 class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
-    def __init__(self, name: str = "MIMiniImageView"):
+    def __init__(self, name: str = "MIMiniImageView", parent: 'Optional[QWidget]' = None, recon_mode: bool = False):
         super().__init__()
 
         self.name = name.title()
@@ -53,6 +53,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
         self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
         self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
+
+        self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
 
     @property
     def histogram(self) -> HistogramLUTItem:
@@ -152,6 +154,3 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         for img_view in self.histogram_siblings:
             with BlockQtSignals(img_view.hist):
                 img_view.hist.setLevels(*hist_range)
-
-    def add_auto_color_action(self, parent: 'Optional[QWidget]', recon_mode: bool = False) -> 'QAction':
-        return self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
