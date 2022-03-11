@@ -61,9 +61,3 @@ jobs:
       with:
         command: xvfb-run pytest -n auto --ignore=mantidimaging/eyes_tests
         label: centos7
-
-    - name: docs
-      uses: ./.github/actions/test
-      with:
-        command: python setup.py docs
-        label: centos7
