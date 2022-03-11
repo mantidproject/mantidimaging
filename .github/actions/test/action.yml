@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Testing with docker
 
 inputs:
@@ -11,7 +9,6 @@ inputs:
     required: true
     default: 'latest'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 runs:
   using: "composite"
   steps:

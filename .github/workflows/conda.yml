@@ -17,8 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Get Date
         id: get-date
@@ -104,11 +102,6 @@ jobs:
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests
 
-      - name: docs
-        shell: bash -l {0}
-        run: |
-          python setup.py docs
-
       - name: Get test data
         shell: bash -l {0}
         run: |
@@ -149,9 +142,3 @@ jobs:
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN }}
-
-      - name: publish docs
-        if: github.ref == 'refs/heads/main'
-        uses: ./.github/actions/publish-docs
-        with:
-          token: ${{ secrets.GHPAGES_API_TOKEN }}
