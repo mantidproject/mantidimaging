@@ -3,7 +3,7 @@
 
 from functools import partial
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.utility.progress_reporting import Progress
 
@@ -27,7 +27,7 @@ class ClipValuesFilter(BaseFilter):
                     clip_max=None,
                     clip_min_new_value=None,
                     clip_max_new_value=None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """Clip values below the min and above the max pixels.
 
         :param data: Input data as a 3D numpy.ndarray.

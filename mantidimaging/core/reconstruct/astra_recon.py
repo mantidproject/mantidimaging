@@ -10,7 +10,7 @@ import astra
 import numpy as np
 from scipy.optimize import minimize
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
@@ -82,7 +82,7 @@ class AstraRecon(BaseRecon):
         return num_gpus
 
     @staticmethod
-    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         """
         Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.
 
@@ -124,13 +124,13 @@ class AstraRecon(BaseRecon):
                 return astra.data2d.get(rec_id)
 
     @staticmethod
-    def full(images: Images,
+    def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None) -> Images:
+             progress: Optional[Progress] = None) -> ImageStack:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, images.width, images.width)
-        output_images: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
+        output_images: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Volume Reconstruction', **recon_params.to_dict())
 
         proj_angles = images.projection_angles(recon_params.max_projection_angle)

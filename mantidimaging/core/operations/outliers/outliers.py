@@ -6,7 +6,7 @@ from functools import partial
 import numpy as np
 import scipy.ndimage as scipy_ndimage
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -44,7 +44,7 @@ class OutliersFilter(BaseFilter):
             return np.where((median - data) > diff, median, data)
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     diff=None,
                     radius=_default_radius,
                     mode=_default_mode,

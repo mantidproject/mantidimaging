@@ -13,7 +13,7 @@ from mantidimaging.core.data.dataset import StrictDataset
 if TYPE_CHECKING:
     import numpy.typing as npt
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log,
@@ -113,7 +113,7 @@ def load_log(log_file: str) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress) -> Images:
+def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress) -> ImageStack:
     return load(input_path=parameters.input_path,
                 in_prefix=parameters.prefix,
                 in_format=parameters.format,
@@ -122,7 +122,7 @@ def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progre
                 progress=progress).sample
 
 
-def load_stack(file_path: str, progress: Optional[Progress] = None) -> Images:
+def load_stack(file_path: str, progress: Optional[Progress] = None) -> ImageStack:
     image_format = get_file_extension(file_path)
     prefix = get_prefix(file_path)
     file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)  # type: ignore

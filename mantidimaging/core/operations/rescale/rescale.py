@@ -8,7 +8,7 @@ import numpy as np
 from numpy import float32, nanmax, nanmin, ndarray, uint16
 from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.windows.operations import FiltersWindowView
@@ -24,12 +24,12 @@ class RescaleFilter(BaseFilter):
     filter_name = 'Rescale'
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     min_input: float = 0.0,
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
                     progress=None,
-                    data_type=None) -> Images:
+                    data_type=None) -> ImageStack:
         np.clip(images.data, min_input, max_input, out=images.data)
         # offset - it removes any negative values so that they don't overflow when in uint16 range
         images.data -= nanmin(images.data)

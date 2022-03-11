@@ -3,7 +3,7 @@
 
 from typing import List, TYPE_CHECKING, Iterable, Any, Dict
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operation_history.operations import ImageOperation, deserialize_metadata
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -20,7 +20,7 @@ class OpHistoryCopyDialogPresenter(BasePresenter):
     main_window: 'MainWindowView'
     view: 'OpHistoryCopyDialogView'
 
-    def __init__(self, view, images: Images, main_window):
+    def __init__(self, view, images: ImageStack, main_window):
         super().__init__(view)
         self.view = view
         self.model = OpHistoryCopyDialogModel(images)

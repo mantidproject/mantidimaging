@@ -17,7 +17,7 @@ from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunctio
 # CIL ASTRA plugin
 from cil.plugins.astra.operators import ProjectionOperator
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.optional_imports import safe_import
@@ -55,7 +55,7 @@ class CILRecon(BaseRecon):
         return (K, f1, f2, G)
 
     @staticmethod
-    def find_cor(images: Images, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         return tomopy.find_center(images.sinograms,
                                   images.projection_angles(recon_params.max_projection_angle).value,
                                   ind=slice_idx,
@@ -126,7 +126,7 @@ class CILRecon(BaseRecon):
             return pdhg.solution.as_array()
 
     @staticmethod
-    def full(images: Images,
+    def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None):
@@ -214,7 +214,7 @@ class CILRecon(BaseRecon):
                     pdhg.next()
                 volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
-            return Images(volume)
+            return ImageStack(volume)
 
 
 def allowed_recon_kwargs() -> dict:

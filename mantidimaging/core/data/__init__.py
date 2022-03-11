@@ -1,4 +1,4 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from .images import Images  # noqa: F401
+from .imagestack import ImageStack  # noqa: F401

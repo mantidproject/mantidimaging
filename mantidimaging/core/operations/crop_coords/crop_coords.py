@@ -7,7 +7,7 @@ from typing import Union, Optional, List
 from PyQt5.QtWidgets import QLineEdit
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -30,9 +30,9 @@ class CropCoordinatesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """Execute the Crop Coordinates by Region of Interest filter. This does
         NOT do any checks if the Region of interest is out of bounds!
 

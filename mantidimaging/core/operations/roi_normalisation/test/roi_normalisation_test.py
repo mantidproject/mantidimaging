@@ -8,7 +8,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -37,7 +37,7 @@ class ROINormalisationTest(unittest.TestCase):
     def test_executed_seq(self):
         self.do_execute(th.generate_images(seed=2021))
 
-    def do_execute(self, images: Images):
+    def do_execute(self, images: ImageStack):
         original = np.copy(images.data[0])
 
         air = SensibleROI.from_list([3, 3, 4, 4])

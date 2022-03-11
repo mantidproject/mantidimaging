@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -63,16 +63,16 @@ class FlatFieldFilter(BaseFilter):
     filter_name = 'Flat-fielding'
 
     @staticmethod
-    def filter_func(images: Images,
-                    flat_before: Images = None,
-                    flat_after: Images = None,
-                    dark_before: Images = None,
-                    dark_after: Images = None,
+    def filter_func(images: ImageStack,
+                    flat_before: ImageStack = None,
+                    flat_after: ImageStack = None,
+                    dark_before: ImageStack = None,
+                    dark_after: ImageStack = None,
                     selected_flat_fielding: str = None,
                     use_dark: bool = True,
                     cores=None,
                     chunksize=None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """Do background correction with flat and dark images.
 
         :param images: Sample data which is to be processed. Expected in radiograms

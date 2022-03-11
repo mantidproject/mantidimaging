@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
 import numpy as np
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
@@ -236,7 +236,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        images: Images = task.result
+        images: ImageStack = task.result
         if images is not None:
             self.view.update_recon_preview(images.data[0])
 
@@ -249,7 +249,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
 
-        images: Images = task.result
+        images: ImageStack = task.result
         slice_idx = self._get_slice_index(None)
         if images is not None:
             assert self.model.images is not None
@@ -415,10 +415,10 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_status_message(" ".join(msg_list))
 
     @staticmethod
-    def _replace_inf_nan(images: Images):
+    def _replace_inf_nan(images: ImageStack):
         """
         Replaces infinity values in a data array with NaNs. Used because pyqtgraph has programs with arrays containing
         inf.
-        :param images: The Images object.
+        :param images: The ImageStack object.
         """
         images.data[np.isinf(images.data)] = np.nan

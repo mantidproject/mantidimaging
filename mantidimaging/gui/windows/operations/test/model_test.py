@@ -11,7 +11,7 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
 from mantidimaging.gui.windows.operations import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 
 class FiltersWindowModelTest(unittest.TestCase):
@@ -23,7 +23,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         cls.test_data = th.generate_images()
 
     def setUp(self):
-        self.stack = Images(np.zeros([3, 3, 3]))
+        self.stack = ImageStack(np.zeros([3, 3, 3]))
 
         self.model = FiltersWindowModel(mock.MagicMock())
 

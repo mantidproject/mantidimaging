@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 
 from PyQt5.QtWidgets import QSpinBox
 from algotom.prep.removal import remove_stripe_based_fitting
@@ -30,7 +30,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, order=1, sigma=3, cores=None, chunksize=None, progress=None):
+    def filter_func(images: ImageStack, order=1, sigma=3, cores=None, chunksize=None, progress=None):
         f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
 
         ps.shared_list = [images.data]

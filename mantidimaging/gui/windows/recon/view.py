@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
                              QVBoxLayout, QWidget, QMessageBox, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
 from PyQt5.QtCore import QSignalBlocker
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
@@ -419,10 +419,10 @@ class ReconstructWindowView(BaseMainWindowView):
         # handled as an internal Qt event in the model
         self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
-    def show_recon_volume(self, data: Images, stack_id: uuid.UUID):
+    def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID):
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack(self, uuid) -> Optional['Images']:
+    def get_stack(self, uuid) -> Optional['ImageStack']:
         if uuid is not None:
             return self.main_window.get_stack(uuid)
         return None

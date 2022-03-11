@@ -3,13 +3,13 @@
 
 import traceback
 
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
 from mantidimaging.gui.windows.stack_choice.view import StackChoiceView
 
 
 class StackComparePresenter(StackChoicePresenterMixin):
-    def __init__(self, stack_one: Images, stack_two: Images, parent):
+    def __init__(self, stack_one: ImageStack, stack_two: ImageStack, parent):
         self.view = StackChoiceView(stack_one, stack_two, self, parent)
         self.view.originalDataButton.hide()
         self.view.newDataButton.hide()

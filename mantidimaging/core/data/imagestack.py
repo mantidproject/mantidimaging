@@ -18,7 +18,7 @@ from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
-class Images:
+class ImageStack:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
     name: str
 
@@ -47,7 +47,7 @@ class Images:
         self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self._proj180deg: Optional[Images] = None
+        self._proj180deg: Optional[ImageStack] = None
         self._log_file: Optional[IMATLogFile] = None
         self._projection_angles: Optional[ProjectionAngles] = None
 
@@ -60,7 +60,7 @@ class Images:
             self.name = name
 
     def __eq__(self, other):
-        if isinstance(other, Images):
+        if isinstance(other, ImageStack):
             return np.array_equal(self.data, other.data) \
                    and self.is_sinograms == other.is_sinograms \
                    and self.metadata == other.metadata \
@@ -128,7 +128,7 @@ class Images:
             display_name
         })
 
-    def copy(self, flip_axes=False) -> 'Images':
+    def copy(self, flip_axes=False) -> 'ImageStack':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
@@ -136,10 +136,10 @@ class Images:
         else:
             data_copy[:] = self.data[:]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
-                        sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
+        images = ImageStack(data_copy,
+                            indices=deepcopy(self.indices),
+                            metadata=deepcopy(self.metadata),
+                            sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
     def copy_roi(self, roi: SensibleROI):
@@ -148,16 +148,16 @@ class Images:
         data_copy = pu.create_array(shape, self.data.dtype)
         data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
-        images = Images(data_copy,
-                        indices=deepcopy(self.indices),
-                        metadata=deepcopy(self.metadata),
-                        sinograms=self._is_sinograms)
+        images = ImageStack(data_copy,
+                            indices=deepcopy(self.indices),
+                            metadata=deepcopy(self.metadata),
+                            sinograms=self._is_sinograms)
 
         mark_cropped(images, roi)
         return images
 
-    def index_as_images(self, index) -> 'Images':
-        return Images(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+    def index_as_image_stack(self, index) -> 'ImageStack':
+        return ImageStack(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
     @property
     def height(self):
@@ -215,12 +215,12 @@ class Images:
         return self._proj180deg is not None
 
     @property
-    def proj180deg(self) -> Optional['Images']:
+    def proj180deg(self) -> Optional['ImageStack']:
         return self._proj180deg
 
     @proj180deg.setter
-    def proj180deg(self, value: 'Images'):
-        assert isinstance(value, Images)
+    def proj180deg(self, value: 'ImageStack'):
+        assert isinstance(value, ImageStack)
         self._proj180deg = value
 
     @property
@@ -244,9 +244,9 @@ class Images:
         return self._data.dtype
 
     @staticmethod
-    def create_empty_images(shape, dtype, metadata):
+    def create_empty_image_stack(shape, dtype, metadata) -> 'ImageStack':
         arr = pu.create_array(shape, dtype)
-        return Images(arr, metadata=metadata)
+        return ImageStack(arr, metadata=metadata)
 
     @property
     def is_sinograms(self) -> bool:

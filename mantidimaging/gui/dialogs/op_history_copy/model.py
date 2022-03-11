@@ -3,13 +3,13 @@
 
 from typing import Iterable
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history.operations import ops_to_partials, ImageOperation
 
 
 class OpHistoryCopyDialogModel:
     def __init__(self, images):
-        self.images: Images = images
+        self.images: ImageStack = images
 
     def apply_ops(self, ops: Iterable[ImageOperation], copy: bool):
         if copy:

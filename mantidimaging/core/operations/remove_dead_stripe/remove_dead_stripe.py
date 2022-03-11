@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
 from algotom.prep.removal import remove_dead_stripe
@@ -30,7 +30,7 @@ class RemoveDeadStripesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, snr=3, size=61, cores=None, chunksize=None, progress=None):
+    def filter_func(images: ImageStack, snr=3, size=61, cores=None, chunksize=None, progress=None):
         f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
         ps.shared_list = [images.data]
         ps.execute(f, images.data.shape[0], progress, cores=cores)

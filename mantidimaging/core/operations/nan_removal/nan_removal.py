@@ -10,7 +10,7 @@ import numpy as np
 from PyQt5.QtWidgets import QFormLayout, QWidget
 import scipy.ndimage as scipy_ndimage
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -44,7 +44,7 @@ class NaNRemovalFilter(BaseFilter):
                     mode_value="Constant",
                     cores=None,
                     chunksize=None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """
         :param data: The input data.
         :param mode_value: Values to replace NaNs with. One of ["Constant", "Median"]
@@ -52,7 +52,7 @@ class NaNRemovalFilter(BaseFilter):
         :param cores: The number of cores that will be used to process the data.
         :param chunksize: The number of chunks that each worker will receive.
         :param progress: The optional Progress object.
-        :return: The Images object with the NaNs replaced.
+        :return: The ImageStack object with the NaNs replaced.
         """
 
         sample = data.data

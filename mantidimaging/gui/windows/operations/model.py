@@ -12,7 +12,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter  # pragma: no cover
-    from mantidimaging.core.data import Images
+    from mantidimaging.core.data import ImageStack
 
 
 def ensure_tuple(val):
@@ -100,7 +100,7 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_to_stacks(self, stacks: List['Images'], progress=None):
+    def apply_to_stacks(self, stacks: List['ImageStack'], progress=None):
         """
         Applies the selected filter to a given image stack.
 
@@ -128,7 +128,7 @@ class FiltersWindowModel(object):
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self, stacks: List['Images'], post_filter: Callable[[Any], None]):
+    def do_apply_filter(self, stacks: List['ImageStack'], post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack.
         """
@@ -140,7 +140,7 @@ class FiltersWindowModel(object):
         apply_func = partial(self.apply_to_stacks, stacks)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 
-    def do_apply_filter_sync(self, stacks: List['Images'], post_filter: Callable[[Any], None]):
+    def do_apply_filter_sync(self, stacks: List['ImageStack'], post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack in a synchronous manner
         """

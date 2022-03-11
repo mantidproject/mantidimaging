@@ -7,7 +7,7 @@ import numpy as np
 from skimage.transform import rotate
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -29,7 +29,7 @@ class RotateFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images, angle=None, dark=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: ImageStack, angle=None, dark=None, cores=None, chunksize=None, progress=None):
         """
         Rotates images by an arbitrary degree.
 

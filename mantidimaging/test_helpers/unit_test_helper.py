@@ -12,7 +12,7 @@ import numpy.random
 import numpy.testing as npt
 from io import StringIO
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -41,12 +41,12 @@ def generate_shared_array(shape=g_shape, dtype=np.float32, seed: Optional[int] =
     return generated_array
 
 
-def generate_images(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> Images:
+def generate_images(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
 
 
-def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Optional[int] = None) -> Images:
+def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Optional[int] = None) -> ImageStack:
     """
     Doesn't do anything special, just makes a number of images big enough to be
     ran in parallel from the logic of multiprocessing_necessary
@@ -60,7 +60,7 @@ def _set_random_data(data, shape, seed: Optional[int] = None):
     # move the data in the shared array
     data[:] = n[:]
 
-    images = Images(data)
+    images = ImageStack(data)
     return images
 
 
@@ -159,7 +159,7 @@ def assert_called_once_with(mock: mock.Mock, *args):
             np.testing.assert_equal(actual, expected)
         elif isinstance(actual, ProjectionAngles):
             np.testing.assert_equal(actual.value, expected.value)
-        elif isinstance(actual, Images):
+        elif isinstance(actual, ImageStack):
             assert actual is expected, f"Expected {expected}, got {actual}"
         elif isinstance(actual, partial):
             assert actual.args == expected.args
