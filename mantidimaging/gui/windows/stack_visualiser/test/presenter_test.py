@@ -5,18 +5,17 @@ import unittest
 from unittest import mock
 from unittest.mock import patch
 
-import numpy.testing as npt
 import numpy as np
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification, \
     SVImageMode
 
 
 class StackVisualiserPresenterTest(unittest.TestCase):
-    test_data: Images
+    test_data: ImageStack
 
     def setUp(self):
         self.test_data = th.generate_images()
@@ -25,14 +24,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
         self.presenter.model = mock.Mock()
         self.view._main_window = mock.Mock()
-
-    def test_get_image(self):
-        index = 3
-
-        test_data = self.test_data
-
-        img = self.presenter.get_image(index)
-        npt.assert_equal(test_data.data[index], img.data[0])
 
     def test_delete_data(self):
         self.presenter.images = th.generate_images()

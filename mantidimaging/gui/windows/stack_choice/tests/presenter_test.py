@@ -11,7 +11,7 @@ import numpy as np
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.gui.windows.stack_choice.view import Notification
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 
 
 class StackChoicePresenterTest(unittest.TestCase):
@@ -80,9 +80,9 @@ class StackChoicePresenterTest(unittest.TestCase):
     def test_do_reapply_original_data(self):
         self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
-        img1 = Images(np.zeros((3, 3, 3)) + 1)
+        img1 = ImageStack(np.zeros((3, 3, 3)) + 1)
         img1.metadata = {"name": 1}
-        img2 = Images(np.zeros((3, 3, 3)) + 2)
+        img2 = ImageStack(np.zeros((3, 3, 3)) + 2)
         img2.metadata = {"name": 2}
         self.p.original_stack = img1
         self.p.new_stack = img2

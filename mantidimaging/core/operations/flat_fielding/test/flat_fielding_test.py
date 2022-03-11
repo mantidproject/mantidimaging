@@ -11,7 +11,7 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.flat_fielding.flat_fielding import enable_correct_fields_only
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.flat_fielding import FlatFieldFilter
 
 
@@ -21,7 +21,7 @@ class FlatFieldingTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
-    def _make_images(self) -> Tuple[Images, Images, Images, Images, Images]:
+    def _make_images(self) -> Tuple[ImageStack, ImageStack, ImageStack, ImageStack, ImageStack]:
         images = th.generate_images()
         flat_before = th.generate_images()
         dark_before = th.generate_images()

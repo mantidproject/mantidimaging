@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
@@ -29,7 +29,7 @@ class StackChoiceView(BaseMainWindowView):
     newDataButton: QPushButton
     lockHistograms: QCheckBox
 
-    def __init__(self, original_stack: Images, new_stack: Images,
+    def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
                  presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
         super().__init__(parent, "gui/ui/stack_choice_window.ui")
 

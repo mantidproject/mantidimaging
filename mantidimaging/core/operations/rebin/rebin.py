@@ -5,7 +5,7 @@ from functools import partial
 import skimage.transform
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
@@ -27,7 +27,12 @@ class RebinFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, rebin_param=0.5, mode=None, cores=None, chunksize=None, progress=None) -> Images:
+    def filter_func(images: ImageStack,
+                    rebin_param=0.5,
+                    mode=None,
+                    cores=None,
+                    chunksize=None,
+                    progress=None) -> ImageStack:
         """
         :param images: Sample data which is to be processed. Expects radiograms
         :param rebin_param: int, float or tuple

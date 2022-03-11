@@ -6,7 +6,7 @@ from typing import Tuple
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -22,7 +22,7 @@ def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_18
     store[:] = np.square(np.roll(p0_and_180[0], search_index, axis=1) - p0_and_180[1]).sum(axis=1) / image_width
 
 
-def find_center(images: Images, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
+def find_center(images: ImageStack, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
     # assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
     shift = pu.create_array((images.height, ))
@@ -66,7 +66,7 @@ def _calculate_correlation_error(images, shared_search_range, min_correlation_er
                msg="Finding correlation on row")
 
 
-def _find_shift(images: Images, search_range: range, min_correlation_error: np.ndarray, shift: np.ndarray):
+def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray, shift: np.ndarray):
     min_correlation_error = np.transpose(min_correlation_error)
     for row in range(images.height):
         # then we just find the index of the minimum one (minimum error)

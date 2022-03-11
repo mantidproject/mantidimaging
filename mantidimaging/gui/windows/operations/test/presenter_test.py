@@ -18,7 +18,7 @@ from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
     _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
@@ -28,7 +28,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
-        self.mock_stacks: List[Images] = []
+        self.mock_stacks: List[ImageStack] = []
         for _ in range(2):
             mock_stack = mock.Mock()
             mock_stack.data = np.zeros([3, 3, 3])
@@ -186,7 +186,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                                                   _do_apply_filter: Mock = Mock(),
                                                                   _do_apply_filter_sync: Mock = Mock()):
         """
-        Test that when an `Images` stack is encountered which also has a
+        Test that when an `ImageStack` stack is encountered which also has a
         180deg projection stack reference, that 180deg stack is also processed
         with the same operation, to ensure consistency between the two images
         """
@@ -195,7 +195,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_stack = mock.MagicMock()
         mock_stack.has_proj180deg.return_value = True
         mock_stack.data = np.array([i for i in range(3)])
-        mock_stacks: List[Images] = [mock_stack]
+        mock_stacks: List[ImageStack] = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
 
@@ -213,12 +213,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_images.return_value = images
+        stack.index_as_image_stack.return_value = images
         self.presenter.stack = stack
 
         self.presenter.do_update_previews()
 
-        stack.index_as_images.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         apply_mock.assert_called_once()
 
@@ -227,13 +227,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_images.return_value = images
+        stack.index_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = False
         self.view.lockScaleCheckBox.isChecked.return_value = False
         self.presenter.do_update_previews()
 
-        stack.index_as_images.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
@@ -247,7 +247,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                                       update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_images.return_value = images
+        stack.index_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
@@ -507,7 +507,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_image_idx = slice_idx = 14
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_images.return_value.data = np.array([[-1 for _ in range(3)] for _ in range(3)])
+        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[-1 for _ in range(3)]
+                                                                                for _ in range(3)])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_called_once_with(
@@ -516,7 +517,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_negative_values_preview_message(self):
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_images.return_value.data = np.array([[1 for _ in range(3)] for _ in range(3)])
+        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[1 for _ in range(3)]
+                                                                                for _ in range(3)])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()

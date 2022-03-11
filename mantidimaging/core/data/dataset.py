@@ -6,12 +6,12 @@ from typing import Optional, List
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.reconlist import ReconList
 
 
 def _delete_stack_error_message(images_id: uuid.UUID) -> str:
-    return f"Unable to delete stack: Images with ID {images_id} not present in dataset."
+    return f"Unable to delete stack: ImageStack with ID {images_id} not present in dataset."
 
 
 class BaseDataset:
@@ -19,7 +19,7 @@ class BaseDataset:
         self._id: uuid.UUID = uuid.uuid4()
         self.recons = ReconList()
         self._name = name
-        self._sinograms: Optional[Images] = None
+        self._sinograms: Optional[ImageStack] = None
 
     @property
     def id(self) -> uuid.UUID:
@@ -34,11 +34,11 @@ class BaseDataset:
         self._name = arg
 
     @property
-    def sinograms(self) -> Optional[Images]:
+    def sinograms(self) -> Optional[ImageStack]:
         return self._sinograms
 
     @sinograms.setter
-    def sinograms(self, sino: Optional[Images]):
+    def sinograms(self, sino: Optional[ImageStack]):
         self._sinograms = sino
 
     @property
@@ -53,7 +53,7 @@ class BaseDataset:
             if image.id == images_id:
                 image.data = new_data
                 return
-        raise KeyError(f"Unable to replace: Images with ID {images_id} not present in dataset.")
+        raise KeyError(f"Unable to replace: ImageStack with ID {images_id} not present in dataset.")
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
         return any([image.id == images_id for image in self.all])
@@ -67,12 +67,12 @@ class BaseDataset:
 
 
 class MixedDataset(BaseDataset):
-    def __init__(self, stacks: List[Images] = [], name: str = ""):
+    def __init__(self, stacks: List[ImageStack] = [], name: str = ""):
         super().__init__(name=name)
         self._stacks = stacks
 
     @property
-    def all(self) -> List[Images]:
+    def all(self) -> List[ImageStack]:
         all_images = self._stacks + self.recons.stacks
         if self.sinograms is None:
             return all_images
@@ -95,18 +95,18 @@ class MixedDataset(BaseDataset):
 
 @dataclass
 class StrictDataset(BaseDataset):
-    sample: Images
-    flat_before: Optional[Images] = None
-    flat_after: Optional[Images] = None
-    dark_before: Optional[Images] = None
-    dark_after: Optional[Images] = None
+    sample: ImageStack
+    flat_before: Optional[ImageStack] = None
+    flat_after: Optional[ImageStack] = None
+    dark_before: Optional[ImageStack] = None
+    dark_after: Optional[ImageStack] = None
 
     def __init__(self,
-                 sample: Images,
-                 flat_before: Optional[Images] = None,
-                 flat_after: Optional[Images] = None,
-                 dark_before: Optional[Images] = None,
-                 dark_after: Optional[Images] = None,
+                 sample: ImageStack,
+                 flat_before: Optional[ImageStack] = None,
+                 flat_after: Optional[ImageStack] = None,
+                 dark_before: Optional[ImageStack] = None,
+                 dark_after: Optional[ImageStack] = None,
                  name: str = ""):
         super().__init__(name=name)
         self.sample = sample
@@ -119,7 +119,7 @@ class StrictDataset(BaseDataset):
             self._name = sample.name
 
     @property
-    def all(self) -> List[Images]:
+    def all(self) -> List[ImageStack]:
         image_stacks = [
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
@@ -134,23 +134,23 @@ class StrictDataset(BaseDataset):
             return None
 
     @proj180deg.setter
-    def proj180deg(self, _180_deg: Images):
+    def proj180deg(self, _180_deg: ImageStack):
         self.sample.proj180deg = _180_deg
 
     def delete_stack(self, images_id: uuid.UUID):
-        if isinstance(self.sample, Images) and self.sample.id == images_id:
+        if isinstance(self.sample, ImageStack) and self.sample.id == images_id:
             self.sample = None  # type: ignore
-        elif isinstance(self.flat_before, Images) and self.flat_before.id == images_id:
+        elif isinstance(self.flat_before, ImageStack) and self.flat_before.id == images_id:
             self.flat_before = None
-        elif isinstance(self.flat_after, Images) and self.flat_after.id == images_id:
+        elif isinstance(self.flat_after, ImageStack) and self.flat_after.id == images_id:
             self.flat_after = None
-        elif isinstance(self.dark_before, Images) and self.dark_before.id == images_id:
+        elif isinstance(self.dark_before, ImageStack) and self.dark_before.id == images_id:
             self.dark_before = None
-        elif isinstance(self.dark_after, Images) and self.dark_after.id == images_id:
+        elif isinstance(self.dark_after, ImageStack) and self.dark_after.id == images_id:
             self.dark_after = None
-        elif isinstance(self.proj180deg, Images) and self.proj180deg.id == images_id:
+        elif isinstance(self.proj180deg, ImageStack) and self.proj180deg.id == images_id:
             self.sample.clear_proj180deg()
-        elif isinstance(self.sinograms, Images) and self.sinograms.id == images_id:
+        elif isinstance(self.sinograms, ImageStack) and self.sinograms.id == images_id:
             self.sinograms = None
         elif images_id in self.recons.ids:
             for recon in self.recons:

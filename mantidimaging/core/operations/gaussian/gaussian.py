@@ -8,7 +8,7 @@ import numpy as np
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -27,7 +27,7 @@ class GaussianFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: ImageStack, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel

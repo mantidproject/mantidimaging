@@ -5,11 +5,11 @@ import uuid
 from collections import UserList
 from typing import List
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 
 
 class ReconList(UserList):
-    def __init__(self, data: List[Images] = []):
+    def __init__(self, data: List[ImageStack] = []):
         super().__init__(data)
         self._id: uuid.UUID = uuid.uuid4()
 
@@ -22,5 +22,5 @@ class ReconList(UserList):
         return [recon.id for recon in self.data]
 
     @property
-    def stacks(self) -> List[Images]:
+    def stacks(self) -> List[ImageStack]:
         return self.data

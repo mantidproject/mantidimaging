@@ -5,7 +5,7 @@ from typing import List, Optional, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.operations.divide import DivideFilter
 from mantidimaging.core.reconstruct import get_reconstructor_for
@@ -26,7 +26,7 @@ LOG = getLogger(__name__)
 
 class ReconstructWindowModel(object):
     def __init__(self, data_model: CorTiltPointQtModel):
-        self._images: Optional[Images] = None
+        self._images: Optional[ImageStack] = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
         self._selected_row = 0
@@ -89,7 +89,7 @@ class ReconstructWindowModel(object):
     def num_points(self):
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'Images'):
+    def initial_select_data(self, images: 'ImageStack'):
         self._images = images
         self.reset_cor_model()
 
@@ -129,7 +129,7 @@ class ReconstructWindowModel(object):
                           slice_idx: int,
                           cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
-                          progress: Progress = None) -> Optional[Images]:
+                          progress: Progress = None) -> Optional[ImageStack]:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -138,7 +138,7 @@ class ReconstructWindowModel(object):
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, images.width, images.width)
-        recon: Images = Images.create_empty_images(output_shape, images.dtype, images.metadata)
+        recon: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         recon.data[0] = reconstructor.single_sino(images.sino(slice_idx),
                                                   cor,
                                                   images.projection_angles(recon_params.max_projection_angle),
@@ -147,7 +147,7 @@ class ReconstructWindowModel(object):
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
-    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[Images]:
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[ImageStack]:
         # Ensure we have some sample data
         images = self.images
         if images is None:

@@ -8,7 +8,7 @@ from unittest import mock
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
@@ -386,7 +386,7 @@ class MainWindowModelTest(unittest.TestCase):
         ds2 = StrictDataset(generate_images())
         ds3 = MixedDataset([generate_images()])
 
-        proj180s = [Images(ds1.sample.data[0]), Images(ds2.sample.data[0])]
+        proj180s = [ImageStack(ds1.sample.data[0]), ImageStack(ds2.sample.data[0])]
         ds1.proj180deg = proj180s[0]
         ds2.proj180deg = proj180s[1]
 

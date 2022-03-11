@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget
 
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 
@@ -115,7 +115,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window.safeApply.setChecked(True)
         QTest.qWait(SHOW_DELAY)
 
-        def mock_wait_for_stack_choice(self, new_stack: Images, stack_uuid: UUID):
+        def mock_wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
             print("mock_wait_for_stack_choice")
             stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
             stack_choice.show()

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.images import Images
+from mantidimaging.core.data.imagestack import ImageStack
 
 from PyQt5.QtWidgets import QSpinBox
 from algotom.prep.removal import remove_stripe_based_filtering, remove_stripe_based_2d_filtering_sorting
@@ -30,7 +30,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     sigma=3,
                     size=21,
                     window_dim=1,

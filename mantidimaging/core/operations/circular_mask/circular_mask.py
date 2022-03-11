@@ -3,7 +3,7 @@
 
 from functools import partial
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -24,11 +24,11 @@ class CircularMaskFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: Images,
+    def filter_func(data: ImageStack,
                     circular_mask_ratio=0.95,
                     circular_mask_value=0.,
                     cores=None,
-                    progress=None) -> Images:
+                    progress=None) -> ImageStack:
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.

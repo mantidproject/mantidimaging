@@ -12,7 +12,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
@@ -100,7 +100,7 @@ class BaseEyesTest(unittest.TestCase):
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
 
         if set_180:
-            dataset.sample.proj180deg = _180_proj = Images(dataset.sample.data[0:1])
+            dataset.sample.proj180deg = _180_proj = ImageStack(dataset.sample.data[0:1])
             self.imaging.presenter.create_single_tabbed_images_stack(_180_proj)
 
         self.imaging.presenter.model.add_dataset_to_model(dataset)

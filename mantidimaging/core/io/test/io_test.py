@@ -7,7 +7,7 @@ import unittest
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.helper import initialise_logging
@@ -205,7 +205,7 @@ class IOTest(FileOutputtingTestCase):
     def test_metadata_round_trip(self):
         # Create dummy image stack
         sample = th.gen_img_numpy_rand()
-        images = Images(sample)
+        images = ImageStack(sample)
         images.metadata['message'] = 'hello, world!'
 
         # Save image stack

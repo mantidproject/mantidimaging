@@ -6,7 +6,7 @@ from functools import partial
 from PyQt5.QtWidgets import QComboBox
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -26,7 +26,7 @@ class RingRemovalFilter(BaseFilter):
     show_negative_overlay = False
 
     @staticmethod
-    def filter_func(images: Images,
+    def filter_func(images: ImageStack,
                     center_mode="image center",
                     center_x=None,
                     center_y=None,

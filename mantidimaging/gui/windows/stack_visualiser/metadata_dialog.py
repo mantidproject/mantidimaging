@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDi
                              QPushButton)
 from PyQt5.QtGui import QKeySequence, QGuiApplication
 
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
 
 
@@ -15,7 +15,7 @@ class MetadataDialog(QDialog):
     """
     Dialog used to show a pretty formatted version of the image metadata.
     """
-    def __init__(self, parent: QWidget, images: Images):
+    def __init__(self, parent: QWidget, images: ImageStack):
         super().__init__(parent)
 
         self.setWindowTitle('Image Metadata')

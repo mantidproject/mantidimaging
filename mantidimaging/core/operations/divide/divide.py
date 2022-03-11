@@ -7,7 +7,7 @@ from typing import Union, Callable, Dict, Any
 from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import Images
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -27,7 +27,7 @@ class DivideFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: Images, value: Union[int, float] = 0, unit="micron", progress=None) -> Images:
+    def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
         h.check_data_stack(images)
         if not value:
             raise ValueError('value parameter must not equal 0 or None')
