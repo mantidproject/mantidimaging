@@ -26,9 +26,7 @@ runs:
     shell: bash -l {0}
     run: |
       conda config --set always_yes yes --set changeps1 no
-      conda create -n build-env anaconda-client python=3.8
-      conda activate build-env
-      conda install conda-build conda-verify
+      make install-build-requirements
 
   - name: Build package
     shell: bash -l {0}
