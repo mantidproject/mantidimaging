@@ -19,3 +19,4 @@ Developer Changes
 - #1317 : Unify auto color palette code between MIMiniImageView and MIImageView
 - #1363 : Add auto color menu from constructor in MIMiniImageView
 - #1362 : Rename Images class to ImageStack
+- #1148 : Re-enable coverage checking
