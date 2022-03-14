@@ -19,7 +19,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self._close_welcome()
 
     def tearDown(self) -> None:
-        self._close_stack_tabs()
+        self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 

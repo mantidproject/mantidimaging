@@ -54,7 +54,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window = self.main_window.filters
 
     def tearDown(self) -> None:
-        self._close_stack_tabs()
+        self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
