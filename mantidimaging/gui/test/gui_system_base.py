@@ -42,6 +42,7 @@ class GuiSystemBase(unittest.TestCase):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
+        self.assertDictEqual(self.main_window.presenter.model.datasets, {})
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
