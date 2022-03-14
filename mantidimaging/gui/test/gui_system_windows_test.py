@@ -7,6 +7,11 @@ from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY
 
 
 class TestGuiSystemWindows(GuiSystemBase):
+    def tearDown(self) -> None:
+        self._close_image_stacks()
+        super().tearDown()
+        self.assertFalse(self.main_window.isVisible())
+
     def test_main_window_shows(self):
         self.assertTrue(self.main_window.isVisible())
         self.assertTrue(self.main_window.welcome_window.view.isVisible())
@@ -43,5 +48,5 @@ class TestGuiSystemWindows(GuiSystemBase):
         self._wait_until(lambda: len(self.main_window.recon.presenter.async_tracker) == 0)
         self.main_window.recon.close()
         QTest.qWait(SHOW_DELAY)
-        self._close_stack_tabs()
+        self._close_image_stacks()
         QTest.qWait(SHOW_DELAY)

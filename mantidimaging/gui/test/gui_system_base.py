@@ -42,6 +42,7 @@ class GuiSystemBase(unittest.TestCase):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
+        self.assertDictEqual(self.main_window.presenter.model.datasets, {})
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
@@ -111,7 +112,7 @@ class GuiSystemBase(unittest.TestCase):
     def _open_reconstruction(self):
         self.main_window.actionRecon.trigger()
 
-    def _close_stack_tabs(self):
+    def _close_image_stacks(self):
         while self.main_window.dataset_tree_widget.topLevelItemCount():
             self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
             self.main_window._delete_container()

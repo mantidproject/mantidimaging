@@ -28,7 +28,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self.recon_window.close()
         assert isinstance(self.main_window.recon, ReconstructWindowView)
         self.assertFalse(self.main_window.recon.isVisible())
-        self._close_stack_tabs()
+        self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 

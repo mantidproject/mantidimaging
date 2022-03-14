@@ -100,7 +100,7 @@ jobs:
         timeout-minutes: 5
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
@@ -113,7 +113,7 @@ jobs:
       - name: GUI Tests System
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests
+          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools
@@ -124,7 +124,7 @@ jobs:
           APPLITOOLS_BATCH_ID: ${{ github.sha }}
           GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests
+          xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests --durations=10
         timeout-minutes: 15
 
       - name: Coveralls

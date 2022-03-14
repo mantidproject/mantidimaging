@@ -18,6 +18,11 @@ class TestGuiSystemLoading(GuiSystemBase):
         super().setUp()
         self._close_welcome()
 
+    def tearDown(self) -> None:
+        self._close_image_stacks()
+        super().tearDown()
+        self.assertFalse(self.main_window.isVisible())
+
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def _load_images(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
