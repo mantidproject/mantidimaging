@@ -131,9 +131,8 @@ jobs:
         shell: bash -l {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
         run: |
-          coveralls
+          coveralls --service=github
 
       # Always label as unstable. Builds of stable releases can be manually labeled to 'main' once tested
       - name: publish 'unstable' package
