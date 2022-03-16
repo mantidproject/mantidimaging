@@ -12,6 +12,7 @@ from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
 import pytest
 
+from mantidimaging.core.utility.leak_tracker import leak_tracker
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.load_dialog.presenter import Notification
@@ -43,6 +44,10 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
         self.assertDictEqual(self.main_window.presenter.model.datasets, {})
+
+        if leak_count := leak_tracker.count():
+            print("\nItems still alive:", leak_count)
+            leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
