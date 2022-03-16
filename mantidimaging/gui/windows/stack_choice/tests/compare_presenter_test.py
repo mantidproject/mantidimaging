@@ -6,10 +6,12 @@ from unittest import mock
 from unittest.mock import call
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_choice.view import Notification
 
 
+@setup_shared_memory_manager
 class StackChoicePresenterTest(unittest.TestCase):
     def setUp(self):
         self.stack_one = th.generate_images()

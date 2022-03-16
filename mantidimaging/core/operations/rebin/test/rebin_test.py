@@ -9,9 +9,11 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.rebin import RebinFilter
 
 
+@setup_shared_memory_manager
 class RebinTest(unittest.TestCase):
     """
     Test rebin filter.

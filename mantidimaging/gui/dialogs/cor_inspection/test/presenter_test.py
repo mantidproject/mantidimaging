@@ -10,8 +10,10 @@ from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogPresente
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.dialogs.cor_inspection.presenter import Notification
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class CORInspectionDialogPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogModel")
     def setUp(self, model) -> None:

@@ -9,6 +9,7 @@ import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.median_filter import MedianFilter
@@ -16,6 +17,7 @@ from mantidimaging.core.operations.median_filter import MedianFilter
 GPU_UTIL_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 
+@setup_shared_memory_manager
 class MedianTest(unittest.TestCase):
     """
     Test median filter.
@@ -102,7 +104,8 @@ class MedianTest(unittest.TestCase):
         images.data[0, 12:15, 2:5] = np.nan  # 3x3
         self.assertTrue(np.any(np.isnan(images.data)))
 
-        result = MedianFilter.filter_func(images.copy(), 3, 'reflect', force_cpu=use_cpu)
+        images_copy = images.copy()
+        result = MedianFilter.filter_func(images_copy, 3, 'reflect', force_cpu=use_cpu)
 
         npt.assert_equal(np.isnan(result.data), np.isnan(images.data))
 

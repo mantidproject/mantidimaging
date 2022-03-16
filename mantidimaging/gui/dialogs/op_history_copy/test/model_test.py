@@ -8,8 +8,10 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogModel
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class OpHistoryCopyDialogModelTest(unittest.TestCase):
     def setUp(self):
         self.images = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))

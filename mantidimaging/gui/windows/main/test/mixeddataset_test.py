@@ -6,8 +6,10 @@ import unittest
 from mantidimaging.core.data.dataset import MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class MixedDatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.image_stacks = [generate_images() for _ in range(3)]

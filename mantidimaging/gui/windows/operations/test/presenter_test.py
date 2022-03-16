@@ -19,8 +19,10 @@ from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_
     _group_consecutive_values
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class FiltersWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView)

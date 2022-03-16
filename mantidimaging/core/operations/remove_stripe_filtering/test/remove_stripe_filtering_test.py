@@ -5,9 +5,11 @@ import unittest
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.remove_stripe_filtering import RemoveStripeFilteringFilter
 
 
+@setup_shared_memory_manager
 class RemoveStripeFilteringTest(unittest.TestCase):
     """
     Test stripe removal filter.

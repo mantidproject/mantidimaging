@@ -7,6 +7,7 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
 
@@ -15,6 +16,7 @@ GPU_SKIP_REASON = "Skip GPU tests if cupy isn't installed."
 GPU_UTILITY_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 
+@setup_shared_memory_manager
 class GPUTest(unittest.TestCase):
     """
     Test median filter.

@@ -12,8 +12,10 @@ from pyqtgraph import ViewBox
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.windows.stack_choice.view import Notification, StackChoiceView
 from mantidimaging.test_helpers import start_qapplication
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 @start_qapplication
 class StackChoiceViewTest(unittest.TestCase):
     def setUp(self):

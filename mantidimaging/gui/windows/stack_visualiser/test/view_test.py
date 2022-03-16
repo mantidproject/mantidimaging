@@ -11,10 +11,12 @@ from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.test_helpers import start_qapplication
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 versions._use_test_values()
 
 
+@setup_shared_memory_manager
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
     test_data: ImageStack

@@ -6,9 +6,11 @@ import unittest
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.circular_mask import CircularMaskFilter
 
 
+@setup_shared_memory_manager
 class CircularMaskTest(unittest.TestCase):
     """
     Test circular mask filter.

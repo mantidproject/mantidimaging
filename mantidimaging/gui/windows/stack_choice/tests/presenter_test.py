@@ -9,11 +9,13 @@ from uuid import uuid4
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.gui.windows.stack_choice.view import Notification
 from mantidimaging.core.data.imagestack import ImageStack
 
 
+@setup_shared_memory_manager
 class StackChoicePresenterTest(unittest.TestCase):
     def setUp(self):
         self.original_stack = th.generate_images()

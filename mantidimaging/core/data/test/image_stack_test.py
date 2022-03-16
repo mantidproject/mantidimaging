@@ -13,9 +13,11 @@ from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
-class ImagesStackTest(unittest.TestCase):
+@setup_shared_memory_manager
+class ImageStackTest(unittest.TestCase):
     def test_parse_metadata_file(self):
         json_file = io.StringIO('{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
                                 '"three"], "a_float": 3.65e-05, "a_bool": true}')

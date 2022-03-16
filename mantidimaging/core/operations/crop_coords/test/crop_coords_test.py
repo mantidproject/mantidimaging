@@ -7,10 +7,12 @@ from unittest import mock
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
+@setup_shared_memory_manager
 class CropCoordsTest(unittest.TestCase):
     """
     Test crop by coordinates filter.
@@ -21,10 +23,10 @@ class CropCoordsTest(unittest.TestCase):
         # Check that the filter is  executed when:
         #   - valid Region of Interest is provided
         #   - no flat or dark images are provided
-
         roi = SensibleROI.from_list([1, 1, 5, 5])
         images = th.generate_images()
-        # store a reference here so it doesn't get freed inside the filter execute
+        # store references here so that they don't get freed inside the filter execute
+        sample_mem = images.shared_memory  # noqa: F841
         sample = images.data
         result = CropCoordinatesFilter.filter_func(images, roi)
         expected_shape = (10, 4, 4)

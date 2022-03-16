@@ -15,8 +15,10 @@ from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class ReconWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())

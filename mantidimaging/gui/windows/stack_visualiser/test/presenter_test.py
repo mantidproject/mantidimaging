@@ -12,8 +12,10 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification, \
     SVImageMode
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
+@setup_shared_memory_manager
 class StackVisualiserPresenterTest(unittest.TestCase):
     test_data: ImageStack
 

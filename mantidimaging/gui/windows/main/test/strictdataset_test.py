@@ -8,6 +8,7 @@ from numpy import array_equal
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
 def test_delete_stack_error_message():
@@ -15,6 +16,7 @@ def test_delete_stack_error_message():
                                                       "present in dataset."
 
 
+@setup_shared_memory_manager
 class StrictDatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
@@ -35,13 +37,14 @@ class StrictDatasetTest(unittest.TestCase):
 
     def test_replace_success(self):
         sample_id = self.images[0].id
-        new_sample_data = generate_images().data
+        new_sample_data = generate_images()
         self.strict_dataset.replace(sample_id, new_sample_data)
-        assert array_equal(self.strict_dataset.sample.data, new_sample_data)
+        assert array_equal(self.strict_dataset.sample.data, new_sample_data.data)
+        assert self.strict_dataset.sample.shared_memory == new_sample_data.shared_memory
 
     def test_replace_failure(self):
         with self.assertRaises(KeyError):
-            self.strict_dataset.replace("nonexistent-id", generate_images().data)
+            self.strict_dataset.replace("nonexistent-id", generate_images())
 
     def test_cant_change_dataset_id(self):
         with self.assertRaises(Exception):
