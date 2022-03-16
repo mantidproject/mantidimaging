@@ -4,8 +4,6 @@ import uuid
 from logging import getLogger
 from typing import Dict, Optional, List, Union, NoReturn, TYPE_CHECKING
 
-import numpy as np
-
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
@@ -87,15 +85,15 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray) -> None:
+    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_stack: ImageStack) -> None:
         """
         Updates the data of an existing dataset/images object.
         :param images_id: The id of the image to update.
-        :param new_data: The new image data.
+        :param new_stack: The ImageStack containing the new data.
         """
         for dataset in self.datasets.values():
             if images_id in dataset:
-                dataset.replace(images_id, new_data)
+                dataset.replace(images_id, new_stack)
                 return
         self.raise_error_when_images_not_found(images_id)
 

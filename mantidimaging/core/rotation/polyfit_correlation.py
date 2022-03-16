@@ -30,16 +30,16 @@ def find_center(images: ImageStack, progress: Progress) -> Tuple[ScalarCoR, Degr
     search_range = get_search_range(images.width)
     min_correlation_error = pu.create_array((len(search_range), images.height))
     shared_search_range = pu.create_array((len(search_range), ), dtype=np.int32)
-    shared_search_range[:] = np.asarray(search_range, dtype=np.int32)
-    _calculate_correlation_error(images, shared_search_range, min_correlation_error, progress)
+    shared_search_range.array[:] = np.asarray(search_range, dtype=np.int32)
+    _calculate_correlation_error(images, shared_search_range.array, min_correlation_error.array, progress)
 
     # Originally the output of do_search is stored in dimensions
     # corresponding to (search_range, square sum). This is awkward to navigate
     # we transpose store to make the array hold (square sum, search range)
     # so that each store[row] accesses the information for the row's square sum across all search ranges
-    _find_shift(images, search_range, min_correlation_error, shift)
+    _find_shift(images, search_range, min_correlation_error.array, shift.array)
 
-    par = np.polyfit(slices, shift, deg=1)
+    par = np.polyfit(slices, shift.array, deg=1)
     m = par[0]
     q = par[1]
     LOG.debug(f"m={m}, q={q}")
@@ -54,12 +54,12 @@ def _calculate_correlation_error(images, shared_search_range, min_correlation_er
     # this makes the multiprocessing significantly slower
     # so they are copied into a shared array to avoid that copying
     shared_projections = pu.create_array((2, images.height, images.width))
-    shared_projections[0][:] = images.projection(0)
-    shared_projections[1][:] = np.fliplr(images.proj180deg.data[0])
+    shared_projections.array[0][:] = images.projection(0)
+    shared_projections.array[1][:] = np.fliplr(images.proj180deg.data[0])
 
     do_search_partial = ps.create_partial(do_calculate_correlation_err, ps.inplace3, image_width=images.width)
 
-    ps.shared_list = [min_correlation_error, shared_search_range, shared_projections]
+    ps.shared_list = [min_correlation_error, shared_search_range, shared_projections.array]
     ps.execute(do_search_partial,
                num_operations=min_correlation_error.shape[0],
                progress=progress,

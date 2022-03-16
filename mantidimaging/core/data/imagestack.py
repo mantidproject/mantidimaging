@@ -6,7 +6,7 @@ import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO
+from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING
 
 import numpy as np
 
@@ -18,13 +18,16 @@ from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
+if TYPE_CHECKING:
+    from multiprocessing.shared_memory import SharedMemory
+
 
 class ImageStack:
     NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
     name: str
 
     def __init__(self,
-                 data: np.ndarray,
+                 data: Union[np.ndarray, pu.SharedArray],
                  filenames: Optional[List[str]] = None,
                  indices: Union[List[int], Indices, None] = None,
                  metadata: Optional[Dict[str, Any]] = None,
@@ -32,14 +35,20 @@ class ImageStack:
                  name: Optional[str] = None):
         """
 
-        :param data: Images of the Sample/Projection data
+        :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
         :param name: A name for the stack
         """
 
-        self._data = data
+        if isinstance(data, pu.SharedArray):
+            self._data = data.array
+            self._shared_memory = data.shared_memory
+        else:
+            self._data = data
+            self._shared_memory = None
+
         self.indices = indices
         self._id = uuid.uuid4()
 
@@ -135,9 +144,9 @@ class ImageStack:
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
-            data_copy[:] = np.swapaxes(self.data, 0, 1)
+            data_copy.array[:] = np.swapaxes(self.data, 0, 1)
         else:
-            data_copy[:] = self.data[:]
+            data_copy.array[:] = self.data[:]
 
         images = ImageStack(data_copy,
                             indices=deepcopy(self.indices),
@@ -149,7 +158,7 @@ class ImageStack:
         shape = (self.data.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
-        data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
+        data_copy.array[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
         images = ImageStack(data_copy,
                             indices=deepcopy(self.indices),
@@ -241,6 +250,14 @@ class ImageStack:
     @data.setter
     def data(self, other: np.ndarray):
         self._data = other
+
+    @property
+    def shared_memory(self) -> 'SharedMemory':
+        return self._shared_memory
+
+    @shared_memory.setter
+    def shared_memory(self, memory: 'SharedMemory'):
+        self._shared_memory = memory
 
     @property
     def dtype(self):

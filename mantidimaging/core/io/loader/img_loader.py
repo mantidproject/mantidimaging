@@ -73,7 +73,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     dark_after_data, dark_after_filenames = il.load_data(dark_after_path)
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    if isinstance(sample_data, np.ndarray):
+    if isinstance(sample_data, pu.SharedArray):
         sample_images = ImageStack(sample_data, chosen_input_filenames, indices)
     else:
         sample_images = sample_data
@@ -101,7 +101,7 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names: List[str]) -> Union[np.ndarray, ImageStack]:
+    def load_sample_data(self, input_file_names: List[str]) -> Union[pu.SharedArray, ImageStack]:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
@@ -117,19 +117,19 @@ class ImageLoader(object):
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
 
-    def load_data(self, file_path: Optional[str]) -> Tuple[Optional[np.ndarray], Optional[List[str]]]:
+    def load_data(self, file_path: Optional[str]) -> Tuple[Optional[pu.SharedArray], Optional[List[str]]]:
         if file_path:
             file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
             return self.load_files(file_names), file_names
         return None, None
 
-    def _do_files_load_seq(self, data: np.ndarray, files: List[str]) -> np.ndarray:
+    def _do_files_load_seq(self, data: pu.SharedArray, files: List[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
 
         with progress:
             for idx, in_file in enumerate(files):
                 try:
-                    data[idx, :] = self.load_func(in_file)
+                    data.array[idx, :] = self.load_func(in_file)
                     progress.update(msg='Image')
                 except ValueError as exc:
                     raise ValueError("An image has different width and/or height "
@@ -141,7 +141,7 @@ class ImageLoader(object):
 
         return data
 
-    def load_files(self, files: List[str]) -> np.ndarray:
+    def load_files(self, files: List[str]) -> pu.SharedArray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)

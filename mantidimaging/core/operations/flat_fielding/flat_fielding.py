@@ -293,10 +293,10 @@ def _execute(data: np.ndarray, flat=None, dark=None, cores=None, chunksize=None,
         norm_divide = pu.create_array((data.shape[1], data.shape[2]), data.dtype)
 
         # subtract dark from flat and copy into shared array with [:]
-        norm_divide[:] = np.subtract(flat, dark)
+        norm_divide.array[:] = np.subtract(flat, dark)
 
         # prevent divide-by-zero issues, and negative pixels make no sense
-        norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
+        norm_divide.array[norm_divide.array == 0] = MINIMUM_PIXEL_VALUE
 
         # subtract the dark from all images
         do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
@@ -305,7 +305,7 @@ def _execute(data: np.ndarray, flat=None, dark=None, cores=None, chunksize=None,
 
         # divide the data by (flat - dark)
         do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
-        ps.shared_list = [data, norm_divide]
+        ps.shared_list = [data, norm_divide.array]
         ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
     return data

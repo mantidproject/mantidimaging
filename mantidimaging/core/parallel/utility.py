@@ -1,14 +1,13 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import ctypes
 import multiprocessing
 import os
 from functools import partial
 from logging import getLogger
-from multiprocessing import Array
+from multiprocessing.shared_memory import SharedMemory
 from multiprocessing.pool import Pool
-from typing import List, Tuple, Type, Union, TYPE_CHECKING
+from typing import List, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
 if TYPE_CHECKING:
@@ -17,18 +16,16 @@ if TYPE_CHECKING:
 from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.size_calculator import full_size_KB
+from mantidimaging.core.parallel import manager as pm
 
 LOG = getLogger(__name__)
-
-SimpleCType = Union[Type[ctypes.c_uint8], Type[ctypes.c_uint16], Type[ctypes.c_int32], Type[ctypes.c_int64],
-                    Type[ctypes.c_float], Type[ctypes.c_double]]
 
 
 def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> np.ndarray:
+def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
     """
     Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
 
@@ -45,39 +42,38 @@ def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) ->
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> np.ndarray:
-    ctype: SimpleCType = ctypes.c_float  # default to numpy float32 / C type float
-    if dtype == np.uint8 or dtype == 'uint8':
-        ctype = ctypes.c_uint8
-        dtype = np.uint8
-    elif dtype == np.uint16 or dtype == 'uint16':
-        ctype = ctypes.c_uint16
-        dtype = np.uint16
-    elif dtype == np.int32 or dtype == 'int32':
-        ctype = ctypes.c_int32
-        dtype = np.int32
-    elif dtype == np.int64 or dtype == 'int64':
-        ctype = ctypes.c_int64
-        dtype = np.int64
-    elif dtype == np.float32 or dtype == 'float32':
-        ctype = ctypes.c_float
+def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+    if dtype == np.float32 or dtype == 'float32':
         dtype = np.float32
     elif dtype == np.float64 or dtype == 'float64':
-        ctype = ctypes.c_double
         dtype = np.float64
+    elif dtype == np.uint8 or dtype == 'uint8':
+        dtype = np.uint8
+    elif dtype == np.uint16 or dtype == 'uint16':
+        dtype = np.uint16
+    elif dtype == np.int32 or dtype == 'int32':
+        dtype = np.int32
+    elif dtype == np.int64 or dtype == 'int64':
+        dtype = np.int64
+    else:
+        raise ValueError(f"Unrecognised dtype '{dtype}' specified for creating shared array")
 
     length = 1
     for axis_length in shape:
         length *= axis_length
 
-    size = ctypes.sizeof(ctype(1)) * length
+    size = dtype().itemsize * length
 
-    LOG.info('Requested shared array with shape={}, length={}, size={}, ' 'dtype={}'.format(shape, length, size, dtype))
+    LOG.info(f'Requested shared array with shape={shape}, length={length}, size={size}, dtype={dtype}')
 
-    array = Array(ctype, length)
-    data = np.frombuffer(array.get_obj(), dtype=dtype)
+    mem = pm.memory_manager.SharedMemory(size=size)
+    array = _read_array_from_shared_memory(shape, dtype, mem)
 
-    return data.reshape(shape)
+    return SharedArray(array, mem)
+
+
+def _read_array_from_shared_memory(shape, dtype, mem: SharedMemory) -> np.ndarray:
+    return np.ndarray(shape, dtype=dtype, buffer=mem.buf)
 
 
 def get_cores():
@@ -127,3 +123,9 @@ def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int
             partial_func(ind)
             progress.update(1, msg)
     progress.mark_complete()
+
+
+class SharedArray:
+    def __init__(self, array, shared_memory):
+        self.array = array
+        self.shared_memory = shared_memory

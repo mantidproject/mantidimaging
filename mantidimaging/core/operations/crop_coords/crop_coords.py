@@ -67,8 +67,10 @@ class CropCoordinatesFilter(BaseFilter):
                              "This can happen on the image preview right after a previous Crop Coordinates.")
 
         output = pu.create_array(shape, images.dtype)
-        images.data = execute_single(sample, region_of_interest, progress, out=output)
-
+        images.data = execute_single(sample, region_of_interest, progress, out=output.array)
+        # We must set the new shared memory location at the end so that the original shared array isn't garbage
+        # collected before we're finished with it
+        images.shared_memory = output.shared_memory
         return images
 
     @staticmethod
