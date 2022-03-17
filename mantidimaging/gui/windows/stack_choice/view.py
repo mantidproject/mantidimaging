@@ -163,6 +163,7 @@ class StackChoiceView(BaseMainWindowView):
 
         self.original_stack.close()
         self.new_stack.close()
+        self.presenter = None
 
     def _set_from_old_to_new(self):
         """
