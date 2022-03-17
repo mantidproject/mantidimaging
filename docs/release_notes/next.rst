@@ -21,3 +21,4 @@ Developer Changes
 - #1362 : Rename Images class to ImageStack
 - #1148 : Re-enable coverage checking
 - #1375 : Leak tracking tool
+- #1376 : Fix leak in StackChoiceView
