@@ -20,3 +20,4 @@ Developer Changes
 - #1363 : Add auto color menu from constructor in MIMiniImageView
 - #1362 : Rename Images class to ImageStack
 - #1148 : Re-enable coverage checking
+- #1375 : Leak tracking tool
