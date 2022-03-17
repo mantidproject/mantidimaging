@@ -16,6 +16,7 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 
 class ImageStack:
@@ -58,6 +59,8 @@ class ImageStack:
                 self.name = "untitled"
         else:
             self.name = name
+
+        leak_tracker.add(data, msg=f"ImageStack {self.name}")
 
     def __eq__(self, other):
         if isinstance(other, ImageStack):
