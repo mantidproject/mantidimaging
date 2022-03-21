@@ -16,8 +16,8 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.load_dialog.presenter import Notification
-from mantidimaging.test_helpers.start_qapplication import start_qapplication
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+from mantidimaging.test_helpers.start_qapplication import start_qapplication, setup_shared_memory_manager
 
 versions._use_test_values()
 
@@ -31,6 +31,7 @@ SHORT_DELAY = 100
 
 @pytest.mark.system
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
+@setup_shared_memory_manager
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
