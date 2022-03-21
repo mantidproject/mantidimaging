@@ -25,6 +25,7 @@ from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
@@ -77,6 +78,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoadImages: QAction
     actionLoadNeXusFile: QAction
     actionSave: QAction
+    actionSaveNeXus: QAction
     actionExit: QAction
 
     filters: Optional[FiltersWindowView] = None
@@ -85,6 +87,7 @@ class MainWindowView(BaseMainWindowView):
     load_dialogue: Optional[MWLoadDialog] = None
     save_dialogue: Optional[MWSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
+    nexus_save_dialog: Optional[NexusSaveDialog] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -152,6 +155,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSave.triggered.connect(self.show_save_dialogue)
+        self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialogue)
         self.actionExit.triggered.connect(self.close)
 
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
@@ -186,6 +190,7 @@ class MainWindowView(BaseMainWindowView):
         has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
 
         self.actionSave.setEnabled(has_datasets)
+        self.actionSaveNeXus.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionLoad180deg.setEnabled(has_strict_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
@@ -305,6 +310,10 @@ class MainWindowView(BaseMainWindowView):
     def show_save_dialogue(self):
         self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
+
+    def show_nexus_save_dialogue(self):
+        self.nexus_save_dialogue = NexusSaveDialog(self, self.dataset_list)
+        self.nexus_save_dialogue.show()
 
     def show_recon_window(self):
         if not self.recon:
