@@ -155,7 +155,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSave.triggered.connect(self.show_save_dialogue)
-        self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialogue)
+        self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialog)
         self.actionExit.triggered.connect(self.close)
 
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
@@ -311,9 +311,9 @@ class MainWindowView(BaseMainWindowView):
         self.save_dialogue = MWSaveDialog(self, self.stack_list)
         self.save_dialogue.show()
 
-    def show_nexus_save_dialogue(self):
-        self.nexus_save_dialogue = NexusSaveDialog(self, self.dataset_list)
-        self.nexus_save_dialogue.show()
+    def show_nexus_save_dialog(self):
+        self.nexus_save_dialog = NexusSaveDialog(self, self.dataset_list)
+        self.nexus_save_dialog.show()
 
     def show_recon_window(self):
         if not self.recon:
