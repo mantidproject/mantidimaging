@@ -45,6 +45,7 @@ class Notification(Enum):
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
+    NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
     ADD_RECON = auto()
 
@@ -76,6 +77,8 @@ class MainWindowPresenter(BasePresenter):
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
+            elif signal == Notification.NEXUS_SAVE:
+                self.save_nexus_file()
             elif signal == Notification.FOCUS_TAB:
                 self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
