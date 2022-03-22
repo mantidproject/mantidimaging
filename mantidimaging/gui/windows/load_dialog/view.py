@@ -13,7 +13,7 @@ from mantidimaging.gui.windows.load_dialog.field import Field
 from .presenter import LoadPresenter, Notification
 
 
-class MWLoadDialog(QDialog):
+class ImageLoadDialog(QDialog):
     tree: QTreeWidget
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox

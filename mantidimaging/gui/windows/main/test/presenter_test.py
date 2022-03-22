@@ -14,7 +14,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
-from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -36,7 +36,7 @@ def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
 class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
-        self.view.load_dialog = mock.create_autospec(MWLoadDialog)
+        self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
         self.images = [generate_images() for _ in range(5)]
         self.dataset = StrictDataset(sample=self.images[0],
@@ -107,7 +107,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_dataset_stack(self, start_async_mock: mock.Mock):
         parameters_mock = mock.Mock()
         parameters_mock.sample.input_path.return_value = "123"
-        self.view.load_dialog.get_parameters.return_value = parameters_mock
+        self.view.image_load_dialog.get_parameters.return_value = parameters_mock
 
         self.presenter.load_image_files()
 
@@ -116,7 +116,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_load_dataset_returns_when_par_and_view_dialog_are_none(self, start_async_mock: mock.Mock):
-        self.view.load_dialog = None
+        self.view.image_load_dialog = None
         self.presenter.load_image_files()
 
         start_async_mock.assert_not_called()
@@ -228,7 +228,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
-        self.view.show_load_dialog.assert_called_once()
+        self.view.show_image_load_dialog.assert_called_once()
 
     def test_wizard_action_show_operation(self):
         OPERATION_STR = "ROI Normalisation"

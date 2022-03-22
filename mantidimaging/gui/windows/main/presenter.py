@@ -118,8 +118,8 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
 
     def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
-        if par is None and self.view.load_dialog is not None:
-            par = self.view.load_dialog.get_parameters()
+        if par is None and self.view.image_load_dialog is not None:
+            par = self.view.image_load_dialog.get_parameters()
         if par is None:
             return
 
@@ -475,7 +475,7 @@ class MainWindowPresenter(BasePresenter):
         return True
 
     def wizard_action_load(self) -> None:
-        self.view.show_load_dialog()
+        self.view.show_image_load_dialog()
 
     def show_operation(self, operation_name: str) -> None:
         self.view.show_filters_window()

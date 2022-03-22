@@ -24,7 +24,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
-from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
@@ -84,7 +84,7 @@ class MainWindowView(BaseMainWindowView):
     filters: Optional[FiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
 
-    load_dialog: Optional[MWLoadDialog] = None
+    image_load_dialog: Optional[ImageLoadDialog] = None
     save_dialog: Optional[MWSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
@@ -148,7 +148,7 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
     def setup_shortcuts(self):
-        self.actionLoadDataset.triggered.connect(self.show_load_dialog)
+        self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionLoadNeXusFile.triggered.connect(self.show_load_nexus_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
@@ -206,9 +206,9 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_window = WelcomeScreenPresenter(self)
         self.welcome_window.show()
 
-    def show_load_dialog(self):
-        self.load_dialog = MWLoadDialog(self)
-        self.load_dialog.show()
+    def show_image_load_dialog(self):
+        self.image_load_dialog = ImageLoadDialog(self)
+        self.image_load_dialog.show()
 
     def show_load_nexus_dialog(self):
         self.nexus_load_dialog = NexusLoadDialog(self)

@@ -15,7 +15,7 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, ImageP
 from mantidimaging.gui.windows.load_dialog.field import Field
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.load_dialog import MWLoadDialog  # pragma: no cover
+    from mantidimaging.gui.windows.load_dialog import ImageLoadDialog  # pragma: no cover
 
 logger = getLogger(__name__)
 
@@ -28,9 +28,9 @@ class Notification(Enum):
 
 
 class LoadPresenter:
-    view: 'MWLoadDialog'
+    view: 'ImageLoadDialog'
 
-    def __init__(self, view: 'MWLoadDialog'):
+    def __init__(self, view: 'ImageLoadDialog'):
         self.view = view
         self.image_format = ''
         self.single_mem = 0
