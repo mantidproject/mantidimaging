@@ -27,8 +27,8 @@ class NexusSaveDialog(QDialog):
         self.selected_dataset = None
 
     def save(self):
-        self.selected_dataset = self.dataset_uuids[self.datasets.currentIndex()]
-        self.parent().execute_save()
+        self.selected_dataset = self.dataset_uuids[self.datasetNames.currentIndex()]
+        self.parent().execute_nexus_save()
 
     def save_path(self) -> str:
         """
@@ -38,6 +38,3 @@ class NexusSaveDialog(QDialog):
 
     def overwrite(self) -> bool:
         return self.overwriteAll.isChecked()
-
-    def pixel_depth(self) -> str:
-        return str(self.pixelDepth.currentText())
