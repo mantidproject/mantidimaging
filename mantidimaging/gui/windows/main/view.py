@@ -298,11 +298,11 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
                                 f"{stack_name}.")
 
-    def execute_tiff_save(self):
-        self.presenter.notify(PresNotification.TIFF_SAVE)
+    def execute_image_file_save(self):
+        self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
 
-    def execute_load(self):
-        self.presenter.notify(PresNotification.LOAD)
+    def execute_image_file_load(self):
+        self.presenter.notify(PresNotification.IMAGE_FILE_LOAD)
 
     def execute_nexus_load(self):
         self.presenter.notify(PresNotification.NEXUS_LOAD)

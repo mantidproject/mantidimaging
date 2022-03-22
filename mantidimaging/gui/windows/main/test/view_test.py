@@ -36,9 +36,9 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.dataset_tree_widget = self.dataset_tree_widget = mock.Mock()
 
     def test_execute_save(self):
-        self.view.execute_tiff_save()
+        self.view.execute_image_file_save()
 
-        self.presenter.notify.assert_called_once_with(PresNotification.TIFF_SAVE)
+        self.presenter.notify.assert_called_once_with(PresNotification.IMAGE_FILE_SAVE)
 
     def test_find_images_stack_title(self):
         images = mock.MagicMock()
@@ -70,9 +70,9 @@ class MainWindowViewTest(unittest.TestCase):
                                                                            _180_deg_file=selected_file)
 
     def test_execute_load(self):
-        self.view.execute_load()
+        self.view.execute_image_file_load()
 
-        self.presenter.notify.assert_called_once_with(PresNotification.LOAD)
+        self.presenter.notify.assert_called_once_with(PresNotification.IMAGE_FILE_LOAD)
 
     def test_execute_nexus_load(self):
         self.view.execute_nexus_load()

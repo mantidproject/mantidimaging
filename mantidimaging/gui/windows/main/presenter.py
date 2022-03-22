@@ -40,8 +40,8 @@ logger = getLogger(__name__)
 
 
 class Notification(Enum):
-    LOAD = auto()
-    TIFF_SAVE = auto()
+    IMAGE_FILE_LOAD = auto()
+    IMAGE_FILE_SAVE = auto()
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
@@ -67,10 +67,10 @@ class MainWindowPresenter(BasePresenter):
 
     def notify(self, signal: Notification, **baggage):
         try:
-            if signal == Notification.LOAD:
-                self.load_dataset()
-            elif signal == Notification.TIFF_SAVE:
-                self.save()
+            if signal == Notification.IMAGE_FILE_LOAD:
+                self.load_image_files()
+            elif signal == Notification.IMAGE_FILE_SAVE:
+                self.image_file_save()
             elif signal == Notification.REMOVE_STACK:
                 self._delete_container(**baggage)
             elif signal == Notification.RENAME_STACK:
@@ -117,7 +117,7 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
 
-    def load_dataset(self, par: Optional[LoadingParameters] = None) -> None:
+    def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
         if par is None and self.view.load_dialogue is not None:
             par = self.view.load_dialogue.get_parameters()
         if par is None:
@@ -340,7 +340,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 
-    def save(self) -> None:
+    def image_file_save(self) -> None:
         assert isinstance(self.view.save_dialogue, MWSaveDialog)
         kwargs = {
             'images_id': self.view.save_dialogue.selected_stack,
@@ -468,7 +468,7 @@ class MainWindowPresenter(BasePresenter):
         if loading_params is None:
             return False
 
-        self.load_dataset(loading_params)
+        self.load_image_files(loading_params)
         return True
 
     def wizard_action_load(self) -> None:
