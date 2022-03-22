@@ -36,9 +36,9 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.dataset_tree_widget = self.dataset_tree_widget = mock.Mock()
 
     def test_execute_save(self):
-        self.view.execute_save()
+        self.view.execute_tiff_save()
 
-        self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
+        self.presenter.notify.assert_called_once_with(PresNotification.TIFF_SAVE)
 
     def test_find_images_stack_title(self):
         images = mock.MagicMock()

@@ -41,7 +41,7 @@ logger = getLogger(__name__)
 
 class Notification(Enum):
     LOAD = auto()
-    SAVE = auto()
+    TIFF_SAVE = auto()
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
@@ -69,7 +69,7 @@ class MainWindowPresenter(BasePresenter):
         try:
             if signal == Notification.LOAD:
                 self.load_dataset()
-            elif signal == Notification.SAVE:
+            elif signal == Notification.TIFF_SAVE:
                 self.save()
             elif signal == Notification.REMOVE_STACK:
                 self._delete_container(**baggage)
