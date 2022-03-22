@@ -50,6 +50,7 @@ class GuiSystemBase(unittest.TestCase):
         if leak_count := leak_tracker.count():
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
+            leak_tracker.clear()
 
     @classmethod
     def _click_messageBox(cls, button_text: str):

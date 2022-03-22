@@ -69,7 +69,10 @@ class ImageStack:
         else:
             self.name = name
 
-        leak_tracker.add(data, msg=f"ImageStack {self.name}")
+        tracker_msg = f"ImageStack {self.name}"
+        leak_tracker.add(data.array if hasattr(data, 'array') else data, msg=tracker_msg)
+        if hasattr(data, 'shared_memory'):
+            leak_tracker.add(data.shared_memory, msg=tracker_msg)
 
     def __eq__(self, other):
         if isinstance(other, ImageStack):
