@@ -8,7 +8,6 @@ from pathlib import Path
 from tempfile import mkdtemp
 from uuid import uuid4
 
-import numpy as np
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel

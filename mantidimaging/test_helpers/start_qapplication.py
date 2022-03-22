@@ -93,13 +93,13 @@ def setup_shared_memory_manager(cls):
     Unittest decorator. Adds the functions for handling shared memory start-up and shutdown
     @param cls: Class being decorated
     """
-    def setUpClass():
+    def setUp(self):
         start_shared_memory_manager()
 
-    def tearDownClass():
+    def tearDown(self):
         shutdown_shared_memory_manager()
 
-    return augment_test_setup_methods(cls, setup_class=setUpClass, teardown_class=tearDownClass)
+    return augment_test_setup_methods(cls, setup=setUp, teardown=tearDown)
 
 
 def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None, teardown_class=None):

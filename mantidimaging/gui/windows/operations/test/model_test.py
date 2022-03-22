@@ -8,26 +8,30 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
+from mantidimaging.test_helpers.start_qapplication import start_shared_memory_manager, shutdown_shared_memory_manager
 from mantidimaging.core.operation_history import const
 from mantidimaging.gui.windows.operations import FiltersWindowModel
 from mantidimaging.gui.windows.stack_visualiser import SVParameters
 from mantidimaging.core.data import ImageStack
 
 
-@setup_shared_memory_manager
 class FiltersWindowModelTest(unittest.TestCase):
     APPLY_BEFORE_AFTER_MAGIC_NUMBER = 42
     ROI_PARAMETER = (4, 3, 2, 1)
 
     @classmethod
     def setUpClass(cls):
+        start_shared_memory_manager()
         cls.test_data = th.generate_images()
 
     def setUp(self):
         self.stack = ImageStack(np.zeros([3, 3, 3]))
 
         self.model = FiltersWindowModel(mock.MagicMock())
+
+    @classmethod
+    def tearDownClass(cls):
+        shutdown_shared_memory_manager()
 
     def execute_mock(self, data):
         self.assertTrue(isinstance(data, np.ndarray))
