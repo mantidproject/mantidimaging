@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
-from typing import Optional
 
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect, pyqtSignal
@@ -59,7 +58,7 @@ class ZSlider(PlotItem):
 
 
 class FilterPreviews(GraphicsLayoutWidget):
-    histogram: Optional[PlotItem]
+    histogram: PlotItem
     z_slider: ZSlider
 
     def __init__(self, parent=None, **kwargs):
@@ -73,8 +72,6 @@ class FilterPreviews(GraphicsLayoutWidget):
             screen_height = max(QGuiApplication.primaryScreen().availableGeometry().height(), 600)
             LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
-
-        self.histogram = None
 
         self.addLabel("Image before")
         self.addLabel("Image after")
@@ -104,7 +101,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.addItem(self.z_slider, colspan=3)
         self.nextRow()
 
-        self.init_histogram()
+        self.histogram = self.init_histogram()
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
@@ -127,11 +124,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_difference.clear()
         self.image_diff_overlay.clear()
 
-    def init_histogram(self):
-        self.histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
+    def init_histogram(self) -> PlotItem:
+        histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
 
-        self.legend = self.histogram.addLegend()
-        self.legend.setOffset((0, 1))
+        legend = histogram.addLegend()
+        legend.setOffset((0, 1))
+
+        return histogram
 
     def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist
@@ -139,17 +138,15 @@ class FilterPreviews(GraphicsLayoutWidget):
         after_data = self.imageview_after.image_item.getHistogram()
         if _data_valid_for_histogram(before_data):
             before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
-            self.legend.addItem(before_plot, "Before")
+            self.histogram_legend.addItem(before_plot, "Before")
 
         if _data_valid_for_histogram(after_data):
             after_plot = self.histogram.plot(*after_data, pen=after_pen)
-            self.legend.addItem(after_plot, "After")
+            self.histogram_legend.addItem(after_plot, "After")
 
     @property
-    def histogram_legend(self) -> Optional[LegendItem]:
-        if self.histogram and self.histogram.legend:
-            return self.histogram.legend
-        return None
+    def histogram_legend(self) -> LegendItem:
+        return self.histogram.legend
 
     def link_all_views(self):
         self.imageview_before.link_sibling_axis()
