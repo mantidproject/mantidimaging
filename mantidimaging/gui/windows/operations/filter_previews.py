@@ -46,12 +46,12 @@ class ZSlider(PlotItem):
 
         self.z_line.sigPositionChanged.connect(self.value_changed)
 
-    def set_range(self, min, max):
+    def set_range(self, min: int, max: int):
         self.z_line.setValue(min)
         self.setXRange(min, max)
         self.z_line.setBounds([min, max])
 
-    def set_value(self, value):
+    def set_value(self, value: int):
         self.z_line.setValue(value)
 
     def value_changed(self):

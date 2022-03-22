@@ -156,7 +156,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.do_update_previews()
 
-    def set_preview_image_index(self, image_idx):
+    def set_preview_image_index(self, image_idx: int):
         """
         Sets the current preview image index.
         """
