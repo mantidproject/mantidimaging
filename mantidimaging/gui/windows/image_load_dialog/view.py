@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.utility import (compile_ui)
-from mantidimaging.gui.windows.load_dialog.field import Field
+from mantidimaging.gui.windows.image_load_dialog.field import Field
 from .presenter import LoadPresenter, Notification
 
 
@@ -34,7 +34,7 @@ class ImageLoadDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        compile_ui('gui/ui/load_dialog.ui', self)
+        compile_ui('gui/ui/image_load_dialog.ui', self)
 
         self.parent_view = parent
         self.presenter = LoadPresenter(self)

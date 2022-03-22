@@ -19,7 +19,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
-from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
@@ -344,7 +344,7 @@ class MainWindowPresenter(BasePresenter):
         self.view.add_item_to_tree_view(dataset_tree_item)
 
     def save_image_files(self) -> None:
-        assert isinstance(self.view.save_dialog, MWSaveDialog)
+        assert isinstance(self.view.save_dialog, ImageSaveDialog)
         kwargs = {
             'images_id': self.view.save_dialog.selected_stack,
             'output_dir': self.view.save_dialog.save_path(),

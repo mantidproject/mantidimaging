@@ -14,7 +14,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
-from mantidimaging.gui.windows.load_dialog import ImageLoadDialog
+from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images

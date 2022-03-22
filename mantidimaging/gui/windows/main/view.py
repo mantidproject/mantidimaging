@@ -24,11 +24,11 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
-from mantidimaging.gui.windows.load_dialog import ImageLoadDialog
+from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
@@ -85,7 +85,7 @@ class MainWindowView(BaseMainWindowView):
     recon: Optional[ReconstructWindowView] = None
 
     image_load_dialog: Optional[ImageLoadDialog] = None
-    save_dialog: Optional[MWSaveDialog] = None
+    save_dialog: Optional[ImageSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
 
@@ -311,7 +311,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.NEXUS_SAVE)
 
     def show_save_dialog(self):
-        self.save_dialog = MWSaveDialog(self, self.stack_list)
+        self.save_dialog = ImageSaveDialog(self, self.stack_list)
         self.save_dialog.show()
 
     def show_nexus_save_dialog(self):
