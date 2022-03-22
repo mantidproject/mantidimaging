@@ -167,6 +167,9 @@ class FiltersWindowPresenter(BasePresenter):
         with BlockQtSignals([preview_idx_spin]):
             preview_idx_spin.setValue(self.model.preview_image_idx)
 
+        with BlockQtSignals([self.view.previews.z_slider]):
+            self.view.previews.z_slider.set_value(self.model.preview_image_idx)
+
         # Trigger preview updating
         self.view.auto_update_triggered.emit()
 

@@ -56,6 +56,9 @@ class ZSlider(PlotItem):
         self.setXRange(min, max)
         self.z_line.setBounds([min, max])
 
+    def set_value(self, value):
+        self.z_line.setValue(value)
+
     def value_changed(self):
         self.valueChanged.emit(int(self.z_line.value()))
 
