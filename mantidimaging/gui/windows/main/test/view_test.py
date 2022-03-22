@@ -80,7 +80,7 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.ImageLoadDialog")
     def test_show_load_dialog(self, mock_load: mock.Mock):
-        self.view.show_image_load_dialog()
+        self.view.show_load_image_dialog()
 
         mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()

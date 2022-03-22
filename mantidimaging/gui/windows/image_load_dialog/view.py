@@ -82,7 +82,7 @@ class ImageLoadDialog(QDialog):
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
         # if accepted load the stack
-        self.accepted.connect(self.parent_view.execute_load)
+        self.accepted.connect(self.parent_view.execute_image_file_load)
 
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")

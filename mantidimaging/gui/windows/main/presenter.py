@@ -475,7 +475,7 @@ class MainWindowPresenter(BasePresenter):
         return True
 
     def wizard_action_load(self) -> None:
-        self.view.show_image_load_dialog()
+        self.view.show_load_image_dialog()
 
     def show_operation(self, operation_name: str) -> None:
         self.view.show_filters_window()
