@@ -85,7 +85,7 @@ class MainWindowView(BaseMainWindowView):
     recon: Optional[ReconstructWindowView] = None
 
     image_load_dialog: Optional[ImageLoadDialog] = None
-    save_dialog: Optional[ImageSaveDialog] = None
+    image_save_dialog: Optional[ImageSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
 
@@ -154,7 +154,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
-        self.actionSave.triggered.connect(self.show_save_dialog)
+        self.actionSave.triggered.connect(self.show_image_save_dialog)
         self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialog)
         self.actionExit.triggered.connect(self.close)
 
@@ -310,9 +310,9 @@ class MainWindowView(BaseMainWindowView):
     def execute_nexus_save(self):
         self.presenter.notify(PresNotification.NEXUS_SAVE)
 
-    def show_save_dialog(self):
-        self.save_dialog = ImageSaveDialog(self, self.stack_list)
-        self.save_dialog.show()
+    def show_image_save_dialog(self):
+        self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
+        self.image_save_dialog.show()
 
     def show_nexus_save_dialog(self):
         self.nexus_save_dialog = NexusSaveDialog(self, self.dataset_list)

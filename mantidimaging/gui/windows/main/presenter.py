@@ -136,7 +136,7 @@ class MainWindowPresenter(BasePresenter):
         self.view.model_changed.emit()
 
     def save_nexus_file(self):
-        pass
+        assert self.view.nexus_save_dialog is not None
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -344,14 +344,14 @@ class MainWindowPresenter(BasePresenter):
         self.view.add_item_to_tree_view(dataset_tree_item)
 
     def save_image_files(self) -> None:
-        assert isinstance(self.view.save_dialog, ImageSaveDialog)
+        assert isinstance(self.view.image_save_dialog, ImageSaveDialog)
         kwargs = {
-            'images_id': self.view.save_dialog.selected_stack,
-            'output_dir': self.view.save_dialog.save_path(),
-            'name_prefix': self.view.save_dialog.name_prefix(),
-            'image_format': self.view.save_dialog.image_format(),
-            'overwrite': self.view.save_dialog.overwrite(),
-            'pixel_depth': self.view.save_dialog.pixel_depth()
+            'images_id': self.view.image_save_dialog.selected_stack,
+            'output_dir': self.view.image_save_dialog.save_path(),
+            'name_prefix': self.view.image_save_dialog.name_prefix(),
+            'image_format': self.view.image_save_dialog.image_format(),
+            'overwrite': self.view.image_save_dialog.overwrite(),
+            'pixel_depth': self.view.image_save_dialog.pixel_depth()
         }
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 

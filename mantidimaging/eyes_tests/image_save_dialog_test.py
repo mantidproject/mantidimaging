@@ -10,7 +10,7 @@ class ImageSaveDialogTest(BaseEyesTest):
     def test_save_dialog_opens_with_no_dataset(self):
         self.imaging.actionSave.trigger()
 
-        self.check_target(widget=self.imaging.save_dialog)
+        self.check_target(widget=self.imaging.image_save_dialog)
 
     def test_save_dialog_opens_with_dataset(self):
         TestTuple = namedtuple('TestTuple', ['id', 'name'])
@@ -20,4 +20,4 @@ class ImageSaveDialogTest(BaseEyesTest):
             mock_stack_list.return_value = stack_list
             self.imaging.actionSave.trigger()
 
-        self.check_target(widget=self.imaging.save_dialog)
+        self.check_target(widget=self.imaging.image_save_dialog)
