@@ -145,7 +145,9 @@ class FiltersWindowPresenter(BasePresenter):
         # Update the preview image index
         with BlockQtSignals([self.view]):
             self.set_preview_image_index(0)
-            self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+            max_slice = self.max_preview_image_idx
+            self.view.previewImageIndex.setMaximum(max_slice)
+            self.view.previews.z_slider.set_range(0, max_slice)
 
             for row_id in range(self.view.filterPropertiesLayout.count()):
                 widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()
@@ -154,7 +156,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         self.do_update_previews()
 
-    def set_preview_image_index(self, image_idx):
+    def set_preview_image_index(self, image_idx: int):
         """
         Sets the current preview image index.
         """
@@ -164,6 +166,9 @@ class FiltersWindowPresenter(BasePresenter):
         preview_idx_spin = self.view.previewImageIndex
         with BlockQtSignals([preview_idx_spin]):
             preview_idx_spin.setValue(self.model.preview_image_idx)
+
+        with BlockQtSignals([self.view.previews.z_slider]):
+            self.view.previews.z_slider.set_value(self.model.preview_image_idx)
 
         # Trigger preview updating
         self.view.auto_update_triggered.emit()

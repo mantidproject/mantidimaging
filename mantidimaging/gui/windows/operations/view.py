@@ -95,6 +95,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
+        self.previews.z_slider.valueChanged.connect(self.presenter.set_preview_image_index)
 
         # Preview update triggers
         self.auto_update_triggered.connect(self.on_auto_update_triggered)
