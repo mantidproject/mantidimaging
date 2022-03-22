@@ -1,7 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from collections import namedtuple
 from logging import getLogger
 from typing import Optional
 
@@ -23,10 +22,6 @@ diff_pen = (0, 0, 200)
 
 OVERLAY_THRESHOLD = 1e-3
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
-
-Coord = namedtuple('Coord', ['row', 'col'])
-histogram_coords = Coord(4, 0)
-label_coords = Coord(3, 1)
 
 
 def _data_valid_for_histogram(data):
@@ -107,6 +102,7 @@ class FilterPreviews(GraphicsLayoutWidget):
 
         self.z_slider = ZSlider()
         self.addItem(self.z_slider, colspan=3)
+        self.nextRow()
 
         self.init_histogram()
 
@@ -132,12 +128,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_diff_overlay.clear()
 
     def init_histogram(self):
-        self.histogram = self.addPlot(row=histogram_coords.row,
-                                      col=histogram_coords.col,
-                                      labels=histogram_axes_labels,
-                                      lockAspect=True,
-                                      colspan=3)
-        self.addLabel("Pixel values", row=label_coords.row, col=label_coords.col)
+        self.histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
 
         self.legend = self.histogram.addLegend()
         self.legend.setOffset((0, 1))
