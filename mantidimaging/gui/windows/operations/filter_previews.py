@@ -2,15 +2,19 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtCore import QPoint, QRect, pyqtSignal
+from PyQt5.QtCore import Qt, QPoint, QRect, pyqtSignal
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, InfiniteLine
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
 
 LOG = getLogger(__name__)
 
@@ -55,6 +59,12 @@ class ZSlider(PlotItem):
 
     def value_changed(self):
         self.valueChanged.emit(int(self.z_line.value()))
+
+    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent'):
+        if ev.button() == Qt.MouseButton.LeftButton:
+            x = round(self.vb.mapSceneToView(ev.scenePos()).x())
+            self.set_value(x)
+        super().mousePressEvent(ev)
 
 
 class FilterPreviews(GraphicsLayoutWidget):
