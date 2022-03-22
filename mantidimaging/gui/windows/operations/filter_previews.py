@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, InfiniteLine
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
@@ -33,8 +33,25 @@ def _data_valid_for_histogram(data):
     return data is not None and any(d is not None for d in data)
 
 
+class ZSlider(PlotItem):
+    z_line: InfiniteLine
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setFixedHeight(40)
+        self.hideAxis("left")
+        self.setXRange(0, 1)
+        self.setMouseEnabled(x=False, y=False)
+        self.hideButtons()
+
+        self.z_line = InfiniteLine(0, movable=True)
+        self.z_line.setPen((255, 255, 0, 200))
+        self.addItem(self.z_line)
+
+
 class FilterPreviews(GraphicsLayoutWidget):
     histogram: Optional[PlotItem]
+    z_slider: ZSlider
 
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
@@ -73,6 +90,9 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_layout.addItem(self.imageview_after)
         self.image_layout.addItem(self.imageview_difference)
         self.nextRow()
+
+        self.z_slider = ZSlider()
+        self.addItem(self.z_slider, colspan=3)
 
         self.init_histogram()
 
