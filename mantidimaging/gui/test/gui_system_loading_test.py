@@ -85,13 +85,13 @@ class TestGuiSystemLoading(GuiSystemBase):
     def test_save_images(self):
         self._load_images()
 
-        self.main_window.show_save_dialogue()
+        self.main_window.show_save_dialog()
 
         with mock.patch("mantidimaging.gui.windows.main.MainWindowModel.do_images_saving") as mock_save:
             self._wait_for_widget_visible(MWSaveDialog)
             QApplication.processEvents()
 
-            ok_button = self.main_window.save_dialogue.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
+            ok_button = self.main_window.save_dialog.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()

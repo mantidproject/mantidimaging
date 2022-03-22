@@ -118,8 +118,8 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
 
     def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
-        if par is None and self.view.load_dialogue is not None:
-            par = self.view.load_dialogue.get_parameters()
+        if par is None and self.view.load_dialog is not None:
+            par = self.view.load_dialog.get_parameters()
         if par is None:
             return
 
@@ -344,14 +344,14 @@ class MainWindowPresenter(BasePresenter):
         self.view.add_item_to_tree_view(dataset_tree_item)
 
     def save_image_files(self) -> None:
-        assert isinstance(self.view.save_dialogue, MWSaveDialog)
+        assert isinstance(self.view.save_dialog, MWSaveDialog)
         kwargs = {
-            'images_id': self.view.save_dialogue.selected_stack,
-            'output_dir': self.view.save_dialogue.save_path(),
-            'name_prefix': self.view.save_dialogue.name_prefix(),
-            'image_format': self.view.save_dialogue.image_format(),
-            'overwrite': self.view.save_dialogue.overwrite(),
-            'pixel_depth': self.view.save_dialogue.pixel_depth()
+            'images_id': self.view.save_dialog.selected_stack,
+            'output_dir': self.view.save_dialog.save_path(),
+            'name_prefix': self.view.save_dialog.name_prefix(),
+            'image_format': self.view.save_dialog.image_format(),
+            'overwrite': self.view.save_dialog.overwrite(),
+            'pixel_depth': self.view.save_dialog.pixel_depth()
         }
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
@@ -475,7 +475,7 @@ class MainWindowPresenter(BasePresenter):
         return True
 
     def wizard_action_load(self) -> None:
-        self.view.show_load_dialogue()
+        self.view.show_load_dialog()
 
     def show_operation(self, operation_name: str) -> None:
         self.view.show_filters_window()

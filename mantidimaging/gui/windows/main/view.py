@@ -84,8 +84,8 @@ class MainWindowView(BaseMainWindowView):
     filters: Optional[FiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
 
-    load_dialogue: Optional[MWLoadDialog] = None
-    save_dialogue: Optional[MWSaveDialog] = None
+    load_dialog: Optional[MWLoadDialog] = None
+    save_dialog: Optional[MWSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
 
@@ -148,13 +148,13 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
     def setup_shortcuts(self):
-        self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
+        self.actionLoadDataset.triggered.connect(self.show_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionLoadNeXusFile.triggered.connect(self.show_load_nexus_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
-        self.actionSave.triggered.connect(self.show_save_dialogue)
+        self.actionSave.triggered.connect(self.show_save_dialog)
         self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialog)
         self.actionExit.triggered.connect(self.close)
 
@@ -206,9 +206,9 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_window = WelcomeScreenPresenter(self)
         self.welcome_window.show()
 
-    def show_load_dialogue(self):
-        self.load_dialogue = MWLoadDialog(self)
-        self.load_dialogue.show()
+    def show_load_dialog(self):
+        self.load_dialog = MWLoadDialog(self)
+        self.load_dialog.show()
 
     def show_load_nexus_dialog(self):
         self.nexus_load_dialog = NexusLoadDialog(self)
@@ -310,9 +310,9 @@ class MainWindowView(BaseMainWindowView):
     def execute_nexus_save(self):
         self.presenter.notify(PresNotification.NEXUS_SAVE)
 
-    def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self, self.stack_list)
-        self.save_dialogue.show()
+    def show_save_dialog(self):
+        self.save_dialog = MWSaveDialog(self, self.stack_list)
+        self.save_dialog.show()
 
     def show_nexus_save_dialog(self):
         self.nexus_save_dialog = NexusSaveDialog(self, self.dataset_list)

@@ -79,8 +79,8 @@ class MainWindowViewTest(unittest.TestCase):
         self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_LOAD)
 
     @mock.patch("mantidimaging.gui.windows.main.view.MWLoadDialog")
-    def test_show_load_dialogue(self, mock_load: mock.Mock):
-        self.view.show_load_dialogue()
+    def test_show_load_dialog(self, mock_load: mock.Mock):
+        self.view.show_load_dialog()
 
         mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()
