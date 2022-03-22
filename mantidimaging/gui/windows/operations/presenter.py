@@ -145,7 +145,9 @@ class FiltersWindowPresenter(BasePresenter):
         # Update the preview image index
         with BlockQtSignals([self.view]):
             self.set_preview_image_index(0)
-            self.view.previewImageIndex.setMaximum(self.max_preview_image_idx)
+            max_slice = self.max_preview_image_idx
+            self.view.previewImageIndex.setMaximum(max_slice)
+            self.view.previews.z_slider.set_range(0, max_slice)
 
             for row_id in range(self.view.filterPropertiesLayout.count()):
                 widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()

@@ -48,6 +48,11 @@ class ZSlider(PlotItem):
         self.z_line.setPen((255, 255, 0, 200))
         self.addItem(self.z_line)
 
+    def set_range(self, min, max):
+        self.z_line.setValue(min)
+        self.setXRange(min, max)
+        self.z_line.setBounds([min, max])
+
 
 class FilterPreviews(GraphicsLayoutWidget):
     histogram: Optional[PlotItem]
