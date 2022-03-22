@@ -6,7 +6,7 @@ from logging import getLogger
 from typing import Optional
 
 import numpy as np
-from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtCore import QPoint, QRect, pyqtSignal
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, InfiniteLine
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
@@ -35,6 +35,7 @@ def _data_valid_for_histogram(data):
 
 class ZSlider(PlotItem):
     z_line: InfiniteLine
+    valueChanged = pyqtSignal(int)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,10 +49,15 @@ class ZSlider(PlotItem):
         self.z_line.setPen((255, 255, 0, 200))
         self.addItem(self.z_line)
 
+        self.z_line.sigPositionChanged.connect(self.value_changed)
+
     def set_range(self, min, max):
         self.z_line.setValue(min)
         self.setXRange(min, max)
         self.z_line.setBounds([min, max])
+
+    def value_changed(self):
+        self.valueChanged.emit(int(self.z_line.value()))
 
 
 class FilterPreviews(GraphicsLayoutWidget):
