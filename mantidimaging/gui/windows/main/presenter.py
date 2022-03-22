@@ -70,7 +70,7 @@ class MainWindowPresenter(BasePresenter):
             if signal == Notification.IMAGE_FILE_LOAD:
                 self.load_image_files()
             elif signal == Notification.IMAGE_FILE_SAVE:
-                self.image_file_save()
+                self.save_image_files()
             elif signal == Notification.REMOVE_STACK:
                 self._delete_container(**baggage)
             elif signal == Notification.RENAME_STACK:
@@ -134,6 +134,9 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_dataset_to_model(dataset)
         self._add_strict_dataset_to_view(dataset)
         self.view.model_changed.emit()
+
+    def save_nexus_file(self):
+        pass
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -340,7 +343,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 
-    def image_file_save(self) -> None:
+    def save_image_files(self) -> None:
         assert isinstance(self.view.save_dialogue, MWSaveDialog)
         kwargs = {
             'images_id': self.view.save_dialogue.selected_stack,
