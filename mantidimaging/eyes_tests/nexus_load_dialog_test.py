@@ -4,7 +4,7 @@
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest, NEXUS_SAMPLE
 
 
-class LoadDialogTest(BaseEyesTest):
+class NexusLoadDialogTest(BaseEyesTest):
     def test_load_dialog_opens(self):
         self.imaging.actionLoadNeXusFile.trigger()
 

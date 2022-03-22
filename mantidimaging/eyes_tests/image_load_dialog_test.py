@@ -5,7 +5,7 @@ from unittest import mock
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest, LOAD_SAMPLE
 
 
-class LoadDialogTest(BaseEyesTest):
+class ImageLoadDialogTest(BaseEyesTest):
     def test_load_dialog_opens(self):
         self.imaging.actionLoadDataset.trigger()
 

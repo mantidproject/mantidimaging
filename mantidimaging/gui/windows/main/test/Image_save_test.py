@@ -9,7 +9,7 @@ from mantidimaging.gui.windows.main.image_save_dialog import sort_by_tomo_and_re
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
 
-class SaveDialogTest(unittest.TestCase):
+class ImageSaveDialogTest(unittest.TestCase):
     def test_sort_stack_names_order(self):
         stack_list = [
             StackId(uuid.uuid4(), "Stack 1"),
