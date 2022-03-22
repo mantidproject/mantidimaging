@@ -106,7 +106,7 @@ class IOTest(FileOutputtingTestCase):
             expected_images.data = expected_images.data[saver_indices[0]:saver_indices[1]]
 
         # saver.save_preproc_images(expected_images)
-        saver.save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
+        saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
 
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, expected_images.data.shape[0], saver_indices)
@@ -146,15 +146,15 @@ class IOTest(FileOutputtingTestCase):
             # indices that were actually saved out
             images.data = images.data[saver_indices[0]:saver_indices[1]]
 
-        saver.save(images, self.output_directory, out_format=img_format)
+        saver.image_save(images, self.output_directory, out_format=img_format)
         flat_before_dir = os.path.join(self.output_directory, "imgIOTest_flat_before")
-        saver.save(flat_before, flat_before_dir, out_format=img_format)
+        saver.image_save(flat_before, flat_before_dir, out_format=img_format)
         flat_after_dir = os.path.join(self.output_directory, "imgIOTest_flat_after")
-        saver.save(flat_after, flat_after_dir, out_format=img_format)
+        saver.image_save(flat_after, flat_after_dir, out_format=img_format)
         dark_before_dir = os.path.join(self.output_directory, "imgIOTest_dark_before")
-        saver.save(dark_before, dark_before_dir, out_format=img_format)
+        saver.image_save(dark_before, dark_before_dir, out_format=img_format)
         dark_after_dir = os.path.join(self.output_directory, "imgIOTest_dark_after")
-        saver.save(dark_after, dark_after_dir, out_format=img_format)
+        saver.image_save(dark_after, dark_after_dir, out_format=img_format)
 
         data_as_stack = False
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
@@ -209,7 +209,7 @@ class IOTest(FileOutputtingTestCase):
         images.metadata['message'] = 'hello, world!'
 
         # Save image stack
-        saver.save(images, self.output_directory)
+        saver.image_save(images, self.output_directory)
 
         # Load image stack back
         dataset = loader.load(self.output_directory)

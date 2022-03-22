@@ -8,6 +8,7 @@ from typing import List, Union, Optional, Dict, Callable
 import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
+from ..data.dataset import StrictDataset, MixedDataset
 from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
@@ -53,18 +54,18 @@ def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.nd
         rangle[...] = projection_angles
 
 
-def save(images: ImageStack,
-         output_dir: str,
-         name_prefix: str = DEFAULT_NAME_PREFIX,
-         swap_axes: bool = False,
-         out_format: str = DEFAULT_IO_FILE_FORMAT,
-         overwrite_all: bool = False,
-         custom_idx: Optional[int] = None,
-         zfill_len: int = DEFAULT_ZFILL_LENGTH,
-         name_postfix: str = DEFAULT_NAME_POSTFIX,
-         indices: Union[List[int], Indices, None] = None,
-         pixel_depth: Optional[str] = None,
-         progress: Optional[Progress] = None) -> Union[str, List[str]]:
+def image_save(images: ImageStack,
+               output_dir: str,
+               name_prefix: str = DEFAULT_NAME_PREFIX,
+               swap_axes: bool = False,
+               out_format: str = DEFAULT_IO_FILE_FORMAT,
+               overwrite_all: bool = False,
+               custom_idx: Optional[int] = None,
+               zfill_len: int = DEFAULT_ZFILL_LENGTH,
+               name_postfix: str = DEFAULT_NAME_POSTFIX,
+               indices: Union[List[int], Indices, None] = None,
+               pixel_depth: Optional[str] = None,
+               progress: Optional[Progress] = None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -163,6 +164,10 @@ def save(images: ImageStack,
                 progress.update(msg='Image')
 
         return names
+
+
+def nexus_save(dataset: Union[StrictDataset, MixedDataset]):
+    pass
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:

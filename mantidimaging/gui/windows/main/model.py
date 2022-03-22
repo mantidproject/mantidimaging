@@ -77,15 +77,19 @@ class MainWindowModel(object):
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
-        filenames = saver.save(images,
-                               output_dir=output_dir,
-                               name_prefix=name_prefix,
-                               overwrite_all=overwrite,
-                               out_format=image_format,
-                               pixel_depth=pixel_depth,
-                               progress=progress)
+        filenames = saver.image_save(images,
+                                     output_dir=output_dir,
+                                     name_prefix=name_prefix,
+                                     overwrite_all=overwrite,
+                                     out_format=image_format,
+                                     pixel_depth=pixel_depth,
+                                     progress=progress)
         images.filenames = filenames
         return True
+
+    def do_nexus_saving(self, dataset_id: uuid.UUID):
+        dataset = self.datasets[dataset_id]
+        saver.nexus_save(dataset)
 
     def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray) -> None:
         """
