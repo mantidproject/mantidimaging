@@ -7,6 +7,7 @@ New Features
 ------------
 
 - #1340 : ROI norm - remove preserve max option
+- #1379 : Add angle/z axis slider in the operations window
 
 Fixes
 -----

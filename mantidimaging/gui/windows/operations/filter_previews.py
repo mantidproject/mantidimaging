@@ -1,18 +1,20 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from collections import namedtuple
 from logging import getLogger
-from typing import Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtCore import Qt, QPoint, QRect, pyqtSignal
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, InfiniteLine
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
 
 LOG = getLogger(__name__)
 
@@ -24,17 +26,50 @@ diff_pen = (0, 0, 200)
 OVERLAY_THRESHOLD = 1e-3
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 
-Coord = namedtuple('Coord', ['row', 'col'])
-histogram_coords = Coord(4, 0)
-label_coords = Coord(3, 1)
-
 
 def _data_valid_for_histogram(data):
     return data is not None and any(d is not None for d in data)
 
 
+class ZSlider(PlotItem):
+    z_line: InfiniteLine
+    valueChanged = pyqtSignal(int)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setFixedHeight(40)
+        self.hideAxis("left")
+        self.setXRange(0, 1)
+        self.setMouseEnabled(x=False, y=False)
+        self.hideButtons()
+
+        self.z_line = InfiniteLine(0, movable=True)
+        self.z_line.setPen((255, 255, 0, 200))
+        self.addItem(self.z_line)
+
+        self.z_line.sigPositionChanged.connect(self.value_changed)
+
+    def set_range(self, min: int, max: int):
+        self.z_line.setValue(min)
+        self.setXRange(min, max)
+        self.z_line.setBounds([min, max])
+
+    def set_value(self, value: int):
+        self.z_line.setValue(value)
+
+    def value_changed(self):
+        self.valueChanged.emit(int(self.z_line.value()))
+
+    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent'):
+        if ev.button() == Qt.MouseButton.LeftButton:
+            x = round(self.vb.mapSceneToView(ev.scenePos()).x())
+            self.set_value(x)
+        super().mousePressEvent(ev)
+
+
 class FilterPreviews(GraphicsLayoutWidget):
-    histogram: Optional[PlotItem]
+    histogram: PlotItem
+    z_slider: ZSlider
 
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
@@ -47,8 +82,6 @@ class FilterPreviews(GraphicsLayoutWidget):
             screen_height = max(QGuiApplication.primaryScreen().availableGeometry().height(), 600)
             LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
-
-        self.histogram = None
 
         self.addLabel("Image before")
         self.addLabel("Image after")
@@ -74,7 +107,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_layout.addItem(self.imageview_difference)
         self.nextRow()
 
-        self.init_histogram()
+        self.z_slider = ZSlider()
+        self.addItem(self.z_slider, colspan=3)
+        self.nextRow()
+
+        self.histogram = self.init_histogram()
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
@@ -97,16 +134,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_difference.clear()
         self.image_diff_overlay.clear()
 
-    def init_histogram(self):
-        self.histogram = self.addPlot(row=histogram_coords.row,
-                                      col=histogram_coords.col,
-                                      labels=histogram_axes_labels,
-                                      lockAspect=True,
-                                      colspan=3)
-        self.addLabel("Pixel values", row=label_coords.row, col=label_coords.col)
+    def init_histogram(self) -> PlotItem:
+        histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
 
-        self.legend = self.histogram.addLegend()
-        self.legend.setOffset((0, 1))
+        legend = histogram.addLegend()
+        legend.setOffset((0, 1))
+
+        return histogram
 
     def update_histogram_data(self):
         # Plot any histogram that has data, and add a legend if both exist
@@ -114,17 +148,15 @@ class FilterPreviews(GraphicsLayoutWidget):
         after_data = self.imageview_after.image_item.getHistogram()
         if _data_valid_for_histogram(before_data):
             before_plot = self.histogram.plot(*before_data, pen=before_pen, clear=True)
-            self.legend.addItem(before_plot, "Before")
+            self.histogram_legend.addItem(before_plot, "Before")
 
         if _data_valid_for_histogram(after_data):
             after_plot = self.histogram.plot(*after_data, pen=after_pen)
-            self.legend.addItem(after_plot, "After")
+            self.histogram_legend.addItem(after_plot, "After")
 
     @property
-    def histogram_legend(self) -> Optional[LegendItem]:
-        if self.histogram and self.histogram.legend:
-            return self.histogram.legend
-        return None
+    def histogram_legend(self) -> LegendItem:
+        return self.histogram.legend
 
     def link_all_views(self):
         self.imageview_before.link_sibling_axis()
