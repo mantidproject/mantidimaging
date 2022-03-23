@@ -169,10 +169,18 @@ def image_save(images: ImageStack,
 
 def nexus_save(dataset: StrictDataset, path: str):
     try:
-        with h5py.File(path, "w"):
-            pass
+        with h5py.File(path, "w") as nexus_file:
+            entry = nexus_file.create_group("entry1")
+            _set_nx_class(entry, "NXentry")
+
+            tomo_entry = entry.create_group("tomo_entry")
+            _set_nx_class(tomo_entry, "NXsubentry")
     except OSError:
         pass
+
+
+def _set_nx_class(group: h5py.Group, class_name: str):
+    group.attrs["NX_class"] = np.string_(class_name)
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
