@@ -5,6 +5,7 @@ import os
 from logging import getLogger
 from typing import List, Union, Optional, Dict, Callable
 
+import h5py
 import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
@@ -167,7 +168,11 @@ def image_save(images: ImageStack,
 
 
 def nexus_save(dataset: StrictDataset, path: str):
-    pass
+    try:
+        with h5py.File(path, "w"):
+            pass
+    except OSError:
+        pass
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
