@@ -3,10 +3,10 @@
 import uuid
 from typing import Optional, List
 
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog
 
 from mantidimaging.core.data.dataset import StrictDataset
-from mantidimaging.gui.utility import select_directory, compile_ui
+from mantidimaging.gui.utility import compile_ui
 
 
 class NexusSaveDialog(QDialog):
@@ -17,7 +17,7 @@ class NexusSaveDialog(QDialog):
         super().__init__(parent)
         compile_ui('gui/ui/nexus_save_dialog.ui', self)
 
-        self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
+        self.browseButton.clicked.connect(self._set_save_path)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).clicked.connect(self.save)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(False)
         self.savePath.textChanged.connect(self.enable_save)
@@ -43,3 +43,7 @@ class NexusSaveDialog(QDialog):
 
     def enable_save(self):
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path() != "")
+
+    def _set_save_path(self):
+        path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", "NeXus (*.nxs)")[0]
+        self.savePath.setText(path)
