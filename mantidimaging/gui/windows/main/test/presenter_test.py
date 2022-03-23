@@ -544,7 +544,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
-        dataset_list = self.presenter.dataset_list
+        dataset_list = self.presenter.strict_dataset_list
         assert len(dataset_list) == 2
 
     def test_add_child_item_to_tree_view(self):

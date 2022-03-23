@@ -315,7 +315,7 @@ class MainWindowView(BaseMainWindowView):
         self.image_save_dialog.show()
 
     def show_nexus_save_dialog(self):
-        self.nexus_save_dialog = NexusSaveDialog(self, self.dataset_list)
+        self.nexus_save_dialog = NexusSaveDialog(self, self.strict_dataset_list)
         self.nexus_save_dialog.show()
 
     def show_recon_window(self):
@@ -341,8 +341,8 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.stack_visualiser_list
 
     @property
-    def dataset_list(self):
-        return self.presenter.dataset_list
+    def strict_dataset_list(self):
+        return self.presenter.strict_dataset_list
 
     @property
     def stack_names(self):

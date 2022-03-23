@@ -87,9 +87,11 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID):
-        dataset = self.datasets[dataset_id]
-        saver.nexus_save(dataset)
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str):
+        if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
+            saver.nexus_save(self.datasets[dataset_id], path)
+        else:
+            raise RuntimeError()
 
     def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray) -> None:
         """

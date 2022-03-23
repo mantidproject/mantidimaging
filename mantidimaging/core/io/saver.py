@@ -8,7 +8,7 @@ from typing import List, Union, Optional, Dict, Callable
 import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from ..data.dataset import StrictDataset, MixedDataset
+from ..data.dataset import StrictDataset
 from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
@@ -166,7 +166,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: Union[StrictDataset, MixedDataset]):
+def nexus_save(dataset: StrictDataset, path: str):
     pass
 
 
