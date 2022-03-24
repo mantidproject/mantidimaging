@@ -167,7 +167,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: StrictDataset, path: str):
+def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     try:
         with h5py.File(path, "w") as nexus_file:
             # Top-level group
@@ -197,6 +197,7 @@ def nexus_save(dataset: StrictDataset, path: str):
             # sample field
             sample_group = tomo_entry.create_group("sample")
             _set_nx_class(sample_group, "NXsample")
+            sample_group.create_dataset("name", data=np.string_(sample_name))
 
             # rotation angle
             rotation_angle = sample_group.create_dataset("rotation_angle",
