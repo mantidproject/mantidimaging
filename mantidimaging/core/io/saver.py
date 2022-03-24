@@ -175,6 +175,9 @@ def nexus_save(dataset: StrictDataset, path: str):
 
             tomo_entry = entry.create_group("tomo_entry")
             _set_nx_class(tomo_entry, "NXsubentry")
+
+            tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+
     except OSError:
         pass
 
