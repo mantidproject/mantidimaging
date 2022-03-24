@@ -21,6 +21,7 @@ class NexusSaveDialog(QDialog):
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).clicked.connect(self.save)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(False)
         self.savePath.textChanged.connect(self.enable_save)
+        self.sampleNameLineEdit.textChanged.connect(self.enable_save)
 
         if dataset_list:
             self.dataset_uuids, dataset_names = zip(*dataset_list)
@@ -38,11 +39,12 @@ class NexusSaveDialog(QDialog):
         """
         return str(self.savePath.text())
 
-    def overwrite(self) -> bool:
-        return self.overwriteAll.isChecked()
+    def sample_name(self) -> str:
+        return str(self.sampleNameLineEdit.text())
 
     def enable_save(self):
-        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path() != "")
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path() != ""
+                                                                               and self.sample_name() != "")
 
     def _set_save_path(self):
         path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", "NeXus (*.nxs)")[0]
