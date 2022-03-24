@@ -139,7 +139,7 @@ class StrictDataset(BaseDataset):
     def image_keys(self) -> List[int]:
         image_keys = []
         if self.dark_before is not None:
-            image_keys += _image_key_list(2, self.dark_after.data.shape[0])
+            image_keys += _image_key_list(2, self.dark_before.data.shape[0])
         if self.flat_before is not None:
             image_keys += _image_key_list(1, self.flat_before.data.shape[0])
         if self.sample is not None:
