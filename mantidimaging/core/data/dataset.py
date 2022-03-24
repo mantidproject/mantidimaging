@@ -127,6 +127,11 @@ class StrictDataset(BaseDataset):
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
 
     @property
+    def nexus_arrays(self) -> List[np.ndarray]:
+        image_stacks = [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]
+        return [images.data for images in image_stacks if images is not None]
+
+    @property
     def proj180deg(self):
         if self.sample is not None:
             return self.sample.proj180deg
