@@ -198,12 +198,20 @@ def nexus_save(dataset: StrictDataset, path: str):
             sample_group = tomo_entry.create_group("sample")
             _set_nx_class(sample_group, "NXsample")
 
+            # rotation angle
             rotation_angle = sample_group.create_dataset("rotation_angle",
                                                          data=dataset.sample.projection_angles().value)
             rotation_angle.attrs["units"] = "rad"
 
-    except OSError as e:
-        print(e)
+            # data field
+            data = tomo_entry.create_group("data")
+            _set_nx_class(data, "NXdata")
+            data["data"] = detector["data"]
+            data["rotation_angle"] = rotation_angle
+            data["image_key"] = detector["image_key"]
+
+    except OSError:
+        pass
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
