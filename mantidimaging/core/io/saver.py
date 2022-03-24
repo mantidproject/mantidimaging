@@ -170,13 +170,23 @@ def image_save(images: ImageStack,
 def nexus_save(dataset: StrictDataset, path: str):
     try:
         with h5py.File(path, "w") as nexus_file:
+            # Top-level group
             entry = nexus_file.create_group("entry1")
             _set_nx_class(entry, "NXentry")
 
+            # Tomo entry
             tomo_entry = entry.create_group("tomo_entry")
             _set_nx_class(tomo_entry, "NXsubentry")
 
+            # definition field
             tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+
+            # instrument field
+            instrument_group = tomo_entry.create_group("instrument")
+            _set_nx_class(instrument_group, "NXinstrument")
+
+            combined_data = np.concatenate(dataset.nexus_arrays)
+            instrument_group.create_dataset("data", data=combined_data)
 
     except OSError:
         pass
