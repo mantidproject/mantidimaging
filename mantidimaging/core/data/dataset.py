@@ -14,6 +14,10 @@ def _delete_stack_error_message(images_id: uuid.UUID) -> str:
     return f"Unable to delete stack: ImageStack with ID {images_id} not present in dataset."
 
 
+def _image_key_list(key: int, n_images: int):
+    return [key for _ in range(n_images)]
+
+
 class BaseDataset:
     def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
@@ -130,6 +134,21 @@ class StrictDataset(BaseDataset):
     def nexus_arrays(self) -> List[np.ndarray]:
         image_stacks = [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]
         return [images.data for images in image_stacks if images is not None]
+
+    @property
+    def image_keys(self) -> List[int]:
+        image_keys = []
+        if self.dark_before is not None:
+            image_keys += _image_key_list(2, self.dark_after.data.shape[0])
+        if self.flat_before is not None:
+            image_keys += _image_key_list(1, self.flat_before.data.shape[0])
+        if self.sample is not None:
+            image_keys += _image_key_list(0, self.sample.data.shape[0])
+        if self.flat_after is not None:
+            image_keys += _image_key_list(1, self.flat_after.data.shape[0])
+        if self.dark_after is not None:
+            image_keys += _image_key_list(2, self.dark_after.data.shape[0])
+        return image_keys
 
     @property
     def proj180deg(self):
