@@ -185,9 +185,20 @@ def nexus_save(dataset: StrictDataset, path: str):
             instrument_group = tomo_entry.create_group("instrument")
             _set_nx_class(instrument_group, "NXinstrument")
 
+            # instrument/detector field
+            detector = instrument_group.create_group("detector")
+            _set_nx_class(detector, "NXdetector")
+
+            # instrument data
             combined_data = np.concatenate(dataset.nexus_arrays)
-            instrument_group.create_dataset("detector/data", data=combined_data)
-            instrument_group.create_dataset("detector/image_key", data=dataset.image_keys)
+            detector.create_dataset("data", data=combined_data)
+            detector.create_dataset("image_key", data=dataset.image_keys)
+
+            # sample field
+            sample_group = tomo_entry.create_group("sample")
+            _set_nx_class(sample_group, "NXsample")
+
+            sample_group.create_dataset("rotation_angle", data=dataset.sample.projection_angles())
 
     except OSError:
         pass
