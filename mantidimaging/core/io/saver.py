@@ -198,7 +198,8 @@ def nexus_save(dataset: StrictDataset, path: str):
             sample_group = tomo_entry.create_group("sample")
             _set_nx_class(sample_group, "NXsample")
 
-            rotation_angle = sample_group.create_dataset("rotation_angle", data=dataset.sample.projection_angles())
+            rotation_angle = sample_group.create_dataset("rotation_angle",
+                                                         data=dataset.sample.projection_angles().value)
             rotation_angle.attrs["units"] = "rad"
 
     except OSError as e:
