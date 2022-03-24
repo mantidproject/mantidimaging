@@ -3,7 +3,7 @@
 
 import os
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Optional
 import unittest
 from unittest import mock
 
@@ -17,6 +17,7 @@ from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.load_dialog.presenter import Notification
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 versions._use_test_values()
 
@@ -76,17 +77,6 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.welcome_window.view.close()
 
     @classmethod
-    def _wait_until(cls, test_func: Callable[[], bool], delay=0.1, max_retry=100):
-        """
-        Repeat test_func every delay seconds until is becomes true. Or if max_retry is reached return false.
-        """
-        for _ in range(max_retry):
-            if test_func():
-                return True
-            QTest.qWait(int(delay * 1000))
-        raise RuntimeError("_wait_until reach max retries")
-
-    @classmethod
     def _wait_for_widget_visible(cls, widget_type, delay=0.1, max_retry=100):
         for _ in range(max_retry):
             for widget in cls.app.topLevelWidgets():
@@ -109,7 +99,7 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.load_dialogue.presenter.notify(Notification.UPDATE_ALL_FIELDS)
         QTest.qWait(SHOW_DELAY)
         self.main_window.load_dialogue.accept()
-        self._wait_until(test_func, max_retry=600)
+        wait_until(test_func, max_retry=600)
 
     def _open_operations(self):
         self.main_window.actionFilters.trigger()
