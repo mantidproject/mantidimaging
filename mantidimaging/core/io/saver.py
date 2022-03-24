@@ -186,7 +186,8 @@ def nexus_save(dataset: StrictDataset, path: str):
             _set_nx_class(instrument_group, "NXinstrument")
 
             combined_data = np.concatenate(dataset.nexus_arrays)
-            instrument_group.create_dataset("data", data=combined_data)
+            instrument_group.create_dataset("detector/data", data=combined_data)
+            instrument_group.create_dataset("detector/image_key", data=dataset.image_keys)
 
     except OSError:
         pass
