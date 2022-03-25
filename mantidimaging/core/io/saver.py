@@ -168,6 +168,13 @@ def image_save(images: ImageStack,
 
 
 def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
+    """
+    Uses information from a StrictDataset to create a NeXus file.
+    :param dataset: The dataset to save as a NeXus file.
+    :param path: The NeXus file path.
+    :param sample_name: The sample name.
+    :return:
+    """
     try:
         with h5py.File(path, "w") as nexus_file:
             # Top-level group
