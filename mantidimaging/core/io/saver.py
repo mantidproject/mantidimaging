@@ -207,8 +207,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
             sample_group.create_dataset("name", data=np.string_(sample_name))
 
             # rotation angle
-            rotation_angle = sample_group.create_dataset("rotation_angle",
-                                                         data=dataset.sample.projection_angles().value)
+            rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.rotation_angles))
             rotation_angle.attrs["units"] = "rad"
 
             # data field
