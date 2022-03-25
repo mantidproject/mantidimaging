@@ -131,14 +131,16 @@ class StrictDataset(BaseDataset):
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
 
     @property
+    def _nexus_stack_order(self) -> List[ImageStack]:
+        return list(filter(None, [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]))
+
+    @property
     def nexus_arrays(self) -> List[np.ndarray]:
-        image_stacks = [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]
-        return [images.data for images in image_stacks if images is not None]
+        return [image_stack.data for image_stack in self._nexus_stack_order]
 
     @property
     def rotation_angles(self) -> List[np.ndarray]:
-        image_stacks = [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]
-        return [image_stack.projection_angles().value for image_stack in image_stacks if image_stack is not None]
+        return [image_stack.projection_angles().value for image_stack in self._nexus_stack_order]
 
     @property
     def image_keys(self) -> List[int]:
