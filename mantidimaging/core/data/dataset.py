@@ -136,6 +136,11 @@ class StrictDataset(BaseDataset):
         return [images.data for images in image_stacks if images is not None]
 
     @property
+    def rotation_angles(self) -> List[np.ndarray]:
+        image_stacks = [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]
+        return [image_stack.projection_angles().value for image_stack in image_stacks if image_stack is not None]
+
+    @property
     def image_keys(self) -> List[int]:
         image_keys = []
         if self.dark_before is not None:
