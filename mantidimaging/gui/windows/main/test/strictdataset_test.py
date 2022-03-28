@@ -151,3 +151,9 @@ class StrictDatasetTest(unittest.TestCase):
             self.strict_dataset.dark_before, self.strict_dataset.flat_before, self.strict_dataset.sample,
             self.strict_dataset.flat_after, self.strict_dataset.dark_after
         ])
+
+    def test_nexus_arrays(self):
+        self.assertListEqual(self.strict_dataset.nexus_arrays, [
+            self.strict_dataset.dark_before.data, self.strict_dataset.flat_before.data, self.strict_dataset.sample.data,
+            self.strict_dataset.flat_after.data, self.strict_dataset.dark_after.data
+        ])
