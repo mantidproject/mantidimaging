@@ -35,8 +35,6 @@ class Progress(object):
         """
         if not p:
             p = Progress(*args, **kwargs)
-            from .console_progress_bar import ConsoleProgressBar
-            p.add_progress_handler(ConsoleProgressBar())
 
         if p and num_steps:
             p.set_estimated_steps(num_steps)
