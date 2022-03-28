@@ -212,3 +212,8 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.dark_after = None
 
         self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1])
+
+    def test_no_sample_image_keys(self):
+        self.strict_dataset.sample = None
+        with self.assertRaises(RuntimeError):
+            self.strict_dataset.image_keys
