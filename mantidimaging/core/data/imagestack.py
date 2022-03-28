@@ -19,7 +19,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 if TYPE_CHECKING:
-    from multiprocessing.shared_memory import SharedMemory
+    from mantidimaging.core.parallel.utility import MISharedMemory
 
 
 class ImageStack:
@@ -44,7 +44,7 @@ class ImageStack:
 
         if isinstance(data, pu.SharedArray):
             self._data = data.array
-            self._shared_memory = data.shared_memory
+            self._shared_memory: Optional['MISharedMemory'] = data.shared_memory
         else:
             self._data = data
             self._shared_memory = None
@@ -255,11 +255,11 @@ class ImageStack:
         self._data = other
 
     @property
-    def shared_memory(self) -> 'SharedMemory':
+    def shared_memory(self) -> Optional['MISharedMemory']:
         return self._shared_memory
 
     @shared_memory.setter
-    def shared_memory(self, memory: 'SharedMemory'):
+    def shared_memory(self, memory: Optional['MISharedMemory']):
         self._shared_memory = memory
 
     @property

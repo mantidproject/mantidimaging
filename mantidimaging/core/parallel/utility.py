@@ -42,7 +42,7 @@ def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) ->
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
     size = full_size_bytes(shape, dtype)
 
     LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
@@ -53,7 +53,7 @@ def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> 'SharedA
     return SharedArray(array, mem)
 
 
-def _read_array_from_shared_memory(shape, dtype, mem: SharedMemory) -> np.ndarray:
+def _read_array_from_shared_memory(shape: Tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory) -> np.ndarray:
     return np.ndarray(shape, dtype=dtype, buffer=mem.buf)
 
 
@@ -111,7 +111,7 @@ class MISharedMemory:
     Wrapper class for a SharedMemory object to ensure the shared memory is freed when it is
     no longer in use
     """
-    def __init__(self, shared_memory):
+    def __init__(self, shared_memory: SharedMemory):
         self._shared_memory = shared_memory
 
     def __del__(self):
@@ -124,6 +124,6 @@ class MISharedMemory:
 
 
 class SharedArray:
-    def __init__(self, array, shared_memory):
+    def __init__(self, array: np.ndarray, shared_memory: SharedMemory):
         self.array = array
         self.shared_memory = MISharedMemory(shared_memory)
