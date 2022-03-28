@@ -157,3 +157,22 @@ class StrictDatasetTest(unittest.TestCase):
             self.strict_dataset.dark_before.data, self.strict_dataset.flat_before.data, self.strict_dataset.sample.data,
             self.strict_dataset.flat_after.data, self.strict_dataset.dark_after.data
         ])
+
+    @unittest.SkipTest
+    def test_rotation_angles(self):
+        self.assertListEqual(self.strict_dataset.rotation_angles, [
+            self.strict_dataset.dark_before.projection_angles().value,
+            self.strict_dataset.flat_before.projection_angles().value,
+            self.strict_dataset.sample.projection_angles().value,
+            self.strict_dataset.flat_after.projection_angles().value,
+            self.strict_dataset.dark_after.projection_angles().value
+        ])
+
+    def test_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1, 2, 2])
