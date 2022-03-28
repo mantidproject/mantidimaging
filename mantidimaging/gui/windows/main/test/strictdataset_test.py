@@ -176,3 +176,39 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.dark_after = generate_images((2, 5, 5))
 
         self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_dark_before_image_keys(self):
+        self.strict_dataset.dark_before = None
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [1, 1, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_flat_before_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = None
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_flat_after_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = None
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 2, 2])
+
+    def test_missing_dark_after_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = None
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1])
