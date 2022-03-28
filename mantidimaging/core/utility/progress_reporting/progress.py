@@ -33,10 +33,10 @@ class Progress(object):
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.
         """
-        if not p:
+        if p is None:
             p = Progress(*args, **kwargs)
 
-        if p and num_steps:
+        if num_steps:
             p.set_estimated_steps(num_steps)
 
         return p
@@ -190,9 +190,8 @@ class Progress(object):
             self.progress_history.append(step_details)
 
         # process progress callbacks
-        if len(self.progress_handlers) != 0:
-            for cb in self.progress_handlers:
-                cb.progress_update()
+        for cb in self.progress_handlers:
+            cb.progress_update()
 
         # Force cancellation on progress update
         if self.should_cancel and not force_continue:
