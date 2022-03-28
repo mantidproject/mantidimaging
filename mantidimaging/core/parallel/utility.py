@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.core.utility.size_calculator import full_size_KB
+from mantidimaging.core.utility.size_calculator import full_size_KB, full_size_bytes
 from mantidimaging.core.parallel import manager as pm
 
 LOG = getLogger(__name__)
@@ -43,28 +43,9 @@ def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) ->
 
 
 def _create_shared_array(shape, dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
-    if dtype == np.float32 or dtype == 'float32':
-        dtype = np.float32
-    elif dtype == np.float64 or dtype == 'float64':
-        dtype = np.float64
-    elif dtype == np.uint8 or dtype == 'uint8':
-        dtype = np.uint8
-    elif dtype == np.uint16 or dtype == 'uint16':
-        dtype = np.uint16
-    elif dtype == np.int32 or dtype == 'int32':
-        dtype = np.int32
-    elif dtype == np.int64 or dtype == 'int64':
-        dtype = np.int64
-    else:
-        raise ValueError(f"Unrecognised dtype '{dtype}' specified for creating shared array")
+    size = full_size_bytes(shape, dtype)
 
-    length = 1
-    for axis_length in shape:
-        length *= axis_length
-
-    size = dtype().itemsize * length
-
-    LOG.info(f'Requested shared array with shape={shape}, length={length}, size={size}, dtype={dtype}')
+    LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
 
     mem = pm.memory_manager.SharedMemory(size=size)
     array = _read_array_from_shared_memory(shape, dtype, mem)
@@ -125,7 +106,24 @@ def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int
     progress.mark_complete()
 
 
+class MISharedMemory:
+    """
+    Wrapper class for a SharedMemory object to ensure the shared memory is freed when it is
+    no longer in use
+    """
+    def __init__(self, shared_memory):
+        self._shared_memory = shared_memory
+
+    def __del__(self):
+        try:
+            self._shared_memory.close()
+            self._shared_memory.unlink()
+        except FileNotFoundError:
+            # Do nothing, memory has already been freed
+            pass
+
+
 class SharedArray:
     def __init__(self, array, shared_memory):
         self.array = array
-        self.shared_memory = shared_memory
+        self.shared_memory = MISharedMemory(shared_memory)
