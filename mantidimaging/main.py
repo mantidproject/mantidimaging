@@ -55,9 +55,11 @@ def main():
     h.initialise_logging(logging.getLevelName(args.log_level))
 
     from mantidimaging import gui
-    pm.start_memory_manager()
-    gui.execute()
-    pm.shutdown_memory_manager()
+    try:
+        pm.start_memory_manager()
+        gui.execute()
+    finally:
+        pm.shutdown_memory_manager()
 
 
 if __name__ == "__main__":

@@ -3,11 +3,11 @@
 
 from logging import getLogger
 
-# Percent memory of the system total to AVOID being allocated by Mantid Imaging shared arrays
-# as taking up nearly, if not exactly, 100% not only makes it more likely to get hit by
-# SIGBUS by the OS, but even if the allocation is permitted it could slow the system down
-# to the point of being unusable
-MEMORY_CAP_PERCENTAGE = 0.025
+# Percent memory of the system total to AVOID being allocated by Mantid Imaging shared arrays.
+# Our Linux installation steps request 90% of RAM for shared memory and taking up nearly all of that makes it more
+# likely to get hit by SIGBUS by the OS. Even if the allocation is permitted, it could slow the
+# system down to the point of being unusable
+MEMORY_CAP_PERCENTAGE = 0.125
 
 
 def system_free_memory():
