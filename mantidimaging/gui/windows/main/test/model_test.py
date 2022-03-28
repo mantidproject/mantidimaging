@@ -274,7 +274,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_no_image_with_matching_id(self):
         self.assertIsNone(self.model.get_images_by_uuid(uuid.uuid4()))
 
-    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.image_save")
     def test_save_image(self, save_mock: mock.MagicMock):
         images_id, images_mock = self._add_mock_image()
         images_mock.data = generate_images().data
@@ -300,7 +300,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual(images_mock.filenames, filenames)  # type: ignore
         assert result
 
-    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.image_save")
     def test_image_save_when_image_not_found(self, save_mock: mock.MagicMock):
         with self.assertRaises(RuntimeError):
             self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
