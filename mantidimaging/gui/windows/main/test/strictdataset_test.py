@@ -5,7 +5,7 @@ import unittest
 
 from numpy import array_equal
 
-from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
+from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -13,6 +13,10 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 def test_delete_stack_error_message():
     assert _delete_stack_error_message("stack-id") == "Unable to delete stack: ImageStack with ID stack-id not " \
                                                       "present in dataset."
+
+
+def test_image_key_list():
+    assert _image_key_list(2, 5) == [2, 2, 2, 2, 2]
 
 
 class StrictDatasetTest(unittest.TestCase):
