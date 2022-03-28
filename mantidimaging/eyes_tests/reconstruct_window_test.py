@@ -1,11 +1,13 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+
 import numpy as np
 from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data.dataset import MixedDataset
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class ReconstructionWindowTest(BaseEyesTest):
@@ -25,6 +27,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         self._load_data_set()
 
         self.imaging.show_recon_window()
+        wait_until(lambda: len(self.imaging.recon.presenter.async_tracker) == 0)
 
         self.check_target(widget=self.imaging.recon)
 

@@ -14,6 +14,7 @@ from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresente
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 OP_LIST = [
     ("Arithmetic", [["Multiply", "2"]]),
@@ -90,7 +91,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window.safeApply.setChecked(False)
         QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        self._wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
+        wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
 
         self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)
@@ -134,7 +135,7 @@ class TestGuiSystemOperations(GuiSystemBase):
             QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
 
             QTest.qWait(SHORT_DELAY)
-            self._wait_until(lambda: self.op_window.presenter.filter_is_running is False)
+            wait_until(lambda: self.op_window.presenter.filter_is_running is False)
             self.main_window.filters.close()
             QTest.qWait(SHOW_DELAY)
 
@@ -143,11 +144,11 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
 
         QTest.mouseClick(self.op_window.previewAutoUpdate, Qt.MouseButton.LeftButton)
-        self._wait_until(lambda: mock_do_update_previews.call_count == 1)
+        wait_until(lambda: mock_do_update_previews.call_count == 1)
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
     def test_clicking_update_now_btn_triggers_preview(self, mock_do_update_previews):
         self.op_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
 
         QTest.mouseClick(self.op_window.updatePreviewButton, Qt.MouseButton.LeftButton)
-        self._wait_until(lambda: mock_do_update_previews.call_count == 1)
+        wait_until(lambda: mock_do_update_previews.call_count == 1)

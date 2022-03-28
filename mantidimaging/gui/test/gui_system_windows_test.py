@@ -4,6 +4,7 @@
 from PyQt5.QtTest import QTest
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemWindows(GuiSystemBase):
@@ -45,7 +46,7 @@ class TestGuiSystemWindows(GuiSystemBase):
         self.assertIsNotNone(self.main_window.recon)
         self.assertTrue(self.main_window.recon.isVisible())
         QTest.qWait(SHOW_DELAY)
-        self._wait_until(lambda: len(self.main_window.recon.presenter.async_tracker) == 0)
+        wait_until(lambda: len(self.main_window.recon.presenter.async_tracker) == 0)
         self.main_window.recon.close()
         QTest.qWait(SHOW_DELAY)
         self._close_image_stacks()

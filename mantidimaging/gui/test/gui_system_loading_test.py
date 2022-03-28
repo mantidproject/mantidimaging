@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QApplication, QDialogButtonBox
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemLoading(GuiSystemBase):
@@ -34,7 +35,7 @@ class TestGuiSystemLoading(GuiSystemBase):
             current_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
             return (current_stacks - initial_stacks) >= 1
 
-        self._wait_until(test_func, max_retry=600)
+        wait_until(test_func, max_retry=600)
 
     @classmethod
     def _click_stack_selector(cls):
@@ -75,7 +76,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
         self.main_window.actionLoad180deg.trigger()
 
-        self._wait_until(lambda: len(self.main_window.presenter.get_active_stack_visualisers()) == 5)
+        wait_until(lambda: len(self.main_window.presenter.get_active_stack_visualisers()) == 5)
 
         stacks_after = self.main_window.presenter.get_active_stack_visualisers()
         self.assertEqual(len(stacks_after), 5)
@@ -95,6 +96,6 @@ class TestGuiSystemLoading(GuiSystemBase):
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()
-            self._wait_until(lambda: mock_save.call_count == 1)
+            wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
