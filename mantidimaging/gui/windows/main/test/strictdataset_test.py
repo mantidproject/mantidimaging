@@ -145,3 +145,9 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.recons = ReconList([generate_images() for _ in range(2)])
         self.strict_dataset.delete_recons()
         self.assertListEqual(self.strict_dataset.recons.stacks, [])
+
+    def test_nexus_stack_order(self):
+        self.assertListEqual(self.strict_dataset._nexus_stack_order, [
+            self.strict_dataset.dark_before, self.strict_dataset.flat_before, self.strict_dataset.sample,
+            self.strict_dataset.flat_after, self.strict_dataset.dark_after
+        ])
