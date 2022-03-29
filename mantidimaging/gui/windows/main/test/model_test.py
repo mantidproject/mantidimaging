@@ -469,3 +469,13 @@ class MainWindowModelTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.model.do_nexus_saving(md.id, "path", "sample-name")
+
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
+    def test_do_nexus_save_success(self, nexus_save):
+        sd = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(sd)
+        path = "path"
+        sample_name = "sample-name"
+
+        self.model.do_nexus_saving(sd.id, path, sample_name)
+        nexus_save.assert_called_once_with(sd, path, sample_name)
