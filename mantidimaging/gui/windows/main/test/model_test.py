@@ -458,3 +458,14 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(sd)
 
         self.assertIsNone(self.model.get_existing_180_id(sd.id))
+
+    def test_do_nexus_saving_fails_from_no_dataset(self):
+        with self.assertRaises(RuntimeError):
+            self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name")
+
+    def test_do_nexus_saving_fails_from_wrong_dataset(self):
+        md = MixedDataset()
+        self.model.add_dataset_to_model(md)
+
+        with self.assertRaises(RuntimeError):
+            self.model.do_nexus_saving(md.id, "path", "sample-name")
