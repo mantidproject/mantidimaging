@@ -91,7 +91,7 @@ class MainWindowModel(object):
         if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
             saver.nexus_save(self.datasets[dataset_id], path, sample_name)
         else:
-            raise RuntimeError()
+            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
     def set_image_data_by_uuid(self, images_id: uuid.UUID, new_data: np.ndarray) -> None:
         """
