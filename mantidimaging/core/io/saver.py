@@ -173,7 +173,6 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     :param dataset: The dataset to save as a NeXus file.
     :param path: The NeXus file path.
     :param sample_name: The sample name.
-    :return:
     """
     try:
         with h5py.File(path, "w") as nexus_file:
