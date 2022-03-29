@@ -23,11 +23,15 @@ class NexusSaveDialog(QDialog):
         self.savePath.textChanged.connect(self.enable_save)
         self.sampleNameLineEdit.textChanged.connect(self.enable_save)
 
+        self.dataset_uuids = []
+        self._create_dataset_lists(dataset_list)
+
+        self.selected_dataset = None
+
+    def _create_dataset_lists(self, dataset_list):
         if dataset_list:
             self.dataset_uuids, dataset_names = zip(*dataset_list)
             self.datasetNames.addItems(dataset_names)
-
-        self.selected_dataset = None
 
     def save(self):
         self.selected_dataset = self.dataset_uuids[self.datasetNames.currentIndex()]
