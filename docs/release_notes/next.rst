@@ -11,6 +11,7 @@ New Features
 
 Fixes
 -----
+- #1381 : Don't use console progress bar in GUI application
 
 Developer Changes
 -----------------
