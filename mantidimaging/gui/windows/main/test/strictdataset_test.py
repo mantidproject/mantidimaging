@@ -3,6 +3,7 @@
 
 import unittest
 
+import numpy as np
 from numpy import array_equal
 
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
@@ -158,9 +159,8 @@ class StrictDatasetTest(unittest.TestCase):
             self.strict_dataset.flat_after.data, self.strict_dataset.dark_after.data
         ])
 
-    @unittest.SkipTest
     def test_rotation_angles(self):
-        self.assertListEqual(self.strict_dataset.rotation_angles, [
+        assert np.array_equal(self.strict_dataset.rotation_angles, [
             self.strict_dataset.dark_before.projection_angles().value,
             self.strict_dataset.flat_before.projection_angles().value,
             self.strict_dataset.sample.projection_angles().value,
