@@ -66,3 +66,10 @@ class NexusSaveDialogTest(unittest.TestCase):
 
         self.assertEqual(self.nexus_save_dialog.dataset_uuids, (dataset_id, ))
         self.nexus_save_dialog.datasetNames.addItems.assert_called_once_with((dataset_name, ))
+
+    @mock.patch("mantidimaging.gui.windows.main.nexus_save_dialog.QFileDialog.getSaveFileName")
+    def test_set_save_path(self, get_save_file_name_mock):
+        save_path = "save_path"
+        get_save_file_name_mock.return_value = (save_path, )
+        self.nexus_save_dialog._set_save_path()
+        self.assertEqual(save_path, self.nexus_save_dialog.savePath.text())
