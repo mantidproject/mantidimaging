@@ -148,9 +148,9 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
     def setup_shortcuts(self):
-        self.actionLoadDataset.triggered.connect(self.show_load_image_dialog)
+        self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
-        self.actionLoadNeXusFile.triggered.connect(self.show_load_nexus_dialog)
+        self.actionLoadNeXusFile.triggered.connect(self.show_nexus_load_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
@@ -206,11 +206,11 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_window = WelcomeScreenPresenter(self)
         self.welcome_window.show()
 
-    def show_load_image_dialog(self):
+    def show_image_load_dialog(self):
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
 
-    def show_load_nexus_dialog(self):
+    def show_nexus_load_dialog(self):
         self.nexus_load_dialog = NexusLoadDialog(self)
         self.nexus_load_dialog.show()
 

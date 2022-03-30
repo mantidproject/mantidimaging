@@ -228,7 +228,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
-        self.view.show_load_image_dialog.assert_called_once()
+        self.view.show_image_load_dialog.assert_called_once()
 
     def test_wizard_action_show_operation(self):
         OPERATION_STR = "ROI Normalisation"
