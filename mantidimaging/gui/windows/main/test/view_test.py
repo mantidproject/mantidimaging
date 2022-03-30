@@ -464,3 +464,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.dataset_tree_widget.topLevelItemCount.return_value = 1
         with self.assertRaises(RuntimeError):
             self.view.get_dataset_tree_view_item("bad-dataset-id")
+
+    def test_execute_nexus_save(self):
+        self.view.execute_nexus_save()
+        self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_SAVE)
