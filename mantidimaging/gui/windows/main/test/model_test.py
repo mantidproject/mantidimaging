@@ -303,7 +303,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.set_image_data_by_uuid(prev_images.id, new_images)
         assert_array_equal(ds.sample.data, new_images.data)
-        assert ds.sample.shared_memory == new_images.shared_memory
+        assert ds.sample.shared_array == new_images.shared_array
 
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):

@@ -7,9 +7,10 @@ from functools import partial
 from logging import getLogger
 from multiprocessing.shared_memory import SharedMemory
 from multiprocessing.pool import Pool
-from typing import List, Tuple, Union, TYPE_CHECKING
+from typing import List, Tuple, Union, TYPE_CHECKING, Optional
 
 import numpy as np
+
 if TYPE_CHECKING:
     import numpy.typing as npt
 
@@ -106,24 +107,20 @@ def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int
     progress.mark_complete()
 
 
-class MISharedMemory:
-    """
-    Wrapper class for a SharedMemory object to ensure the shared memory is freed when it is
-    no longer in use
-    """
-    def __init__(self, shared_memory: SharedMemory):
+class SharedArray:
+    def __init__(self, array: np.ndarray, shared_memory: Optional[SharedMemory]):
+        self.array = array
         self._shared_memory = shared_memory
 
     def __del__(self):
-        try:
-            self._shared_memory.close()
-            self._shared_memory.unlink()
-        except FileNotFoundError:
-            # Do nothing, memory has already been freed
-            pass
+        if self.has_shared_memory:
+            try:
+                self._shared_memory.close()
+                self._shared_memory.unlink()
+            except FileNotFoundError:
+                # Do nothing, memory has already been freed
+                pass
 
-
-class SharedArray:
-    def __init__(self, array: np.ndarray, shared_memory: SharedMemory):
-        self.array = array
-        self.shared_memory = MISharedMemory(shared_memory)
+    @property
+    def has_shared_memory(self) -> bool:
+        return self._shared_memory is not None

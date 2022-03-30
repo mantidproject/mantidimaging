@@ -65,10 +65,7 @@ class RebinFilter(BaseFilter):
                               output_shape=empty_resized_data.array.shape[1:])
         ps.shared_list = [sample, empty_resized_data.array]
         ps.execute(partial_func=f, num_operations=sample.shape[0], cores=cores, msg="Applying Rebin", progress=progress)
-        images.data = empty_resized_data.array
-        # We must set the new shared memory location at the end so that the original shared array isn't garbage
-        # collected before we're finished with it
-        images.shared_memory = empty_resized_data.shared_memory
+        images.shared_array = empty_resized_data
 
         return images
 

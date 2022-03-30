@@ -337,7 +337,7 @@ class FiltersWindowPresenter(BasePresenter):
 
             # If the filter function has put the results into shared memory then we must copy them back out
             # so that they will continue to be available when this function ends
-            filtered_image_data = np.copy(subset.data[0]) if subset.shared_memory else subset.data[0]
+            filtered_image_data = np.copy(subset.data[0]) if subset.uses_shared_memory else subset.data[0]
 
             if np.any(filtered_image_data < 0):
                 self._show_preview_negative_values_error(self.model.preview_image_idx)

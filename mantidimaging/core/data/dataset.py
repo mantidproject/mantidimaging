@@ -49,8 +49,7 @@ class BaseDataset:
     def replace(self, images_id: uuid.UUID, image_stack: ImageStack):
         for image in self.all:
             if image.id == images_id:
-                image.data = image_stack.data
-                image.shared_memory = image_stack.shared_memory
+                image.shared_array = image_stack.shared_array
                 return
         raise KeyError(f"Unable to replace: ImageStack with ID {images_id} not present in dataset.")
 

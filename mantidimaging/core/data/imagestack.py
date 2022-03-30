@@ -6,7 +6,7 @@ import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING
+from typing import List, Optional, Any, Dict, Union, TextIO
 
 import numpy as np
 
@@ -17,9 +17,6 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts,
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
-
-if TYPE_CHECKING:
-    from mantidimaging.core.parallel.utility import MISharedMemory
 
 
 class ImageStack:
@@ -43,11 +40,9 @@ class ImageStack:
         """
 
         if isinstance(data, pu.SharedArray):
-            self._data = data.array
-            self._shared_memory: Optional['MISharedMemory'] = data.shared_memory
+            self._shared_array = data
         else:
-            self._data = data
-            self._shared_memory = None
+            self._shared_array = pu.SharedArray(data, None)
 
         self.indices = indices
         self._id = uuid.uuid4()
@@ -70,9 +65,8 @@ class ImageStack:
             self.name = name
 
         tracker_msg = f"ImageStack {self.name}"
-        leak_tracker.add(data.array if hasattr(data, 'array') else data, msg=tracker_msg)
-        if hasattr(data, 'shared_memory'):
-            leak_tracker.add(data.shared_memory, msg=tracker_msg)
+        leak_tracker.add(self._shared_array.array, msg=tracker_msg)
+        leak_tracker.add(self._shared_array, msg=tracker_msg)
 
     def __eq__(self, other):
         if isinstance(other, ImageStack):
@@ -240,31 +234,35 @@ class ImageStack:
 
     @property
     def projections(self):
-        return self._data if not self._is_sinograms else np.swapaxes(self._data, 0, 1)
+        return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
     def sinograms(self):
-        return self._data if self._is_sinograms else np.swapaxes(self._data, 0, 1)
+        return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
     def data(self) -> np.ndarray:
-        return self._data
+        return self._shared_array.array
 
     @data.setter
     def data(self, other: np.ndarray):
-        self._data = other
+        self._shared_array.array = other
 
     @property
-    def shared_memory(self) -> Optional['MISharedMemory']:
-        return self._shared_memory
+    def shared_array(self) -> pu.SharedArray:
+        return self._shared_array
 
-    @shared_memory.setter
-    def shared_memory(self, memory: Optional['MISharedMemory']):
-        self._shared_memory = memory
+    @shared_array.setter
+    def shared_array(self, shared_array: pu.SharedArray):
+        self._shared_array = shared_array
+
+    @property
+    def uses_shared_memory(self) -> bool:
+        return self._shared_array.has_shared_memory
 
     @property
     def dtype(self):
-        return self._data.dtype
+        return self.data.dtype
 
     @staticmethod
     def create_empty_image_stack(shape, dtype, metadata) -> 'ImageStack':

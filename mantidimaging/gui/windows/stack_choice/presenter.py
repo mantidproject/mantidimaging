@@ -69,8 +69,7 @@ class StackChoicePresenter(StackChoicePresenterMixin):
             self.operations_presenter.original_images_stack = None
 
     def do_reapply_original_data(self):
-        self.new_stack.data = self.original_stack.data
-        self.new_stack.shared_memory = self.original_stack.shared_memory
+        self.new_stack.shared_array = self.original_stack.shared_array
         self.new_stack.metadata = self.original_stack.metadata
         self._clean_up_original_images_stack()
         self.view.choice_made = True

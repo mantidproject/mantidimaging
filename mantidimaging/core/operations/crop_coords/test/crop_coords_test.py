@@ -26,14 +26,13 @@ class CropCoordsTest(unittest.TestCase):
         roi = SensibleROI.from_list([1, 1, 5, 5])
         images = th.generate_images()
         # store references here so that they don't get freed inside the filter execute
-        sample_mem = images.shared_memory  # noqa: F841
-        sample = images.data
+        sample = images.shared_array
         result = CropCoordinatesFilter.filter_func(images, roi)
         expected_shape = (10, 4, 4)
 
         npt.assert_equal(result.data.shape, expected_shape)
         # check that the data has been modified
-        th.assert_not_equals(result.data, sample)
+        th.assert_not_equals(result.data, sample.array)
 
     def test_execute_wrapper_return_is_runnable(self):
         """
