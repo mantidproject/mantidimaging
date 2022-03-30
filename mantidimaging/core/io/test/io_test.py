@@ -227,7 +227,9 @@ class IOTest(FileOutputtingTestCase):
 
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, sample_name)
+
             self.assertIn("entry1", nexus_file)
+            assert nexus_file["entry1"].attrs["NX_class"].decode("utf-8") == "NXentry"
 
 
 if __name__ == '__main__':
