@@ -468,3 +468,15 @@ class MainWindowViewTest(unittest.TestCase):
     def test_execute_nexus_save(self):
         self.view.execute_nexus_save()
         self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_SAVE)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.ImageSaveDialog")
+    def test_show_image_save_dialog(self, image_save_dialog_mock):
+        self.view.show_image_save_dialog()
+        image_save_dialog_mock.assert_called_once_with(self.view, self.view.stack_list)
+        image_save_dialog_mock.return_value.show.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.NexusSaveDialog")
+    def test_show_nexus_save_dialog(self, nexus_save_dialog_mock):
+        self.view.show_nexus_save_dialog()
+        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.strict_dataset_list)
+        nexus_save_dialog_mock.return_value.show.assert_called_once()
