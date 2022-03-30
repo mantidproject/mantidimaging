@@ -12,16 +12,24 @@ from PyQt5.QtCore import QTimer
 
 
 class AsyncTaskDialogView(BaseDialogView):
+    _presenter: Optional[AsyncTaskDialogPresenter]
+
     def __init__(self, parent: QMainWindow):
         super().__init__(parent, 'gui/ui/async_task_dialog.ui')
 
-        self.presenter = AsyncTaskDialogPresenter(self)
+        self._presenter = AsyncTaskDialogPresenter(self)
 
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
 
         self.show_timer = QTimer(self)
         self.hide()
+
+    @property
+    def presenter(self) -> AsyncTaskDialogPresenter:
+        if self._presenter is None:
+            raise RuntimeError("Presenter accessed after handle_completion")
+        return self._presenter
 
     def handle_completion(self, successful: bool):
         """
@@ -36,8 +44,12 @@ class AsyncTaskDialogView(BaseDialogView):
         else:
             self.infoText.setText("Task failed.")
 
-        self.hide()
+        self.close()
+        self.setParent(None)
+
         self.presenter.progress = None
+        self.presenter.model = None
+        self._presenter = None
 
     def set_progress(self, progress: float, message: str):
         # Set status message
@@ -52,7 +64,8 @@ class AsyncTaskDialogView(BaseDialogView):
         self.show_timer.start()
 
     def show_from_timer(self):
-        if self.presenter.task_is_running:
+        # Might not run until after handle_completion
+        if self._presenter is not None and self.presenter.task_is_running:
             self.show()
 
 
