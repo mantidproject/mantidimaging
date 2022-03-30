@@ -16,6 +16,10 @@ from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
 
+def _decode_nexus_string(nexus_string) -> str:
+    return nexus_string.decode("utf-8")
+
+
 class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -229,7 +233,7 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, sample_name)
 
             self.assertIn("entry1", nexus_file)
-            assert nexus_file["entry1"].attrs["NX_class"].decode("utf-8") == "NXentry"
+            assert _decode_nexus_string(nexus_file["entry1"].attrs["NX_class"]) == "NXentry"
 
 
 if __name__ == '__main__':
