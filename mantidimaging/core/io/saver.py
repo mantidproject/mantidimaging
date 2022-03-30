@@ -175,49 +175,53 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     :param sample_name: The sample name.
     """
     try:
-        with h5py.File(path, "w") as nexus_file:
-            # Top-level group
-            entry = nexus_file.create_group("entry1")
-            _set_nx_class(entry, "NXentry")
-
-            # Tomo entry
-            tomo_entry = entry.create_group("tomo_entry")
-            _set_nx_class(tomo_entry, "NXsubentry")
-
-            # definition field
-            tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
-
-            # instrument field
-            instrument_group = tomo_entry.create_group("instrument")
-            _set_nx_class(instrument_group, "NXinstrument")
-
-            # instrument/detector field
-            detector = instrument_group.create_group("detector")
-            _set_nx_class(detector, "NXdetector")
-
-            # instrument data
-            combined_data = np.concatenate(dataset.nexus_arrays)
-            detector.create_dataset("data", data=combined_data)
-            detector.create_dataset("image_key", data=dataset.image_keys)
-
-            # sample field
-            sample_group = tomo_entry.create_group("sample")
-            _set_nx_class(sample_group, "NXsample")
-            sample_group.create_dataset("name", data=np.string_(sample_name))
-
-            # rotation angle
-            rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.rotation_angles))
-            rotation_angle.attrs["units"] = "rad"
-
-            # data field
-            data = tomo_entry.create_group("data")
-            _set_nx_class(data, "NXdata")
-            data["data"] = detector["data"]
-            data["rotation_angle"] = rotation_angle
-            data["image_key"] = detector["image_key"]
-
+        with h5py.File(path, "w", driver="core") as nexus_file:
+            _nexus_save(nexus_file, dataset, sample_name)
     except OSError:
         pass
+
+
+def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
+
+    # Top-level group
+    entry = nexus_file.create_group("entry1")
+    _set_nx_class(entry, "NXentry")
+
+    # Tomo entry
+    tomo_entry = entry.create_group("tomo_entry")
+    _set_nx_class(tomo_entry, "NXsubentry")
+
+    # definition field
+    tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+
+    # instrument field
+    instrument_group = tomo_entry.create_group("instrument")
+    _set_nx_class(instrument_group, "NXinstrument")
+
+    # instrument/detector field
+    detector = instrument_group.create_group("detector")
+    _set_nx_class(detector, "NXdetector")
+
+    # instrument data
+    combined_data = np.concatenate(dataset.nexus_arrays)
+    detector.create_dataset("data", data=combined_data)
+    detector.create_dataset("image_key", data=dataset.image_keys)
+
+    # sample field
+    sample_group = tomo_entry.create_group("sample")
+    _set_nx_class(sample_group, "NXsample")
+    sample_group.create_dataset("name", data=np.string_(sample_name))
+
+    # rotation angle
+    rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.rotation_angles))
+    rotation_angle.attrs["units"] = "rad"
+
+    # data field
+    data = tomo_entry.create_group("data")
+    _set_nx_class(data, "NXdata")
+    data["data"] = detector["data"]
+    data["rotation_angle"] = rotation_angle
+    data["image_key"] = detector["image_key"]
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
