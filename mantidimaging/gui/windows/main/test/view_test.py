@@ -80,7 +80,7 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.ImageLoadDialog")
     def test_show_load_dialog(self, mock_load: mock.Mock):
-        self.view.show_load_image_dialog()
+        self.view.show_image_load_dialog()
 
         mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()
@@ -327,7 +327,7 @@ class MainWindowViewTest(unittest.TestCase):
     def test_show_nexus_load_dialog_calls_show(self):
         self.view._get_file_name = mock.MagicMock()
         with mock.patch("mantidimaging.gui.windows.main.view.NexusLoadDialog") as nexus_load_dialog:
-            self.view.show_load_nexus_dialog()
+            self.view.show_nexus_load_dialog()
         nexus_load_dialog.assert_called_once()
         nexus_load_dialog.return_value.show.assert_called_once()
 
