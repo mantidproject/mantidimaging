@@ -784,7 +784,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         nexus_save_dialog_mock.sample_name.return_value = sample_name = "sample-name"
         nexus_save_dialog_mock.selected_dataset = dataset_id = "dataset-id"
 
-        self.presenter.save_nexus_file()
+        self.presenter.notify(Notification.NEXUS_SAVE)
         self.model.do_nexus_saving.assert_called_once_with(dataset_id, save_path, sample_name)
 
 
