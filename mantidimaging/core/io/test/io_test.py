@@ -4,10 +4,12 @@
 import os
 import unittest
 
+import h5py
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.helper import initialise_logging
@@ -217,6 +219,15 @@ class IOTest(FileOutputtingTestCase):
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
+
+    def test_nexus_save(self):
+        sd = StrictDataset(th.generate_images())
+        path = "nexus/file/path"
+        sample_name = "sample-name"
+
+        with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, sample_name)
+            self.assertIn("entry1", nexus_file)
 
 
 if __name__ == '__main__':
