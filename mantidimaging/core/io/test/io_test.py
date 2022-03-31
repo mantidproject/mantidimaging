@@ -235,17 +235,17 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, sample_name)
 
-            self.assertIn("entry1", nexus_file)
             assert _decode_nexus_string(nexus_file["entry1"].attrs[NX_CLASS]) == "NXentry"
+            assert _decode_nexus_string(nexus_file["entry1"]["tomo_entry"].attrs[NX_CLASS]) == "NXsubentry"
 
-            self.assertIn("tomo_entry", nexus_file["entry1"])
-            assert _decode_nexus_string(nexus_file["entry1/tomo_entry"].attrs[NX_CLASS]) == "NXsubentry"
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
-            self.assertIn("definition", nexus_file["entry1/tomo_entry"])
-            assert _decode_nexus_string(np.array(nexus_file["entry1/tomo_entry/definition"]).tostring()) == "NXtomo"
+            assert _decode_nexus_string(np.array(tomo_entry["definition"]).tostring()) == "NXtomo"
+            assert _decode_nexus_string(tomo_entry["instrument"].attrs[NX_CLASS]) == "NXinstrument"
 
-            self.assertIn("instrument", nexus_file["entry1/tomo_entry"])
-            assert _decode_nexus_string(nexus_file["entry1/tomo_entry/instrument"].attrs[NX_CLASS]) == "NXinstrument"
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]), sd.sample.data)
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                                   [0 for _ in range(sd.sample.data.shape[0])])
 
 
 if __name__ == '__main__':
