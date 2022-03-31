@@ -16,6 +16,8 @@ from mantidimaging.core.io import saver
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
+NX_CLASS = "NX_class"
+
 
 def _decode_nexus_string(nexus_string) -> str:
     return nexus_string.decode("utf-8")
@@ -234,13 +236,16 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, sample_name)
 
             self.assertIn("entry1", nexus_file)
-            assert _decode_nexus_string(nexus_file["entry1"].attrs["NX_class"]) == "NXentry"
+            assert _decode_nexus_string(nexus_file["entry1"].attrs[NX_CLASS]) == "NXentry"
 
             self.assertIn("tomo_entry", nexus_file["entry1"])
-            assert _decode_nexus_string(nexus_file["entry1/tomo_entry"].attrs["NX_class"]) == "NXsubentry"
+            assert _decode_nexus_string(nexus_file["entry1/tomo_entry"].attrs[NX_CLASS]) == "NXsubentry"
 
-            self.assertIn("definition", nexus_file["entry1"])
-            assert _decode_nexus_string(np.array(nexus_file["entry1/definition"]).tostring()) == "NXtomo"
+            self.assertIn("definition", nexus_file["entry1/tomo_entry"])
+            assert _decode_nexus_string(np.array(nexus_file["entry1/tomo_entry/definition"]).tostring()) == "NXtomo"
+
+            self.assertIn("instrument", nexus_file["entry1/tomo_entry"])
+            assert _decode_nexus_string(nexus_file["entry1/tomo_entry/instrument"].attrs[NX_CLASS]) == "NXinstrument"
 
 
 if __name__ == '__main__':
