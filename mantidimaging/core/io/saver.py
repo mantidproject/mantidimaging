@@ -197,7 +197,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     _set_nx_class(tomo_entry, "NXsubentry")
 
     # definition field
-    tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+    entry.create_dataset("definition", data=np.string_("NXtomo"))
 
     # instrument field
     instrument_group = tomo_entry.create_group("instrument")
