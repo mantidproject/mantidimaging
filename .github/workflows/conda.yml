@@ -17,6 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Needed to get tags so that git describe works during package build
+          fetch-depth: "0"
 
       - name: Get Date
         id: get-date
