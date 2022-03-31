@@ -8,7 +8,6 @@ import warnings
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
-from mantidimaging.core.parallel import manager as pm
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -55,11 +54,7 @@ def main():
     h.initialise_logging(logging.getLevelName(args.log_level))
 
     from mantidimaging import gui
-    try:
-        pm.start_memory_manager()
-        gui.execute()
-    finally:
-        pm.shutdown_memory_manager()
+    gui.execute()
 
 
 if __name__ == "__main__":

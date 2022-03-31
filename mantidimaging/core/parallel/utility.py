@@ -3,13 +3,16 @@
 
 import multiprocessing
 import os
+import uuid
 from functools import partial
 from logging import getLogger
+from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
 from multiprocessing.pool import Pool
 from typing import List, Tuple, Union, TYPE_CHECKING, Optional
 
 import numpy as np
+import psutil
 
 if TYPE_CHECKING:
     import numpy.typing as npt
@@ -48,7 +51,8 @@ def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.flo
 
     LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
 
-    mem = pm.memory_manager.SharedMemory(size=size)
+    name = f'{pm.MEM_PREFIX}_{psutil.Process().pid}_{uuid.uuid4()}'
+    mem = shared_memory.SharedMemory(name=name, create=True, size=size)
     array = _read_array_from_shared_memory(shape, dtype, mem)
 
     return SharedArray(array, mem)
