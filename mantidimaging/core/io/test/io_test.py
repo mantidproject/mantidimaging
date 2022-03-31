@@ -235,6 +235,9 @@ class IOTest(FileOutputtingTestCase):
             self.assertIn("entry1", nexus_file)
             assert _decode_nexus_string(nexus_file["entry1"].attrs["NX_class"]) == "NXentry"
 
+            self.assertIn("tomo_entry", nexus_file["entry1"])
+            assert _decode_nexus_string(nexus_file["entry1/tomo_entry"].attrs["NX_class"]) == "NXsubentry"
+
 
 if __name__ == '__main__':
     unittest.main()
