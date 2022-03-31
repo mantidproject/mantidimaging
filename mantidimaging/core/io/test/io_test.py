@@ -19,8 +19,8 @@ from mantidimaging.test_helpers import FileOutputtingTestCase
 NX_CLASS = "NX_class"
 
 
-def _decode_nexus_string(nexus_string) -> str:
-    return nexus_string.decode("utf-8")
+def _decode_nexus_class(nexus_data) -> str:
+    return nexus_data.attrs[NX_CLASS].decode("utf-8")
 
 
 class IOTest(FileOutputtingTestCase):
@@ -235,18 +235,20 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, sample_name)
 
-            assert _decode_nexus_string(nexus_file["entry1"].attrs[NX_CLASS]) == "NXentry"
-            assert _decode_nexus_string(nexus_file["entry1"]["tomo_entry"].attrs[NX_CLASS]) == "NXsubentry"
+            assert _decode_nexus_class(nexus_file["entry1"]) == "NXentry"
+            assert _decode_nexus_class(nexus_file["entry1"]["tomo_entry"]) == "NXsubentry"
 
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
-            assert _decode_nexus_string(np.array(tomo_entry["definition"]).tostring()) == "NXtomo"
-            assert _decode_nexus_string(tomo_entry["instrument"].attrs[NX_CLASS]) == "NXinstrument"
+            assert np.array(tomo_entry["definition"]).tostring().decode("utf-8") == "NXtomo"
+            assert _decode_nexus_class(tomo_entry["instrument"]) == "NXinstrument"
 
-            assert _decode_nexus_string(tomo_entry["instrument"]["detector"].attrs[NX_CLASS]) == "NXdetector"
+            assert _decode_nexus_class(tomo_entry["instrument"]["detector"]) == "NXdetector"
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]), sd.sample.data)
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
+
+            assert _decode_nexus_class(tomo_entry["sample"])
 
 
 if __name__ == '__main__':
