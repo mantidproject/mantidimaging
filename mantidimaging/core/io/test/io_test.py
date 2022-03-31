@@ -227,7 +227,7 @@ class IOTest(FileOutputtingTestCase):
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
 
-    def test_nexus_save(self):
+    def test_nexus_simple_dataset_save(self):
         sd = StrictDataset(th.generate_images())
         path = "nexus/file/path"
         sample_name = "sample-name"
@@ -235,27 +235,57 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, sample_name)
 
+            # test entry field
             assert _decode_nexus_class(nexus_file["entry1"]) == "NXentry"
             assert _decode_nexus_class(nexus_file["entry1"]["tomo_entry"]) == "NXsubentry"
 
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
+            # test definition field
             assert np.array(tomo_entry["definition"]).tostring().decode("utf-8") == "NXtomo"
+
+            # test instrument field
             assert _decode_nexus_class(tomo_entry["instrument"]) == "NXinstrument"
 
+            # test instrument/detector fields
             assert _decode_nexus_class(tomo_entry["instrument"]["detector"]) == "NXdetector"
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]), sd.sample.data)
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
+            # test instrument/sample fields
             assert _decode_nexus_class(tomo_entry["sample"]) == "NXsample"
             assert np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8") == sample_name
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    sd.sample.projection_angles().value)
 
+            # test links
             self.assertEqual(tomo_entry["data"]["data"], tomo_entry["instrument"]["detector"]["data"])
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
+
+    def test_nexus_complex_dataset_save(self):
+        image_stacks = [th.generate_images() for _ in range(5)]
+        sd = StrictDataset(*image_stacks)
+
+        with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
+
+            # test instrument field
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["data"]),
+                np.concatenate(
+                    [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data, sd.dark_after.data]))
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
+                [0 for _ in range(sd.sample.data.shape[0])] + [1 for _ in range(sd.flat_after.data.shape[0])] +
+                [2 for _ in range(sd.dark_after.data.shape[0])])
+
+            # test instrument/sample fields
+            # npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
+            #                        sd.sample.projection_angles().value)
 
 
 if __name__ == '__main__':
