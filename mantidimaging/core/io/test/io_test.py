@@ -253,6 +253,10 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    sd.sample.projection_angles().value)
 
+            self.assertEqual(tomo_entry["data"]["data"], tomo_entry["instrument"]["detector"]["data"])
+            self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
+            self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
+
 
 if __name__ == '__main__':
     unittest.main()
