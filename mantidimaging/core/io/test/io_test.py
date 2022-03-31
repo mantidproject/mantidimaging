@@ -264,7 +264,8 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
-    def test_nexus_complex_dataset_save(self):
+    @staticmethod
+    def test_nexus_complex_dataset_save():
         image_stacks = [th.generate_images() for _ in range(5)]
         sd = StrictDataset(*image_stacks)
 
@@ -284,8 +285,8 @@ class IOTest(FileOutputtingTestCase):
                 [2 for _ in range(sd.dark_after.data.shape[0])])
 
             # test instrument/sample fields
-            # npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
-            #                        sd.sample.projection_angles().value)
+            npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
+                                   np.concatenate([images.projection_angles().value for images in image_stacks]))
 
 
 if __name__ == '__main__':
