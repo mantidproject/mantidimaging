@@ -5,6 +5,7 @@ import os
 import unittest
 
 import h5py
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -237,6 +238,9 @@ class IOTest(FileOutputtingTestCase):
 
             self.assertIn("tomo_entry", nexus_file["entry1"])
             assert _decode_nexus_string(nexus_file["entry1/tomo_entry"].attrs["NX_class"]) == "NXsubentry"
+
+            self.assertIn("definition", nexus_file["entry1"])
+            assert _decode_nexus_string(np.array(nexus_file["entry1/definition"]).tostring()) == "NXtomo"
 
 
 if __name__ == '__main__':
