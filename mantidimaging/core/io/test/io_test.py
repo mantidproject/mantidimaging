@@ -243,6 +243,7 @@ class IOTest(FileOutputtingTestCase):
             assert _decode_nexus_string(np.array(tomo_entry["definition"]).tostring()) == "NXtomo"
             assert _decode_nexus_string(tomo_entry["instrument"].attrs[NX_CLASS]) == "NXinstrument"
 
+            assert _decode_nexus_string(tomo_entry["instrument"]["detector"].attrs[NX_CLASS]) == "NXdetector"
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]), sd.sample.data)
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
