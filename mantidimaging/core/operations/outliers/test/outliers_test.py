@@ -8,14 +8,12 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QSpinBox, QComboBox, QDoubleSpinBox
 from mantidimaging.test_helpers import start_qapplication
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.outliers import OutliersFilter
 from mantidimaging.core.operations.outliers.outliers import OUTLIERS_BRIGHT
 
 
-@setup_shared_memory_manager
 @start_qapplication
 class OutliersTest(unittest.TestCase):
     """

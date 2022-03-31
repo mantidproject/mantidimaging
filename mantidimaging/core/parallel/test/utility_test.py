@@ -8,7 +8,6 @@ from unittest import mock
 import pytest
 
 from mantidimaging.core.parallel.utility import _create_shared_array, execute_impl, multiprocessing_necessary
-from mantidimaging.test_helpers.start_qapplication import start_shared_memory_manager, shutdown_shared_memory_manager
 
 
 @pytest.mark.parametrize(
@@ -67,10 +66,8 @@ def test_execute_impl_par(mock_pool):
     ['float64', np.float64],
 ])
 def test_create_shared_array(dtype, expected_dtype):
-    start_shared_memory_manager()
     arr = _create_shared_array((10, 10, 10), dtype)
     assert arr.array.dtype == expected_dtype
-    shutdown_shared_memory_manager()
 
 
 if __name__ == "__main__":

@@ -8,7 +8,6 @@ from numpy import array_equal
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
 def test_delete_stack_error_message():
@@ -16,7 +15,6 @@ def test_delete_stack_error_message():
                                                       "present in dataset."
 
 
-@setup_shared_memory_manager
 class StrictDatasetTest(unittest.TestCase):
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]

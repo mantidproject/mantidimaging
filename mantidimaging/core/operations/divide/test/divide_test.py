@@ -7,12 +7,10 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.divide import DivideFilter
 
 
-@setup_shared_memory_manager
 class DivideTest(unittest.TestCase):
     @parameterized.expand([("None", None), ("0", 0.00)])
     def test_divide_with_invalid_value_raises_exception(self, _, value):

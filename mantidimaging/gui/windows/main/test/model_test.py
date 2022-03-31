@@ -15,10 +15,8 @@ from mantidimaging.core.utility.data_containers import LoadingParameters, Projec
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
-@setup_shared_memory_manager
 class MainWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = MainWindowModel()

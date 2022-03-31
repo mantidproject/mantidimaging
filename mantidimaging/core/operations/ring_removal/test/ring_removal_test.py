@@ -5,11 +5,9 @@ import unittest
 from unittest.mock import Mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.ring_removal import RingRemovalFilter
 
 
-@setup_shared_memory_manager
 class RingRemovalTest(unittest.TestCase):
     """
     Test ring removal filter.

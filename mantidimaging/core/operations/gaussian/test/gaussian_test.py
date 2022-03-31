@@ -8,11 +8,9 @@ from unittest import mock
 import numpy as np
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.core.operations.gaussian import GaussianFilter
 
 
-@setup_shared_memory_manager
 class GaussianTest(unittest.TestCase):
     """
     Test gaussian filter.

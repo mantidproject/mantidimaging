@@ -18,7 +18,6 @@ from mantidimaging.gui.windows.load_dialog import MWLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
 def test_generate_recon_item_name():
@@ -34,7 +33,6 @@ def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
     return images
 
 
-@setup_shared_memory_manager
 class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)

@@ -12,10 +12,8 @@ from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
-@setup_shared_memory_manager
 class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

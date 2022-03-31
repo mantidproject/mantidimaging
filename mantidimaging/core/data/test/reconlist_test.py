@@ -5,10 +5,8 @@ import uuid
 
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
-@setup_shared_memory_manager
 class ReconListTest(unittest.TestCase):
     def setUp(self) -> None:
         self.recon_list = ReconList([generate_images() for _ in range(3)])

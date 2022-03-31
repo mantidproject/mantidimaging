@@ -15,7 +15,6 @@ from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, SINO_TEXT
 from mantidimaging.test_helpers import start_qapplication
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.core.utility.version_check import versions
@@ -23,7 +22,6 @@ from mantidimaging.core.utility.version_check import versions
 versions._use_test_values()
 
 
-@setup_shared_memory_manager
 @start_qapplication
 class MainWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:

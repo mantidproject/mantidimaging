@@ -18,7 +18,6 @@ import sys
 
 import pyqtgraph
 from PyQt5.QtWidgets import QApplication
-from mantidimaging.core.parallel import manager as pm
 
 _QAPP = QApplication.instance()
 
@@ -26,16 +25,6 @@ uncaught_exception = None
 current_excepthook = sys.excepthook
 
 pyqtgraph.setConfigOptions(imageAxisOrder="row-major")
-
-
-def start_shared_memory_manager():
-    # We need to start with a new manager each time as you can't restart a manager after shutting it down
-    pm.reset_memory_manager()
-    pm.start_memory_manager()
-
-
-def shutdown_shared_memory_manager():
-    pm.shutdown_memory_manager()
 
 
 def get_application(name=''):
@@ -86,20 +75,6 @@ def start_qapplication(cls):
             gc.collect()
 
     return augment_test_setup_methods(cls, setUp, tearDown, setUpClass, tearDownClass)
-
-
-def setup_shared_memory_manager(cls):
-    """
-    Unittest decorator. Adds the functions for handling shared memory start-up and shutdown
-    @param cls: Class being decorated
-    """
-    def setUp(self):
-        start_shared_memory_manager()
-
-    def tearDown(self):
-        shutdown_shared_memory_manager()
-
-    return augment_test_setup_methods(cls, setup=setUp, teardown=tearDown)
 
 
 def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None, teardown_class=None):

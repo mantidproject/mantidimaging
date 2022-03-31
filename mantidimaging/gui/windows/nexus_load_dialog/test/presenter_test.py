@@ -12,7 +12,6 @@ from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_
     IMAGE_KEY_PATH, NexusLoadPresenter, ROTATION_ANGLE_PATH
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
 def test_missing_field_message():
@@ -20,7 +19,6 @@ def test_missing_field_message():
         "required missing_data") == "The NeXus file does not contain the required missing_data data."
 
 
-@setup_shared_memory_manager
 class NexusLoaderTest(unittest.TestCase):
     def setUp(self) -> None:
         self.nexus = h5py.File("data", "w", driver="core", backing_store=False)

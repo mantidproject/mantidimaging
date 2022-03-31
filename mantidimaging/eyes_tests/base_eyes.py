@@ -15,7 +15,7 @@ from applitools.common import MatchLevel
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
-from mantidimaging.test_helpers.start_qapplication import start_qapplication, setup_shared_memory_manager
+from mantidimaging.test_helpers.start_qapplication import start_qapplication
 import mantidimaging.core.parallel.utility as pu
 
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
@@ -50,7 +50,6 @@ QApplication.setFont(QFont("Sans Serif", 10))
 
 @unittest.skipIf(API_KEY_PRESENT is None, "API Key is not defined in the environment, so Eyes tests are skipped.")
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
-@setup_shared_memory_manager
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager

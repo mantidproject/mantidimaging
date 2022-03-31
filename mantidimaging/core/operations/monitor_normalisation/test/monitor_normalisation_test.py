@@ -9,29 +9,23 @@ import numpy.testing as npt
 from mantidimaging.core.utility.data_containers import Counts
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 from ..monitor_normalisation import MonitorNormalisation
-from mantidimaging.test_helpers.start_qapplication import start_shared_memory_manager, shutdown_shared_memory_manager
 
 
 def test_one_projection():
-    start_shared_memory_manager()
     images = generate_images((1, 1, 1))
     images._log_file = mock.Mock()
     images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
     npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
-    shutdown_shared_memory_manager()
 
 
 def test_no_counts():
-    start_shared_memory_manager()
     images = generate_images((2, 2, 2))
     images._log_file = mock.Mock()
     images._log_file.counts = mock.Mock(return_value=None)
     npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
-    shutdown_shared_memory_manager()
 
 
 def test_execute():
-    start_shared_memory_manager()
     images = generate_images()
     images._log_file = mock.Mock()
     images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
@@ -40,7 +34,6 @@ def test_execute():
     MonitorNormalisation.filter_func(images)
     images._log_file.counts.assert_called_once()
     assert_not_equals(original.data, images.data)
-    shutdown_shared_memory_manager()
 
 
 def test_execute2():
@@ -49,7 +42,6 @@ def test_execute2():
 
     In this test that will make all the counts equal to 1, and the data will remain unchanged
     """
-    start_shared_memory_manager()
     images = generate_images()
     images._log_file = mock.Mock()
     images._log_file.counts = mock.Mock(return_value=Counts(np.full((10, ), 10)))
@@ -58,7 +50,6 @@ def test_execute2():
     MonitorNormalisation.filter_func(images)
     images._log_file.counts.assert_called_once()
     npt.assert_equal(original.data, images.data)
-    shutdown_shared_memory_manager()
 
 
 def test_register_gui():

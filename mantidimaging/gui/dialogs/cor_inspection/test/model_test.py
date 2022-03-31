@@ -11,10 +11,8 @@ from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
 from mantidimaging.gui.dialogs.cor_inspection.model import INIT_ITERS_CENTRE_VALUE, INIT_ITERS_STEP
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 
 
-@setup_shared_memory_manager
 class CORInspectionDialogModelTest(unittest.TestCase):
     def test_construct(self):
         images = generate_images()

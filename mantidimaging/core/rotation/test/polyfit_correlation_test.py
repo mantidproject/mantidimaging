@@ -5,13 +5,11 @@ from unittest import mock
 import numpy as np
 
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
-from mantidimaging.test_helpers.start_qapplication import setup_shared_memory_manager
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
 from ...data import ImageStack
 from ...utility.progress_reporting import Progress
 
 
-@setup_shared_memory_manager
 class PolyfitCorrelationTest(unittest.TestCase):
     def test_do_search(self):
         test_p0 = np.identity(10)
