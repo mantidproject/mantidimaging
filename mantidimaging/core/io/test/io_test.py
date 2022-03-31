@@ -248,7 +248,10 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
-            assert _decode_nexus_class(tomo_entry["sample"])
+            assert _decode_nexus_class(tomo_entry["sample"]) == "NXsample"
+            assert np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8") == sample_name
+            npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
+                                   sd.sample.projection_angles().value)
 
 
 if __name__ == '__main__':
