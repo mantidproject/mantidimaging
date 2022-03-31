@@ -24,3 +24,4 @@ Developer Changes
 - #1148 : Re-enable coverage checking
 - #1375 : Leak tracking tool
 - #1376 : Fix leak in StackChoiceView
+- #1387 : Fix async task leak
