@@ -182,7 +182,12 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
 
 
 def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
-
+    """
+    Takes a NeXus file and writes the StrictDataset information to it.
+    :param nexus_file: The NeXus file.
+    :param dataset: The StrictDataset.
+    :param sample_name: The sample name.
+    """
     # Top-level group
     entry = nexus_file.create_group("entry1")
     _set_nx_class(entry, "NXentry")
