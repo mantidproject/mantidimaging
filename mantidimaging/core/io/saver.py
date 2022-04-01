@@ -208,7 +208,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     _set_nx_class(detector, "NXdetector")
 
     # instrument data
-    combined_data = np.concatenate(dataset.nexus_arrays)
+    combined_data = np.concatenate(dataset.nexus_arrays).astype("uint16")
     detector.create_dataset("data", data=combined_data)
     detector.create_dataset("image_key", data=dataset.image_keys)
 
