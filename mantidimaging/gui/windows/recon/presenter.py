@@ -238,7 +238,9 @@ class ReconstructWindowPresenter(BasePresenter):
 
         images: ImageStack = task.result
         if images is not None:
-            self.view.update_recon_preview(images.data[0])
+            # We copy the preview data out of shared memory when passing it into update_recon_preview so that it
+            # will still be available after this function ends
+            self.view.update_recon_preview(np.copy(images.data[0]))
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
