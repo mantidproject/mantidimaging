@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import math
-
 import numpy as np
 import pytest
 from numpy import testing as npt, int16, uint16, float32, finfo, copy
