@@ -41,7 +41,7 @@
     <addaction name="actionLoadProjectionAngles"/>
     <addaction name="actionLoad180deg"/>
     <addaction name="separator"/>
-    <addaction name="actionSave"/>
+    <addaction name="actionSaveImages"/>
     <addaction name="actionSaveNeXus"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -86,7 +86,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionSaveImages">
    <property name="enabled">
     <bool>false</bool>
    </property>
