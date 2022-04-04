@@ -8,7 +8,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class ImageSaveDialogTest(BaseEyesTest):
     def test_save_dialog_opens_with_no_dataset(self):
-        self.imaging.actionSave.trigger()
+        self.imaging.actionSaveImages.trigger()
 
         self.check_target(widget=self.imaging.image_save_dialog)
 
@@ -18,6 +18,6 @@ class ImageSaveDialogTest(BaseEyesTest):
         with mock.patch("mantidimaging.gui.windows.main.MainWindowView.stack_list",
                         new_callable=mock.PropertyMock) as mock_stack_list:
             mock_stack_list.return_value = stack_list
-            self.imaging.actionSave.trigger()
+            self.imaging.actionSaveImages.trigger()
 
         self.check_target(widget=self.imaging.image_save_dialog)

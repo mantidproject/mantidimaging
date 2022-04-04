@@ -77,7 +77,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoadDataset: QAction
     actionLoadImages: QAction
     actionLoadNeXusFile: QAction
-    actionSave: QAction
+    actionSaveImages: QAction
     actionSaveNeXus: QAction
     actionExit: QAction
 
@@ -154,7 +154,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
-        self.actionSave.triggered.connect(self.show_image_save_dialog)
+        self.actionSaveImages.triggered.connect(self.show_image_save_dialog)
         self.actionSaveNeXus.triggered.connect(self.show_nexus_save_dialog)
         self.actionExit.triggered.connect(self.close)
 
@@ -189,7 +189,7 @@ class MainWindowView(BaseMainWindowView):
         has_datasets = len(self.presenter.datasets) > 0
         has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
 
-        self.actionSave.setEnabled(has_datasets)
+        self.actionSaveImages.setEnabled(has_datasets)
         self.actionSaveNeXus.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionLoad180deg.setEnabled(has_strict_datasets)

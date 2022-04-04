@@ -228,7 +228,7 @@ class MainWindowViewTest(unittest.TestCase):
         self._update_shortcuts_test(True, False, False)
 
     def _update_shortcuts_test(self, original_state, has_stacks, has_strict_datasets):
-        self.view.actionSave.setEnabled(original_state)
+        self.view.actionSaveImages.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
         self.view.actionLoad180deg.setEnabled(original_state)
         self.view.actionLoadProjectionAngles.setEnabled(original_state)
@@ -237,7 +237,7 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.update_shortcuts()
 
-        self.assertEqual(has_stacks, self.view.actionSave.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionSaveImages.isEnabled())
         self.assertEqual(has_stacks, self.view.actionSampleLoadLog.isEnabled())
         self.assertEqual(has_strict_datasets, self.view.actionLoad180deg.isEnabled())
         self.assertEqual(has_stacks, self.view.actionLoadProjectionAngles.isEnabled())
