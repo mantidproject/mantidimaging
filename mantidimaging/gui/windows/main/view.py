@@ -190,7 +190,7 @@ class MainWindowView(BaseMainWindowView):
         has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
 
         self.actionSaveImages.setEnabled(has_datasets)
-        self.actionSaveNeXus.setEnabled(has_datasets)
+        self.actionSaveNeXus.setEnabled(has_strict_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionLoad180deg.setEnabled(has_strict_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
