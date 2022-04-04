@@ -230,6 +230,11 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
+    """
+    Sets the NX_class attribute of data in a NeXus file.
+    :param group: The h5py group.
+    :param class_name: The class name.
+    """
     group.attrs["NX_class"] = np.string_(class_name)
 
 
