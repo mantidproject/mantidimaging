@@ -249,7 +249,8 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument/detector fields
             assert _decode_nexus_class(tomo_entry["instrument"]["detector"]) == "NXdetector"
-            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]), sd.sample.data)
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]),
+                                   sd.sample.data.astype("uint16"))
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
@@ -277,7 +278,8 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_array_equal(
                 np.array(tomo_entry["instrument"]["detector"]["data"]),
                 np.concatenate(
-                    [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data, sd.dark_after.data]))
+                    [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
+                     sd.dark_after.data]).astype("uint16"))
             npt.assert_array_equal(
                 np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                 [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
