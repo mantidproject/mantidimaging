@@ -23,7 +23,7 @@ class NexusSaveDialog(QDialog):
         self.savePath.textChanged.connect(self.enable_save)
         self.sampleNameLineEdit.textChanged.connect(self.enable_save)
 
-        self.dataset_uuids = []
+        self.dataset_uuids: List[uuid.UUID] = []
         self._create_dataset_lists(dataset_list)
 
         self.selected_dataset = None

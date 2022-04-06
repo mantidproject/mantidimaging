@@ -89,7 +89,7 @@ class MainWindowModel(object):
 
     def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str):
         if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
-            saver.nexus_save(self.datasets[dataset_id], path, sample_name)
+            saver.nexus_save(self.datasets[dataset_id], path, sample_name)  # type: ignore
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
