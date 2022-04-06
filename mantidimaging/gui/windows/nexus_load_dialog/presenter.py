@@ -281,7 +281,7 @@ class NexusLoadPresenter:
         :return: An ImageStack object.
         """
         data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
-        data[:] = data_array
+        data.array[:] = data_array
         return ImageStack(data, [f"{name} {self.title}"])
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[ImageStack]:

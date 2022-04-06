@@ -4,7 +4,7 @@
 import os
 import sys
 from functools import partial
-from typing import Tuple, Optional
+from typing import Optional
 
 from unittest import mock
 import numpy as np
@@ -29,18 +29,6 @@ def gen_img_numpy_rand(shape=g_shape, seed: Optional[int] = None) -> np.ndarray:
     return rng.random(shape)
 
 
-def generate_shared_array_and_copy(shape=g_shape) -> Tuple[np.ndarray, np.ndarray]:
-    arr = generate_shared_array(shape)
-    copy = np.copy(arr)
-    return arr, copy
-
-
-def generate_shared_array(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> np.ndarray:
-    generated_array = pu.create_array(shape, dtype)
-    np.copyto(generated_array, gen_img_numpy_rand(shape, seed=seed).astype(dtype))
-    return generated_array
-
-
 def generate_images(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
@@ -55,12 +43,12 @@ def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Opti
     return _set_random_data(d, shape, seed=seed)
 
 
-def _set_random_data(data, shape, seed: Optional[int] = None):
+def _set_random_data(shared_array, shape, seed: Optional[int] = None):
     n = gen_img_numpy_rand(shape, seed=seed)
     # move the data in the shared array
-    data[:] = n[:]
+    shared_array.array[:] = n[:]
 
-    images = ImageStack(data)
+    images = ImageStack(shared_array)
     return images
 
 

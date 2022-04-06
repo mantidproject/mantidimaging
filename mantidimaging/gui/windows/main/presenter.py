@@ -411,7 +411,7 @@ class MainWindowPresenter(BasePresenter):
         raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stack_visualisers.items()}")
 
     def set_images_in_stack(self, stack_id: uuid.UUID, images: ImageStack) -> None:
-        self.model.set_image_data_by_uuid(stack_id, images.data)
+        self.model.set_image_data_by_uuid(stack_id, images)
         stack = self.stack_visualisers[stack_id]
         if not stack.presenter.images == images:  # todo - refactor
             stack.image_view.clear()

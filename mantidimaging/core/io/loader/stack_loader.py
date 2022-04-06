@@ -69,7 +69,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     # we could just move with data[:] = new_data[:] but then we don't get
     # loading bar information, and I doubt there's any performance gain
-    data = do_stack_load_seq(data, new_data, img_shape, name, progress)
+    data.array = do_stack_load_seq(data.array, new_data, img_shape, name, progress)
 
     # Nexus doesn't load flat/dark images yet, if the functionality is
     # requested it should be changed here

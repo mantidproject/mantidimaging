@@ -184,28 +184,28 @@ def _execute(data: np.ndarray,
                                                    air_right=air_region.right,
                                                    air_bottom=air_region.bottom)
 
-        ps.shared_list = [data, air_means]
+        ps.shared_list = [data, air_means.array]
         ps.execute(do_calculate_air_means, data.shape[0], progress, cores=cores)
 
         if normalisation_mode == 'Stack Average':
-            air_means /= air_means.mean()
+            air_means.array /= air_means.array.mean()
 
         elif normalisation_mode == 'Flat Field' and flat_field is not None:
             flat_mean = pu.create_array((flat_field.shape[0], ), flat_field.dtype)
-            ps.shared_list = [flat_field, flat_mean]
+            ps.shared_list = [flat_field, flat_mean.array]
             ps.execute(do_calculate_air_means, flat_field.shape[0], progress, cores=cores)
-            air_means /= flat_mean.mean()
+            air_means.array /= flat_mean.array.mean()
 
-        if np.isnan(air_means).any():
+        if np.isnan(air_means.array).any():
             raise ValueError("Air region contains invalid (NaN) pixels")
 
         do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
-        ps.shared_list = [data, air_means]
+        ps.shared_list = [data, air_means.array]
         ps.execute(do_divide, data.shape[0], progress, cores=cores)
 
-        avg = np.average(air_means)
-        max_avg = np.max(air_means) / avg
-        min_avg = np.min(air_means) / avg
+        avg = np.average(air_means.array)
+        max_avg = np.max(air_means.array) / avg
+        min_avg = np.min(air_means.array) / avg
 
         log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 

@@ -334,7 +334,11 @@ class FiltersWindowPresenter(BasePresenter):
                 return
 
             # Update image after first in order to prevent wrong histogram ranges being shared
-            filtered_image_data = subset.data[0]
+
+            # If the filter function has put the results into shared memory then we must copy them back out
+            # so that they will continue to be available when this function ends
+            filtered_image_data = np.copy(subset.data[0]) if subset.uses_shared_memory else subset.data[0]
+
             if np.any(filtered_image_data < 0):
                 self._show_preview_negative_values_error(self.model.preview_image_idx)
 
@@ -342,7 +346,6 @@ class FiltersWindowPresenter(BasePresenter):
 
             # Update image before
             self._update_preview_image(before_image, self.view.preview_image_before)
-
             self.view.previews.update_histogram_data()
 
             if filtered_image_data.shape == before_image.shape:

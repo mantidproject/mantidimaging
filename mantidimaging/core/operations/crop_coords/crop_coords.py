@@ -67,8 +67,8 @@ class CropCoordinatesFilter(BaseFilter):
                              "This can happen on the image preview right after a previous Crop Coordinates.")
 
         output = pu.create_array(shape, images.dtype)
-        images.data = execute_single(sample, region_of_interest, progress, out=output)
-
+        execute_single(sample, region_of_interest, progress, out=output.array)
+        images.shared_array = output
         return images
 
     @staticmethod

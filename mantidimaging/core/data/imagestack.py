@@ -24,7 +24,7 @@ class ImageStack:
     name: str
 
     def __init__(self,
-                 data: np.ndarray,
+                 data: Union[np.ndarray, pu.SharedArray],
                  filenames: Optional[List[str]] = None,
                  indices: Union[List[int], Indices, None] = None,
                  metadata: Optional[Dict[str, Any]] = None,
@@ -32,14 +32,18 @@ class ImageStack:
                  name: Optional[str] = None):
         """
 
-        :param data: Images of the Sample/Projection data
+        :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
         :param name: A name for the stack
         """
 
-        self._data = data
+        if isinstance(data, pu.SharedArray):
+            self._shared_array = data
+        else:
+            self._shared_array = pu.SharedArray(data, None)
+
         self.indices = indices
         self._id = uuid.uuid4()
 
@@ -60,7 +64,9 @@ class ImageStack:
         else:
             self.name = name
 
-        leak_tracker.add(data, msg=f"ImageStack {self.name}")
+        tracker_msg = f"ImageStack {self.name}"
+        leak_tracker.add(self._shared_array.array, msg=tracker_msg)
+        leak_tracker.add(self._shared_array, msg=tracker_msg)
 
     def __eq__(self, other):
         if isinstance(other, ImageStack):
@@ -135,9 +141,9 @@ class ImageStack:
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
-            data_copy[:] = np.swapaxes(self.data, 0, 1)
+            data_copy.array[:] = np.swapaxes(self.data, 0, 1)
         else:
-            data_copy[:] = self.data[:]
+            data_copy.array[:] = self.data[:]
 
         images = ImageStack(data_copy,
                             indices=deepcopy(self.indices),
@@ -149,7 +155,7 @@ class ImageStack:
         shape = (self.data.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
-        data_copy[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
+        data_copy.array[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
         images = ImageStack(data_copy,
                             indices=deepcopy(self.indices),
@@ -228,23 +234,35 @@ class ImageStack:
 
     @property
     def projections(self):
-        return self._data if not self._is_sinograms else np.swapaxes(self._data, 0, 1)
+        return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
     def sinograms(self):
-        return self._data if self._is_sinograms else np.swapaxes(self._data, 0, 1)
+        return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
     def data(self) -> np.ndarray:
-        return self._data
+        return self._shared_array.array
 
     @data.setter
     def data(self, other: np.ndarray):
-        self._data = other
+        self._shared_array.array = other
+
+    @property
+    def shared_array(self) -> pu.SharedArray:
+        return self._shared_array
+
+    @shared_array.setter
+    def shared_array(self, shared_array: pu.SharedArray):
+        self._shared_array = shared_array
+
+    @property
+    def uses_shared_memory(self) -> bool:
+        return self._shared_array.has_shared_memory
 
     @property
     def dtype(self):
-        return self._data.dtype
+        return self.data.dtype
 
     @staticmethod
     def create_empty_image_stack(shape, dtype, metadata) -> 'ImageStack':

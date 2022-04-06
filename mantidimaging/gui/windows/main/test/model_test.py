@@ -17,20 +17,6 @@ from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
-def test_matching_dataset_attribute_returns_true_for_matching_ids():
-    images = generate_images()
-    assert _matching_dataset_attribute(images, images.id)
-
-
-def test_matching_dataset_attribute_returns_false_for_different_ids():
-    images = generate_images()
-    assert not _matching_dataset_attribute(images, uuid.uuid4())
-
-
-def test_matching_dataset_attribute_returns_false_for_none():
-    assert not _matching_dataset_attribute(None, uuid.uuid4())
-
-
 class MainWindowModelTest(unittest.TestCase):
     def setUp(self):
         self.model = MainWindowModel()
@@ -309,12 +295,13 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_set_images_by_uuid_success(self):
         prev_images = generate_images()
-        new_data = generate_images().data
+        new_images = generate_images()
         ds = StrictDataset(prev_images)
         self.model.datasets[ds.id] = ds
 
-        self.model.set_image_data_by_uuid(prev_images.id, new_data)
-        assert_array_equal(ds.sample.data, new_data)
+        self.model.set_image_data_by_uuid(prev_images.id, new_images)
+        assert_array_equal(ds.sample.data, new_images.data)
+        assert ds.sample.shared_array == new_images.shared_array
 
     def test_set_images_by_uuid_failure(self):
         with self.assertRaises(RuntimeError):
@@ -458,3 +445,14 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(sd)
 
         self.assertIsNone(self.model.get_existing_180_id(sd.id))
+
+    def test_matching_dataset_attribute_returns_true_for_matching_ids(self):
+        images = generate_images()
+        assert _matching_dataset_attribute(images, images.id)
+
+    def test_matching_dataset_attribute_returns_false_for_different_ids(self):
+        images = generate_images()
+        assert not _matching_dataset_attribute(images, uuid.uuid4())
+
+    def test_matching_dataset_attribute_returns_false_for_none(self):
+        assert not _matching_dataset_attribute(None, uuid.uuid4())

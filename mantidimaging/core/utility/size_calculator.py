@@ -24,12 +24,16 @@ def full_size(shape: Iterable[int]) -> int:
     return math.prod(shape)
 
 
+def full_size_bytes(shape: Iterable[int], dtype: numpy.dtype):
+    return full_size(shape) * _determine_dtype_size(dtype)
+
+
 def full_size_KB(shape: Iterable[int], dtype: numpy.dtype):
-    return full_size(shape) * _determine_dtype_size(dtype) / 1024
+    return full_size_bytes(shape, dtype) / 1024
 
 
 def full_size_MB(shape: Iterable[int], dtype: numpy.dtype):
-    return full_size(shape) * _determine_dtype_size(dtype) / 1024 / 1024
+    return full_size_KB(shape, dtype) / 1024
 
 
 def number_of_images_from_indices(start, end, increment):

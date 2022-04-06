@@ -28,10 +28,10 @@ class OperationsWindowTest(BaseEyesTest):
         self._load_data_set(set_180=True)
 
         self.imaging.show_filters_window()
+        QApplication.processEvents()
         self.imaging.filters.ask_confirmation = mock.MagicMock(return_value=True)
         self.imaging.filters.safeApply.setChecked(False)
         self.imaging.filters.applyButton.click()
-        QApplication.processEvents()
         QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)

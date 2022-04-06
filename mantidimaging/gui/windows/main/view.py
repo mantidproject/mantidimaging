@@ -414,6 +414,11 @@ class MainWindowView(BaseMainWindowView):
             # Ignore the close event, keeping window open
             event.ignore()
 
+    def cleanup(self):
+        # Release shared memory from loaded stacks
+        for stack in self.get_all_stacks():
+            stack.shared_array = None
+
     def uncaught_exception(self, user_error_msg, log_error_msg):
         QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
         getLogger(__name__).error(log_error_msg)

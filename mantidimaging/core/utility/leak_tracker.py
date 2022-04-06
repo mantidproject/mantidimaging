@@ -82,6 +82,9 @@ class LeakTracker:
         item_info = ItemInfo(weakref.ref(item), msg, created)
         self.tracked_objects.append(item_info)
 
+    def clear(self) -> None:
+        self.tracked_objects.clear()
+
     def live_objects(self) -> Iterable[ItemInfo]:
         return (item for item in self.tracked_objects if item.ref() is not None)
 

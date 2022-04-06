@@ -16,6 +16,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
+import mantidimaging.core.parallel.utility as pu
 
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
@@ -100,8 +101,11 @@ class BaseEyesTest(unittest.TestCase):
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
 
         if set_180:
-            dataset.sample.proj180deg = _180_proj = ImageStack(dataset.sample.data[0:1])
-            self.imaging.presenter.create_single_tabbed_images_stack(_180_proj)
+            _180_array = dataset.sample.data[0:1]
+            shared_180 = pu.create_array(_180_array.shape, _180_array.dtype)
+            shared_180.array[:] = _180_array[:]
+            dataset.sample.proj180deg = ImageStack(shared_180)
+            self.imaging.presenter.create_single_tabbed_images_stack(dataset.sample.proj180deg)
 
         self.imaging.presenter.model.add_dataset_to_model(dataset)
 
