@@ -54,7 +54,7 @@ class ImageSaveDialog(QDialog):
 
     def save_all(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
-        self.parent().execute_save()
+        self.parent().execute_image_file_save()
 
     def save_path(self) -> str:
         """
