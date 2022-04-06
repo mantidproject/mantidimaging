@@ -15,7 +15,8 @@ class DatasetSelectorDialog(QDialog):
     def __init__(self,
                  main_window: Optional['MainWindowView'],
                  title: Optional[str] = None,
-                 message: Optional[str] = None):
+                 message: Optional[str] = None,
+                 show_stacks: bool = False):
         super().__init__(main_window)
 
         self.selected_dataset = None
@@ -35,7 +36,9 @@ class DatasetSelectorDialog(QDialog):
         self.vertical_layout.addWidget(self.message_label)
 
         # Dataset selector
-        self.dataset_selector_widget = DatasetSelectorWidgetView(self, relevant_dataset_types=StrictDataset)
+        self.dataset_selector_widget = DatasetSelectorWidgetView(self,
+                                                                 relevant_dataset_types=StrictDataset,
+                                                                 show_stacks=show_stacks)
         self.dataset_selector_widget.subscribe_to_main_window(main_window)  # type: ignore
         self.vertical_layout.addWidget(self.dataset_selector_widget)
 
