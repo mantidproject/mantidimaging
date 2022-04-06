@@ -12,7 +12,10 @@ if TYPE_CHECKING:
 
 
 class DatasetSelectorDialog(QDialog):
-    def __init__(self, main_window: Optional['MainWindowView'], title: Optional[str] = None):
+    def __init__(self,
+                 main_window: Optional['MainWindowView'],
+                 title: Optional[str] = None,
+                 message: Optional[str] = None):
         super().__init__(main_window)
 
         self.selected_dataset = None
@@ -24,7 +27,12 @@ class DatasetSelectorDialog(QDialog):
             self.setWindowTitle(title)
 
         self.vertical_layout = QVBoxLayout(self)
-        self.vertical_layout.addWidget(QLabel("What dataset is the 180 projection being loaded for?", self))
+        if message is None:
+            self.message_label = QLabel("Select the dataset")
+        else:
+            self.message_label = QLabel(message)
+
+        self.vertical_layout.addWidget(self.message_label)
 
         # Dataset selector
         self.dataset_selector_widget = DatasetSelectorWidgetView(self, relevant_dataset_types=StrictDataset)
