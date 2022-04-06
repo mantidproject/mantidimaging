@@ -236,27 +236,27 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, sample_name)
 
             # test entry field
-            assert _decode_nexus_class(nexus_file["entry1"]) == "NXentry"
-            assert _decode_nexus_class(nexus_file["entry1"]["tomo_entry"]) == "NXsubentry"
+            self.assertEqual(_decode_nexus_class(nexus_file["entry1"]), "NXentry")
+            self.assertEqual(_decode_nexus_class(nexus_file["entry1"]["tomo_entry"]), "NXsubentry")
 
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
             # test definition field
-            assert np.array(tomo_entry["definition"]).tostring().decode("utf-8") == "NXtomo"
+            self.assertEqual(np.array(tomo_entry["definition"]).tostring().decode("utf-8"), "NXtomo")
 
             # test instrument field
-            assert _decode_nexus_class(tomo_entry["instrument"]) == "NXinstrument"
+            self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]), "NXinstrument")
 
             # test instrument/detector fields
-            assert _decode_nexus_class(tomo_entry["instrument"]["detector"]) == "NXdetector"
+            self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]["detector"]), "NXdetector")
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]),
                                    sd.sample.data.astype("uint16"))
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
             # test instrument/sample fields
-            assert _decode_nexus_class(tomo_entry["sample"]) == "NXsample"
-            assert np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8") == sample_name
+            self.assertEqual(_decode_nexus_class(tomo_entry["sample"]), "NXsample")
+            self.assertEqual(np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8"), sample_name)
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    sd.sample.projection_angles().value)
 
