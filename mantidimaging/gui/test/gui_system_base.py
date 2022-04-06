@@ -85,7 +85,7 @@ class GuiSystemBase(unittest.TestCase):
             QTest.qWait(delay * 1000)
         raise RuntimeError("_wait_for_stack_selector reach max retries")
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.MWLoadDialog.select_file")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file")
     def _load_data_set(self, mocked_select_file):
         mocked_select_file.return_value = LOAD_SAMPLE
         initial_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
