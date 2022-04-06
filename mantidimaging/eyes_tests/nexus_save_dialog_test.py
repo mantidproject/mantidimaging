@@ -14,6 +14,6 @@ class NexusSaveDialogTest(BaseEyesTest):
         with mock.patch("mantidimaging.gui.windows.main.MainWindowView.strict_dataset_list",
                         new_callable=mock.PropertyMock) as mock_dataset_list:
             mock_dataset_list.return_value = dataset_list
-            self.imaging.actionSaveNexus.trigger()
+            self.imaging.actionSaveNeXusFile.trigger()
 
         self.check_target(widget=self.imaging.image_save_dialog)
