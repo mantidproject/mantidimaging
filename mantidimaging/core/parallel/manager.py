@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 import uuid
-from multiprocessing import shared_memory
 from typing import List
 
 import psutil
@@ -20,7 +19,7 @@ def generate_mi_shared_mem_name() -> str:
 def clear_memory_from_current_process_linux() -> None:
     for mem_name in _get_shared_mem_names_linux():
         if _is_mi_memory_from_current_process(mem_name):
-            free_shared_memory([mem_name])
+            free_shared_memory_linux([mem_name])
 
 
 def find_memory_from_previous_process_linux() -> List[str]:
@@ -31,11 +30,9 @@ def find_memory_from_previous_process_linux() -> List[str]:
     return old_memory
 
 
-def free_shared_memory(mem_names: List[str]) -> None:
+def free_shared_memory_linux(mem_names: List[str]) -> None:
     for mem_name in mem_names:
-        shm = shared_memory.SharedMemory(name=mem_name)
-        shm.close()
-        shm.unlink()
+        os.remove(f'{MEM_DIR_LINUX}/{mem_name}')
 
 
 def _is_safe_to_remove(mem_name: str) -> bool:

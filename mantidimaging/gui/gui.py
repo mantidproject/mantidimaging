@@ -58,7 +58,7 @@ def execute():
                                                "\n\nDo you want these to be automatically cleaned now?",
                                                defaultButton=QMessageBox.No)
                 if msg_box == QMessageBox.Yes:
-                    pm.free_shared_memory(memory_to_clean)
+                    pm.free_shared_memory_linux(memory_to_clean)
                     done = QMessageBox(application_window)
                     done.setWindowTitle("Clean Up Shared Memory")
                     done.setIcon(QMessageBox.Information)
