@@ -52,10 +52,10 @@ class BaseDataset:
     def delete_stack(self, images_id: uuid.UUID):
         raise NotImplementedError()
 
-    def replace(self, images_id: uuid.UUID, new_data: np.ndarray):
+    def replace(self, images_id: uuid.UUID, image_stack: ImageStack):
         for image in self.all:
             if image.id == images_id:
-                image.data = new_data
+                image.shared_array = image_stack.shared_array
                 return
         raise KeyError(f"Unable to replace: ImageStack with ID {images_id} not present in dataset.")
 

@@ -4,7 +4,9 @@
 
 import argparse
 import logging
+import sys
 import warnings
+import mantidimaging.core.parallel.manager as pm
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -54,7 +56,12 @@ def main():
     h.initialise_logging(logging.getLevelName(args.log_level))
 
     from mantidimaging import gui
-    gui.execute()
+    try:
+        gui.execute()
+    except BaseException as e:
+        if sys.platform == 'linux':
+            pm.clear_memory_from_current_process_linux()
+        raise e
 
 
 if __name__ == "__main__":

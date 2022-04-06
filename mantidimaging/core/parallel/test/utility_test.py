@@ -67,7 +67,7 @@ def test_execute_impl_par(mock_pool):
 ])
 def test_create_shared_array(dtype, expected_dtype):
     arr = _create_shared_array((10, 10, 10), dtype)
-    assert arr.dtype == expected_dtype
+    assert arr.array.dtype == expected_dtype
 
 
 if __name__ == "__main__":

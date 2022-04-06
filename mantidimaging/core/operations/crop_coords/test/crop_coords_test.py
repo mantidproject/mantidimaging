@@ -21,17 +21,16 @@ class CropCoordsTest(unittest.TestCase):
         # Check that the filter is  executed when:
         #   - valid Region of Interest is provided
         #   - no flat or dark images are provided
-
         roi = SensibleROI.from_list([1, 1, 5, 5])
         images = th.generate_images()
-        # store a reference here so it doesn't get freed inside the filter execute
-        sample = images.data
+        # store references here so that they don't get freed inside the filter execute
+        sample = images.shared_array
         result = CropCoordinatesFilter.filter_func(images, roi)
         expected_shape = (10, 4, 4)
 
         npt.assert_equal(result.data.shape, expected_shape)
         # check that the data has been modified
-        th.assert_not_equals(result.data, sample)
+        th.assert_not_equals(result.data, sample.array)
 
     def test_execute_wrapper_return_is_runnable(self):
         """

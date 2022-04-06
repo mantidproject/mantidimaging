@@ -55,39 +55,70 @@ def get_application(name=''):
 
 def start_qapplication(cls):
     """
-    Unittest decorator. Adds or augments the setUpClass classmethod
-    to the given class. It starts the QApplication object
+    Unittest decorator. Adds the functions for starting the QApplication object
     if it is not already started
     @param cls: Class being decorated
+    """
+    def setUp(self):
+        global uncaught_exception
+        uncaught_exception = None
+
+    def tearDown(self):
+        if uncaught_exception is not None:
+            pytest.fail(f"Uncaught exception {uncaught_exception}")
+
+    def setUpClass():
+        cls.app = get_application()
+
+    def tearDownClass():
+        if os.getenv("APPLITOOLS_API_KEY") is None:
+            gc.collect()
+
+    return augment_test_setup_methods(cls, setUp, tearDown, setUpClass, tearDownClass)
+
+
+def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None, teardown_class=None):
+    """
+    Adds or augments the setup and teardown methods for the given class.
+    For sharing code between different unittest decorators.
+    @param cls: class being decorated
+    @param setup: the setUp function to be added
+    @param teardown: the tearDown function to be added
+    @param setup_class: the setUpClass function to be added
+    @param teardown_class: the tearDownClass function to be added
     """
     def do_nothing(_):
         pass
 
     def setUp(self):
-        global uncaught_exception
-        uncaught_exception = None
-        setUp_orig(self)
+        setup(self)
+        setup_orig(self)
 
     def tearDown(self):
-        tearDown_orig(self)
-        if uncaught_exception is not None:
-            pytest.fail(f"Uncaught exception {uncaught_exception}")
+        teardown_orig(self)
+        teardown(self)
 
     def setUpClass(cls):
-        cls.app = get_application()
-        setUpClass_orig()
+        setup_class()
+        setup_class_orig()
 
     def tearDownClass(cls):
-        if os.getenv("APPLITOOLS_API_KEY") is None:
-            gc.collect()
-        tearDownClass_orig()
+        teardown_class()
+        teardown_class_orig()
 
-    setUp_orig = cls.setUp if hasattr(cls, 'setUp') else do_nothing
-    tearDown_orig = cls.tearDown if hasattr(cls, 'tearDown') else do_nothing
-    setUpClass_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
-    tearDownClass_orig = cls.tearDownClass if hasattr(cls, 'tearDownClass') else do_nothing
-    setattr(cls, 'setUp', setUp)
-    setattr(cls, 'tearDown', tearDown)
-    setattr(cls, 'setUpClass', classmethod(setUpClass))
-    setattr(cls, 'tearDownClass', classmethod(tearDownClass))
+    if setup:
+        setup_orig = cls.setUp if hasattr(cls, 'setUp') else do_nothing
+        setattr(cls, 'setUp', setUp)
+
+    if teardown:
+        teardown_orig = cls.tearDown if hasattr(cls, 'tearDown') else do_nothing
+        setattr(cls, 'tearDown', tearDown)
+
+    if setup_class:
+        setup_class_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
+        setattr(cls, 'setUpClass', classmethod(setUpClass))
+
+    if teardown_class:
+        teardown_class_orig = cls.tearDownClass if hasattr(cls, 'tearDownClass') else do_nothing
+        setattr(cls, 'tearDownClass', classmethod(tearDownClass))
     return cls

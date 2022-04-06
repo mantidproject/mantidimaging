@@ -102,7 +102,8 @@ class MedianTest(unittest.TestCase):
         images.data[0, 12:15, 2:5] = np.nan  # 3x3
         self.assertTrue(np.any(np.isnan(images.data)))
 
-        result = MedianFilter.filter_func(images.copy(), 3, 'reflect', force_cpu=use_cpu)
+        images_copy = images.copy()
+        result = MedianFilter.filter_func(images_copy, 3, 'reflect', force_cpu=use_cpu)
 
         npt.assert_equal(np.isnan(result.data), np.isnan(images.data))
 
