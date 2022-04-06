@@ -105,10 +105,7 @@ class MainWindowPresenter(BasePresenter):
                 return stack_id.id
         return None
 
-    def add_log_to_sample(self, stack_name: str, log_file: str) -> None:
-        stack_id = self.get_stack_id_by_name(stack_name)
-        if stack_id is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+    def add_log_to_sample(self, stack_id: uuid.UUID, log_file: str) -> None:
         self.model.add_log_to_sample(stack_id, log_file)
 
     def _do_rename_stack(self, current_name: str, new_name: str) -> None:

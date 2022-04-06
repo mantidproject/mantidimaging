@@ -273,20 +273,9 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_stack_id_by_name_failure(self):
         self.assertIsNone(self.presenter._get_stack_visualiser_by_name("bad-id"))
 
-    def test_add_log_to_sample_success(self):
-        stack_window = mock.Mock()
-        stack_window.id = stack_id = "id"
-        stack_window.isVisible.return_value = True
-        stack_window.windowTitle.return_value = stack_window_title = "stack window title"
-        self.presenter.stack_visualisers[stack_window.id] = stack_window
-        log_file = "log file"
-
-        self.presenter.add_log_to_sample(stack_window_title, log_file)
-        self.model.add_log_to_sample.assert_called_once_with(stack_id, log_file)
-
-    def test_add_log_to_sample_failure(self):
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_log_to_sample("doesn't exist", "log file")
+    def test_add_log_to_sample(self):
+        self.presenter.add_log_to_sample("doesn't exist", "log file")
+        self.presenter.model.add_log_to_sample.assrt_called_with("doesn't exist", "log file")
 
     def test_do_rename_stack(self):
         self.presenter.stack_visualisers["stack-id"] = mock_stack = mock.Mock()

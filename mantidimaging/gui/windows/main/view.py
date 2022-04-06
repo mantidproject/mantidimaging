@@ -237,13 +237,14 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.load_image_stack(selected_file)
 
     def load_sample_log_dialog(self):
-        stack_selector = StackSelectorDialog(main_window=self,
-                                             title="Stack Selector",
-                                             message="Which stack is the log being loaded for?")
+        stack_selector = DatasetSelectorDialog(main_window=self,
+                                               title="Stack Selector",
+                                               message="Which stack is the log being loaded for?",
+                                               show_stacks=True)
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
-        stack_to_add_log_to = stack_selector.selected_stack
+        stack_to_add_log_to = stack_selector.selected_dataset
 
         # Open file dialog
         selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log *.csv)")
@@ -252,7 +253,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
+        self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=selected_file)
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")
