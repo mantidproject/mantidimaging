@@ -9,11 +9,11 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.utility import (compile_ui)
-from mantidimaging.gui.windows.load_dialog.field import Field
+from mantidimaging.gui.windows.image_load_dialog.field import Field
 from .presenter import LoadPresenter, Notification
 
 
-class MWLoadDialog(QDialog):
+class ImageLoadDialog(QDialog):
     tree: QTreeWidget
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox
@@ -34,7 +34,7 @@ class MWLoadDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        compile_ui('gui/ui/load_dialog.ui', self)
+        compile_ui('gui/ui/image_load_dialog.ui', self)
 
         self.parent_view = parent
         self.presenter = LoadPresenter(self)
@@ -82,7 +82,7 @@ class MWLoadDialog(QDialog):
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
         # if accepted load the stack
-        self.accepted.connect(self.parent_view.execute_load)
+        self.accepted.connect(self.parent_view.execute_image_file_load)
 
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")

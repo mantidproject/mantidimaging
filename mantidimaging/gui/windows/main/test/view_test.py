@@ -36,9 +36,9 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.dataset_tree_widget = self.dataset_tree_widget = mock.Mock()
 
     def test_execute_save(self):
-        self.view.execute_save()
+        self.view.execute_image_file_save()
 
-        self.presenter.notify.assert_called_once_with(PresNotification.SAVE)
+        self.presenter.notify.assert_called_once_with(PresNotification.IMAGE_FILE_SAVE)
 
     def test_find_images_stack_title(self):
         images = mock.MagicMock()
@@ -70,17 +70,17 @@ class MainWindowViewTest(unittest.TestCase):
                                                                            _180_deg_file=selected_file)
 
     def test_execute_load(self):
-        self.view.execute_load()
+        self.view.execute_image_file_load()
 
-        self.presenter.notify.assert_called_once_with(PresNotification.LOAD)
+        self.presenter.notify.assert_called_once_with(PresNotification.IMAGE_FILE_LOAD)
 
     def test_execute_nexus_load(self):
         self.view.execute_nexus_load()
         self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_LOAD)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.MWLoadDialog")
-    def test_show_load_dialogue(self, mock_load: mock.Mock):
-        self.view.show_load_dialogue()
+    @mock.patch("mantidimaging.gui.windows.main.view.ImageLoadDialog")
+    def test_show_load_dialog(self, mock_load: mock.Mock):
+        self.view.show_image_load_dialog()
 
         mock_load.assert_called_once_with(self.view)
         mock_load.return_value.show.assert_called_once_with()
@@ -228,7 +228,7 @@ class MainWindowViewTest(unittest.TestCase):
         self._update_shortcuts_test(True, False, False)
 
     def _update_shortcuts_test(self, original_state, has_stacks, has_strict_datasets):
-        self.view.actionSave.setEnabled(original_state)
+        self.view.actionSaveImages.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
         self.view.actionLoad180deg.setEnabled(original_state)
         self.view.actionLoadProjectionAngles.setEnabled(original_state)
@@ -237,7 +237,7 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.update_shortcuts()
 
-        self.assertEqual(has_stacks, self.view.actionSave.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionSaveImages.isEnabled())
         self.assertEqual(has_stacks, self.view.actionSampleLoadLog.isEnabled())
         self.assertEqual(has_strict_datasets, self.view.actionLoad180deg.isEnabled())
         self.assertEqual(has_stacks, self.view.actionLoadProjectionAngles.isEnabled())
@@ -327,7 +327,7 @@ class MainWindowViewTest(unittest.TestCase):
     def test_show_nexus_load_dialog_calls_show(self):
         self.view._get_file_name = mock.MagicMock()
         with mock.patch("mantidimaging.gui.windows.main.view.NexusLoadDialog") as nexus_load_dialog:
-            self.view.show_load_nexus_dialog()
+            self.view.show_nexus_load_dialog()
         nexus_load_dialog.assert_called_once()
         nexus_load_dialog.return_value.show.assert_called_once()
 
@@ -464,3 +464,19 @@ class MainWindowViewTest(unittest.TestCase):
         self.dataset_tree_widget.topLevelItemCount.return_value = 1
         with self.assertRaises(RuntimeError):
             self.view.get_dataset_tree_view_item("bad-dataset-id")
+
+    def test_execute_nexus_save(self):
+        self.view.execute_nexus_save()
+        self.presenter.notify.assert_called_once_with(PresNotification.NEXUS_SAVE)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.ImageSaveDialog")
+    def test_show_image_save_dialog(self, image_save_dialog_mock):
+        self.view.show_image_save_dialog()
+        image_save_dialog_mock.assert_called_once_with(self.view, self.view.stack_list)
+        image_save_dialog_mock.return_value.show.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.NexusSaveDialog")
+    def test_show_nexus_save_dialog(self, nexus_save_dialog_mock):
+        self.view.show_nexus_save_dialog()
+        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.strict_dataset_list)
+        nexus_save_dialog_mock.return_value.show.assert_called_once()

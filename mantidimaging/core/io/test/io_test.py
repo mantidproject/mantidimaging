@@ -4,14 +4,23 @@
 import os
 import unittest
 
+import h5py
+import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
+
+NX_CLASS = "NX_class"
+
+
+def _decode_nexus_class(nexus_data) -> str:
+    return nexus_data.attrs[NX_CLASS].decode("utf-8")
 
 
 class IOTest(FileOutputtingTestCase):
@@ -106,7 +115,7 @@ class IOTest(FileOutputtingTestCase):
             expected_images.data = expected_images.data[saver_indices[0]:saver_indices[1]]
 
         # saver.save_preproc_images(expected_images)
-        saver.save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
+        saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
 
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, expected_images.data.shape[0], saver_indices)
@@ -146,15 +155,15 @@ class IOTest(FileOutputtingTestCase):
             # indices that were actually saved out
             images.data = images.data[saver_indices[0]:saver_indices[1]]
 
-        saver.save(images, self.output_directory, out_format=img_format)
+        saver.image_save(images, self.output_directory, out_format=img_format)
         flat_before_dir = os.path.join(self.output_directory, "imgIOTest_flat_before")
-        saver.save(flat_before, flat_before_dir, out_format=img_format)
+        saver.image_save(flat_before, flat_before_dir, out_format=img_format)
         flat_after_dir = os.path.join(self.output_directory, "imgIOTest_flat_after")
-        saver.save(flat_after, flat_after_dir, out_format=img_format)
+        saver.image_save(flat_after, flat_after_dir, out_format=img_format)
         dark_before_dir = os.path.join(self.output_directory, "imgIOTest_dark_before")
-        saver.save(dark_before, dark_before_dir, out_format=img_format)
+        saver.image_save(dark_before, dark_before_dir, out_format=img_format)
         dark_after_dir = os.path.join(self.output_directory, "imgIOTest_dark_after")
-        saver.save(dark_after, dark_after_dir, out_format=img_format)
+        saver.image_save(dark_after, dark_after_dir, out_format=img_format)
 
         data_as_stack = False
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
@@ -209,7 +218,7 @@ class IOTest(FileOutputtingTestCase):
         images.metadata['message'] = 'hello, world!'
 
         # Save image stack
-        saver.save(images, self.output_directory)
+        saver.image_save(images, self.output_directory)
 
         # Load image stack back
         dataset = loader.load(self.output_directory)
@@ -217,6 +226,69 @@ class IOTest(FileOutputtingTestCase):
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
+
+    def test_nexus_simple_dataset_save(self):
+        sd = StrictDataset(th.generate_images())
+        path = "nexus/file/path"
+        sample_name = "sample-name"
+
+        with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, sample_name)
+
+            # test entry field
+            self.assertEqual(_decode_nexus_class(nexus_file["entry1"]), "NXentry")
+            self.assertEqual(_decode_nexus_class(nexus_file["entry1"]["tomo_entry"]), "NXsubentry")
+
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
+
+            # test definition field
+            self.assertEqual(np.array(tomo_entry["definition"]).tostring().decode("utf-8"), "NXtomo")
+
+            # test instrument field
+            self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]), "NXinstrument")
+
+            # test instrument/detector fields
+            self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]["detector"]), "NXdetector")
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]),
+                                   sd.sample.data.astype("uint16"))
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                                   [0 for _ in range(sd.sample.data.shape[0])])
+
+            # test instrument/sample fields
+            self.assertEqual(_decode_nexus_class(tomo_entry["sample"]), "NXsample")
+            self.assertEqual(np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8"), sample_name)
+            npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
+                                   sd.sample.projection_angles().value)
+
+            # test links
+            self.assertEqual(tomo_entry["data"]["data"], tomo_entry["instrument"]["detector"]["data"])
+            self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
+            self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
+
+    @staticmethod
+    def test_nexus_complex_dataset_save():
+        image_stacks = [th.generate_images() for _ in range(5)]
+        sd = StrictDataset(*image_stacks)
+
+        with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
+
+            # test instrument field
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["data"]),
+                np.concatenate(
+                    [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
+                     sd.dark_after.data]).astype("uint16"))
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
+                [0 for _ in range(sd.sample.data.shape[0])] + [1 for _ in range(sd.flat_after.data.shape[0])] +
+                [2 for _ in range(sd.dark_after.data.shape[0])])
+
+            # test instrument/sample fields
+            npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
+                                   np.concatenate([images.projection_angles().value for images in image_stacks]))
 
 
 if __name__ == '__main__':

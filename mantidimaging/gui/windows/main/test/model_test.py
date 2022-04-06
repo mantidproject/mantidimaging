@@ -260,7 +260,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_no_image_with_matching_id(self):
         self.assertIsNone(self.model.get_images_by_uuid(uuid.uuid4()))
 
-    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.image_save")
     def test_save_image(self, save_mock: mock.MagicMock):
         images_id, images_mock = self._add_mock_image()
         images_mock.data = generate_images().data
@@ -286,7 +286,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual(images_mock.filenames, filenames)  # type: ignore
         assert result
 
-    @mock.patch("mantidimaging.gui.windows.main.model.saver.save")
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.image_save")
     def test_image_save_when_image_not_found(self, save_mock: mock.MagicMock):
         with self.assertRaises(RuntimeError):
             self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
@@ -456,3 +456,24 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_matching_dataset_attribute_returns_false_for_none(self):
         assert not _matching_dataset_attribute(None, uuid.uuid4())
+
+    def test_do_nexus_saving_fails_from_no_dataset(self):
+        with self.assertRaises(RuntimeError):
+            self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name")
+
+    def test_do_nexus_saving_fails_from_wrong_dataset(self):
+        md = MixedDataset()
+        self.model.add_dataset_to_model(md)
+
+        with self.assertRaises(RuntimeError):
+            self.model.do_nexus_saving(md.id, "path", "sample-name")
+
+    @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
+    def test_do_nexus_save_success(self, nexus_save):
+        sd = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(sd)
+        path = "path"
+        sample_name = "sample-name"
+
+        self.model.do_nexus_saving(sd.id, path, sample_name)
+        nexus_save.assert_called_once_with(sd, path, sample_name)

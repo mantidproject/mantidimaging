@@ -75,15 +75,21 @@ class MainWindowModel(object):
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
-        filenames = saver.save(images,
-                               output_dir=output_dir,
-                               name_prefix=name_prefix,
-                               overwrite_all=overwrite,
-                               out_format=image_format,
-                               pixel_depth=pixel_depth,
-                               progress=progress)
+        filenames = saver.image_save(images,
+                                     output_dir=output_dir,
+                                     name_prefix=name_prefix,
+                                     overwrite_all=overwrite,
+                                     out_format=image_format,
+                                     pixel_depth=pixel_depth,
+                                     progress=progress)
         images.filenames = filenames
         return True
+
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str):
+        if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
+            saver.nexus_save(self.datasets[dataset_id], path, sample_name)  # type: ignore
+        else:
+            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
     def set_image_data_by_uuid(self, images_id: uuid.UUID, new_stack: ImageStack) -> None:
         """

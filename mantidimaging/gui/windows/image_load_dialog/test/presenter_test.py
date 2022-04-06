@@ -7,10 +7,10 @@ from unittest import mock
 
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
-from mantidimaging.gui.windows.load_dialog.presenter import LoadPresenter, Notification, logger
+from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, Notification, logger
 
 
-class LoadDialogPresenterTest(unittest.TestCase):
+class ImageLoadDialogPresenterTest(unittest.TestCase):
     def setUp(self):
         self.v = mock.MagicMock()
         self.p = LoadPresenter(self.v)
@@ -43,15 +43,15 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with("Sample")
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_log", return_value=3)
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_180deg_proj", return_value=2)
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images", return_value=1)
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.read_in_file_information",
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log", return_value=3)
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images", return_value=1)
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_in_file_information",
                 return_value=FileInformation([], (0, 0, 0), True))
     @mock.patch(
-        "mantidimaging.gui.windows.load_dialog.presenter.get_file_extension", )
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix")
+        "mantidimaging.gui.windows.image_load_dialog.presenter.get_file_extension", )
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix")
     def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information, mock_load_log,
                               find_images, find_180deg_proj, find_log):
         selected_file = "SelectedFile"
@@ -123,7 +123,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
 
         field.set_images.assert_not_called()
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
     def test_do_update_flat_or_dark(self, find_images):
         file_name = "/ExampleFilename"
         name = "Name"
@@ -136,7 +136,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         find_images.assert_called_once_with(Path('/'), name, suffix, image_format='', logger=logger)
         field.set_images.assert_called_once_with(find_images.return_value)
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.find_images")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
     def test_do_update_flat_or_dark_second_attempt(self, find_images):
         file_name = "/aaa_0000.tiff"
         name = "Name"
@@ -199,7 +199,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.select_file.assert_called_once_with(name, is_image_file)
         self.assertNotEqual(field.path, file_name)
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
     def test_do_update_sample_log(self, mock_ensure):
         file_name = "file_name"
         name = "Name"
@@ -214,7 +214,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.v.select_file.assert_called_once_with(name, is_image_file)
         mock_ensure.assert_called_once_with(field, file_name, [])
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
     def test_ensure_sample_log_consistency_matching(self, mock_load_log):
         """
         Test behaviour when the number of projection angles and files matches
@@ -236,7 +236,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         self.assertIsNotNone(field.path)
         self.assertIsNotNone(field.use)
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.load_log")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
     def test_ensure_sample_log_consistency_exits_when_none_or_empty_str(self, mock_load_log):
         mock_log = mock.create_autospec(IMATLogFile)
         mock_load_log.return_value = mock_log
@@ -255,7 +255,7 @@ class LoadDialogPresenterTest(unittest.TestCase):
         mock_load_log.assert_not_called()
         mock_log.raise_if_angle_missing.assert_not_called()
 
-    @mock.patch("mantidimaging.gui.windows.load_dialog.presenter.get_prefix", return_value="/path")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix", return_value="/path")
     def test_get_parameters(self, get_prefix):
         path_text = "/path/text"
         sample_input_path = "/sample/input/path"

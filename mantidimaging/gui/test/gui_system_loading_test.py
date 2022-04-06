@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication, QDialogButtonBox
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
-from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
@@ -86,13 +86,13 @@ class TestGuiSystemLoading(GuiSystemBase):
     def test_save_images(self):
         self._load_images()
 
-        self.main_window.show_save_dialogue()
+        self.main_window.show_image_save_dialog()
 
         with mock.patch("mantidimaging.gui.windows.main.MainWindowModel.do_images_saving") as mock_save:
-            self._wait_for_widget_visible(MWSaveDialog)
+            self._wait_for_widget_visible(ImageSaveDialog)
             QApplication.processEvents()
 
-            ok_button = self.main_window.save_dialogue.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
+            ok_button = self.main_window.image_save_dialog.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()

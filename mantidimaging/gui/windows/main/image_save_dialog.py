@@ -22,12 +22,12 @@ def sort_by_tomo_and_recon(stack_id: "StackId"):
         return 3
 
 
-class MWSaveDialog(QDialog):
+class ImageSaveDialog(QDialog):
     selected_stack = Optional[uuid.UUID]
 
     def __init__(self, parent, stack_list):
         super().__init__(parent)
-        compile_ui('gui/ui/save_dialog.ui', self)
+        compile_ui('gui/ui/image_save_dialog.ui', self)
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
 
@@ -54,7 +54,7 @@ class MWSaveDialog(QDialog):
 
     def save_all(self):
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
-        self.parent().execute_save()
+        self.parent().execute_image_file_save()
 
     def save_path(self) -> str:
         """

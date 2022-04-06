@@ -5,9 +5,11 @@ import os
 from logging import getLogger
 from typing import List, Union, Optional, Dict, Callable
 
+import h5py
 import numpy as np
 
 from .utility import DEFAULT_IO_FILE_FORMAT
+from ..data.dataset import StrictDataset
 from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
@@ -53,18 +55,18 @@ def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.nd
         rangle[...] = projection_angles
 
 
-def save(images: ImageStack,
-         output_dir: str,
-         name_prefix: str = DEFAULT_NAME_PREFIX,
-         swap_axes: bool = False,
-         out_format: str = DEFAULT_IO_FILE_FORMAT,
-         overwrite_all: bool = False,
-         custom_idx: Optional[int] = None,
-         zfill_len: int = DEFAULT_ZFILL_LENGTH,
-         name_postfix: str = DEFAULT_NAME_POSTFIX,
-         indices: Union[List[int], Indices, None] = None,
-         pixel_depth: Optional[str] = None,
-         progress: Optional[Progress] = None) -> Union[str, List[str]]:
+def image_save(images: ImageStack,
+               output_dir: str,
+               name_prefix: str = DEFAULT_NAME_PREFIX,
+               swap_axes: bool = False,
+               out_format: str = DEFAULT_IO_FILE_FORMAT,
+               overwrite_all: bool = False,
+               custom_idx: Optional[int] = None,
+               zfill_len: int = DEFAULT_ZFILL_LENGTH,
+               name_postfix: str = DEFAULT_NAME_POSTFIX,
+               indices: Union[List[int], Indices, None] = None,
+               pixel_depth: Optional[str] = None,
+               progress: Optional[Progress] = None) -> Union[str, List[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -163,6 +165,77 @@ def save(images: ImageStack,
                 progress.update(msg='Image')
 
         return names
+
+
+def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
+    """
+    Uses information from a StrictDataset to create a NeXus file.
+    :param dataset: The dataset to save as a NeXus file.
+    :param path: The NeXus file path.
+    :param sample_name: The sample name.
+    """
+    try:
+        with h5py.File(path, "w", driver="core") as nexus_file:
+            _nexus_save(nexus_file, dataset, sample_name)
+    except OSError:
+        pass
+
+
+def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
+    """
+    Takes a NeXus file and writes the StrictDataset information to it.
+    :param nexus_file: The NeXus file.
+    :param dataset: The StrictDataset.
+    :param sample_name: The sample name.
+    """
+    # Top-level group
+    entry = nexus_file.create_group("entry1")
+    _set_nx_class(entry, "NXentry")
+
+    # Tomo entry
+    tomo_entry = entry.create_group("tomo_entry")
+    _set_nx_class(tomo_entry, "NXsubentry")
+
+    # definition field
+    tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+
+    # instrument field
+    instrument_group = tomo_entry.create_group("instrument")
+    _set_nx_class(instrument_group, "NXinstrument")
+
+    # instrument/detector field
+    detector = instrument_group.create_group("detector")
+    _set_nx_class(detector, "NXdetector")
+
+    # instrument data
+    combined_data = np.concatenate(dataset.nexus_arrays).astype("uint16")
+    detector.create_dataset("data", data=combined_data)
+    detector.create_dataset("image_key", data=dataset.image_keys)
+
+    # sample field
+    sample_group = tomo_entry.create_group("sample")
+    _set_nx_class(sample_group, "NXsample")
+    sample_group.create_dataset("name", data=np.string_(sample_name))
+
+    # rotation angle
+    rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.rotation_angles))
+    rotation_angle.attrs["units"] = "rad"
+
+    # data field
+    data = tomo_entry.create_group("data")
+    _set_nx_class(data, "NXdata")
+    data["data"] = detector["data"]
+    data["rotation_angle"] = rotation_angle
+    data["image_key"] = detector["image_key"]
+
+
+def _set_nx_class(group: h5py.Group, class_name: str):
+    """
+    Sets the NX_class attribute of data in a NeXus file.
+    :param group: The h5py group.
+    :param class_name: The class name.
+    """
+    group.attrs["NX_class"] = np.string_(class_name)
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:

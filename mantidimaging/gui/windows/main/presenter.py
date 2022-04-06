@@ -19,7 +19,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
-from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
@@ -40,11 +40,12 @@ logger = getLogger(__name__)
 
 
 class Notification(Enum):
-    LOAD = auto()
-    SAVE = auto()
+    IMAGE_FILE_LOAD = auto()
+    IMAGE_FILE_SAVE = auto()
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
     NEXUS_LOAD = auto()
+    NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
     ADD_RECON = auto()
 
@@ -66,16 +67,18 @@ class MainWindowPresenter(BasePresenter):
 
     def notify(self, signal: Notification, **baggage):
         try:
-            if signal == Notification.LOAD:
-                self.load_dataset()
-            elif signal == Notification.SAVE:
-                self.save()
+            if signal == Notification.IMAGE_FILE_LOAD:
+                self.load_image_files()
+            elif signal == Notification.IMAGE_FILE_SAVE:
+                self.save_image_files()
             elif signal == Notification.REMOVE_STACK:
                 self._delete_container(**baggage)
             elif signal == Notification.RENAME_STACK:
                 self._do_rename_stack(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
+            elif signal == Notification.NEXUS_SAVE:
+                self.save_nexus_file()
             elif signal == Notification.FOCUS_TAB:
                 self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
@@ -114,9 +117,9 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
 
-    def load_dataset(self, par: Optional[LoadingParameters] = None) -> None:
-        if par is None and self.view.load_dialogue is not None:
-            par = self.view.load_dialogue.get_parameters()
+    def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
+        if par is None and self.view.image_load_dialog is not None:
+            par = self.view.image_load_dialog.get_parameters()
         if par is None:
             return
 
@@ -131,6 +134,12 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_dataset_to_model(dataset)
         self._add_strict_dataset_to_view(dataset)
         self.view.model_changed.emit()
+
+    def save_nexus_file(self):
+        assert self.view.nexus_save_dialog is not None
+        dataset_id = self.view.nexus_save_dialog.selected_dataset
+        self.model.do_nexus_saving(dataset_id, self.view.nexus_save_dialog.save_path(),
+                                   self.view.nexus_save_dialog.sample_name())
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
@@ -337,15 +346,15 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 
-    def save(self) -> None:
-        assert isinstance(self.view.save_dialogue, MWSaveDialog)
+    def save_image_files(self) -> None:
+        assert isinstance(self.view.image_save_dialog, ImageSaveDialog)
         kwargs = {
-            'images_id': self.view.save_dialogue.selected_stack,
-            'output_dir': self.view.save_dialogue.save_path(),
-            'name_prefix': self.view.save_dialogue.name_prefix(),
-            'image_format': self.view.save_dialogue.image_format(),
-            'overwrite': self.view.save_dialogue.overwrite(),
-            'pixel_depth': self.view.save_dialogue.pixel_depth()
+            'images_id': self.view.image_save_dialog.selected_stack,
+            'output_dir': self.view.image_save_dialog.save_path(),
+            'name_prefix': self.view.image_save_dialog.name_prefix(),
+            'image_format': self.view.image_save_dialog.image_format(),
+            'overwrite': self.view.image_save_dialog.overwrite(),
+            'pixel_depth': self.view.image_save_dialog.pixel_depth()
         }
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
@@ -365,7 +374,7 @@ class MainWindowPresenter(BasePresenter):
         return self.model.datasets.values()
 
     @property
-    def dataset_list(self) -> List[DatasetId]:
+    def strict_dataset_list(self) -> List[DatasetId]:
         datasets = [
             DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
             if isinstance(dataset, StrictDataset)
@@ -465,11 +474,11 @@ class MainWindowPresenter(BasePresenter):
         if loading_params is None:
             return False
 
-        self.load_dataset(loading_params)
+        self.load_image_files(loading_params)
         return True
 
     def wizard_action_load(self) -> None:
-        self.view.show_load_dialogue()
+        self.view.show_image_load_dialog()
 
     def show_operation(self, operation_name: str) -> None:
         self.view.show_filters_window()

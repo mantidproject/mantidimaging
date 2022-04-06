@@ -24,10 +24,11 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
-from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
+from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
-from mantidimaging.gui.windows.main.save_dialog import MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
@@ -76,15 +77,17 @@ class MainWindowView(BaseMainWindowView):
     actionLoadDataset: QAction
     actionLoadImages: QAction
     actionLoadNeXusFile: QAction
-    actionSave: QAction
+    actionSaveImages: QAction
+    actionSaveNeXusFile: QAction
     actionExit: QAction
 
     filters: Optional[FiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
 
-    load_dialogue: Optional[MWLoadDialog] = None
-    save_dialogue: Optional[MWSaveDialog] = None
+    image_load_dialog: Optional[ImageLoadDialog] = None
+    image_save_dialog: Optional[ImageSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
+    nexus_save_dialog: Optional[NexusSaveDialog] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -145,13 +148,14 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
     def setup_shortcuts(self):
-        self.actionLoadDataset.triggered.connect(self.show_load_dialogue)
+        self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
-        self.actionLoadNeXusFile.triggered.connect(self.show_load_nexus_dialog)
+        self.actionLoadNeXusFile.triggered.connect(self.show_nexus_load_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
-        self.actionSave.triggered.connect(self.show_save_dialogue)
+        self.actionSaveImages.triggered.connect(self.show_image_save_dialog)
+        self.actionSaveNeXusFile.triggered.connect(self.show_nexus_save_dialog)
         self.actionExit.triggered.connect(self.close)
 
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
@@ -185,7 +189,8 @@ class MainWindowView(BaseMainWindowView):
         has_datasets = len(self.presenter.datasets) > 0
         has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
 
-        self.actionSave.setEnabled(has_datasets)
+        self.actionSaveImages.setEnabled(has_datasets)
+        self.actionSaveNeXusFile.setEnabled(has_strict_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionLoad180deg.setEnabled(has_strict_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
@@ -201,11 +206,11 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_window = WelcomeScreenPresenter(self)
         self.welcome_window.show()
 
-    def show_load_dialogue(self):
-        self.load_dialogue = MWLoadDialog(self)
-        self.load_dialogue.show()
+    def show_image_load_dialog(self):
+        self.image_load_dialog = ImageLoadDialog(self)
+        self.image_load_dialog.show()
 
-    def show_load_nexus_dialog(self):
+    def show_nexus_load_dialog(self):
         self.nexus_load_dialog = NexusLoadDialog(self)
         self.nexus_load_dialog.show()
 
@@ -293,18 +298,25 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
                                 f"{stack_name}.")
 
-    def execute_save(self):
-        self.presenter.notify(PresNotification.SAVE)
+    def execute_image_file_save(self):
+        self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
 
-    def execute_load(self):
-        self.presenter.notify(PresNotification.LOAD)
+    def execute_image_file_load(self):
+        self.presenter.notify(PresNotification.IMAGE_FILE_LOAD)
 
     def execute_nexus_load(self):
         self.presenter.notify(PresNotification.NEXUS_LOAD)
 
-    def show_save_dialogue(self):
-        self.save_dialogue = MWSaveDialog(self, self.stack_list)
-        self.save_dialogue.show()
+    def execute_nexus_save(self):
+        self.presenter.notify(PresNotification.NEXUS_SAVE)
+
+    def show_image_save_dialog(self):
+        self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
+        self.image_save_dialog.show()
+
+    def show_nexus_save_dialog(self):
+        self.nexus_save_dialog = NexusSaveDialog(self, self.strict_dataset_list)
+        self.nexus_save_dialog.show()
 
     def show_recon_window(self):
         if not self.recon:
@@ -329,8 +341,8 @@ class MainWindowView(BaseMainWindowView):
         return self.presenter.stack_visualiser_list
 
     @property
-    def dataset_list(self):
-        return self.presenter.dataset_list
+    def strict_dataset_list(self):
+        return self.presenter.strict_dataset_list
 
     @property
     def stack_names(self):

@@ -51,7 +51,7 @@ def select_directory(field, caption):
     assert isinstance(field, QLineEdit), ("The passed object is of type {0}. This function only works with "
                                           "QLineEdit".format(type(field)))
 
-    # open file dialogue and set the text if file is selected
+    # open file dialog and set the text if file is selected
     field.setText(QFileDialog.getExistingDirectory(caption=caption))
 
 

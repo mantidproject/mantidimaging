@@ -3,9 +3,10 @@
 
 import unittest
 
+import numpy as np
 from numpy import array_equal
 
-from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message
+from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -13,6 +14,10 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 def test_delete_stack_error_message():
     assert _delete_stack_error_message("stack-id") == "Unable to delete stack: ImageStack with ID stack-id not " \
                                                       "present in dataset."
+
+
+def test_image_key_list():
+    assert _image_key_list(2, 5) == [2, 2, 2, 2, 2]
 
 
 class StrictDatasetTest(unittest.TestCase):
@@ -142,3 +147,74 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.recons = ReconList([generate_images() for _ in range(2)])
         self.strict_dataset.delete_recons()
         self.assertListEqual(self.strict_dataset.recons.stacks, [])
+
+    def test_nexus_stack_order(self):
+        self.assertListEqual(self.strict_dataset._nexus_stack_order, [
+            self.strict_dataset.dark_before, self.strict_dataset.flat_before, self.strict_dataset.sample,
+            self.strict_dataset.flat_after, self.strict_dataset.dark_after
+        ])
+
+    def test_nexus_arrays(self):
+        self.assertListEqual(self.strict_dataset.nexus_arrays, [
+            self.strict_dataset.dark_before.data, self.strict_dataset.flat_before.data, self.strict_dataset.sample.data,
+            self.strict_dataset.flat_after.data, self.strict_dataset.dark_after.data
+        ])
+
+    def test_rotation_angles(self):
+        assert np.array_equal(self.strict_dataset.rotation_angles, [
+            self.strict_dataset.dark_before.projection_angles().value,
+            self.strict_dataset.flat_before.projection_angles().value,
+            self.strict_dataset.sample.projection_angles().value,
+            self.strict_dataset.flat_after.projection_angles().value,
+            self.strict_dataset.dark_after.projection_angles().value
+        ])
+
+    def test_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_dark_before_image_keys(self):
+        self.strict_dataset.dark_before = None
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [1, 1, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_flat_before_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = None
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 0, 0, 1, 1, 2, 2])
+
+    def test_missing_flat_after_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = None
+        self.strict_dataset.dark_after = generate_images((2, 5, 5))
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 2, 2])
+
+    def test_missing_dark_after_image_keys(self):
+        self.strict_dataset.dark_before = generate_images((2, 5, 5))
+        self.strict_dataset.flat_before = generate_images((2, 5, 5))
+        self.strict_dataset.sample = generate_images((2, 5, 5))
+        self.strict_dataset.flat_after = generate_images((2, 5, 5))
+        self.strict_dataset.dark_after = None
+
+        self.assertListEqual(self.strict_dataset.image_keys, [2, 2, 1, 1, 0, 0, 1, 1])
+
+    def test_no_sample_image_keys(self):
+        self.strict_dataset.sample = None
+        with self.assertRaises(RuntimeError):
+            self.strict_dataset.image_keys

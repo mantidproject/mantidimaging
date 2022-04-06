@@ -5,16 +5,16 @@ from unittest import mock
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest, LOAD_SAMPLE
 
 
-class LoadDialogTest(BaseEyesTest):
+class ImageLoadDialogTest(BaseEyesTest):
     def test_load_dialog_opens(self):
         self.imaging.actionLoadDataset.trigger()
 
-        self.check_target(widget=self.imaging.load_dialogue)
+        self.check_target(widget=self.imaging.image_load_dialog)
 
     def test_load_dialog_selected_dataset(self):
         self.imaging.actionLoadDataset.trigger()
-        self.imaging.load_dialogue.select_file = mock.MagicMock(return_value=LOAD_SAMPLE)
+        self.imaging.image_load_dialog.select_file = mock.MagicMock(return_value=LOAD_SAMPLE)
 
-        self.imaging.load_dialogue.presenter.do_update_sample()
+        self.imaging.image_load_dialog.presenter.do_update_sample()
 
-        self.check_target(widget=self.imaging.load_dialogue)
+        self.check_target(widget=self.imaging.image_load_dialog)

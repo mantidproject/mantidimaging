@@ -14,7 +14,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
-from mantidimaging.gui.windows.load_dialog import MWLoadDialog
+from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
 from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -36,7 +36,7 @@ def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
 class MainWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
-        self.view.load_dialogue = mock.create_autospec(MWLoadDialog)
+        self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
         self.images = [generate_images() for _ in range(5)]
         self.dataset = StrictDataset(sample=self.images[0],
@@ -107,17 +107,17 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_dataset_stack(self, start_async_mock: mock.Mock):
         parameters_mock = mock.Mock()
         parameters_mock.sample.input_path.return_value = "123"
-        self.view.load_dialogue.get_parameters.return_value = parameters_mock
+        self.view.image_load_dialog.get_parameters.return_value = parameters_mock
 
-        self.presenter.load_dataset()
+        self.presenter.load_image_files()
 
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_dataset,
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_load_dataset_returns_when_par_and_view_dialog_are_none(self, start_async_mock: mock.Mock):
-        self.view.load_dialogue = None
-        self.presenter.load_dataset()
+        self.view.image_load_dialog = None
+        self.presenter.load_image_files()
 
         start_async_mock.assert_not_called()
 
@@ -228,7 +228,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
-        self.view.show_load_dialogue.assert_called_once()
+        self.view.show_image_load_dialog.assert_called_once()
 
     def test_wizard_action_show_operation(self):
         OPERATION_STR = "ROI Normalisation"
@@ -544,7 +544,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
-        dataset_list = self.presenter.dataset_list
+        dataset_list = self.presenter.strict_dataset_list
         assert len(dataset_list) == 2
 
     def test_add_child_item_to_tree_view(self):
@@ -772,6 +772,20 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.remove_item_from_tree_view(item_to_delete_id)
         recon_group_mock.takeChild.assert_not_called()
         top_level_item_mock.takeChild.assert_called_once_with(1)
+
+    def test_save_nexus_fails_when_no_nexus_save_dialog(self):
+        self.presenter.view.nexus_save_dialog = None
+        with self.assertRaises(AssertionError):
+            self.presenter.save_nexus_file()
+
+    def test_save_nexus_file(self):
+        self.view.nexus_save_dialog = nexus_save_dialog_mock = mock.Mock()
+        nexus_save_dialog_mock.save_path.return_value = save_path = "nexus/save/path"
+        nexus_save_dialog_mock.sample_name.return_value = sample_name = "sample-name"
+        nexus_save_dialog_mock.selected_dataset = dataset_id = "dataset-id"
+
+        self.presenter.notify(Notification.NEXUS_SAVE)
+        self.model.do_nexus_saving.assert_called_once_with(dataset_id, save_path, sample_name)
 
 
 if __name__ == '__main__':

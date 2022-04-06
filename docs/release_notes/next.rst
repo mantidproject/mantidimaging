@@ -8,6 +8,7 @@ New Features
 
 - #1340 : ROI norm - remove preserve max option
 - #1379 : Add angle/z axis slider in the operations window
+- #1217 : Basic NeXus Saving
 
 Fixes
 -----

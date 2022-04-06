@@ -5,11 +5,11 @@ import unittest
 import uuid
 
 from mantidimaging.gui.windows.main.presenter import StackId
-from mantidimaging.gui.windows.main.save_dialog import sort_by_tomo_and_recon, MWSaveDialog
+from mantidimaging.gui.windows.main.image_save_dialog import sort_by_tomo_and_recon, ImageSaveDialog
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
 
-class SaveDialogTest(unittest.TestCase):
+class ImageSaveDialogTest(unittest.TestCase):
     def test_sort_stack_names_order(self):
         stack_list = [
             StackId(uuid.uuid4(), "Stack 1"),
@@ -34,7 +34,7 @@ class SaveDialogQtTest(unittest.TestCase):
             StackId(uuid.uuid4(), "Stack Tomo"),
             StackId(uuid.uuid4(), "Stack Recon"),
         ]
-        mwsd = MWSaveDialog(None, stack_list)
+        mwsd = ImageSaveDialog(None, stack_list)
 
         # the Recon stack is top choice
         self.assertEqual(mwsd.stack_uuids[0], stack_list[4].id)
