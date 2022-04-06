@@ -16,4 +16,4 @@ class NexusSaveDialogTest(BaseEyesTest):
             mock_dataset_list.return_value = dataset_list
             self.imaging.actionSaveNeXusFile.trigger()
 
-        self.check_target(widget=self.imaging.image_save_dialog)
+        self.check_target(widget=self.imaging.nexus_save_dialog)
