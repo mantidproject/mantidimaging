@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import math
 from pathlib import Path
 from unittest import mock
 
@@ -82,6 +83,43 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(len(stacks_after), 5)
         self.assertIn(stacks[0], stacks_after)
         self.assertTrue(stacks[0].presenter.images.has_proj180deg())
+
+    def _get_log_angle(self, log_path):
+        with open(log_path) as log_file:
+            for line in log_file:
+                if "Projection:  1" in line:
+                    words = line.split()
+                    angle = float(words[words.index("angle:") + 1])
+                    return angle
+        raise ValueError(f"Could not extract angle from: {log_path}")
+
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
+    def test_load_log(self, mocked_select_file):
+        log_path = Path(LOAD_SAMPLE).parents[1] / "TomoIMAT00010675_FlowerFine_log.txt"
+        mocked_select_file.return_value = log_path
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
+        self._load_data_set()
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+
+        self.assertEqual(len(self.main_window.presenter.datasets), 1)
+        sample = list(self.main_window.presenter.datasets)[0].sample
+        self.assertNotIn("log_file", sample.metadata)
+
+        # Initial angles are just evenly spaced from 0 to 2*pi
+        stack_len = sample.num_images
+        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
+
+        # Load sample log
+        QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
+        QTimer.singleShot(SHORT_DELAY * 2, lambda: self._click_messageBox("OK"))
+        self.main_window.actionSampleLoadLog.trigger()
+
+        self.assertIn("log_file", sample.metadata)
+        self.assertEqual(sample.metadata['log_file'], log_path)
+
+        # After loading angles should match file
+        log_angle = math.radians(self._get_log_angle(log_path))
+        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 12)
 
     def test_save_images(self):
         self._load_images()
