@@ -97,7 +97,7 @@ class MedianFilter(BaseFilter):
         if not force_cpu:
             _execute_gpu(data.data, size, mode, progress)
         else:
-            _execute(data.data, size, mode, cores, chunksize, progress)
+            _execute(data, size, mode, cores, chunksize, progress)
 
         h.check_data_stack(data)
         return data
@@ -150,7 +150,7 @@ def _median_filter(data: np.ndarray, size: int, mode: str):
     return data
 
 
-def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
+def _execute(images: ImageStack, size, mode, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
@@ -159,10 +159,10 @@ def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
 
     with progress:
         log.info("PARALLEL median filter, with pixel data type: {0}, filter "
-                 "size/width: {1}.".format(data.dtype, size))
+                 "size/width: {1}.".format(images.dtype, size))
 
-        ps.shared_list = [data]
-        ps.execute(f, data.shape[0], progress, msg="Median filter", cores=cores)
+        ps.shared_list = [images.shared_array]
+        ps.execute(f, images.data.shape[0], progress, msg="Median filter", cores=cores)
 
 
 def _execute_gpu(data, size, mode, progress=None):

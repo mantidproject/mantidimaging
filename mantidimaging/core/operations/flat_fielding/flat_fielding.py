@@ -121,7 +121,7 @@ class FlatFieldFilter(BaseFilter):
             progress = Progress.ensure_instance(progress,
                                                 num_steps=images.data.shape[0],
                                                 task_name='Background Correction')
-            _execute(images.data, flat_avg, dark_avg, cores, chunksize, progress)
+            _execute(images, flat_avg, dark_avg, cores, chunksize, progress)
 
         h.check_data_stack(images)
         return images
@@ -270,7 +270,12 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def _execute(data: np.ndarray, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+def _norm_divide(flat, dark):
+    # subtract dark from flat
+    return np.subtract(flat, dark)
+
+
+def _execute(images: ImageStack, flat=None, dark=None, cores=None, chunksize=None, progress=None):
     """A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
 
@@ -290,22 +295,24 @@ def _execute(data: np.ndarray, flat=None, dark=None, cores=None, chunksize=None,
     with progress:
         progress.update(msg="Applying background correction")
 
-        norm_divide = pu.create_array((data.shape[1], data.shape[2]), data.dtype)
-
-        # subtract dark from flat and copy into shared array with [:]
-        norm_divide.array[:] = np.subtract(flat, dark)
+        if images.uses_shared_memory:
+            shared_dark = pu.copy_into_shared_memory(dark)
+            norm_divide = pu.copy_into_shared_memory(_norm_divide(flat, dark))
+        else:
+            shared_dark = pu.SharedArray(dark, None)
+            norm_divide = pu.SharedArray(_norm_divide(flat, dark), None)
 
         # prevent divide-by-zero issues, and negative pixels make no sense
         norm_divide.array[norm_divide.array == 0] = MINIMUM_PIXEL_VALUE
 
         # subtract the dark from all images
         do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
-        ps.shared_list = [data, dark]
-        ps.execute(do_subtract, data.shape[0], progress, cores=cores)
+        ps.shared_list = [images.shared_array, shared_dark]
+        ps.execute(do_subtract, images.data.shape[0], progress, cores=cores)
 
         # divide the data by (flat - dark)
         do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
-        ps.shared_list = [data, norm_divide.array]
-        ps.execute(do_divide, data.shape[0], progress, cores=cores)
+        ps.shared_list = [images.shared_array, norm_divide]
+        ps.execute(do_divide, images.data.shape[0], progress, cores=cores)
 
-    return data
+    return images

@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFormLayout, QWidget
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
+from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
@@ -40,9 +41,9 @@ class MonitorNormalisation(BaseFilter):
         if counts is None:
             raise RuntimeError("No loaded log values for this stack.")
 
-        counts_val = counts.value / counts.value[0]
+        counts_val = pu.copy_into_shared_memory(counts.value / counts.value[0])
         do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
-        ps.shared_list = [images.data, counts_val]
+        ps.shared_list = [images.shared_array, counts_val]
         ps.execute(do_division, images.num_projections, progress, cores=cores)
         return images
 

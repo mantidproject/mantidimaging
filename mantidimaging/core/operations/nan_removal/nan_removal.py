@@ -55,13 +55,12 @@ class NaNRemovalFilter(BaseFilter):
         :return: The ImageStack object with the NaNs replaced.
         """
 
-        sample = data.data
-        nan_idxs = np.isnan(sample)
-
         if mode_value == "Constant":
+            sample = data.data
+            nan_idxs = np.isnan(sample)
             sample[nan_idxs] = replace_value
         elif mode_value == "Median":
-            _execute(sample, 3, "reflect", cores, chunksize, progress)
+            _execute(data, 3, "reflect", cores, chunksize, progress)
         else:
             raise ValueError(f"Unknown mode: '{mode_value}'\nShould be one of {NaNRemovalFilter.MODES}")
 
@@ -113,7 +112,7 @@ def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
     return data
 
 
-def _execute(data, size, edgemode, cores=None, chunksize=None, progress=None):
+def _execute(images: ImageStack, size, edgemode, cores=None, chunksize=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='NaN Removal')
 
@@ -121,9 +120,9 @@ def _execute(data, size, edgemode, cores=None, chunksize=None, progress=None):
     f = ps.create_partial(_nan_to_median, ps.return_to_self, size=size, edgemode=edgemode)
 
     with progress:
-        log.info("PARALLEL NaN Removal filter, with pixel data type: {0}".format(data.dtype))
+        log.info("PARALLEL NaN Removal filter, with pixel data type: {0}".format(images.dtype))
 
-        ps.shared_list = [data]
-        ps.execute(f, data.shape[0], progress, msg="NaN Removal", cores=cores)
+        ps.shared_list = [images.shared_array]
+        ps.execute(f, images.data.shape[0], progress, msg="NaN Removal", cores=cores)
 
-    return data
+    return images

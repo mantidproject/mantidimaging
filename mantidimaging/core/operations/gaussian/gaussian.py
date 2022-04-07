@@ -3,7 +3,6 @@
 
 from functools import partial
 from logging import getLogger
-import numpy as np
 
 import scipy.ndimage as scipy_ndimage
 
@@ -52,7 +51,7 @@ class GaussianFilter(BaseFilter):
         if not size or not size > 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        _execute(data.data, size, mode, order, cores, progress)
+        _execute(data, size, mode, order, cores, progress)
         h.check_data_stack(data)
         return data
 
@@ -93,19 +92,19 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _execute(data: np.ndarray, size, mode, order, cores=None, progress=None):
+def _execute(images: ImageStack, size, mode, order, cores=None, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
 
     f = ps.create_partial(scipy_ndimage.gaussian_filter, ps.return_to_self, sigma=size, mode=mode, order=order)
 
     log.info("Starting PARALLEL gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(data.dtype, size))
+             "filter size/width: {1}.".format(images.dtype, size))
 
     progress.update()
-    ps.shared_list = [data]
-    ps.execute(f, data.shape[0], progress, msg="Gaussian filter", cores=cores)
+    ps.shared_list = [images.shared_array]
+    ps.execute(f, images.data.shape[0], progress, msg="Gaussian filter", cores=cores)
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(data.dtype, size))
+             "filter size/width: {1}.".format(images.dtype, size))

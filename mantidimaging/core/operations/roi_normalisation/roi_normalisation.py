@@ -83,14 +83,8 @@ class RoiNormalisationFilter(BaseFilter):
         if not region_of_interest:
             raise ValueError('region_of_interest must be provided')
 
-        if flat_field is not None:
-            flat_field_data = flat_field.data
-        else:
-            flat_field_data = None
-
-        # just get data reference
         progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-        _execute(images.data, region_of_interest, normalisation_mode, flat_field_data, cores, chunksize, progress)
+        _execute(images, region_of_interest, normalisation_mode, flat_field, cores, chunksize, progress)
         h.check_data_stack(images)
         return images
 
@@ -159,10 +153,10 @@ def _divide_by_air(data=None, air_sums=None):
     data[:] = np.true_divide(data, air_sums)
 
 
-def _execute(data: np.ndarray,
+def _execute(images: ImageStack,
              air_region: SensibleROI,
              normalisation_mode: str,
-             flat_field: Optional[np.ndarray],
+             flat_field: Optional[ImageStack],
              cores=None,
              chunksize=None,
              progress=None):
@@ -174,8 +168,8 @@ def _execute(data: np.ndarray,
             air_region = SensibleROI.from_list(air_region)
 
         # initialise same number of air sums
-        img_num = data.shape[0]
-        air_means = pu.create_array((img_num, ), data.dtype)
+        img_num = images.data.shape[0]
+        air_means = pu.create_array((img_num, ), images.dtype)
 
         do_calculate_air_means = ps.create_partial(_calc_mean,
                                                    ps.return_to_second_at_i,
@@ -184,24 +178,24 @@ def _execute(data: np.ndarray,
                                                    air_right=air_region.right,
                                                    air_bottom=air_region.bottom)
 
-        ps.shared_list = [data, air_means.array]
-        ps.execute(do_calculate_air_means, data.shape[0], progress, cores=cores)
+        ps.shared_list = [images.shared_array, air_means]
+        ps.execute(do_calculate_air_means, images.data.shape[0], progress, cores=cores)
 
         if normalisation_mode == 'Stack Average':
             air_means.array /= air_means.array.mean()
 
         elif normalisation_mode == 'Flat Field' and flat_field is not None:
-            flat_mean = pu.create_array((flat_field.shape[0], ), flat_field.dtype)
-            ps.shared_list = [flat_field, flat_mean.array]
-            ps.execute(do_calculate_air_means, flat_field.shape[0], progress, cores=cores)
+            flat_mean = pu.create_array((flat_field.data.shape[0], ), flat_field.dtype)
+            ps.shared_list = [flat_field.shared_array, flat_mean]
+            ps.execute(do_calculate_air_means, flat_field.data.shape[0], progress, cores=cores)
             air_means.array /= flat_mean.array.mean()
 
         if np.isnan(air_means.array).any():
             raise ValueError("Air region contains invalid (NaN) pixels")
 
         do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
-        ps.shared_list = [data, air_means.array]
-        ps.execute(do_divide, data.shape[0], progress, cores=cores)
+        ps.shared_list = [images.shared_array, air_means]
+        ps.execute(do_divide, images.data.shape[0], progress, cores=cores)
 
         avg = np.average(air_means.array)
         max_avg = np.max(air_means.array) / avg

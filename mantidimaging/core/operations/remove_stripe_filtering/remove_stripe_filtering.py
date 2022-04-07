@@ -51,7 +51,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
                                   sigma=sigma,
                                   size=size,
                                   dim=window_dim)
-        ps.shared_list = [images.data]
+        ps.shared_list = [images.shared_array]
         ps.execute(f, images.data.shape[0], progress, cores=cores)
         return images
 

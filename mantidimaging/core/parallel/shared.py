@@ -2,53 +2,53 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import List
-
-import numpy
+from typing import List, Tuple
 
 from mantidimaging.core.parallel import utility as pu
 
-shared_list: List[numpy.ndarray] = []
+shared_list: List[pu.SharedArray] = []
 
 
-def inplace3(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1][i], shared_list[2], **kwargs)
+def inplace3(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace2(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1][i], **kwargs)
+def inplace2(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    func(data[0].array[i], data[1].array[i], **kwargs)
 
 
-def inplace1(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], **kwargs)
+def inplace1(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    func(data[0].array[i], **kwargs)
 
 
-def return_to_self(func, i, **kwargs):
-    global shared_list
-    shared_list[0][i] = func(shared_list[0][i], **kwargs)
+def return_to_self(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    data[0].array[i] = func(data[0].array[i], **kwargs)
 
 
-def inplace_second_2d(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1], **kwargs)
+def inplace_second_2d(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    func(data[0].array[i], data[1].array, **kwargs)
 
 
-def return_to_second(func, i, **kwargs):
-    global shared_list
-    shared_list[1] = func(shared_list[0][i], **kwargs)
+def return_to_second_at_i(func, array_details, i, **kwargs):
+    data = _get_array_list(array_details)
+    data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def return_to_second_at_i(func, i, **kwargs):
-    global shared_list
-    shared_list[1][i] = func(shared_list[0][i], **kwargs)
+def arithmetic(func, array_details, i, arg_list):
+    data = _get_array_list(array_details)
+    func(data[0].array[i], *arg_list)
 
 
-def arithmetic(func, i):
-    global shared_list
-    func(shared_list[0][i], *shared_list[1:])
+def _get_array_list(array_details):
+    if not array_details:
+        return shared_list
+    else:
+        return pu.lookup_shared_arrays(array_details)
 
 
 def create_partial(func, fwd_function, **kwargs):
@@ -111,8 +111,14 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
     :return:
     """
 
-    if not cores:
+    all_data_in_shared_memory, shared_array_details = _check_shared_mem_details()
+
+    if not all_data_in_shared_memory:
+        cores = 1
+    elif not cores:
         cores = pu.get_cores()
+
+    partial_func = partial(partial_func, shared_array_details)
 
     chunksize = pu.calculate_chunksize(cores)
 
@@ -120,3 +126,18 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
 
     global shared_list
     shared_list = []
+
+
+def _check_shared_mem_details() -> Tuple[bool, List[pu.SharedArrayDetails]]:
+    """
+    Checks if all shared arrays in shared_list are using shared memory and returns this result in the first element
+    of the tuple. If all the arrays are using shared memory, then the list of SharedArrayDetails are returned in the
+    second element of the tuple.
+    """
+    details = []
+    for shared_array in shared_list:
+        if shared_array.has_shared_memory:
+            details.append(shared_array.details)
+        else:
+            return False, []
+    return True, details
