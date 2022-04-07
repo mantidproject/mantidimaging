@@ -219,10 +219,12 @@ class MainWindowView(BaseMainWindowView):
         self.wizard.show()
 
     @staticmethod
-    def _get_file_name(caption: str, file_filter: str) -> str:
-        selected_file, _ = QFileDialog.getOpenFileName(caption=caption,
-                                                       filter=f"{file_filter};;All (*.*)",
-                                                       initialFilter=file_filter)
+    def _get_file_name(caption: str, file_filter: str = "All (*.*)") -> str:
+        if file_filter == "All (*.*)":
+            full_filter = file_filter
+        else:
+            full_filter = f"{file_filter};;All (*.*)"
+        selected_file, _ = QFileDialog.getOpenFileName(caption=caption, filter=full_filter, initialFilter=file_filter)
         return selected_file
 
     def load_image_stack(self):
@@ -289,8 +291,7 @@ class MainWindowView(BaseMainWindowView):
 
         stack_id = stack_selector.selected_id
 
-        selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                       filter="All (*.*)")
+        selected_file = self._get_file_name(self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION)
         if selected_file == "":
             return
 

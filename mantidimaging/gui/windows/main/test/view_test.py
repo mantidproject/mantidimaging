@@ -207,7 +207,8 @@ class MainWindowViewTest(unittest.TestCase):
                                                       message=self.view.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE,
                                                       show_stacks=True)
         getOpenFileName.assert_called_once_with(caption=self.view.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                filter="All (*.*)")
+                                                filter="All (*.*)",
+                                                initialFilter="All (*.*)")
 
         self.presenter.add_projection_angles_to_sample.assert_called_once_with(selected_stack, proj_angles)
         QMessageBox.information.assert_called_once()

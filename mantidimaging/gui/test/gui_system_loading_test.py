@@ -2,9 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import math
+import os
+import tempfile
 from pathlib import Path
 from unittest import mock
 
+import numpy
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QDialogButtonBox
@@ -120,6 +123,40 @@ class TestGuiSystemLoading(GuiSystemBase):
         # After loading angles should match file
         log_angle = math.radians(self._get_log_angle(log_path))
         self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 12)
+
+    def _make_angles_file(self, angles):
+        angles_file = tempfile.NamedTemporaryFile("w", delete=False)
+        angles_file.write(",".join(map(str, angles)))
+        angles_file.close()
+        return angles_file
+
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
+    def test_load_angles(self, mocked_select_file):
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
+        self._load_data_set()
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+
+        self.assertEqual(len(self.main_window.presenter.datasets), 1)
+        sample = list(self.main_window.presenter.datasets)[0].sample
+        self.assertNotIn("log_file", sample.metadata)
+
+        # Initial angles are just evenly spaced from 0 to 2*pi
+        stack_len = sample.num_images
+        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
+
+        test_angles = numpy.linspace(0, 100, stack_len)
+        angle_file = self._make_angles_file(test_angles)
+
+        mocked_select_file.return_value = angle_file.name
+
+        # Load angles
+        QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
+        QTimer.singleShot(SHORT_DELAY * 2, lambda: self._click_messageBox("OK"))
+        self.main_window.actionLoadProjectionAngles.trigger()
+
+        # After loading angles should match file
+        self.assertAlmostEqual(sample.projection_angles().value[1], math.radians(test_angles[1]), 12)
+        os.remove(angle_file.name)
 
     def test_save_images(self):
         self._load_images()
