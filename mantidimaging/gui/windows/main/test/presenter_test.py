@@ -376,20 +376,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.replace_child_item_id("dataset-id", "bad-id", "new-id")
 
-    def test_add_projection_angles_to_stack_success(self):
-        mock_stack = mock.Mock()
-        mock_stack.windowTitle.return_value = window_title = "window title"
-        stack_id = "stack-id"
-        self.presenter.stack_visualisers[stack_id] = mock_stack
-        projection_angles = ProjectionAngles(np.ndarray([1]))
-
-        self.presenter.add_projection_angles_to_sample(window_title, projection_angles)
-        self.model.add_projection_angles_to_sample(stack_id, projection_angles)
-
-    def test_add_projection_angles_to_stack_failure(self):
-        with self.assertRaises(RuntimeError):
-            self.presenter.add_projection_angles_to_sample("doesn't-exist", ProjectionAngles(np.ndarray([1])))
-        self.model.add_projection_angles_to_sample.assert_not_called()
+    def test_add_projection_angles_to_stack(self):
+        id, angles = "doesn't-exist", ProjectionAngles(np.ndarray([1]))
+        self.presenter.add_projection_angles_to_sample(id, angles)
+        self.model.add_projection_angles_to_sample.assert_called_with(id, angles)
 
     def test_remove_dataset_from_tree_view(self):
         """

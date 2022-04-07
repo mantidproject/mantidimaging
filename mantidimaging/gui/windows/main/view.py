@@ -23,7 +23,6 @@ from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSe
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
-from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -280,14 +279,15 @@ class MainWindowView(BaseMainWindowView):
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
 
     def load_projection_angles(self):
-        stack_selector = StackSelectorDialog(main_window=self,
-                                             title="Stack Selector",
-                                             message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
+        stack_selector = DatasetSelectorDialog(main_window=self,
+                                               title="Stack Selector",
+                                               message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE,
+                                               show_stacks=True)
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
 
-        stack_name = stack_selector.selected_stack
+        stack_id = stack_selector.selected_dataset
 
         selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
                                                        filter="All (*.*)")
@@ -297,9 +297,9 @@ class MainWindowView(BaseMainWindowView):
         pafp = ProjectionAngleFileParser(selected_file)
         projection_angles = pafp.get_projection_angles()
 
-        self.presenter.add_projection_angles_to_sample(stack_name, projection_angles)
+        self.presenter.add_projection_angles_to_sample(stack_id, projection_angles)
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
-                                f"{stack_name}.")
+                                f"{stack_id}.")
 
     def execute_image_file_save(self):
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)

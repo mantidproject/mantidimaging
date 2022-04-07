@@ -460,10 +460,7 @@ class MainWindowPresenter(BasePresenter):
                 return
         raise RuntimeError(f"Failed to get tree view item with ID {prev_id}")
 
-    def add_projection_angles_to_sample(self, stack_name: str, proj_angles: ProjectionAngles) -> None:
-        stack_id = self.get_stack_id_by_name(stack_name)
-        if stack_id is None:
-            raise RuntimeError(f"Failed to get stack with name {stack_name}")
+    def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
