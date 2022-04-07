@@ -243,7 +243,7 @@ class MainWindowView(BaseMainWindowView):
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
-        stack_to_add_log_to = stack_selector.selected_dataset
+        stack_to_add_log_to = stack_selector.selected_id
 
         # Open file dialog
         selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log *.csv)")
@@ -264,7 +264,7 @@ class MainWindowView(BaseMainWindowView):
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != dataset_selector.exec():
             return
-        dataset_to_add_180_deg_to = dataset_selector.selected_dataset
+        dataset_to_add_180_deg_to = dataset_selector.selected_id
 
         # Open file dialog
         selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
@@ -287,7 +287,7 @@ class MainWindowView(BaseMainWindowView):
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
 
-        stack_id = stack_selector.selected_dataset
+        stack_id = stack_selector.selected_id
 
         selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
                                                        filter="All (*.*)")

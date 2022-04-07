@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import uuid
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
@@ -19,7 +20,7 @@ class DatasetSelectorDialog(QDialog):
                  show_stacks: bool = False):
         super().__init__(main_window)
 
-        self.selected_dataset = None
+        self.selected_id: Optional[uuid.UUID] = None
 
         self.setModal(True)
         self.setMinimumWidth(300)
@@ -51,5 +52,5 @@ class DatasetSelectorDialog(QDialog):
         self.vertical_layout.addLayout(self.button_layout)
 
     def on_ok_clicked(self):
-        self.selected_dataset = self.dataset_selector_widget.current()
+        self.selected_id = self.dataset_selector_widget.current()
         self.done(QDialog.DialogCode.Accepted)

@@ -54,7 +54,7 @@ class MainWindowViewTest(unittest.TestCase):
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, dataset_selector_dialog: mock.Mock):
         dataset_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         dataset_id = "dataset-id"
-        dataset_selector_dialog.return_value.selected_dataset = dataset_id
+        dataset_selector_dialog.return_value.selected_id = dataset_id
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
@@ -192,7 +192,7 @@ class MainWindowViewTest(unittest.TestCase):
                                     ProjectionAngleFileParser: Mock, QMessageBox: Mock):
         DatasetSelectorDialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         selected_stack = "selected_id"
-        DatasetSelectorDialog.return_value.selected_dataset = selected_stack
+        DatasetSelectorDialog.return_value.selected_id = selected_stack
 
         selected_file = "~/home/test/directory/selected_file.txt"
         getOpenFileName.return_value = (selected_file, None)

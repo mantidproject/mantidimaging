@@ -46,7 +46,7 @@ class DatasetSelectorDialogTest(unittest.TestCase):
 
         diag.on_ok_clicked()
 
-        self.assertEqual(dataset_id, diag.selected_dataset)
+        self.assertEqual(dataset_id, diag.selected_id)
         diag.dataset_selector_widget.current.assert_called_once()
 
     def test_close_called_on_ok_clicked(self):
