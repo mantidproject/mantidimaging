@@ -8,7 +8,7 @@ from logging import getLogger
 from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
 from multiprocessing.pool import Pool
-from typing import List, Tuple, Union, TYPE_CHECKING, Optional
+from typing import List, Tuple, Union, TYPE_CHECKING, Optional, NamedTuple
 
 import numpy as np
 
@@ -29,13 +29,11 @@ def enough_memory(shape, dtype):
 
 def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
     """
-    Create an array, either in a memory file (if name provided), or purely in memory (if name is None)
+    Create an array in shared memory
 
     :param shape: Shape of the array
     :param dtype: Dtype of the array
-    :param name: Name of the shared memory array. If None, a non-shared array will be created
-    :param random_name: Whether to randomise the name. Will discard anything in the `name` parameter
-    :return: The created Numpy array
+    :return: The created SharedArray
     """
     if not enough_memory(shape, dtype):
         raise RuntimeError(
@@ -51,13 +49,27 @@ def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.flo
 
     name = pm.generate_mi_shared_mem_name()
     mem = shared_memory.SharedMemory(name=name, create=True, size=size)
-    array = _read_array_from_shared_memory(shape, dtype, mem)
-
-    return SharedArray(array, mem)
+    return _read_array_from_shared_memory(shape, dtype, mem, True)
 
 
-def _read_array_from_shared_memory(shape: Tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory) -> np.ndarray:
-    return np.ndarray(shape, dtype=dtype, buffer=mem.buf)
+def _read_array_from_shared_memory(shape: Tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory,
+                                   free_mem_on_delete: bool) -> 'SharedArray':
+    array = np.ndarray(shape, dtype=dtype, buffer=mem.buf)
+    return SharedArray(array, mem, free_mem_on_del=free_mem_on_delete)
+
+
+def copy_into_shared_memory(array: np.ndarray) -> 'SharedArray':
+    shared_array = create_array(array.shape, array.dtype)
+    shared_array.array[:] = array[:]
+    return shared_array
+
+
+def lookup_shared_arrays(array_details: List['SharedArrayDetails']) -> List['SharedArray']:
+    arrays = []
+    for details in array_details:
+        mem = shared_memory.SharedMemory(name=details.mem_name)
+        arrays.append(_read_array_from_shared_memory(details.shape, details.dtype, mem, False))
+    return arrays
 
 
 def get_cores():
@@ -110,19 +122,32 @@ def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int
 
 
 class SharedArray:
-    def __init__(self, array: np.ndarray, shared_memory: Optional[SharedMemory]):
+    def __init__(self, array: np.ndarray, shared_memory: Optional[SharedMemory], free_mem_on_del: bool = True):
         self.array = array
         self._shared_memory = shared_memory
+        self._free_mem_on_del = free_mem_on_del
 
     def __del__(self):
         if self.has_shared_memory:
-            try:
-                self._shared_memory.close()
-                self._shared_memory.unlink()
-            except FileNotFoundError:
-                # Do nothing, memory has already been freed
-                pass
+            self._shared_memory.close()
+            if self._free_mem_on_del:
+                try:
+                    self._shared_memory.unlink()
+                except FileNotFoundError:
+                    # Do nothing, memory has already been freed
+                    pass
 
     @property
     def has_shared_memory(self) -> bool:
         return self._shared_memory is not None
+
+    @property
+    def details(self) -> 'SharedArrayDetails':
+        mem_name = self._shared_memory.name if self._shared_memory else None
+        return SharedArrayDetails(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
+
+
+class SharedArrayDetails(NamedTuple):
+    mem_name: Optional[str]
+    shape: Tuple[int, ...]
+    dtype: 'npt.DTypeLike'
