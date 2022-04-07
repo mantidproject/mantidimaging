@@ -442,8 +442,8 @@ class MainWindowView(BaseMainWindowView):
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            one = self.presenter.get_stack_visualiser(dialog.stack_one.current()).presenter.images
-            two = self.presenter.get_stack_visualiser(dialog.stack_two.current()).presenter.images
+            one = self.presenter.get_stack(dialog.stack_one.current())
+            two = self.presenter.get_stack(dialog.stack_two.current())
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()

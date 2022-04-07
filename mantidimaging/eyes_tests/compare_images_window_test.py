@@ -13,9 +13,9 @@ class CompareImagesWindowTest(BaseEyesTest):
     @mock.patch("mantidimaging.gui.windows.main.view.MultipleStackSelect")
     def test_compare_images_window_opens(self, multi_stack_select):
         multi_stack_select.return_value.exec.return_value = QDialog.DialogCode.Accepted
-        self.imaging.presenter.get_stack_visualiser = mock.MagicMock()
-        self.imaging.presenter.get_stack_visualiser.return_value.presenter.images = generate_images(seed=2021)
-        self.imaging.find_images_stack_title = mock.MagicMock(return_value="Stack 1")
+        test_stack = generate_images(seed=2021)
+        self.imaging.presenter.get_stack = mock.MagicMock()
+        self.imaging.presenter.get_stack.return_value = test_stack
 
         stack_compare = self.imaging.show_stack_select_dialog()
 
