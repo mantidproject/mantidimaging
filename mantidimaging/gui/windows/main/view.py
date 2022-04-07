@@ -23,7 +23,6 @@ from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSe
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
-from mantidimaging.gui.widgets.stack_selector_dialog.stack_selector_dialog import StackSelectorDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -220,10 +219,12 @@ class MainWindowView(BaseMainWindowView):
         self.wizard.show()
 
     @staticmethod
-    def _get_file_name(caption: str, file_filter: str) -> str:
-        selected_file, _ = QFileDialog.getOpenFileName(caption=caption,
-                                                       filter=f"{file_filter};;All (*.*)",
-                                                       initialFilter=file_filter)
+    def _get_file_name(caption: str, file_filter: str = "All (*.*)") -> str:
+        if file_filter == "All (*.*)":
+            full_filter = file_filter
+        else:
+            full_filter = f"{file_filter};;All (*.*)"
+        selected_file, _ = QFileDialog.getOpenFileName(caption=caption, filter=full_filter, initialFilter=file_filter)
         return selected_file
 
     def load_image_stack(self):
@@ -237,13 +238,14 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.load_image_stack(selected_file)
 
     def load_sample_log_dialog(self):
-        stack_selector = StackSelectorDialog(main_window=self,
-                                             title="Stack Selector",
-                                             message="Which stack is the log being loaded for?")
+        stack_selector = DatasetSelectorDialog(main_window=self,
+                                               title="Stack Selector",
+                                               message="Which stack is the log being loaded for?",
+                                               show_stacks=True)
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
-        stack_to_add_log_to = stack_selector.selected_stack
+        stack_to_add_log_to = stack_selector.selected_id
 
         # Open file dialog
         selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log *.csv)")
@@ -252,17 +254,19 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        self.presenter.add_log_to_sample(stack_name=stack_to_add_log_to, log_file=selected_file)
+        self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=selected_file)
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")
 
     def load_180_deg_dialog(self):
-        dataset_selector = DatasetSelectorDialog(main_window=self, title="Dataset Selector")
+        dataset_selector = DatasetSelectorDialog(main_window=self,
+                                                 title="Dataset Selector",
+                                                 message="Which dataset is the 180 projection being loaded for?")
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != dataset_selector.exec():
             return
-        dataset_to_add_180_deg_to = dataset_selector.selected_dataset
+        dataset_to_add_180_deg_to = dataset_selector.selected_id
 
         # Open file dialog
         selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
@@ -277,26 +281,26 @@ class MainWindowView(BaseMainWindowView):
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
 
     def load_projection_angles(self):
-        stack_selector = StackSelectorDialog(main_window=self,
-                                             title="Stack Selector",
-                                             message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
+        stack_selector = DatasetSelectorDialog(main_window=self,
+                                               title="Stack Selector",
+                                               message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE,
+                                               show_stacks=True)
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
 
-        stack_name = stack_selector.selected_stack
+        stack_id = stack_selector.selected_id
 
-        selected_file, _ = QFileDialog.getOpenFileName(caption=self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                       filter="All (*.*)")
+        selected_file = self._get_file_name(self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION)
         if selected_file == "":
             return
 
         pafp = ProjectionAngleFileParser(selected_file)
         projection_angles = pafp.get_projection_angles()
 
-        self.presenter.add_projection_angles_to_sample(stack_name, projection_angles)
+        self.presenter.add_projection_angles_to_sample(stack_id, projection_angles)
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
-                                f"{stack_name}.")
+                                f"{stack_id}.")
 
     def execute_image_file_save(self):
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)

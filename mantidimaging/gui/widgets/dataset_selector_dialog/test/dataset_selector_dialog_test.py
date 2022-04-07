@@ -27,6 +27,18 @@ class DatasetSelectorDialogTest(unittest.TestCase):
         diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), title=None)
         self.assertEqual("", diag.windowTitle())
 
+    def test_message_label_set_to_given_message(self):
+        given_message = "given_message"
+
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), message=given_message)
+
+        self.assertEqual(given_message, diag.message_label.text())
+
+    def test_message_label_set_to_default_given_none(self):
+        diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), message=None)
+
+        self.assertEqual("Select the dataset", diag.message_label.text())
+
     def test_selected_dataset_called_on_ok_clicked(self):
         diag = DatasetSelectorDialog(main_window=FakeMainWindowView())
         dataset_id = "dataset-id"
@@ -34,7 +46,7 @@ class DatasetSelectorDialogTest(unittest.TestCase):
 
         diag.on_ok_clicked()
 
-        self.assertEqual(dataset_id, diag.selected_dataset)
+        self.assertEqual(dataset_id, diag.selected_id)
         diag.dataset_selector_widget.current.assert_called_once()
 
     def test_close_called_on_ok_clicked(self):

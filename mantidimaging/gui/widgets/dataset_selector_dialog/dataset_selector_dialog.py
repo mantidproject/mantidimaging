@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import uuid
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
@@ -12,10 +13,14 @@ if TYPE_CHECKING:
 
 
 class DatasetSelectorDialog(QDialog):
-    def __init__(self, main_window: Optional['MainWindowView'], title: Optional[str] = None):
+    def __init__(self,
+                 main_window: Optional['MainWindowView'],
+                 title: Optional[str] = None,
+                 message: Optional[str] = None,
+                 show_stacks: bool = False):
         super().__init__(main_window)
 
-        self.selected_dataset = None
+        self.selected_id: Optional[uuid.UUID] = None
 
         self.setModal(True)
         self.setMinimumWidth(300)
@@ -24,10 +29,17 @@ class DatasetSelectorDialog(QDialog):
             self.setWindowTitle(title)
 
         self.vertical_layout = QVBoxLayout(self)
-        self.vertical_layout.addWidget(QLabel("What dataset is the 180 projection being loaded for?", self))
+        if message is None:
+            self.message_label = QLabel("Select the dataset")
+        else:
+            self.message_label = QLabel(message)
+
+        self.vertical_layout.addWidget(self.message_label)
 
         # Dataset selector
-        self.dataset_selector_widget = DatasetSelectorWidgetView(self, relevant_dataset_types=StrictDataset)
+        self.dataset_selector_widget = DatasetSelectorWidgetView(self,
+                                                                 relevant_dataset_types=StrictDataset,
+                                                                 show_stacks=show_stacks)
         self.dataset_selector_widget.subscribe_to_main_window(main_window)  # type: ignore
         self.vertical_layout.addWidget(self.dataset_selector_widget)
 
@@ -40,5 +52,5 @@ class DatasetSelectorDialog(QDialog):
         self.vertical_layout.addLayout(self.button_layout)
 
     def on_ok_clicked(self):
-        self.selected_dataset = self.dataset_selector_widget.current()
+        self.selected_id = self.dataset_selector_widget.current()
         self.done(QDialog.DialogCode.Accepted)

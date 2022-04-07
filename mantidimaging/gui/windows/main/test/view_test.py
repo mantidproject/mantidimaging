@@ -54,7 +54,7 @@ class MainWindowViewTest(unittest.TestCase):
     def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, dataset_selector_dialog: mock.Mock):
         dataset_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
         dataset_id = "dataset-id"
-        dataset_selector_dialog.return_value.selected_dataset = dataset_id
+        dataset_selector_dialog.return_value.selected_id = dataset_id
         selected_file = "~/home/test/directory/selected_file.tif"
         get_open_file_name.return_value = (selected_file, None)
         _180_dataset = mock.MagicMock()
@@ -62,7 +62,9 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.load_180_deg_dialog()
 
-        dataset_selector_dialog.assert_called_once_with(main_window=self.view, title='Dataset Selector')
+        dataset_selector_dialog.assert_called_once_with(main_window=self.view,
+                                                        title='Dataset Selector',
+                                                        message="Which dataset is the 180 projection being loaded for?")
         get_open_file_name.assert_called_once_with(caption="180 Degree Image",
                                                    filter="Image File (*.tif *.tiff);;All (*.*)",
                                                    initialFilter="Image File (*.tif *.tiff)")
@@ -184,13 +186,13 @@ class MainWindowViewTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
     @mock.patch("mantidimaging.gui.windows.main.view.ProjectionAngleFileParser")
-    @mock.patch("mantidimaging.gui.windows.main.view.StackSelectorDialog")
+    @mock.patch("mantidimaging.gui.windows.main.view.DatasetSelectorDialog")
     @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
-    def test_load_projection_angles(self, getOpenFileName: mock.Mock, StackSelectorDialog: mock.Mock,
+    def test_load_projection_angles(self, getOpenFileName: mock.Mock, DatasetSelectorDialog: mock.Mock,
                                     ProjectionAngleFileParser: Mock, QMessageBox: Mock):
-        StackSelectorDialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
-        selected_stack = "selected_stack"
-        StackSelectorDialog.return_value.selected_stack = selected_stack
+        DatasetSelectorDialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
+        selected_stack = "selected_id"
+        DatasetSelectorDialog.return_value.selected_id = selected_stack
 
         selected_file = "~/home/test/directory/selected_file.txt"
         getOpenFileName.return_value = (selected_file, None)
@@ -200,11 +202,13 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.view.load_projection_angles()
 
-        StackSelectorDialog.assert_called_once_with(main_window=self.view,
-                                                    title='Stack Selector',
-                                                    message=self.view.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE)
+        DatasetSelectorDialog.assert_called_once_with(main_window=self.view,
+                                                      title='Stack Selector',
+                                                      message=self.view.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE,
+                                                      show_stacks=True)
         getOpenFileName.assert_called_once_with(caption=self.view.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION,
-                                                filter="All (*.*)")
+                                                filter="All (*.*)",
+                                                initialFilter="All (*.*)")
 
         self.presenter.add_projection_angles_to_sample.assert_called_once_with(selected_stack, proj_angles)
         QMessageBox.information.assert_called_once()
