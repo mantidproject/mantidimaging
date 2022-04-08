@@ -270,7 +270,7 @@ def _subtract(data, dark=None):
     np.subtract(data, dark, out=data)
 
 
-def _norm_divide(flat, dark):
+def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
     # subtract dark from flat
     return np.subtract(flat, dark)
 

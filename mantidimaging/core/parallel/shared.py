@@ -9,42 +9,42 @@ from mantidimaging.core.parallel import utility as pu
 shared_list: List[pu.SharedArray] = []
 
 
-def inplace3(func, array_details, i, **kwargs):
+def inplace3(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace2(func, array_details, i, **kwargs):
+def inplace2(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     func(data[0].array[i], data[1].array[i], **kwargs)
 
 
-def inplace1(func, array_details, i, **kwargs):
+def inplace1(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     func(data[0].array[i], **kwargs)
 
 
-def return_to_self(func, array_details, i, **kwargs):
+def return_to_self(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     data[0].array[i] = func(data[0].array[i], **kwargs)
 
 
-def inplace_second_2d(func, array_details, i, **kwargs):
+def inplace_second_2d(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     func(data[0].array[i], data[1].array, **kwargs)
 
 
-def return_to_second_at_i(func, array_details, i, **kwargs):
+def return_to_second_at_i(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
     data = _get_array_list(array_details)
     data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def arithmetic(func, array_details, i, arg_list):
+def arithmetic(func, array_details: List[pu.SharedArrayDetails], i, arg_list):
     data = _get_array_list(array_details)
     func(data[0].array[i], *arg_list)
 
 
-def _get_array_list(array_details):
+def _get_array_list(array_details: List[pu.SharedArrayDetails]) -> List[pu.SharedArray]:
     if not array_details:
         return shared_list
     else:
