@@ -450,9 +450,6 @@ class MainWindowView(BaseMainWindowView):
 
             return stack_choice
 
-    def find_images_stack_title(self, images: ImageStack) -> str:
-        return self.presenter.get_stack_with_images(images).name
-
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
