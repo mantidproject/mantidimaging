@@ -14,6 +14,7 @@ class CompareImagesWindowTest(BaseEyesTest):
     def test_compare_images_window_opens(self, multi_stack_select):
         multi_stack_select.return_value.exec.return_value = QDialog.DialogCode.Accepted
         test_stack = generate_images(seed=2021)
+        test_stack.name = "Stack 1"
         self.imaging.presenter.get_stack = mock.MagicMock()
         self.imaging.presenter.get_stack.return_value = test_stack
 
