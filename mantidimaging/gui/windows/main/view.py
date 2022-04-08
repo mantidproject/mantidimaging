@@ -361,17 +361,11 @@ class MainWindowView(BaseMainWindowView):
     def get_images_from_stack_uuid(self, stack_uuid) -> ImageStack:
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
-    def get_all_stack_visualisers(self):
-        return self.presenter.get_active_stack_visualisers()
-
     def get_all_stacks(self) -> List[ImageStack]:
         return self.presenter.get_all_stacks()
 
     def get_all_180_projections(self):
         return self.presenter.get_all_180_projections()
-
-    def get_all_stack_visualisers_with_180deg_proj(self):
-        return self.presenter.get_all_stack_visualisers_with_180deg_proj()
 
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_visualiser_history(stack_uuid)

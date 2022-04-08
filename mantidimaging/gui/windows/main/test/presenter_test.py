@@ -426,18 +426,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.stack_visualisers = {stack_id: mock_stack}
         self.assertIs(self.presenter.get_stack_visualiser_history(stack_id), metadata)
 
-    def test_get_all_stack_visualisers_with_180deg_proj(self):
-        mock_stacks = [mock.Mock() for _ in range(3)]
-
-        mock_stacks[0].presenter.images.has_proj180deg.return_value = mock_stacks[
-            1].presenter.images.has_proj180deg.return_value = True
-        mock_stacks[1].presenter.images.has_proj180deg.return_value = False
-
-        self.presenter.stack_visualisers = {uuid.uuid4(): stack for stack in mock_stacks}
-
-        self.assertListEqual([mock_stacks[0], mock_stacks[2]],
-                             self.presenter.get_all_stack_visualisers_with_180deg_proj())
-
     def test_delete_single_image_stack(self):
         id_to_remove = "id-to-remove"
         self.model.remove_container = mock.Mock(return_value=[id_to_remove])

@@ -398,9 +398,6 @@ class MainWindowPresenter(BasePresenter):
     def active_stacks(self) -> Dict[uuid.UUID, StackVisualiserView]:
         return {stack_id: stack for (stack_id, stack) in self.stack_visualisers.items() if stack.isVisible()}
 
-    def get_all_stack_visualisers_with_180deg_proj(self) -> List[StackVisualiserView]:
-        return [stack for stack in self.stack_visualisers.values() if stack.presenter.images.has_proj180deg()]
-
     @property
     def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
