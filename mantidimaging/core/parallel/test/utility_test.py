@@ -6,8 +6,11 @@ from typing import List, Tuple, Union
 from unittest import mock
 
 import pytest
+import numpy.testing as npt
 
-from mantidimaging.core.parallel.utility import _create_shared_array, execute_impl, multiprocessing_necessary
+from mantidimaging.test_helpers import unit_test_helper as th
+from mantidimaging.core.parallel.utility import _create_shared_array, execute_impl, multiprocessing_necessary,\
+    lookup_shared_arrays, copy_into_shared_memory
 
 
 @pytest.mark.parametrize(
@@ -68,6 +71,31 @@ def test_execute_impl_par(mock_pool):
 def test_create_shared_array(dtype, expected_dtype):
     arr = _create_shared_array((10, 10, 10), dtype)
     assert arr.array.dtype == expected_dtype
+    assert arr._free_mem_on_del
+
+
+def test_copy_into_shared_memory():
+    array = np.zeros((5, 5, 5), np.float32)
+    shared_array = copy_into_shared_memory(array)
+    assert shared_array.has_shared_memory
+    assert shared_array._free_mem_on_del
+    npt.assert_equal(shared_array.array, array)
+
+
+def test_lookup_shared_arrays():
+    shape = (5, 5, 5)
+    dtype = np.float32
+    array = th.gen_img_numpy_rand(shape)
+
+    # Create an array in shared memory to look up
+    shared_array = _create_shared_array(shape, dtype)
+    shared_array.array[:] = array[:]
+
+    results = lookup_shared_arrays([shared_array.details])
+    assert len(results) == 1
+    assert not results[0]._free_mem_on_del
+    assert shared_array._shared_memory.name == results[0]._shared_memory.name
+    npt.assert_equal(shared_array.array, results[0].array)
 
 
 if __name__ == "__main__":
