@@ -26,3 +26,4 @@ Developer Changes
 - #1375 : Leak tracking tool
 - #1376 : Fix leak in StackChoiceView
 - #1387 : Fix async task leak
+- #1384 : Remove StackSelectorWidget and StackSelectorDialog

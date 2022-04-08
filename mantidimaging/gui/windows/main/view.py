@@ -361,17 +361,11 @@ class MainWindowView(BaseMainWindowView):
     def get_images_from_stack_uuid(self, stack_uuid) -> ImageStack:
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
 
-    def get_all_stack_visualisers(self):
-        return self.presenter.get_active_stack_visualisers()
-
     def get_all_stacks(self) -> List[ImageStack]:
         return self.presenter.get_all_stacks()
 
     def get_all_180_projections(self):
         return self.presenter.get_all_180_projections()
-
-    def get_all_stack_visualisers_with_180deg_proj(self):
-        return self.presenter.get_all_stack_visualisers_with_180deg_proj()
 
     def get_stack_history(self, stack_uuid):
         return self.presenter.get_stack_visualiser_history(stack_uuid)
@@ -442,16 +436,13 @@ class MainWindowView(BaseMainWindowView):
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            one = self.presenter.get_stack_visualiser(dialog.stack_one.current()).presenter.images
-            two = self.presenter.get_stack_visualiser(dialog.stack_two.current()).presenter.images
+            one = self.presenter.get_stack(dialog.stack_one.current())
+            two = self.presenter.get_stack(dialog.stack_two.current())
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
 
             return stack_choice
-
-    def find_images_stack_title(self, images: ImageStack) -> str:
-        return self.presenter.get_stack_with_images(images).name
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():

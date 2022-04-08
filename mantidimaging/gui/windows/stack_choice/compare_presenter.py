@@ -18,10 +18,8 @@ class StackComparePresenter(StackChoicePresenterMixin):
         self.view.choice_made = True
         self.view.setWindowTitle("Comparing data")
 
-        stack_one_name = parent.find_images_stack_title(stack_one)
-        stack_two_name = parent.find_images_stack_title(stack_two)
-        self.view.originalStackLabel.setText(stack_one_name)
-        self.view.newStackLabel.setText(stack_two_name)
+        self.view.originalStackLabel.setText(stack_one.name)
+        self.view.newStackLabel.setText(stack_two.name)
 
     def show(self):
         self.view.show()

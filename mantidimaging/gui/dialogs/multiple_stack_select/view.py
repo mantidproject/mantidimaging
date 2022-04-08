@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING
-from mantidimaging.gui.widgets.stack_selector.view import StackSelectorWidgetView
+from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton
 
 if TYPE_CHECKING:
@@ -16,11 +16,11 @@ class MultipleStackSelect(QDialog):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        self.stack_one = StackSelectorWidgetView(self)
+        self.stack_one = DatasetSelectorWidgetView(self, show_stacks=True)
         self.stack_one.subscribe_to_main_window(main_window)
         layout.addWidget(self.stack_one, 0, 1)
 
-        self.stack_two = StackSelectorWidgetView(self)
+        self.stack_two = DatasetSelectorWidgetView(self, show_stacks=True)
         self.stack_two.subscribe_to_main_window(main_window)
         layout.addWidget(self.stack_two, 0, 2)
 
