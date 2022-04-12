@@ -264,8 +264,6 @@ class FiltersWindowPresenter(BasePresenter):
                         # and running another async instance causes a race condition in the parallel module
                         # where the shared data can be removed in the middle of the operation of another operation
                         self._do_apply_filter_sync([stack.proj180deg])
-                        self.view.main_window.update_stack_with_images(stack.proj180deg)  # type: ignore
-                    self.view.main_window.update_stack_with_images(stack)
                 if np.any(stack.data < 0):
                     negative_stacks.append(stack)
 
