@@ -75,6 +75,8 @@ class StackVisualiserView(QDockWidget):
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
+        self._main_window.stack_changed.connect(lambda: self.presenter.notify(SVNotification.REFRESH_IMAGE))
+
     @property
     def name(self):
         return self.windowTitle()
