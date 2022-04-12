@@ -113,6 +113,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.view.clear_notification_dialog.assert_called_once()
         self.view.show_operation_completed.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
+        self.presenter.view.filter_applied.emit.assert_called_once()
 
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,
@@ -130,7 +131,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.presenter.view.show_error_dialog.assert_called_once_with('Operation failed: 123')
         do_update_previews.assert_called_once()
-        self.presenter.main_window.presenter.set_images_in_stack.assert_called_once()
+        self.presenter.view.filter_applied.emit.assert_called_once()
 
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,
@@ -156,6 +157,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.clear_notification_dialog.assert_called_once()
         self.view.show_operation_completed.assert_not_called()
         self.view.show_operation_cancelled.assert_called_once_with(self.presenter.model.selected_filter.filter_name)
+        self.presenter.view.filter_applied.emit.assert_called_once()
 
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,
@@ -176,6 +178,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
         self.assertRaises(ValueError, self.presenter._post_filter, self.mock_stacks, mock_task)
         self.assertFalse(self.presenter.filter_is_running)
+        self.presenter.view.filter_applied.emit.assert_called_once()
 
     @mock.patch.multiple(
         'mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
