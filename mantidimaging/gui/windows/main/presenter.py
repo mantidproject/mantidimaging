@@ -16,7 +16,6 @@ from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESH
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
@@ -401,11 +400,6 @@ class MainWindowPresenter(BasePresenter):
     @property
     def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
-
-    def update_stack_with_images(self, images: ImageStack) -> None:
-        sv = self.get_stack_with_images(images)
-        if sv is not None:
-            sv.presenter.notify(SVNotification.REFRESH_IMAGE)
 
     def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
         for _, sv in self.stack_visualisers.items():

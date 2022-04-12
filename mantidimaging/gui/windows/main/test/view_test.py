@@ -119,12 +119,6 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(images)
 
-    def test_update_stack_with_images(self):
-        images = generate_images()
-        self.view.update_stack_with_images(images)
-
-        self.presenter.update_stack_with_images.assert_called_once_with(images)
-
     def test_rename_stack(self):
         self.view.rename_stack("apples", "oranges")
 
