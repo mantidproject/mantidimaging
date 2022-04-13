@@ -91,18 +91,6 @@ class MainWindowModel(object):
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
-    def set_image_data_by_uuid(self, images_id: uuid.UUID, new_stack: ImageStack) -> None:
-        """
-        Updates the data of an existing dataset/images object.
-        :param images_id: The id of the image to update.
-        :param new_stack: The ImageStack containing the new data.
-        """
-        for dataset in self.datasets.values():
-            if images_id in dataset:
-                dataset.replace(images_id, new_stack)
-                return
-        self.raise_error_when_images_not_found(images_id)
-
     def get_existing_180_id(self, dataset_id: uuid.UUID) -> Optional[uuid.UUID]:
         """
         Gets the ID of the 180 projection object in a Dataset.
