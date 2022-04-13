@@ -95,7 +95,7 @@ class MedianFilter(BaseFilter):
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
         if not force_cpu:
-            data = _execute_gpu(data.data, size, mode, progress)
+            _execute_gpu(data.data, size, mode, progress)
         else:
             _execute(data.data, size, mode, cores, chunksize, progress)
 
@@ -164,8 +164,6 @@ def _execute(data, size, mode, cores=None, chunksize=None, progress=None):
         ps.shared_list = [data]
         ps.execute(f, data.shape[0], progress, msg="Median filter", cores=cores)
 
-    return data
-
 
 def _execute_gpu(data, size, mode, progress=None):
     log = getLogger(__name__)
@@ -175,6 +173,4 @@ def _execute_gpu(data, size, mode, progress=None):
     with progress:
         log.info("GPU median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
 
-        data = cuda.median_filter(data, size, mode, progress)
-
-    return ImageStack(data)
+        cuda.median_filter(data, size, mode, progress)
