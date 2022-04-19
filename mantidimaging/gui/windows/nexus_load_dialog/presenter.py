@@ -116,19 +116,21 @@ class NexusLoadPresenter:
         """
         Reads the rotation angles array and coverts them to radians if needed.
         :param image_key: The image key for the angles to read.
+        :param before: Whether the rotation angles are for before/after images. This is None when rotation angles
+            for sample images are being read.
         :return: A numpy array of the rotation angles.
         """
         assert self.image_key_dataset is not None
         if before is None:
             rotation_angles = self.rotation_angles[np.where(self.image_key_dataset[...] == image_key)]
         else:
-            first_sample_index = np.where(self.image_key_dataset == 0)[0][0]
+            first_sample_image_index = np.where(self.image_key_dataset == 0)[0][0]
             if before:
-                rotation_angles = self.rotation_angles[:first_sample_index][np.where(
-                    self.image_key_dataset[:first_sample_index] == image_key)]
+                rotation_angles = self.rotation_angles[:first_sample_image_index][np.where(
+                    self.image_key_dataset[:first_sample_image_index] == image_key)]
             else:
-                rotation_angles = self.rotation_angles[first_sample_index:][np.where(
-                    self.image_key_dataset[first_sample_index:] == image_key)]
+                rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
+                    self.image_key_dataset[first_sample_image_index:] == image_key)]
         if self.degrees:
             rotation_angles = np.radians(rotation_angles)
         return rotation_angles
@@ -307,6 +309,7 @@ class NexusLoadPresenter:
         "Use?" checkbox.
         :param data_array: The images data array.
         :param name: The name of the images.
+        :param image_key: The image key index for the image type.
         :return: An ImageStack object or None.
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
