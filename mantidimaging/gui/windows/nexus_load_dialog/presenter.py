@@ -91,9 +91,11 @@ class NexusLoadPresenter:
                 if self.data is None:
                     return
 
-                self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)[:]
+                self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
                 if self.image_key_dataset is None:
                     return
+                else:
+                    self.image_key_dataset = self.image_key_dataset[:]
 
                 self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
                 if self.rotation_angles is not None:
@@ -102,7 +104,7 @@ class NexusLoadPresenter:
                         self.degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                     else:
                         self.degrees = "deg" in self.rotation_angles.attrs["units"]
-                self.rotation_angles = self.rotation_angles[:]
+                    self.rotation_angles = self.rotation_angles[:]
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
