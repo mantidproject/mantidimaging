@@ -119,9 +119,11 @@ class NexusLoadPresenter:
         if before is None:
             rotation_angles = self.rotation_angles[np.where(self.image_key_dataset[...] == image_key)]
         elif before:
-            pass
+            split_array = np.split(self.rotation_angles, 2)[0]
+            rotation_angles = split_array[np.where(split_array[...] == image_key)]
         else:
-            pass
+            split_array = np.split(self.rotation_angles, 2)[1]
+            rotation_angles = split_array[np.where(split_array[...] == image_key)]
         if self.degrees:
             rotation_angles = np.radians(rotation_angles)
         return rotation_angles
