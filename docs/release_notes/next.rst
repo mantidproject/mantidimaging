@@ -13,6 +13,7 @@ New Features
 Fixes
 -----
 - #1381 : Don't use console progress bar in GUI application
+- #1405 : MedianFilter work inplace on ImageStack
 
 Developer Changes
 -----------------
