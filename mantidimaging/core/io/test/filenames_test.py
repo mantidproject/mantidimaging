@@ -36,6 +36,12 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertFalse(p1.match("IMAT_Flower_Tomo.tif"))
         self.assertFalse(p1.match("IMAT_Flower_Tomo_000007.tiff"))
 
+    def test_pattern_dont_match_180(self):
+        p1 = FilenamePattern.from_name("IMAT00006388_PSI_cylinder_Sample_000.tif")
+        self.assertTrue(p1.match("IMAT00006388_PSI_cylinder_Sample_943.tif"))
+        self.assertFalse(p1.match("IMAT00006388_PSI_cylinder_Sample_180deg.tif"))
+        self.assertFalse(p1.match("IMAT00006388_PSI_cylinder_Sample_360deg.tif"))
+
     def test_pattern_match_different_digits(self):
         # Allow cases where index has grown above padding
         p1 = FilenamePattern.from_name("img_000.tif")
