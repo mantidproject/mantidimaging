@@ -67,7 +67,6 @@ class NexusLoadPresenter:
         self.flat_before_array = None
         self.flat_after_array = None
         self.dark_after_array = None
-        self.projection_angles = None
 
     def notify(self, n: Notification):
         try:
@@ -104,6 +103,8 @@ class NexusLoadPresenter:
                         self.degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                     else:
                         self.degrees = "deg" in self.rotation_angles.attrs["units"]
+                    if self.degrees:
+                        self.rotation_angles = np.radians(self.rotation_angles)
                     self.rotation_angles = self.rotation_angles[:]
 
                 self._get_data_from_image_key()
@@ -133,8 +134,6 @@ class NexusLoadPresenter:
             else:
                 rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
                     self.image_key_dataset[first_sample_image_index:] == image_key)]
-        if self.degrees:
-            rotation_angles = np.radians(rotation_angles)
         return rotation_angles
 
     def _missing_data_error(self, field: str):
