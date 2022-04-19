@@ -36,6 +36,15 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertFalse(p1.match("IMAT_Flower_Tomo.tif"))
         self.assertFalse(p1.match("IMAT_Flower_Tomo_000007.tiff"))
 
+    def test_pattern_match_different_digits(self):
+        # Allow cases where index has grown above padding
+        p1 = FilenamePattern.from_name("img_000.tif")
+        self.assertTrue(p1.match("img_000.tif"))
+        self.assertTrue(p1.match("img_001.tif"))
+        self.assertTrue(p1.match("img_999.tif"))
+        self.assertTrue(p1.match("img_1000.tif"))
+        self.assertFalse(p1.match("img_0000.tif"))
+
     def test_pattern_get_value(self):
         p1 = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
         self.assertEqual(p1.get_value("IMAT_Flower_Tomo_000023.tif"), 23)

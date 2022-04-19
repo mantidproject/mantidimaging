@@ -20,8 +20,12 @@ class FilenamePattern:
         self.digit_count = digit_count
         self.suffix = suffix
 
-        self.re_pattern = re.compile("^" + re.escape(prefix) + "([0-9]{" + str(digit_count) + "})" + re.escape(suffix) +
-                                     "$")
+        if digit_count == 0:
+            self.re_pattern = re.compile("^" + re.escape(prefix) + re.escape(suffix) + "$")
+        else:
+            # Note: allow extra leading digits, for data sets that go 001 ... 998, 999, 1000, 1001
+            self.re_pattern = re.compile("^" + re.escape(prefix) + "([1-9]?[0-9]{" + str(digit_count) + "})" +
+                                         re.escape(suffix) + "$")
         self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
