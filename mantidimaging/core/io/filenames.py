@@ -1,7 +1,9 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from pathlib import Path
 import re
+from typing import List, Iterator
 
 
 class FilenamePattern:
@@ -56,3 +58,31 @@ class FilenamePattern:
         if self.digit_count == 0:
             return 0
         return int(result.group(1))
+
+
+class FilenameGroup:
+    def __init__(self, directory: Path, pattern: FilenamePattern, indexes: List[int]):
+        self.directory = directory
+        self.pattern = pattern
+        self.indexes = indexes
+
+    @classmethod
+    def from_file(cls, path: Path) -> "FilenameGroup":
+        if path.is_dir():
+            raise ValueError(f"path is a directory: {path}")
+        directory = path.parent
+        name = path.name
+        pattern = FilenamePattern.from_name(name)
+        index = pattern.get_value(name)
+        new_filename_pattern = cls(directory, pattern, [index])
+
+        return new_filename_pattern
+
+    def all_files(self) -> Iterator[str]:
+        for index in self.indexes:
+            yield self.pattern.generate(index)
+
+    def find_all_files(self) -> None:
+        for filename in self.directory.iterdir():
+            if self.pattern.match(filename.name):
+                self.indexes.append(self.pattern.get_value(filename.name))

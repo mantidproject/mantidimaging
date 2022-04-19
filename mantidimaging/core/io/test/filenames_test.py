@@ -1,11 +1,13 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+from pathlib import Path
 import unittest
+from unittest import mock
 
 from parameterized import parameterized
 
-from ..filenames import FilenamePattern
+from ..filenames import FilenameGroup, FilenamePattern
 
 
 class FilenamePatternTest(unittest.TestCase):
@@ -61,3 +63,50 @@ class FilenamePatternTest(unittest.TestCase):
         p1 = FilenamePattern.from_name("IMAT00006388_PSI_cylinder_Sample_180deg.tif")
         self.assertEqual(p1.get_value("IMAT00006388_PSI_cylinder_Sample_180deg.tif"), 0)
         self.assertEqual(p1.generate(0), "IMAT00006388_PSI_cylinder_Sample_180deg.tif")
+
+
+class FilenameGroupTest(unittest.TestCase):
+    def test_filenamepattern_from_file_unindexed(self):
+        p1 = Path("foo", "bar", "baz.tiff")
+        f1 = FilenameGroup.from_file(p1)
+        self.assertEqual(f1.directory, Path("foo", "bar"))
+
+        all_files = list(f1.all_files())
+        self.assertEqual(all_files, ["baz.tiff"])
+
+    def test_filenamepattern_from_file_indexed(self):
+        p1 = Path("foo", "IMAT_Flower_Tomo_000007.tif")
+        f1 = FilenameGroup.from_file(p1)
+
+        all_files = list(f1.all_files())
+        self.assertEqual(all_files, ["IMAT_Flower_Tomo_000007.tif"])
+
+    def test_all_files(self):
+        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
+        f1 = FilenameGroup(Path("foo"), pattern, [0, 1, 2])
+
+        all_files = list(f1.all_files())
+        self.assertEqual(all_files,
+                         ["IMAT_Flower_Tomo_000000.tif", "IMAT_Flower_Tomo_000001.tif", "IMAT_Flower_Tomo_000002.tif"])
+
+    def test_find_all_files(self):
+        file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
+        path_mock = mock.Mock()
+        path_mock.iterdir.return_value = file_list
+
+        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
+        fg = FilenameGroup(path_mock, pattern, [])
+        fg.find_all_files()
+
+        self.assertEqual(fg.indexes, list(range(10)))
+
+    def test_find_all_files_different_digits(self):
+        file_list = [Path(f"IMAT_Flower_Tomo_{i:01d}.tif") for i in range(5, 15)]
+        path_mock = mock.Mock()
+        path_mock.iterdir.return_value = file_list
+
+        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_1.tif")
+        fg = FilenameGroup(path_mock, pattern, [])
+        fg.find_all_files()
+
+        self.assertEqual(fg.indexes, list(range(5, 15)))
