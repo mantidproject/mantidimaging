@@ -310,5 +310,5 @@ class NexusLoadPresenter:
             return None
         image_stack = self._create_images(data_array, name)
         if image_stack is not None:
-            image_stack.set_projection_angles(ProjectionAngles(self._read_rotation_angles(image_key)))
+            image_stack.set_projection_angles(ProjectionAngles(self._read_rotation_angles(image_key, "Before" in name)))
         return image_stack
