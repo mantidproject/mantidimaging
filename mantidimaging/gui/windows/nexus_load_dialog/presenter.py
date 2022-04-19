@@ -60,6 +60,7 @@ class NexusLoadPresenter:
         self.image_key_dataset = None
         self.rotation_angles = None
         self.title = ""
+        self.degrees = None
 
         self.sample_array = None
         self.dark_before_array = None
