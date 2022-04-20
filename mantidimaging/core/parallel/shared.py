@@ -2,53 +2,39 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from mantidimaging.core.parallel import utility as pu
 
 shared_list: List[pu.SharedArray] = []
 
 
-def inplace3(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def inplace3(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace2(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def inplace2(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     func(data[0].array[i], data[1].array[i], **kwargs)
 
 
-def inplace1(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def inplace1(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     func(data[0].array[i], **kwargs)
 
 
-def return_to_self(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def return_to_self(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     data[0].array[i] = func(data[0].array[i], **kwargs)
 
 
-def inplace_second_2d(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def inplace_second_2d(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     func(data[0].array[i], data[1].array, **kwargs)
 
 
-def return_to_second_at_i(func, array_details: List[pu.SharedArrayDetails], i, **kwargs):
-    data = _get_array_list(array_details)
+def return_to_second_at_i(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
     data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def arithmetic(func, array_details: List[pu.SharedArrayDetails], i, arg_list):
-    data = _get_array_list(array_details)
+def arithmetic(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, arg_list):
     func(data[0].array[i], *arg_list)
-
-
-def _get_array_list(array_details: List[pu.SharedArrayDetails]) -> List[pu.SharedArray]:
-    if not array_details:
-        return shared_list
-    else:
-        return pu.lookup_shared_arrays(array_details)
 
 
 def create_partial(func, fwd_function, **kwargs):
@@ -111,14 +97,14 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
     :return:
     """
 
-    all_data_in_shared_memory, shared_array_details = _check_shared_mem_details()
+    all_data_in_shared_memory, data = _check_shared_mem_and_get_data()
 
     if not all_data_in_shared_memory:
         cores = 1
     elif not cores:
         cores = pu.get_cores()
 
-    partial_func = partial(partial_func, shared_array_details)
+    partial_func = partial(partial_func, data)
 
     chunksize = pu.calculate_chunksize(cores)
 
@@ -128,16 +114,17 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
     shared_list = []
 
 
-def _check_shared_mem_details() -> Tuple[bool, List[pu.SharedArrayDetails]]:
+def _check_shared_mem_and_get_data() -> Tuple[bool, Union[List[pu.SharedArray], List[pu.SharedArrayProxy]]]:
     """
     Checks if all shared arrays in shared_list are using shared memory and returns this result in the first element
-    of the tuple. If all the arrays are using shared memory, then the list of SharedArrayDetails are returned in the
-    second element of the tuple.
+    of the tuple. The second element of the tuple gives the data to use in the processing.
     """
-    details = []
+    data = []
     for shared_array in shared_list:
         if shared_array.has_shared_memory:
-            details.append(shared_array.details)
+            # If we're using shared memory then we must use the SharedArrayProxy for the data. This allows us to
+            # look up the SharedArray from within a subprocess without needing to pass it in directly
+            data.append(shared_array.array_proxy)
         else:
-            return False, []
-    return True, details
+            return False, list(shared_list)
+    return True, data

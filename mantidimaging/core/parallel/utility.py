@@ -8,7 +8,7 @@ from logging import getLogger
 from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
 from multiprocessing.pool import Pool
-from typing import List, Tuple, Union, TYPE_CHECKING, Optional, NamedTuple
+from typing import List, Tuple, Union, TYPE_CHECKING, Optional
 
 import numpy as np
 
@@ -62,14 +62,6 @@ def copy_into_shared_memory(array: np.ndarray) -> 'SharedArray':
     shared_array = create_array(array.shape, array.dtype)
     shared_array.array[:] = array[:]
     return shared_array
-
-
-def lookup_shared_arrays(array_details: List['SharedArrayDetails']) -> List['SharedArray']:
-    arrays = []
-    for details in array_details:
-        mem = shared_memory.SharedMemory(name=details.mem_name)
-        arrays.append(_read_array_from_shared_memory(details.shape, details.dtype, mem, False))
-    return arrays
 
 
 def get_cores():
@@ -142,12 +134,21 @@ class SharedArray:
         return self._shared_memory is not None
 
     @property
-    def details(self) -> 'SharedArrayDetails':
+    def array_proxy(self) -> 'SharedArrayProxy':
         mem_name = self._shared_memory.name if self._shared_memory else None
-        return SharedArrayDetails(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
+        return SharedArrayProxy(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
 
 
-class SharedArrayDetails(NamedTuple):
-    mem_name: Optional[str]
-    shape: Tuple[int, ...]
-    dtype: 'npt.DTypeLike'
+class SharedArrayProxy:
+    def __init__(self, mem_name: Optional[str], shape: Tuple[int, ...], dtype: 'npt.DTypeLike'):
+        self._mem_name = mem_name
+        self._shape = shape
+        self._dtype = dtype
+        self._shared_array: Optional['SharedArray'] = None
+
+    @property
+    def array(self) -> np.ndarray:
+        if self._shared_array is None:
+            mem = shared_memory.SharedMemory(name=self._mem_name)
+            self._shared_array = _read_array_from_shared_memory(self._shape, self._dtype, mem, False)
+        return self._shared_array.array

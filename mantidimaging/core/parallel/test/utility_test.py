@@ -10,7 +10,7 @@ import numpy.testing as npt
 
 from mantidimaging.test_helpers import unit_test_helper as th
 from mantidimaging.core.parallel.utility import _create_shared_array, execute_impl, multiprocessing_necessary,\
-    lookup_shared_arrays, copy_into_shared_memory
+    copy_into_shared_memory
 
 
 @pytest.mark.parametrize(
@@ -82,7 +82,7 @@ def test_copy_into_shared_memory():
     npt.assert_equal(shared_array.array, array)
 
 
-def test_lookup_shared_arrays():
+def test_looking_up_shared_array_from_proxy():
     shape = (5, 5, 5)
     dtype = np.float32
     array = th.gen_img_numpy_rand(shape)
@@ -91,11 +91,15 @@ def test_lookup_shared_arrays():
     shared_array = _create_shared_array(shape, dtype)
     shared_array.array[:] = array[:]
 
-    results = lookup_shared_arrays([shared_array.details])
-    assert len(results) == 1
-    assert not results[0]._free_mem_on_del
-    assert shared_array._shared_memory.name == results[0]._shared_memory.name
-    npt.assert_equal(shared_array.array, results[0].array)
+    # Create the proxy
+    proxy = shared_array.array_proxy
+    assert proxy._shared_array is None
+
+    # Call the array property of the proxy to look up the shared array
+    npt.assert_equal(shared_array.array, proxy.array)
+    assert proxy._shared_array
+    assert not proxy._shared_array._free_mem_on_del
+    assert shared_array._shared_memory.name == proxy._shared_array._shared_memory.name
 
 
 if __name__ == "__main__":
