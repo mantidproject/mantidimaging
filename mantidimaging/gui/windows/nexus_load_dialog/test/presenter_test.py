@@ -302,3 +302,18 @@ class NexusLoaderTest(unittest.TestCase):
 
         self.nexus_loader.scan_nexus_file()
         assert np.array_equal(self.nexus_loader.rotation_angles, rotation_angles_array)
+
+    def test_rotation_angles_stored_in_projection_angles_object(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH]
+        rotation_angles_array = np.array([i for i in range(10)])
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=rotation_angles_array)
+        angle_dataset.attrs.create("units", "radians")
+
+        self.nexus_loader.scan_nexus_file()
+        ds, _ = self.nexus_loader.get_dataset()
+
+        assert np.array_equal(ds.flat_before.projection_angles().value, [0, 1])
+        assert np.array_equal(ds.dark_before.projection_angles().value, [2, 3])
+        assert np.array_equal(ds.sample.projection_angles().value, [4, 5])
+        assert np.array_equal(ds.dark_after.projection_angles().value, [6, 7])
+        assert np.array_equal(ds.flat_after.projection_angles().value, [8, 9])
