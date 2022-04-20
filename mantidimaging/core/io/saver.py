@@ -178,7 +178,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
         with h5py.File(path, "w", driver="core") as nexus_file:
             _nexus_save(nexus_file, dataset, sample_name)
     except OSError:
-        pass
+        os.remove(path)
 
 
 def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
