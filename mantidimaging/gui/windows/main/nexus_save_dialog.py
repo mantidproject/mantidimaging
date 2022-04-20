@@ -3,7 +3,7 @@
 import uuid
 from typing import Optional, List
 
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QApplication
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.utility import compile_ui
@@ -18,7 +18,6 @@ class NexusSaveDialog(QDialog):
         compile_ui('gui/ui/nexus_save_dialog.ui', self)
 
         self.browseButton.clicked.connect(self._set_save_path)
-        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).clicked.connect(self.save)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(False)
         self.savePath.textChanged.connect(self.enable_save)
         self.sampleNameLineEdit.textChanged.connect(self.enable_save)
@@ -33,9 +32,12 @@ class NexusSaveDialog(QDialog):
             self.dataset_uuids, dataset_names = zip(*dataset_list)
             self.datasetNames.addItems(dataset_names)
 
-    def save(self):
+    def accept(self) -> None:
+        self.stackedWidget.setCurrentIndex(1)
+        QApplication.processEvents()
         self.selected_dataset = self.dataset_uuids[self.datasetNames.currentIndex()]
         self.parent().execute_nexus_save()
+        self.close()
 
     def save_path(self) -> str:
         """
