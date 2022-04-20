@@ -253,3 +253,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
     def set_log_scale(self):
         set_histogram_log_scale(self.getHistogramWidget().item)
+
+    def close(self):
+        self.roi_changed_callback = None
+        super().close()

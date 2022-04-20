@@ -5,7 +5,6 @@ from itertools import product
 from unittest import mock
 from uuid import UUID
 
-import pytest
 from parameterized import parameterized
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt, QTimer
@@ -154,7 +153,6 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.mouseClick(self.op_window.updatePreviewButton, Qt.MouseButton.LeftButton)
         wait_until(lambda: mock_do_update_previews.call_count == 1)
 
-    @pytest.mark.xfail  # See #1404
     def test_run_operation_after_deletes(self):
         self._close_image_stacks()
         QTest.qWait(SHOW_DELAY)
