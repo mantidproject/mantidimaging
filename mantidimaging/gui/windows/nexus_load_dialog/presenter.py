@@ -60,7 +60,6 @@ class NexusLoadPresenter:
         self.image_key_dataset = None
         self.rotation_angles = None
         self.title = ""
-        self.degrees = None
 
         self.sample_array = None
         self.dark_before_array = None
@@ -102,10 +101,10 @@ class NexusLoadPresenter:
 
                 if "units" not in self.rotation_angles.attrs.keys():
                     logger.warning("No unit information found for rotation angles. Will infer from array values.")
-                    self.degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
+                    degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
-                    self.degrees = "deg" in self.rotation_angles.attrs["units"]
-                if self.degrees:
+                    degrees = "deg" in self.rotation_angles.attrs["units"]
+                if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
                 self.rotation_angles = self.rotation_angles[:]
 
