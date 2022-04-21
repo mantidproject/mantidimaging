@@ -75,6 +75,9 @@ class StackVisualiserView(QDockWidget):
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
+        self.connection_stack_changed = self._main_window.stack_changed.connect(
+            lambda: self.presenter.notify(SVNotification.REFRESH_IMAGE))
+
     @property
     def name(self):
         return self.windowTitle()
@@ -198,3 +201,7 @@ class StackVisualiserView(QDockWidget):
     def ask_confirmation(self, msg: str):
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
+
+    def cleanup(self):
+        self._main_window.stack_changed.disconnect(self.connection_stack_changed)
+        self.presenter = None
