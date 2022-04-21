@@ -41,3 +41,25 @@ jobs:
         run: |
           mamba env list
           python --version; conda list ; pip list
+
+      - name: Yapf
+        shell: bash -l {0}
+        run: |
+          yapf --parallel --diff --recursive .
+
+      - name: Flake8
+        shell: bash -l {0}
+        run: |
+          python -m flake8
+
+      - name: mypy
+        shell: bash -l {0}
+        # COMPAT: applitools has some bad signatures, so use --no-site-packages
+        run: |
+          mypy --ignore-missing-imports --no-site-packages mantidimaging
+
+      - name: pytest
+        timeout-minutes: 5
+        shell: bash -l {0}
+        run: |
+          python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
