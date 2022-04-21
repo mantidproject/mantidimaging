@@ -373,9 +373,6 @@ class MainWindowView(BaseMainWindowView):
     def create_new_stack(self, images: ImageStack):
         self.presenter.create_single_tabbed_images_stack(images)
 
-    def update_stack_with_images(self, images: ImageStack):
-        self.presenter.update_stack_with_images(images)
-
     def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
         return self.presenter.get_stack_with_images(images)
 

@@ -250,15 +250,10 @@ class FiltersWindowPresenter(BasePresenter):
     def _post_filter(self, updated_stacks: List[ImageStack], task):
         try:
             use_new_data = True
-            attempt_repair = task.error is not None
             negative_stacks = []
             for stack in updated_stacks:
-                # If the operation encountered an error during processing,
-                # try to restore the original data else continue processing as usual
-                if attempt_repair:
-                    self.main_window.presenter.set_images_in_stack(stack.id, stack)
                 # Ensure there is no error if we are to continue with safe apply and 180 degree.
-                elif task.error is None:
+                if task.error is None:
                     # otherwise check with user which one to keep
                     if self.view.safeApply.isChecked():
                         use_new_data = self._wait_for_stack_choice(stack, stack.id)
@@ -269,8 +264,6 @@ class FiltersWindowPresenter(BasePresenter):
                         # and running another async instance causes a race condition in the parallel module
                         # where the shared data can be removed in the middle of the operation of another operation
                         self._do_apply_filter_sync([stack.proj180deg])
-                        self.view.main_window.update_stack_with_images(stack.proj180deg)  # type: ignore
-                    self.view.main_window.update_stack_with_images(stack)
                 if np.any(stack.data < 0):
                     negative_stacks.append(stack)
 
