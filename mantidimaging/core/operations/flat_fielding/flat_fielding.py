@@ -307,12 +307,12 @@ def _execute(images: ImageStack, flat=None, dark=None, cores=None, chunksize=Non
 
         # subtract the dark from all images
         do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
-        ps.shared_list = [images.shared_array, shared_dark]
-        ps.execute(do_subtract, images.data.shape[0], progress, cores=cores)
+        arrays = [images.shared_array, shared_dark]
+        ps.execute(do_subtract, arrays, images.data.shape[0], progress, cores=cores)
 
         # divide the data by (flat - dark)
         do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
-        ps.shared_list = [images.shared_array, norm_divide]
-        ps.execute(do_divide, images.data.shape[0], progress, cores=cores)
+        arrays = [images.shared_array, norm_divide]
+        ps.execute(do_divide, arrays, images.data.shape[0], progress, cores=cores)
 
     return images

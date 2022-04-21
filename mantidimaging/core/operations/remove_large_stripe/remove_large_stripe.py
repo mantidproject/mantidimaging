@@ -40,8 +40,7 @@ class RemoveLargeStripesFilter(BaseFilter):
             snr=snr,
             size=la_size,
         )
-        ps.shared_list = [images.shared_array]
-        ps.execute(f, images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
         return images
 
     @staticmethod

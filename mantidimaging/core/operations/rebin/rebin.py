@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+
 import skimage.transform
 
 from mantidimaging import helper as h
@@ -62,8 +63,8 @@ class RebinFilter(BaseFilter):
                               ps.return_to_second_at_i,
                               mode=mode,
                               output_shape=empty_resized_data.array.shape[1:])
-        ps.shared_list = [images.shared_array, empty_resized_data]
         ps.execute(partial_func=f,
+                   arrays=[images.shared_array, empty_resized_data],
                    num_operations=images.data.shape[0],
                    cores=cores,
                    msg="Applying Rebin",

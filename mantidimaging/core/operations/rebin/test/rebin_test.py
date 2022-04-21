@@ -121,21 +121,6 @@ class RebinTest(unittest.TestCase):
         self.assertEqual(factor.value.call_count, 1)
         self.assertEqual(mode_field.currentText.call_count, 1)
 
-    @mock.patch("mantidimaging.core.operations.rebin.rebin.ps")
-    def test_execute_argument_order(self, ps_mock):
-
-        images = th.generate_images()
-        mode = 'reflect'
-        cores = 4
-        progress_mock = mock.Mock()
-        RebinFilter.filter_func(images=images, mode=mode, cores=cores, progress=progress_mock)
-
-        ps_mock.execute.assert_called_once_with(partial_func=ps_mock.create_partial.return_value,
-                                                num_operations=images.data.shape[0],
-                                                cores=cores,
-                                                msg="Applying Rebin",
-                                                progress=progress_mock)
-
 
 if __name__ == '__main__':
     unittest.main()

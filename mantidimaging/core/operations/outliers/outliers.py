@@ -67,8 +67,7 @@ class OutliersFilter(BaseFilter):
             raise ValueError(f'radius parameter must be greater than 0. Value provided was {radius}')
 
         func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
-        ps.shared_list = [images.shared_array]
-        ps.execute(func,
+        ps.execute(func, [images.shared_array],
                    images.num_projections,
                    progress=progress,
                    msg=f"Outliers with threshold {diff} and kernel {radius}")

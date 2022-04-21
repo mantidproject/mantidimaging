@@ -32,8 +32,7 @@ class RemoveDeadStripesFilter(BaseFilter):
     @staticmethod
     def filter_func(images: ImageStack, snr=3, size=61, cores=None, chunksize=None, progress=None):
         f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
-        ps.shared_list = [images.shared_array]
-        ps.execute(f, images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
         return images
 
     @staticmethod

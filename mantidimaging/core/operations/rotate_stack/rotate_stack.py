@@ -78,7 +78,10 @@ def _execute(images: ImageStack, angle: float, cores: int, chunksize: int, progr
 
     with progress:
         f = ps.create_partial(_rotate_image_inplace, ps.inplace1, angle=angle)
-        ps.shared_list = [images.shared_array]
-        ps.execute(f, images.data.shape[0], progress, msg=f"Rotating by {angle} degrees", cores=cores)
+        ps.execute(f, [images.shared_array],
+                   images.data.shape[0],
+                   progress,
+                   msg=f"Rotating by {angle} degrees",
+                   cores=cores)
 
     return images

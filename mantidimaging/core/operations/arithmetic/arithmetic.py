@@ -120,5 +120,4 @@ def _execute(images: ImageStack, div_val: float, mult_val: float, add_val: float
              progress):
     arg_list = [div_val, mult_val, add_val, sub_val]
     do_arithmetic = ps.create_partial(_arithmetic_func, fwd_function=ps.arithmetic, arg_list=arg_list)
-    ps.shared_list = [images.shared_array]
-    ps.execute(do_arithmetic, images.data.shape[0], progress, cores=cores)
+    ps.execute(do_arithmetic, [images.shared_array], images.data.shape[0], progress, cores=cores)

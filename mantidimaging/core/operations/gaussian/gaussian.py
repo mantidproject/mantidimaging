@@ -102,8 +102,7 @@ def _execute(images: ImageStack, size, mode, order, cores=None, progress=None):
              "filter size/width: {1}.".format(images.dtype, size))
 
     progress.update()
-    ps.shared_list = [images.shared_array]
-    ps.execute(f, images.data.shape[0], progress, msg="Gaussian filter", cores=cores)
+    ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Gaussian filter", cores=cores)
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "

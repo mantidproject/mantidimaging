@@ -59,8 +59,9 @@ def _calculate_correlation_error(images, shared_search_range, min_correlation_er
 
     do_search_partial = ps.create_partial(do_calculate_correlation_err, ps.inplace3, image_width=images.width)
 
-    ps.shared_list = [min_correlation_error, shared_search_range, shared_projections]
+    arrays = [min_correlation_error, shared_search_range, shared_projections]
     ps.execute(do_search_partial,
+               arrays,
                num_operations=min_correlation_error.array.shape[0],
                progress=progress,
                msg="Finding correlation on row")

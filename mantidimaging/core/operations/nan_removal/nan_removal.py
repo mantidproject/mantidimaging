@@ -122,7 +122,6 @@ def _execute(images: ImageStack, size, edgemode, cores=None, chunksize=None, pro
     with progress:
         log.info("PARALLEL NaN Removal filter, with pixel data type: {0}".format(images.dtype))
 
-        ps.shared_list = [images.shared_array]
-        ps.execute(f, images.data.shape[0], progress, msg="NaN Removal", cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="NaN Removal", cores=cores)
 
     return images

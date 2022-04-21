@@ -43,8 +43,8 @@ class MonitorNormalisation(BaseFilter):
 
         counts_val = pu.copy_into_shared_memory(counts.value / counts.value[0])
         do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
-        ps.shared_list = [images.shared_array, counts_val]
-        ps.execute(do_division, images.num_projections, progress, cores=cores)
+        arrays = [images.shared_array, counts_val]
+        ps.execute(do_division, arrays, images.num_projections, progress, cores=cores)
         return images
 
     @staticmethod
