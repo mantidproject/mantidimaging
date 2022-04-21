@@ -165,28 +165,28 @@ class NexusLoaderTest(unittest.TestCase):
         np.testing.assert_array_almost_equal(dataset.flat_after.data, self.flat_after)
 
     def test_no_flat_before_data(self):
-        self.replace_values_in_image_key("Flat Before", 0)
+        self.replace_values_in_image_key("Flat Before", 5)
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertIsNone(dataset.flat_before)
         self.view.set_images_found.assert_any_call(1, False, (0, 10, 10))
 
     def test_no_dark_before_data(self):
-        self.replace_values_in_image_key("Dark Before", 0)
+        self.replace_values_in_image_key("Dark Before", 5)
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertIsNone(dataset.dark_before)
         self.view.set_images_found.assert_any_call(3, False, (0, 10, 10))
 
     def test_no_flat_after_data(self):
-        self.replace_values_in_image_key("Flat After", 0)
+        self.replace_values_in_image_key("Flat After", 5)
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertIsNone(dataset.flat_after)
         self.view.set_images_found.assert_any_call(2, False, (0, 10, 10))
 
     def test_no_dark_after_data(self):
-        self.replace_values_in_image_key("Dark After", 0)
+        self.replace_values_in_image_key("Dark After", 5)
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
         self.assertIsNone(dataset.dark_after)
@@ -284,10 +284,6 @@ class NexusLoaderTest(unittest.TestCase):
             self.nexus_loader.scan_nexus_file()
         self.assertIn("The NeXus file does not contain the sample/rotation_angle data.", log_mock.output[0])
 
-        dataset = self.nexus_loader.get_dataset()[0]
-        self.assertIsNone(dataset.sample._projection_angles)
-        self.assertIsNone(dataset.sample._proj180deg)
-
     def test_no_rotation_angle_units(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH].attrs["units"]
         with self.assertLogs(nexus_logger, level="WARNING") as log_mock:
@@ -296,7 +292,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_rotation_angles_converted_to_radians(self):
         self.nexus_loader.scan_nexus_file()
-        assert np.array_equal(self.nexus_loader.projection_angles, np.array([np.pi * 0.5, np.pi]))
+        assert np.array_equal(self.nexus_loader.rotation_angles, np.deg2rad(self.rotation_angles_array))
 
     def test_rotation_angles_already_in_radians(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH]
@@ -305,4 +301,19 @@ class NexusLoaderTest(unittest.TestCase):
         angle_dataset.attrs.create("units", "radians")
 
         self.nexus_loader.scan_nexus_file()
-        assert np.array_equal(self.nexus_loader.projection_angles, np.array([np.pi * 0.5, np.pi]))
+        assert np.array_equal(self.nexus_loader.rotation_angles, rotation_angles_array)
+
+    def test_rotation_angles_stored_in_projection_angles_object(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH]
+        rotation_angles_array = np.array([i for i in range(10)])
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=rotation_angles_array)
+        angle_dataset.attrs.create("units", "radians")
+
+        self.nexus_loader.scan_nexus_file()
+        ds, _ = self.nexus_loader.get_dataset()
+
+        assert np.array_equal(ds.flat_before.projection_angles().value, [0, 1])
+        assert np.array_equal(ds.dark_before.projection_angles().value, [2, 3])
+        assert np.array_equal(ds.sample.projection_angles().value, [4, 5])
+        assert np.array_equal(ds.dark_after.projection_angles().value, [6, 7])
+        assert np.array_equal(ds.flat_after.projection_angles().value, [8, 9])

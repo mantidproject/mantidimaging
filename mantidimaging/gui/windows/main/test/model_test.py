@@ -6,7 +6,6 @@ import uuid
 
 from unittest import mock
 import numpy as np
-from numpy.testing import assert_array_equal
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -292,20 +291,6 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
                                         mock.Mock())
         save_mock.assert_not_called()
-
-    def test_set_images_by_uuid_success(self):
-        prev_images = generate_images()
-        new_images = generate_images()
-        ds = StrictDataset(prev_images)
-        self.model.datasets[ds.id] = ds
-
-        self.model.set_image_data_by_uuid(prev_images.id, new_images)
-        assert_array_equal(ds.sample.data, new_images.data)
-        assert ds.sample.shared_array == new_images.shared_array
-
-    def test_set_images_by_uuid_failure(self):
-        with self.assertRaises(RuntimeError):
-            self.model.set_image_data_by_uuid("cant-find-this-id", generate_images())
 
     def test_remove_dataset_from_model(self):
         images = [generate_images() for _ in range(5)]

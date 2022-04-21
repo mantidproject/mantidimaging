@@ -152,3 +152,26 @@ class TestGuiSystemOperations(GuiSystemBase):
 
         QTest.mouseClick(self.op_window.updatePreviewButton, Qt.MouseButton.LeftButton)
         wait_until(lambda: mock_do_update_previews.call_count == 1)
+
+    def test_run_operation_after_deletes(self):
+        self._close_image_stacks()
+        QTest.qWait(SHOW_DELAY)
+        self._load_data_set()
+        QTest.qWait(SHOW_DELAY)
+        index = self.op_window.filterSelector.findText("Crop Coordinates")
+        self.op_window.filterSelector.setCurrentIndex(index)
+        QTest.qWait(SHOW_DELAY)
+
+        widget = self._get_operation_parameter_widget(self.op_window.filterPropertiesLayout, "ROI")
+        widget.selectAll()
+        QTest.keyClicks(widget, "0,0,20,20")
+        QTest.keyClick(widget, Qt.Key_Return)
+        QTest.qWait(SHOW_DELAY)
+
+        self.op_window.safeApply.setChecked(False)
+        QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
+
+        self.main_window.filters.close()
+        QTest.qWait(SHOW_DELAY)

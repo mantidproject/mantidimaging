@@ -68,6 +68,8 @@ class StackVisualiserPresenter(BasePresenter):
 
     def delete_data(self):
         self.images = None
+        self.view.cleanup()
+        self.view = None
 
     def refresh_image(self):
         self.view.image = self.summed_image if self.image_mode is SVImageMode.SUMMED \
