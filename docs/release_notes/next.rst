@@ -15,6 +15,7 @@ Fixes
 -----
 - #1381 : Don't use console progress bar in GUI application
 - #1405 : MedianFilter work inplace on ImageStack
+- #1395 : Delete file when NeXus saving fails
 
 Developer Changes
 -----------------
