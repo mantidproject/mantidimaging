@@ -31,7 +31,7 @@ def find_center(images: ImageStack, progress: Progress) -> Tuple[ScalarCoR, Degr
     min_correlation_error = pu.create_array((len(search_range), images.height))
     shared_search_range = pu.create_array((len(search_range), ), dtype=np.int32)
     shared_search_range.array[:] = np.asarray(search_range, dtype=np.int32)
-    _calculate_correlation_error(images, shared_search_range.array, min_correlation_error.array, progress)
+    _calculate_correlation_error(images, shared_search_range, min_correlation_error, progress)
 
     # Originally the output of do_search is stored in dimensions
     # corresponding to (search_range, square sum). This is awkward to navigate
@@ -59,9 +59,10 @@ def _calculate_correlation_error(images, shared_search_range, min_correlation_er
 
     do_search_partial = ps.create_partial(do_calculate_correlation_err, ps.inplace3, image_width=images.width)
 
-    ps.shared_list = [min_correlation_error, shared_search_range, shared_projections.array]
+    arrays = [min_correlation_error, shared_search_range, shared_projections]
     ps.execute(do_search_partial,
-               num_operations=min_correlation_error.shape[0],
+               arrays,
+               num_operations=min_correlation_error.array.shape[0],
                progress=progress,
                msg="Finding correlation on row")
 

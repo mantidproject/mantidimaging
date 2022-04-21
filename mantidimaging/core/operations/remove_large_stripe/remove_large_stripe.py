@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from algotom.prep.removal import remove_large_stripe
@@ -9,6 +10,9 @@ from algotom.prep.removal import remove_large_stripe
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data.imagestack import ImageStack
 
 
 class RemoveLargeStripesFilter(BaseFilter):
@@ -29,15 +33,14 @@ class RemoveLargeStripesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images, snr=3, la_size=61, cores=None, chunksize=None, progress=None):
+    def filter_func(images: 'ImageStack', snr=3, la_size=61, cores=None, chunksize=None, progress=None):
         f = ps.create_partial(
             remove_large_stripe,
             ps.return_to_self,
             snr=snr,
             size=la_size,
         )
-        ps.shared_list = [images.data]
-        ps.execute(f, images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
         return images
 
     @staticmethod

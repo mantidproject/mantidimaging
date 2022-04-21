@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-import numpy as np
 
 from skimage.transform import rotate
 
@@ -47,7 +46,7 @@ class RotateFilter(BaseFilter):
 
         # No need to run the filter for an angle of 0 as it won't have any effect
         if not angle == 0:
-            _execute(data.data, angle, cores, chunksize, progress)
+            _execute(data, angle, cores, chunksize, progress)
 
         return data
 
@@ -74,12 +73,15 @@ def _rotate_image_inplace(data, angle=None):
     data[:, :] = rotate(data[:, :], angle)
 
 
-def _execute(data: np.ndarray, angle: float, cores: int, chunksize: int, progress: Progress):
+def _execute(images: ImageStack, angle: float, cores: int, chunksize: int, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
         f = ps.create_partial(_rotate_image_inplace, ps.inplace1, angle=angle)
-        ps.shared_list = [data]
-        ps.execute(f, data.shape[0], progress, msg=f"Rotating by {angle} degrees", cores=cores)
+        ps.execute(f, [images.shared_array],
+                   images.data.shape[0],
+                   progress,
+                   msg=f"Rotating by {angle} degrees",
+                   cores=cores)
 
-    return data
+    return images
