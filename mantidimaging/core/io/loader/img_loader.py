@@ -23,10 +23,6 @@ from ...utility.data_containers import Indices
 
 def execute(load_func: Callable[[str], np.ndarray],
             sample_path: List[str],
-            flat_before_path: Optional[str],
-            flat_after_path: Optional[str],
-            dark_before_path: Optional[str],
-            dark_after_path: Optional[str],
             img_format: str,
             dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
@@ -48,7 +44,6 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     :returns: StrictDataset object
     """
-
     if not sample_path:
         raise RuntimeError("No filenames were provided.")
 
@@ -65,12 +60,6 @@ def execute(load_func: Callable[[str], np.ndarray],
     # forward all arguments to internal class for easy re-usage
     il = ImageLoader(load_func, img_format, img_shape, dtype, indices, progress)
 
-    # we load the flat and dark first, because if they fail we don't want to
-    # fail after we've loaded a big stack into memory
-    flat_before_data, flat_before_filenames = il.load_data(flat_before_path)
-    flat_after_data, flat_after_filenames = il.load_data(flat_after_path)
-    dark_before_data, dark_before_filenames = il.load_data(dark_before_path)
-    dark_after_data, dark_after_filenames = il.load_data(dark_after_path)
     sample_data = il.load_sample_data(chosen_input_filenames)
 
     if isinstance(sample_data, pu.SharedArray):
@@ -78,12 +67,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     else:
         sample_images = sample_data
 
-    return StrictDataset(
-        sample_images,
-        flat_before=ImageStack(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
-        flat_after=ImageStack(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
-        dark_before=ImageStack(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
-        dark_after=ImageStack(dark_after_data, dark_after_filenames) if dark_after_data is not None else None)
+    return StrictDataset(sample_images)
 
 
 class ImageLoader(object):

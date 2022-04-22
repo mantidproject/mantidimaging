@@ -136,81 +136,20 @@ class IOTest(FileOutputtingTestCase):
 
         npt.assert_equal(loaded_images.data, expected_images.data)
 
-    def test_load_sample_flat_and_dark(self,
-                                       img_format='tiff',
-                                       loader_indices=None,
-                                       expected_len=None,
-                                       saver_indices=None):
+    def test_load_sample(self):
+        img_format = 'tiff'
         images = th.generate_images()
-        flat_before = th.generate_images()
-        dark_before = th.generate_images()
-        flat_after = th.generate_images()
-        dark_after = th.generate_images()
-
-        # this only affects enumeration
-        saver._indices = saver_indices
-
-        # saver indices only affects the enumeration of the data
-        if saver_indices:
-            # crop the original images to make sure the test is checking the
-            # indices that were actually saved out
-            images.data = images.data[saver_indices[0]:saver_indices[1]]
 
         saver.image_save(images, self.output_directory, out_format=img_format)
-        flat_before_dir = os.path.join(self.output_directory, "imgIOTest_flat_before")
-        saver.image_save(flat_before, flat_before_dir, out_format=img_format)
-        flat_after_dir = os.path.join(self.output_directory, "imgIOTest_flat_after")
-        saver.image_save(flat_after, flat_after_dir, out_format=img_format)
-        dark_before_dir = os.path.join(self.output_directory, "imgIOTest_dark_before")
-        saver.image_save(dark_before, dark_before_dir, out_format=img_format)
-        dark_after_dir = os.path.join(self.output_directory, "imgIOTest_dark_after")
-        saver.image_save(dark_after, dark_after_dir, out_format=img_format)
 
         data_as_stack = False
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, images.data.shape[0])
 
-        flat_before_dir = os.path.join(flat_before_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(flat_before_dir, img_format, data_as_stack, flat_before.data.shape[0])
-        flat_after_dir = os.path.join(flat_after_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(flat_after_dir, img_format, data_as_stack, flat_after.data.shape[0])
-
-        dark_before_dir = os.path.join(dark_before_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(dark_before_dir, img_format, data_as_stack, dark_before.data.shape[0])
-        dark_after_dir = os.path.join(dark_after_dir, saver.DEFAULT_NAME_PREFIX)
-        self.assert_files_exist(dark_after_dir, img_format, data_as_stack, dark_after.data.shape[0])
-
-        flat_before_filename = f"{flat_before_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
-        flat_after_filename = f"{flat_after_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
-        dark_before_filename = f"{dark_before_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
-        dark_after_filename = f"{dark_after_dir}_{''.zfill(saver.DEFAULT_ZFILL_LENGTH)}.{img_format}"
-
-        dataset = loader.load(self.output_directory,
-                              input_path_flat_before=flat_before_filename,
-                              input_path_flat_after=flat_after_filename,
-                              input_path_dark_before=dark_before_filename,
-                              input_path_dark_after=dark_after_filename,
-                              in_format=img_format,
-                              indices=loader_indices)
+        dataset = loader.load(self.output_directory, in_format=img_format)
         loaded_images = dataset.sample
 
-        if loader_indices:
-            assert len(loaded_images.data) == expected_len, \
-                "The length of the loaded data doesn't " \
-                "match the expected length: {0}, " \
-                "Got: {1}".format(
-                    expected_len, len(loaded_images.data))
-
-            # crop the original images to make sure the tests is correct
-            images.data = images.data[loader_indices[0]:loader_indices[1]]
-
         npt.assert_equal(loaded_images.data, images.data)
-        # we only check the first image because they will be
-        # averaged out when loaded! The initial images are only 3s
-        npt.assert_equal(dataset.flat_before.data, flat_before.data)
-        npt.assert_equal(dataset.dark_before.data, dark_before.data)
-        npt.assert_equal(dataset.flat_after.data, flat_after.data)
-        npt.assert_equal(dataset.dark_after.data, dark_after.data)
 
     def test_metadata_round_trip(self):
         # Create dummy image stack
