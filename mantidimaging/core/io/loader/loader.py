@@ -45,13 +45,6 @@ def _fitsread(filename: str) -> np.ndarray:
     return image[0].data
 
 
-def _nxsread(filename: str) -> np.ndarray:
-    import h5py
-    nexus = h5py.File(filename, 'r')
-    data = nexus["tomography/sample_data"]
-    return data
-
-
 def _imread(filename: str) -> np.ndarray:
     from mantidimaging.core.utility.special_imports import import_skimage_io
     skio = import_skimage_io()
@@ -165,18 +158,14 @@ def load(input_path: Optional[str] = None,
     else:
         input_file_names = file_names
 
-    if in_format in ['nxs']:
-        raise NotImplementedError("TODO this needs to be adapted to the new changes")
-        # pass only the first filename as we only expect a stack
-        # input_file = input_file_names[0]
-        # images = stack_loader.execute(_nxsread, input_file, dtype, "NXS Load", indices, progress)
+    if in_format in ['fits', 'fit']:
+        load_func = _fitsread
+    elif in_format in ['tiff', 'tif']:
+        load_func = _imread
     else:
-        if in_format in ['fits', 'fit']:
-            load_func = _fitsread
-        else:
-            load_func = _imread
+        raise NotImplementedError("Loading not implemented for:", in_format)
 
-        dataset = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
+    dataset = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
 
     # Search for and load metadata file
     metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
@@ -211,7 +200,7 @@ def create_loading_parameters_for_file_path(file_path: str,
     loading_parameters.pixel_size = DEFAULT_PIXEL_SIZE
     loading_parameters.sinograms = DEFAULT_IS_SINOGRAM
     loading_parameters.name = os.path.basename(sample_file)
-    _, image_format = os.path.splitext(sample_file)
+    image_format = get_file_extension(sample_file)
     sample_directory = os.path.dirname(sample_file)
     last_file_info = read_in_file_information(sample_directory,
                                               in_prefix=get_prefix(sample_file),
