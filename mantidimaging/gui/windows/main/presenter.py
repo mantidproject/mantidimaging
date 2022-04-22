@@ -16,7 +16,6 @@ from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESH
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.stack_visualiser.presenter import SVNotification
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
 from .model import MainWindowModel
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
@@ -402,26 +401,11 @@ class MainWindowPresenter(BasePresenter):
     def have_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
 
-    def update_stack_with_images(self, images: ImageStack) -> None:
-        sv = self.get_stack_with_images(images)
-        if sv is not None:
-            sv.presenter.notify(SVNotification.REFRESH_IMAGE)
-
     def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
         for _, sv in self.stack_visualisers.items():
             if images is sv.presenter.images:
                 return sv
         raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stack_visualisers.items()}")
-
-    def set_images_in_stack(self, stack_id: uuid.UUID, images: ImageStack) -> None:
-        self.model.set_image_data_by_uuid(stack_id, images)
-        stack = self.stack_visualisers[stack_id]
-        if not stack.presenter.images == images:  # todo - refactor
-            stack.image_view.clear()
-            stack.image_view.setImage(images.data)
-
-            # Free previous images stack before reassignment
-            stack.presenter.images.data = images.data
 
     def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
         """

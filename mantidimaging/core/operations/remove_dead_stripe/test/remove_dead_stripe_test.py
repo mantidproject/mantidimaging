@@ -15,11 +15,11 @@ class RemoveDeadStripesTest(unittest.TestCase):
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
     def test_executed(self):
-        images = th.generate_images()
+        images = th.generate_images((10, 400, 500))
         control = images.copy()
 
         # size=3 makes sure that the data will be changed, as the default kernel is bigger
-        # than the size of the test data
+        # than the size of the test data. This requires a large enough test dataset to pass on Windows
         result = RemoveDeadStripesFilter.filter_func(images, size=3)
 
         th.assert_not_equals(result.data, control.data)

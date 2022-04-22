@@ -2,53 +2,37 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import List
-
-import numpy
+from typing import List, Tuple, Union
 
 from mantidimaging.core.parallel import utility as pu
 
-shared_list: List[numpy.ndarray] = []
+
+def inplace3(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace3(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1][i], shared_list[2], **kwargs)
+def inplace2(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    func(data[0].array[i], data[1].array[i], **kwargs)
 
 
-def inplace2(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1][i], **kwargs)
+def inplace1(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    func(data[0].array[i], **kwargs)
 
 
-def inplace1(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], **kwargs)
+def return_to_self(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    data[0].array[i] = func(data[0].array[i], **kwargs)
 
 
-def return_to_self(func, i, **kwargs):
-    global shared_list
-    shared_list[0][i] = func(shared_list[0][i], **kwargs)
+def inplace_second_2d(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    func(data[0].array[i], data[1].array, **kwargs)
 
 
-def inplace_second_2d(func, i, **kwargs):
-    global shared_list
-    func(shared_list[0][i], shared_list[1], **kwargs)
+def return_to_second_at_i(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+    data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def return_to_second(func, i, **kwargs):
-    global shared_list
-    shared_list[1] = func(shared_list[0][i], **kwargs)
-
-
-def return_to_second_at_i(func, i, **kwargs):
-    global shared_list
-    shared_list[1][i] = func(shared_list[0][i], **kwargs)
-
-
-def arithmetic(func, i):
-    global shared_list
-    func(shared_list[0][i], *shared_list[1:])
+def arithmetic(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, arg_list):
+    func(data[0].array[i], *arg_list)
 
 
 def create_partial(func, fwd_function, **kwargs):
@@ -66,7 +50,12 @@ def create_partial(func, fwd_function, **kwargs):
     return partial(fwd_function, func, **kwargs)
 
 
-def execute(partial_func: partial, num_operations: int, progress=None, msg: str = '', cores=None) -> None:
+def execute(partial_func: partial,
+            arrays: List[pu.SharedArray],
+            num_operations: int,
+            progress=None,
+            msg: str = '',
+            cores=None) -> None:
     """
     Executes a function in parallel with shared memory between the processes.
 
@@ -103,6 +92,7 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
     9 chunks 3.45s
 
     :param partial_func: A function constructed using create_partial
+    :param arrays: The list of SharedArray objects that the operations should be performed on
     :param num_operations: The expected number of operations - should match the number of images being processed
                            Also used to set the number of progress steps
     :param cores: number of cores that the processing will use
@@ -111,12 +101,32 @@ def execute(partial_func: partial, num_operations: int, progress=None, msg: str 
     :return:
     """
 
-    if not cores:
+    all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
+
+    if not all_data_in_shared_memory:
+        cores = 1
+    elif not cores:
         cores = pu.get_cores()
+
+    partial_func = partial(partial_func, data)
 
     chunksize = pu.calculate_chunksize(cores)
 
     pu.execute_impl(num_operations, partial_func, cores, chunksize, progress, msg)
 
-    global shared_list
-    shared_list = []
+
+def _check_shared_mem_and_get_data(
+        arrays: List[pu.SharedArray]) -> Tuple[bool, Union[List[pu.SharedArray], List[pu.SharedArrayProxy]]]:
+    """
+    Checks if all shared arrays in shared_list are using shared memory and returns this result in the first element
+    of the tuple. The second element of the tuple gives the data to use in the processing.
+    """
+    data = []
+    for shared_array in arrays:
+        if shared_array.has_shared_memory:
+            # If we're using shared memory then we must use the SharedArrayProxy for the data. This allows us to
+            # look up the SharedArray from within a subprocess without needing to pass it in directly
+            data.append(shared_array.array_proxy)
+        else:
+            return False, arrays
+    return True, data

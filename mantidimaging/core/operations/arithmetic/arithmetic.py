@@ -59,7 +59,7 @@ class ArithmeticFilter(BaseFilter):
         if div_val == 0 or mult_val == 0:
             raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")
 
-        _execute(images.data, div_val, mult_val, add_val, sub_val, cores, progress)
+        _execute(images, div_val, mult_val, add_val, sub_val, cores, progress)
         return images
 
     @staticmethod
@@ -116,8 +116,8 @@ class ArithmeticFilter(BaseFilter):
                        sub_val=sub_input_widget.value())
 
 
-def _execute(data: np.ndarray, div_val: float, mult_val: float, add_val: float, sub_val: float, cores: Optional[int],
+def _execute(images: ImageStack, div_val: float, mult_val: float, add_val: float, sub_val: float, cores: Optional[int],
              progress):
-    do_arithmetic = ps.create_partial(_arithmetic_func, fwd_function=ps.arithmetic)
-    ps.shared_list = [data, div_val, mult_val, add_val, sub_val]
-    ps.execute(do_arithmetic, data.shape[0], progress, cores=cores)
+    arg_list = [div_val, mult_val, add_val, sub_val]
+    do_arithmetic = ps.create_partial(_arithmetic_func, fwd_function=ps.arithmetic, arg_list=arg_list)
+    ps.execute(do_arithmetic, [images.shared_array], images.data.shape[0], progress, cores=cores)

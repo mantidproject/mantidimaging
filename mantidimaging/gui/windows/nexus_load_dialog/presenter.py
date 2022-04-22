@@ -58,6 +58,7 @@ class NexusLoadPresenter:
         self.data = None
         self.tomo_path = ""
         self.image_key_dataset = None
+        self.rotation_angles = None
         self.title = ""
 
         self.sample_array = None
@@ -65,7 +66,6 @@ class NexusLoadPresenter:
         self.flat_before_array = None
         self.flat_after_array = None
         self.dark_after_array = None
-        self.projection_angles = None
 
     def notify(self, n: Notification):
         try:
@@ -93,13 +93,20 @@ class NexusLoadPresenter:
                 if self.image_key_dataset is None:
                     return
 
-                rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
-                if rotation_angles is not None:
-                    if "units" not in rotation_angles.attrs.keys():
-                        logger.warning("No unit information found for rotation angles. Will infer from array values.")
-                        self._read_rotation_angles(rotation_angles, np.abs(rotation_angles).max() > 2 * np.pi)
-                    else:
-                        self._read_rotation_angles(rotation_angles, "deg" in rotation_angles.attrs["units"])
+                self.image_key_dataset = self.image_key_dataset[:]
+
+                self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+                if self.rotation_angles is None:
+                    return
+
+                if "units" not in self.rotation_angles.attrs.keys():
+                    logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                    degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
+                else:
+                    degrees = "deg" in self.rotation_angles.attrs["units"]
+                if degrees:
+                    self.rotation_angles = np.radians(self.rotation_angles)
+                self.rotation_angles = self.rotation_angles[:]
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
@@ -109,17 +116,26 @@ class NexusLoadPresenter:
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-    def _read_rotation_angles(self, rotation_angles: h5py.Dataset, degrees: bool):
+    def _read_rotation_angles(self, image_key: int, before: bool = None) -> np.ndarray:
         """
-        Reads the rotation angles array for the projections alone and coverts them to radians if needed.
-        :param rotation_angles: The rotation angle information for all the images.
-        :param degrees: Whether the data is in degrees or not. If this information isn't included in the file then a
-            guess was made.
+        Reads the rotation angles array and coverts them to radians if needed.
+        :param image_key: The image key for the angles to read.
+        :param before: Whether the rotation angles are for before/after images. This is None when rotation angles
+            for sample images are being read.
+        :return: A numpy array of the rotation angles.
         """
         assert self.image_key_dataset is not None
-        self.projection_angles = rotation_angles[np.where(self.image_key_dataset[...] == ImageKeys.Projections.value)]
-        if degrees:
-            self.projection_angles = np.radians(self.projection_angles)
+        if before is None:
+            rotation_angles = self.rotation_angles[np.where(self.image_key_dataset[...] == image_key)]
+        else:
+            first_sample_image_index = np.where(self.image_key_dataset == 0)[0][0]
+            if before:
+                rotation_angles = self.rotation_angles[:first_sample_image_index][np.where(
+                    self.image_key_dataset[:first_sample_image_index] == image_key)]
+            else:
+                rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
+                    self.image_key_dataset[first_sample_image_index:] == image_key)]
+        return rotation_angles
 
     def _missing_data_error(self, field: str):
         """
@@ -245,10 +261,14 @@ class NexusLoadPresenter:
         sample_images = self._create_sample_images()
         sample_images.name = self.title
         return StrictDataset(sample=sample_images,
-                             flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before"),
-                             flat_after=self._create_images_if_required(self.flat_after_array, "Flat After"),
-                             dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before"),
-                             dark_after=self._create_images_if_required(self.dark_after_array, "Dark After"),
+                             flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
+                                                                         ImageKeys.FlatField.value),
+                             flat_after=self._create_images_if_required(self.flat_after_array, "Flat After",
+                                                                        ImageKeys.FlatField.value),
+                             dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before",
+                                                                         ImageKeys.DarkField.value),
+                             dark_after=self._create_images_if_required(self.dark_after_array, "Dark After",
+                                                                        ImageKeys.DarkField.value),
                              name=self.title), self.title
 
     def _create_sample_images(self):
@@ -266,10 +286,11 @@ class NexusLoadPresenter:
 
         # Set attributes
         sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
-        if self.projection_angles is not None:
+        projection_angles = self._read_rotation_angles(ImageKeys.Projections.value)
+        if projection_angles is not None:
             sample_images.set_projection_angles(
-                ProjectionAngles(self.projection_angles[self.view.start_widget.value():self.view.stop_widget.value(
-                ):self.view.step_widget.value()]))
+                ProjectionAngles(projection_angles[self.view.start_widget.value():self.view.stop_widget.value():self.
+                                                   view.step_widget.value()]))
 
         return sample_images
 
@@ -284,14 +305,18 @@ class NexusLoadPresenter:
         data.array[:] = data_array
         return ImageStack(data, [f"{name} {self.title}"])
 
-    def _create_images_if_required(self, data_array: np.ndarray, name: str) -> Optional[ImageStack]:
+    def _create_images_if_required(self, data_array: np.ndarray, name: str, image_key: int) -> Optional[ImageStack]:
         """
         Create the ImageStack objects if the corresponding data was found in the NeXus file, and the user checked the
         "Use?" checkbox.
         :param data_array: The images data array.
         :param name: The name of the images.
+        :param image_key: The image key index for the image type.
         :return: An ImageStack object or None.
         """
         if data_array.size == 0 or not self.view.checkboxes[name].isChecked():
             return None
-        return self._create_images(data_array, name)
+        image_stack = self._create_images(data_array, name)
+        if image_stack is not None:
+            image_stack.set_projection_angles(ProjectionAngles(self._read_rotation_angles(image_key, "Before" in name)))
+        return image_stack

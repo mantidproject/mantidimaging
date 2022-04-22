@@ -4,7 +4,6 @@
 import unittest
 
 import numpy as np
-from numpy import array_equal
 
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
 from mantidimaging.core.data.reconlist import ReconList
@@ -37,17 +36,6 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertIsNone(dataset.flat_after)
         self.assertIsNone(dataset.dark_before)
         self.assertIsNone(dataset.dark_after)
-
-    def test_replace_success(self):
-        sample_id = self.images[0].id
-        new_sample_data = generate_images()
-        self.strict_dataset.replace(sample_id, new_sample_data)
-        assert array_equal(self.strict_dataset.sample.data, new_sample_data.data)
-        assert self.strict_dataset.sample.shared_array == new_sample_data.shared_array
-
-    def test_replace_failure(self):
-        with self.assertRaises(KeyError):
-            self.strict_dataset.replace("nonexistent-id", generate_images())
 
     def test_cant_change_dataset_id(self):
         with self.assertRaises(Exception):

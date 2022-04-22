@@ -307,27 +307,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.get_stack_with_images(generate_images())
 
-    def test_set_images_in_stack(self):
-        mock_stack = mock.Mock()
-        mock_stack.presenter.images = old_images = generate_images()
-        self.presenter.stack_visualisers[old_images.id] = mock_stack
-        new_images = generate_images()
-
-        self.presenter.set_images_in_stack(old_images.id, new_images)
-        mock_stack.image_view.clear.assert_called_once()
-        mock_stack.image_view.setImage.assert_called_once_with(new_images.data)
-        self.assertEqual(self.presenter.stack_visualisers[old_images.id].presenter.images, new_images)
-
-    def test_set_same_image_in_stack(self):
-        mock_stack = mock.Mock()
-        mock_stack.presenter.images = old_images = generate_images()
-        self.presenter.stack_visualisers[old_images.id] = mock_stack
-
-        self.presenter.set_images_in_stack(old_images.id, old_images)
-        mock_stack.image_view.clear.assert_not_called()
-        mock_stack.image_view.setImage.assert_not_called()
-        self.assertEqual(self.presenter.stack_visualisers[old_images.id].presenter.images, old_images)
-
     def test_add_first_180_deg_to_dataset(self):
         dataset_id = "dataset-id"
         filename_for_180 = "path/to/180"
