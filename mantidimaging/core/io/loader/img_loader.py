@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-from . import stack_loader
 from ...utility.data_containers import Indices
 
 
@@ -88,14 +87,6 @@ class ImageLoader(object):
         if len(self.img_shape) == 2:
             # the loaded file was a single image
             return self.load_files(input_file_names)
-        elif len(self.img_shape) == 3:
-            # the loaded file was a file containing a stack of images
-            return stack_loader.execute(self.load_func,
-                                        input_file_names[0],
-                                        self.data_dtype,
-                                        "Sample",
-                                        self.indices,
-                                        progress=self.progress)
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
 
