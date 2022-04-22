@@ -1,0 +1,93 @@
+name: Testing on Windows
+
+on:
+  push:
+    branches:
+    - 'main'
+    - 'release-*'
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+  release:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Needed to get tags so that git describe works during package build
+          fetch-depth: "0"
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+        shell: bash
+
+      - name: Cache Mambaforge and Pip packages
+        uses: actions/cache@v2
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: |
+            ~/conda_pkgs_dir
+            ~/.cache/pip
+          key:
+            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: mantidimaging-dev
+          auto-activate-base: false
+          use-mamba: true
+
+      - name: Cache Mambaforge environment
+        uses: actions/cache@v2
+        id: cache-mambaforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ${{env.CONDA}}/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Mantid Imaging developer dependencies
+        if: steps.cache-mambaforge-environment.outputs.cache-hit != 'true'
+        shell: bash -l {0}
+        run: |
+          conda deactivate
+          python ./setup.py create_dev_env
+
+      - name: List versions
+        shell: bash -l {0}
+        run: |
+          mamba env list
+          python --version; conda list ; pip list
+
+      - name: Yapf
+        shell: bash -l {0}
+        run: |
+          yapf --parallel --diff --recursive .
+
+      - name: Flake8
+        shell: bash -l {0}
+        run: |
+          python -m flake8
+
+      - name: mypy
+        shell: bash -l {0}
+        # COMPAT: applitools has some bad signatures, so use --no-site-packages
+        run: |
+          mypy --ignore-missing-imports --no-site-packages mantidimaging
+
+      - name: pytest
+        timeout-minutes: 5
+        shell: bash -l {0}
+        run: |
+          python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
