@@ -21,6 +21,23 @@ jobs:
           # Needed to get tags so that git describe works during package build
           fetch-depth: "0"
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+        shell: bash
+
+      - name: Cache Mambaforge and Pip packages
+        uses: actions/cache@v2
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: |
+            ~/conda_pkgs_dir
+            ~/.cache/pip
+          key:
+            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
