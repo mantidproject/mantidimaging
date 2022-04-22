@@ -110,32 +110,6 @@ def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
     return None
 
 
-def get_folder_names(path: str) -> List[str]:
-    """
-    Get all folder names in a specific path.
-
-    :param path: The path to be checked.
-
-    :return: All the folder names, sorted by ascending
-
-    """
-
-    path = os.path.abspath(os.path.expanduser(path))
-
-    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want
-    # dirnames
-    folders = next(os.walk(path))[1]
-
-    if len(folders) <= 0:
-        raise RuntimeError("Could not find any folders in {0}".format(path))
-
-    # this is a necessary step, otherwise the file order is not guaranteed to
-    # be sequential and we get randomly ordered stack of names
-    folders.sort(key=_alphanum_key_split)
-
-    return folders
-
-
 def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
     """
     From a string to a list of alphabetic and numeric elements. Intended to
