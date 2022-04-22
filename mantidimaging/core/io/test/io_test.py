@@ -3,6 +3,7 @@
 
 import os
 import unittest
+from unittest import mock
 
 import h5py
 import numpy as np
@@ -289,6 +290,30 @@ class IOTest(FileOutputtingTestCase):
             # test instrument/sample fields
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    np.concatenate([images.projection_angles().value for images in image_stacks]))
+
+    @mock.patch("mantidimaging.core.io.saver.h5py.File")
+    @mock.patch("mantidimaging.core.io.saver._nexus_save")
+    def test_h5py_os_error_returns(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
+        file_mock.side_effect = OSError
+        saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
+        nexus_save_mock.assert_not_called()
+
+    @mock.patch("mantidimaging.core.io.saver.h5py.File")
+    @mock.patch("mantidimaging.core.io.saver._nexus_save")
+    @mock.patch("mantidimaging.core.io.saver.os")
+    def test_failed_nexus_save_deletes_file(self, os_mock: mock.Mock, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
+        nexus_save_mock.side_effect = OSError
+        save_path = "failed/save/path"
+        with self.assertRaises(RuntimeError):
+            saver.nexus_save(StrictDataset(th.generate_images()), save_path, "sample-name")
+        file_mock.return_value.close.assert_called_once()
+        os_mock.remove.assert_called_once_with(save_path)
+
+    @mock.patch("mantidimaging.core.io.saver.h5py.File")
+    @mock.patch("mantidimaging.core.io.saver._nexus_save")
+    def test_successful_nexus_save_closes_file(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
+        saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
+        file_mock.return_value.close.assert_called_once()
 
 
 if __name__ == '__main__':

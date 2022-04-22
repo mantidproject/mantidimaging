@@ -181,8 +181,10 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
 
     try:
         _nexus_save(nexus_file, dataset, sample_name)
-    except OSError:
+    except OSError as e:
+        nexus_file.close()
         os.remove(path)
+        raise RuntimeError("Unable to save NeXus file.", e)
 
     nexus_file.close()
 
