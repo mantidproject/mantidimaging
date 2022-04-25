@@ -208,7 +208,7 @@ class MainWindowModelTest(unittest.TestCase):
         _180_file = "180 file"
         dataset_id = "id"
         self.model.datasets[dataset_id] = dataset_mock = StrictDataset(generate_images())
-        load.return_value.sample = _180_stack = generate_images()
+        load.return_value = _180_stack = generate_images()
         self.model.add_180_deg_to_dataset(dataset_id=dataset_id, _180_deg_file=_180_file)
 
         load.assert_called_with(file_names=[_180_file])

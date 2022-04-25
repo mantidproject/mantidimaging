@@ -7,8 +7,6 @@ from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 import numpy as np
 
-from ...data.dataset import StrictDataset
-
 if TYPE_CHECKING:
     import numpy.typing as npt
 
@@ -23,23 +21,17 @@ def execute(load_func: Callable[[str], np.ndarray],
             img_format: str,
             dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
-            progress: Optional[Progress] = None) -> StrictDataset:
+            progress: Optional[Progress] = None) -> ImageStack:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
-
-    If several files are found in the same directory (for example you
-    give image0001.fits and there's also image0002.fits,
-    image0003.fits) these will also be loaded as the usual convention
-    in ImageJ and related imaging tools, using the last digits to sort
-    the images in the stack.
 
     Usual type in fits is 16-bit pixel depth, data type is denoted with:
         '>i2' - uint16
         '>f2' - float16
         '>f4' - float32
 
-    :returns: StrictDataset object
+    :returns: ImageStack object
     """
     if not sample_path:
         raise RuntimeError("No filenames were provided.")
@@ -59,9 +51,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    sample_images = ImageStack(sample_data, chosen_input_filenames, indices)
-
-    return StrictDataset(sample_images)
+    return ImageStack(sample_data, chosen_input_filenames, indices)
 
 
 class ImageLoader(object):

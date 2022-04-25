@@ -122,8 +122,7 @@ class IOTest(FileOutputtingTestCase):
                                 data_as_stack, expected_images.data.shape[0], saver_indices)
 
         # this does not load any flats or darks as they were not saved out
-        dataset = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
-        loaded_images = dataset.sample
+        loaded_images = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
 
         if loader_indices:
             assert len(loaded_images.data) == expected_len, \
@@ -146,8 +145,7 @@ class IOTest(FileOutputtingTestCase):
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, images.data.shape[0])
 
-        dataset = loader.load(self.output_directory, in_format=img_format)
-        loaded_images = dataset.sample
+        loaded_images = loader.load(self.output_directory, in_format=img_format)
 
         npt.assert_equal(loaded_images.data, images.data)
 
@@ -161,8 +159,7 @@ class IOTest(FileOutputtingTestCase):
         saver.image_save(images, self.output_directory)
 
         # Load image stack back
-        dataset = loader.load(self.output_directory)
-        loaded_images = dataset.sample
+        loaded_images = loader.load(self.output_directory)
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)

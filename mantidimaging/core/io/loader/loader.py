@@ -8,8 +8,6 @@ from typing import Tuple, List, Optional, Union, TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging.core.data.dataset import StrictDataset
-
 if TYPE_CHECKING:
     import numpy.typing as npt
 
@@ -86,18 +84,17 @@ def read_in_file_information(input_path: str,
                              in_format: str = DEFAULT_IO_FILE_FORMAT,
                              data_dtype: 'npt.DTypeLike' = np.float32) -> FileInformation:
     input_file_names = get_file_names(input_path, in_format, in_prefix)
-    dataset = load(input_path,
-                   in_prefix=in_prefix,
-                   in_format=in_format,
-                   dtype=data_dtype,
-                   indices=[0, 1, 1],
-                   file_names=input_file_names)
-    images = dataset.sample
+    image_stack = load(input_path,
+                       in_prefix=in_prefix,
+                       in_format=in_format,
+                       dtype=data_dtype,
+                       indices=[0, 1, 1],
+                       file_names=input_file_names)
 
     # construct and return the new shape
-    shape: Tuple[int, int, int] = (len(input_file_names), ) + images.data[0].shape
+    shape: Tuple[int, int, int] = (len(input_file_names), ) + image_stack.data[0].shape
 
-    fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=images.is_sinograms)
+    fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=image_stack.is_sinograms)
     return fi
 
 
@@ -112,7 +109,7 @@ def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progre
                 in_format=parameters.format,
                 indices=parameters.indices,
                 dtype=dtype,
-                progress=progress).sample
+                progress=progress)
 
 
 def load_stack(file_path: str, progress: Optional[Progress] = None) -> ImageStack:
@@ -120,7 +117,7 @@ def load_stack(file_path: str, progress: Optional[Progress] = None) -> ImageStac
     prefix = get_prefix(file_path)
     file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)  # type: ignore
 
-    return load(file_names=file_names, progress=progress).sample
+    return load(file_names=file_names, progress=progress)
 
 
 def load(input_path: Optional[str] = None,
@@ -129,7 +126,7 @@ def load(input_path: Optional[str] = None,
          dtype: 'npt.DTypeLike' = np.float32,
          file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
-         progress: Optional[Progress] = None) -> StrictDataset:
+         progress: Optional[Progress] = None) -> ImageStack:
     """
 
     Loads a stack, including sample, white and dark images.
@@ -144,8 +141,7 @@ def load(input_path: Optional[str] = None,
                     filename, but removes all indices from the filenames list
                     that are not selected
     :param progress: The progress reporting instance
-    :return: a tuple with shape 3: (sample, flat, dark), if no flat and dark
-             were loaded, they will be None
+    :return: an ImageStack
     """
     if in_format not in supported_formats():
         raise ValueError("Image format {0} not supported!".format(in_format))
@@ -165,19 +161,19 @@ def load(input_path: Optional[str] = None,
     else:
         raise NotImplementedError("Loading not implemented for:", in_format)
 
-    dataset = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
+    image_stack = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
 
     # Search for and load metadata file
     metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
     metadata_filename = metadata_found_filenames[0] if metadata_found_filenames else None
     if metadata_filename:
         with open(metadata_filename) as f:
-            dataset.sample.load_metadata(f)
+            image_stack.load_metadata(f)
             LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
     else:
         LOG.debug('No metadata file found')
 
-    return dataset
+    return image_stack
 
 
 def find_and_verify_sample_log(sample_directory: str, image_filenames: List[str]) -> str:
