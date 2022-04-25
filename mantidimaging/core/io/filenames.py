@@ -3,7 +3,7 @@
 
 from pathlib import Path
 import re
-from typing import List, Iterator
+from typing import List, Iterator, Optional
 
 
 class FilenamePattern:
@@ -28,6 +28,8 @@ class FilenamePattern:
             # Note: allow extra leading digits, for data sets that go 001 ... 998, 999, 1000, 1001
             self.re_pattern = re.compile("^" + re.escape(prefix) + "([1-9]?[0-9]{" + str(digit_count) + "})" +
                                          re.escape(suffix) + "$")
+
+        self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json")
         self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
@@ -35,7 +37,11 @@ class FilenamePattern:
         result = FilenamePattern.PATTERN.search(filename)
 
         if result is None:
-            return FilenamePattern(filename, 0, "")
+            if "." in filename:
+                name, _, ext = filename.rpartition(".")
+                return FilenamePattern(name, 0, "." + ext)
+            else:
+                return FilenamePattern(filename, 0, "")
 
         prefix = result.group(1)
         digits = result.group(2)
@@ -59,12 +65,16 @@ class FilenamePattern:
             return 0
         return int(result.group(1))
 
+    def match_metadata(self, filename: str) -> bool:
+        return self.re_pattern_metadata.match(filename) is not None
+
 
 class FilenameGroup:
     def __init__(self, directory: Path, pattern: FilenamePattern, indexes: List[int]):
         self.directory = directory
         self.pattern = pattern
         self.indexes = indexes
+        self.metadata_path: Optional[str] = None
 
     @classmethod
     def from_file(cls, path: Path) -> "FilenameGroup":
@@ -86,3 +96,6 @@ class FilenameGroup:
         for filename in self.directory.iterdir():
             if self.pattern.match(filename.name):
                 self.indexes.append(self.pattern.get_value(filename.name))
+
+            if self.pattern.match_metadata(filename.name):
+                self.metadata_path = filename.name
