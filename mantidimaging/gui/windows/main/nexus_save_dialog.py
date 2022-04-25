@@ -47,8 +47,8 @@ class NexusSaveDialog(QDialog):
         return str(self.sampleNameLineEdit.text())
 
     def enable_save(self):
-        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path() != ""
-                                                                               and self.sample_name() != "")
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path().strip() != ""
+                                                                               and self.sample_name().strip() != "")
 
     def _set_save_path(self):
         path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", "NeXus (*.nxs)")[0]
