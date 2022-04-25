@@ -1,15 +1,46 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from multiprocessing import get_context
 import os
 import uuid
-from typing import List
+from logging import getLogger
+from typing import List, Optional, TYPE_CHECKING
 
 import psutil
 from psutil import NoSuchProcess, AccessDenied
 
+if TYPE_CHECKING:
+    from multiprocessing.pool import Pool
+
 MEM_PREFIX = 'MI'
 MEM_DIR_LINUX = '/dev/shm'
 CURRENT_PID = psutil.Process().pid
+
+LOG = getLogger(__name__)
+
+pool: Optional['Pool'] = None
+
+
+def create_and_start_pool():
+    LOG.info('Creating process pool')
+    context = get_context('spawn')
+    cores = context.cpu_count()
+    global pool
+    pool = context.Pool(cores)
+    # We need a function to call to start the processes but the function itself doesn't need to do anything
+    # If we don't do this then the processes start when the pool is first called later in the application
+    # which affects performance.
+    pool.map_async(_do_nothing, range(cores))
+
+
+def _do_nothing(i):
+    pass
+
+
+def end_pool():
+    if pool:
+        pool.close()
+        pool.terminate()
 
 
 def generate_mi_shared_mem_name() -> str:
