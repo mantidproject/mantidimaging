@@ -30,7 +30,7 @@ class MonitorNormalisation(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack, cores=None, chunksize=None, progress=None) -> ImageStack:
+    def filter_func(images: ImageStack, progress=None) -> ImageStack:
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
             # passed in doesn't have the logfile in it
@@ -44,7 +44,7 @@ class MonitorNormalisation(BaseFilter):
         counts_val = pu.copy_into_shared_memory(counts.value / counts.value[0])
         do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
         arrays = [images.shared_array, counts_val]
-        ps.execute(do_division, arrays, images.num_projections, progress, cores=cores)
+        ps.execute(do_division, arrays, images.num_projections, progress)
         return images
 
     @staticmethod

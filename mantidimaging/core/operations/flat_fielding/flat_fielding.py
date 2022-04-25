@@ -70,8 +70,6 @@ class FlatFieldFilter(BaseFilter):
                     dark_after: ImageStack = None,
                     selected_flat_fielding: str = None,
                     use_dark: bool = True,
-                    cores=None,
-                    chunksize=None,
                     progress=None) -> ImageStack:
         """Do background correction with flat and dark images.
 
@@ -83,8 +81,6 @@ class FlatFieldFilter(BaseFilter):
         :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
                                        stacks or combined.
         :param use_dark: Whether to use dark frame subtraction
-        :param cores: The number of cores that will be used to process the data.
-        :param chunksize: The number of chunks that each worker will receive.
         :return: Filtered data (stack of images)
         """
         h.check_data_stack(images)
@@ -121,7 +117,7 @@ class FlatFieldFilter(BaseFilter):
             progress = Progress.ensure_instance(progress,
                                                 num_steps=images.data.shape[0],
                                                 task_name='Background Correction')
-            _execute(images, flat_avg, dark_avg, cores, chunksize, progress)
+            _execute(images, flat_avg, dark_avg, progress)
 
         h.check_data_stack(images)
         return images
@@ -275,7 +271,7 @@ def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
     return np.subtract(flat, dark)
 
 
-def _execute(images: ImageStack, flat=None, dark=None, cores=None, chunksize=None, progress=None):
+def _execute(images: ImageStack, flat=None, dark=None, progress=None):
     """A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
 
@@ -308,11 +304,11 @@ def _execute(images: ImageStack, flat=None, dark=None, cores=None, chunksize=Non
         # subtract the dark from all images
         do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
         arrays = [images.shared_array, shared_dark]
-        ps.execute(do_subtract, arrays, images.data.shape[0], progress, cores=cores)
+        ps.execute(do_subtract, arrays, images.data.shape[0], progress)
 
         # divide the data by (flat - dark)
         do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
         arrays = [images.shared_array, norm_divide]
-        ps.execute(do_divide, arrays, images.data.shape[0], progress, cores=cores)
+        ps.execute(do_divide, arrays, images.data.shape[0], progress)
 
     return images

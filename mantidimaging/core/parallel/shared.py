@@ -54,65 +54,26 @@ def execute(partial_func: partial,
             arrays: List[pu.SharedArray],
             num_operations: int,
             progress=None,
-            msg: str = '',
-            cores=None) -> None:
+            msg: str = '') -> None:
     """
-    Executes a function in parallel with shared memory between the processes.
+    Executes a function a given number of times using the provided list of SharedArray objects.
 
-    The array must have been created using
-    parallel.utility.create_shared_array(shape, dtype).
-
-    If the input array IS NOT a shared array, the data will NOT BE CHANGED!
-
-    The reason for that is that the processes don't work on the data, but on a
-    copy.
-
-    When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK
-    TO REPLACE THE ORIGINAL, it is discarded.
-
-    - imap_unordered gives the images back in random order
-    - map and map_async do not improve speed performance
-    - imap seems to be the best choice
-
-    Using _ in the for _ enumerate is slightly faster, because the tuple
-    from enumerate isn't unpacked, and thus some time is saved.
-
-    From performance tests, the chunksize doesn't seem to make much of a
-    difference, but having larger chunks usually led to slower performance:
-
-    Shape: (50,512,512)
-    1 chunk 3.06s
-    2 chunks 3.05s
-    3 chunks 3.07s
-    4 chunks 3.06s
-    5 chunks 3.16s
-    6 chunks 3.06s
-    7 chunks 3.058s
-    8 chunks 3.25s
-    9 chunks 3.45s
+    If all the arrays in the list use shared memory then the execution is done in parallel, with each process
+    accessing the data in shared memory.
+    If any arrays in the list do not use shared memory then the execution will be performed synchronously.
 
     :param partial_func: A function constructed using create_partial
     :param arrays: The list of SharedArray objects that the operations should be performed on
     :param num_operations: The expected number of operations - should match the number of images being processed
                            Also used to set the number of progress steps
-    :param cores: number of cores that the processing will use
     :param progress: Progress instance to use for progress reporting (optional)
     :param msg: Message to be shown on the progress bar
     :return:
     """
 
     all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
-
-    if not all_data_in_shared_memory:
-        cores = 1
-    elif not cores:
-        cores = pu.get_cores()
-
     partial_func = partial(partial_func, data)
-
-    chunksize = pu.calculate_chunksize(cores)
-
-    pu.execute_impl(num_operations, partial_func, cores, chunksize, progress, msg)
+    pu.execute_impl(num_operations, partial_func, all_data_in_shared_memory, progress, msg)
 
 
 def _check_shared_mem_and_get_data(

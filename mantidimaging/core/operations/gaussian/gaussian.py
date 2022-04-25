@@ -26,7 +26,7 @@ class GaussianFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: ImageStack, size=None, mode=None, order=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: ImageStack, size=None, mode=None, order=None, progress=None):
         """
         :param data: Input data as a 3D numpy.ndarray
         :param size: Size of the kernel
@@ -41,8 +41,6 @@ class GaussianFilter(BaseFilter):
                       An order of 1, 2, or 3 corresponds to convolution
                       with the first, second or third derivatives of a Gaussian.
                       Higher order derivatives are not implemented
-        :param cores: The number of cores that will be used to process the data.
-        :param chunksize: The number of chunks that each worker will receive.
 
         :return: The processed 3D numpy.ndarray
         """
@@ -51,7 +49,7 @@ class GaussianFilter(BaseFilter):
         if not size or not size > 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        _execute(data, size, mode, order, cores, progress)
+        _execute(data, size, mode, order, progress)
         h.check_data_stack(data)
         return data
 
@@ -92,7 +90,7 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _execute(images: ImageStack, size, mode, order, cores=None, progress=None):
+def _execute(images: ImageStack, size, mode, order, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
 
@@ -102,7 +100,7 @@ def _execute(images: ImageStack, size, mode, order, cores=None, progress=None):
              "filter size/width: {1}.".format(images.dtype, size))
 
     progress.update()
-    ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Gaussian filter", cores=cores)
+    ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Gaussian filter")
 
     progress.mark_complete()
     log.info("Finished  gaussian filter, with pixel data type: {0}, "

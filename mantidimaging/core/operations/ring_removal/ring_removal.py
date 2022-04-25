@@ -35,8 +35,6 @@ class RingRemovalFilter(BaseFilter):
                     thresh_min=-100.0,
                     theta_min=30,
                     rwidth=30,
-                    cores=None,
-                    chunksize=None,
                     progress=None):
         """
         Removal of ring artifacts in reconstructed volume. Uses Wavelet-Fourier based ring removal
@@ -91,8 +89,6 @@ class RingRemovalFilter(BaseFilter):
                            thresh_min=thresh_min,
                            theta_min=theta_min,
                            rwidth=rwidth,
-                           ncore=cores,
-                           nchunk=chunksize,
                            out=sample)
 
         return images

@@ -28,14 +28,12 @@ class RotateFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: ImageStack, angle=None, dark=None, cores=None, chunksize=None, progress=None):
+    def filter_func(data: ImageStack, angle=None, progress=None):
         """
         Rotates images by an arbitrary degree.
 
         :param data: stack of sample images
         :param angle: The rotation to be performed, in degrees
-        :param cores: cores for parallel execution
-        :param chunksize: chunk for each worker
 
         :return: The rotated images
         """
@@ -46,7 +44,7 @@ class RotateFilter(BaseFilter):
 
         # No need to run the filter for an angle of 0 as it won't have any effect
         if not angle == 0:
-            _execute(data, angle, cores, chunksize, progress)
+            _execute(data, angle, progress)
 
         return data
 
@@ -73,15 +71,11 @@ def _rotate_image_inplace(data, angle=None):
     data[:, :] = rotate(data[:, :], angle)
 
 
-def _execute(images: ImageStack, angle: float, cores: int, chunksize: int, progress: Progress):
+def _execute(images: ImageStack, angle: float, progress: Progress):
     progress = Progress.ensure_instance(progress, task_name='Rotate Stack')
 
     with progress:
         f = ps.create_partial(_rotate_image_inplace, ps.inplace1, angle=angle)
-        ps.execute(f, [images.shared_array],
-                   images.data.shape[0],
-                   progress,
-                   msg=f"Rotating by {angle} degrees",
-                   cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg=f"Rotating by {angle} degrees")
 
     return images

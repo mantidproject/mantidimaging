@@ -30,9 +30,9 @@ class RemoveDeadStripesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack, snr=3, size=61, cores=None, chunksize=None, progress=None):
+    def filter_func(images: ImageStack, snr=3, size=61, progress=None):
         f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
         return images
 
     @staticmethod

@@ -18,12 +18,14 @@ CURRENT_PID = psutil.Process().pid
 
 LOG = getLogger(__name__)
 
+cores: int = 1
 pool: Optional['Pool'] = None
 
 
 def create_and_start_pool():
     LOG.info('Creating process pool')
     context = get_context('spawn')
+    global cores
     cores = context.cpu_count()
     global pool
     pool = context.Pool(cores)
