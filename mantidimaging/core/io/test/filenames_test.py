@@ -133,3 +133,33 @@ class FilenameGroupTest(unittest.TestCase):
         fg.find_all_files()
 
         self.assertEqual(fg.metadata_path, "IMAT_Flower_Tomo.json")
+
+    def test_find_log(self):
+        parent_mock = mock.Mock()
+        path_mock = mock.Mock()
+        path_mock.name = "tomo"
+        path_mock.parent = parent_mock
+
+        parent_mock.glob.return_value = ["tomo.txt"]
+
+        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000000.tif")
+        fg = FilenameGroup(path_mock, pattern, [])
+        fg.find_log_file()
+
+        parent_mock.glob.assert_called_once_with("tomo*.txt")
+        self.assertEqual(fg.log_path, "tomo.txt")
+
+    def test_find_log_best(self):
+        parent_mock = mock.Mock()
+        path_mock = mock.Mock()
+        path_mock.name = "Dark"
+        path_mock.parent = parent_mock
+
+        parent_mock.glob.return_value = ["Dark_aaa_log.txt", "Dark_log.txt", "Dark_bbb_log.txt"]
+
+        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000000.tif")
+        fg = FilenameGroup(path_mock, pattern, [])
+        fg.find_log_file()
+
+        parent_mock.glob.assert_called_once_with("Dark*.txt")
+        self.assertEqual(fg.log_path, "Dark_log.txt")

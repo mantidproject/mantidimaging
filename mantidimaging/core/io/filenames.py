@@ -75,6 +75,7 @@ class FilenameGroup:
         self.pattern = pattern
         self.indexes = indexes
         self.metadata_path: Optional[str] = None
+        self.log_path: Optional[str] = None
 
     @classmethod
     def from_file(cls, path: Path) -> "FilenameGroup":
@@ -99,3 +100,13 @@ class FilenameGroup:
 
             if self.pattern.match_metadata(filename.name):
                 self.metadata_path = filename.name
+
+    def find_log_file(self):
+        parent_directory = self.directory.parent
+        log_pattern = self.directory.name + "*" + ".txt"
+        log_paths = parent_directory.glob(log_pattern)
+
+        if log_paths:
+            # choose shortest match
+            log_paths.sort(key=len)
+            self.log_path = log_paths[0]
