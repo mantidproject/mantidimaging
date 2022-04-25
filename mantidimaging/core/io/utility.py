@@ -17,19 +17,16 @@ SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
 THRESHOLD_180 = np.radians(1)
 
 
-def get_file_extension(file: str) -> Optional[str]:
+def get_file_extension(file: str) -> str:
     """
     >>> get_file_extension("/home/user/file_path.test")
     'test'
     >>> get_file_extension("/home/user/file.path.test")
     'test'
     >>> get_file_extension("/home/")
+    ''
 
-    # above is expecting a None which.. well doesn't show as anything so just
-    # an empty line with a comment explaining it
     """
-    if os.path.isdir(file):
-        return None
     # [1] gets the extension, [1:] returns it without the dot
     return os.path.splitext(file)[1][1:]
 
@@ -111,32 +108,6 @@ def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
             getLogger(__name__).info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
 
     return None
-
-
-def get_folder_names(path: str) -> List[str]:
-    """
-    Get all folder names in a specific path.
-
-    :param path: The path to be checked.
-
-    :return: All the folder names, sorted by ascending
-
-    """
-
-    path = os.path.abspath(os.path.expanduser(path))
-
-    # os.walk returns a tuple (dirpath, dirnames, filenames), we only want
-    # dirnames
-    folders = next(os.walk(path))[1]
-
-    if len(folders) <= 0:
-        raise RuntimeError("Could not find any folders in {0}".format(path))
-
-    # this is a necessary step, otherwise the file order is not guaranteed to
-    # be sequential and we get randomly ordered stack of names
-    folders.sort(key=_alphanum_key_split)
-
-    return folders
 
 
 def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:

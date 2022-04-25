@@ -3,7 +3,6 @@
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
-import os
 from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 import numpy as np
@@ -14,19 +13,13 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.io.utility import get_file_names, get_prefix
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-from . import stack_loader
 from ...utility.data_containers import Indices
 
 
 def execute(load_func: Callable[[str], np.ndarray],
             sample_path: List[str],
-            flat_before_path: Optional[str],
-            flat_after_path: Optional[str],
-            dark_before_path: Optional[str],
-            dark_after_path: Optional[str],
             img_format: str,
             dtype: 'npt.DTypeLike',
             indices: Union[List[int], Indices, None],
@@ -48,7 +41,6 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     :returns: StrictDataset object
     """
-
     if not sample_path:
         raise RuntimeError("No filenames were provided.")
 
@@ -65,12 +57,6 @@ def execute(load_func: Callable[[str], np.ndarray],
     # forward all arguments to internal class for easy re-usage
     il = ImageLoader(load_func, img_format, img_shape, dtype, indices, progress)
 
-    # we load the flat and dark first, because if they fail we don't want to
-    # fail after we've loaded a big stack into memory
-    flat_before_data, flat_before_filenames = il.load_data(flat_before_path)
-    flat_after_data, flat_after_filenames = il.load_data(flat_after_path)
-    dark_before_data, dark_before_filenames = il.load_data(dark_before_path)
-    dark_after_data, dark_after_filenames = il.load_data(dark_after_path)
     sample_data = il.load_sample_data(chosen_input_filenames)
 
     if isinstance(sample_data, pu.SharedArray):
@@ -78,12 +64,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     else:
         sample_images = sample_data
 
-    return StrictDataset(
-        sample_images,
-        flat_before=ImageStack(flat_before_data, flat_before_filenames) if flat_before_data is not None else None,
-        flat_after=ImageStack(flat_after_data, flat_after_filenames) if flat_after_data is not None else None,
-        dark_before=ImageStack(dark_before_data, dark_before_filenames) if dark_before_data is not None else None,
-        dark_after=ImageStack(dark_after_data, dark_after_filenames) if dark_after_data is not None else None)
+    return StrictDataset(sample_images)
 
 
 class ImageLoader(object):
@@ -106,22 +87,8 @@ class ImageLoader(object):
         if len(self.img_shape) == 2:
             # the loaded file was a single image
             return self.load_files(input_file_names)
-        elif len(self.img_shape) == 3:
-            # the loaded file was a file containing a stack of images
-            return stack_loader.execute(self.load_func,
-                                        input_file_names[0],
-                                        self.data_dtype,
-                                        "Sample",
-                                        self.indices,
-                                        progress=self.progress)
         else:
             raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
-
-    def load_data(self, file_path: Optional[str]) -> Tuple[Optional[pu.SharedArray], Optional[List[str]]]:
-        if file_path:
-            file_names = get_file_names(os.path.dirname(file_path), self.img_format, get_prefix(file_path))
-            return self.load_files(file_names), file_names
-        return None, None
 
     def _do_files_load_seq(self, data: pu.SharedArray, files: List[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
