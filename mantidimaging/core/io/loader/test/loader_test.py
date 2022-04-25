@@ -76,7 +76,7 @@ class LoaderTest(FileOutputtingTestCase):
         self._create_test_sample()
         tomo_dir = os.path.join(self.output_directory, "Tomo")
         tomo_prefix = os.path.join(tomo_dir, "Tomo")
-        image_format = ".tif"
+        image_format = "tif"
         flat_before_dir = os.path.join(self.output_directory, "Flat_Before")
         flat_before_prefix = os.path.join(flat_before_dir, "Flat_Before")
         flat_before_log = os.path.join(self.output_directory, "Flat_Before_log.txt")
