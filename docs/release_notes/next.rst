@@ -10,6 +10,7 @@ New Features
 - #1379 : Add angle/z axis slider in the operations window
 - #1217 : Basic NeXus Saving
 - #1385 : Load all NeXus rotation angles
+- #1394 : NeXus Busy Indicator
 
 Fixes
 -----
