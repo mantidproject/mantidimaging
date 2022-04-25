@@ -97,7 +97,7 @@ A new 180 projection can be loaded with the :code:`Load 180 degree projection` o
 Saving
 ------
 
-The *Save* options is only enabled when at least one stack is loaded.
+The *Save* options are only enabled when at least one stack is loaded.
 
 Save as Image Files
 *******************
