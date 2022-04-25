@@ -73,13 +73,18 @@ def start_async_task_view(parent: QMainWindow,
                           task: Callable,
                           on_complete: Callable,
                           kwargs: Optional[Dict] = None,
-                          tracker: Optional[Set[Any]] = None):
+                          tracker: Optional[Set[Any]] = None,
+                          busy: Optional[bool] = False):
     atd = AsyncTaskDialogView(parent)
     if not kwargs:
         kwargs = {'progress': Progress()}
     else:
         kwargs['progress'] = Progress()
     kwargs['progress'].add_progress_handler(atd.presenter)
+
+    if busy:
+        atd.progressBar.setMinimum(0)
+        atd.progressBar.setMaximum(0)
 
     atd.presenter.set_task(task)
     atd.presenter.set_on_complete(on_complete)
