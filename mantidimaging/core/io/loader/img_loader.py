@@ -59,10 +59,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    if isinstance(sample_data, pu.SharedArray):
-        sample_images = ImageStack(sample_data, chosen_input_filenames, indices)
-    else:
-        sample_images = sample_data
+    sample_images = ImageStack(sample_data, chosen_input_filenames, indices)
 
     return StrictDataset(sample_images)
 
@@ -82,7 +79,7 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names: List[str]) -> Union[pu.SharedArray, ImageStack]:
+    def load_sample_data(self, input_file_names: List[str]) -> pu.SharedArray:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
