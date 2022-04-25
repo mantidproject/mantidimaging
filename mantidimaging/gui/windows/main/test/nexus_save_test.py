@@ -13,17 +13,15 @@ class NexusSaveDialogTest(unittest.TestCase):
     def setUp(self) -> None:
         self.nexus_save_dialog = NexusSaveDialog(None, [])
 
-    def test_accept_calls_execute_nexus_save_and_changes_stack_index(self):
+    def test_accept_calls_execute_nexus_save(self):
         parent = mock.Mock()
         self.nexus_save_dialog.parent = mock.Mock(return_value=parent)
 
-        dataset_id = "dataset-id"
-        self.nexus_save_dialog.dataset_uuids = [dataset_id]
+        self.nexus_save_dialog.dataset_uuids = ["dataset-id"]
         self.nexus_save_dialog.datasetNames.currentIndex = mock.Mock(return_value=0)
 
         self.nexus_save_dialog.accept()
         parent.execute_nexus_save.assert_called_once()
-        assert self.nexus_save_dialog.stackedWidget.currentIndex()
 
     def test_save_path(self):
         save_path = "a/save/path"
