@@ -33,8 +33,7 @@ def test_correctly_chooses_parallel(shape: Union[int, List, Tuple[int, int, int]
     assert multiprocessing_necessary(shape, cores) is should_be_parallel
 
 
-@mock.patch('mantidimaging.core.parallel.utility.Pool')
-def test_execute_impl_one_core(mock_pool):
+def test_execute_impl_one_core():
     mock_partial = mock.Mock()
     mock_progress = mock.Mock()
     execute_impl(1, mock_partial, 1, 1, mock_progress, "Test")
@@ -42,15 +41,13 @@ def test_execute_impl_one_core(mock_pool):
     mock_progress.update.assert_called_once_with(1, "Test")
 
 
-@mock.patch('mantidimaging.core.parallel.utility.Pool')
+@mock.patch('mantidimaging.core.parallel.manager.pool')
 def test_execute_impl_par(mock_pool):
     mock_partial = mock.Mock()
     mock_progress = mock.Mock()
-    mock_pool_instance = mock.Mock()
-    mock_pool_instance.imap.return_value = range(15)
-    mock_pool.return_value.__enter__.return_value = mock_pool_instance
+    mock_pool.imap.return_value = range(15)
     execute_impl(15, mock_partial, 10, 1, mock_progress, "Test")
-    mock_pool_instance.imap.assert_called_once()
+    mock_pool.imap.assert_called_once()
     assert mock_progress.update.call_count == 15
 
 

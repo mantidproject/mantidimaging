@@ -7,7 +7,6 @@ from functools import partial
 from logging import getLogger
 from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
-from multiprocessing.pool import Pool
 from typing import List, Tuple, Union, TYPE_CHECKING, Optional
 
 import numpy as np
@@ -83,18 +82,18 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int], List], cor
         return False
 
     if cores == 1:
-        LOG.info("1 core specified. Running synchronously on 1 core")
+        LOG.info("1 core specified")
         return False
     elif isinstance(shape, int):
         if shape <= 10:
-            LOG.info("Shape under 10. Running synchronously on 1 core")
+            LOG.info("Shape under 10")
             return False
     elif isinstance(shape, tuple) or isinstance(shape, list):
         if shape[0] <= 10:
-            LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
+            LOG.info("3D axis 0 shape under 10")
             return False
 
-    LOG.info(f"Running async on {cores} cores")
+    LOG.info("Multiprocessing required")
     return True
 
 
@@ -102,11 +101,12 @@ def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int
     task_name = f"{msg} {cores}c {chunksize}chs"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = range(img_num)
-    if multiprocessing_necessary(img_num, cores):
-        with Pool(cores) as pool:
-            for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
-                progress.update(1, msg)
+    if multiprocessing_necessary(img_num, cores) and pm.pool:
+        LOG.info(f"Running async on {cores} cores")
+        for _ in pm.pool.imap(partial_func, indices_list, chunksize=chunksize):
+            progress.update(1, msg)
     else:
+        LOG.info("Running synchronously on 1 core")
         for ind in indices_list:
             partial_func(ind)
             progress.update(1, msg)
