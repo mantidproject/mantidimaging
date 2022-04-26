@@ -15,7 +15,6 @@ class ExecutionTimerTest(unittest.TestCase):
 
         with t:
             self.assertEqual(t.total_seconds, None)
-            self.assertEqual(str(t), 'Elapsed time: unknown seconds')
 
             time.sleep(0.1)
 
