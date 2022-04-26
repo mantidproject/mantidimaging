@@ -67,8 +67,15 @@ class NexusSaveDialogTest(unittest.TestCase):
         self.nexus_save_dialog.datasetNames.addItems.assert_called_once_with((dataset_name, ))
 
     @mock.patch("mantidimaging.gui.windows.main.nexus_save_dialog.QFileDialog.getSaveFileName")
-    def test_set_save_path(self, get_save_file_name_mock):
+    def test_set_save_path_adds_extension(self, get_save_file_name_mock):
         save_path = "save_path"
+        get_save_file_name_mock.return_value = (save_path, )
+        self.nexus_save_dialog._set_save_path()
+        self.assertEqual(save_path + ".nxs", self.nexus_save_dialog.savePath.text())
+
+    @mock.patch("mantidimaging.gui.windows.main.nexus_save_dialog.QFileDialog.getSaveFileName")
+    def test_set_save_path_doesnt_add_extention_when_not_needed(self, get_save_file_name_mock):
+        save_path = "save_path.nxs"
         get_save_file_name_mock.return_value = (save_path, )
         self.nexus_save_dialog._set_save_path()
         self.assertEqual(save_path, self.nexus_save_dialog.savePath.text())

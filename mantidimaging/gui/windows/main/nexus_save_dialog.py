@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import os
 import uuid
 from typing import Optional, List
 
@@ -7,6 +8,8 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.utility import compile_ui
+
+NXS_EXT = ".nxs"
 
 
 class NexusSaveDialog(QDialog):
@@ -51,5 +54,7 @@ class NexusSaveDialog(QDialog):
                                                                                and self.sample_name().strip() != "")
 
     def _set_save_path(self):
-        path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", "NeXus (*.nxs)")[0]
+        path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", f"NeXus (*{NXS_EXT})")[0]
+        if os.path.splitext(path)[1] != NXS_EXT:
+            path += NXS_EXT
         self.savePath.setText(path)
