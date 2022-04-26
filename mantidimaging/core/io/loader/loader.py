@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from logging import getLogger, Logger
 from pathlib import Path
-from typing import Tuple, List, Optional, Union, TYPE_CHECKING
+from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
 
 import numpy as np
 from skimage import io as skio
@@ -50,6 +50,16 @@ def _imread(filename: str) -> np.ndarray:
 
 def supported_formats() -> List[str]:
     return ['fits', 'fit', 'tif', 'tiff']
+
+
+def get_loader(in_format: str) -> Callable[[str], np.ndarray]:
+    if in_format in ['fits', 'fit']:
+        load_func = _fitsread
+    elif in_format in ['tiff', 'tif']:
+        load_func = _imread
+    else:
+        raise NotImplementedError("Loading not implemented for:", in_format)
+    return load_func
 
 
 @dataclass
@@ -123,9 +133,6 @@ def load(input_path: Optional[str] = None,
     :param progress: The progress reporting instance
     :return: an ImageStack
     """
-    if in_format not in supported_formats():
-        raise ValueError("Image format {0} not supported!".format(in_format))
-
     if indices and len(indices) < 3:
         raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
@@ -134,12 +141,7 @@ def load(input_path: Optional[str] = None,
     else:
         input_file_names = file_names
 
-    if in_format in ['fits', 'fit']:
-        load_func = _fitsread
-    elif in_format in ['tiff', 'tif']:
-        load_func = _imread
-    else:
-        raise NotImplementedError("Loading not implemented for:", in_format)
+    load_func = get_loader(in_format)
 
     image_stack = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
 
