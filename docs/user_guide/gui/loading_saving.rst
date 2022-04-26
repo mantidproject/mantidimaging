@@ -97,9 +97,12 @@ A new 180 projection can be loaded with the :code:`Load 180 degree projection` o
 Saving
 ------
 
-The *Save* option is only enabled when at least one stack is loaded.
+The *Save* options are only enabled when at least one stack is loaded.
 
-When selected the save dialog appears:
+Save as Image Files
+*******************
+
+When *Save as Image Files* is selected the save images dialog appears:
 
 .. image:: ../../_static/gui_save_dialog.png
     :alt: Save dialog
@@ -112,3 +115,11 @@ of the image in the stack.
 The *Overwrite* option removes checking for existing data of the same name. When
 disabled an error will be raised if the specified output directory is not empty
 prior to saving.
+
+Save as a NeXus File
+********************
+
+When *Save as NeXus File* is selected the save NeXus dialog appears. Only Datasets
+with sample images data can be saved as NeXus files. A sample name and an output
+directory are required before a save can be attempted.
+

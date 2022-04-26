@@ -724,14 +724,22 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.presenter.save_nexus_file()
 
-    def test_save_nexus_file(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
+    def test_save_nexus_file(self, start_async_mock: mock.Mock):
         self.view.nexus_save_dialog = nexus_save_dialog_mock = mock.Mock()
         nexus_save_dialog_mock.save_path.return_value = save_path = "nexus/save/path"
         nexus_save_dialog_mock.sample_name.return_value = sample_name = "sample-name"
         nexus_save_dialog_mock.selected_dataset = dataset_id = "dataset-id"
 
         self.presenter.notify(Notification.NEXUS_SAVE)
-        self.model.do_nexus_saving.assert_called_once_with(dataset_id, save_path, sample_name)
+        start_async_mock.assert_called_once_with(self.presenter.view,
+                                                 self.model.do_nexus_saving,
+                                                 self.presenter._on_save_done, {
+                                                     'dataset_id': dataset_id,
+                                                     'path': save_path,
+                                                     'sample_name': sample_name
+                                                 },
+                                                 busy=True)
 
 
 if __name__ == '__main__':
