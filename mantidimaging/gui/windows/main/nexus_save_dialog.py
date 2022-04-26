@@ -23,6 +23,7 @@ class NexusSaveDialog(QDialog):
         self.browseButton.clicked.connect(self._set_save_path)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(False)
         self.savePath.textChanged.connect(self.enable_save)
+        self.savePath.editingFinished.connect(self._check_extension)
         self.sampleNameLineEdit.textChanged.connect(self.enable_save)
 
         self.dataset_uuids: List[uuid.UUID] = []
@@ -55,6 +56,10 @@ class NexusSaveDialog(QDialog):
 
     def _set_save_path(self):
         path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", f"NeXus (*{NXS_EXT})")[0]
-        if os.path.splitext(path)[1] != NXS_EXT:
-            path += NXS_EXT
         self.savePath.setText(path)
+        self._check_extension()
+
+    def _check_extension(self):
+        path = self.save_path()
+        if os.path.splitext(path)[1] != NXS_EXT:
+            self.savePath.setText(path + NXS_EXT)
