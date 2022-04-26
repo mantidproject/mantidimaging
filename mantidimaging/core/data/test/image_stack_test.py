@@ -128,7 +128,6 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images((42, 100, 350))
         self.assertEqual(images.height, 100)
         self.assertEqual(images.width, 350)
-        self.assertEqual(images.v_middle, 50)
         self.assertEqual(images.h_middle, 350 / 2)
         self.assertEqual(images.num_images, 42)
         self.assertEqual(images.num_projections, 42)
