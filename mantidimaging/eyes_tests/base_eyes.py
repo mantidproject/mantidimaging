@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
@@ -95,17 +96,18 @@ class BaseEyesTest(unittest.TestCase):
         menu.popup(widget.mapFromGlobal(menu_location))
 
     def _load_data_set(self, set_180: bool = False):
-        dataset = loader.load(file_names=[LOAD_SAMPLE])
-        dataset.sample.name = "Stack 1"
+        image_stack = loader.load(file_names=[LOAD_SAMPLE])
+        dataset = StrictDataset(image_stack)
+        image_stack.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
 
         if set_180:
-            _180_array = dataset.sample.data[0:1]
+            _180_array = image_stack.data[0:1]
             shared_180 = pu.create_array(_180_array.shape, _180_array.dtype)
             shared_180.array[:] = _180_array[:]
-            dataset.sample.proj180deg = ImageStack(shared_180)
-            self.imaging.presenter.create_single_tabbed_images_stack(dataset.sample.proj180deg)
+            image_stack.proj180deg = ImageStack(shared_180)
+            self.imaging.presenter.create_single_tabbed_images_stack(image_stack.proj180deg)
 
         self.imaging.presenter.model.add_dataset_to_model(dataset)
 

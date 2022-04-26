@@ -20,7 +20,6 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 
 class ImageStack:
-    NO_FILENAME_IMAGE_TITLE_STRING = "Image: {}"
     name: str
 
     def __init__(self,
@@ -185,13 +184,6 @@ class ImageStack:
         Returns the horizontal middle (middle column) of the projections
         """
         return self.width / 2
-
-    @property
-    def v_middle(self) -> float:
-        """
-        Returns the vertical middle (middle row) of the projections
-        """
-        return self.height / 2
 
     @property
     def num_images(self) -> int:
