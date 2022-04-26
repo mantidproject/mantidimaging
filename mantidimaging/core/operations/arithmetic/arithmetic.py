@@ -1,7 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from functools import partial
-from typing import Callable, Dict, Optional
+from typing import Callable, Dict
 
 import numpy as np
 from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
@@ -43,7 +43,6 @@ class ArithmeticFilter(BaseFilter):
                     mult_val: float = 1.0,
                     add_val: float = 0.0,
                     sub_val: float = 0.0,
-                    cores: Optional[int] = None,
                     progress=None) -> ImageStack:
         """
         Apply arithmetic operations to the pixels.
@@ -52,14 +51,13 @@ class ArithmeticFilter(BaseFilter):
         :param div_val: The division value.
         :param add_val: The addition value.
         :param sub_val: The subtraction value.
-        :param cores: The number of cores that will be used to process the data.
         :param progress: The Progress object isn't used.
         :return: The processed ImageStack object.
         """
         if div_val == 0 or mult_val == 0:
             raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")
 
-        _execute(images, div_val, mult_val, add_val, sub_val, cores, progress)
+        _execute(images, div_val, mult_val, add_val, sub_val, progress)
         return images
 
     @staticmethod
@@ -116,8 +114,7 @@ class ArithmeticFilter(BaseFilter):
                        sub_val=sub_input_widget.value())
 
 
-def _execute(images: ImageStack, div_val: float, mult_val: float, add_val: float, sub_val: float, cores: Optional[int],
-             progress):
+def _execute(images: ImageStack, div_val: float, mult_val: float, add_val: float, sub_val: float, progress):
     arg_list = [div_val, mult_val, add_val, sub_val]
     do_arithmetic = ps.create_partial(_arithmetic_func, fwd_function=ps.arithmetic, arg_list=arg_list)
-    ps.execute(do_arithmetic, [images.shared_array], images.data.shape[0], progress, cores=cores)
+    ps.execute(do_arithmetic, [images.shared_array], images.data.shape[0], progress)

@@ -39,18 +39,11 @@ class NaNRemovalFilter(BaseFilter):
     MODES = ["Constant", "Median"]
 
     @staticmethod
-    def filter_func(data,
-                    replace_value=None,
-                    mode_value="Constant",
-                    cores=None,
-                    chunksize=None,
-                    progress=None) -> ImageStack:
+    def filter_func(data, replace_value=None, mode_value="Constant", progress=None) -> ImageStack:
         """
         :param data: The input data.
         :param mode_value: Values to replace NaNs with. One of ["Constant", "Median"]
         :param replace_value: In constant mode, the value to replace NaNs with.
-        :param cores: The number of cores that will be used to process the data.
-        :param chunksize: The number of chunks that each worker will receive.
         :param progress: The optional Progress object.
         :return: The ImageStack object with the NaNs replaced.
         """
@@ -60,7 +53,7 @@ class NaNRemovalFilter(BaseFilter):
             nan_idxs = np.isnan(sample)
             sample[nan_idxs] = replace_value
         elif mode_value == "Median":
-            _execute(data, 3, "reflect", cores, chunksize, progress)
+            _execute(data, 3, "reflect", progress)
         else:
             raise ValueError(f"Unknown mode: '{mode_value}'\nShould be one of {NaNRemovalFilter.MODES}")
 
@@ -112,7 +105,7 @@ def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
     return data
 
 
-def _execute(images: ImageStack, size, edgemode, cores=None, chunksize=None, progress=None):
+def _execute(images: ImageStack, size, edgemode, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='NaN Removal')
 
@@ -122,6 +115,6 @@ def _execute(images: ImageStack, size, edgemode, cores=None, chunksize=None, pro
     with progress:
         log.info("PARALLEL NaN Removal filter, with pixel data type: {0}".format(images.dtype))
 
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="NaN Removal", cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="NaN Removal")
 
     return images

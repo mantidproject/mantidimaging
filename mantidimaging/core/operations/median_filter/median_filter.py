@@ -67,13 +67,7 @@ class MedianFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: ImageStack,
-                    size=None,
-                    mode="reflect",
-                    cores=None,
-                    chunksize=None,
-                    progress=None,
-                    force_cpu=True):
+    def filter_func(data: ImageStack, size=None, mode="reflect", progress=None, force_cpu=True):
         """
         :param data: Input data as an ImageStack object.
         :param size: Size of the kernel
@@ -81,8 +75,6 @@ class MedianFilter(BaseFilter):
                      One of [reflect, constant, nearest, mirror, wrap].
                      Modes are described in the `SciPy documentation
                      <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.median_filter.html>`_.
-        :param cores: The number of cores that will be used to process the data.
-        :param chunksize: The number of chunks that each worker will receive.
         :param progress: The object for displaying the progress.
         :param force_cpu: Whether or not to use the CPU.
 
@@ -97,7 +89,7 @@ class MedianFilter(BaseFilter):
         if not force_cpu:
             _execute_gpu(data.data, size, mode, progress)
         else:
-            _execute(data, size, mode, cores, chunksize, progress)
+            _execute(data, size, mode, progress)
 
         h.check_data_stack(data)
         return data
@@ -150,7 +142,7 @@ def _median_filter(data: np.ndarray, size: int, mode: str):
     return data
 
 
-def _execute(images: ImageStack, size, mode, cores=None, chunksize=None, progress=None):
+def _execute(images: ImageStack, size, mode, progress=None):
     log = getLogger(__name__)
     progress = Progress.ensure_instance(progress, task_name='Median filter')
 
@@ -161,7 +153,7 @@ def _execute(images: ImageStack, size, mode, cores=None, chunksize=None, progres
         log.info("PARALLEL median filter, with pixel data type: {0}, filter "
                  "size/width: {1}.".format(images.dtype, size))
 
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Median filter", cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Median filter")
 
 
 def _execute_gpu(data, size, mode, progress=None):

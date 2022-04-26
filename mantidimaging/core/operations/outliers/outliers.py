@@ -48,7 +48,6 @@ class OutliersFilter(BaseFilter):
                     diff=None,
                     radius=_default_radius,
                     mode=_default_mode,
-                    cores=None,
                     progress: Progress = None):
         """
         :param images: Input data
@@ -56,7 +55,6 @@ class OutliersFilter(BaseFilter):
         :param radius: Size of the median filter to apply
         :param mode: Whether to remove bright or dark outliers
                     One of [OUTLIERS_BRIGHT, OUTLIERS_DARK]
-        :param cores: The number of cores that will be used to process the data.
 
         :return: The processed 3D numpy.ndarray
         """

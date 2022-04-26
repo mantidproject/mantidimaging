@@ -30,16 +30,9 @@ class RemoveAllStripesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack,
-                    snr=3,
-                    la_size=61,
-                    sm_size=21,
-                    dim=1,
-                    cores=None,
-                    chunksize=None,
-                    progress=None):
+    def filter_func(images: ImageStack, snr=3, la_size=61, sm_size=21, dim=1, progress=None):
         f = ps.create_partial(remove_all_stripe, ps.return_to_self, snr=snr, la_size=la_size, sm_size=sm_size, dim=dim)
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
         return images
 
     @staticmethod
