@@ -12,6 +12,7 @@ New Features
 - #1385 : Load all NeXus rotation angles
 - #1394 : NeXus Busy Indicator
 - #1394 : Add .nxs extension to NeXus save path
+- #1399 : NeXus Saving OSError message
 
 Fixes
 -----
