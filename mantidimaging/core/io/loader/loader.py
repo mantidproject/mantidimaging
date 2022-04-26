@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING
 
 import numpy as np
+from skimage import io as skio
+import astropy.io.fits as fits
 
 if TYPE_CHECKING:
     import numpy.typing as npt
@@ -34,7 +36,6 @@ def _fitsread(filename: str) -> np.ndarray:
     :param filename :: name of the image file, can be relative or absolute path
     :param img_format: format of the image ('fits')
     """
-    import astropy.io.fits as fits
     image = fits.open(filename)
     if len(image) < 1:
         raise RuntimeError("Could not load at least one FITS image/table file from: {0}".format(filename))
@@ -44,32 +45,11 @@ def _fitsread(filename: str) -> np.ndarray:
 
 
 def _imread(filename: str) -> np.ndarray:
-    from mantidimaging.core.utility.special_imports import import_skimage_io
-    skio = import_skimage_io()
     return skio.imread(filename)
 
 
 def supported_formats() -> List[str]:
-    # ignore errors for unused import/variable, we are only checking
-    # availability
-
-    try:
-        from skimage import io as skio  # noqa: F401
-        skio_available = True
-    except ImportError:  # pragma: no cover
-        skio_available = False  # pragma: no cover
-
-    try:
-        import astropy.io.fits as fits  # noqa: F401
-        fits_available = True
-    except ImportError:  # pragma: no cover
-        fits_available = False  # pragma: no cover
-
-    avail_list = \
-        (['fits', 'fit', '.fits', '.fit'] if fits_available else []) + \
-        (['tif', 'tiff', '.tif', '.tiff'] if skio_available else [])
-
-    return avail_list
+    return ['fits', 'fit', 'tif', 'tiff']
 
 
 @dataclass
