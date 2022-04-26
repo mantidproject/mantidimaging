@@ -10,13 +10,14 @@ from logging import getLogger
 from typing import Any, Tuple, Union, List, Callable
 
 from PyQt5 import uic  # type: ignore
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction,
                              QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
 
 from mantidimaging.core.utility import finder
 
 MAX_SPIN_BOX = 2147483647
+INPUT_DIALOG_FLAGS = Qt.WindowSystemMenuHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
 
 
 class BlockQtSignals(object):

@@ -11,6 +11,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 
 from ..stack_visualiser.presenter import StackVisualiserPresenter
 from .metadata_dialog import MetadataDialog
@@ -135,7 +136,7 @@ class StackVisualiserView(QDockWidget):
             0,  # Default value
             0,  # Min projection value
             self.presenter.get_num_images(),  # Max possible value
-        )
+            flags=INPUT_DIALOG_FLAGS)
         if accepted:
             self.image_view.set_selected_image(projection_to_goto)
 
@@ -148,7 +149,7 @@ class StackVisualiserView(QDockWidget):
             0,  # Min projection value
             2147483647,  # Max possible value
             4,  # Digits/decimals
-        )
+            flags=INPUT_DIALOG_FLAGS)
         if accepted:
             self.image_view.set_selected_image(self.presenter.find_image_from_angle(projection_to_goto))
 
@@ -157,7 +158,8 @@ class StackVisualiserView(QDockWidget):
             self,
             "Manual ROI",
             "Enter ROI in order left, top, right, bottom, with commas in-between each number",
-            text="0, 0, 50, 50")
+            text="0, 0, 50, 50",
+            flags=INPUT_DIALOG_FLAGS)
         if accepted:
             roi = [int(r.strip()) for r in roi.split(",")]
             self.image_view.roi.setPos((roi[0], roi[1]), update=False)
@@ -170,8 +172,11 @@ class StackVisualiserView(QDockWidget):
         QGuiApplication.clipboard().setText(f"{pos.x}, {pos.y}, {pos.x + size.x}, {pos.y + size.y}")
 
     def change_window_name_clicked(self):
-        input_window = QInputDialog()
-        new_window_name, ok = input_window.getText(self, "Change window name", "Name:", text=self.name)
+        new_window_name, ok = QInputDialog().getText(self,
+                                                     "Change window name",
+                                                     "Name:",
+                                                     text=self.name,
+                                                     flags=INPUT_DIALOG_FLAGS)
         if ok:
             if new_window_name not in self.main_window.stack_names:
                 self.main_window.rename_stack(self.name, new_window_name)
@@ -192,8 +197,11 @@ class StackVisualiserView(QDockWidget):
     def mark_as_sinograms(self):
         # 1 is position of sinograms, 0 is projections
         current = 1 if self.presenter.images._is_sinograms else 0
-        item, accepted = QInputDialog.getItem(self, "Select if projections or sinograms", "Images are:",
-                                              ["projections", "sinograms"], current)
+        item, accepted = QInputDialog.getItem(self,
+                                              "Select if projections or sinograms",
+                                              "Images are:", ["projections", "sinograms"],
+                                              current,
+                                              flags=INPUT_DIALOG_FLAGS)
         if accepted:
             self.presenter.images._is_sinograms = False if item == "projections" else True
             self._main_window.stack_changed.emit()

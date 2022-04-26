@@ -2,14 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING
+
+from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
-from PyQt5.QtWidgets import QDialog, QGridLayout, QPushButton
+from PyQt5.QtWidgets import QGridLayout, QPushButton
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 
-class MultipleStackSelect(QDialog):
+class MultipleStackSelect(BaseDialogView):
     def __init__(self, main_window: 'MainWindowView') -> None:
         super().__init__(main_window)
 

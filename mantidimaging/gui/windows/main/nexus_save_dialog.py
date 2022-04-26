@@ -4,21 +4,20 @@ import os
 import uuid
 from typing import Optional, List
 
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog
+from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog
 
 from mantidimaging.core.data.dataset import StrictDataset
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.mvp_base import BaseDialogView
 
 NXS_EXT = ".nxs"
 
 
-class NexusSaveDialog(QDialog):
+class NexusSaveDialog(BaseDialogView):
 
     selected_dataset = Optional[uuid.UUID]
 
     def __init__(self, parent, dataset_list: List[StrictDataset]):
-        super().__init__(parent)
-        compile_ui('gui/ui/nexus_save_dialog.ui', self)
+        super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
 
         self.browseButton.clicked.connect(self._set_save_path)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(False)

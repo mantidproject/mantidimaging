@@ -6,6 +6,7 @@ from unittest import mock
 
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
+from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
@@ -290,7 +291,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                          value=6,
                                                          min=2,
                                                          max=30,
-                                                         step=1)
+                                                         step=1,
+                                                         flags=INPUT_DIALOG_FLAGS)
 
     @mock.patch("mantidimaging.gui.windows.recon.view.QInputDialog")
     def test_get_number_of_cors_when_accepted_is_false(self, qinputdialog_mock):
@@ -305,7 +307,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                          value=6,
                                                          min=2,
                                                          max=30,
-                                                         step=1)
+                                                         step=1,
+                                                         flags=INPUT_DIALOG_FLAGS)
 
     def test_get_auto_cor_method_when_current_is_correlation(self):
         self.autoFindMethod.currentText.return_value = "Correlation"

@@ -6,13 +6,14 @@ from typing import TYPE_CHECKING, Optional
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 
-class DatasetSelectorDialog(QDialog):
+class DatasetSelectorDialog(BaseDialogView):
     def __init__(self,
                  main_window: Optional['MainWindowView'],
                  title: Optional[str] = None,
