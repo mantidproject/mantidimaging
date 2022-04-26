@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from mantidimaging.core.utility import finder
-import os
 from PyQt5.QtWidgets import QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -11,9 +10,9 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 class WelcomeScreenView(BaseDialogView):
     def __init__(self, parent, presenter):
         super().__init__(parent, "gui/ui/welcome_screen_dialog.ui")
-        base_path = finder.ROOT_PATH
 
-        bg_image = os.path.join(base_path, "gui/ui/images/welcome_screen_background.png")
+        # The background image URL must use forward slashes on both Windows and Linux
+        bg_image = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_screen_background.png'
         self.setStyleSheet("#WelcomeScreenDialog {"
                            f"border-image:url({bg_image});"
                            "min-width:30em; min-height:20em;max-width:30em; max-height:20em;}")
