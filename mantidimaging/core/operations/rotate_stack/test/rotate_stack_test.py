@@ -8,8 +8,10 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rotate_stack import RotateFilter
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 
+@start_multiprocessing_pool
 class RotateStackTest(unittest.TestCase):
     """
     Test rotate stack filter.
@@ -24,19 +26,22 @@ class RotateStackTest(unittest.TestCase):
         self.assertRaises(ValueError, RotateFilter.filter_func, images, rotation)
 
     def test_executed_par(self):
-        self.do_execute()
+        self.do_execute(True)
 
     def test_executed_seq(self):
-        self.do_execute(cores=1)
+        self.do_execute(False)
 
-    def do_execute(self, cores=None):
+    def do_execute(self, in_parallel):
         # only works on square images
-        images = th.generate_images((10, 10, 10))
+        if in_parallel:
+            images = th.generate_images_for_parallel((15, 15, 15))
+        else:
+            images = th.generate_images((10, 10, 10))
 
         rotation = -90
         images.data[:, 0, :] = 42
 
-        result = RotateFilter.filter_func(images, rotation, cores=cores)
+        result = RotateFilter.filter_func(images, rotation)
 
         npt.assert_equal(result.data[:, :, -1], 42)
 

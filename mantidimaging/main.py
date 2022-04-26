@@ -57,11 +57,14 @@ def main():
 
     from mantidimaging import gui
     try:
+        pm.create_and_start_pool()
         gui.execute()
     except BaseException as e:
         if sys.platform == 'linux':
             pm.clear_memory_from_current_process_linux()
         raise e
+    finally:
+        pm.end_pool()
 
 
 if __name__ == "__main__":

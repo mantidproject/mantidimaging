@@ -30,10 +30,10 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack, order=1, sigma=3, cores=None, chunksize=None, progress=None):
+    def filter_func(images: ImageStack, order=1, sigma=3, progress=None):
         f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
 
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, cores=cores)
+        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
         return images
 
     @staticmethod

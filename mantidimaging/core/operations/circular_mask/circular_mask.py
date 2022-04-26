@@ -24,11 +24,7 @@ class CircularMaskFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: ImageStack,
-                    circular_mask_ratio=0.95,
-                    circular_mask_value=0.,
-                    cores=None,
-                    progress=None) -> ImageStack:
+    def filter_func(data: ImageStack, circular_mask_ratio=0.95, circular_mask_value=0., progress=None) -> ImageStack:
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -47,9 +43,7 @@ class CircularMaskFilter(BaseFilter):
         with progress:
             progress.update(msg="Applying circular mask")
 
-            # for some reason this doesn't like the ncore param, even though
-            # it's in the official tomopy docs
-            tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value, ncore=cores)
+            tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
 
         return data
 

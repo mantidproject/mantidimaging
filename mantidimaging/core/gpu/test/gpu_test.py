@@ -9,12 +9,14 @@ import numpy.testing as npt
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.median_filter import MedianFilter, modes
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
 GPU_SKIP_REASON = "Skip GPU tests if cupy isn't installed."
 GPU_UTILITY_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 
+@start_multiprocessing_pool
 class GPUTest(unittest.TestCase):
     """
     Test median filter.
