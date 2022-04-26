@@ -134,8 +134,14 @@ class MainWindowPresenter(BasePresenter):
     def save_nexus_file(self):
         assert self.view.nexus_save_dialog is not None
         dataset_id = self.view.nexus_save_dialog.selected_dataset
-        self.model.do_nexus_saving(dataset_id, self.view.nexus_save_dialog.save_path(),
-                                   self.view.nexus_save_dialog.sample_name())
+        start_async_task_view(self.view,
+                              self.model.do_nexus_saving,
+                              self._on_save_done, {
+                                  'dataset_id': dataset_id,
+                                  'path': self.view.nexus_save_dialog.save_path(),
+                                  'sample_name': self.view.nexus_save_dialog.sample_name()
+                              },
+                              busy=True)
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
