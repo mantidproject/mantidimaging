@@ -17,6 +17,7 @@ import pytest
 import sys
 
 import pyqtgraph
+from mantidimaging.core.parallel.manager import create_and_start_pool, end_pool
 from PyQt5.QtWidgets import QApplication
 
 _QAPP = QApplication.instance()
@@ -75,6 +76,16 @@ def start_qapplication(cls):
             gc.collect()
 
     return augment_test_setup_methods(cls, setUp, tearDown, setUpClass, tearDownClass)
+
+
+def start_multiprocessing_pool(cls):
+    def setUpClass():
+        create_and_start_pool()
+
+    def tearDownClass():
+        end_pool()
+
+    return augment_test_setup_methods(cls, setup_class=setUpClass, teardown_class=tearDownClass)
 
 
 def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None, teardown_class=None):

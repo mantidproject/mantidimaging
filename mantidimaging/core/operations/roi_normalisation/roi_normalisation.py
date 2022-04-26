@@ -43,8 +43,6 @@ class RoiNormalisationFilter(BaseFilter):
                     region_of_interest: SensibleROI = None,
                     normalisation_mode: str = modes()[0],
                     flat_field: Optional[ImageStack] = None,
-                    cores=None,
-                    chunksize=None,
                     progress=None):
         """Normalise by beam intensity.
 
@@ -65,9 +63,6 @@ class RoiNormalisationFilter(BaseFilter):
 
         :param flat_field: Flat field to use if 'Flat Field' mode is enabled.
 
-        :param cores: The number of cores that will be used to process the data.
-
-        :param chunksize: The number of chunks that each worker will receive.
         :param progress: Reference to a progress bar object
 
         :returns: Filtered data (stack of images)
@@ -84,7 +79,7 @@ class RoiNormalisationFilter(BaseFilter):
             raise ValueError('region_of_interest must be provided')
 
         progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-        _execute(images, region_of_interest, normalisation_mode, flat_field, cores, chunksize, progress)
+        _execute(images, region_of_interest, normalisation_mode, flat_field, progress)
         h.check_data_stack(images)
         return images
 
@@ -157,8 +152,6 @@ def _execute(images: ImageStack,
              air_region: SensibleROI,
              normalisation_mode: str,
              flat_field: Optional[ImageStack],
-             cores=None,
-             chunksize=None,
              progress=None):
     log = getLogger(__name__)
 
@@ -179,7 +172,7 @@ def _execute(images: ImageStack,
                                                    air_bottom=air_region.bottom)
 
         arrays = [images.shared_array, air_means]
-        ps.execute(do_calculate_air_means, arrays, images.data.shape[0], progress, cores=cores)
+        ps.execute(do_calculate_air_means, arrays, images.data.shape[0], progress)
 
         if normalisation_mode == 'Stack Average':
             air_means.array /= air_means.array.mean()
@@ -187,7 +180,7 @@ def _execute(images: ImageStack,
         elif normalisation_mode == 'Flat Field' and flat_field is not None:
             flat_mean = pu.create_array((flat_field.data.shape[0], ), flat_field.dtype)
             arrays = [flat_field.shared_array, flat_mean]
-            ps.execute(do_calculate_air_means, arrays, flat_field.data.shape[0], progress, cores=cores)
+            ps.execute(do_calculate_air_means, arrays, flat_field.data.shape[0], progress)
             air_means.array /= flat_mean.array.mean()
 
         if np.isnan(air_means.array).any():
@@ -195,7 +188,7 @@ def _execute(images: ImageStack,
 
         do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
         arrays = [images.shared_array, air_means]
-        ps.execute(do_divide, arrays, images.data.shape[0], progress, cores=cores)
+        ps.execute(do_divide, arrays, images.data.shape[0], progress)
 
         avg = np.average(air_means.array)
         max_avg = np.max(air_means.array) / avg

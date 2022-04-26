@@ -29,7 +29,7 @@ def split_lines(s: str) -> List[str]:
     return s.split("\n")
 
 
-PARAM_SKIP_LIST = ["images", "cores", "chunksize", "progress"]
+PARAM_SKIP_LIST = ["images", "progress"]
 
 
 def get_params(s: str) -> List[str]:

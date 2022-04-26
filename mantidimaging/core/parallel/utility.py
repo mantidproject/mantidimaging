@@ -1,14 +1,12 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import multiprocessing
 import os
 from functools import partial
 from logging import getLogger
 from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
-from multiprocessing.pool import Pool
-from typing import List, Tuple, Union, TYPE_CHECKING, Optional
+from typing import Tuple, TYPE_CHECKING, Optional
 
 import numpy as np
 
@@ -64,17 +62,27 @@ def copy_into_shared_memory(array: np.ndarray) -> 'SharedArray':
     return shared_array
 
 
-def get_cores():
-    return multiprocessing.cpu_count()
-
-
 def calculate_chunksize(cores):
-    # TODO possible proper calculation of chunksize, although best performance
-    # has been with 1
+    """
+    TODO possible proper calculation of chunksize, although best performance has been with 1
+    From performance tests, the chunksize doesn't seem to make much of a
+    difference, but having larger chunks usually led to slower performance:
+
+    Shape: (50,512,512)
+    1 chunk 3.06s
+    2 chunks 3.05s
+    3 chunks 3.07s
+    4 chunks 3.06s
+    5 chunks 3.16s
+    6 chunks 3.06s
+    7 chunks 3.058s
+    8 chunks 3.25s
+    9 chunks 3.45s
+    """
     return 1
 
 
-def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int], List], cores) -> bool:
+def multiprocessing_necessary(shape: int, is_shared_data: bool) -> bool:
     # This environment variable will be present when running PYDEVD from PyCharm
     # and that has the bug that multiprocessing Pools can never finish `.join()` ing
     # thus never actually finish their processing.
@@ -82,31 +90,32 @@ def multiprocessing_necessary(shape: Union[int, Tuple[int, int, int], List], cor
         LOG.info("Debugging environment variable 'PYDEVD_LOAD_VALUES_ASYNC' found. Running synchronously on 1 core")
         return False
 
-    if cores == 1:
-        LOG.info("1 core specified. Running synchronously on 1 core")
+    if not is_shared_data:
+        LOG.info("Not all of the data uses shared memory")
         return False
-    elif isinstance(shape, int):
-        if shape <= 10:
-            LOG.info("Shape under 10. Running synchronously on 1 core")
-            return False
-    elif isinstance(shape, tuple) or isinstance(shape, list):
-        if shape[0] <= 10:
-            LOG.info("3D axis 0 shape under 10. Running synchronously on 1 core")
-            return False
+    elif shape <= 10:
+        LOG.info("Shape under 10")
+        return False
 
-    LOG.info(f"Running async on {cores} cores")
+    LOG.info("Multiprocessing required")
     return True
 
 
-def execute_impl(img_num: int, partial_func: partial, cores: int, chunksize: int, progress: Progress, msg: str):
-    task_name = f"{msg} {cores}c {chunksize}chs"
+def execute_impl(img_num: int, partial_func: partial, is_shared_data: bool, progress: Progress, msg: str):
+    task_name = f"{msg}"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = range(img_num)
-    if multiprocessing_necessary(img_num, cores):
-        with Pool(cores) as pool:
-            for _ in pool.imap(partial_func, indices_list, chunksize=chunksize):
-                progress.update(1, msg)
+    if multiprocessing_necessary(img_num, is_shared_data) and pm.pool:
+        LOG.info(f"Running async on {pm.cores} cores")
+        # Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn't unpacked,
+        # and thus some time is saved
+        # Using imap here seems to be the best choice:
+        # - imap_unordered gives the images back in random order
+        # - map and map_async do not improve speed performance
+        for _ in pm.pool.imap(partial_func, indices_list, chunksize=calculate_chunksize(pm.cores)):
+            progress.update(1, msg)
     else:
+        LOG.info("Running synchronously on 1 core")
         for ind in indices_list:
             partial_func(ind)
             progress.update(1, msg)

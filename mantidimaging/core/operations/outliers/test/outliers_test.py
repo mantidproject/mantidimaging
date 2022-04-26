@@ -44,7 +44,7 @@ class OutliersTest(unittest.TestCase):
         threshold = 0.1
 
         sample = np.copy(images.data)
-        result = OutliersFilter.filter_func(images, threshold, radius, cores=1)
+        result = OutliersFilter.filter_func(images, threshold, radius)
 
         th.assert_not_equals(result.data, sample)
 

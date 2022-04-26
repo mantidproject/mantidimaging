@@ -26,7 +26,7 @@ class StripeRemovalFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images, wf=None, ti=None, sf=None, cores=None, chunksize=None, progress=None):
+    def filter_func(images, wf=None, ti=None, sf=None, progress=None):
         """
         Execute stripe removal operations.
 
@@ -77,10 +77,10 @@ class StripeRemovalFilter(BaseFilter):
         with progress:
             if wf:
                 progress.update(msg=msg.format('Fourier-wavelet'))
-                func = partial(_wf, images.data, wf, cores, chunksize)
+                func = partial(_wf, images.data, wf)
             elif sf:
                 progress.update(msg=msg.format('Smoothing-Filter'))
-                func = partial(_sf, images.data, sf, cores, chunksize)
+                func = partial(_sf, images.data, sf)
 
             images.data = func()
 
@@ -210,11 +210,11 @@ def _get_params(params):
         return dict(map(lambda p: p.split('='), params))
 
 
-def _wf(data, params, cores, chunksize):
+def _wf(data, params):
     tomopy = importer.do_importing('tomopy')
 
     # creating a dictionary with all possible params for this func
-    kwargs = dict(level=None, wname=u'db5', sigma=2, pad=True, ncore=cores, nchunk=chunksize)
+    kwargs = dict(level=None, wname=u'db5', sigma=2, pad=True)
 
     # process the input parameters
     params = _get_params(params)
@@ -251,11 +251,11 @@ def _wf(data, params, cores, chunksize):
 #     return tomopy.prep.stripe.remove_stripe_ti(data, **kwargs)
 
 
-def _sf(data, params, cores, chunksize):
+def _sf(data, params):
     tomopy = importer.do_importing('tomopy')
 
     # creating a dictionary with all possible params for this func
-    kwargs = dict(size=5, ncore=cores, nchunk=chunksize)
+    kwargs = dict(size=5)
 
     # process the input parameters
     params = _get_params(params)

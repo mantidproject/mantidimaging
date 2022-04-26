@@ -28,12 +28,7 @@ class RebinFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack,
-                    rebin_param=0.5,
-                    mode=None,
-                    cores=None,
-                    chunksize=None,
-                    progress=None) -> ImageStack:
+    def filter_func(images: ImageStack, rebin_param=0.5, mode=None, progress=None) -> ImageStack:
         """
         :param images: Sample data which is to be processed. Expects radiograms
         :param rebin_param: int, float or tuple
@@ -42,8 +37,6 @@ class RebinFilter(BaseFilter):
                             tuple - Size of the output image (x, y).
         :param mode: Interpolation to use for re-sizing
                      ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
-        :param cores: The number of cores that will be used to process the data.
-        :param chunksize: The number of chunks that each worker will receive.
 
         :return: The processed 3D numpy.ndarray
         """
@@ -66,7 +59,6 @@ class RebinFilter(BaseFilter):
         ps.execute(partial_func=f,
                    arrays=[images.shared_array, empty_resized_data],
                    num_operations=images.data.shape[0],
-                   cores=cores,
                    msg="Applying Rebin",
                    progress=progress)
         images.shared_array = empty_resized_data
