@@ -176,15 +176,15 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     """
     try:
         nexus_file = h5py.File(path, "w", driver="core")
-    except OSError:
-        return
+    except OSError as e:
+        raise RuntimeError("Unable to save NeXus file. " + str(e))
 
     try:
         _nexus_save(nexus_file, dataset, sample_name)
     except OSError as e:
         nexus_file.close()
         os.remove(path)
-        raise RuntimeError("Unable to save NeXus file.", e)
+        raise RuntimeError("Unable to save NeXus file. " + str(e))
 
     nexus_file.close()
 
