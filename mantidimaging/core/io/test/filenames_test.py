@@ -7,6 +7,7 @@ from unittest import mock
 
 from parameterized import parameterized
 
+from mantidimaging.test_helpers import FileOutputtingTestCase
 from ..filenames import FilenameGroup, FilenamePattern
 
 
@@ -76,29 +77,30 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertTrue(p2.match_metadata("foo.json"))
 
 
-class FilenameGroupTest(unittest.TestCase):
+class FilenameGroupTest(FileOutputtingTestCase):
     def test_filenamepattern_from_file_unindexed(self):
         p1 = Path("foo", "bar", "baz.tiff")
         f1 = FilenameGroup.from_file(p1)
         self.assertEqual(f1.directory, Path("foo", "bar"))
 
         all_files = list(f1.all_files())
-        self.assertEqual(all_files, ["baz.tiff"])
+        self.assertEqual(all_files, [p1])
 
     def test_filenamepattern_from_file_indexed(self):
         p1 = Path("foo", "IMAT_Flower_Tomo_000007.tif")
         f1 = FilenameGroup.from_file(p1)
 
         all_files = list(f1.all_files())
-        self.assertEqual(all_files, ["IMAT_Flower_Tomo_000007.tif"])
+        self.assertEqual(all_files, [p1])
 
     def test_all_files(self):
         pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
         f1 = FilenameGroup(Path("foo"), pattern, [0, 1, 2])
 
         all_files = list(f1.all_files())
-        self.assertEqual(all_files,
-                         ["IMAT_Flower_Tomo_000000.tif", "IMAT_Flower_Tomo_000001.tif", "IMAT_Flower_Tomo_000002.tif"])
+        self.assertEqual(all_files[0], Path("foo", "IMAT_Flower_Tomo_000000.tif"))
+        self.assertEqual(all_files[1], Path("foo", "IMAT_Flower_Tomo_000001.tif"))
+        self.assertEqual(all_files[2], Path("foo", "IMAT_Flower_Tomo_000002.tif"))
 
     def test_find_all_files(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
@@ -132,34 +134,31 @@ class FilenameGroupTest(unittest.TestCase):
         fg = FilenameGroup(path_mock, pattern, [])
         fg.find_all_files()
 
-        self.assertEqual(fg.metadata_path, "IMAT_Flower_Tomo.json")
+        self.assertEqual(fg.metadata_path, Path("IMAT_Flower_Tomo.json"))
 
     def test_find_log(self):
-        parent_mock = mock.Mock()
-        path_mock = mock.Mock()
-        path_mock.name = "tomo"
-        path_mock.parent = parent_mock
+        log = Path(self.output_directory, "tomo.txt")
+        log.touch()
+        Path(self.output_directory, "tomo").mkdir()
+        sample = Path(self.output_directory, "tomo", "IMAT_Flower_Tomo_000000.tif")
+        sample.touch()
 
-        parent_mock.glob.return_value = ["tomo.txt"]
-
-        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000000.tif")
-        fg = FilenameGroup(path_mock, pattern, [])
+        fg = FilenameGroup.from_file(sample)
         fg.find_log_file()
 
-        parent_mock.glob.assert_called_once_with("tomo*.txt")
-        self.assertEqual(fg.log_path, "tomo.txt")
+        self.assertEqual(fg.log_path, log)
 
     def test_find_log_best(self):
-        parent_mock = mock.Mock()
-        path_mock = mock.Mock()
-        path_mock.name = "Dark"
-        path_mock.parent = parent_mock
+        log = Path(self.output_directory, "Dark_log.txt")
+        log.touch()
+        Path(self.output_directory, "Dark_aaa_log.txt").touch()
+        Path(self.output_directory, "Dark_bbb_log.txt").touch()
 
-        parent_mock.glob.return_value = ["Dark_aaa_log.txt", "Dark_log.txt", "Dark_bbb_log.txt"]
+        Path(self.output_directory, "Dark").mkdir()
+        sample = Path(self.output_directory, "Dark", "IMAT_Flower_Tomo_000000.tif")
+        sample.touch()
 
-        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000000.tif")
-        fg = FilenameGroup(path_mock, pattern, [])
+        fg = FilenameGroup.from_file(sample)
         fg.find_log_file()
 
-        parent_mock.glob.assert_called_once_with("Dark*.txt")
-        self.assertEqual(fg.log_path, "Dark_log.txt")
+        self.assertEqual(fg.log_path, log)

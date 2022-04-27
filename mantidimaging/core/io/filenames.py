@@ -74,8 +74,8 @@ class FilenameGroup:
         self.directory = directory
         self.pattern = pattern
         self.indexes = indexes
-        self.metadata_path: Optional[str] = None
-        self.log_path: Optional[str] = None
+        self.metadata_path: Optional[Path] = None
+        self.log_path: Optional[Path] = None
 
     @classmethod
     def from_file(cls, path: Path) -> "FilenameGroup":
@@ -89,9 +89,9 @@ class FilenameGroup:
 
         return new_filename_pattern
 
-    def all_files(self) -> Iterator[str]:
+    def all_files(self) -> Iterator[Path]:
         for index in self.indexes:
-            yield self.pattern.generate(index)
+            yield self.directory / self.pattern.generate(index)
 
     def find_all_files(self) -> None:
         for filename in self.directory.iterdir():
@@ -99,14 +99,14 @@ class FilenameGroup:
                 self.indexes.append(self.pattern.get_value(filename.name))
 
             if self.pattern.match_metadata(filename.name):
-                self.metadata_path = filename.name
+                self.metadata_path = filename
 
     def find_log_file(self):
         parent_directory = self.directory.parent
         log_pattern = self.directory.name + "*" + ".txt"
-        log_paths = parent_directory.glob(log_pattern)
+        log_paths = list(parent_directory.glob(log_pattern))
 
         if log_paths:
             # choose shortest match
-            log_paths.sort(key=len)
-            self.log_path = log_paths[0]
+            shortest = min(log_paths, key=lambda p: len(p.name))
+            self.log_path = self.directory / shortest
