@@ -42,7 +42,7 @@ jobs:
         command: mypy --ignore-missing-imports --no-site-packages mantidimaging
 
     - name: pytest
-      timeout-minutes: 5
+      timeout-minutes: 60
       uses: ./.github/actions/test
       with:
         command: xvfb-run pytest --ignore=mantidimaging/eyes_tests --durations=10
