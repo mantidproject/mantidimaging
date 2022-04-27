@@ -231,7 +231,8 @@ class IOTest(FileOutputtingTestCase):
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
     def test_h5py_os_error_returns(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
         file_mock.side_effect = OSError
-        saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
+        with self.assertRaises(RuntimeError):
+            saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
         nexus_save_mock.assert_not_called()
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")

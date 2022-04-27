@@ -55,7 +55,7 @@ def _generate_recon_item_name(recon_no: int) -> str:
 
 class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
-    SAVE_ERROR_STRING = "Failed to save stack. Error: {}"
+    SAVE_ERROR_STRING = "Failed to save data. Error: {}"
 
     view: 'MainWindowView'
 
