@@ -3,15 +3,16 @@
 
 import json
 
-from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialog, QDialogButtonBox, QVBoxLayout, QShortcut,
+from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QShortcut,
                              QPushButton)
 from PyQt5.QtGui import QKeySequence, QGuiApplication
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
+from mantidimaging.gui.mvp_base import BaseDialogView
 
 
-class MetadataDialog(QDialog):
+class MetadataDialog(BaseDialogView):
     """
     Dialog used to show a pretty formatted version of the image metadata.
     """

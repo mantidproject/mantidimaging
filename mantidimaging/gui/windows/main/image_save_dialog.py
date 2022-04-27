@@ -3,11 +3,12 @@
 import uuid
 from typing import Optional, TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QDialogButtonBox
 
 from mantidimaging.core.io.loader import supported_formats
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
-from mantidimaging.gui.utility import (compile_ui, select_directory)
+from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.utility import select_directory
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.presenter import StackId
@@ -22,12 +23,11 @@ def sort_by_tomo_and_recon(stack_id: "StackId"):
         return 3
 
 
-class ImageSaveDialog(QDialog):
+class ImageSaveDialog(BaseDialogView):
     selected_stack = Optional[uuid.UUID]
 
     def __init__(self, parent, stack_list):
-        super().__init__(parent)
-        compile_ui('gui/ui/image_save_dialog.ui', self)
+        super().__init__(parent, 'gui/ui/image_save_dialog.ui')
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
 

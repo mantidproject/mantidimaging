@@ -15,6 +15,7 @@ from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webp
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
@@ -441,7 +442,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                             value=6,
                                             min=2,
                                             max=30,
-                                            step=1)
+                                            step=1,
+                                            flags=INPUT_DIALOG_FLAGS)
         if accepted:
             return num
         else:

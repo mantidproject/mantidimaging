@@ -4,16 +4,16 @@
 from typing import Optional, Tuple
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QSpinBox, QDialog, QFileDialog
+    QHeaderView, QSpinBox, QFileDialog
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
-from mantidimaging.gui.utility import (compile_ui)
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from .presenter import LoadPresenter, Notification
+from ...mvp_base import BaseDialogView
 
 
-class ImageLoadDialog(QDialog):
+class ImageLoadDialog(BaseDialogView):
     tree: QTreeWidget
     pixel_bit_depth: QComboBox
     images_are_sinograms: QCheckBox
@@ -33,8 +33,7 @@ class ImageLoadDialog(QDialog):
     _flat_log_path: Optional[QTreeWidgetItem] = None
 
     def __init__(self, parent):
-        super().__init__(parent)
-        compile_ui('gui/ui/image_load_dialog.ui', self)
+        super().__init__(parent, 'gui/ui/image_load_dialog.ui')
 
         self.parent_view = parent
         self.presenter = LoadPresenter(self)

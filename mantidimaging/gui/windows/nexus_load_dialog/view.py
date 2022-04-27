@@ -3,11 +3,11 @@
 from typing import Tuple
 
 from PyQt5.QtCore import Qt, QEventLoop
-from PyQt5.QtWidgets import QDialog, QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
+from PyQt5.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
     QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox
 
-from mantidimaging.gui.utility import compile_ui
+from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import NexusLoadPresenter, Notification
 
 NEXUS_CAPTION = "NeXus"
@@ -22,7 +22,7 @@ CHECKBOX_COLUMN = 4
 TEXT_COLUMNS = [FOUND_COLUMN, PATH_COLUMN, SHAPE_COLUMN]
 
 
-class NexusLoadDialog(QDialog):
+class NexusLoadDialog(BaseDialogView):
     tree: QTreeWidget
     chooseFileButton: QPushButton
     filePathLineEdit: QLineEdit
@@ -35,8 +35,7 @@ class NexusLoadDialog(QDialog):
     presenter: NexusLoadPresenter
 
     def __init__(self, parent):
-        super().__init__(parent)
-        compile_ui("gui/ui/nexus_load_dialog.ui", self)
+        super().__init__(parent, "gui/ui/nexus_load_dialog.ui")
 
         self.parent_view = parent
         self.presenter = NexusLoadPresenter(self)

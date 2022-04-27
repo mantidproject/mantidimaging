@@ -3,6 +3,7 @@
 
 from logging import getLogger
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
 
 from mantidimaging.gui.utility import compile_ui
@@ -48,6 +49,9 @@ class BaseMainWindowView(QMainWindow):
 class BaseDialogView(QDialog):
     def __init__(self, parent, ui_file=None):
         super().__init__(parent)
+
+        # Prevents the context help button appearing in the dialog title bar on Windows
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
 
         if ui_file is not None:
             compile_ui(ui_file, self)
