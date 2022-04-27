@@ -9,8 +9,10 @@ from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SH
 from mantidimaging.gui.windows.recon.view import ReconstructWindowView
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 
+@start_multiprocessing_pool
 class TestGuiSystemReconstruction(GuiSystemBase):
     def setUp(self) -> None:
         super().setUp()

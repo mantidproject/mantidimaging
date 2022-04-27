@@ -15,6 +15,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 OP_LIST = [
     ("Arithmetic", [["Multiply", "2"]]),
@@ -42,6 +43,7 @@ OP_LIST = [
 ]
 
 
+@start_multiprocessing_pool
 class TestGuiSystemOperations(GuiSystemBase):
     def setUp(self) -> None:
         super().setUp()
