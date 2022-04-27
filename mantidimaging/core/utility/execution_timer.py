@@ -15,9 +15,9 @@ class ExecutionTimer(object):
         self.time_end = None
 
     def __str__(self):
-        prefix = '{}: '.format(self.msg) if self.msg else ''
+        prefix = f'{self.msg}: ' if self.msg else ''
         sec = self.total_seconds
-        return '{}{} seconds'.format(prefix, sec if sec else 'unknown')
+        return f'{prefix}{sec if sec else "unknown"} seconds'
 
     def __enter__(self):
         self.time_start = time.time()
