@@ -165,6 +165,9 @@ class IOTest(FileOutputtingTestCase):
         self.assertEqual(loaded_images.metadata, images.metadata)
 
     def test_nexus_simple_dataset_save(self):
+        sample = th.generate_images()
+        sample.data *= 12
+
         sd = StrictDataset(th.generate_images())
         path = "nexus/file/path"
         sample_name = "sample-name"
@@ -204,7 +207,12 @@ class IOTest(FileOutputtingTestCase):
 
     @staticmethod
     def test_nexus_complex_dataset_save():
-        image_stacks = [th.generate_images() for _ in range(5)]
+        image_stacks = []
+        for _ in range(5):
+            image_stack = th.generate_images()
+            image_stack.data *= 12
+            image_stacks.append(image_stack)
+
         sd = StrictDataset(*image_stacks)
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
