@@ -34,3 +34,4 @@ Developer Changes
 - #1376 : Fix leak in StackChoiceView
 - #1387 : Fix async task leak
 - #1384 : Remove StackSelectorWidget and StackSelectorDialog
+- #1420 : Save NeXus data without concatenate
