@@ -98,7 +98,7 @@ jobs:
         run: |
           python -m pytest --randomly-seed=2318448647 --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
 
-      - name: pytest - know pass order
+      - name: pytest - known pass order
         timeout-minutes: 5
         shell: bash -l {0}
         run: |
