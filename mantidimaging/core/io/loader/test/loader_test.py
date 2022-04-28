@@ -12,7 +12,7 @@ from mantidimaging.test_helpers import FileOutputtingTestCase
 
 class LoaderTest(FileOutputtingTestCase):
     def test_raise_on_invalid_format(self):
-        self.assertRaises(ValueError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
+        self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
 
     @mock.patch("mantidimaging.core.io.loader.loader.load")
     @mock.patch("mantidimaging.core.io.loader.loader.get_file_names")

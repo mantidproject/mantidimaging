@@ -7,6 +7,8 @@ from typing import List, Union, Optional, Dict, Callable
 
 import h5py
 import numpy as np
+from skimage import io as skio
+import astropy.io.fits as fits
 
 from .utility import DEFAULT_IO_FILE_FORMAT
 from ..data.dataset import StrictDataset
@@ -24,15 +26,12 @@ INT16_SIZE = 65536
 
 
 def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
-    import astropy.io.fits as fits
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, overwrite=overwrite)
 
 
 def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
-    from mantidimaging.core.utility.special_imports import import_skimage_io
-    skio = import_skimage_io()
     skio.imsave(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
