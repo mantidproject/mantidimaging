@@ -219,7 +219,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     detector.create_dataset("data", shape=combined_data_shape, dtype="uint16")
     index = 0
     for arr in dataset.nexus_arrays:
-        detector["data"][index:index + arr.shape[0]] = arr.astype("uint16")
+        detector["data"][index:index + arr.shape[0]] = arr
         index += arr.shape[0]
     detector.create_dataset("image_key", data=dataset.image_keys)
 
