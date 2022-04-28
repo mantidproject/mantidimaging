@@ -70,24 +70,36 @@ jobs:
           mamba env list
           python --version; conda list ; pip list
 
-      - name: Yapf
-        shell: bash -l {0}
-        run: |
-          yapf --parallel --diff --recursive .
-
-      - name: Flake8
-        shell: bash -l {0}
-        run: |
-          python -m flake8
-
-      - name: mypy
-        shell: bash -l {0}
-        # COMPAT: applitools has some bad signatures, so use --no-site-packages
-        run: |
-          mypy --ignore-missing-imports --no-site-packages mantidimaging
+#      - name: Yapf
+#        shell: bash -l {0}
+#        run: |
+#          yapf --parallel --diff --recursive .
+#
+#      - name: Flake8
+#        shell: bash -l {0}
+#        run: |
+#          python -m flake8
+#
+#      - name: mypy
+#        shell: bash -l {0}
+#        # COMPAT: applitools has some bad signatures, so use --no-site-packages
+#        run: |
+#          mypy --ignore-missing-imports --no-site-packages mantidimaging
 
       - name: pytest
         timeout-minutes: 5
         shell: bash -l {0}
         run: |
           python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
+
+      - name: pytest - known fail order
+        timeout-minutes: 5
+        shell: bash -l {0}
+        run: |
+          python -m pytest --randomly-seed=2318448647 --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
+
+      - name: pytest - know pass order
+        timeout-minutes: 5
+        shell: bash -l {0}
+        run: |
+          python -m pytest --randomly-seed=1427976157 --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
