@@ -8,11 +8,10 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rotate_stack import RotateFilter
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
-# from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
-
-# @start_multiprocessing_pool
+@start_multiprocessing_pool
 class RotateStackTest(unittest.TestCase):
     """
     Test rotate stack filter.

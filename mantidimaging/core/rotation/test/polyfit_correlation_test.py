@@ -4,14 +4,14 @@ import unittest
 from unittest import mock
 import numpy as np
 
-# from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
 from ...data import ImageStack
 from ...utility.progress_reporting import Progress
 
 
-# @start_multiprocessing_pool
+@start_multiprocessing_pool
 class PolyfitCorrelationTest(unittest.TestCase):
     def test_do_search(self):
         test_p0 = np.identity(10)

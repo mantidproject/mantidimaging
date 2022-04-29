@@ -12,12 +12,12 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.median_filter import MedianFilter
-# from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 GPU_UTIL_LOC = "mantidimaging.core.gpu.utility.gpu_available"
 
 
-# @start_multiprocessing_pool
+@start_multiprocessing_pool
 class MedianTest(unittest.TestCase):
     """
     Test median filter.

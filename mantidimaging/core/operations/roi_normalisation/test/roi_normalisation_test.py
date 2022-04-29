@@ -11,11 +11,10 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
-# from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
-
-# @start_multiprocessing_pool
+@start_multiprocessing_pool
 class ROINormalisationTest(unittest.TestCase):
     """
     Test contrast ROI normalisation filter.
