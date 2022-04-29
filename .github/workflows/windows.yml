@@ -91,3 +91,11 @@ jobs:
         shell: bash -l {0}
         run: |
           python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
+
+      - name: Get test data
+        shell: bash -l {0}
+        run: |
+          curl -L https://github.com/mantidproject/mantidimaging-data/archive/refs/tags/small.zip --output small.zip
+          unzip -q small.zip -d ~
+          mv ~/mantidimaging-data-small ~/mantidimaging-data
+        timeout-minutes: 5
