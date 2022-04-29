@@ -87,13 +87,13 @@ jobs:
 #          mypy --ignore-missing-imports --no-site-packages mantidimaging
 
       - name: pytest
-        timeout-minutes: 15
+        timeout-minutes: 5
         shell: bash -l {0}
         run: |
           python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: pytest - known fail order
-        timeout-minutes: 15
+        timeout-minutes: 5
         shell: bash -l {0}
         run: |
           python -m pytest --randomly-seed=2318448647 --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
