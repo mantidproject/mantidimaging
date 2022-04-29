@@ -284,6 +284,17 @@ class ImageStack:
 
         self._projection_angles = angles
 
+    def real_projection_angles(self) -> Optional[ProjectionAngles]:
+        """
+        Return only the projection angles that are from a log file or have been manually loaded.
+        :return: Real projection angles if they were found, None otherwise.
+        """
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
+        if self._projection_angles is not None:
+            return self._projection_angles
+        return None
+
     def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
         """
         Return projection angles, in priority order:
@@ -295,10 +306,9 @@ class ImageStack:
                           Only used when the angles are generated, if they are provided
                           via a log or a file the argument will be ignored.
         """
-        if self._log_file is not None:
-            return self._log_file.projection_angles()
-        elif self._projection_angles is not None:
-            return self._projection_angles
+        projection_angles = self.real_projection_angles()
+        if projection_angles is not None:
+            return projection_angles
         else:
             return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
 
