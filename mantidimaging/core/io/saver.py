@@ -215,8 +215,12 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     _set_nx_class(detector, "NXdetector")
 
     # instrument data
-    combined_data = np.concatenate(dataset.nexus_arrays).astype("uint16")
-    detector.create_dataset("data", data=combined_data)
+    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
+    detector.create_dataset("data", shape=combined_data_shape, dtype="uint16")
+    index = 0
+    for arr in dataset.nexus_arrays:
+        detector["data"][index:index + arr.shape[0]] = arr
+        index += arr.shape[0]
     detector.create_dataset("image_key", data=dataset.image_keys)
 
     # sample field
