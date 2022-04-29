@@ -70,10 +70,10 @@ class FilenamePattern:
 
 
 class FilenameGroup:
-    def __init__(self, directory: Path, pattern: FilenamePattern, indexes: List[int]):
+    def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
         self.directory = directory
         self.pattern = pattern
-        self.indexes = indexes
+        self.all_indexes = all_indexes
         self.metadata_path: Optional[Path] = None
         self.log_path: Optional[Path] = None
 
@@ -90,16 +90,17 @@ class FilenameGroup:
         return new_filename_pattern
 
     def all_files(self) -> Iterator[Path]:
-        for index in self.indexes:
+        for index in self.all_indexes:
             yield self.directory / self.pattern.generate(index)
 
     def find_all_files(self) -> None:
         for filename in self.directory.iterdir():
             if self.pattern.match(filename.name):
-                self.indexes.append(self.pattern.get_value(filename.name))
+                self.all_indexes.append(self.pattern.get_value(filename.name))
 
             if self.pattern.match_metadata(filename.name):
                 self.metadata_path = filename
+        self.all_indexes.sort()
 
     def find_log_file(self):
         parent_directory = self.directory.parent

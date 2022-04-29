@@ -111,7 +111,7 @@ class FilenameGroupTest(FileOutputtingTestCase):
         fg = FilenameGroup(path_mock, pattern, [])
         fg.find_all_files()
 
-        self.assertEqual(fg.indexes, list(range(10)))
+        self.assertEqual(fg.all_indexes, list(range(10)))
 
     def test_find_all_files_different_digits(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:01d}.tif") for i in range(5, 15)]
@@ -122,7 +122,7 @@ class FilenameGroupTest(FileOutputtingTestCase):
         fg = FilenameGroup(path_mock, pattern, [])
         fg.find_all_files()
 
-        self.assertEqual(fg.indexes, list(range(5, 15)))
+        self.assertEqual(fg.all_indexes, list(range(5, 15)))
 
     def test_find_all_files_metadata(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
