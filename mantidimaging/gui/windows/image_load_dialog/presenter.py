@@ -3,7 +3,6 @@
 
 import os
 import traceback
-from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, NamedTuple, Dict
@@ -18,10 +17,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog  # pragma: no cover
 
 logger = getLogger(__name__)
-
-
-class Notification(Enum):
-    UPDATE_FIELD = auto()
 
 
 class TypeInfo(NamedTuple):
@@ -53,14 +48,7 @@ class LoadPresenter:
         self.last_file_info: Optional[FileInformation] = None
         self.dtype = '32'
 
-    def notify(self, n: Notification, **baggage):
-        try:
-            if n == Notification.UPDATE_FIELD:
-                self.do_update_field(**baggage)
-        except RuntimeError as err:
-            self.view.show_error(str(err), traceback.format_exc())
-
-    def do_update_field(self, field):
+    def do_update_field(self, field: Field):
         if field.file_info.mode == "sample":
             self.do_update_sample()
         elif field.file_info.mode == "images":

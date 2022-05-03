@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.windows.image_load_dialog.field import Field
-from .presenter import LoadPresenter, FILE_TYPES, TypeInfo, Notification
+from .presenter import LoadPresenter, FILE_TYPES, TypeInfo
 from ...mvp_base import BaseDialogView
 
 
@@ -70,7 +70,7 @@ class ImageLoadDialog(BaseDialogView):
         self.tree.setItemWidget(section, 3, select_button)
         field = Field(self, self.tree, section, use, select_button, file_info)
 
-        select_button.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_FIELD, field=field))
+        select_button.clicked.connect(lambda: self.presenter.do_update_field(field=field))
 
         return field
 
