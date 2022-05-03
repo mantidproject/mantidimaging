@@ -5,6 +5,7 @@ import unittest
 
 import numpy as np
 
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -17,6 +18,14 @@ def test_delete_stack_error_message():
 
 def test_image_key_list():
     assert _image_key_list(2, 5) == [2, 2, 2, 2, 2]
+
+
+def _set_fake_projection_angles(image_stack: ImageStack):
+    """
+    Sets the private projection angles attribute.
+    :param image_stack: The ImageStack object.
+    """
+    image_stack._projection_angles = image_stack.projection_angles()
 
 
 class StrictDatasetTest(unittest.TestCase):
@@ -149,6 +158,8 @@ class StrictDatasetTest(unittest.TestCase):
         ])
 
     def test_rotation_angles(self):
+        for stack in self.strict_dataset._nexus_stack_order:
+            _set_fake_projection_angles(stack)
         assert np.array_equal(self.strict_dataset.rotation_angles, [
             self.strict_dataset.dark_before.projection_angles().value,
             self.strict_dataset.flat_before.projection_angles().value,
