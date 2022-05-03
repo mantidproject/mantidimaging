@@ -67,7 +67,7 @@ jobs:
         timeout-minutes: 5
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
 
 #      - name: docs
 #        shell: bash -l {0}
