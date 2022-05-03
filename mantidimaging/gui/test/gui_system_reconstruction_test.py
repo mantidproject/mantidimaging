@@ -48,7 +48,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
 
             QTest.qWait(SHORT_DELAY)
-            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=500)
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
             QTest.qWait(SHORT_DELAY)
 
