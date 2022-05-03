@@ -160,7 +160,7 @@ class StrictDatasetTest(unittest.TestCase):
     def test_rotation_angles(self):
         for stack in self.strict_dataset._nexus_stack_order:
             _set_fake_projection_angles(stack)
-        assert np.array_equal(self.strict_dataset.rotation_angles, [
+        assert np.array_equal(self.strict_dataset.nexus_rotation_angles, [
             self.strict_dataset.dark_before.projection_angles().value,
             self.strict_dataset.flat_before.projection_angles().value,
             self.strict_dataset.sample.projection_angles().value,
