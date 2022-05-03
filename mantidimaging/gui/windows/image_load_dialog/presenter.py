@@ -144,47 +144,34 @@ class LoadPresenter:
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
-        sample_log = self.view.sample_log.path_text() if self.view.sample_log.use.isChecked() else None
-        lp.sample = ImageParameters(input_path=self.view.sample.directory(),
-                                    format=self.image_format,
-                                    prefix=get_prefix(self.view.sample.path_text()),
-                                    indices=self.view.sample.indices,
-                                    log_file=sample_log)
+
+        for image_group in [k for k, v in FILE_TYPES.items() if v.mode in ["images", "sample"]]:
+            image_field = self.view.fields[image_group]
+            if not image_field.use.isChecked() or image_field.path_text() == "":
+                continue
+
+            params = ImageParameters(input_path=image_field.directory(),
+                                     format=self.image_format,
+                                     prefix=get_prefix(image_field.path_text()))
+
+            if image_group == "Sample":
+                params.indices = image_field.indices
+
+            if image_group + " Log" in self.view.fields:
+                log_field = self.view.fields[image_group + " Log"]
+                if log_field.use.isChecked():
+                    params.log_file = log_field.path_text()
+
+            lp.set(image_group, params)
+
+        field_180 = self.view.fields["180 degree"]
+        if field_180.use.isChecked() and field_180.path_text() != "":
+            lp.proj_180deg = ImageParameters(input_path=field_180.directory(),
+                                             prefix=os.path.splitext(field_180.path_text())[0],
+                                             format=self.image_format)
 
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
-
-        if self.view.flat_before.use.isChecked() and self.view.flat_before.path_text() != "":
-            flat_before_log = self.view.flat_before_log.path_text() if self.view.flat_before_log.use.isChecked() \
-                else None
-            lp.flat_before = ImageParameters(input_path=self.view.flat_before.directory(),
-                                             prefix=get_prefix(self.view.flat_before.path_text()),
-                                             format=self.image_format,
-                                             log_file=flat_before_log)
-
-        if self.view.flat_after.use.isChecked() and self.view.flat_after.path_text() != "":
-            flat_after_log = self.view.flat_after_log.path_text() if self.view.flat_after_log.use.isChecked() \
-                else None
-            lp.flat_after = ImageParameters(input_path=self.view.flat_after.directory(),
-                                            prefix=get_prefix(self.view.flat_after.path_text()),
-                                            format=self.image_format,
-                                            log_file=flat_after_log)
-
-        if self.view.dark_before.use.isChecked() and self.view.dark_before.path_text() != "":
-            lp.dark_before = ImageParameters(input_path=self.view.dark_before.directory(),
-                                             prefix=get_prefix(self.view.dark_before.path_text()),
-                                             format=self.image_format)
-
-        if self.view.dark_after.use.isChecked() and self.view.dark_after.path_text() != "":
-            lp.dark_after = ImageParameters(input_path=self.view.dark_after.directory(),
-                                            prefix=get_prefix(self.view.dark_after.path_text()),
-                                            format=self.image_format)
-
-        if self.view.proj_180deg.use.isChecked() and self.view.proj_180deg.path_text() != "":
-            lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
-                                             prefix=os.path.splitext(self.view.proj_180deg.path_text())[0],
-                                             format=self.image_format)
-
         lp.dtype = self.view.pixel_bit_depth.currentText()
         lp.sinograms = self.view.images_are_sinograms.isChecked()
         lp.pixel_size = self.view.pixelSize.value()
