@@ -6,7 +6,7 @@ import traceback
 from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, NamedTuple, Dict
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
@@ -25,6 +25,26 @@ class Notification(Enum):
     UPDATE_FLAT_OR_DARK = auto()
     UPDATE_SINGLE_FILE = auto()
     UPDATE_SAMPLE_LOG = auto()
+
+
+class TypeInfo(NamedTuple):
+    name: str
+    suffix: Optional[str]
+    mode: str
+    notification: Notification
+
+
+FILE_TYPES: Dict[str, TypeInfo] = {
+    "Sample": TypeInfo("Sample", None, "sample", Notification.UPDATE_ALL_FIELDS),
+    "Flat Before": TypeInfo("Flat", "Before", "images", Notification.UPDATE_FLAT_OR_DARK),
+    "Flat After": TypeInfo("Flat", "After", "images", Notification.UPDATE_FLAT_OR_DARK),
+    "Dark Before": TypeInfo("Dark", "Before", "images", Notification.UPDATE_FLAT_OR_DARK),
+    "Dark After": TypeInfo("Dark", "After", "images", Notification.UPDATE_FLAT_OR_DARK),
+    "180 degree": TypeInfo("180 degree", None, "180", Notification.UPDATE_SINGLE_FILE),
+    "Sample Log": TypeInfo("Sample Log", None, "log", Notification.UPDATE_SAMPLE_LOG),
+    "Flat Before Log": TypeInfo("Flat Before Log", None, "log", Notification.UPDATE_SINGLE_FILE),
+    "Flat After Log": TypeInfo("Flat After Log", None, "log", Notification.UPDATE_SINGLE_FILE),
+}
 
 
 class LoadPresenter:
@@ -78,39 +98,32 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        self.view.flat_before.set_images(
-            find_images(sample_dirname,
-                        "Flat",
-                        suffix="Before",
-                        look_without_suffix=True,
-                        image_format=self.image_format,
-                        logger=logger))
-        self.view.flat_after.set_images(
-            find_images(sample_dirname, "Flat", suffix="After", image_format=self.image_format, logger=logger))
-        self.view.dark_before.set_images(
-            find_images(sample_dirname,
-                        "Dark",
-                        suffix="Before",
-                        look_without_suffix=True,
-                        image_format=self.image_format,
-                        logger=logger))
-        self.view.dark_after.set_images(
-            find_images(sample_dirname, "Dark", suffix="After", image_format=self.image_format, logger=logger))
-        self.view.proj_180deg.path = find_180deg_proj(sample_dirname, self.image_format, logger)
+        for file_info_name, file_info in FILE_TYPES.items():
+            if file_info.mode == "images":
+                field = self.view.fields[file_info_name]
+                images = find_images(sample_dirname,
+                                     file_info.name,
+                                     suffix=file_info.suffix,
+                                     look_without_suffix="Before" in file_info.name,
+                                     image_format=self.image_format,
+                                     logger=logger)
+                field.set_images(images)
+            elif file_info.mode == "180":
+                field = self.view.fields[file_info_name]
+                field.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
-            self.set_sample_log(self.view.sample_log, sample_dirname, self.view.sample.directory(),
+            self.set_sample_log(self.view.fields["Sample Log"], sample_dirname, self.view.sample.directory(),
                                 self.last_file_info.filenames)
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
 
-        self.view.sample_log.use = False
+        self.view.fields["Sample Log"].use = False
 
-        self.view.flat_before_log.path = find_log(sample_dirname, self.view.flat_before.directory(), logger)
-        self.view.flat_before_log.use = False
-
-        self.view.flat_after_log.path = find_log(sample_dirname, self.view.flat_after.directory(), logger)
-        self.view.flat_after_log.use = False
+        for pos in ["Before", "After"]:
+            self.view.fields[f"Flat {pos} Log"].path = find_log(sample_dirname,
+                                                                self.view.fields[f"Flat {pos}"].directory(), logger)
+            self.view.fields[f"Flat {pos} Log"].use = False
 
         self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
 

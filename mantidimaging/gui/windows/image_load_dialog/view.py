@@ -1,7 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from typing import Optional, Tuple
+from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView, QSpinBox, QFileDialog
@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.windows.image_load_dialog.field import Field
-from .presenter import LoadPresenter, Notification
+from .presenter import LoadPresenter, FILE_TYPES, TypeInfo
 from ...mvp_base import BaseDialogView
 
 
@@ -23,60 +23,24 @@ class ImageLoadDialog(BaseDialogView):
     step_preview: QPushButton
     step_all: QPushButton
 
-    _sample_path: Optional[QTreeWidgetItem] = None
-    _flat_before_path: Optional[QTreeWidgetItem] = None
-    _flat_after_path: Optional[QTreeWidgetItem] = None
-    _dark_before_path: Optional[QTreeWidgetItem] = None
-    _dark_after_path: Optional[QTreeWidgetItem] = None
-    _proj_180deg_path: Optional[QTreeWidgetItem] = None
-    _sample_log_path: Optional[QTreeWidgetItem] = None
-    _flat_log_path: Optional[QTreeWidgetItem] = None
+    fields: Dict[str, Field]
 
     def __init__(self, parent):
         super().__init__(parent, 'gui/ui/image_load_dialog.ui')
 
         self.parent_view = parent
         self.presenter = LoadPresenter(self)
+        self.fields = {}
 
         self.tree.header().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tree.header().setStretchLastSection(False)
         self.tree.setTabKeyNavigation(True)
 
-        self.sample, self.select_sample = self.create_file_input(0)
-        self.select_sample.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_ALL_FIELDS))
+        for n, file_info in enumerate(FILE_TYPES.items()):
+            self.fields[file_info[0]] = self.create_file_input(n, file_info[1])
 
-        self.flat_before, self.select_flat_before = self.create_file_input(1)
-        self.select_flat_before.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_FLAT_OR_DARK, field=self.flat_before, name="Flat", suffix="Before"))
-
-        self.flat_after, self.select_flat_after = self.create_file_input(2)
-        self.select_flat_after.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_FLAT_OR_DARK, field=self.flat_after, name="Flat", suffix="After"))
-
-        self.dark_before, self.select_dark_before = self.create_file_input(3)
-        self.select_dark_before.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_FLAT_OR_DARK, field=self.dark_before, name="Dark", suffix="Before"))
-
-        self.dark_after, self.select_dark_after = self.create_file_input(4)
-        self.select_dark_after.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_FLAT_OR_DARK, field=self.dark_after, name="Dark", suffix="After"))
-
-        self.proj_180deg, self.select_proj_180deg = self.create_file_input(5)
-        self.select_proj_180deg.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.proj_180deg, name="180 degree", is_image_file=True))
-
-        self.sample_log, self.select_sample_log = self.create_file_input(6)
-        self.select_sample_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SAMPLE_LOG, field=self.sample_log, name="Sample Log", is_image_file=False))
-
-        self.flat_before_log, self.select_flat_before_log = self.create_file_input(7)
-        self.select_flat_before_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.flat_before_log, name="Flat Before Log", is_image_file=False))
-
-        self.flat_after_log, self.select_flat_after_log = self.create_file_input(8)
-        self.select_flat_after_log.clicked.connect(lambda: self.presenter.notify(
-            Notification.UPDATE_SINGLE_FILE, field=self.flat_after_log, name="Flat After Log", is_image_file=False))
+        self.sample = self.fields["Sample"]
 
         self.step_all.clicked.connect(self._set_all_step)
         self.step_preview.clicked.connect(self._set_preview_step)
@@ -91,7 +55,7 @@ class ImageLoadDialog(BaseDialogView):
         self.pixelSize.setValue(DEFAULT_PIXEL_SIZE)
         self.pixel_bit_depth.setCurrentText(DEFAULT_PIXEL_DEPTH)
 
-    def create_file_input(self, position: int) -> Tuple[Field, QPushButton]:
+    def create_file_input(self, position: int, file_info: Optional[TypeInfo] = None) -> Field:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         use = QCheckBox(self)
@@ -104,9 +68,19 @@ class ImageLoadDialog(BaseDialogView):
         select_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
 
         self.tree.setItemWidget(section, 3, select_button)
-        field = Field(self, self.tree, section, use)
+        field = Field(self, self.tree, section, use, select_button)
 
-        return field, select_button
+        if file_info is not None:
+            if file_info.mode == "sample":
+                select_button.clicked.connect(lambda: self.presenter.notify(file_info.notification))
+            elif file_info.mode == "images":
+                select_button.clicked.connect(lambda: self.presenter.notify(
+                    file_info.notification, field=field, name=file_info.name, suffix=file_info.suffix))
+            elif file_info.mode in ["log", "180"]:
+                select_button.clicked.connect(lambda: self.presenter.notify(
+                    file_info.notification, field=field, name=file_info.name, is_image_file=file_info.mode == "180"))
+
+        return field
 
     @staticmethod
     def select_file(caption: str, image_file=True) -> Optional[str]:

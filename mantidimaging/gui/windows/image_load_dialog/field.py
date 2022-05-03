@@ -4,7 +4,7 @@ import numpy as np
 import os
 from typing import Optional, List, Union, Tuple
 
-from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox
+from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.core.utility.data_containers import Indices
@@ -20,12 +20,13 @@ class Field:
 
     _shape_widget: Optional[QTreeWidgetItem] = None
 
-    def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox):
+    def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton):
         self._parent = parent
         self._tree = tree
         self._widget = widget
         self._use = use
         self._path = None
+        self.select_button = select_button
 
     def set_images(self, image_files: List[str]):
         if len(image_files) > 0:
