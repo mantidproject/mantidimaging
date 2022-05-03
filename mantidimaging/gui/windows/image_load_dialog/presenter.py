@@ -21,29 +21,25 @@ logger = getLogger(__name__)
 
 
 class Notification(Enum):
-    UPDATE_ALL_FIELDS = auto()
-    UPDATE_FLAT_OR_DARK = auto()
-    UPDATE_SINGLE_FILE = auto()
-    UPDATE_SAMPLE_LOG = auto()
+    UPDATE_FIELD = auto()
 
 
 class TypeInfo(NamedTuple):
     name: str
-    suffix: Optional[str]
+    suffix: str
     mode: str
-    notification: Notification
 
 
 FILE_TYPES: Dict[str, TypeInfo] = {
-    "Sample": TypeInfo("Sample", None, "sample", Notification.UPDATE_ALL_FIELDS),
-    "Flat Before": TypeInfo("Flat", "Before", "images", Notification.UPDATE_FLAT_OR_DARK),
-    "Flat After": TypeInfo("Flat", "After", "images", Notification.UPDATE_FLAT_OR_DARK),
-    "Dark Before": TypeInfo("Dark", "Before", "images", Notification.UPDATE_FLAT_OR_DARK),
-    "Dark After": TypeInfo("Dark", "After", "images", Notification.UPDATE_FLAT_OR_DARK),
-    "180 degree": TypeInfo("180 degree", None, "180", Notification.UPDATE_SINGLE_FILE),
-    "Sample Log": TypeInfo("Sample Log", None, "log", Notification.UPDATE_SAMPLE_LOG),
-    "Flat Before Log": TypeInfo("Flat Before Log", None, "log", Notification.UPDATE_SINGLE_FILE),
-    "Flat After Log": TypeInfo("Flat After Log", None, "log", Notification.UPDATE_SINGLE_FILE),
+    "Sample": TypeInfo("Sample", "", "sample"),
+    "Flat Before": TypeInfo("Flat", "Before", "images"),
+    "Flat After": TypeInfo("Flat", "After", "images"),
+    "Dark Before": TypeInfo("Dark", "Before", "images"),
+    "Dark After": TypeInfo("Dark", "After", "images"),
+    "180 degree": TypeInfo("180 degree", "", "180"),
+    "Sample Log": TypeInfo("Sample Log", "", "log"),
+    "Flat Before Log": TypeInfo("Flat Before Log", "", "log"),
+    "Flat After Log": TypeInfo("Flat After Log", "", "log"),
 }
 
 
@@ -59,16 +55,20 @@ class LoadPresenter:
 
     def notify(self, n: Notification, **baggage):
         try:
-            if n == Notification.UPDATE_ALL_FIELDS:
-                self.do_update_sample()
-            elif n == Notification.UPDATE_FLAT_OR_DARK:
-                self.do_update_flat_or_dark(**baggage)
-            elif n == Notification.UPDATE_SINGLE_FILE:
-                self.do_update_single_file(**baggage)
-            elif n == Notification.UPDATE_SAMPLE_LOG:
-                self.do_update_sample_log(**baggage)
+            if n == Notification.UPDATE_FIELD:
+                self.do_update_field(**baggage)
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
+
+    def do_update_field(self, field):
+        if field.file_info.mode == "sample":
+            self.do_update_sample()
+        elif field.file_info.mode == "images":
+            self.do_update_flat_or_dark(field)
+        elif field.file_info.name == "Sample Log":
+            self.do_update_sample_log(field)
+        elif field.file_info.mode in ["log", "180"]:
+            self.do_update_single_file(field)
 
     def do_update_sample(self):
         """
@@ -131,7 +131,9 @@ class LoadPresenter:
         self.view.sample.update_shape(self.last_file_info.shape[1:])
         self.view.enable_preview_all_buttons()
 
-    def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
+    def do_update_flat_or_dark(self, field: Field):
+        name = field.file_info.name
+        suffix = field.file_info.suffix
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
@@ -183,16 +185,19 @@ class LoadPresenter:
             field.path = file_name
             field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field, name: str, is_image_file: bool):
+    def do_update_single_file(self, field: Field):
+        name = field.file_info.name
+        is_image_file = field.file_info.mode in ["image", "180"]
         file_name = self.view.select_file(name, is_image_file)
         if file_name is None:
             return
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field, name: str, is_image_file: bool):
+    def do_update_sample_log(self, field: Field):
+        name = field.file_info.name
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
-        file_name = self.view.select_file(name, is_image_file)
+        file_name = self.view.select_file(name, False)
 
         # this is set when the user selects sample data
         self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)

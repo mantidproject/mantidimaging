@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
 from mantidimaging.gui.windows.image_load_dialog.field import Field
-from .presenter import LoadPresenter, FILE_TYPES, TypeInfo
+from .presenter import LoadPresenter, FILE_TYPES, TypeInfo, Notification
 from ...mvp_base import BaseDialogView
 
 
@@ -55,7 +55,7 @@ class ImageLoadDialog(BaseDialogView):
         self.pixelSize.setValue(DEFAULT_PIXEL_SIZE)
         self.pixel_bit_depth.setCurrentText(DEFAULT_PIXEL_DEPTH)
 
-    def create_file_input(self, position: int, file_info: Optional[TypeInfo] = None) -> Field:
+    def create_file_input(self, position: int, file_info: TypeInfo) -> Field:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         use = QCheckBox(self)
@@ -68,17 +68,9 @@ class ImageLoadDialog(BaseDialogView):
         select_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
 
         self.tree.setItemWidget(section, 3, select_button)
-        field = Field(self, self.tree, section, use, select_button)
+        field = Field(self, self.tree, section, use, select_button, file_info)
 
-        if file_info is not None:
-            if file_info.mode == "sample":
-                select_button.clicked.connect(lambda: self.presenter.notify(file_info.notification))
-            elif file_info.mode == "images":
-                select_button.clicked.connect(lambda: self.presenter.notify(
-                    file_info.notification, field=field, name=file_info.name, suffix=file_info.suffix))
-            elif file_info.mode in ["log", "180"]:
-                select_button.clicked.connect(lambda: self.presenter.notify(
-                    file_info.notification, field=field, name=file_info.name, is_image_file=file_info.mode == "180"))
+        select_button.clicked.connect(lambda: self.presenter.notify(Notification.UPDATE_FIELD, field=field))
 
         return field
 

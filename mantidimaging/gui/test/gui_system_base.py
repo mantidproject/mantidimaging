@@ -97,7 +97,8 @@ class GuiSystemBase(unittest.TestCase):
 
         self.main_window.actionLoadDataset.trigger()
         QTest.qWait(SHOW_DELAY)
-        self.main_window.image_load_dialog.presenter.notify(Notification.UPDATE_ALL_FIELDS)
+        self.main_window.image_load_dialog.presenter.notify(Notification.UPDATE_FIELD,
+                                                            field=self.main_window.image_load_dialog.sample)
         QTest.qWait(SHOW_DELAY)
         self.main_window.image_load_dialog.accept()
         wait_until(test_func, max_retry=600)

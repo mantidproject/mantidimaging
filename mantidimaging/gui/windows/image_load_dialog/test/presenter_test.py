@@ -9,34 +9,13 @@ import pytest
 
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
-from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, Notification, logger
+from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, logger, FILE_TYPES, TypeInfo
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
     def setUp(self):
         self.v = mock.MagicMock()
         self.p = LoadPresenter(self.v)
-
-    def test_notify_update_all_fields(self):
-        self.p.do_update_sample = mock.MagicMock()
-
-        self.p.notify(Notification.UPDATE_ALL_FIELDS)
-
-        self.p.do_update_sample.assert_called_once()
-
-    def test_notify_update_flat_or_dark(self):
-        self.p.do_update_flat_or_dark = mock.MagicMock()
-
-        self.p.notify(Notification.UPDATE_FLAT_OR_DARK, alt=1)
-
-        self.p.do_update_flat_or_dark.assert_called_once_with(alt=1)
-
-    def test_notify_update_single_file(self):
-        self.p.do_update_single_file = mock.MagicMock()
-
-        self.p.notify(Notification.UPDATE_SINGLE_FILE, alt=1)
-
-        self.p.do_update_single_file.assert_called_once_with(alt=1)
 
     def test_do_update_sample_with_no_selected_file(self):
         self.v.select_file.return_value = None
@@ -117,12 +96,10 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     def test_do_update_flat_or_dark_returns_without_setting_anything(self):
         file_name = None
-        name = "Name"
-        suffix = "testing"
         field = mock.MagicMock()
         self.v.select_file.return_value = file_name
 
-        self.p.do_update_flat_or_dark(field, name, suffix)
+        self.p.do_update_flat_or_dark(field)
 
         field.set_images.assert_not_called()
 
@@ -131,10 +108,10 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "/ExampleFilename"
         name = "Name"
         suffix = "Apples"
-        field = mock.MagicMock()
+        field = mock.MagicMock(file_info=TypeInfo(name, suffix, "images"))
         self.v.select_file.return_value = file_name
 
-        self.p.do_update_flat_or_dark(field, name, suffix)
+        self.p.do_update_flat_or_dark(field)
 
         find_images.assert_called_once_with(Path('/'), name, suffix, image_format='', logger=logger)
         field.set_images.assert_called_once_with(find_images.return_value)
@@ -144,12 +121,12 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "/aaa_0000.tiff"
         name = "Name"
         suffix = "Apples"
-        field = mock.MagicMock()
+        field = mock.MagicMock(file_info=TypeInfo(name, suffix, "images"))
         self.v.select_file.return_value = file_name
         files_list = [file_name, "aaa_0001.tiff"]
         find_images.side_effect = [[], files_list]
 
-        self.p.do_update_flat_or_dark(field, name, suffix)
+        self.p.do_update_flat_or_dark(field)
 
         calls = [
             mock.call(Path('/'), name, suffix, image_format='', logger=logger),
@@ -160,44 +137,43 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     def test_do_update_single_file(self):
         file_name = "file_name"
-        name = "Name"
+        name = "180 degree"
         is_image_file = True
-        field = mock.MagicMock()
+        field = mock.MagicMock(file_info=FILE_TYPES["180 degree"])
         self.v.select_file.return_value = file_name
 
-        self.p.do_update_single_file(field, name, is_image_file)
+        self.p.do_update_single_file(field)
 
         self.v.select_file.assert_called_once_with(name, is_image_file)
         self.assertEqual(field.path, file_name)
 
     def test_do_update_single_file_no_file_selected(self):
         file_name = "file_name"
-        name = "Name"
+        name = "180 degree"
         is_image_file = True
-        field = mock.MagicMock()
+        field = mock.MagicMock(file_info=FILE_TYPES["180 degree"])
         self.v.select_file.return_value = None
 
-        self.p.do_update_single_file(field, name, is_image_file)
+        self.p.do_update_single_file(field)
 
         self.v.select_file.assert_called_once_with(name, is_image_file)
         self.assertNotEqual(field.path, file_name)
 
     def test_do_update_sample_log_no_sample_selected(self):
-        name = "Name"
-        is_image_file = True
         field = mock.MagicMock()
         self.p.last_file_info = None
-        self.assertRaises(RuntimeError, self.p.do_update_sample_log, field, name, is_image_file)
+        self.assertRaises(RuntimeError, self.p.do_update_sample_log, field)
 
     def test_do_update_sample_log_no_file_selected(self):
         file_name = "file_name"
-        name = "Name"
-        is_image_file = True
-        field = mock.MagicMock()
+        name = "Sample Log"
+        is_image_file = False
+        field = mock.MagicMock(file_info=FILE_TYPES["Sample Log"])
+
         self.v.select_file.return_value = None
 
         self.p.last_file_info = FileInformation([], (0, 0, 0), False)
-        self.p.do_update_sample_log(field, name, is_image_file)
+        self.p.do_update_sample_log(field)
 
         self.v.select_file.assert_called_once_with(name, is_image_file)
         self.assertNotEqual(field.path, file_name)
@@ -205,14 +181,14 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
     def test_do_update_sample_log(self, mock_ensure):
         file_name = "file_name"
-        name = "Name"
+        name = "Sample Log"
 
-        is_image_file = True
-        field = mock.MagicMock()
+        is_image_file = False
+        field = mock.MagicMock(file_info=FILE_TYPES["Sample Log"])
         self.v.select_file.return_value = file_name
 
         self.p.last_file_info = FileInformation([], (0, 0, 0), False)
-        self.p.do_update_sample_log(field, name, is_image_file)
+        self.p.do_update_sample_log(field)
 
         self.v.select_file.assert_called_once_with(name, is_image_file)
         mock_ensure.assert_called_once_with(field, file_name, [])
