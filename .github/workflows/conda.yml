@@ -100,7 +100,7 @@ jobs:
           mypy --ignore-missing-imports --no-site-packages mantidimaging
 
       - name: pytest
-        timeout-minutes: 5
+        timeout-minutes: 15
         shell: bash -l {0}
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
