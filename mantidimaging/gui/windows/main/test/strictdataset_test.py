@@ -217,3 +217,7 @@ class StrictDatasetTest(unittest.TestCase):
         self.strict_dataset.sample = None
         with self.assertRaises(RuntimeError):
             self.strict_dataset.image_keys
+
+    def test_incomplete_nexus_rotation_angles(self):
+        with self.assertRaises(RuntimeError):
+            self.strict_dataset.nexus_rotation_angles
