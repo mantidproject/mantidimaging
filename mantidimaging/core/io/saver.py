@@ -229,7 +229,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     sample_group.create_dataset("name", data=np.string_(sample_name))
 
     # rotation angle
-    rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.rotation_angles))
+    rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
 
     # data field

@@ -167,8 +167,9 @@ class IOTest(FileOutputtingTestCase):
     def test_nexus_simple_dataset_save(self):
         sample = th.generate_images()
         sample.data *= 12
+        sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(th.generate_images())
+        sd = StrictDataset(sample)
         path = "nexus/file/path"
         sample_name = "sample-name"
 
@@ -212,6 +213,7 @@ class IOTest(FileOutputtingTestCase):
             image_stack = th.generate_images()
             image_stack.data *= 12
             image_stacks.append(image_stack)
+            image_stack._projection_angles = image_stack.projection_angles()
 
         sd = StrictDataset(*image_stacks)
 
