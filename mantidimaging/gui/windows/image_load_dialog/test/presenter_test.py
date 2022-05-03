@@ -5,8 +5,6 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import pytest
-
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, logger, FILE_TYPES, TypeInfo
@@ -14,7 +12,9 @@ from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter,
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
     def setUp(self):
-        self.v = mock.MagicMock()
+        self.fields = {name: mock.Mock() for name in FILE_TYPES}
+        self.v = mock.MagicMock(fields=self.fields)
+        self.v.sample = self.fields["Sample"]
         self.p = LoadPresenter(self.v)
 
     def test_do_update_sample_with_no_selected_file(self):
@@ -24,7 +24,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with("Sample")
 
-    @pytest.mark.xfail
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log", return_value=3)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images", return_value=1)
@@ -49,7 +48,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.v.sample.file.return_value = sample_file_name
         self.v.sample.path_text.return_value = path_text
         self.v.sample.directory.return_value = dirname
-        self.v.flat.directory.return_value = dirname + "t"
         get_file_extension.return_value = image_format
         get_prefix.return_value = prefix
 
@@ -62,11 +60,9 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         get_prefix.assert_called_once_with(path_text)
         read_in_file_information.assert_called_once_with(dirname, in_prefix=prefix, in_format=image_format)
         self.assertEqual((0, 0, 0), self.p.last_file_info.shape)
-        self.v.flat_before.set_images.assert_called_once_with(1)
-        self.v.dark_before.set_images.assert_called_once_with(1)
-        self.v.flat_after.set_images.assert_called_once_with(1)
-        self.v.dark_after.set_images.assert_called_once_with(1)
-        self.assertEqual(2, self.v.proj_180deg.path)
+        for name in ["Flat Before", "Flat After", "Dark Before", "Dark After"]:
+            self.fields[name].set_images.assert_called_once_with(1)
+        self.assertEqual(2, self.fields["180 degree"].path)
         find_log.assert_any_call(Path(dirname), dirname, logger)
         find_images.assert_any_call(Path(dirname),
                                     'Flat',
@@ -74,20 +70,30 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
                                     look_without_suffix=True,
                                     image_format=image_format,
                                     logger=logger)
-        find_images.assert_any_call(Path(dirname), 'Flat', suffix='After', image_format=image_format, logger=logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Flat',
+                                    suffix='After',
+                                    look_without_suffix=False,
+                                    image_format=image_format,
+                                    logger=logger)
         find_images.assert_any_call(Path(dirname),
                                     'Dark',
                                     suffix='Before',
                                     look_without_suffix=True,
                                     image_format=image_format,
                                     logger=logger)
-        find_images.assert_any_call(Path(dirname), 'Dark', suffix='After', image_format=image_format, logger=logger)
+        find_images.assert_any_call(Path(dirname),
+                                    'Dark',
+                                    suffix='After',
+                                    look_without_suffix=False,
+                                    image_format=image_format,
+                                    logger=logger)
         self.assertEqual(4, find_images.call_count)
         find_180deg_proj.assert_called_once_with(Path(dirname), image_format, logger)
-        self.assertEqual(self.v.sample_log.path, 3)
-        self.assertEqual(self.v.flat_before_log.path, 3)
-        self.assertFalse(self.v.flat_before_log.use)
-        self.assertFalse(self.v.sample_log.use)
+        self.assertEqual(self.fields["Sample Log"].path, 3)
+        self.assertEqual(self.fields["Flat Before Log"].path, 3)
+        self.assertFalse(self.fields["Flat Before Log"].use)
+        self.assertFalse(self.fields["Sample Log"].use)
         self.v.images_are_sinograms.setChecked.assert_called_once_with(True)
         self.v.sample.update_indices.assert_called_once_with(0)
         self.v.sample.update_shape.assert_called_once_with((0, 0))
@@ -234,7 +240,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_load_log.assert_not_called()
         mock_log.raise_if_angle_missing.assert_not_called()
 
-    @pytest.mark.xfail
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix", return_value="/path")
     def test_get_parameters(self, get_prefix):
         path_text = "/path/text"
@@ -253,29 +258,29 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         sinograms = True
         sample_path_text = "/path/of/sample"
         dark_before_path_text = "/path/of/dark"
-        self.v.sample_log.path_text.return_value = path_text
-        self.v.sample_log.use.isChecked.return_value = True
+        self.fields["Sample Log"].path_text.return_value = path_text
+        self.fields["Sample Log"].use.isChecked.return_value = True
         self.v.sample.directory.return_value = sample_input_path
         self.p.image_format = image_format
         self.v.sample.indices = sample_indices
         self.v.sample.file.return_value = sample_file_name
         self.v.pixelSize.value.return_value = pixel_size
-        self.v.flat_before.use.isChecked.return_value = True
-        self.v.flat_before.path_text.return_value = flat_file_name
-        self.v.flat_before_log.path_text.return_value = flat_log_file_name
-        self.v.flat_before.directory.return_value = flat_directory
-        self.v.flat_after.use.isChecked.return_value = True
-        self.v.flat_after.path_text.return_value = flat_file_name
-        self.v.flat_after_log.path_text.return_value = flat_log_file_name
-        self.v.flat_after.directory.return_value = flat_directory
-        self.v.dark_before.directory.return_value = dark_directory
-        self.v.dark_after.directory.return_value = dark_directory
+        self.fields["Flat Before"].use.isChecked.return_value = True
+        self.fields["Flat Before"].path_text.return_value = flat_file_name
+        self.fields["Flat Before Log"].path_text.return_value = flat_log_file_name
+        self.fields["Flat Before"].directory.return_value = flat_directory
+        self.fields["Flat After"].use.isChecked.return_value = True
+        self.fields["Flat After"].path_text.return_value = flat_file_name
+        self.fields["Flat After Log"].path_text.return_value = flat_log_file_name
+        self.fields["Flat After"].directory.return_value = flat_directory
+        self.fields["Dark Before"].directory.return_value = dark_directory
+        self.fields["Dark After"].directory.return_value = dark_directory
         self.v.pixel_bit_depth.currentText.return_value = dtype
         self.v.images_are_sinograms.isChecked.return_value = sinograms
-        self.v.proj_180deg.path_text.return_value = proj180deg_file
-        self.v.proj_180deg.directory.return_value = proj180deg_directory
+        self.fields["180 degree"].path_text.return_value = proj180deg_file
+        self.fields["180 degree"].directory.return_value = proj180deg_directory
         self.v.sample.path_text.return_value = sample_path_text
-        self.v.dark_before.path_text.return_value = dark_before_path_text
+        self.fields["Dark Before"].path_text.return_value = dark_before_path_text
 
         lp = self.p.get_parameters()
 

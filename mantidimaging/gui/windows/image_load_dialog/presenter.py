@@ -104,7 +104,7 @@ class LoadPresenter:
                 images = find_images(sample_dirname,
                                      file_info.name,
                                      suffix=file_info.suffix,
-                                     look_without_suffix="Before" in file_info.name,
+                                     look_without_suffix="Before" in file_info_name,
                                      image_format=self.image_format,
                                      logger=logger)
                 field.set_images(images)
