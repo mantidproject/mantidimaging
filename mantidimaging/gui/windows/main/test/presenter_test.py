@@ -115,13 +115,6 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
-    def test_load_dataset_returns_when_par_and_view_dialog_are_none(self, start_async_mock: mock.Mock):
-        self.view.image_load_dialog = None
-        self.presenter.load_image_files()
-
-        start_async_mock.assert_not_called()
-
-    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_load_stack(self, start_async_mock: mock.Mock):
         file_path = mock.Mock()
 

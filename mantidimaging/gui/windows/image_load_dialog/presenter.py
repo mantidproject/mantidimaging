@@ -64,6 +64,7 @@ class LoadPresenter:
         """
         selected_file = self.view.select_file("Sample")
         if not selected_file:
+            self.view.ok_button.setEnabled(False)
             return False
 
         self.view.sample.path = selected_file
@@ -118,6 +119,7 @@ class LoadPresenter:
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
         self.view.enable_preview_all_buttons()
+        self.view.ok_button.setEnabled(True)
 
     def do_update_flat_or_dark(self, field: Field):
         name = field.file_info.name

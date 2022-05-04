@@ -4,7 +4,7 @@
 from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QSpinBox, QFileDialog
+    QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
 from mantidimaging.core.utility.data_containers import LoadingParameters
@@ -46,6 +46,8 @@ class ImageLoadDialog(BaseDialogView):
         self.step_preview.clicked.connect(self._set_preview_step)
         # if accepted load the stack
         self.accepted.connect(self.parent_view.execute_image_file_load)
+        self.ok_button = self.buttonBox.button(QDialogButtonBox.Ok)
+        self.ok_button.setEnabled(False)
 
         # remove the placeholder text from QtCreator
         self.expectedResourcesLabel.setText("")
