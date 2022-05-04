@@ -103,7 +103,7 @@ jobs:
         timeout-minutes: 15
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
