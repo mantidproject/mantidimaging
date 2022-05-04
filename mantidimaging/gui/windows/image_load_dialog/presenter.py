@@ -3,10 +3,9 @@
 
 import os
 import traceback
-from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, NamedTuple, Dict
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
@@ -20,11 +19,23 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
-class Notification(Enum):
-    UPDATE_ALL_FIELDS = auto()
-    UPDATE_FLAT_OR_DARK = auto()
-    UPDATE_SINGLE_FILE = auto()
-    UPDATE_SAMPLE_LOG = auto()
+class TypeInfo(NamedTuple):
+    name: str
+    suffix: str
+    mode: str
+
+
+FILE_TYPES: Dict[str, TypeInfo] = {
+    "Sample": TypeInfo("Sample", "", "sample"),
+    "Flat Before": TypeInfo("Flat", "Before", "images"),
+    "Flat After": TypeInfo("Flat", "After", "images"),
+    "Dark Before": TypeInfo("Dark", "Before", "images"),
+    "Dark After": TypeInfo("Dark", "After", "images"),
+    "180 degree": TypeInfo("180 degree", "", "180"),
+    "Sample Log": TypeInfo("Sample Log", "", "log"),
+    "Flat Before Log": TypeInfo("Flat Before Log", "", "log"),
+    "Flat After Log": TypeInfo("Flat After Log", "", "log"),
+}
 
 
 class LoadPresenter:
@@ -37,18 +48,15 @@ class LoadPresenter:
         self.last_file_info: Optional[FileInformation] = None
         self.dtype = '32'
 
-    def notify(self, n: Notification, **baggage):
-        try:
-            if n == Notification.UPDATE_ALL_FIELDS:
-                self.do_update_sample()
-            elif n == Notification.UPDATE_FLAT_OR_DARK:
-                self.do_update_flat_or_dark(**baggage)
-            elif n == Notification.UPDATE_SINGLE_FILE:
-                self.do_update_single_file(**baggage)
-            elif n == Notification.UPDATE_SAMPLE_LOG:
-                self.do_update_sample_log(**baggage)
-        except RuntimeError as err:
-            self.view.show_error(str(err), traceback.format_exc())
+    def do_update_field(self, field: Field):
+        if field.file_info.mode == "sample":
+            self.do_update_sample()
+        elif field.file_info.mode == "images":
+            self.do_update_flat_or_dark(field)
+        elif field.file_info.name == "Sample Log":
+            self.do_update_sample_log(field)
+        elif field.file_info.mode in ["log", "180"]:
+            self.do_update_single_file(field)
 
     def do_update_sample(self):
         """
@@ -56,6 +64,7 @@ class LoadPresenter:
         """
         selected_file = self.view.select_file("Sample")
         if not selected_file:
+            self.view.ok_button.setEnabled(False)
             return False
 
         self.view.sample.path = selected_file
@@ -78,47 +87,43 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        self.view.flat_before.set_images(
-            find_images(sample_dirname,
-                        "Flat",
-                        suffix="Before",
-                        look_without_suffix=True,
-                        image_format=self.image_format,
-                        logger=logger))
-        self.view.flat_after.set_images(
-            find_images(sample_dirname, "Flat", suffix="After", image_format=self.image_format, logger=logger))
-        self.view.dark_before.set_images(
-            find_images(sample_dirname,
-                        "Dark",
-                        suffix="Before",
-                        look_without_suffix=True,
-                        image_format=self.image_format,
-                        logger=logger))
-        self.view.dark_after.set_images(
-            find_images(sample_dirname, "Dark", suffix="After", image_format=self.image_format, logger=logger))
-        self.view.proj_180deg.path = find_180deg_proj(sample_dirname, self.image_format, logger)
+        for file_info_name, file_info in FILE_TYPES.items():
+            if file_info.mode == "images":
+                field = self.view.fields[file_info_name]
+                images = find_images(sample_dirname,
+                                     file_info.name,
+                                     suffix=file_info.suffix,
+                                     look_without_suffix="Before" in file_info_name,
+                                     image_format=self.image_format,
+                                     logger=logger)
+                field.set_images(images)
+            elif file_info.mode == "180":
+                field = self.view.fields[file_info_name]
+                field.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
-            self.set_sample_log(self.view.sample_log, sample_dirname, self.view.sample.directory(),
+            self.set_sample_log(self.view.fields["Sample Log"], sample_dirname, self.view.sample.directory(),
                                 self.last_file_info.filenames)
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
 
-        self.view.sample_log.use = False
+        self.view.fields["Sample Log"].use = False
 
-        self.view.flat_before_log.path = find_log(sample_dirname, self.view.flat_before.directory(), logger)
-        self.view.flat_before_log.use = False
-
-        self.view.flat_after_log.path = find_log(sample_dirname, self.view.flat_after.directory(), logger)
-        self.view.flat_after_log.use = False
+        for pos in ["Before", "After"]:
+            self.view.fields[f"Flat {pos} Log"].path = find_log(sample_dirname,
+                                                                self.view.fields[f"Flat {pos}"].directory(), logger)
+            self.view.fields[f"Flat {pos} Log"].use = False
 
         self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
 
         self.view.sample.update_indices(self.last_file_info.shape[0])
         self.view.sample.update_shape(self.last_file_info.shape[1:])
         self.view.enable_preview_all_buttons()
+        self.view.ok_button.setEnabled(True)
 
-    def do_update_flat_or_dark(self, field: Field, name: str, suffix: str):
+    def do_update_flat_or_dark(self, field: Field):
+        name = field.file_info.name
+        suffix = field.file_info.suffix
         selected_file = self.view.select_file(name)
         if not selected_file:
             return
@@ -131,47 +136,34 @@ class LoadPresenter:
 
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
-        sample_log = self.view.sample_log.path_text() if self.view.sample_log.use.isChecked() else None
-        lp.sample = ImageParameters(input_path=self.view.sample.directory(),
-                                    format=self.image_format,
-                                    prefix=get_prefix(self.view.sample.path_text()),
-                                    indices=self.view.sample.indices,
-                                    log_file=sample_log)
+
+        for image_group in [k for k, v in FILE_TYPES.items() if v.mode in ["images", "sample"]]:
+            image_field = self.view.fields[image_group]
+            if not image_field.use.isChecked() or image_field.path_text() == "":
+                continue
+
+            params = ImageParameters(input_path=image_field.directory(),
+                                     format=self.image_format,
+                                     prefix=get_prefix(image_field.path_text()))
+
+            if image_group == "Sample":
+                params.indices = image_field.indices
+
+            if image_group + " Log" in self.view.fields:
+                log_field = self.view.fields[image_group + " Log"]
+                if log_field.use.isChecked():
+                    params.log_file = log_field.path_text()
+
+            lp.set(image_group, params)
+
+        field_180 = self.view.fields["180 degree"]
+        if field_180.use.isChecked() and field_180.path_text() != "":
+            lp.proj_180deg = ImageParameters(input_path=field_180.directory(),
+                                             prefix=os.path.splitext(field_180.path_text())[0],
+                                             format=self.image_format)
 
         lp.name = self.view.sample.file()
         lp.pixel_size = self.view.pixelSize.value()
-
-        if self.view.flat_before.use.isChecked() and self.view.flat_before.path_text() != "":
-            flat_before_log = self.view.flat_before_log.path_text() if self.view.flat_before_log.use.isChecked() \
-                else None
-            lp.flat_before = ImageParameters(input_path=self.view.flat_before.directory(),
-                                             prefix=get_prefix(self.view.flat_before.path_text()),
-                                             format=self.image_format,
-                                             log_file=flat_before_log)
-
-        if self.view.flat_after.use.isChecked() and self.view.flat_after.path_text() != "":
-            flat_after_log = self.view.flat_after_log.path_text() if self.view.flat_after_log.use.isChecked() \
-                else None
-            lp.flat_after = ImageParameters(input_path=self.view.flat_after.directory(),
-                                            prefix=get_prefix(self.view.flat_after.path_text()),
-                                            format=self.image_format,
-                                            log_file=flat_after_log)
-
-        if self.view.dark_before.use.isChecked() and self.view.dark_before.path_text() != "":
-            lp.dark_before = ImageParameters(input_path=self.view.dark_before.directory(),
-                                             prefix=get_prefix(self.view.dark_before.path_text()),
-                                             format=self.image_format)
-
-        if self.view.dark_after.use.isChecked() and self.view.dark_after.path_text() != "":
-            lp.dark_after = ImageParameters(input_path=self.view.dark_after.directory(),
-                                            prefix=get_prefix(self.view.dark_after.path_text()),
-                                            format=self.image_format)
-
-        if self.view.proj_180deg.use.isChecked() and self.view.proj_180deg.path_text() != "":
-            lp.proj_180deg = ImageParameters(input_path=self.view.proj_180deg.directory(),
-                                             prefix=os.path.splitext(self.view.proj_180deg.path_text())[0],
-                                             format=self.image_format)
-
         lp.dtype = self.view.pixel_bit_depth.currentText()
         lp.sinograms = self.view.images_are_sinograms.isChecked()
         lp.pixel_size = self.view.pixelSize.value()
@@ -183,16 +175,19 @@ class LoadPresenter:
             field.path = file_name
             field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field, name: str, is_image_file: bool):
+    def do_update_single_file(self, field: Field):
+        name = field.file_info.name
+        is_image_file = field.file_info.mode in ["image", "180"]
         file_name = self.view.select_file(name, is_image_file)
         if file_name is None:
             return
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field, name: str, is_image_file: bool):
+    def do_update_sample_log(self, field: Field):
+        name = field.file_info.name
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
-        file_name = self.view.select_file(name, is_image_file)
+        file_name = self.view.select_file(name, False)
 
         # this is set when the user selects sample data
         self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)

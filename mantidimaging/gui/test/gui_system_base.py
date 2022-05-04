@@ -15,7 +15,6 @@ import pytest
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
-from mantidimaging.gui.windows.image_load_dialog.presenter import Notification
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
@@ -97,7 +96,7 @@ class GuiSystemBase(unittest.TestCase):
 
         self.main_window.actionLoadDataset.trigger()
         QTest.qWait(SHOW_DELAY)
-        self.main_window.image_load_dialog.presenter.notify(Notification.UPDATE_ALL_FIELDS)
+        self.main_window.image_load_dialog.presenter.do_update_field(self.main_window.image_load_dialog.sample)
         QTest.qWait(SHOW_DELAY)
         self.main_window.image_load_dialog.accept()
         wait_until(test_func, max_retry=600)

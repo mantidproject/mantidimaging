@@ -114,13 +114,9 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
 
     def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
-        if par is None and self.view.image_load_dialog is not None:
-            par = self.view.image_load_dialog.get_parameters()
         if par is None:
-            return
-
-        if par.sample.input_path == "":
-            raise ValueError("No sample path provided")
+            assert self.view.image_load_dialog is not None
+            par = self.view.image_load_dialog.get_parameters()
 
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 

@@ -140,3 +140,9 @@ class LoadingParameters:
     name: str
     dtype: str
     sinograms: bool
+
+    def set(self, name: str, img_params: ImageParameters):
+        short_name = name.lower().replace(" ", "_")
+        if name == "180 degree":
+            short_name = "proj_180deg"
+        self.__setattr__(short_name, img_params)
