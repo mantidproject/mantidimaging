@@ -68,7 +68,7 @@ class ImageLoadDialog(BaseDialogView):
         select_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
 
         self.tree.setItemWidget(section, 3, select_button)
-        field = Field(self, self.tree, section, use, select_button, file_info)
+        field = Field(self.tree, section, use, select_button, file_info)
 
         select_button.clicked.connect(lambda: self.presenter.do_update_field(field=field))
 

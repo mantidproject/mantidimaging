@@ -20,12 +20,10 @@ class Field:
     _start_spinbox: Optional[QSpinBox] = None
     _stop_spinbox: Optional[QSpinBox] = None
     _increment_spinbox: Optional[QSpinBox] = None
-
     _shape_widget: Optional[QTreeWidgetItem] = None
 
-    def __init__(self, parent, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton,
+    def __init__(self, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton,
                  file_info: 'TypeInfo'):
-        self._parent = parent
         self._tree = tree
         self._widget = widget
         self._use = use
@@ -185,18 +183,18 @@ class Field:
         if self._increment_spinbox is not None:
             self._increment_spinbox.setValue(value)
 
-    def _update_expected_mem_usage(self, shape: Tuple[int, int]):
+    def _update_expected_mem_usage(self, shape: Tuple[int, int]) -> Tuple[int, float]:
         num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),
                                                                    self._increment.value())
 
         single_mem = size_calculator.full_size_MB(shape, dtype=np.float32)
 
         exp_mem = round(single_mem * num_images, 2)
-        return num_images, shape, exp_mem
+        return num_images, exp_mem
 
     def update_shape(self, shape: Union[int, Tuple[int, int]]):
         if isinstance(shape, int):
-            self._shape = f"{str(shape)} images"  # type: ignore
+            self._shape = f"{str(shape)} images"
         else:
-            num_images, shape, exp_mem = self._update_expected_mem_usage(shape)
-            self._shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"  # type: ignore
+            num_images, exp_mem = self._update_expected_mem_usage(shape)
+            self._shape = f"{num_images} images x {shape[0]} x {shape[1]}, {exp_mem}MB"
