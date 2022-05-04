@@ -32,14 +32,14 @@ def test_execute_impl_seq():
     mock_progress.update.assert_called_once_with(1, "Test")
 
 
-# @mock.patch('mantidimaging.core.parallel.manager.pool')
-# def test_execute_impl_par(mock_pool):
-#     mock_partial = mock.Mock()
-#     mock_progress = mock.Mock()
-#     mock_pool.imap.return_value = range(15)
-#     execute_impl(15, mock_partial, True, mock_progress, "Test")
-#     mock_pool.imap.assert_called_once()
-#     assert mock_progress.update.call_count == 15
+@mock.patch('mantidimaging.core.parallel.utility.pm.pool')
+def test_execute_impl_par(mock_pool):
+    mock_partial = mock.Mock()
+    mock_progress = mock.Mock()
+    mock_pool.imap.return_value = range(15)
+    execute_impl(15, mock_partial, True, mock_progress, "Test")
+    mock_pool.imap.assert_called_once()
+    assert mock_progress.update.call_count == 15
 
 
 @pytest.mark.parametrize('dtype,expected_dtype', [
