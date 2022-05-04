@@ -239,6 +239,18 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     data["rotation_angle"] = rotation_angle
     data["image_key"] = detector["image_key"]
 
+    for recon in dataset.recons:
+        _save_recon_to_nexus(nexus_file, recon)
+
+
+def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
+
+    recon_entry = nexus_file.create_group(recon.name)
+    _set_nx_class(recon_entry, "NXentry")
+
+    recon_entry.create_dataset("title", data=np.string_(recon.name))
+    recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+
 
 def _set_nx_class(group: h5py.Group, class_name: str):
     """
