@@ -90,7 +90,7 @@ jobs:
         timeout-minutes: 15
         shell: bash -l {0}
         run: |
-          python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10
+          python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
