@@ -105,20 +105,20 @@ def execute_impl(img_num: int, partial_func: partial, is_shared_data: bool, prog
     task_name = f"{msg}"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = range(img_num)
-    # if multiprocessing_necessary(img_num, is_shared_data) and pm.pool:
-    #     LOG.info(f"Running async on {pm.cores} cores")
-    #     # Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn't unpacked,
-    #     # and thus some time is saved
-    #     # Using imap here seems to be the best choice:
-    #     # - imap_unordered gives the images back in random order
-    #     # - map and map_async do not improve speed performance
-    #     for _ in pm.pool.imap(partial_func, indices_list, chunksize=calculate_chunksize(pm.cores)):
-    #         progress.update(1, msg)
-    # else:
-    LOG.info("Running synchronously on 1 core")
-    for ind in indices_list:
-        partial_func(ind)
-        progress.update(1, msg)
+    if multiprocessing_necessary(img_num, is_shared_data) and pm.pool:
+        LOG.info(f"Running async on {pm.cores} cores")
+        # Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn't unpacked,
+        # and thus some time is saved
+        # Using imap here seems to be the best choice:
+        # - imap_unordered gives the images back in random order
+        # - map and map_async do not improve speed performance
+        for _ in pm.pool.imap(partial_func, indices_list, chunksize=calculate_chunksize(pm.cores)):
+            progress.update(1, msg)
+    else:
+        LOG.info("Running synchronously on 1 core")
+        for ind in indices_list:
+            partial_func(ind)
+            progress.update(1, msg)
     progress.mark_complete()
 
 
