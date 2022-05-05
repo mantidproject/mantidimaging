@@ -4,6 +4,9 @@
 from pathlib import Path
 import re
 from typing import List, Iterator, Optional
+from logging import getLogger
+
+LOG = getLogger(__name__)
 
 
 class FilenamePattern:
@@ -29,7 +32,7 @@ class FilenamePattern:
             self.re_pattern = re.compile("^" + re.escape(prefix) + "([1-9]?[0-9]{" + str(digit_count) + "})" +
                                          re.escape(suffix) + "$")
 
-        self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json")
+        self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
         self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
@@ -99,6 +102,8 @@ class FilenameGroup:
                 self.all_indexes.append(self.pattern.get_index(filename.name))
 
             if self.pattern.match_metadata(filename.name):
+                if self.metadata_path is not None:
+                    LOG.warning(f"Multiple metadata files found: {filename}")
                 self.metadata_path = filename
         self.all_indexes.sort()
 
