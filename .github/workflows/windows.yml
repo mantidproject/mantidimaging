@@ -106,6 +106,11 @@ jobs:
           python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10
         timeout-minutes: 30
 
+      - name: Set display resolution for screenshot tests
+        run: |
+          Set-DisplayResolution -Width 1920 -Height 1080 -Force
+        shell: pwsh
+
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
         shell: bash -l {0}
