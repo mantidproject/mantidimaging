@@ -3,6 +3,7 @@
 
 import inspect
 import os
+import sys
 from tempfile import mkdtemp
 from unittest import mock
 from uuid import uuid4
@@ -24,6 +25,7 @@ class EyesManager:
         self.application_name = application_name
         self.eyes = Eyes()
         self.eyes.match_level = MatchLevel.CONTENT
+        self.eyes.configure.host_os = sys.platform
         self.image_directory = None
         self.imaging = None
         if test_name is None:
