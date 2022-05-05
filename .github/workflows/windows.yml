@@ -105,3 +105,14 @@ jobs:
         run: |
           python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10
         timeout-minutes: 30
+
+      - name: GUI Tests Screenshots Applitools
+        if: github.event_name == 'pull_request'
+        shell: bash -l {0}
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+          APPLITOOLS_BATCH_ID: ${{ github.sha }}
+          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests --durations=10
+        timeout-minutes: 15
