@@ -56,15 +56,15 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertTrue(p1.match("img_1000.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
 
-    def test_pattern_get_value(self):
+    def test_pattern_get_index(self):
         p1 = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
-        self.assertEqual(p1.get_value("IMAT_Flower_Tomo_000023.tif"), 23)
-        self.assertRaises(ValueError, p1.get_value, "foo")
-        self.assertRaises(ValueError, p1.get_value, "IMAT_Flower_Tomo_00002x.tif")
+        self.assertEqual(p1.get_index("IMAT_Flower_Tomo_000023.tif"), 23)
+        self.assertRaises(ValueError, p1.get_index, "foo")
+        self.assertRaises(ValueError, p1.get_index, "IMAT_Flower_Tomo_00002x.tif")
 
     def test_unindexed(self):
         p1 = FilenamePattern.from_name("IMAT00006388_PSI_cylinder_Sample_180deg.tif")
-        self.assertEqual(p1.get_value("IMAT00006388_PSI_cylinder_Sample_180deg.tif"), 0)
+        self.assertEqual(p1.get_index("IMAT00006388_PSI_cylinder_Sample_180deg.tif"), 0)
         self.assertEqual(p1.generate(0), "IMAT00006388_PSI_cylinder_Sample_180deg.tif")
 
     def test_match_metadata(self):

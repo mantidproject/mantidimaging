@@ -57,7 +57,7 @@ class FilenamePattern:
     def match(self, filename: str) -> bool:
         return self.re_pattern.match(filename) is not None
 
-    def get_value(self, filename: str) -> int:
+    def get_index(self, filename: str) -> int:
         result = self.re_pattern.match(filename)
         if result is None:
             raise ValueError(f"Filename ({filename}) does not match pattern: {self.re_pattern}")
@@ -84,10 +84,10 @@ class FilenameGroup:
         directory = path.parent
         name = path.name
         pattern = FilenamePattern.from_name(name)
-        index = pattern.get_value(name)
-        new_filename_pattern = cls(directory, pattern, [index])
+        index = pattern.get_index(name)
+        new_filename_group = cls(directory, pattern, [index])
 
-        return new_filename_pattern
+        return new_filename_group
 
     def all_files(self) -> Iterator[Path]:
         for index in self.all_indexes:
@@ -96,7 +96,7 @@ class FilenameGroup:
     def find_all_files(self) -> None:
         for filename in self.directory.iterdir():
             if self.pattern.match(filename.name):
-                self.all_indexes.append(self.pattern.get_value(filename.name))
+                self.all_indexes.append(self.pattern.get_index(filename.name))
 
             if self.pattern.match_metadata(filename.name):
                 self.metadata_path = filename
