@@ -58,6 +58,7 @@ class ReconstructWindowView(BaseMainWindowView):
     maxProjAngle: QDoubleSpinBox
     pixelSize: QDoubleSpinBox
     alphaSpinbox: QDoubleSpinBox
+    nonNegativeCheckBox: QCheckBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
@@ -180,6 +181,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.alphaSpinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.nonNegativeCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
@@ -387,6 +389,10 @@ class ReconstructWindowView(BaseMainWindowView):
     @alpha.setter
     def alpha(self, value: float):
         self.alphaSpinbox.setValue(value)
+
+    @property
+    def non_negative(self):
+        return self.nonNegativeCheckBox.isChecked()
 
     @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
