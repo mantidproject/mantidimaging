@@ -414,6 +414,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
+                                        non_negative=self.non_negative,
                                         max_projection_angle=self.max_proj_angle,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 

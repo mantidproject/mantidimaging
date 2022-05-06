@@ -101,6 +101,7 @@ class ReconstructionParameters:
     tilt: Optional[Degrees] = None
     pixel_size: float = 0.0
     alpha: float = 0.0
+    non_negative: bool = False
     max_projection_angle: float = 360.0
     beam_hardening_coefs: Optional[List[float]] = None
 
