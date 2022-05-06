@@ -97,3 +97,32 @@ jobs:
         shell: bash -l {0}
         run: |
           python -m pytest --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=1
+
+      - name: pytest s2
+        timeout-minutes: 10
+        if: always()
+        shell: bash -l {0}
+        run: |
+          python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=2
+
+      - name: pytest no parallel s2
+        timeout-minutes: 10
+        if: always()
+        shell: bash -l {0}
+        run: |
+          python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=2
+
+      - name: pytest no cov s2
+        timeout-minutes: 10
+        if: always()
+        shell: bash -l {0}
+        run: |
+          python -m pytest -n auto --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=2
+
+      - name: pytest no parallel no cov s2
+        timeout-minutes: 10
+        if: always()
+        shell: bash -l {0}
+        run: |
+          python -m pytest --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=2
+
