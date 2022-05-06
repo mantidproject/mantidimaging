@@ -72,28 +72,28 @@ jobs:
 
       - name: pytest
         timeout-minutes: 10
-        continue-on-error: true
+        if: always()
         shell: bash -l {0}
         run: |
           python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=1
 
       - name: pytest no parallel
         timeout-minutes: 10
-        continue-on-error: true
+        if: always()
         shell: bash -l {0}
         run: |
           python -m pytest --cov --cov-report=xml --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=1
 
       - name: pytest no cov
         timeout-minutes: 10
-        continue-on-error: true
+        if: always()
         shell: bash -l {0}
         run: |
           python -m pytest -n auto --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=1
 
       - name: pytest no parallel no cov
         timeout-minutes: 10
-        continue-on-error: true
+        if: always()
         shell: bash -l {0}
         run: |
           python -m pytest --ignore=mantidimaging/eyes_tests --durations=10 --randomly-seed=1
