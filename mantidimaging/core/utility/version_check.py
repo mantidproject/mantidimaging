@@ -33,21 +33,9 @@ class CheckVersion:
         self._conda_available_version = None
         self._conda_exe = self.find_conda_executable()
 
-        # To test update warning message uncomment
-        # self._use_test_values(False)
-
     def _retrieve_versions(self) -> None:
         self._retrieve_conda_installed_version()
         self._retrieve_conda_available_version()
-
-    def _use_test_values(self, uptodate: bool = True) -> None:
-        """Avoid fetching version info"""
-        self._conda_installed_version = "1.0.0_1"
-        self._conda_installed_label = "main"
-        if uptodate:
-            self._conda_available_version = "1.0.0_1"
-        else:
-            self._conda_available_version = "2.0.0_1"
 
     @staticmethod
     def find_conda_executable() -> str:
