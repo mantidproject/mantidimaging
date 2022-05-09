@@ -36,3 +36,4 @@ Developer Changes
 - #1387 : Fix async task leak
 - #1384 : Remove StackSelectorWidget and StackSelectorDialog
 - #1420 : Save NeXus data without concatenate
+- #1402 : Add GitHub Actions tests for Windows

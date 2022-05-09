@@ -49,6 +49,7 @@ def get_application(name=''):
 
     if _QAPP is None:
         _QAPP = QApplication([name])
+        _QAPP.setStyle('Fusion')
         sys.excepthook = handle_uncaught_exceptions
 
     return _QAPP
