@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import datetime
 import os
 from logging import getLogger
 from typing import List, Union, Optional, Dict, Callable
@@ -264,21 +264,20 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
 
     sample = recon_entry.create_group("sample")
     _set_nx_class(sample, "NXsample")
-    sample.create_dataset("name", data=np.string("sample description"))
+    sample.create_dataset("name", data=np.string_("sample description"))
 
     reconstruction = recon_entry.create_group("reconstruction")
     _set_nx_class(reconstruction, "NXprocess")
 
     reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
     reconstruction.create_dataset("version", data=np.string_(CheckVersion().get_version()))
-    reconstruction.create_dataset("date")  # TODO
-    reconstruction.create_dataset("paramters")  # TODO
+    reconstruction.create_dataset("date", data=np.string_("T".join(str(datetime.datetime.now()).split())))
+    reconstruction.create_group("parameters")
 
     data = recon_entry.create_group("data")
-    _set_nx_class("data", "NXdata")
+    _set_nx_class(data, "NXdata")
 
-    data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
-    data["data"] = recon.data
+    data.create_dataset("data", shape=recon.data.shape, dtype="uint16", data=recon.data)
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
