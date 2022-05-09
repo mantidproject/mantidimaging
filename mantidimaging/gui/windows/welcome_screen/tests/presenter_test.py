@@ -8,9 +8,10 @@ import tempfile
 from PyQt5.QtCore import QSettings, QCoreApplication
 
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
-from mantidimaging.test_helpers import start_qapplication
+from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 
+@mock_versions
 @start_qapplication
 class WelcomeScreenPresenterTest(unittest.TestCase):
     @classmethod
