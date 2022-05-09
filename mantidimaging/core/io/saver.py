@@ -16,6 +16,7 @@ from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
 from ..utility.progress_reporting import Progress
+from ..utility.version_check import CheckVersion
 
 LOG = getLogger(__name__)
 
@@ -250,6 +251,34 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
 
     recon_entry.create_dataset("title", data=np.string_(recon.name))
     recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+
+    instrument = recon_entry.create_group("instrument")
+    _set_nx_class(instrument, "NXinstrument")
+
+    source = instrument.create_group("source")
+    _set_nx_class(source, "NXsource")
+
+    source.create_dataset("type", data=np.string_("Neutron source"))
+    source.create_dataset("name", data=np.string_("ISIS"))
+    source.create_dataset("probe", data=np.string_("neutron"))
+
+    sample = recon_entry.create_group("sample")
+    _set_nx_class(sample, "NXsample")
+    sample.create_dataset("name", data=np.string("sample description"))
+
+    reconstruction = recon_entry.create_group("reconstruction")
+    _set_nx_class(reconstruction, "NXprocess")
+
+    reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
+    reconstruction.create_dataset("version", data=np.string_(CheckVersion().get_version()))
+    reconstruction.create_dataset("date")  # TODO
+    reconstruction.create_dataset("paramters")  # TODO
+
+    data = recon_entry.create_group("data")
+    _set_nx_class("data", "NXdata")
+
+    data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
+    data["data"] = recon.data
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
