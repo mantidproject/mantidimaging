@@ -245,6 +245,11 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 
 
 def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
+    """
+    Saves a recon to a NeXus file.
+    :param nexus_file: The NeXus file.
+    :param recon: The recon data.
+    """
 
     recon_entry = nexus_file.create_group(recon.name)
     _set_nx_class(recon_entry, "NXentry")
