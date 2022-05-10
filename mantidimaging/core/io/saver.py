@@ -299,7 +299,7 @@ def _scale_recon_data(image: np.ndarray) -> np.ndarray:
     min_value = np.min(image)
     if min_value < 0:
         image -= min_value
-    image *= (65535 / np.max(image))
+    image *= (np.iinfo("uint16").max / np.max(image))
     return image
 
 
