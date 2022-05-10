@@ -6,14 +6,18 @@ import unittest
 from unittest import mock
 
 from mantidimaging.core.utility.version_check import (CheckVersion, _version_is_uptodate, _parse_version)
+from mantidimaging.test_helpers import mock_versions
 
 
+@mock_versions
 class TestCheckVersion(unittest.TestCase):
     def setUp(self):
         with mock.patch("mantidimaging.core.utility.version_check.CheckVersion._retrieve_versions"):
             with mock.patch("shutil.which"):
                 self.versions = CheckVersion()
-                self.versions._use_test_values()
+                self.versions._conda_installed_version = "1.0.0_1"
+                self.versions._conda_installed_label = "main"
+                self.versions._conda_available_version = "1.0.0_1"
 
     def test_parse_version(self):
         parsed = _parse_version("9.9.9_1234")
@@ -58,13 +62,14 @@ class TestCheckVersion(unittest.TestCase):
         self.assertEqual(_version_is_uptodate(local_parsed, remote_parsed), is_uptodate)
 
     def test_is_conda_uptodate(self):
+        self.versions._conda_available_version = "1.0.0_1"
         self.assertTrue(self.versions.is_conda_uptodate())
 
-        self.versions._use_test_values(False)
+        self.versions._conda_available_version = "2.0.0_1"
         self.assertFalse(self.versions.is_conda_uptodate())
 
     def test_conda_update_message(self):
-        self.versions._use_test_values(False)
+        self.versions._conda_available_version = "2.0.0_1"
         msg, detailed = self.versions.conda_update_message()
         self.assertTrue("Found version 1.0.0_1" in msg)
         self.assertTrue("latest: 2.0.0_1" in msg)

@@ -6,14 +6,12 @@ from unittest import mock
 
 from mantidimaging.gui.windows.wizard.view import WizardView, WizardStep, WizardStage
 from mantidimaging.gui.windows.main import MainWindowView
-from mantidimaging.test_helpers import start_qapplication
-from mantidimaging.core.utility.version_check import versions
-
-versions._use_test_values()
+from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 STEP_DATA = {'name': 'Loading files', 'description': 'desc'}
 
 
+@mock_versions
 @start_qapplication
 class WizardViewTest(unittest.TestCase):
     def setUp(self) -> None:
