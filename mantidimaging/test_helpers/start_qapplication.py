@@ -110,7 +110,7 @@ def mock_versions(cls):
     def tearDownClass():
         cls.mock_version_patch.stop()
         cls.mock_version_label_patch.stop()
-        cls.mock_version_available_patch.start()
+        cls.mock_version_available_patch.stop()
 
     return augment_test_setup_methods(cls, setup_class=setUpClass, teardown_class=tearDownClass)
 
