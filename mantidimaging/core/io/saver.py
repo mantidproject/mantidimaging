@@ -282,7 +282,8 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")
 
-    data.create_dataset("data", shape=recon.data.shape, dtype="uint16", data=recon.data)
+    data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
+    data["data"][:] = recon.data
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
