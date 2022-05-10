@@ -2,7 +2,7 @@ name: mantidimaging-nightly
 channels:
   - mantid/label/unstable
   - dtasev
-  - astra-toolbox/label/dev
+  - astra-toolbox
   - conda-forge
   - ccpi
   - algotom

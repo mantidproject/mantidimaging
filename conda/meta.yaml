@@ -28,13 +28,13 @@ requirements:
     - tomopy=1.10.*
     - cudatoolkit=10.2*
     - cupy=10.2.*
-    - astra-toolbox=1.9.9*
+    - astra-toolbox=2.0.*
     - requests=2.26.*
     - h5py=3.4.*
     - sarepy=2020.07
     - psutil=5.8.*
-    - cil=21.3.*
-    - cil-astra=21.3.*
+    - cil=21.4.*
+    - cil-astra=21.4.*
     - ccpi-regulariser=21.0.*
 
 build:
