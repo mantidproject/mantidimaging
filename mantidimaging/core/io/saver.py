@@ -257,10 +257,10 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     recon_entry.create_dataset("title", data=np.string_(recon.name))
     recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
 
-    instrument = recon_entry.create_group("instrument")
+    instrument = recon_entry.create_group("INSTRUMENT")
     _set_nx_class(instrument, "NXinstrument")
 
-    source = instrument.create_group("source")
+    source = instrument.create_group("SOURCE")
     _set_nx_class(source, "NXsource")
 
     source.create_dataset("type", data=np.string_("Neutron source"))
