@@ -267,7 +267,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     source.create_dataset("name", data=np.string_("ISIS"))
     source.create_dataset("probe", data=np.string_("neutron"))
 
-    sample = recon_entry.create_group("sample")
+    sample = recon_entry.create_group("SAMPLE")
     _set_nx_class(sample, "NXsample")
     sample.create_dataset("name", data=np.string_("sample description"))
 

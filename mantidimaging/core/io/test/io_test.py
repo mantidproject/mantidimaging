@@ -313,10 +313,14 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]), "NXinstrument")
             self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]), "NXsource")
 
-            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["type"]),
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["type"]),
                              "Neutron source")
-            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["name"]), "ISIS")
-            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["probe"]), "neutron")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["name"]), "ISIS")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["probe"]),
+                             "neutron")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["SAMPLE"], "NXsample"))
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"], "sample description"))
 
 
 if __name__ == '__main__':
