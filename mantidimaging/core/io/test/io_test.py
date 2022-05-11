@@ -24,6 +24,10 @@ def _decode_nexus_class(nexus_data) -> str:
     return nexus_data.attrs[NX_CLASS].decode("utf-8")
 
 
+def _nexus_dataset_to_string(nexus_dataset) -> str:
+    return np.array(nexus_dataset).tostring().decode("utf-8")
+
+
 class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -287,6 +291,32 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, "sample-name")
 
         recon_save_mock.assert_not_called()
+
+    def test_save_recon_to_nexus(self):
+
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+
+        recon = th.generate_images()
+        recon.name = recon_name = "Recon"
+        sd.recons.append(recon)
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]), "NXextry")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["title"]), recon_name)
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["definition"]), "NXtomoproc")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]), "NXinstrument")
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]), "NXsource")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["type"]),
+                             "Neutron source")
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["name"]), "ISIS")
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["probe"]), "neutron")
 
 
 if __name__ == '__main__':
