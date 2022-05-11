@@ -12,7 +12,7 @@ from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, Image
 
 from cil.optimisation.algorithms import PDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
-from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction
+from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox
 
 # CIL ASTRA plugin
 from cil.plugins.astra.operators import ProjectionOperator
@@ -32,13 +32,15 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData, alpha: float):
+    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
+                                 recon_params: ReconstructionParameters):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
         # Set up TV regularisation
 
         # Define Gradient Operator and BlockOperator
+        alpha = recon_params.alpha
         Grad = GradientOperator(image_geometry)
         K = BlockOperator(alpha * Grad, A2d)
 
@@ -50,8 +52,12 @@ class CILRecon(BaseRecon):
         f2 = L2NormSquared(b=acquisition_data)
         # F = BlockFunction(f1,f2)
 
-        # Define Function G simply as zero
-        G = ZeroFunction()
+        if recon_params.non_negative:
+            G = IndicatorBox(lower=0)
+        else:
+            # Define Function G simply as zero
+            G = ZeroFunction()
+
         return (K, f1, f2, G)
 
     @staticmethod
@@ -95,11 +101,9 @@ class CILRecon(BaseRecon):
             data = ag.allocate(None)
             data.fill(sino)
 
-            alpha = recon_params.alpha
-
             ig = ag.get_ImageGeometry()
             # set up TV regularisation
-            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, alpha)
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
             # alpha = 1.0
             # f1 =  alpha * MixedL21Norm()
@@ -189,11 +193,9 @@ class CILRecon(BaseRecon):
             data.fill(BaseRecon.prepare_sinogram(images.data, recon_params))
             data.reorder('astra')
 
-            alpha = recon_params.alpha
-
             ig = ag.get_ImageGeometry()
             # set up TV regularisation
-            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, alpha)
+            K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
             # alpha = 1.0
             # f1 =  alpha * MixedL21Norm()
