@@ -63,7 +63,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
     def test_refine(self):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=4))
         QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
-        wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+        wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=500)
 
         for _ in range(5):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
@@ -81,7 +81,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=3))
             QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
-            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=500)
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
