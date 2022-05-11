@@ -262,6 +262,32 @@ class IOTest(FileOutputtingTestCase):
         saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
         file_mock.return_value.close.assert_called_once()
 
+    @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
+    def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+        sd.recons = [th.generate_images(), th.generate_images()]
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+        self.assertEqual(recon_save_mock.call_count, len(sd.recons))
+
+    @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
+    def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
+
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+        recon_save_mock.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
