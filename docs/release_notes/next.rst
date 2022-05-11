@@ -14,6 +14,7 @@ New Features
 - #1394 : Add .nxs extension to NeXus save path
 - #1399 : NeXus Saving OSError message
 - #1331 : Make MI Windows compatible
+- #1430 : Provide an Anaconda package that is compatible with Windows
 
 Fixes
 -----
