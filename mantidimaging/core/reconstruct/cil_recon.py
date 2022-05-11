@@ -7,14 +7,10 @@ from typing import List, Optional
 
 import numpy as np
 
-# import cil
 from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry
-
 from cil.optimisation.algorithms import PDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox
-
-# CIL ASTRA plugin
 from cil.plugins.astra.operators import ProjectionOperator
 
 from mantidimaging.core.data import ImageStack
@@ -37,20 +33,14 @@ class CILRecon(BaseRecon):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
-        # Set up TV regularisation
-
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
         Grad = GradientOperator(image_geometry)
         K = BlockOperator(alpha * Grad, A2d)
 
         # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
-        # alpha = 1.0
-        # f1 =  alpha * MixedL21Norm()
         f1 = MixedL21Norm()
-        # f2 = 0.5 * L2NormSquared(b=ad2d)
         f2 = L2NormSquared(b=acquisition_data)
-        # F = BlockFunction(f1,f2)
 
         if recon_params.non_negative:
             G = IndicatorBox(lower=0)
@@ -97,17 +87,11 @@ class CILRecon(BaseRecon):
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
             ag.set_angles(angles=proj_angles.value, angle_unit='radian')
 
-            # stick it into an AcquisitionData
             data = ag.allocate(None)
             data.fill(sino)
 
             ig = ag.get_ImageGeometry()
-            # set up TV regularisation
             K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
-
-            # alpha = 1.0
-            # f1 =  alpha * MixedL21Norm()
-            # f2 = 0.5 * L2NormSquared(b=ad2d)
 
             F = BlockFunction(f1, f2)
             normK = K.norm()
@@ -188,18 +172,13 @@ class CILRecon(BaseRecon):
             ag.set_angles(angles=angles, angle_unit='radian')
             ag.set_labels(data_order)
 
-            # stick it into an AcquisitionData
             data = ag.allocate(None)
             data.fill(BaseRecon.prepare_sinogram(images.data, recon_params))
             data.reorder('astra')
 
             ig = ag.get_ImageGeometry()
-            # set up TV regularisation
             K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
-            # alpha = 1.0
-            # f1 =  alpha * MixedL21Norm()
-            # f2 = 0.5 * L2NormSquared(b=ad2d)
             F = BlockFunction(f1, f2)
             normK = K.norm()
             sigma = 1
