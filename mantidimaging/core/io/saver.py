@@ -283,7 +283,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     _set_nx_class(data, "NXdata")
 
     data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
-    data["data"][:] = _scale_recon_data(recon.data)
+    data["data"][:] = _rescale_recon_data(recon.data)
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
@@ -295,12 +295,17 @@ def _set_nx_class(group: h5py.Group, class_name: str):
     group.attrs["NX_class"] = np.string_(class_name)
 
 
-def _scale_recon_data(image: np.ndarray) -> np.ndarray:
-    min_value = np.min(image)
+def _rescale_recon_data(data: np.ndarray) -> np.ndarray:
+    """
+    Rescales recon data so that it can be converted to uint.
+    :param data: The recon data.
+    :return: The rescaled recon data.
+    """
+    min_value = np.min(data)
     if min_value < 0:
-        image -= min_value
-    image *= (np.iinfo("uint16").max / np.max(image))
-    return image
+        data -= min_value
+    data *= (np.iinfo("uint16").max / np.max(data))
+    return data
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
