@@ -42,6 +42,9 @@ build:
   number: 1
   script:
     - {{ PYTHON }} -m pip install --ignore-installed .
+  entry_points:
+    - mantidimaging = mantidimaging.main:main
+    - mantidimaging-ipython = mantidimaging.ipython:main
 
 test:
   imports:

@@ -29,6 +29,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.numIter = self.numIter = mock.Mock()
         self.view.pixelSize = self.pixelSize = mock.Mock()
         self.view.alphaSpinbox = self.alpha = mock.Mock()
+        self.view.nonNegativeCheckBox = self.non_negative = mock.Mock()
         self.view.algorithmName = self.algorithmName = mock.Mock()
         self.view.filterName = self.filterName = mock.Mock()
         self.view.maxProjAngle = self.maxProjAngle = mock.Mock()
@@ -237,6 +238,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
                                                   tilt=Degrees(self.resultTilt.value.return_value),
                                                   pixel_size=self.pixelSize.value.return_value,
                                                   alpha=self.alpha.value.return_value,
+                                                  non_negative=self.non_negative.isChecked.return_value,
                                                   max_projection_angle=self.maxProjAngle.value.return_value,
                                                   beam_hardening_coefs=self.view.beam_hardening_coefs)
 
