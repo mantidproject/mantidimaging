@@ -339,8 +339,10 @@ class IOTest(FileOutputtingTestCase):
             self.assertIn(str(datetime.date.today()),
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
-            npt.assert_array_almost_equal(np.array(nexus_file[recon_name]["data"]["data"]),
-                                          _rescale_recon_data(recon.data).astype("uint16"))
+            assert abs(
+                np.max(
+                    np.array(nexus_file[recon_name]["data"]["data"]) -
+                    _rescale_recon_data(recon.data).astype("uint16"))) <= 1
 
 
 if __name__ == '__main__':
