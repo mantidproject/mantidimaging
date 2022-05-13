@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import datetime
 import os
 import unittest
 from unittest import mock
@@ -14,6 +14,8 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
+from mantidimaging.core.io.saver import _rescale_recon_data
+from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
@@ -22,6 +24,19 @@ NX_CLASS = "NX_class"
 
 def _decode_nexus_class(nexus_data) -> str:
     return nexus_data.attrs[NX_CLASS].decode("utf-8")
+
+
+def _nexus_dataset_to_string(nexus_dataset) -> str:
+    return np.array(nexus_dataset).tostring().decode("utf-8")
+
+
+def test_rescale_negative_recon_data():
+
+    recon = th.generate_images()
+    recon.data -= np.min(recon.data) * 1.2
+
+    assert np.min(_rescale_recon_data(recon.data)) >= 0
+    assert int(np.max(_rescale_recon_data(recon.data))) == np.iinfo("uint16").max
 
 
 class IOTest(FileOutputtingTestCase):
@@ -183,7 +198,7 @@ class IOTest(FileOutputtingTestCase):
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
             # test definition field
-            self.assertEqual(np.array(tomo_entry["definition"]).tostring().decode("utf-8"), "NXtomo")
+            self.assertEqual(_nexus_dataset_to_string(tomo_entry["definition"]), "NXtomo")
 
             # test instrument field
             self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]), "NXinstrument")
@@ -197,7 +212,7 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument/sample fields
             self.assertEqual(_decode_nexus_class(tomo_entry["sample"]), "NXsample")
-            self.assertEqual(np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8"), sample_name)
+            self.assertEqual(_nexus_dataset_to_string(tomo_entry["sample"]["name"]), sample_name)
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    sd.sample.projection_angles().value)
 
@@ -261,6 +276,74 @@ class IOTest(FileOutputtingTestCase):
     def test_successful_nexus_save_closes_file(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
         saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
         file_mock.return_value.close.assert_called_once()
+
+    @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
+    def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+        sd.recons.data = [th.generate_images(), th.generate_images()]
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+        self.assertEqual(recon_save_mock.call_count, len(sd.recons))
+
+    @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
+    def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
+
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+        recon_save_mock.assert_not_called()
+
+    def test_save_recon_to_nexus(self):
+
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+
+        recon = th.generate_images(seed=2)
+        recon.name = recon_name = "Recon"
+        sd.recons.append(recon)
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]), "NXentry")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["title"]), recon_name)
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["definition"]), "NXtomoproc")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]), "NXinstrument")
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]), "NXsource")
+
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["type"]),
+                             "Neutron source")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["name"]), "ISIS")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["probe"]),
+                             "neutron")
+
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["SAMPLE"]), "NXsample")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"]), "sample description")
+
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["program"]),
+                             "Mantid Imaging")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["version"]),
+                             CheckVersion().get_version())
+            self.assertIn(str(datetime.date.today()),
+                          _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
+
+            assert abs(
+                np.max(
+                    np.array(nexus_file[recon_name]["data"]["data"]) -
+                    _rescale_recon_data(recon.data).astype("uint16"))) <= 1
 
 
 if __name__ == '__main__':
