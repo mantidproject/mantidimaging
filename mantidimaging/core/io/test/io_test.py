@@ -283,7 +283,7 @@ class IOTest(FileOutputtingTestCase):
         sample._projection_angles = sample.projection_angles()
 
         sd = StrictDataset(sample)
-        sd.recons = [th.generate_images(), th.generate_images()]
+        sd.recons.data = [th.generate_images(), th.generate_images()]
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, "sample-name")
