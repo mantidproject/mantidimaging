@@ -14,7 +14,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.saver import _scale_recon_data
+from mantidimaging.core.io.saver import _rescale_recon_data
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -332,7 +332,14 @@ class IOTest(FileOutputtingTestCase):
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
             npt.assert_array_almost_equal(np.array(nexus_file[recon_name]["data"]["data"]),
-                                          _scale_recon_data(recon.data).astype("uint16"))
+                                          _rescale_recon_data(recon.data).astype("uint16"))
+
+    def test_scale_negative_recon_data(self):
+
+        recon = th.generate_images()
+        recon.data -= np.min(recon.data) * 1.2
+
+        assert np.min(_rescale_recon_data(recon.data)) >= 0
 
 
 if __name__ == '__main__':
