@@ -310,7 +310,7 @@ class IOTest(FileOutputtingTestCase):
 
         sd = StrictDataset(sample)
 
-        recon = th.generate_images()
+        recon = th.generate_images(seed=2)
         recon.name = recon_name = "Recon"
         sd.recons.append(recon)
 
