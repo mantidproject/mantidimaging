@@ -15,10 +15,10 @@ source:
 
 requirements:
   build:
-    - python=3.8.*
+    - python=3.9.*
     - setuptools=58.*
   run:
-    - python=3.8.*
+    - python=3.9.*
     - pip
     - astropy=4.3.*
     - scipy=1.7.*
@@ -28,16 +28,17 @@ requirements:
     - tomopy=1.10.*
     - cudatoolkit=10.2*
     - cupy=10.2.*
-    - astra-toolbox=1.9.9*
+    - astra-toolbox=2.0.*
     - requests=2.26.*
     - h5py=3.4.*
     - sarepy=2020.07
     - psutil=5.8.*
-    - cil=21.3.*
-    - cil-astra=21.3.*
+    - cil=21.4.*
+    - cil-astra=21.4.*
     - ccpi-regulariser=21.0.*
 
 build:
+  noarch: python
   number: 1
   script:
     - {{ PYTHON }} -m pip install --ignore-installed .

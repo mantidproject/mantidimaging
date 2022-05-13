@@ -7,14 +7,12 @@ from unittest import mock
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
-from mantidimaging.test_helpers import start_qapplication
-
-versions._use_test_values()
+from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 
+@mock_versions
 @start_qapplication
 class StackVisualiserViewTest(unittest.TestCase):
     test_data: ImageStack

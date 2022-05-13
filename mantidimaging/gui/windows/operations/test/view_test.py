@@ -6,13 +6,10 @@ from unittest import mock
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
-from mantidimaging.test_helpers import start_qapplication
-
-from mantidimaging.core.utility.version_check import versions
-
-versions._use_test_values()
+from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 
+@mock_versions
 @start_qapplication
 class OperationsWindowsViewTest(unittest.TestCase):
     def setUp(self):

@@ -32,7 +32,7 @@ def test_execute_impl_seq():
     mock_progress.update.assert_called_once_with(1, "Test")
 
 
-@mock.patch('mantidimaging.core.parallel.manager.pool')
+@mock.patch('mantidimaging.core.parallel.utility.pm.pool')
 def test_execute_impl_par(mock_pool):
     mock_partial = mock.Mock()
     mock_progress = mock.Mock()

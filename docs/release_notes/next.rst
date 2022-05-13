@@ -14,6 +14,7 @@ New Features
 - #1394 : Add .nxs extension to NeXus save path
 - #1399 : NeXus Saving OSError message
 - #1331 : Make MI Windows compatible
+- #1430 : Provide an Anaconda package that is compatible with Windows
 - #1398 : Save recons to NeXus file
 
 Fixes
@@ -37,3 +38,6 @@ Developer Changes
 - #1387 : Fix async task leak
 - #1384 : Remove StackSelectorWidget and StackSelectorDialog
 - #1420 : Save NeXus data without concatenate
+- #1402 : Add GitHub Actions tests for Windows
+- #1449 : Update CIL to 21.4, Astra to 2.0
+- #1341 : Update to python 3.9, numpy 1.20

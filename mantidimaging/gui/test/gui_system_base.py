@@ -13,13 +13,9 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
 import pytest
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
-from mantidimaging.core.utility.version_check import versions
 from mantidimaging.gui.windows.main import MainWindowView
-from mantidimaging.gui.windows.image_load_dialog.presenter import Notification
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
-from mantidimaging.test_helpers.start_qapplication import start_qapplication
-
-versions._use_test_values()
+from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
 LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
@@ -29,6 +25,7 @@ SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100
 
 
+@mock_versions
 @pytest.mark.system
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
@@ -97,7 +94,7 @@ class GuiSystemBase(unittest.TestCase):
 
         self.main_window.actionLoadDataset.trigger()
         QTest.qWait(SHOW_DELAY)
-        self.main_window.image_load_dialog.presenter.notify(Notification.UPDATE_ALL_FIELDS)
+        self.main_window.image_load_dialog.presenter.do_update_field(self.main_window.image_load_dialog.sample)
         QTest.qWait(SHOW_DELAY)
         self.main_window.image_load_dialog.accept()
         wait_until(test_func, max_retry=600)

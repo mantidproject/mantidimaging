@@ -9,7 +9,7 @@ Requirements
 Operating system
    Linux. Tested on Ubuntu 18.04, 20.04 and CentOS 7
 
-Python 3.8
+Python 3.9
    This can be installed below using Conda if needed.
 
 GPU
