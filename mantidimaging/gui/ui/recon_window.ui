@@ -538,17 +538,43 @@
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
                <layout class="QGridLayout" name="optionsLayout">
-                <item row="5" column="0">
-                 <widget class="QLabel" name="pixelSizeLabel">
-                  <property name="text">
-                   <string>Pixel size (microns)</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="1">
+                <item row="6" column="1">
                  <widget class="QDoubleSpinBox" name="pixelSize">
                   <property name="maximum">
                    <double>99999.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="filterNameLabel">
+                  <property name="text">
+                   <string>Reconstruction filter:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="numIterLabel">
+                  <property name="text">
+                   <string>Number of iterations:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QDoubleSpinBox" name="alphaSpinbox">
+                  <property name="decimals">
+                   <number>6</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.000001000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>1000000.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>1.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -603,13 +629,31 @@
                   </item>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="maxProjAngle">
-                  <property name="maximum">
-                   <double>9999.000000000000000</double>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="maxProjAngleLabel">
+                  <property name="text">
+                   <string>Maximum projection angle</string>
                   </property>
-                  <property name="value">
-                   <double>360.000000000000000</double>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="pixelSizeLabel">
+                  <property name="text">
+                   <string>Pixel size (microns)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="algorithmNameLabel">
+                  <property name="text">
+                   <string>Algorithm:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="alphaLabel">
+                  <property name="text">
+                   <string>Alpha</string>
                   </property>
                  </widget>
                 </item>
@@ -623,57 +667,27 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="filterNameLabel">
-                  <property name="text">
-                   <string>Reconstruction filter:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="algorithmNameLabel">
-                  <property name="text">
-                   <string>Algorithm:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="maxProjAngleLabel">
-                  <property name="text">
-                   <string>Maximum projection angle</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="numIterLabel">
-                  <property name="text">
-                   <string>Number of iterations:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="alphaLabel">
-                  <property name="text">
-                   <string>Alpha</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QDoubleSpinBox" name="alphaSpinbox">
-                  <property name="decimals">
-                   <number>6</number>
-                  </property>
-                  <property name="minimum">
-                   <double>0.000001000000000</double>
-                  </property>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="maxProjAngle">
                   <property name="maximum">
-                   <double>1000000.000000000000000</double>
-                  </property>
-                  <property name="singleStep">
-                   <double>0.010000000000000</double>
+                   <double>9999.000000000000000</double>
                   </property>
                   <property name="value">
-                   <double>1.000000000000000</double>
+                   <double>360.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="nonNegativeLabel">
+                  <property name="text">
+                   <string>Non-negative</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QCheckBox" name="nonNegativeCheckBox">
+                  <property name="text">
+                   <string/>
                   </property>
                  </widget>
                 </item>
