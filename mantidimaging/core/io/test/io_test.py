@@ -36,6 +36,7 @@ def test_rescale_negative_recon_data():
     recon.data -= np.min(recon.data) * 1.2
 
     assert np.min(_rescale_recon_data(recon.data)) >= 0
+    assert np.max(_rescale_recon_data(recon.data)) == np.iinfo("uint16").max
 
 
 class IOTest(FileOutputtingTestCase):
