@@ -15,10 +15,10 @@ source:
 
 requirements:
   build:
-    - python=3.8.*
+    - python=3.9.*
     - setuptools=58.*
   run:
-    - python=3.8.*
+    - python=3.9.*
     - pip
     - astropy=4.3.*
     - scipy=1.7.*

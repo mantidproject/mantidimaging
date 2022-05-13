@@ -39,3 +39,4 @@ Developer Changes
 - #1420 : Save NeXus data without concatenate
 - #1402 : Add GitHub Actions tests for Windows
 - #1449 : Update CIL to 21.4, Astra to 2.0
+- #1341 : Update to python 3.9, numpy 1.20
