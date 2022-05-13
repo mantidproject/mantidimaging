@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import datetime
 import os
 import unittest
 from unittest import mock
@@ -14,6 +14,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
+from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
@@ -306,7 +307,7 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, "sample-name")
 
-            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]), "NXextry")
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]), "NXentry")
             self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["title"]), recon_name)
             self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["definition"]), "NXtomoproc")
 
@@ -319,8 +320,15 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["INSTRUMENT"]["SOURCE"]["probe"]),
                              "neutron")
 
-            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["SAMPLE"], "NXsample"))
-            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"], "sample description"))
+            self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["SAMPLE"]), "NXsample")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"]), "sample description")
+
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["program"]),
+                             "Mantid Imaging")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["version"]),
+                             CheckVersion().get_version())
+            self.assertIn(str(datetime.date.today()),
+                          _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
 
 if __name__ == '__main__':
