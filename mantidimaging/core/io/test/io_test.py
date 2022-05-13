@@ -30,6 +30,14 @@ def _nexus_dataset_to_string(nexus_dataset) -> str:
     return np.array(nexus_dataset).tostring().decode("utf-8")
 
 
+def test_rescale_negative_recon_data():
+
+    recon = th.generate_images()
+    recon.data -= np.min(recon.data) * 1.2
+
+    assert np.min(_rescale_recon_data(recon.data)) >= 0
+
+
 class IOTest(FileOutputtingTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -189,7 +197,7 @@ class IOTest(FileOutputtingTestCase):
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
             # test definition field
-            self.assertEqual(np.array(tomo_entry["definition"]).tostring().decode("utf-8"), "NXtomo")
+            self.assertEqual(_nexus_dataset_to_string(tomo_entry["definition"]), "NXtomo")
 
             # test instrument field
             self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]), "NXinstrument")
@@ -203,7 +211,7 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument/sample fields
             self.assertEqual(_decode_nexus_class(tomo_entry["sample"]), "NXsample")
-            self.assertEqual(np.array(tomo_entry["sample"]["name"]).tostring().decode("utf-8"), sample_name)
+            self.assertEqual(_nexus_dataset_to_string(tomo_entry["sample"]["name"]), sample_name)
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    sd.sample.projection_angles().value)
 
@@ -333,13 +341,6 @@ class IOTest(FileOutputtingTestCase):
 
             npt.assert_array_almost_equal(np.array(nexus_file[recon_name]["data"]["data"]),
                                           _rescale_recon_data(recon.data).astype("uint16"))
-
-    def test_scale_negative_recon_data(self):
-
-        recon = th.generate_images()
-        recon.data -= np.min(recon.data) * 1.2
-
-        assert np.min(_rescale_recon_data(recon.data)) >= 0
 
 
 if __name__ == '__main__':
