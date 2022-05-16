@@ -29,7 +29,7 @@ requirements:
     - cudatoolkit=10.2*
     - cupy=10.2.*
     - astra-toolbox=2.0.*
-    - requests=2.26.*
+    - requests=2.27.*
     - h5py=3.4.*
     - sarepy=2020.07
     - psutil=5.8.*
