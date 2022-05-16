@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import datetime
 import os
 from logging import getLogger
 from typing import List, Union, Optional, Dict, Callable
@@ -16,6 +16,7 @@ from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
 from ..utility.data_containers import Indices
 from ..utility.progress_reporting import Progress
+from ..utility.version_check import CheckVersion
 
 LOG = getLogger(__name__)
 
@@ -239,6 +240,51 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     data["rotation_angle"] = rotation_angle
     data["image_key"] = detector["image_key"]
 
+    for recon in dataset.recons:
+        _save_recon_to_nexus(nexus_file, recon)
+
+
+def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
+    """
+    Saves a recon to a NeXus file.
+    :param nexus_file: The NeXus file.
+    :param recon: The recon data.
+    """
+
+    recon_entry = nexus_file.create_group(recon.name)
+    _set_nx_class(recon_entry, "NXentry")
+
+    recon_entry.create_dataset("title", data=np.string_(recon.name))
+    recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+
+    instrument = recon_entry.create_group("INSTRUMENT")
+    _set_nx_class(instrument, "NXinstrument")
+
+    source = instrument.create_group("SOURCE")
+    _set_nx_class(source, "NXsource")
+
+    source.create_dataset("type", data=np.string_("Neutron source"))
+    source.create_dataset("name", data=np.string_("ISIS"))
+    source.create_dataset("probe", data=np.string_("neutron"))
+
+    sample = recon_entry.create_group("SAMPLE")
+    _set_nx_class(sample, "NXsample")
+    sample.create_dataset("name", data=np.string_("sample description"))
+
+    reconstruction = recon_entry.create_group("reconstruction")
+    _set_nx_class(reconstruction, "NXprocess")
+
+    reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
+    reconstruction.create_dataset("version", data=np.string_(CheckVersion().get_version()))
+    reconstruction.create_dataset("date", data=np.string_("T".join(str(datetime.datetime.now()).split())))
+    reconstruction.create_group("parameters")
+
+    data = recon_entry.create_group("data")
+    _set_nx_class(data, "NXdata")
+
+    data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
+    data["data"][:] = _rescale_recon_data(recon.data)
+
 
 def _set_nx_class(group: h5py.Group, class_name: str):
     """
@@ -247,6 +293,19 @@ def _set_nx_class(group: h5py.Group, class_name: str):
     :param class_name: The class name.
     """
     group.attrs["NX_class"] = np.string_(class_name)
+
+
+def _rescale_recon_data(data: np.ndarray) -> np.ndarray:
+    """
+    Rescales recon data so that it can be converted to uint.
+    :param data: The recon data.
+    :return: The rescaled recon data.
+    """
+    min_value = np.min(data)
+    if min_value < 0:
+        data -= min_value
+    data *= (np.iinfo("uint16").max / np.max(data))
+    return data
 
 
 def rescale_single_image(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:

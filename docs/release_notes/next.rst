@@ -15,6 +15,7 @@ New Features
 - #1399 : NeXus Saving OSError message
 - #1331 : Make MI Windows compatible
 - #1430 : Provide an Anaconda package that is compatible with Windows
+- #1398 : Save recons to NeXus file
 - #1444 : CIL PDHG non-negativity constraint
 
 Fixes
