@@ -4,6 +4,7 @@
 import json
 import os
 import subprocess
+import sys
 from logging import getLogger
 import requests
 from typing import Optional
@@ -95,7 +96,8 @@ class CheckVersion:
         detailed += f"Found version {self.get_conda_installed_version()}, "
         detailed += f"latest: {self.get_conda_available_version()}.\n"
         detailed += "To update your environment please copy and run the following command:\n"
-        detailed += f"source {os.environ['CONDA_EXE'].rsplit('/',1)[0]}/activate {os.environ['CONDA_PREFIX']} && "
+        if sys.platform == 'linux':
+            detailed += f"source {os.environ['CONDA_EXE'].rsplit('/',1)[0]}/activate {os.environ['CONDA_PREFIX']} && "
         detailed += f"{self._conda_exe} update -c mantid/label/{suffix} mantidimaging"
         return msg, detailed
 
