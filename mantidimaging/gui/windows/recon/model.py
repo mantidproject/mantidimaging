@@ -242,7 +242,7 @@ class ReconstructWindowModel(object):
                             If a list is passed, the COR will be retrieved for each slice.
         :param progress: Progress reporter
         """
-
+        print("auto_find_minimisation_sqsum:")
         # Ensure we have some sample data
         if self.images is None:
             return [0.0]
@@ -258,6 +258,9 @@ class ReconstructWindowModel(object):
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
         cors = []
         for idx, slice in enumerate(slices):
+            print(f"{idx=} {slice=}")
+            print(f"{self.images.data.shape=}")
+            print(f"{initial_cor}")
             cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")

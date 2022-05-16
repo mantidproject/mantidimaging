@@ -380,6 +380,9 @@ class ReconstructWindowPresenter(BasePresenter):
             initial_cor = self.view.rotation_centre
 
         def _completed_finding_cors(task: TaskWorkerThread):
+            print("_completed_finding_cors:")
+            print(f"{task.result=}")
+            print(f"{task.error=}")
             cors = task.result
             for slice_idx, cor in zip(slice_indices, cors):
                 self.view.add_cor_table_row(selected_row, slice_idx, cor)
