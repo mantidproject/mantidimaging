@@ -16,7 +16,7 @@ source:
 requirements:
   build:
     - python=3.9.*
-    - setuptools=58.*
+    - setuptools=62.*
   run:
     - python=3.9.*
     - pip
