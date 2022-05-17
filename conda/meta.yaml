@@ -16,23 +16,23 @@ source:
 requirements:
   build:
     - python=3.9.*
-    - setuptools=58.*
+    - setuptools=62.*
   run:
     - python=3.9.*
     - pip
-    - astropy=4.3.*
+    - astropy=5.0.*
     - scipy=1.7.*
-    - scikit-image=0.18.*
+    - scikit-image=0.19.*
     - numpy=1.20.*
     - algotom=1.0.*
     - tomopy=1.10.*
     - cudatoolkit=10.2*
     - cupy=10.2.*
     - astra-toolbox=2.0.*
-    - requests=2.26.*
-    - h5py=3.4.*
+    - requests=2.27.*
+    - h5py=3.6.*
     - sarepy=2020.07
-    - psutil=5.8.*
+    - psutil=5.9.*
     - cil=21.4.*
     - cil-astra=21.4.*
     - ccpi-regulariser=21.0.*
