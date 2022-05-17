@@ -30,7 +30,7 @@ requirements:
     - cupy=10.2.*
     - astra-toolbox=2.0.*
     - requests=2.27.*
-    - h5py=3.4.*
+    - h5py=3.6.*
     - sarepy=2020.07
     - psutil=5.8.*
     - cil=21.4.*
