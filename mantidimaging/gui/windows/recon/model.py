@@ -257,12 +257,21 @@ class ReconstructWindowModel(object):
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
         cors = []
+
         for idx, slice in enumerate(slices):
-            print(f"{idx=} {slice=}")
-            print(f"{self.images.data.shape=}")
-            print(f"{initial_cor=}")
+            print(f"{idx=} {slice=} {initial_cor=}")
+            print(f"before {self.images.data.shape=}")
             print(f"{self.images.data.min()=} {self.images.data.max()=} {self.images.data.mean()=}")
-            cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
+            print(f"{self.images.sinograms[slice,:4,:4]=}")
+            try:
+                print(reconstructor.find_cor)
+                cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
+            except ValueError:
+                print(f"after {self.images.data.shape=}")
+                print(f"{self.images.data.min()=} {self.images.data.max()=} {self.images.data.mean()=}")
+                print(f"{self.images.sinograms[slice,:4,:4]=}")
+                raise
+
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
