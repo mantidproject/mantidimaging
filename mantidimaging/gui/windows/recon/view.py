@@ -85,7 +85,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
-        if CudaChecker().cuda_is_present():
+        if False and CudaChecker().cuda_is_present():
             self.algorithmName.insertItem(0, "FBP_CUDA")
             self.algorithmName.insertItem(1, "SIRT_CUDA")
             self.algorithmName.insertItem(2, "CIL: PDHG-TV")
