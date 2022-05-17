@@ -260,7 +260,8 @@ class ReconstructWindowModel(object):
         for idx, slice in enumerate(slices):
             print(f"{idx=} {slice=}")
             print(f"{self.images.data.shape=}")
-            print(f"{initial_cor}")
+            print(f"{initial_cor=}")
+            print(f"{self.images.data.min()=} {self.images.data.max()=} {self.images.data.mean()=}")
             cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
