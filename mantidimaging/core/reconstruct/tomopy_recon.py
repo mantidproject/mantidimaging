@@ -19,7 +19,8 @@ tomopy = safe_import('tomopy')
 class TomopyRecon(BaseRecon):
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
-        sino = BaseRecon.prepare_sinogram(images.sinograms[slice_idx:slice_idx + 1], recon_params)
+        sino = np.maximum(images.sinograms[slice_idx:slice_idx + 1], 1e-6)
+        sino = BaseRecon.prepare_sinogram(sino, recon_params)
         return tomopy.find_center(sino,
                                   images.projection_angles(recon_params.max_projection_angle).value,
                                   ind=0,
