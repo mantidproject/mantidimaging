@@ -5,7 +5,7 @@ from functools import partial
 from typing import Any, Dict
 
 import numpy as np
-from numpy import float32, nanmax, nanmin, ndarray, uint16
+from numpy import nanmax, nanmin, ndarray
 from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
 from mantidimaging.core.data import ImageStack
@@ -28,8 +28,7 @@ class RescaleFilter(BaseFilter):
                     min_input: float = 0.0,
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
-                    progress=None,
-                    data_type=None) -> ImageStack:
+                    progress=None) -> ImageStack:
         np.clip(images.data, min_input, max_input, out=images.data)
         # offset - it removes any negative values so that they don't overflow when in uint16 range
         images.data -= nanmin(images.data)
@@ -37,32 +36,17 @@ class RescaleFilter(BaseFilter):
         # slope
         images.data *= (max_output / data_max)
 
-        if data_type is not None:
-            if data_type == uint16 and not images.dtype == uint16:
-                images.data = images.data.astype(uint16)
-            elif data_type == float32 and not images.dtype == float32:
-                images.data = images.data.astype(float32)
-
         return images
 
     @staticmethod
-    def filter_single_image(image: ndarray,
-                            min_input: float,
-                            max_input: float,
-                            max_output: float,
-                            data_type=float32) -> np.ndarray:
+    def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
         np.clip(image, min_input, max_input, out=image)
         image -= min_input
         data_max = nanmax(image)
 
         image *= (max_output / data_max)
 
-        if data_type == float32:
-            return image.astype(float32)
-        elif data_type == uint16:
-            return image.astype(uint16)
-        else:
-            raise ValueError("Only float32 and int16 data types are supported by single image rescale")
+        return image
 
     @staticmethod
     def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
