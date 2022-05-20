@@ -70,10 +70,10 @@ def test_scale_single_image():
 
     images.data[0:2] = np.arange(-1, 1, step=0.0002).reshape(100, 100)
 
-    scaled_image = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                     min_input=images.data[0].min(),
-                                                     max_input=images.data[0].max(),
-                                                     max_output=65535)
+    scaled_image = RescaleFilter.filter_array(copy(images.data[0]),
+                                              min_input=images.data[0].min(),
+                                              max_input=images.data[0].max(),
+                                              max_output=65535)
     assert scaled_image.min() == 0
     assert scaled_image.max() == 65535
 
@@ -81,7 +81,7 @@ def test_scale_single_image():
 def test_scale_single_image_bad_offset():
     images = th.generate_images((2, 100, 100))
     try:
-        RescaleFilter.filter_single_image(copy(images.data[0]), min_input=-5000, max_input=5000, max_output=65535)
+        RescaleFilter.filter_array(copy(images.data[0]), min_input=-5000, max_input=5000, max_output=65535)
     except ValueError:
         pass
     except Exception as e:

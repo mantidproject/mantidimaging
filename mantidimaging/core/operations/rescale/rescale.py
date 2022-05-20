@@ -30,11 +30,11 @@ class RescaleFilter(BaseFilter):
                     max_output: float = 256.0,
                     progress=None) -> ImageStack:
 
-        RescaleFilter.filter_single_image(images.data, min_input, max_input, max_output)
+        RescaleFilter.filter_array(images.data, min_input, max_input, max_output)
         return images
 
     @staticmethod
-    def filter_single_image(image: ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
+    def filter_array(image: ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
         np.clip(image, min_input, max_input, out=image)
         image -= min_input
         data_max = nanmax(image)

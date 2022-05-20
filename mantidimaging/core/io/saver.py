@@ -154,10 +154,10 @@ def image_save(images: ImageStack,
             for idx in range(num_images):
                 # Overwrite images with the copy that has been rescaled.
                 if pixel_depth == "int16":
-                    output_data = RescaleFilter.filter_single_image(np.copy(images.data[idx]),
-                                                                    min_input=min_value,
-                                                                    max_input=max_value,
-                                                                    max_output=INT16_SIZE - 1).astype(np.uint16)
+                    output_data = RescaleFilter.filter_array(np.copy(images.data[idx]),
+                                                             min_input=min_value,
+                                                             max_input=max_value,
+                                                             max_output=INT16_SIZE - 1).astype(np.uint16)
                     write_func(output_data, names[idx], overwrite_all, rescale_info)
                 else:
                     write_func(data[idx, :, :], names[idx], overwrite_all, rescale_info)
