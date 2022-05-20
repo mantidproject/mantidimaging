@@ -5,7 +5,6 @@ from functools import partial
 from typing import Any, Dict
 
 import numpy as np
-from numpy import nanmax, ndarray
 from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
 from mantidimaging.core.data import ImageStack
@@ -34,13 +33,8 @@ class RescaleFilter(BaseFilter):
         return images
 
     @staticmethod
-    def filter_array(image: ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
-        np.clip(image, min_input, max_input, out=image)
-        image -= min_input
-        data_max = nanmax(image)
-
-        image *= (max_output / data_max)
-
+    def filter_array(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
+        image[:] = np.interp(image, [min_input, max_input], [0, max_output])
         return image
 
     @staticmethod
