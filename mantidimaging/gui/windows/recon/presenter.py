@@ -380,10 +380,13 @@ class ReconstructWindowPresenter(BasePresenter):
             initial_cor = self.view.rotation_centre
 
         def _completed_finding_cors(task: TaskWorkerThread):
-            cors = task.result
-            for slice_idx, cor in zip(slice_indices, cors):
-                self.view.add_cor_table_row(selected_row, slice_idx, cor)
-            self.do_cor_fit()
+            if task.error is not None:
+                self.view.warn_user("Failure!", "Finding the COR failed.\n\n" f"Error: {str(task.error)}")
+            else:
+                cors = task.result
+                for slice_idx, cor in zip(slice_indices, cors):
+                    self.view.add_cor_table_row(selected_row, slice_idx, cor)
+                self.do_cor_fit()
             self.view.set_correlate_buttons_enabled(True)
 
         self.view.set_correlate_buttons_enabled(False)
