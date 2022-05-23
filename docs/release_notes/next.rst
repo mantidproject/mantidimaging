@@ -24,6 +24,7 @@ Fixes
 - #1405 : MedianFilter work inplace on ImageStack
 - #1395 : Delete file when NeXus saving fails
 - #1397 : Only use real NeXus projection angles
+- #1473 : Tomopy COR finder use -log
 
 Developer Changes
 -----------------
