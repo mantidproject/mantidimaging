@@ -164,7 +164,7 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def index_as_image_stack(self, index) -> 'ImageStack':
+    def slice_as_image_stack(self, index) -> 'ImageStack':
         return ImageStack(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
     @property

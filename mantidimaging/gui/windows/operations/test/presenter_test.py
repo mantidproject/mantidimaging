@@ -216,12 +216,12 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
 
         self.presenter.do_update_previews()
 
-        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.slice_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         apply_mock.assert_called_once()
 
@@ -230,13 +230,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = False
         self.view.lockScaleCheckBox.isChecked.return_value = False
         self.presenter.do_update_previews()
 
-        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.slice_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
@@ -250,7 +250,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                                                       update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
         images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
@@ -510,8 +510,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_image_idx = slice_idx = 14
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[-1 for _ in range(3)]
-                                                                                for _ in range(3)])
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([3, 3]) * -1
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_called_once_with(
@@ -520,8 +519,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_negative_values_preview_message(self):
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[1 for _ in range(3)]
-                                                                                for _ in range(3)])
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([3, 3])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()
