@@ -15,8 +15,7 @@ CHANNELS:=$(shell cat environment-dev.yml | sed -ne '/channels:/,/dependencies:/
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env
-	source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate build-env; conda install --yes conda-build anaconda-client conda-verify
-	source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate build-env; conda config --env $(CHANNELS)
+	conda info --base
 
 install-dev-requirements:
 	conda env create -f environment-dev.yml
