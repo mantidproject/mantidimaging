@@ -22,7 +22,11 @@ runs:
     shell: bash -l {0}
     run: |
       conda config --set always_yes yes --set changeps1 no
-      make install-build-requirements
+      conda create -n build-env
+      conda activate build-env
+      conda install --yes conda-build anaconda-client conda-verify
+      channels=$(cat environment-dev.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | sed 's/ - / --append channels /g' | tr -d '\n') ; conda config --env $channels
+
 
 #  - name: Build package
 #    shell: bash -l {0}
