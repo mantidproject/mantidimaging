@@ -4,7 +4,7 @@
 import math
 import numpy as np
 import pytest
-from numpy import testing as npt, int16, uint16, float32, finfo, copy
+from numpy import testing as npt, copy
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.rescale import RescaleFilter
@@ -65,45 +65,23 @@ def test_execute_wrapper_with_preset(type: str, expected_max: float):
     assert partial.keywords['max_output'] == expected_max
 
 
-@pytest.mark.parametrize('type, max_value', [(uint16, 65535), (float32, finfo(float32).max)])
-def test_type_changes_to_given_type(type, max_value):
-    images = th.generate_images((10, 100, 100))
-
-    expected_min_input = 0
-    images = RescaleFilter.filter_func(images,
-                                       min_input=expected_min_input,
-                                       max_input=images.data.max(),
-                                       max_output=max_value,
-                                       data_type=type)
-
-    npt.assert_equal(images.dtype, type)
-
-
-@pytest.mark.parametrize('type', [uint16, float32])
-def test_scale_single_image(type):
+def test_scale_single_image():
     images = th.generate_images((2, 100, 100))
 
     images.data[0:2] = np.arange(-1, 1, step=0.0002).reshape(100, 100)
 
-    scaled_image = RescaleFilter.filter_single_image(copy(images.data[0]),
-                                                     min_input=images.data[0].min(),
-                                                     max_input=images.data[0].max(),
-                                                     max_output=65535,
-                                                     data_type=type)
+    scaled_image = RescaleFilter.filter_array(copy(images.data[0]),
+                                              min_input=images.data[0].min(),
+                                              max_input=images.data[0].max(),
+                                              max_output=65535)
     assert scaled_image.min() == 0
     assert scaled_image.max() == 65535
-    assert scaled_image.dtype != int16, \
-        "Ensure not using signed int16 - this will make all values over 32768 overflow to negative"
 
 
 def test_scale_single_image_bad_offset():
     images = th.generate_images((2, 100, 100))
     try:
-        RescaleFilter.filter_single_image(copy(images.data[0]),
-                                          min_input=-5000,
-                                          max_input=5000,
-                                          max_output=65535,
-                                          data_type=uint16)
+        RescaleFilter.filter_array(copy(images.data[0]), min_input=-5000, max_input=5000, max_output=65535)
     except ValueError:
         pass
     except Exception as e:

@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import numpy as np
+from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -18,28 +19,33 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.imaging.recon.close()
         super().tearDown()
 
-    def test_reconstruction_window_opens(self):
+    def _show_recon_window(self):
         self.imaging.show_recon_window()
+        QTest.qWaitForWindowExposed(self.imaging.recon)
+
+    def test_reconstruction_window_opens(self):
+        self._show_recon_window()
 
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_opens_with_data(self):
         self._load_data_set()
 
-        self.imaging.show_recon_window()
+        self._show_recon_window()
+
         wait_until(lambda: len(self.imaging.recon.presenter.async_tracker) == 0)
 
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_cor_and_tilt_tab(self):
-        self.imaging.show_recon_window()
+        self._show_recon_window()
 
         self.imaging.recon.tabWidget.setCurrentWidget(self.imaging.recon.resultsTab)
 
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_reconstruct_tab(self):
-        self.imaging.show_recon_window()
+        self._show_recon_window()
 
         self.imaging.recon.tabWidget.setCurrentWidget(self.imaging.recon.reconTab)
 
@@ -57,13 +63,13 @@ class ReconstructionWindowTest(BaseEyesTest):
         images.data[0:, 3:4] = -1
         images.data[0:, 0:1] = np.nan
 
-        self.imaging.show_recon_window()
+        self._show_recon_window()
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_colour_palette_dialog(self):
         self._load_data_set()
 
-        self.imaging.show_recon_window()
+        self._show_recon_window()
         self.imaging.recon.image_view.imageview_recon.setImage(np.zeros((512, 512)))
         self.imaging.recon.changeColourPaletteButton.click()
 
