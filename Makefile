@@ -2,7 +2,7 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 #Needed because each command is run in a new shell
 SHELL=/bin/bash
-CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
+CONDA_ACTIVATE=source $$CONDA/etc/profile.d/conda.sh ; conda activate ; conda activate
 
 install-conda-env:
 	conda env create -f environment.yml
