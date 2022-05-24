@@ -2,7 +2,7 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 #Needed because each command is run in a new shell
 SHELL=/bin/bash
-CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
+CONDA_ACTIVATE=source $$CONDA_PREFIX/etc/profile.d/conda.sh ; conda activate ; conda activate
 
 install-conda-env:
 	conda env create -f environment.yml
@@ -15,7 +15,7 @@ CHANNELS:=$(shell cat environment-dev.yml | sed -ne '/channels:/,/dependencies:/
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env
-	source "C:\Miniconda3/etc/profile.d/conda.sh" ; conda activate ; conda activate build-env; conda env list
+	$(CONDA_ACTIVATE) build-env; conda env list
 
 install-dev-requirements:
 	conda env create -f environment-dev.yml
