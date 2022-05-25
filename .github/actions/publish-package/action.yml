@@ -24,13 +24,12 @@ runs:
       conda config --set always_yes yes --set changeps1 no
       make install-build-requirements
 
-
-#  - name: Build package
-#    shell: bash -l {0}
-#    run: |
-#      conda activate build-env
-#      conda config --set anaconda_upload yes
-#      # if the upload silently fails - check the token expiration. Conda can fail silently!
-#      conda build --user ${{ inputs.repository }} --token ${{ inputs.token }} --label ${{ inputs.label }} $GITHUB_WORKSPACE/conda |& tee upload.log
-#      # Check that upload completed
-#      grep "Upload complete" upload.log
+  - name: Build package
+    shell: bash -l {0}
+    run: |
+      conda activate build-env
+      conda config --set anaconda_upload yes
+      # if the upload silently fails - check the token expiration. Conda can fail silently!
+      conda build --user ${{ inputs.repository }} --token ${{ inputs.token }} --label ${{ inputs.label }} $GITHUB_WORKSPACE/conda |& tee upload.log
+      # Check that upload completed
+      grep "Upload complete" upload.log
