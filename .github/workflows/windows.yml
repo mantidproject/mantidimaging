@@ -121,3 +121,11 @@ jobs:
         run: |
           python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests --durations=10
         timeout-minutes: 15
+
+      # Label as 'windows-build-test' for testing purposes. To use, remove 'false &&' from the 'if' condition and change label to 'unstable' after testing
+      - name: publish package
+        if: false && github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
+        uses: ./.github/actions/publish-package
+        with:
+          label: windows-build-test
+          token: ${{ secrets.ANACONDA_API_TOKEN }}
