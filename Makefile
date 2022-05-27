@@ -13,6 +13,7 @@ install-run-requirements:
 CHANNELS:=$(shell cat environment-dev.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 install-build-requirements:
+	# intended for local use
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env
 	$(CONDA_ACTIVATE) build-env ; conda install --yes conda-build anaconda-client conda-verify
