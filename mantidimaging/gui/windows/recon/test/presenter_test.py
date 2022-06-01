@@ -166,7 +166,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter._on_preview_reconstruct_slice_done(task_mock)
 
-        self.view.update_recon_preview.assert_called_once_with(image_mock)
+        self.view.update_recon_preview.assert_called_once_with(image_mock, False)
 
     def test_do_preview_reconstruct_slice_raises(self):
         task_mock = mock.Mock(error=ValueError())

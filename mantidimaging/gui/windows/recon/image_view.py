@@ -10,6 +10,7 @@ from pyqtgraph import GraphicsLayoutWidget, InfiniteLine
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
+from mantidimaging.gui.widgets.line_profile_plot.view import LineProfilePlot
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 
@@ -33,10 +34,12 @@ class ReconImagesView(GraphicsLayoutWidget):
                                        movable=True)
         self.imageview_projection.viewbox.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
+        self.recon_line_profile = LineProfilePlot(self.imageview_recon)
 
         self.addItem(self.imageview_projection, 0, 0)
-        self.addItem(self.imageview_recon, 0, 1, rowspan=2)
+        self.addItem(self.imageview_recon, 0, 1)
         self.addItem(self.imageview_sinogram, 1, 0)
+        self.addItem(self.recon_line_profile, 1, 1)
 
         self.imageview_projection.image_item.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
@@ -70,10 +73,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_sinogram.histogram.imageChanged(autoLevel=True, autoRange=True)
         set_histogram_log_scale(self.imageview_sinogram.histogram)
 
-    def update_recon(self, image_data):
+    def update_recon(self, image_data, reset_roi: bool = False):
         self.imageview_recon.clear()
         self.imageview_recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.imageview_recon.histogram)
+        if reset_roi:
+            self.recon_line_profile.reset_roi_line()
+        self.recon_line_profile.update_plot()
 
     def update_recon_hist(self):
         self.imageview_recon.histogram.imageChanged(autoLevel=True, autoRange=True)

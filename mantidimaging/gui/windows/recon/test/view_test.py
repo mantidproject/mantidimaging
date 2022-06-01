@@ -155,14 +155,14 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.update_recon_hist_needed = False
 
         self.view.update_recon_preview(image_data)
-        self.image_view.update_recon.assert_called_once_with(image_data)
+        self.image_view.update_recon.assert_called_once_with(image_data, False)
 
     def test_update_recon_preview_and_hist(self):
         image_data = mock.Mock()
         self.view.update_recon_hist_needed = True
 
         self.view.update_recon_preview(image_data)
-        self.image_view.update_recon.assert_called_once_with(image_data)
+        self.image_view.update_recon.assert_called_once_with(image_data, False)
         self.image_view.update_recon_hist.assert_called_once_with()
 
     def test_reset_recon_and_sino_previews(self):

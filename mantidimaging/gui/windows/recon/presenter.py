@@ -3,6 +3,7 @@
 
 import traceback
 from enum import Enum, auto
+from functools import partial
 from logging import getLogger
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
 
@@ -138,7 +139,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if images is None:
             self.view.show_status_message("")
             return
-        self.do_preview_reconstruct_slice()
+        self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
 
     def set_preview_projection_idx(self, idx):
@@ -226,7 +227,11 @@ class ReconstructWindowPresenter(BasePresenter):
             self.model.preview_slice_idx = slice_idx
         return slice_idx
 
-    def do_preview_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None, force_update: bool = False):
+    def do_preview_reconstruct_slice(self,
+                                     cor=None,
+                                     slice_idx: Optional[int] = None,
+                                     force_update: bool = False,
+                                     reset_roi: bool = False):
         if self.model.images is None:
             self.view.reset_recon_and_sino_previews()
             return
@@ -234,9 +239,10 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self._get_slice_index(slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         if self.view.is_auto_update_preview() or force_update:
-            self._get_reconstruct_slice(cor, slice_idx, self._on_preview_reconstruct_slice_done)
+            on_preview_complete = partial(self._on_preview_reconstruct_slice_done, reset_roi=reset_roi)
+            self._get_reconstruct_slice(cor, slice_idx, on_preview_complete)
 
-    def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread):
+    def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread, reset_roi: bool = False):
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
@@ -245,7 +251,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if images is not None:
             # We copy the preview data out of shared memory when passing it into update_recon_preview so that it
             # will still be available after this function ends
-            self.view.update_recon_preview(np.copy(images.data[0]))
+            self.view.update_recon_preview(np.copy(images.data[0]), reset_roi)
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
         slice_idx = self._get_slice_index(slice_idx)
