@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Tuple, Optional
 
 from PyQt5.QtCore import QRect
 from pyqtgraph import GraphicsLayout, LineSegmentROI
@@ -16,7 +16,7 @@ class LineProfilePlot(GraphicsLayout):
 
         self._line_profile = self.addPlot().plot()
         self._image_view = image_view
-        self._roi_line = None
+        self._roi_line: Optional[MILineSegmentROI] = None
         self._roi_initial_state = None
 
         self.update_plot()
@@ -30,13 +30,13 @@ class LineProfilePlot(GraphicsLayout):
                                                       axes=(1, 0))
             self._line_profile.setData(roi_slice)
 
-    def reset_roi_line(self, force_reset: bool = False):
+    def reset_roi_line(self, force_reset: bool = False) -> None:
         if self._roi_initial_state is not None and (force_reset or self._roi_line_needs_resetting()):
             self._roi_initial_state['points'] = self._roi_initial_pos()
             self._roi_line.setState(self._roi_initial_state)
             self._roi_line.maxBounds = self._roi_bounds()
 
-    def _try_add_roi_to_image_view(self):
+    def _try_add_roi_to_image_view(self) -> bool:
         initial_position = self._roi_initial_pos()
         if initial_position is None:
             return False
@@ -47,25 +47,25 @@ class LineProfilePlot(GraphicsLayout):
         self._roi_initial_state = self._roi_line.saveState()
         return True
 
-    def _add_roi_reset_menu_option(self):
+    def _add_roi_reset_menu_option(self) -> None:
         self._reset_roi = self._image_view.viewbox.menu.addAction("Reset ROI")
         self._image_view.viewbox.menu.insertSeparator(self._reset_roi)
         self._reset_roi.triggered.connect(lambda: self.reset_roi_line(True))
 
-    def _roi_line_needs_resetting(self):
+    def _roi_line_needs_resetting(self) -> bool:
         image_width = self._image_view.image_item.width()
-        if image_width is None:
+        if image_width is None or self._roi_line is None:
             return False
 
         roi_bound_width = self._roi_line.maxBounds.width()
         roi_bound_height = self._roi_line.maxBounds.height()
         return roi_bound_width != image_width or roi_bound_height != self._image_view.image_item.height()
 
-    def _roi_initial_pos(self):
+    def _roi_initial_pos(self) -> Optional[list[Tuple[int, int]]]:
         image_width = self._image_view.image_item.width()
         return [(0, 0), (image_width, 0)] if image_width is not None else None
 
-    def _roi_bounds(self):
+    def _roi_bounds(self) -> QRect:
         return QRect(0, 0, self._image_view.image_item.width(), self._image_view.image_item.height())
 
 
@@ -73,7 +73,7 @@ class MILineSegmentROI(LineSegmentROI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def checkPointMove(self, handle, pos, modifiers):
+    def checkPointMove(self, handle, pos, modifiers) -> bool:
         if self.maxBounds is None:
             return True
 
