@@ -48,7 +48,7 @@ class LineProfilePlot(GraphicsLayout):
         return True
 
     def _add_roi_reset_menu_option(self) -> None:
-        self._reset_roi = self._image_view.viewbox.menu.addAction("Reset ROI")
+        self._reset_roi = self._image_view.viewbox.menu.addAction("Reset Profile Line")
         self._image_view.viewbox.menu.insertSeparator(self._reset_roi)
         self._reset_roi.triggered.connect(lambda: self.reset_roi_line(True))
 
