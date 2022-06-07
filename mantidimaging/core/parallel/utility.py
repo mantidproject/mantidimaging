@@ -6,7 +6,7 @@ from functools import partial
 from logging import getLogger
 from multiprocessing import shared_memory
 from multiprocessing.shared_memory import SharedMemory
-from typing import Tuple, TYPE_CHECKING, Optional
+from typing import Tuple, TYPE_CHECKING, Optional, Callable
 
 import numpy as np
 
@@ -118,6 +118,26 @@ def execute_impl(img_num: int, partial_func: partial, is_shared_data: bool, prog
         LOG.info("Running synchronously on 1 core")
         for ind in indices_list:
             partial_func(ind)
+            progress.update(1, msg)
+    progress.mark_complete()
+
+
+def run_compute_func_impl(worker_func: Callable[[int], None],
+                          num_operations: int,
+                          is_shared_data: bool,
+                          progress=None,
+                          msg: str = ""):
+    task_name = f"{msg}"
+    progress = Progress.ensure_instance(progress, num_steps=num_operations, task_name=task_name)
+    indices_list = range(num_operations)
+    if multiprocessing_necessary(num_operations, is_shared_data) and pm.pool:
+        LOG.info(f"Running async on {pm.cores} cores")
+        for _ in pm.pool.imap(worker_func, indices_list, chunksize=calculate_chunksize(pm.cores)):
+            progress.update(1, msg)
+    else:
+        LOG.info("Running synchronously on 1 core")
+        for ind in indices_list:
+            worker_func(ind)
             progress.update(1, msg)
     progress.mark_complete()
 
