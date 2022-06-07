@@ -2,10 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
+from typing import List, Dict, Any
 from mantidimaging.core.data.imagestack import ImageStack
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from algotom.prep.removal import remove_all_stripe
+from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -31,9 +33,14 @@ class RemoveAllStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, snr=3, la_size=61, sm_size=21, dim=1, progress=None):
-        f = ps.create_partial(remove_all_stripe, ps.return_to_self, snr=snr, la_size=la_size, sm_size=sm_size, dim=dim)
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
+        params = {"snr": snr, "la_size": la_size, "sm_size": sm_size, "dim": dim}
+        ps.run_compute_func(RemoveAllStripesFilter.compute_function, images.data.shape[0], [images.shared_array],
+                            params, progress)
         return images
+
+    @staticmethod
+    def compute_function(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][index] = remove_all_stripe(arrays[0][index], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):
