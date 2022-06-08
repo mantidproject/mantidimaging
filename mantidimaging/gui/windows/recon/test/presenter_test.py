@@ -72,6 +72,20 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+    @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack')
+    def test_set_stack_uuid_no_image_data(self, mock_is_current_stack, mock_start_async_task_view):
+        self.presenter.model._images = None
+        self.view.get_stack.return_value = None
+        mock_is_current_stack.return_value = False
+
+        self.presenter.set_stack_uuid(None)
+        self.view.reset_recon_and_sino_previews.assert_called_once()
+        self.view.reset_projection_preview.assert_called_once()
+        mock_start_async_task_view.assert_not_called()
+        self.view.update_sinogram.assert_not_called()
+        self.view.update_projection.assert_not_called()
+
+    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
         self.presenter.model._images = None
         # first-time selecting this data after reset
@@ -97,6 +111,12 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_projection.assert_called_once()
         self.view.update_sinogram.assert_called_once()
 
+    def test_do_update_projection_no_image_data(self):
+        self.presenter.model._images = None
+        self.presenter.do_update_projection()
+        self.view.reset_projection_preview.assert_called_once()
+        self.view.update_projection.assert_not_called()
+
     @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor', return_value=ScalarCoR(15))
     def test_do_add_manual_cor_table_row(self, mock_get_me_a_cor):
         self.presenter.model.selected_row = 0
@@ -121,6 +141,12 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
         mock_start_async_task_view.assert_called_once()
         self.view.recon_params.assert_called_once()
+
+    def test_do_preview_reconstruct_slice_no_image_data(self):
+        self.presenter.model._images = None
+        self.presenter.do_preview_reconstruct_slice()
+        self.view.reset_recon_and_sino_previews.assert_called_once()
+        self.view.update_sinogram.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._get_reconstruct_slice')
     def test_do_preview_reconstruct_slice_no_auto_update(self, mock_get_reconstruct_slice):
