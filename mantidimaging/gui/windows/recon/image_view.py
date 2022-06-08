@@ -89,6 +89,12 @@ class ReconImagesView(GraphicsLayoutWidget):
     def clear_recon(self):
         self.imageview_recon.clear()
 
+    def clear_sinogram(self):
+        self.imageview_sinogram.clear()
+
+    def clear_projection(self):
+        self.imageview_projection.clear()
+
     def reset_slice_and_tilt(self, slice_index):
         self.slice_line.setPos(slice_index)
         self.hide_tilt()
