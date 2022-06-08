@@ -84,6 +84,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_start_async_task_view.assert_not_called()
         self.view.update_sinogram.assert_not_called()
         self.view.update_projection.assert_not_called()
+        self.view.show_status_message.assert_called_once_with("")
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):

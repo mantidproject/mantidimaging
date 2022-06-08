@@ -136,6 +136,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
         if images is None:
+            self.view.show_status_message("")
             return
         self.do_preview_reconstruct_slice()
         self._do_nan_zero_negative_check()
