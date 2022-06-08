@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from PyQt5.QtWidgets import QApplication
 from unittest import mock
-import pytest
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
@@ -25,19 +24,18 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.show_filters_window()
         self.check_target(widget=self.imaging.filters)
 
-    @pytest.mark.xfail
     def test_operation_window_after_data_was_processed(self):
         self._load_data_set(set_180=True)
 
         self.imaging.show_filters_window()
         QApplication.processEvents()
-        self.imaging.filters.ask_confirmation = mock.MagicMock(return_value=True)
+        self.imaging.filters.ask_confirmation = mock.MagicMock()
         self.imaging.filters.safeApply.setChecked(False)
         self.imaging.filters.applyButton.click()
         QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)
-        self.imaging.filters.ask_confirmation.assert_called_once()
+        self.imaging.filters.ask_confirmation.assert_not_called()
 
     def test_operations_crop_coordinates_parameters(self):
         self._load_data_set()
