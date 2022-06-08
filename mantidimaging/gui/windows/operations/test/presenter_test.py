@@ -544,3 +544,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_is_a_proj180deg_returns_false(self):
         self.main_window.get_all_180_projections.return_value = [generate_images() for _ in range(5)]
         assert not self.presenter.is_a_proj180deg(generate_images())
+
+    def test_do_update_previews_no_image_data(self):
+        self.presenter.do_update_previews()
+        self.view.clear_previews.assert_called_once()
+        self.view.clear_previews.assert_called_with()
