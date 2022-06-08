@@ -12,7 +12,7 @@ on:
   release:
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
 
     steps:
@@ -83,28 +83,53 @@ jobs:
           mamba env list
           python --version; conda list ; pip list
 
+  yapf:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Yapf
         shell: bash -l {0}
         run: |
           yapf --parallel --diff --recursive .
 
+  flake8:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Flake8
         shell: bash -l {0}
         run: |
           python -m flake8
 
+  mypy:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: mypy
         shell: bash -l {0}
         # COMPAT: applitools has some bad signatures, so use --no-site-packages
         run: |
           mypy --ignore-missing-imports --no-site-packages mantidimaging
 
+  pytest:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: pytest
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
 
+  setup_test_data:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Get test data
         shell: bash -l {0}
         run: |
@@ -113,12 +138,22 @@ jobs:
           mv ~/mantidimaging-data-small ~/mantidimaging-data
         timeout-minutes: 5
 
+  gui_system_tests:
+    needs: setup_test_data
+    runs-on: ubuntu-latest
+
+    steps:
       - name: GUI Tests System
         shell: bash -l {0}
         run: |
           xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10
         timeout-minutes: 30
 
+  eyes_tests:
+    needs: setup_test_data
+    runs-on: ubuntu-latest
+
+    steps:
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
         shell: bash -l {0}
@@ -130,6 +165,11 @@ jobs:
           xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests --durations=10
         timeout-minutes: 15
 
+  post_tests:
+    needs: [yapf, flake8, mypy, pytest, gui_system_tests, eyes_tests]
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Coveralls
         shell: bash -l {0}
         env:
