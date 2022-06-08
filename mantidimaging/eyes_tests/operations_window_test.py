@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from PyQt5.QtWidgets import QApplication
 from unittest import mock
+import pytest
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
@@ -24,6 +25,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.show_filters_window()
         self.check_target(widget=self.imaging.filters)
 
+    @pytest.mark.xfail
     def test_operation_window_after_data_was_processed(self):
         self._load_data_set(set_180=True)
 

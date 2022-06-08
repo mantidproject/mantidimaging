@@ -6,7 +6,6 @@ import numpy as np
 import numpy.testing as npt
 from functools import partial
 from typing import List
-import pytest
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
@@ -546,7 +545,6 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.main_window.get_all_180_projections.return_value = [generate_images() for _ in range(5)]
         assert not self.presenter.is_a_proj180deg(generate_images())
 
-    @pytest.mark.xfail
     def test_is_a_proj180deg_returns_false_same_data(self):
         "Check we don't get true when the stack has the same data as 180"
         stack1 = generate_images(seed=1)
