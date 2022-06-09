@@ -245,7 +245,7 @@ class FiltersWindowPresenter(BasePresenter):
         return stack_choice.use_new_data
 
     def is_a_proj180deg(self, stack_to_check: ImageStack):
-        return stack_to_check in self.main_window.get_all_180_projections()
+        return any(stack_to_check is stack for stack in self.main_window.get_all_180_projections())
 
     def _post_filter(self, updated_stacks: List[ImageStack], task):
         try:
