@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Optional
 
 from PyQt5.QtCore import QRect
 from pyqtgraph import GraphicsLayout, LineSegmentROI
@@ -18,7 +18,7 @@ class LineProfilePlot(GraphicsLayout):
 
         self._plot = self.addPlot()
         self._line_profile = self._plot.plot()
-        self._roi_line = ImageViewLineROI(image_view)
+        self._roi_line = ImageViewLineROI(image_view, reset_menu_name="Reset Profile Line")
         self._roi_line.sigRegionChanged.connect(self.update)
 
     def update(self) -> None:
@@ -42,11 +42,11 @@ class LineProfilePlot(GraphicsLayout):
 
 
 class ImageViewLineROI(LineSegmentROI):
-    def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView']):
+    def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView'], reset_menu_name: Optional[str] = None):
         super().__init__(positions=[(0, 0), (0, 0)], pen='r')
 
         self._image_view = image_view
-        self._add_reset_menu_option()
+        self._add_reset_menu_option(reset_menu_name)
         self._initial_state = self.saveState()
         self._roi_line_is_visible = False
 
@@ -98,7 +98,8 @@ class ImageViewLineROI(LineSegmentROI):
         self._image_view.viewbox.addItem(self)
         self._roi_line_is_visible = True
 
-    def _add_reset_menu_option(self) -> None:
-        self._reset_option = self._image_view.viewbox.menu.addAction("Reset Profile Line")
+    def _add_reset_menu_option(self, reset_menu_name: Optional[str] = None) -> None:
+        menu_name = reset_menu_name if reset_menu_name is not None else "Reset ROI line"
+        self._reset_option = self._image_view.viewbox.menu.addAction(menu_name)
         self._image_view.viewbox.menu.insertSeparator(self._reset_option)
         self._reset_option.triggered.connect(lambda: self.reset())
