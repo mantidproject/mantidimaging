@@ -304,6 +304,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.image_view.clear_recon()
         self.image_view.clear_sinogram()
 
+    def reset_recon_line_profile(self):
+        self.image_view.clear_recon_line_profile()
+
     def reset_projection_preview(self):
         self.image_view.clear_projection()
 

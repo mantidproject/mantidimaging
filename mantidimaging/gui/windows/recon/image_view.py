@@ -78,8 +78,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.imageview_recon.histogram)
         if reset_roi:
-            self.recon_line_profile.reset_roi_line()
-        self.recon_line_profile.update_plot()
+            self.recon_line_profile.reset()
+        else:
+            self.recon_line_profile.update()
 
     def update_recon_hist(self):
         self.imageview_recon.histogram.imageChanged(autoLevel=True, autoRange=True)
@@ -94,6 +95,9 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def clear_recon(self):
         self.imageview_recon.clear()
+
+    def clear_recon_line_profile(self):
+        self.recon_line_profile.clear_plot()
 
     def clear_sinogram(self):
         self.imageview_sinogram.clear()

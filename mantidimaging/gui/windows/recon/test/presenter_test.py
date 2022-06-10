@@ -84,6 +84,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_start_async_task_view.assert_not_called()
         self.view.update_sinogram.assert_not_called()
         self.view.update_projection.assert_not_called()
+        self.view.reset_recon_line_profile.assert_called_once()
         self.view.show_status_message.assert_called_once_with("")
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
