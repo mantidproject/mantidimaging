@@ -79,6 +79,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     def clear(self):
         self.im.clear()
         self.set_auto_color_enabled(False)
+        self.clear_overlays()
 
     def setImage(self, *args, **kwargs):
         self.im.setImage(*args, **kwargs)

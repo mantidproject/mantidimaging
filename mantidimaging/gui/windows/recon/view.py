@@ -296,12 +296,16 @@ class ReconstructWindowView(BaseMainWindowView):
             self.image_view.update_recon_hist()
             self.update_recon_hist_needed = False
 
-    def reset_image_recon_preview(self):
+    def reset_recon_and_sino_previews(self):
         """
-        Resets the recon preview image, forcing a complete redraw next time it
-        is updated.
+        Resets the recon and sinogram preview images, forcing a complete redraw next time they
+        are updated.
         """
         self.image_view.clear_recon()
+        self.image_view.clear_sinogram()
+
+    def reset_projection_preview(self):
+        self.image_view.clear_projection()
 
     def reset_slice_and_tilt(self, slice_index):
         self.image_view.reset_slice_and_tilt(slice_index)

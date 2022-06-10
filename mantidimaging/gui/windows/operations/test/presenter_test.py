@@ -554,3 +554,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.assertEqual(stack1, proj180)
         self.assertIsNot(stack1, proj180)
         self.assertFalse(self.presenter.is_a_proj180deg(stack1))
+
+    def test_do_update_previews_no_image_data(self):
+        self.presenter.do_update_previews()
+        self.view.clear_previews.assert_called_once()
+        self.view.clear_previews.assert_called_with()

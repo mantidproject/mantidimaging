@@ -43,9 +43,13 @@ class BadDataCheck:
         self.overlay.setZValue(11)
         self.overlay.setLevels([0, 1])
 
-    def clear(self):
+    def remove(self):
         self.overlay.getViewBox().removeItem(self.indicator)
         self.overlay.getViewBox().removeItem(self.overlay)
+        self.overlay.clear()
+
+    def clear(self):
+        self.indicator.setVisible(False)
         self.overlay.clear()
 
 
@@ -101,7 +105,7 @@ class BadDataOverlay:
 
     def disable_check(self, name: str):
         if name in self.enabled_checks:
-            self.enabled_checks[name].clear()
+            self.enabled_checks[name].remove()
             self.enabled_checks.pop(name, None)
 
     def _get_current_slice(self) -> Optional[np.ndarray]:
@@ -113,3 +117,7 @@ class BadDataOverlay:
         if current_slice is not None:
             for test in self.enabled_checks.values():
                 test.do_check(current_slice)
+
+    def clear_overlays(self):
+        for check in self.enabled_checks.values():
+            check.clear()

@@ -128,7 +128,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.model.is_current_stack(uuid):
             return
 
-        self.view.reset_image_recon_preview()
+        self.view.reset_recon_and_sino_previews()
         self.view.clear_cor_table()
         self.model.initial_select_data(images)
         self.view.rotation_centre = self.model.last_cor.value
@@ -136,6 +136,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
         if images is None:
+            self.view.show_status_message("")
             return
         self.do_preview_reconstruct_slice()
         self._do_nan_zero_negative_check()
@@ -160,9 +161,11 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_update_projection(self):
         images = self.model.images
-        if images is not None:
-            img_data = images.projection(self.model.preview_projection_idx)
-            self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
+        if images is None:
+            self.view.reset_projection_preview()
+            return
+        img_data = images.projection(self.model.preview_projection_idx)
+        self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
     def handle_stack_changed(self):
         if self.view.isVisible():
@@ -225,6 +228,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_preview_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None, force_update: bool = False):
         if self.model.images is None:
+            self.view.reset_recon_and_sino_previews()
             return
 
         slice_idx = self._get_slice_index(slice_idx)

@@ -306,60 +306,63 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self):
+        if self.stack is None:
+            self.view.clear_previews()
+            return
+
         self.view.clear_previews(clear_before=False)
-        if self.stack is not None:
-            lock_scale = self.view.lockScaleCheckBox.isChecked()
-            if lock_scale:
-                self.view.previews.record_histogram_regions()
+        lock_scale = self.view.lockScaleCheckBox.isChecked()
+        if lock_scale:
+            self.view.previews.record_histogram_regions()
 
-            subset: ImageStack = self.stack.index_as_image_stack(self.model.preview_image_idx)
-            before_image = np.copy(subset.data[0])
+        subset: ImageStack = self.stack.index_as_image_stack(self.model.preview_image_idx)
+        before_image = np.copy(subset.data[0])
 
-            try:
-                if self.model.filter_widget_kwargs:
-                    self.model.apply_to_images(subset)
-            except Exception as e:
-                msg = f"Error applying filter for preview: {e}"
-                self.show_error(msg, traceback.format_exc())
+        try:
+            if self.model.filter_widget_kwargs:
+                self.model.apply_to_images(subset)
+        except Exception as e:
+            msg = f"Error applying filter for preview: {e}"
+            self.show_error(msg, traceback.format_exc())
 
-                # Can't continue be need the before image drawn
-                self._update_preview_image(before_image, self.view.preview_image_before)
-                return
-
-            # Update image after first in order to prevent wrong histogram ranges being shared
-
-            # If the filter function has put the results into shared memory then we must copy them back out
-            # so that they will continue to be available when this function ends
-            filtered_image_data = np.copy(subset.data[0]) if subset.uses_shared_memory else subset.data[0]
-
-            if np.any(filtered_image_data < 0):
-                self._show_preview_negative_values_error(self.model.preview_image_idx)
-
-            self._update_preview_image(filtered_image_data, self.view.preview_image_after)
-
-            # Update image before
+            # Can't continue be need the before image drawn
             self._update_preview_image(before_image, self.view.preview_image_before)
-            self.view.previews.update_histogram_data()
+            return
 
-            if filtered_image_data.shape == before_image.shape:
-                diff = np.subtract(filtered_image_data, before_image)
-                if self.view.overlayDifference.isChecked():
-                    nan_change = _find_nan_change(before_image, filtered_image_data)
-                    self.view.previews.add_difference_overlay(diff, nan_change)
-                else:
-                    self.view.previews.hide_difference_overlay()
-                if self.view.invertDifference.isChecked():
-                    diff = np.negative(diff, out=diff)
+        # Update image after first in order to prevent wrong histogram ranges being shared
 
-                self._update_preview_image(diff, self.view.preview_image_difference)
+        # If the filter function has put the results into shared memory then we must copy them back out
+        # so that they will continue to be available when this function ends
+        filtered_image_data = np.copy(subset.data[0]) if subset.uses_shared_memory else subset.data[0]
 
-            # Ensure all of it is visible if the lock zoom isn't checked
-            if not self.view.lockZoomCheckBox.isChecked():
-                self.view.previews.auto_range()
+        if np.any(filtered_image_data < 0):
+            self._show_preview_negative_values_error(self.model.preview_image_idx)
 
-            if lock_scale:
-                self.view.previews.restore_histogram_regions()
-            self.view.previews.set_histogram_log_scale()
+        self._update_preview_image(filtered_image_data, self.view.preview_image_after)
+
+        # Update image before
+        self._update_preview_image(before_image, self.view.preview_image_before)
+        self.view.previews.update_histogram_data()
+
+        if filtered_image_data.shape == before_image.shape:
+            diff = np.subtract(filtered_image_data, before_image)
+            if self.view.overlayDifference.isChecked():
+                nan_change = _find_nan_change(before_image, filtered_image_data)
+                self.view.previews.add_difference_overlay(diff, nan_change)
+            else:
+                self.view.previews.hide_difference_overlay()
+            if self.view.invertDifference.isChecked():
+                diff = np.negative(diff, out=diff)
+
+            self._update_preview_image(diff, self.view.preview_image_difference)
+
+        # Ensure all of it is visible if the lock zoom isn't checked
+        if not self.view.lockZoomCheckBox.isChecked():
+            self.view.previews.auto_range()
+
+        if lock_scale:
+            self.view.previews.restore_histogram_regions()
+        self.view.previews.set_histogram_log_scale()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

@@ -165,9 +165,10 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.image_view.update_recon.assert_called_once_with(image_data)
         self.image_view.update_recon_hist.assert_called_once_with()
 
-    def test_reset_image_recon_preview(self):
-        self.view.reset_image_recon_preview()
+    def test_reset_recon_and_sino_previews(self):
+        self.view.reset_recon_and_sino_previews()
         self.image_view.clear_recon.assert_called_once()
+        self.image_view.clear_sinogram.assert_called_once()
 
     def test_reset_slice_and_tilt(self):
         slice_index = 5

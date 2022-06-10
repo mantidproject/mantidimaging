@@ -26,6 +26,7 @@ Fixes
 - #1397 : Only use real NeXus projection angles
 - #1473 : Tomopy COR finder use -log
 - #1475 : Fix scaling when saving to int
+- #1484 : Clear image previews in open windows when there are no stacks to select
 
 
 Developer Changes
