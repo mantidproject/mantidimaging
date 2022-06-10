@@ -18,6 +18,7 @@ from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 import mantidimaging.core.parallel.utility as pu
+from mantidimaging.core.io.filenames import FilenameGroup
 
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
@@ -96,7 +97,10 @@ class BaseEyesTest(unittest.TestCase):
         menu.popup(widget.mapFromGlobal(menu_location))
 
     def _load_data_set(self, set_180: bool = False):
-        image_stack = loader.load(file_names=[LOAD_SAMPLE])
+        filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
+        filename_group.find_all_files()
+        filenames = [str(p) for p in filename_group.all_files()]
+        image_stack = loader.load(file_names=filenames)
         dataset = StrictDataset(image_stack)
         image_stack.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
