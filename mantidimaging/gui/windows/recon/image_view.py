@@ -37,9 +37,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.recon_line_profile = LineProfilePlot(self.imageview_recon)
 
         self.addItem(self.imageview_projection, 0, 0)
-        self.addItem(self.imageview_recon, 0, 1)
         self.addItem(self.imageview_sinogram, 1, 0)
-        self.addItem(self.recon_line_profile, 1, 1)
+
+        self.recon_layout = self.ci.addLayout(0, 1, rowspan=2)
+        self.recon_layout.addItem(self.imageview_recon, 0, 0)
+        self.recon_layout.addItem(self.recon_line_profile, 1, 0)
+        # Set the recon preview to take up more vertical space than the line profile graph underneath it
+        self.recon_layout.layout.setRowStretchFactor(0, 2)
 
         self.imageview_projection.image_item.mouseClickEvent = lambda ev: self.mouse_click(ev, self.slice_line)
         self.slice_line.sigPositionChangeFinished.connect(self.slice_line_moved)
