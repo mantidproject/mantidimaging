@@ -84,6 +84,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_start_async_task_view.assert_not_called()
         self.view.update_sinogram.assert_not_called()
         self.view.update_projection.assert_not_called()
+        self.view.reset_recon_line_profile.assert_called_once()
         self.view.show_status_message.assert_called_once_with("")
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
@@ -166,7 +167,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter._on_preview_reconstruct_slice_done(task_mock)
 
-        self.view.update_recon_preview.assert_called_once_with(image_mock)
+        self.view.update_recon_preview.assert_called_once_with(image_mock, False)
 
     def test_do_preview_reconstruct_slice_raises(self):
         task_mock = mock.Mock(error=ValueError())

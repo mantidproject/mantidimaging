@@ -17,6 +17,7 @@ New Features
 - #1430 : Provide an Anaconda package that is compatible with Windows
 - #1398 : Save recons to NeXus file
 - #1444 : CIL PDHG non-negativity constraint
+- #1483 : Add line profile to reconstruction window
 
 Fixes
 -----

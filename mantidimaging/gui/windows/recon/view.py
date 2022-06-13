@@ -286,12 +286,12 @@ class ReconstructWindowView(BaseMainWindowView):
         if self.previewAutoUpdate.isChecked():
             self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
-    def update_recon_preview(self, image_data: numpy.ndarray):
+    def update_recon_preview(self, image_data: numpy.ndarray, reset_roi: bool = False):
         """
         Updates the reconstruction preview image with new data.
         """
         # Plot image
-        self.image_view.update_recon(image_data)
+        self.image_view.update_recon(image_data, reset_roi)
         if self.update_recon_hist_needed:
             self.image_view.update_recon_hist()
             self.update_recon_hist_needed = False
@@ -303,6 +303,9 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         self.image_view.clear_recon()
         self.image_view.clear_sinogram()
+
+    def reset_recon_line_profile(self):
+        self.image_view.clear_recon_line_profile()
 
     def reset_projection_preview(self):
         self.image_view.clear_projection()
