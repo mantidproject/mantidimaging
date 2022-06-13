@@ -73,6 +73,7 @@ class ImageViewLineROI(LineSegmentROI):
     def reset(self) -> None:
         if self._image_data_exists() and self._roi_line_is_visible:
             self._set_initial_state()
+            self._image_view.viewbox.autoRange()
             self.sigRegionChanged.emit(self)
 
     def reset_is_needed(self) -> bool:

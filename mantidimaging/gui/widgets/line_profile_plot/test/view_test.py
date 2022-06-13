@@ -80,9 +80,11 @@ class ImageViewLineROITest(unittest.TestCase):
     def test_reset(self):
         self._set_image()
         self.roi_line._roi_line_is_visible = True
+        self.roi_line._image_view.viewbox.autoRange = mock.Mock()
         self.roi_line.reset()
 
         check_state_and_bounds(self.roi_line)
+        self.roi_line._image_view.viewbox.autoRange.assert_called_once()
 
     def test_get_image_region_no_image_data(self):
         self.assertIsNone(self.roi_line.get_image_region())
