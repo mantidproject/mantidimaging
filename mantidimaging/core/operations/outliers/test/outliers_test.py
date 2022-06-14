@@ -48,6 +48,12 @@ class OutliersTest(unittest.TestCase):
 
         th.assert_not_equals(result.data, sample)
 
+    def test_executed_sino_preview(self):
+        images = th.generate_images([1, 10, 10])
+        images._is_sinograms = True
+
+        OutliersFilter.filter_func(images, 0.1, 2)
+
     def test_execute_wrapper_return_is_runnable(self):
         """
         Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)

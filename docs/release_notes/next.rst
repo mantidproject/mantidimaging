@@ -28,6 +28,7 @@ Fixes
 - #1473 : Tomopy COR finder use -log
 - #1475 : Fix scaling when saving to int
 - #1484 : Clear image previews in open windows when there are no stacks to select
+- #1496 : OutliersFilter IndexError when using sinograms
 
 
 Developer Changes
