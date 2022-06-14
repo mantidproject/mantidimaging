@@ -315,8 +315,13 @@ class FiltersWindowPresenter(BasePresenter):
         if lock_scale:
             self.view.previews.record_histogram_regions()
 
-        subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
-        before_image = np.copy(subset.data[0])
+        if not self.model.selected_filter.operate_on_sinograms:
+            subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
+        else:
+            subset = self.stack.sino_as_image_stack(self.model.preview_image_idx)
+
+        # Take copies for display to prevent issues when the shared memory is cleaned
+        before_image = np.copy(subset.data.squeeze())
 
         try:
             if self.model.filter_widget_kwargs:
@@ -331,9 +336,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Update image after first in order to prevent wrong histogram ranges being shared
 
-        # If the filter function has put the results into shared memory then we must copy them back out
-        # so that they will continue to be available when this function ends
-        filtered_image_data = np.copy(subset.data[0]) if subset.uses_shared_memory else subset.data[0]
+        filtered_image_data = np.copy(subset.data.squeeze())
 
         if np.any(filtered_image_data < 0):
             self._show_preview_negative_values_error(self.model.preview_image_idx)
