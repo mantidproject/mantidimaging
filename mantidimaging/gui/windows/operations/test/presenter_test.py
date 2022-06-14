@@ -218,7 +218,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
-        images = generate_images()
+        images = generate_images([1, 10, 10])
         stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
 
@@ -232,7 +232,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
     def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        images = generate_images()
+        images = generate_images([1, 10, 10])
         stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = False
@@ -252,7 +252,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_auto_range_called_when_locks_are_checked(self, apply_mock: mock.Mock,
                                                       update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        images = generate_images()
+        images = generate_images([1, 10, 10])
         stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
@@ -513,7 +513,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_image_idx = slice_idx = 14
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([3, 3]) * -1
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([1, 3, 3]) * -1
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_called_once_with(
@@ -522,7 +522,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_negative_values_preview_message(self):
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([3, 3])
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([1, 3, 3])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()
