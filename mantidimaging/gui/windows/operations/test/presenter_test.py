@@ -40,7 +40,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         reg_fun_mock = mock.Mock()
         filter_reg_mock.return_value = reg_fun_mock
         self.view.filterSelector.currentIndex.return_value = 0
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         reg_fun_mock.assert_called_once()
         filter_reg_mock.assert_called_once()
@@ -49,14 +50,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_link_before_after_histograms(self, _):
         self.view.filterSelector.currentText.return_value = "Clip Values"
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(True)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_disconnect_before_after_histograms(self, _):
         self.view.filterSelector.currentText.return_value = "Rescale"
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
 

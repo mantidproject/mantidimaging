@@ -130,8 +130,12 @@ class FiltersWindowPresenter(BasePresenter):
 
     @property
     def max_preview_image_idx(self):
-        num_images = self.stack.num_images if self.stack is not None else 0
-        return max(num_images - 1, 0)
+        if self.stack is None:
+            return 0
+        if not self.model.selected_filter.operate_on_sinograms:
+            return self.stack.num_images - 1
+        else:
+            return self.stack.num_sinograms - 1
 
     def set_stack_uuid(self, uuid: Optional[uuid.UUID]):
         if uuid is not None:
@@ -194,6 +198,14 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.previews.add_negative_overlay()
         else:
             self.view.previews.hide_negative_overlay()
+
+        # Update the preview image index
+        with BlockQtSignals([self.view]):
+            max_slice = self.max_preview_image_idx
+            self.view.previewImageIndex.setMaximum(max_slice)
+            self.view.previews.z_slider.set_range(0, max_slice)
+            if self.model.preview_image_idx > max_slice:
+                self.set_preview_image_index(0)
 
     def filter_uses_parameter(self, parameter):
         return parameter in self.model.params_needed_from_stack.values() if \
@@ -318,6 +330,10 @@ class FiltersWindowPresenter(BasePresenter):
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
         else:
+            if self.stack.num_projections < 2:
+                self.show_error("This filter requires a stack with multiple projections", "")
+                self.view.clear_previews()
+                return
             subset = self.stack.sino_as_image_stack(self.model.preview_image_idx)
 
         # Take copies for display to prevent issues when the shared memory is cleaned
