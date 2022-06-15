@@ -329,15 +329,17 @@ class FiltersWindowPresenter(BasePresenter):
 
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
+            squeeze_axis = 0
         else:
             if self.stack.num_projections < 2:
                 self.show_error("This filter requires a stack with multiple projections", "")
                 self.view.clear_previews()
                 return
             subset = self.stack.sino_as_image_stack(self.model.preview_image_idx)
+            squeeze_axis = 1
 
         # Take copies for display to prevent issues when the shared memory is cleaned
-        before_image = np.copy(subset.data.squeeze())
+        before_image = np.copy(subset.data.squeeze(squeeze_axis))
 
         try:
             if self.model.filter_widget_kwargs:
@@ -352,7 +354,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         # Update image after first in order to prevent wrong histogram ranges being shared
 
-        filtered_image_data = np.copy(subset.data.squeeze())
+        filtered_image_data = np.copy(subset.data.squeeze(squeeze_axis))
 
         if np.any(filtered_image_data < 0):
             self._show_preview_negative_values_error(self.model.preview_image_idx)

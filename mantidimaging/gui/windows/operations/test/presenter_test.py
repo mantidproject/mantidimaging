@@ -263,6 +263,26 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
 
+    @parameterized.expand([(True, True), (False, True), (True, False), (False, False)])
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_update_previews_shapes(self, sino_op, stack_sino, _, update_preview_image_mock: mock.Mock):
+        stack = mock.Mock(num_projections=10)
+        if not sino_op:
+            stack.slice_as_image_stack.return_value = generate_images([1, 10, 12])
+            stack.slice_as_image_stack.return_value._is_sinograms = stack_sino
+        else:
+            stack.sino_as_image_stack.return_value = generate_images([10, 1, 12])
+            stack.sino_as_image_stack.return_value._is_sinograms = stack_sino
+
+        self.presenter.model.selected_filter = mock.Mock(operate_on_sinograms=sino_op)
+        self.presenter.stack = stack
+
+        self.presenter.do_update_previews()
+
+        for args in update_preview_image_mock.call_args_list:
+            self.assertEqual(args[0][0].shape, (10, 12))
+
     def test_get_filter_module_name(self):
         self.presenter.model.filters = mock.MagicMock()
 
