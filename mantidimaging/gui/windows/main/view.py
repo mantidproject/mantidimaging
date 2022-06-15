@@ -31,6 +31,7 @@ from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
+from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
@@ -70,6 +71,7 @@ class MainWindowView(BaseMainWindowView):
     actionRecon: QAction
     actionFilters: QAction
     actionCompareImages: QAction
+    actionSpectrumViewer: QAction
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
@@ -82,6 +84,7 @@ class MainWindowView(BaseMainWindowView):
 
     filters: Optional[FiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
+    spectrum_viewer: Optional[SpectrumViewerWindowView] = None
 
     image_load_dialog: Optional[ImageLoadDialog] = None
     image_save_dialog: Optional[ImageSaveDialog] = None
@@ -165,6 +168,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
+        self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
@@ -339,6 +343,15 @@ class MainWindowView(BaseMainWindowView):
         else:
             self.filters.activateWindow()
             self.filters.raise_()
+
+    def show_spectrum_viewer_window(self):
+        if not self.spectrum_viewer:
+            self.spectrum_viewer = SpectrumViewerWindowView(self)
+            self.spectrum_viewer.show()
+        else:
+            self.spectrum_viewer.activateWindow()
+            self.spectrum_viewer.raise_()
+            self.spectrum_viewer.show()
 
     @property
     def stack_list(self):

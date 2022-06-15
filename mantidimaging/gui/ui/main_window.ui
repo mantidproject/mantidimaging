@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -56,6 +56,7 @@
     <addaction name="actionFilters"/>
     <addaction name="actionRecon"/>
     <addaction name="actionCompareImages"/>
+    <addaction name="actionSpectrumViewer"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -221,6 +222,11 @@
    </property>
    <property name="text">
     <string>Save as NeXus File</string>
+   </property>
+  </action>
+  <action name="actionSpectrumViewer">
+   <property name="text">
+    <string>Spectrum Viewer</string>
    </property>
   </action>
  </widget>
