@@ -2,14 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.imagestack import ImageStack
+from typing import List, Dict, Any
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
 from algotom.prep.removal import remove_dead_stripe
+from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.data.imagestack import ImageStack
 
 
 class RemoveDeadStripesFilter(BaseFilter):
@@ -28,18 +30,35 @@ class RemoveDeadStripesFilter(BaseFilter):
     """
     filter_name = "Remove dead stripes"
     link_histograms = True
+    operate_on_sinograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack, snr=3, size=61, progress=None):
+    @classmethod
+    def filter_func(cls, images: ImageStack, snr=3, size=61, progress=None):
         """
         :param snr: The ratio value.
         :param size: The window size of the median filter to remove dead stripes.
 
         :return: The ImageStack object with the dead stripes removed.
         """
-        f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
+        if images.num_projections < 2:
+            return images
+        params = {"snr": snr, "size": size, "residual": False}
+        if images.is_sinograms:
+            compute_func = cls.compute_function_sino
+            num_slices = images.data.shape[0]
+        else:
+            compute_func = cls.compute_function
+            num_slices = images.data.shape[1]
+        ps.run_compute_func(compute_func, num_slices, [images.shared_array], params, progress)
         return images
+
+    @staticmethod
+    def compute_function_sino(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][index] = remove_dead_stripe(arrays[0][index], **params)
+
+    @staticmethod
+    def compute_function(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][:, index, :] = remove_dead_stripe(arrays[0][:, index, :], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):
