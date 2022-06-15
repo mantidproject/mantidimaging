@@ -66,7 +66,7 @@ class OutliersFilter(BaseFilter):
 
         func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
         ps.execute(func, [images.shared_array],
-                   images.num_projections,
+                   images.data.shape[0],
                    progress=progress,
                    msg=f"Outliers with threshold {diff} and kernel {radius}")
         return images
