@@ -70,29 +70,29 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>30</height>
+          <height>40</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="flatFieldLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QCheckBox" name="normaliseCheckBox">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Flat field:</string>
+         <string>Normalise to open beam</string>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="DatasetSelectorWidgetView" name="flatStackSelector">
+       <widget class="DatasetSelectorWidgetView" name="normaliseStackSelector">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="frame">
          <bool>true</bool>
         </property>

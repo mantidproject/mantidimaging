@@ -27,10 +27,10 @@ class SpectrumViewerWindowViewTest(unittest.TestCase):
         new_dataset.flat_before.name = 'Flat_before'
         self.view.main_window.get_dataset = mock.Mock()
         self.view.main_window.get_dataset.return_value = new_dataset
-        self.view.flatStackSelector.try_to_select_relevant_stack = mock.Mock()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack = mock.Mock()
 
         self.view._handle_sample_change(uuid.uuid4())
-        self.view.flatStackSelector.try_to_select_relevant_stack.assert_called_once_with('Flat_before')
+        self.view.normaliseStackSelector.try_to_select_relevant_stack.assert_called_once_with('Flat_before')
 
     def test_handle_sample_change_has_flat_after(self):
         self.view.main_window.get_dataset_id_from_stack_uuid.return_value = uuid.uuid4()
@@ -38,17 +38,17 @@ class SpectrumViewerWindowViewTest(unittest.TestCase):
         new_dataset.flat_after.name = 'Flat_after'
         self.view.main_window.get_dataset = mock.Mock()
         self.view.main_window.get_dataset.return_value = new_dataset
-        self.view.flatStackSelector.try_to_select_relevant_stack = mock.Mock()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack = mock.Mock()
 
         self.view._handle_sample_change(uuid.uuid4())
-        self.view.flatStackSelector.try_to_select_relevant_stack.assert_called_once_with('Flat_after')
+        self.view.normaliseStackSelector.try_to_select_relevant_stack.assert_called_once_with('Flat_after')
 
     def test_handle_sample_change_no_new_stack(self):
         self.assertIsNotNone(self.view._current_dataset_id)
-        self.view.flatStackSelector.try_to_select_relevant_stack = mock.Mock()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack = mock.Mock()
 
         self.view._handle_sample_change(None)
-        self.view.flatStackSelector.try_to_select_relevant_stack.assert_not_called()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack.assert_not_called()
         self.assertIsNone(self.view._current_dataset_id)
 
     def test_handle_sample_change_dataset_unchanged(self):
@@ -64,19 +64,19 @@ class SpectrumViewerWindowViewTest(unittest.TestCase):
         new_dataset = MixedDataset([generate_images()])
         self.view.main_window.get_dataset = mock.Mock()
         self.view.main_window.get_dataset.return_value = new_dataset
-        self.view.flatStackSelector.try_to_select_relevant_stack = mock.Mock()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack = mock.Mock()
 
         self.view._handle_sample_change(uuid.uuid4())
         self.view.main_window.get_dataset.assert_called_once()
-        self.view.flatStackSelector.try_to_select_relevant_stack.assert_not_called()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack.assert_not_called()
 
     def test_handle_sample_change_no_flat(self):
         self.view.main_window.get_dataset_id_from_stack_uuid.return_value = uuid.uuid4()
         new_dataset = StrictDataset(generate_images())
         self.view.main_window.get_dataset = mock.Mock()
         self.view.main_window.get_dataset.return_value = new_dataset
-        self.view.flatStackSelector.try_to_select_relevant_stack = mock.Mock()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack = mock.Mock()
 
         self.view._handle_sample_change(uuid.uuid4())
         self.view.main_window.get_dataset.assert_called_once()
-        self.view.flatStackSelector.try_to_select_relevant_stack.assert_not_called()
+        self.view.normaliseStackSelector.try_to_select_relevant_stack.assert_not_called()
