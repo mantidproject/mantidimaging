@@ -383,6 +383,9 @@ class MainWindowPresenter(BasePresenter):
     def stack_visualiser_names(self) -> List[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
+    def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union[MixedDataset, StrictDataset]]:
+        return self.model.datasets.get(dataset_id)
+
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.stack_visualisers[stack_id]
 
@@ -394,6 +397,9 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata
+
+    def get_dataset_id_for_stack(self, stack_id: uuid.UUID) -> uuid.UUID:
+        return self.model.get_parent_dataset(stack_id)
 
     @property
     def active_stacks(self) -> Dict[uuid.UUID, StackVisualiserView]:

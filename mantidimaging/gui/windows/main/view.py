@@ -4,7 +4,7 @@
 import os
 import uuid
 from logging import getLogger
-from typing import Optional, List
+from typing import Optional, List, Union, TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -36,6 +36,9 @@ from mantidimaging.gui.windows.stack_choice.compare_presenter import StackCompar
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data.dataset import MixedDataset
 
 RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
@@ -373,6 +376,12 @@ class MainWindowView(BaseMainWindowView):
 
     def get_images_from_stack_uuid(self, stack_uuid) -> ImageStack:
         return self.presenter.get_stack_visualiser(stack_uuid).presenter.images
+
+    def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
+        return self.presenter.get_dataset_id_for_stack(stack_id)
+
+    def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union['MixedDataset', StrictDataset]]:
+        return self.presenter.get_dataset(dataset_id)
 
     def get_all_stacks(self) -> List[ImageStack]:
         return self.presenter.get_all_stacks()
