@@ -225,8 +225,11 @@
    </property>
   </action>
   <action name="actionSpectrumViewer">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Spectrum Viewer</string>
+    <string>Spectrum Viewer (Beta)</string>
    </property>
   </action>
  </widget>
