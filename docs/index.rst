@@ -18,6 +18,7 @@ such as `Avizo
    installation
    user_guide/index
    developer_guide/index
+   support
    troubleshooting
    api
    release_notes/index
