@@ -5,8 +5,6 @@ Written: November 2020
 
 Author: Arianna Wintle (STFC)
 
-Please email any suggestions to mantidimagingsupport@stfc365.onmicrosoft.com
-
 Example data that can be used for this tutorial can be downloaded from `github.com/mantidproject/mantidimaging-data <https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/main.zip>`_
 
 Loading Sample Stack
