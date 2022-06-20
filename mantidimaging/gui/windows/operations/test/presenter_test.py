@@ -40,7 +40,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         reg_fun_mock = mock.Mock()
         filter_reg_mock.return_value = reg_fun_mock
         self.view.filterSelector.currentIndex.return_value = 0
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         reg_fun_mock.assert_called_once()
         filter_reg_mock.assert_called_once()
@@ -49,14 +50,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_link_before_after_histograms(self, _):
         self.view.filterSelector.currentText.return_value = "Clip Values"
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(True)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_disconnect_before_after_histograms(self, _):
         self.view.filterSelector.currentText.return_value = "Rescale"
-        self.presenter.do_register_active_filter()
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.do_register_active_filter()
 
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
 
@@ -215,13 +218,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_update_previews_apply_throws_exception(self, apply_mock: mock.Mock):
         apply_mock.side_effect = Exception
         stack = mock.Mock()
-        images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        images = generate_images([1, 10, 10])
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
 
         self.presenter.do_update_previews()
 
-        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.slice_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         apply_mock.assert_called_once()
 
@@ -229,14 +232,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
     def test_update_previews_with_no_lock_checked(self, apply_mock: mock.Mock, update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        images = generate_images([1, 10, 10])
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = False
         self.view.lockScaleCheckBox.isChecked.return_value = False
         self.presenter.do_update_previews()
 
-        stack.index_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
+        stack.slice_as_image_stack.assert_called_once_with(self.presenter.model.preview_image_idx)
         self.view.clear_previews.assert_called_once()
         self.assertEqual(3, update_preview_image_mock.call_count)
         apply_mock.assert_called_once()
@@ -249,8 +252,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_auto_range_called_when_locks_are_checked(self, apply_mock: mock.Mock,
                                                       update_preview_image_mock: mock.Mock):
         stack = mock.Mock()
-        images = generate_images()
-        stack.index_as_image_stack.return_value = images
+        images = generate_images([1, 10, 10])
+        stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
@@ -259,6 +262,26 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.auto_range.assert_not_called()
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
+
+    @parameterized.expand([(True, True), (False, True), (True, False), (False, False)])
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_update_previews_shapes(self, sino_op, stack_sino, _, update_preview_image_mock: mock.Mock):
+        stack = mock.Mock(num_projections=10)
+        if not sino_op:
+            stack.slice_as_image_stack.return_value = generate_images([1, 10, 12])
+            stack.slice_as_image_stack.return_value._is_sinograms = stack_sino
+        else:
+            stack.sino_as_image_stack.return_value = generate_images([10, 1, 12])
+            stack.sino_as_image_stack.return_value._is_sinograms = stack_sino
+
+        self.presenter.model.selected_filter = mock.Mock(operate_on_sinograms=sino_op)
+        self.presenter.stack = stack
+
+        self.presenter.do_update_previews()
+
+        for args in update_preview_image_mock.call_args_list:
+            self.assertEqual(args[0][0].shape, (10, 12))
 
     def test_get_filter_module_name(self):
         self.presenter.model.filters = mock.MagicMock()
@@ -510,8 +533,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.model.preview_image_idx = slice_idx = 14
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[-1 for _ in range(3)]
-                                                                                for _ in range(3)])
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([1, 3, 3]) * -1
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_called_once_with(
@@ -520,8 +542,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def test_no_negative_values_preview_message(self):
         self.presenter.model.apply_to_images = mock.Mock()
         self.presenter.stack = mock.Mock()
-        self.presenter.stack.index_as_image_stack.return_value.data = np.array([[1 for _ in range(3)]
-                                                                                for _ in range(3)])
+        self.presenter.stack.slice_as_image_stack.return_value.data = np.ones([1, 3, 3])
         self.presenter.do_update_previews()
 
         self.view.show_error_dialog.assert_not_called()

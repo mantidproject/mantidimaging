@@ -18,6 +18,7 @@ New Features
 - #1398 : Save recons to NeXus file
 - #1444 : CIL PDHG non-negativity constraint
 - #1483 : Add line profile to reconstruction window
+- #1480 : Automatic sinograms for sinogram operations
 
 Fixes
 -----

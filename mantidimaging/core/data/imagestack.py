@@ -30,12 +30,13 @@ class ImageStack:
                  sinograms: bool = False,
                  name: Optional[str] = None):
         """
-
         :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
+        :param sinograms: Set data ordering, if false: [t,y,x] if true: [y,t,x]
         :param name: A name for the stack
+
         """
 
         if isinstance(data, pu.SharedArray):
@@ -164,8 +165,13 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def index_as_image_stack(self, index) -> 'ImageStack':
+    def slice_as_image_stack(self, index) -> 'ImageStack':
+        "A slice, either projection or sinogram depending on current ordering"
         return ImageStack(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+
+    def sino_as_image_stack(self, index) -> 'ImageStack':
+        "A single sinogram slice as an ImageStack in projection ordering"
+        return ImageStack(np.asarray([self.sino(index)]).swapaxes(0, 1), metadata=deepcopy(self.metadata))
 
     @property
     def height(self):

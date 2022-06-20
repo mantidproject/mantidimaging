@@ -6,8 +6,10 @@ from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.remove_all_stripe import RemoveAllStripesFilter
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 
+@start_multiprocessing_pool
 class RemoveAllStripesTest(unittest.TestCase):
     """
     Test stripe removal filter.
@@ -16,6 +18,14 @@ class RemoveAllStripesTest(unittest.TestCase):
     """
     def test_executed(self):
         images = th.generate_images()
+        control = images.copy()
+
+        result = RemoveAllStripesFilter.filter_func(images)
+
+        th.assert_not_equals(result.data, control.data)
+
+    def test_executed_mp(self):
+        images = th.generate_images(shape=(20, 20, 20))
         control = images.copy()
 
         result = RemoveAllStripesFilter.filter_func(images)

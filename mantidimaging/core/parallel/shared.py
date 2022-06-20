@@ -2,9 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Callable, Dict, Any, TYPE_CHECKING
 
 from mantidimaging.core.parallel import utility as pu
+
+if TYPE_CHECKING:
+    from numpy import ndarray
 
 
 def inplace3(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
@@ -74,6 +77,31 @@ def execute(partial_func: partial,
     all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
     partial_func = partial(partial_func, data)
     pu.execute_impl(num_operations, partial_func, all_data_in_shared_memory, progress, msg)
+
+
+ComputeFuncType = Callable[[int, List['ndarray'], Dict[str, Any]], None]
+
+
+class _Worker:
+    def __init__(self, func: ComputeFuncType, arrays: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]],
+                 params: Dict[str, Any]):
+        self.func = func
+        self.arrays = arrays
+        self.params = params
+
+    def __call__(self, index: int):
+        ndarrays = [sa.array for sa in self.arrays]
+        self.func(index, ndarrays, self.params)
+
+
+def run_compute_func(func: ComputeFuncType,
+                     num_operations: int,
+                     arrays: List[pu.SharedArray],
+                     params: Dict[str, Any],
+                     progress=None):
+    all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
+    worker_func = _Worker(func, data, params)
+    pu.run_compute_func_impl(worker_func, num_operations, all_data_in_shared_memory, progress)
 
 
 def _check_shared_mem_and_get_data(
