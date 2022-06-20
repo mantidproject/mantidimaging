@@ -1,15 +1,17 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from typing import TYPE_CHECKING, Union, Optional
+from typing import TYPE_CHECKING, Union, Optional, Any
 
 from PyQt5.QtCore import QRect
 from pyqtgraph import GraphicsLayout, LineSegmentROI
 
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility import BlockQtSignals
 
 if TYPE_CHECKING:
     from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
     from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+    import numpy as np
 
 
 class LineProfilePlot(GraphicsLayout):
@@ -18,15 +20,21 @@ class LineProfilePlot(GraphicsLayout):
 
         self._plot = self.addPlot()
         self._line_profile = self._plot.plot()
+        self._info_label = self.addLabel(row=1, col=0)
         self._roi_line = ImageViewLineROI(image_view, reset_menu_name="Reset Profile Line")
         self._roi_line.sigRegionChanged.connect(self.update)
 
-    def update(self) -> None:
-        image_region = self._roi_line.get_image_region()
+    def update(self):
+        image_region, coords = self._roi_line.get_image_region()
+
         if image_region is None:
             self.clear_plot()
         else:
             self._line_profile.setData(image_region)
+            start = CloseEnoughPoint([coords[0][0], coords[1][0]])
+            end = CloseEnoughPoint([coords[0][-1], coords[1][-1]])
+            self._info_label.setText(
+                f'start x={start.x}, y={start.y} | end x={end.x}, y={end.y} | length={image_region.size}')
 
     def reset(self) -> None:
         if self._roi_line.reset_is_needed():
@@ -39,6 +47,7 @@ class LineProfilePlot(GraphicsLayout):
         # Calling self._line_profile.clear() seems to be very slow, so we use this approach instead
         self._plot.clear()
         self._line_profile = self._plot.plot()
+        self._info_label.setText(' ')
 
 
 class ImageViewLineROI(LineSegmentROI):
@@ -62,14 +71,17 @@ class ImageViewLineROI(LineSegmentROI):
         new_point = self.getViewBox().mapSceneToView(pos)
         return self._checkpoint_bounds.contains(new_point.x(), new_point.y())
 
-    def get_image_region(self):
+    def get_image_region(self) -> Union[tuple[None, None], tuple['np.ndarray', Any]]:
         if not self._image_data_exists():
-            return None
+            return None, None
 
         if not self._roi_line_is_visible:
             self._add_roi_to_image()
 
-        return self.getArrayRegion(self._image_view.image_data, self._image_view.image_item, axes=(1, 0))
+        return self.getArrayRegion(self._image_view.image_data,
+                                   self._image_view.image_item,
+                                   axes=(1, 0),
+                                   returnMappedCoords=True)
 
     def reset(self) -> None:
         if self._image_data_exists() and self._roi_line_is_visible:

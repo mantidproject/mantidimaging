@@ -88,16 +88,24 @@ class ImageViewLineROITest(unittest.TestCase):
         self.roi_line._image_view.viewbox.autoRange.assert_called_once()
 
     def test_get_image_region_no_image_data(self):
-        self.assertIsNone(self.roi_line.get_image_region())
+        image_region, coords = self.roi_line.get_image_region()
+        self.assertIsNone(image_region)
+        self.assertIsNone(coords)
 
     def test_get_image_region_no_visible_roi(self):
         self._set_image()
-        self.assertIsNotNone(self.roi_line.get_image_region())
+
+        image_region, coords = self.roi_line.get_image_region()
+        self.assertIsNotNone(image_region)
+        self.assertIsNotNone(coords)
 
     def test_get_image_region_visible_roi(self):
         self._set_image()
         self.roi_line._add_roi_to_image()
-        self.assertIsNotNone(self.roi_line.get_image_region())
+
+        image_region, coords = self.roi_line.get_image_region()
+        self.assertIsNotNone(image_region)
+        self.assertIsNotNone(coords)
 
     def _set_image(self, image=IMAGE):
         self.image_view.setImage(image)
@@ -123,6 +131,9 @@ class LineProfilePlotTest(unittest.TestCase):
         self.line_profile.update()
 
         self.line_profile._line_profile.setData.assert_called_once()
+        info_label_test = self.line_profile._info_label.text
+        self.assertIsNotNone(info_label_test)
+        self.assertNotEqual(' ', info_label_test)
 
     def test_reset_with_roi_reset(self):
         self.line_profile._line_profile.setData = mock.Mock()
