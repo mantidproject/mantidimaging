@@ -734,6 +734,25 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                  },
                                                  busy=True)
 
+    def test_get_dataset(self):
+        test_ds = StrictDataset(generate_images())
+        other_ds = StrictDataset(generate_images())
+        self.model.datasets = dict()
+        self.model.datasets[test_ds.id] = test_ds
+        self.model.datasets[other_ds.id] = other_ds
+
+        result = self.presenter.get_dataset(test_ds.id)
+        self.assertEqual(result, test_ds)
+
+    def test_get_dataset_not_found(self):
+        ds = StrictDataset(generate_images())
+        incorrect_id = uuid.uuid4()
+        self.model.datasets = dict()
+        self.model.datasets[ds.id] = ds
+
+        result = self.presenter.get_dataset(incorrect_id)
+        self.assertIsNone(result)
+
 
 if __name__ == '__main__':
     unittest.main()
