@@ -80,6 +80,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.im.clear()
         self.set_auto_color_enabled(False)
         self.clear_overlays()
+        self.details.setText("")
 
     def setImage(self, *args, **kwargs):
         self.im.setImage(*args, **kwargs)
@@ -108,16 +109,16 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
             return
         pos = CloseEnoughPoint(ev.pos())
 
-        self.show_value(pos)
+        self.show_details(pos)
         for img_view in self.axis_siblings:
-            img_view.show_value(pos)
+            img_view.show_details(pos)
 
-    def show_value(self, pos):
+    def show_details(self, pos):
         image = self.im.image
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
             value_string = ("%.6f" % pixel_value)[:8]
-            self.details.setText(f"{self.name}: {value_string}")
+            self.details.setText(f"{self.name}: x={pos.x}, y={pos.y}, value={value_string}")
 
     def link_sibling_axis(self):
         # Linking multiple viewboxes with locked aspect ratios causes
