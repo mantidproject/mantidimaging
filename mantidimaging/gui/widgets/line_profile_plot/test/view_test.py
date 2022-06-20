@@ -14,8 +14,9 @@ from mantidimaging.test_helpers import start_qapplication
 IMAGE_WIDTH = 10
 IMAGE_HEIGHT = 15
 IMAGE = np.zeros((IMAGE_HEIGHT, IMAGE_WIDTH))
-INITIAL_POS = [(0, 0), (IMAGE_WIDTH, 0)]
-BOUNDS = QRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT)
+INITIAL_POS_Y = IMAGE_HEIGHT // 2
+INITIAL_POS = [(0, INITIAL_POS_Y), (IMAGE_WIDTH, INITIAL_POS_Y)]
+BOUNDS = QRect(0, 0 - INITIAL_POS_Y, IMAGE_WIDTH, IMAGE_HEIGHT)
 
 
 def check_state_and_bounds(roi_line: ImageViewLineROI, initial_pos=INITIAL_POS, bounds=BOUNDS):
@@ -136,8 +137,10 @@ class LineProfilePlotTest(unittest.TestCase):
 
         self.line_profile.reset()
 
-        check_state_and_bounds(self.line_profile._roi_line, [(0, 0), (new_width, 0)],
-                               QRect(0, 0, new_width, IMAGE_HEIGHT))
+        new_y_pos = IMAGE_HEIGHT // 2
+        new_position = [(0, new_y_pos), (new_width, new_y_pos)]
+        new_bounds = QRect(0, 0 - new_y_pos, new_width, IMAGE_HEIGHT)
+        check_state_and_bounds(self.line_profile._roi_line, new_position, new_bounds)
         self.line_profile._line_profile.setData.assert_called_once()
 
     def test_reset_without_roi_reset(self):

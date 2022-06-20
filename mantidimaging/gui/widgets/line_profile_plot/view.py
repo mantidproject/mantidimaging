@@ -49,17 +49,18 @@ class ImageViewLineROI(LineSegmentROI):
         self._add_reset_menu_option(reset_menu_name)
         self._initial_state = self.saveState()
         self._roi_line_is_visible = False
+        self._checkpoint_bounds = None
 
         # We can't add the ROI line until we have some image data dimensions to position it
         if self._image_data_exists():
             self._add_roi_to_image()
 
     def checkPointMove(self, handle, pos, modifiers) -> bool:
-        if self.maxBounds is None:
+        if self._checkpoint_bounds is None:
             return True
 
         new_point = self.getViewBox().mapSceneToView(pos)
-        return self.maxBounds.contains(new_point.x(), new_point.y())
+        return self._checkpoint_bounds.contains(new_point.x(), new_point.y())
 
     def get_image_region(self):
         if not self._image_data_exists():
@@ -90,13 +91,27 @@ class ImageViewLineROI(LineSegmentROI):
     def _set_initial_state(self) -> None:
         # Prevent emitting a RegionChanged signal from setting the state programmatically
         with BlockQtSignals(self):
-            self._initial_state['points'] = [(0, 0), (self._image_view.image_item.width(), 0)]
+            initial_pos_x = 0
+            initial_pos_y = self._image_view.image_item.height() // 2
+            image_width = self._image_view.image_item.width()
+            image_height = self._image_view.image_item.height()
+
+            self._initial_state['points'] = [(initial_pos_x, initial_pos_y), (image_width, initial_pos_y)]
             self.setState(self._initial_state)
-            self.maxBounds = QRect(0, 0, self._image_view.image_item.width(), self._image_view.image_item.height())
+            # maxBounds seem to work relative to the initial position of the ROI line rather than defining
+            # a fixed location, so we need to define a second set of bounds that uses a fixed location for the
+            # ROI line handles
+            self.maxBounds = QRect(0 - initial_pos_x, 0 - initial_pos_y, image_width, image_height)
+            self._checkpoint_bounds = QRect(0, 0, image_width, image_height)
 
     def _add_roi_to_image(self) -> None:
         self._set_initial_state()
         self._image_view.viewbox.addItem(self)
+        # Calling autoRange on the viewbox seems to change the effect of the ROI bounds when you drag the line to the
+        # very right (before autoRange is called it causes the image to zoom out, but after it's called the right hand
+        # side of the line just disappears off the preview).
+        # We call autoRange here as soon as the line is added so that the behaviour is always consistent.
+        self._image_view.viewbox.autoRange()
         self._roi_line_is_visible = True
 
     def _add_reset_menu_option(self, reset_menu_name: Optional[str] = None) -> None:
