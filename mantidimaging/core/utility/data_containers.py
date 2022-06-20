@@ -8,9 +8,8 @@ The biggest benefit is explicitly marking what the value represents (e.g. Degree
 and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
-from collections import namedtuple
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, NamedTuple
 
 import numpy
 
@@ -117,7 +116,7 @@ class ReconstructionParameters:
         }
 
 
-Indices = namedtuple('Indices', ['start', 'end', 'step'])
+Indices = NamedTuple("Indices", [("start", int), ("end", int), ("step", int)])
 
 
 @dataclass

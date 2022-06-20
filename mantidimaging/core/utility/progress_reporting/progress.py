@@ -3,13 +3,12 @@
 
 import threading
 import time
-from collections import namedtuple
 from logging import getLogger
-from typing import List, Optional
+from typing import List, NamedTuple, Optional
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
-ProgressHistory = namedtuple('ProgressHistory', ['time', 'step', 'msg'])
+ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str)])
 
 
 class ProgressHandler(object):

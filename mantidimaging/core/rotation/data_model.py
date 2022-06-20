@@ -1,9 +1,8 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from collections import namedtuple
 from logging import getLogger
-from typing import Optional, List, Iterator
+from typing import Optional, List, Iterator, NamedTuple
 
 import numpy as np
 import scipy as sp
@@ -12,7 +11,7 @@ from mantidimaging.core.operation_history import const
 from ..utility.data_containers import ScalarCoR, Degrees, Slope
 
 LOG = getLogger(__name__)
-Point = namedtuple('Point', ['slice_index', 'cor'])
+Point = NamedTuple("Point", [("slice_index", int), ("cor", float)])
 
 
 class CorTiltDataModel:
