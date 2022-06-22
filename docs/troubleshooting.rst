@@ -73,3 +73,13 @@ Suggested Fix
 #############
 
 You can set this via :code:`export DISPLAY=:N` where :code:`:N` should be the number of your display.
+
+IDAaaS Terminal Error Messages
+------------------------------
+Errors from the terminal when Mantid Imaging is launched, such as:
+
+:code:`ERROR: ld.so: object 'libdlfaker.so' from LD_PRELOAD cannot be preloaded: ignored.`
+
+These are harmless and can be ignored.
+
+
