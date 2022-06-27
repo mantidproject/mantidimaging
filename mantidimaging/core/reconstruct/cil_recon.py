@@ -156,6 +156,10 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
+                     f"output shape {recon_volume_shape}\n"
+                     f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
+                     f"Non-negative {recon_params.non_negative}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
             angles = images.projection_angles(recon_params.max_projection_angle).value
 
