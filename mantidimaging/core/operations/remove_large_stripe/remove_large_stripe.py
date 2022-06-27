@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict, Any
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from algotom.prep.removal import remove_large_stripe
@@ -13,6 +13,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
     from mantidimaging.core.data.imagestack import ImageStack
+    from numpy import ndarray
 
 
 class RemoveLargeStripesFilter(BaseFilter):
@@ -31,23 +32,33 @@ class RemoveLargeStripesFilter(BaseFilter):
     """
     filter_name = "Remove large stripes"
     link_histograms = True
+    operate_on_sinograms = True
 
-    @staticmethod
-    def filter_func(images: 'ImageStack', snr=3, la_size=61, progress=None):
+    @classmethod
+    def filter_func(cls, images: 'ImageStack', snr=3, la_size=61, progress=None):
         """
         :param snr: The ratio value.
         :param size: The window size of the median filter to remove large stripes.
 
         :return: The ImageStack object with large stripes removed.
         """
-        f = ps.create_partial(
-            remove_large_stripe,
-            ps.return_to_self,
-            snr=snr,
-            size=la_size,
-        )
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
+        params = {"snr": snr, "size": la_size}
+        if images.is_sinograms:
+            compute_func = cls.compute_function_sino
+            num_slices = images.data.shape[0]
+        else:
+            compute_func = cls.compute_function
+            num_slices = images.data.shape[1]
+        ps.run_compute_func(compute_func, num_slices, [images.shared_array], params, progress)
         return images
+
+    @staticmethod
+    def compute_function_sino(index: int, arrays: List['ndarray'], params: Dict[str, Any]):
+        arrays[0][index] = remove_large_stripe(arrays[0][index], **params)
+
+    @staticmethod
+    def compute_function(index: int, arrays: List['ndarray'], params: Dict[str, Any]):
+        arrays[0][:, index, :] = remove_large_stripe(arrays[0][:, index, :], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):
