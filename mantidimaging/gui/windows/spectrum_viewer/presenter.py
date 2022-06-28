@@ -50,3 +50,4 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.view.spectrum.image.setImage(stack_averaged)
         self.view.spectrum.spectrum.plot(stack_spectrum, clear=True)
+        self.view.spectrum.add_range(0, stack_spectrum.shape[0] - 1)
