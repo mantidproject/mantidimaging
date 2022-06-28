@@ -2,14 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.imagestack import ImageStack
+from typing import List, Dict, Any
 
 from PyQt5.QtWidgets import QSpinBox
 from algotom.prep.removal import remove_stripe_based_filtering, remove_stripe_based_2d_filtering_sorting
+from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.data.imagestack import ImageStack
 
 
 class RemoveStripeFilteringFilter(BaseFilter):
@@ -28,9 +30,10 @@ class RemoveStripeFilteringFilter(BaseFilter):
     """
     filter_name = "Remove stripes with filtering"
     link_histograms = True
+    operate_on_sinograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
+    @classmethod
+    def filter_func(cls, images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
         """
         :param sigma: The sigma of the Gaussian window used to separate the
                       low-pass and high-pass components of the intensity profile
@@ -45,21 +48,40 @@ class RemoveStripeFilteringFilter(BaseFilter):
         :return: The ImageStack object with the stripes removed using the
                  filtering and sorting technique.
         """
-        if filtering_dim == 1:
-            f = ps.create_partial(remove_stripe_based_filtering,
-                                  ps.return_to_self,
-                                  sigma=sigma,
-                                  size=size,
-                                  dim=window_dim,
-                                  sort=True)
+        params = {"sigma": sigma, "size": size, "dim": window_dim}
+        if images.is_sinograms:
+            num_slices = images.data.shape[0]
+            if filtering_dim == 1:
+                params["sort"] = True
+                compute_func = cls.compute_function_sino
+            else:
+                compute_func = cls.compute_function_2d_sino
         else:
-            f = ps.create_partial(remove_stripe_based_2d_filtering_sorting,
-                                  ps.return_to_self,
-                                  sigma=sigma,
-                                  size=size,
-                                  dim=window_dim)
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
+            num_slices = images.data.shape[1]
+            if filtering_dim == 1:
+                params["sort"] = True
+                compute_func = cls.compute_function
+            else:
+                compute_func = cls.compute_function_2d
+
+        ps.run_compute_func(compute_func, num_slices, [images.shared_array], params, progress)
         return images
+
+    @staticmethod
+    def compute_function_sino(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][index] = remove_stripe_based_filtering(arrays[0][index], **params)
+
+    @staticmethod
+    def compute_function(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][:, index, :] = remove_stripe_based_filtering(arrays[0][:, index, :], **params)
+
+    @staticmethod
+    def compute_function_2d_sino(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][index] = remove_stripe_based_2d_filtering_sorting(arrays[0][index], **params)
+
+    @staticmethod
+    def compute_function_2d(index: int, arrays: List[ndarray], params: Dict[str, Any]):
+        arrays[0][:, index, :] = remove_stripe_based_2d_filtering_sorting(arrays[0][:, index, :], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):
