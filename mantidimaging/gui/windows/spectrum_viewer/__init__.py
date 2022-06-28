@@ -3,3 +3,4 @@
 
 from .view import SpectrumViewerWindowView  # noqa: F401
 from .presenter import SpectrumViewerWindowPresenter  # noqa: F401
+from .model import SpectrumViewerWindowModel  # noqa: F401

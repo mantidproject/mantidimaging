@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -13,12 +14,14 @@ if TYPE_CHECKING:
 
 class SpectrumViewerWindowPresenter(BasePresenter):
     view: 'SpectrumViewerWindowView'
+    model: SpectrumViewerWindowModel
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
 
         self.view = view
         self.main_window = main_window
+        self.model = SpectrumViewerWindowModel(self)
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         new_dataset_id = self.get_dataset_id_for_stack(uuid)
