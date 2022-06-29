@@ -55,9 +55,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def show_new_sample(self, uuid: 'UUID'):
         stack = self.main_window.get_stack(uuid)
 
-        stack_averaged = stack.data.mean(axis=0)
         stack_spectrum = stack.data.mean(axis=(1, 2))
 
-        self.view.spectrum.image.setImage(stack_averaged)
+        self.view.spectrum.image.setImage(self.model.get_averaged_image())
         self.view.spectrum.spectrum.plot(stack_spectrum, clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from mantidimaging.core.data import ImageStack
 
 if TYPE_CHECKING:
+    import numpy as np
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
 
 
@@ -23,3 +24,10 @@ class SpectrumViewerWindowModel:
 
     def set_open_stack(self, open_stack: ImageStack):
         self._open_stack = open_stack
+
+    def get_averaged_image(self) -> 'np.ndarray':
+        if self._stack is not None:
+            tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
+            return self._stack.data[tof_slice].mean(axis=0)
+        else:
+            return None
