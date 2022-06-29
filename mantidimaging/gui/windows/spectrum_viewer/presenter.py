@@ -25,10 +25,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         new_dataset_id = self.get_dataset_id_for_stack(uuid)
-        if new_dataset_id is None:
-            self.view.current_dataset_id = None
-            return
 
+        if new_dataset_id:
+            self.auto_find_flat_stack(new_dataset_id)
+        else:
+            self.view.current_dataset_id = None
+
+        if uuid is not None:
+            self.model.set_stack(self.main_window.get_stack(uuid))
+            normalise_uuid = self.view.get_normalise_stack()
+            if normalise_uuid is not None:
+                self.model.set_open_stack(self.main_window.get_stack(normalise_uuid))
+            self.show_new_sample(uuid)
+
+    def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
             self.view.current_dataset_id = new_dataset_id
 
@@ -38,9 +48,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.view.try_to_select_relevant_normalise_stack(new_dataset.flat_before.name)
                 elif new_dataset.flat_after is not None:
                     self.view.try_to_select_relevant_normalise_stack(new_dataset.flat_after.name)
-
-        if uuid is not None:
-            self.show_new_sample(uuid)
 
     def get_dataset_id_for_stack(self, stack_id: Optional['UUID']) -> Optional['UUID']:
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)

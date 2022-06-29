@@ -35,6 +35,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         new_dataset = StrictDataset(generate_images(), flat_before=generate_images())
         new_dataset.flat_before.name = 'Flat_before'
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
+        self.presenter.main_window.get_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
 
@@ -47,6 +48,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         new_dataset = StrictDataset(generate_images(), flat_after=generate_images())
         new_dataset.flat_after.name = 'Flat_after'
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
+        self.presenter.main_window.get_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
 
@@ -68,6 +70,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         initial_dataset_id = self.view.current_dataset_id
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=initial_dataset_id)
         self.presenter.main_window.get_dataset = mock.Mock()
+        self.presenter.main_window.get_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
 
         self.presenter.handle_sample_change(uuid.uuid4())
@@ -78,6 +81,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
         new_dataset = MixedDataset([generate_images()])
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
+        self.presenter.main_window.get_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
 
@@ -89,6 +93,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
         new_dataset = StrictDataset(generate_images())
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
+        self.presenter.main_window.get_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
 

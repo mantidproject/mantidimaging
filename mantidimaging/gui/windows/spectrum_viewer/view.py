@@ -65,3 +65,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def try_to_select_relevant_normalise_stack(self, name: str) -> None:
         self.normaliseStackSelector.try_to_select_relevant_stack(name)
+
+    def get_normalise_stack(self) -> Optional['UUID']:
+        return self.normaliseStackSelector.current()
