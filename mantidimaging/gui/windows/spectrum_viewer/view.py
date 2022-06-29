@@ -40,6 +40,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum = SpectrumWidget(self)
         self.imageLayout.addWidget(self.spectrum)
 
+        self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
+
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()

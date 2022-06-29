@@ -56,3 +56,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum.image.setImage(self.model.get_averaged_image())
         self.view.spectrum.spectrum.plot(self.model.get_spectrum(), clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)
+
+    def handle_range_slide_moved(self) -> None:
+        tof_range = self.view.spectrum.get_tof_range()
+        self.model.tof_range = tof_range
+        self.view.spectrum.image.setImage(self.model.get_averaged_image(), autoLevels=False)
