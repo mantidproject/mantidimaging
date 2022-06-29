@@ -31,6 +31,14 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, order=1, sigma=3, progress=None):
+        """
+        :param order: The polynomial fit order. Check algotom docs for more
+                      information.
+        :param sigma: The sigma of the Gaussian window in the x-direction.
+
+        :return: The ImageStack object with the stripes removed using the
+                 sorting and fitting technique.
+        """
         f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
 
         ps.execute(f, [images.shared_array], images.data.shape[0], progress)

@@ -28,6 +28,12 @@ class DivideFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
+        """
+        :param value: The division value.
+        :param unit: The unit of the divisor.
+
+        :return: The ImageStack object which has been divided by a value.
+        """
         h.check_data_stack(images)
         if not value:
             raise ValueError('value parameter must not equal 0 or None')

@@ -34,6 +34,12 @@ class RemoveLargeStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: 'ImageStack', snr=3, la_size=61, progress=None):
+        """
+        :param snr: The ratio value.
+        :param size: The window size of the median filter to remove large stripes.
+
+        :return: The ImageStack object with large stripes removed.
+        """
         f = ps.create_partial(
             remove_large_stripe,
             ps.return_to_self,

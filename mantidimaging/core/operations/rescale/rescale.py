@@ -28,6 +28,16 @@ class RescaleFilter(BaseFilter):
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
                     progress=None) -> ImageStack:
+        """
+        :param min_input: The Minimum value of the data that will be used.
+                          Anything below this will be clipped to 0.
+        :param max_input: Maximum value of the data that will be used. Anything
+                          above it will be clipped to 0.
+        :param max_output: Maximum value of the OUTPUT images. They will be
+                           rescaled to range [0, MAX OUTPUT].
+
+        :return: The ImageStack object scaled to a new range.
+        """
 
         RescaleFilter.filter_array(images.data, min_input, max_input, max_output)
         return images
