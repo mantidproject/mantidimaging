@@ -31,3 +31,9 @@ class SpectrumViewerWindowModel:
             return self._stack.data[tof_slice].mean(axis=0)
         else:
             return None
+
+    def get_spectrum(self) -> 'np.ndarray':
+        if self._stack is not None:
+            return self._stack.data.mean(axis=(1, 2))
+        else:
+            return None

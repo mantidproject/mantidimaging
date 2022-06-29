@@ -4,6 +4,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -43,3 +44,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         av_img = self.model.get_averaged_image()
         self.assertEqual(av_img.data.shape, (11, 12))
         self.assertEqual(av_img.data[0, 0], 6.5)
+
+    def test_get_spectrum(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+
+        model_spec = self.model.get_spectrum()
+        self.assertEqual(model_spec.shape, (10, ))
+        npt.assert_array_equal(model_spec, spectrum)

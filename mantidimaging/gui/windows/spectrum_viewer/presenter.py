@@ -36,7 +36,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             normalise_uuid = self.view.get_normalise_stack()
             if normalise_uuid is not None:
                 self.model.set_open_stack(self.main_window.get_stack(normalise_uuid))
-            self.show_new_sample(uuid)
+            self.show_new_sample()
 
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
@@ -52,11 +52,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def get_dataset_id_for_stack(self, stack_id: Optional['UUID']) -> Optional['UUID']:
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
-    def show_new_sample(self, uuid: 'UUID'):
-        stack = self.main_window.get_stack(uuid)
-
-        stack_spectrum = stack.data.mean(axis=(1, 2))
-
+    def show_new_sample(self) -> None:
         self.view.spectrum.image.setImage(self.model.get_averaged_image())
-        self.view.spectrum.spectrum.plot(stack_spectrum, clear=True)
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum(), clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)

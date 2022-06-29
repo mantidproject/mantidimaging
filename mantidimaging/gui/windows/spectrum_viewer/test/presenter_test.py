@@ -105,10 +105,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_show_sample(self):
         image_stack = generate_images([10, 11, 12])
-        self.presenter.main_window.get_stack = mock.Mock(return_value=image_stack)
         self.view.spectrum.image = mock.Mock()
         self.view.spectrum.spectrum = mock.Mock()
         self.presenter.model.set_stack(image_stack)
 
-        self.presenter.show_new_sample(uuid.uuid4())
+        self.presenter.show_new_sample()
         self.view.spectrum.add_range.assert_called_once_with(0, 9)
