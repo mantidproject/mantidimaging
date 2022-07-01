@@ -34,10 +34,6 @@ def return_to_second_at_i(func, data: Union[List[pu.SharedArray], List[pu.Shared
     data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def arithmetic(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, arg_list):
-    func(data[0].array[i], *arg_list)
-
-
 def create_partial(func, fwd_function, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
