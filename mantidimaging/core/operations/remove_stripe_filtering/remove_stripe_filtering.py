@@ -31,6 +31,20 @@ class RemoveStripeFilteringFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
+        """
+        :param sigma: The sigma of the Gaussian window used to separate the
+                      low-pass and high-pass components of the intensity profile
+                      of each column.
+        :param size: The window size of the median filter to remove large
+                     stripes.
+        :param window_dim: Whether to perform the median on 1D or 2D view of the
+                           data.
+        :param filtering_dim: Whether to use a 1D or 2D low-pass filter. This
+                              uses different Sarepy methods.
+
+        :return: The ImageStack object with the stripes removed using the
+                 filtering and sorting technique.
+        """
         if filtering_dim == 1:
             f = ps.create_partial(remove_stripe_based_filtering,
                                   ps.return_to_self,

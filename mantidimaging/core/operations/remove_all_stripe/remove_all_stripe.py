@@ -34,6 +34,17 @@ class RemoveAllStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, snr=3, la_size=61, sm_size=21, dim=1, progress=None):
+        """
+        :param snr: The ratio used to segment between useful information and
+                    noise. Greater is less sensitive.
+        :param la_size: The window size of the median filter to remove large
+                        stripes.
+        :param sm_size: The window size of the median filter to remove
+                        small-to-medium stripes.
+        :param dim: Whether to perform the median on 1D or 2D view of the data.
+
+        :return: Remove all types of stripe artifacts.
+        """
         if images.num_projections < 2:
             return images
         params = {"snr": snr, "la_size": la_size, "sm_size": sm_size, "dim": dim}

@@ -31,6 +31,12 @@ class RemoveDeadStripesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack, snr=3, size=61, progress=None):
+        """
+        :param snr: The ratio value.
+        :param size: The window size of the median filter to remove dead stripes.
+
+        :return: The ImageStack object with the dead stripes removed.
+        """
         f = ps.create_partial(remove_dead_stripe, ps.return_to_self, snr=snr, size=size, residual=False)
         ps.execute(f, [images.shared_array], images.data.shape[0], progress)
         return images
