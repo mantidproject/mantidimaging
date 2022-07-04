@@ -40,6 +40,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum = SpectrumWidget(self)
         self.imageLayout.addWidget(self.spectrum)
 
+        self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
+
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
@@ -65,3 +67,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def try_to_select_relevant_normalise_stack(self, name: str) -> None:
         self.normaliseStackSelector.try_to_select_relevant_stack(name)
+
+    def get_normalise_stack(self) -> Optional['UUID']:
+        return self.normaliseStackSelector.current()
