@@ -47,11 +47,9 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         params = {'order': order, 'sigma': sigma, 'sort': True}
         if images.is_sinograms:
             compute_func = cls.compute_function_sino
-            num_slices = images.data.shape[0]
         else:
             compute_func = cls.compute_function
-            num_slices = images.data.shape[1]
-        ps.run_compute_func(compute_func, num_slices, [images.shared_array], params, progress)
+        ps.run_compute_func(compute_func, images.num_sinograms, [images.shared_array], params, progress)
 
         return images
 

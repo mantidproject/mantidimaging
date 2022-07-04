@@ -50,12 +50,10 @@ class RemoveAllStripesFilter(BaseFilter):
         params = {"snr": snr, "la_size": la_size, "sm_size": sm_size, "dim": dim}
         if images.is_sinograms:
             compute_func = RemoveAllStripesFilter.compute_function_sino
-            num_slices = images.data.shape[0]
         else:
             compute_func = RemoveAllStripesFilter.compute_function
-            num_slices = images.data.shape[1]
 
-        ps.run_compute_func(compute_func, num_slices, [images.shared_array], params, progress)
+        ps.run_compute_func(compute_func, images.num_sinograms, [images.shared_array], params, progress)
         return images
 
     @staticmethod
