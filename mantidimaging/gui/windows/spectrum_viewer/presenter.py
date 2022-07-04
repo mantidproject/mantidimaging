@@ -35,7 +35,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.set_stack(self.main_window.get_stack(uuid))
             normalise_uuid = self.view.get_normalise_stack()
             if normalise_uuid is not None:
-                self.model.set_open_stack(self.main_window.get_stack(normalise_uuid))
+                self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
             self.show_new_sample()
 
     def auto_find_flat_stack(self, new_dataset_id):

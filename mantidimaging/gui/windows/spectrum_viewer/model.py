@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class SpectrumViewerWindowModel:
     presenter: 'SpectrumViewerWindowPresenter'
     _stack: Optional[ImageStack]
-    _open_stack: Optional[ImageStack]
+    _normalise_stack: Optional[ImageStack]
     tof_range: tuple[int, int] = (0, 0)
 
     def __init__(self, presenter):
@@ -22,8 +22,8 @@ class SpectrumViewerWindowModel:
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
 
-    def set_open_stack(self, open_stack: ImageStack):
-        self._open_stack = open_stack
+    def set_normalise_stack(self, normalise_stack: ImageStack):
+        self._normalise_stack = normalise_stack
 
     def get_averaged_image(self) -> 'np.ndarray':
         if self._stack is not None:

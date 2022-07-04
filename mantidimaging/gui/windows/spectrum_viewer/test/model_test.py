@@ -18,12 +18,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_set_stacks(self):
         stack = generate_images([10, 11, 12])
-        open_stack = generate_images([10, 11, 12])
+        normalise_stack = generate_images([10, 11, 12])
         self.model.set_stack(stack)
-        self.model.set_open_stack(open_stack)
+        self.model.set_normalise_stack(normalise_stack)
 
         self.assertEqual(self.model._stack, stack)
-        self.assertEqual(self.model._open_stack, open_stack)
+        self.assertEqual(self.model._normalise_stack, normalise_stack)
         self.assertEqual(self.model.tof_range, (0, 9))
 
     def test_get_averaged_image(self):
