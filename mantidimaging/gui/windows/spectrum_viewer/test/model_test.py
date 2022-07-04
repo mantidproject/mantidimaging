@@ -16,15 +16,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
 
-    def test_set_stacks(self):
+    def test_set_stack(self):
         stack = generate_images([10, 11, 12])
-        normalise_stack = generate_images([10, 11, 12])
         self.model.set_stack(stack)
-        self.model.set_normalise_stack(normalise_stack)
 
         self.assertEqual(self.model._stack, stack)
-        self.assertEqual(self.model._normalise_stack, normalise_stack)
         self.assertEqual(self.model.tof_range, (0, 9))
+
+    def test_set_normalise_stack(self):
+        normalise_stack = generate_images([10, 11, 12])
+        self.model.set_normalise_stack(normalise_stack)
+
+        self.assertEqual(self.model._normalise_stack, normalise_stack)
 
     def test_get_averaged_image(self):
         stack = ImageStack(np.ones([10, 11, 12]))
