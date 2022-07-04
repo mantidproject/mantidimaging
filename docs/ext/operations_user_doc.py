@@ -56,10 +56,14 @@ class OperationsUserDoc(Directive):
         except ImportError:
             raise ValueError("operations_user_doc could not import load_filter_packages")
 
+        env = self.state.document.settings.env
+        env.note_dependency(__file__)
+
         rst_lines = []
 
         operations = load_filter_packages()
         for op in operations:
+            env.note_dependency(inspect.getfile(op))
             # Title
             rst_lines += make_heading(op.filter_name, "-")
 
