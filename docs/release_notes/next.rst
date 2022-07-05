@@ -19,6 +19,7 @@ New Features
 - #1444 : CIL PDHG non-negativity constraint
 - #1483 : Add line profile to reconstruction window
 - #1480 : Automatic sinograms for sinogram operations
+- #1523 : Operations window Lock Scale and Lock Zoom enabled by default
 
 Fixes
 -----
