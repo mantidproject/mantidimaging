@@ -1,7 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from functools import partial
-from typing import Callable, Dict, List
+from typing import Callable, Dict
 
 import numpy as np
 from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
@@ -46,13 +46,13 @@ class ArithmeticFilter(BaseFilter):
             raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")
 
         params = {'div': div_val, 'mult': mult_val, 'add': add_val, 'sub': sub_val}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], [images.shared_array], params, progress)
+        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
 
         return images
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, float]):
-        arrays[0][i] = arrays[0][i] / params['div'] * params['mult'] + params['add'] - params['sub']
+    def compute_function(i: int, array: np.ndarray, params: Dict[str, float]):
+        array[i] = array[i] / params['div'] * params['mult'] + params['add'] - params['sub']
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:

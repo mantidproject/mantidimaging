@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
 from algotom.prep.removal import remove_dead_stripe
@@ -47,16 +47,16 @@ class RemoveDeadStripesFilter(BaseFilter):
             compute_func = cls.compute_function_sino
         else:
             compute_func = cls.compute_function
-        ps.run_compute_func(compute_func, images.num_sinograms, [images.shared_array], params, progress)
+        ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, arrays: List[ndarray], params: Dict[str, Any]):
-        arrays[0][index] = remove_dead_stripe(arrays[0][index], **params)
+    def compute_function_sino(index: int, array: ndarray, params: Dict[str, Any]):
+        array[index] = remove_dead_stripe(array[index], **params)
 
     @staticmethod
-    def compute_function(index: int, arrays: List[ndarray], params: Dict[str, Any]):
-        arrays[0][:, index, :] = remove_dead_stripe(arrays[0][:, index, :], **params)
+    def compute_function(index: int, array: ndarray, params: Dict[str, Any]):
+        array[:, index, :] = remove_dead_stripe(array[:, index, :], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):
