@@ -29,6 +29,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         self.assertEqual(self.model._normalise_stack, normalise_stack)
 
+    def test_stack_image_shape(self):
+        stack = generate_images([10, 11, 12])
+        self.model.set_stack(stack)
+
+        self.assertEqual(self.model.get_image_shape(), (11, 12))
+
     def test_get_averaged_image(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         stack.data[:5, :, :] = 2
@@ -57,3 +63,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         model_spec = self.model.get_spectrum()
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
+
+    def test_get_roi(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        self.model.set_stack(stack)
+        npt.assert_array_equal(self.model.roi_range.top, 0)
+        npt.assert_array_equal(self.model.roi_range.left, 0)
+        npt.assert_array_equal(self.model.roi_range.right, 12)
+        npt.assert_array_equal(self.model.roi_range.bottom, 11)

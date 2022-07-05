@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
     import numpy as np
@@ -14,6 +15,7 @@ class SpectrumViewerWindowModel:
     _stack: Optional[ImageStack]
     _normalise_stack: Optional[ImageStack]
     tof_range: tuple[int, int] = (0, 0)
+    roi_range: SensibleROI = SensibleROI()
 
     def __init__(self, presenter):
         self.presenter = presenter
@@ -21,6 +23,8 @@ class SpectrumViewerWindowModel:
     def set_stack(self, stack: ImageStack):
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
+        height, width = self.get_image_shape()
+        self.roi_range = SensibleROI.from_list([0, 0, width, height])
 
     def set_normalise_stack(self, normalise_stack: ImageStack):
         self._normalise_stack = normalise_stack
@@ -37,3 +41,9 @@ class SpectrumViewerWindowModel:
             return self._stack.data.mean(axis=(1, 2))
         else:
             return None
+
+    def get_image_shape(self) -> tuple[int, int]:
+        if self._stack is not None:
+            return self._stack.data.shape[1:]
+        else:
+            return 0, 0
