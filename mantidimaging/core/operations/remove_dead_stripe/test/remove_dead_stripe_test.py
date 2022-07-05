@@ -6,8 +6,10 @@ from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.remove_dead_stripe import RemoveDeadStripesFilter
+from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 
 
+@start_multiprocessing_pool
 class RemoveDeadStripesTest(unittest.TestCase):
     """
     Test stripe removal filter.

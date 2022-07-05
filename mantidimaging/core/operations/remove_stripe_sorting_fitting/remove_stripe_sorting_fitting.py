@@ -2,14 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from functools import partial
-from mantidimaging.core.data.imagestack import ImageStack
+from typing import Dict, Any
 
 from PyQt5.QtWidgets import QSpinBox
 from algotom.prep.removal import remove_stripe_based_fitting
+from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.data.imagestack import ImageStack
 
 
 class RemoveStripeSortingFittingFilter(BaseFilter):
@@ -28,9 +30,10 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     """
     filter_name = "Remove stripes with sorting and fitting"
     link_histograms = True
+    operate_on_sinograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack, order=1, sigma=3, progress=None):
+    @classmethod
+    def filter_func(cls, images: ImageStack, order=1, sigma=3, progress=None):
         """
         :param order: The polynomial fit order. Check algotom docs for more
                       information.
@@ -39,10 +42,24 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         :return: The ImageStack object with the stripes removed using the
                  sorting and fitting technique.
         """
-        f = ps.create_partial(remove_stripe_based_fitting, ps.return_to_self, order=order, sigma=sigma, sort=True)
+        if images.num_projections < 2:
+            return images
+        params = {'order': order, 'sigma': sigma, 'sort': True}
+        if images.is_sinograms:
+            compute_func = cls.compute_function_sino
+        else:
+            compute_func = cls.compute_function
+        ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
 
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress)
         return images
+
+    @staticmethod
+    def compute_function_sino(index: int, array: ndarray, params: Dict[str, Any]):
+        array[index] = remove_stripe_based_fitting(array[index], **params)
+
+    @staticmethod
+    def compute_function(index: int, array: ndarray, params: Dict[str, Any]):
+        array[:, index, :] = remove_stripe_based_fitting(array[:, index, :], **params)
 
     @staticmethod
     def register_gui(form, on_change, view):

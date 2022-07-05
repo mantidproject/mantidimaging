@@ -34,10 +34,6 @@ def return_to_second_at_i(func, data: Union[List[pu.SharedArray], List[pu.Shared
     data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
-def arithmetic(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, arg_list):
-    func(data[0].array[i], *arg_list)
-
-
 def create_partial(func, fwd_function, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
@@ -79,7 +75,8 @@ def execute(partial_func: partial,
     pu.execute_impl(num_operations, partial_func, all_data_in_shared_memory, progress, msg)
 
 
-ComputeFuncType = Callable[[int, List['ndarray'], Dict[str, Any]], None]
+ComputeFuncType = Union[Callable[[int, List['ndarray'], Dict[str, Any]], None],
+                        Callable[[int, 'ndarray', Dict[str, Any]], None]]
 
 
 class _Worker:
@@ -91,14 +88,18 @@ class _Worker:
 
     def __call__(self, index: int):
         ndarrays = [sa.array for sa in self.arrays]
+        if len(ndarrays) == 1:
+            ndarrays = ndarrays[0]
         self.func(index, ndarrays, self.params)
 
 
 def run_compute_func(func: ComputeFuncType,
                      num_operations: int,
-                     arrays: List[pu.SharedArray],
+                     arrays: Union[List[pu.SharedArray], pu.SharedArray],
                      params: Dict[str, Any],
                      progress=None):
+    if isinstance(arrays, pu.SharedArray):
+        arrays = [arrays]
     all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
     worker_func = _Worker(func, data, params)
     pu.run_compute_func_impl(worker_func, num_operations, all_data_in_shared_memory, progress)
