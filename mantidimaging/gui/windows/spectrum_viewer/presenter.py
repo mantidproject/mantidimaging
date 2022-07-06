@@ -62,3 +62,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         tof_range = self.view.spectrum.get_tof_range()
         self.model.tof_range = tof_range
         self.view.spectrum.image.setImage(self.model.get_averaged_image(), autoLevels=False)
+
+    def handle_roi_moved(self) -> None:
+        roi = self.view.spectrum.get_roi()
+        self.model.roi_range = roi
+        self.view.spectrum.spectrum.clearPlots()
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum())

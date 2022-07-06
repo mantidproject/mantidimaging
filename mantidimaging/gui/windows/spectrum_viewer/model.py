@@ -38,7 +38,9 @@ class SpectrumViewerWindowModel:
 
     def get_spectrum(self) -> 'np.ndarray':
         if self._stack is not None:
-            return self._stack.data.mean(axis=(1, 2))
+            left, top, right, bottom = self.roi_range
+            roi_data = self._stack.data[:, top:bottom, left:right]
+            return roi_data.mean(axis=(1, 2))
         else:
             return None
 

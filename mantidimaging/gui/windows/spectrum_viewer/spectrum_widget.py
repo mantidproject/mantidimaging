@@ -8,6 +8,7 @@ from pyqtgraph import GraphicsLayoutWidget, PlotItem, LinearRegionItem, ROI
 
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 if TYPE_CHECKING:
     from .view import SpectrumViewerWindowView
@@ -20,6 +21,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     roi: ROI
 
     range_changed = pyqtSignal()
+    roi_changed = pyqtSignal()
 
     def __init__(self, parent: 'SpectrumViewerWindowView'):
         super().__init__(parent)
@@ -38,6 +40,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control.sigRegionChanged.connect(self.range_changed.emit)
 
         self.roi = ROI(pos=(0, 0))
+        self.roi.sigRegionChanged.connect(self.roi_changed.emit)
 
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
@@ -56,3 +59,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi.addScaleHandle([0, 0], [1, 1])
         self.roi.addScaleHandle([0, 1], [1, 0])
         self.image.vb.addItem(self.roi)
+
+    def get_roi(self) -> SensibleROI:
+        pos = CloseEnoughPoint(self.roi.pos())
+        size = CloseEnoughPoint(self.roi.size())
+        return SensibleROI.from_points(pos, size)

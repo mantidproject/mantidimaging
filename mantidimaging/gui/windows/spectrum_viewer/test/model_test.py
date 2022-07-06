@@ -9,6 +9,7 @@ import numpy.testing as npt
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
@@ -71,3 +72,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         npt.assert_array_equal(self.model.roi_range.left, 0)
         npt.assert_array_equal(self.model.roi_range.right, 12)
         npt.assert_array_equal(self.model.roi_range.bottom, 11)
+
+    def test_get_spectrum_roi(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        stack.data[:, :, 6:] *= 2
+        self.model.set_stack(stack)
+
+        self.model.roi_range = SensibleROI.from_list([0, 0, 3, 3])
+        model_spec = self.model.get_spectrum()
+        npt.assert_array_equal(model_spec, spectrum)
+
+        self.model.roi_range = SensibleROI.from_list([6, 0, 6 + 3, 3])
+        model_spec = self.model.get_spectrum()
+        npt.assert_array_equal(model_spec, spectrum * 2)
