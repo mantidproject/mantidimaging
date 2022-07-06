@@ -322,12 +322,15 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_previews()
             return
 
+        is_new_treeview_data = self.view.preview_image_before.image_data is None
+        had_previous_diff = self.view.preview_image_difference.image_data is not None
+
         self.view.clear_previews(clear_before=False)
-        is_first_data = self.view.preview_image_before.image_data is None
+
         # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
-        lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_first_data
+        lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_treeview_data
         if lock_scale:
-            self.view.previews.record_histogram_regions()
+            self.view.previews.record_histogram_regions(apply_to_diff=had_previous_diff)
 
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
@@ -380,13 +383,13 @@ class FiltersWindowPresenter(BasePresenter):
             self._update_preview_image(diff, self.view.preview_image_difference)
 
         # Ensure all of it is visible if the lock zoom isn't checked or if we're setting data for the first time
-        if not self.view.lockZoomCheckBox.isChecked() or is_first_data:
+        if not self.view.lockZoomCheckBox.isChecked() or is_new_treeview_data:
             self.view.previews.auto_range()
 
         if lock_scale:
-            self.view.previews.restore_histogram_regions()
+            self.view.previews.restore_histogram_regions(apply_to_diff=had_previous_diff)
         self.view.previews.set_histogram_log_scale()
-        if is_first_data:
+        if is_new_treeview_data:
             # Refresh the histogram view for the case where we've deleted all the tree view data with the window
             # still open and then loaded some new data
             self.view.previews.autorange_histograms()

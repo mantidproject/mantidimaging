@@ -189,15 +189,17 @@ class FilterPreviews(GraphicsLayoutWidget):
         # This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox
         self.imageview_before.viewbox.autoRange()
 
-    def record_histogram_regions(self):
+    def record_histogram_regions(self, apply_to_diff: bool = True):
         self.before_region = self.imageview_before.histogram.region.getRegion()
-        self.diff_region = self.imageview_difference.histogram.region.getRegion()
         self.after_region = self.imageview_after.histogram.region.getRegion()
+        if apply_to_diff:
+            self.diff_region = self.imageview_difference.histogram.region.getRegion()
 
-    def restore_histogram_regions(self):
+    def restore_histogram_regions(self, apply_to_diff: bool = True):
         self.imageview_before.histogram.region.setRegion(self.before_region)
-        self.imageview_difference.histogram.region.setRegion(self.diff_region)
         self.imageview_after.histogram.region.setRegion(self.after_region)
+        if apply_to_diff:
+            self.imageview_difference.histogram.region.setRegion(self.diff_region)
 
     def link_before_after_histogram_scales(self, create_link: bool):
         """
@@ -218,3 +220,5 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def autorange_histograms(self):
         self.imageview_before.histogram.autoHistogramRange()
+        self.imageview_after.histogram.autoHistogramRange()
+        self.imageview_difference.histogram.autoHistogramRange()
