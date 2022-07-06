@@ -487,9 +487,10 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         Opens the Palette Changer window when the "Auto" button has been clicked.
         """
-        self.change_colour_palette_dialog = PaletteChangerView(
-            self, self.image_view.imageview_recon.histogram, self.image_view.imageview_recon.image_data,
-            [self.image_view.imageview_sinogram.histogram, self.image_view.imageview_projection.histogram], True)
+        self.change_colour_palette_dialog = PaletteChangerView(self,
+                                                               self.image_view.imageview_recon.histogram,
+                                                               self.image_view.imageview_recon.image_data,
+                                                               recon_mode=True)
         self.change_colour_palette_dialog.show()
 
     def show_status_message(self, msg: str):
