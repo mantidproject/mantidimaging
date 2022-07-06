@@ -54,6 +54,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     def add_roi(self, roi: SensibleROI):
         self.roi.setPos((roi.left, roi.top))
         self.roi.setSize((roi.width, roi.height))
+        self.roi.maxBounds = self.roi.parentBounds()
         self.roi.addScaleHandle([1, 1], [0, 0])
         self.roi.addScaleHandle([1, 0], [0, 1])
         self.roi.addScaleHandle([0, 0], [1, 1])
