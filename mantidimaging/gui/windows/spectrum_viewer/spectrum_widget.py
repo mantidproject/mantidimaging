@@ -39,7 +39,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self.range_changed.emit)
 
-        self.roi = ROI(pos=(0, 0))
+        self.roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         self.roi.sigRegionChanged.connect(self.roi_changed.emit)
 
     def add_range(self, range_min: int, range_max: int):
