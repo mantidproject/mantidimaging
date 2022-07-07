@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 from unittest import mock
 
@@ -115,6 +116,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Gaussian")
         QApplication.processEvents()
+        QTest.qWait(2000)
 
         self.check_target(widget=self.imaging.filters)
 
