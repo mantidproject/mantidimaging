@@ -116,7 +116,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Gaussian")
         QApplication.processEvents()
-        QTest.qWait(2000)
+        QTest.qWait(5000)
 
         self.check_target(widget=self.imaging.filters)
 
