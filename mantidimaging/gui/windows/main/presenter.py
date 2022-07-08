@@ -50,7 +50,7 @@ class Notification(Enum):
 
 
 def _generate_recon_item_name(recon_no: int) -> str:
-    return f"Recon {recon_no}"
+    return "Recon" if recon_no == 1 else f"Recon {recon_no}"
 
 
 class MainWindowPresenter(BasePresenter):
@@ -524,12 +524,15 @@ class MainWindowPresenter(BasePresenter):
         :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
-        if recon_count == 1:
+        recon_group = None if recon_count == 1 else self.view.get_recon_group(dataset_item)
+
+        if not recon_group:
             recon_group = self.view.add_recon_group(dataset_item, self.model.get_recon_list_id(parent_id))
-            name = "Recon"
+            recon_num = 1
         else:
-            recon_group = self.view.get_recon_group(dataset_item)
-            name = _generate_recon_item_name(recon_count)
+            recon_num = recon_count
+
+        name = _generate_recon_item_name(recon_num)
         self.view.create_child_tree_item(recon_group, child_id, name)
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
