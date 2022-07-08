@@ -322,6 +322,8 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.clear_previews()
             return
 
+        is_new_data = self.view.preview_image_before.image_data is None
+
         self.view.clear_previews(clear_before=False)
         lock_scale = self.view.lockScaleCheckBox.isChecked()
         if lock_scale:
@@ -378,7 +380,7 @@ class FiltersWindowPresenter(BasePresenter):
             self._update_preview_image(diff, self.view.preview_image_difference)
 
         # Ensure all of it is visible if the lock zoom isn't checked
-        if not self.view.lockZoomCheckBox.isChecked():
+        if not self.view.lockZoomCheckBox.isChecked() or is_new_data:
             self.view.previews.auto_range()
 
         if lock_scale:
