@@ -20,6 +20,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     normaliseCheckBox: QCheckBox
     imageLayout: QVBoxLayout
+    _current_dataset_id: Optional['UUID']
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/spectrum_viewer.ui')
@@ -27,21 +28,21 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
-        self._configure_dropdown(self.sampleStackSelector)
-        self._configure_dropdown(self.normaliseStackSelector)
-
-        self.sampleStackSelector.select_eligible_stack()
-        self.try_to_select_relevant_normalise_stack("Flat")
-
-        self._current_dataset_id = self.presenter.get_dataset_id_for_stack(self.sampleStackSelector.current())
-        self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
-        self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
-
         self.spectrum = SpectrumWidget(self)
         self.imageLayout.addWidget(self.spectrum)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
+
+        self._current_dataset_id = None
+        self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
+        self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
+
+        self._configure_dropdown(self.sampleStackSelector)
+        self._configure_dropdown(self.normaliseStackSelector)
+
+        self.sampleStackSelector.select_eligible_stack()
+        self.try_to_select_relevant_normalise_stack("Flat")
 
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
