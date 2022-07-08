@@ -50,3 +50,17 @@ class OperationsWindowsViewTest(unittest.TestCase):
                 as mock_do_update_previews:
             self.window.on_auto_update_triggered()
             mock_do_update_previews.assert_not_called()
+
+    def test_lock_zoom_changed_deselected(self):
+        self.window.lockZoomCheckBox.setChecked(False)
+        self.window.previews.auto_range = mock.Mock()
+        self.window.lock_zoom_changed()
+
+        self.window.previews.auto_range.assert_called_once()
+
+    def test_lock_zoom_changed_selected(self):
+        self.window.lockZoomCheckBox.setChecked(True)
+        self.window.previews.auto_range = mock.Mock()
+        self.window.lock_zoom_changed()
+
+        self.window.previews.auto_range.assert_not_called()
