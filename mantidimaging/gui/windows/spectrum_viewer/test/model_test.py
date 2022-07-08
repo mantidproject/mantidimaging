@@ -9,6 +9,7 @@ import numpy.testing as npt
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
@@ -28,6 +29,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_normalise_stack(normalise_stack)
 
         self.assertEqual(self.model._normalise_stack, normalise_stack)
+
+    def test_get_image_shape(self):
+        stack = generate_images([10, 11, 12])
+        self.model.set_stack(stack)
+
+        self.assertEqual(self.model.get_image_shape(), (11, 12))
 
     def test_get_averaged_image(self):
         stack = ImageStack(np.ones([10, 11, 12]))
@@ -57,3 +64,26 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         model_spec = self.model.get_spectrum()
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
+
+    def test_set_stack_sets_roi(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        self.model.set_stack(stack)
+        npt.assert_array_equal(self.model.roi_range.top, 0)
+        npt.assert_array_equal(self.model.roi_range.left, 0)
+        npt.assert_array_equal(self.model.roi_range.right, 12)
+        npt.assert_array_equal(self.model.roi_range.bottom, 11)
+
+    def test_get_spectrum_roi(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        stack.data[:, :, 6:] *= 2
+        self.model.set_stack(stack)
+
+        self.model.roi_range = SensibleROI.from_list([0, 0, 3, 3])
+        model_spec = self.model.get_spectrum()
+        npt.assert_array_equal(model_spec, spectrum)
+
+        self.model.roi_range = SensibleROI.from_list([6, 0, 6 + 3, 3])
+        model_spec = self.model.get_spectrum()
+        npt.assert_array_equal(model_spec, spectrum * 2)
