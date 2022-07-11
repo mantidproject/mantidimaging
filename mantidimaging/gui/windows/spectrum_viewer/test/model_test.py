@@ -1,7 +1,9 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
+from pathlib import Path
 from unittest import mock
+import io
 
 import numpy as np
 import numpy.testing as npt
@@ -87,3 +89,27 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.roi_range = SensibleROI.from_list([6, 0, 6 + 3, 3])
         model_spec = self.model.get_spectrum()
         npt.assert_array_equal(model_spec, spectrum * 2)
+
+    def test_save_csv(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10) * 2
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+
+        class CloseCheckStream(io.StringIO):
+            self.is_closed: bool = False
+
+            def close(self) -> None:
+                # don't call real close as it clears buffer
+                self.is_closed = True
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+
+        self.model.save_csv(mock_path)
+        mock_path.open.assert_called_once_with("w")
+        self.assertIn("# tof_index,all,roi", mock_stream.getvalue())
+        self.assertIn("0.0,0.0,0.0", mock_stream.getvalue())
+        self.assertIn("1.0,2.0,2.0", mock_stream.getvalue())
+        self.assertTrue(mock_stream.is_closed)
