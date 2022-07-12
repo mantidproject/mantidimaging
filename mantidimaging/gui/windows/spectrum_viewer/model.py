@@ -15,8 +15,8 @@ if TYPE_CHECKING:
 
 class SpectrumViewerWindowModel:
     presenter: 'SpectrumViewerWindowPresenter'
-    _stack: Optional[ImageStack]
-    _normalise_stack: Optional[ImageStack]
+    _stack: Optional[ImageStack] = None
+    _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
     roi_range: SensibleROI = SensibleROI()
 
