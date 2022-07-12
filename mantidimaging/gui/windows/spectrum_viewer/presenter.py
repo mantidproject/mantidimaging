@@ -68,3 +68,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.roi_range = roi
         self.view.spectrum.spectrum.clearPlots()
         self.view.spectrum.spectrum.plot(self.model.get_spectrum())
+
+    def handle_export_csv(self) -> None:
+        path = self.view.get_csv_filename()
+        if path is None:
+            return
+
+        if path.suffix != ".csv":
+            path = path.with_suffix(".csv")
+
+        self.model.save_csv(path)

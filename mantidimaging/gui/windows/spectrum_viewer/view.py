@@ -1,8 +1,9 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
@@ -20,6 +21,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     normaliseCheckBox: QCheckBox
     imageLayout: QVBoxLayout
+    exportButton: QPushButton
     _current_dataset_id: Optional['UUID']
 
     def __init__(self, main_window: 'MainWindowView'):
@@ -43,6 +45,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.sampleStackSelector.select_eligible_stack()
         self.try_to_select_relevant_normalise_stack("Flat")
+
+        self.exportButton.clicked.connect(self.presenter.handle_export_csv)
 
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
@@ -72,3 +76,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def get_normalise_stack(self) -> Optional['UUID']:
         return self.normaliseStackSelector.current()
+
+    def get_csv_filename(self) -> Optional[Path]:
+        path = QFileDialog.getSaveFileName(self, "Save CSV file", "", "CSV file (*.csv)")[0]
+        if path:
+            return Path(path)
+        else:
+            return None
