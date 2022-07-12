@@ -5,6 +5,7 @@ import unittest
 
 from unittest import mock
 import numpy as np
+from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.rotation.data_model import Point
@@ -177,10 +178,17 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.show_error_dialog.assert_called_once()
         self.view.update_recon_preview.assert_not_called()
 
+    def test_do_stack_reconstruct_slice_disables_buttons(self):
+        self.presenter._get_reconstruct_slice = mock.Mock()
+
+        self.presenter.do_stack_reconstruct_slice()
+        self.view.set_recon_buttons_enabled.assert_called_once_with(False)
+
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_do_reconstruct_volume(self, mock_async_task):
         self.presenter.do_reconstruct_volume()
-        # kind of a pointless test, but at least it might capture some parameter change
+        self.view.set_recon_buttons_enabled.assert_called_once_with(False)
+        # This won't test that the reconstruction is working but it might capture some parameter change
         mock_async_task.assert_called_once_with(self.view,
                                                 self.presenter.model.run_full_recon,
                                                 self.presenter._on_volume_recon_done,
@@ -311,7 +319,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
             "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
             "projection to (10, 10)")
 
-    def test_do_stack_reconstruct_slice(self):
+    def test_on_stack_reconstruct_slice_done(self):
         test_data = ImageStack(np.ndarray(shape=(200, 250), dtype=np.float32))
         test_data.record_operation = mock.Mock()
         task_mock = mock.Mock(result=test_data, error=None)
@@ -325,13 +333,15 @@ class ReconWindowPresenterTest(unittest.TestCase):
                                                            'Slice Reconstruction',
                                                            slice_idx=7,
                                                            **self.view.recon_params().to_dict())
+        self.view.set_recon_buttons_enabled.assert_called_once_with(True)
 
-    def test_do_stack_reconstruct_slice_raises(self):
+    def test_on_stack_reconstruct_slice_done_raises(self):
         task_mock = mock.Mock(error=ValueError())
         self.presenter._on_stack_reconstruct_slice_done(task_mock)
 
         self.view.show_recon_volume.assert_not_called()
         self.view.show_error_dialog.assert_called_once()
+        self.view.set_recon_buttons_enabled.assert_called_once_with(True)
 
     def test_proj_180_degree_shape_matches_images_where_they_match(self):
         images = mock.MagicMock()
@@ -394,3 +404,12 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter._on_stack_reconstruct_slice_done(task)
         assert not np.isinf(self.view.show_recon_volume.call_args[0][0].data).any()
+
+    @parameterized.expand([("With_error", mock.Mock), ("Successful", None)])
+    def test_on_volume_recon_done_enables_buttons(self, _, error):
+        task = mock.Mock()
+        task.error = error
+        task.result.data = np.ones((5, 10, 10))
+
+        self.presenter._on_volume_recon_done(task)
+        self.view.set_recon_buttons_enabled.assert_called_once_with(True)

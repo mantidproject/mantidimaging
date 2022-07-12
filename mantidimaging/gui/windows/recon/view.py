@@ -504,3 +504,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.messageIcon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_MessageBoxCritical))
         else:
             self.messageIcon.clear()
+
+    def set_recon_buttons_enabled(self, enabled: bool):
+        self.reconstructSlice.setEnabled(enabled)
+        self.reconstructVolume.setEnabled(enabled)
