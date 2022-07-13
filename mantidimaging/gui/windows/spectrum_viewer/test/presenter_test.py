@@ -2,7 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
 import uuid
+from pathlib import Path
 from unittest import mock
+
+from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
@@ -120,3 +123,24 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_range_slide_moved()
 
         self.assertEqual(self.presenter.model.tof_range, (10, 20))
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
+    def test_handle_export_csv_none(self, mock_save_csv: mock.Mock):
+        self.view.get_csv_filename = mock.Mock(return_value=None)
+
+        self.presenter.handle_export_csv()
+
+        self.view.get_csv_filename.assert_called_once()
+        mock_save_csv.assert_not_called()
+
+    @parameterized.expand(["/fake/path", "/fake/path.csv"])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
+    def test_handle_export_csv(self, path_name: str, mock_save_csv: mock.Mock):
+        self.view.get_csv_filename = mock.Mock(return_value=Path(path_name))
+
+        self.presenter.model.set_stack(generate_images())
+
+        self.presenter.handle_export_csv()
+
+        self.view.get_csv_filename.assert_called_once()
+        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"))
