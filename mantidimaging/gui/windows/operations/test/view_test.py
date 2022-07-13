@@ -64,3 +64,17 @@ class OperationsWindowsViewTest(unittest.TestCase):
         self.window.lock_zoom_changed()
 
         self.window.previews.auto_range.assert_not_called()
+
+    def test_lock_scale_changed_deselected(self):
+        self.window.lockScaleCheckBox.setChecked(False)
+        self.window.presenter.do_update_previews = mock.Mock()
+        self.window.lock_scale_changed()
+
+        self.window.presenter.do_update_previews.assert_called_once()
+
+    def test_lock_scale_changed_selected(self):
+        self.window.lockScaleCheckBox.setChecked(True)
+        self.window.presenter.do_update_previews = mock.Mock()
+        self.window.lock_scale_changed()
+
+        self.window.presenter.do_update_previews.assert_not_called()

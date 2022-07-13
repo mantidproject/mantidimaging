@@ -93,6 +93,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.invertDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
         self.overlayDifference.stateChanged.connect(lambda: self.presenter.notify(PresNotification.UPDATE_PREVIEWS))
         self.lockZoomCheckBox.stateChanged.connect(self.lock_zoom_changed)
+        self.lockScaleCheckBox.stateChanged.connect(self.lock_scale_changed)
 
         # Handle preview index selection
         self.previewImageIndex.valueChanged[int].connect(self.presenter.set_preview_image_index)
@@ -306,3 +307,7 @@ class FiltersWindowView(BaseMainWindowView):
     def lock_zoom_changed(self):
         if not self.lockZoomCheckBox.isChecked():
             self.previews.auto_range()
+
+    def lock_scale_changed(self):
+        if not self.lockScaleCheckBox.isChecked():
+            self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
