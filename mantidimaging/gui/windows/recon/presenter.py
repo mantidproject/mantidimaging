@@ -203,6 +203,7 @@ class ReconstructWindowPresenter(BasePresenter):
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
         self.recon_is_running = True
+        self.view.set_recon_buttons_enabled(False)
         start_async_task_view(self.view,
                               self.model.run_full_recon,
                               self._on_volume_recon_done, {'recon_params': self.view.recon_params()},
@@ -255,25 +256,30 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.update_recon_preview(np.copy(images.data[0]), reset_roi)
 
     def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
+        self.view.set_recon_buttons_enabled(False)
         slice_idx = self._get_slice_index(slice_idx)
         self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)
 
     def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread):
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
+            self.view.set_recon_buttons_enabled(True)
             return
 
-        images: ImageStack = task.result
-        slice_idx = self._get_slice_index(None)
-        if images is not None:
-            assert self.model.images is not None
-            images.name = "Recon"
-            self._replace_inf_nan(images)  # pyqtgraph workaround
-            self.view.show_recon_volume(images, self.model.stack_id)
-            images.record_operation('AstraRecon.single_sino',
-                                    'Slice Reconstruction',
-                                    slice_idx=slice_idx,
-                                    **self.view.recon_params().to_dict())
+        try:
+            images: ImageStack = task.result
+            slice_idx = self._get_slice_index(None)
+            if images is not None:
+                assert self.model.images is not None
+                images.name = "Recon"
+                self._replace_inf_nan(images)  # pyqtgraph workaround
+                self.view.show_recon_volume(images, self.model.stack_id)
+                images.record_operation('AstraRecon.single_sino',
+                                        'Slice Reconstruction',
+                                        slice_idx=slice_idx,
+                                        **self.view.recon_params().to_dict())
+        finally:
+            self.view.set_recon_buttons_enabled(True)
 
     def _do_refine_selected_cor(self):
         selected_rows = self.view.get_cor_table_selected_rows()
@@ -318,12 +324,16 @@ class ReconstructWindowPresenter(BasePresenter):
         self.recon_is_running = False
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
+            self.view.set_recon_buttons_enabled(True)
             return
 
-        self._replace_inf_nan(task.result)  # pyqtgraph workaround
-        assert self.model.images is not None
-        task.result.name = "Recon"
-        self.view.show_recon_volume(task.result, self.model.stack_id)
+        try:
+            self._replace_inf_nan(task.result)  # pyqtgraph workaround
+            assert self.model.images is not None
+            task.result.name = "Recon"
+            self.view.show_recon_volume(task.result, self.model.stack_id)
+        finally:
+            self.view.set_recon_buttons_enabled(True)
 
     def do_clear_all_cors(self):
         self.view.clear_cor_table()

@@ -16,12 +16,8 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import Notification, _generate_recon_item_name
+from mantidimaging.gui.windows.main.presenter import Notification
 from mantidimaging.test_helpers.unit_test_helper import generate_images
-
-
-def test_generate_recon_item_name():
-    assert _generate_recon_item_name(4) == "Recon 4"
 
 
 def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
@@ -460,17 +456,14 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_recon(self):
         recon = generate_images()
-        self.dataset.recons.append(recon)
         stack_id = "stack-id"
         parent_id = "parent-id"
-        self.model.datasets = dict()
-        self.model.datasets[parent_id] = self.dataset
         self.model.add_recon_to_dataset.return_value = parent_id
         self.presenter.add_recon_item_to_tree_view = mock.Mock()
 
         self.presenter.notify(Notification.ADD_RECON, recon_data=recon, stack_id=stack_id)
         self.model.add_recon_to_dataset.assert_called_once_with(recon, stack_id)
-        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, 1)
+        self.presenter.add_recon_item_to_tree_view.assert_called_with(parent_id, recon.id, recon.name)
         self.view.create_new_stack.assert_called_once_with(recon)
         self.view.model_changed.emit.assert_called_once()
 
@@ -565,30 +558,43 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
         self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
-    def test_add_first_recon_item_to_tree_view(self):
+    def test_add_recon_item_to_tree_view_first_item(self):
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         dataset_item_mock.id = parent_id = "parent-id"
         child_id = "child-id"
+        name = "Recon"
         recon_group_mock = self.view.add_recon_group.return_value
         self.model.get_recon_list_id.return_value = recons_id = "recons-id"
+        self.view.get_recon_group.return_value = None
 
-        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, 1)
+        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, name)
         self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
         self.model.get_recon_list_id.assert_called_once_with(parent_id)
         self.view.add_recon_group.assert_called_once_with(dataset_item_mock, recons_id)
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon")
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
 
-    def test_add_additional_recon_item_to_tree_view(self):
+    def test_add_recon_item_to_tree_view_additional_item(self):
         parent_id = "parent-id"
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         child_id = "child-id"
         recon_group_mock = self.view.get_recon_group.return_value
-        recon_count = 2
+        name = "Recon_2"
 
-        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, recon_count)
+        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, name)
         self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
         self.view.get_recon_group.assert_called_once_with(dataset_item_mock)
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, "Recon 2")
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
+
+    def test_add_recon_item_to_tree_view_first_item_with_multiple_recons(self):
+        child_id = "child-id"
+        name = "Recon"
+        recon_group_mock = self.view.add_recon_group.return_value
+        self.view.get_recon_group.return_value = None
+
+        self.presenter.add_recon_item_to_tree_view("parent-id", child_id, name)
+
+        self.view.add_recon_group.assert_called_once()
+        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
 
     def test_created_mixed_dataset_tree_view_items(self):
         n_images = 3

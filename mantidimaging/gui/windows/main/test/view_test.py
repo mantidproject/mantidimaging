@@ -411,8 +411,7 @@ class MainWindowViewTest(unittest.TestCase):
         item_mocks[1].text.return_value = "Flat Before"
         item_mocks[2].text.return_value = "Flat After"
 
-        with self.assertRaises(RuntimeError):
-            self.view.get_recon_group(dataset_item_mock)
+        self.assertIsNone(self.view.get_recon_group(dataset_item_mock))
 
     def test_get_all_180_projections(self):
         self.assertIs(self.view.get_all_180_projections(), self.presenter.get_all_180_projections.return_value)

@@ -361,3 +361,16 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         self.view.change_refine_iterations()
         refine_iterations_button_mock.setEnabled.assert_called_once_with(False)
+
+    def test_set_recon_buttons_enabled(self):
+        def assert_button_state_is_correct(is_enabled):
+            self.assertEqual(self.view.reconstructSlice.isEnabled(), is_enabled)
+            self.assertEqual(self.view.reconstructVolume.isEnabled(), is_enabled)
+
+        assert_button_state_is_correct(is_enabled=True)
+
+        self.view.set_recon_buttons_enabled(False)
+        assert_button_state_is_correct(is_enabled=False)
+
+        self.view.set_recon_buttons_enabled(True)
+        assert_button_state_is_correct(is_enabled=True)

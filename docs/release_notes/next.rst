@@ -32,6 +32,7 @@ Fixes
 - #1484 : Clear image previews in open windows when there are no stacks to select
 - #1496 : OutliersFilter IndexError when using sinograms
 - #1515 : Unlink axis in recon window
+- #1351 : Double clicking reconstruct buttons can cause RunTimeError
 
 
 Developer Changes

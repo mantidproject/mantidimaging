@@ -49,10 +49,6 @@ class Notification(Enum):
     ADD_RECON = auto()
 
 
-def _generate_recon_item_name(recon_no: int) -> str:
-    return f"Recon {recon_no}"
-
-
 class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save data. Error: {}"
@@ -516,20 +512,19 @@ class MainWindowPresenter(BasePresenter):
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
-    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, recon_count: int):
+    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, name: str):
         """
         Adds a recon item to the tree view.
         :param parent_id: The ID of the parent dataset.
         :param child_id: The ID of the corresponding ImageStack object.
-        :param recon_count: The number of the recon in the dataset. One indicates the first recon that has been added.
+        :param name: The name to display for the recon in the tree view.
         """
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
-        if recon_count == 1:
+
+        recon_group = self.view.get_recon_group(dataset_item)
+        if not recon_group:
             recon_group = self.view.add_recon_group(dataset_item, self.model.get_recon_list_id(parent_id))
-            name = "Recon"
-        else:
-            recon_group = self.view.get_recon_group(dataset_item)
-            name = _generate_recon_item_name(recon_count)
+
         self.view.create_child_tree_item(recon_group, child_id, name)
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
@@ -580,7 +575,7 @@ class MainWindowPresenter(BasePresenter):
         """
         parent_id = self.model.add_recon_to_dataset(recon_data, stack_id)
         self.view.create_new_stack(recon_data)
-        self.add_recon_item_to_tree_view(parent_id, recon_data.id, len(self.model.datasets[parent_id].recons))
+        self.add_recon_item_to_tree_view(parent_id, recon_data.id, recon_data.name)
         self.view.model_changed.emit()
 
     def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID):
