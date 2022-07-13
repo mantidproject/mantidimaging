@@ -325,7 +325,8 @@ class FiltersWindowPresenter(BasePresenter):
         is_new_data = self.view.preview_image_before.image_data is None
 
         self.view.clear_previews(clear_before=False)
-        lock_scale = self.view.lockScaleCheckBox.isChecked()
+        # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
+        lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
         if lock_scale:
             self.view.previews.record_histogram_regions()
 
@@ -386,6 +387,10 @@ class FiltersWindowPresenter(BasePresenter):
         if lock_scale:
             self.view.previews.restore_histogram_regions()
         self.view.previews.set_histogram_log_scale()
+        if is_new_data:
+            # Needed for the case where we've deleted all the tree view data with the window
+            # still open and then loaded some new data
+            self.view.previews.autorange_histograms()
 
     @staticmethod
     def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):

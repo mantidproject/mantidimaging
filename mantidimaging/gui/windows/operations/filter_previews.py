@@ -215,3 +215,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         set_histogram_log_scale(self.imageview_before.histogram)
         set_histogram_log_scale(self.imageview_after.histogram)
+
+    def autorange_histograms(self):
+        self.imageview_before.histogram.autoHistogramRange()
+        self.imageview_after.histogram.autoHistogramRange()
+        self.imageview_difference.histogram.autoHistogramRange()
