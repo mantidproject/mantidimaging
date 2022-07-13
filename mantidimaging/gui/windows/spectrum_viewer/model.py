@@ -20,26 +20,26 @@ class SpectrumViewerWindowModel:
     tof_range: tuple[int, int] = (0, 0)
     roi_range: SensibleROI = SensibleROI()
 
-    def __init__(self, presenter):
+    def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
 
-    def set_stack(self, stack: ImageStack):
+    def set_stack(self, stack: ImageStack) -> None:
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
         self.roi_range = SensibleROI.from_list([0, 0, width, height])
 
-    def set_normalise_stack(self, normalise_stack: ImageStack):
+    def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
         self._normalise_stack = normalise_stack
 
-    def get_averaged_image(self) -> 'np.ndarray':
+    def get_averaged_image(self) -> Optional['np.ndarray']:
         if self._stack is not None:
             tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
             return self._stack.data[tof_slice].mean(axis=0)
         else:
             return None
 
-    def get_spectrum(self) -> 'np.ndarray':
+    def get_spectrum(self) -> Optional['np.ndarray']:
         if self._stack is not None:
             left, top, right, bottom = self.roi_range
             roi_data = self._stack.data[:, top:bottom, left:right]
