@@ -38,7 +38,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
+        self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
         self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
+        self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
