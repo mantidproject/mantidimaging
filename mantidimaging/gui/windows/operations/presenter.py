@@ -325,7 +325,8 @@ class FiltersWindowPresenter(BasePresenter):
         is_new_data = self.view.preview_image_before.image_data is None
 
         self.view.clear_previews(clear_before=False)
-        lock_scale = self.view.lockScaleCheckBox.isChecked()
+        # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
+        lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
         if lock_scale:
             self.view.previews.record_histogram_regions()
 
