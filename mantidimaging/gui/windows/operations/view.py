@@ -311,3 +311,6 @@ class FiltersWindowView(BaseMainWindowView):
     def lock_scale_changed(self):
         if not self.lockScaleCheckBox.isChecked():
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
+
+    def get_selected_filter(self):
+        return self.filterSelector.currentText()

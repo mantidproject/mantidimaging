@@ -178,7 +178,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
-        filter_name = self.view.filterSelector.currentText()
+        filter_name = self.view.get_selected_filter()
 
         # Get registration function for new filter
         register_func = self.model.filter_registration_func(filter_name)
@@ -297,7 +297,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.view.clear_notification_dialog()
                 self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
-            if use_new_data and self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
+            if use_new_data and self._flat_fielding_is_selected() and negative_stacks:
                 self._show_negative_values_error(negative_stacks)
 
         finally:
@@ -325,6 +325,7 @@ class FiltersWindowPresenter(BasePresenter):
         is_new_data = self.view.preview_image_before.image_data is None
 
         self.view.clear_previews(clear_before=False)
+
         # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
         lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
         if lock_scale:
@@ -408,7 +409,7 @@ class FiltersWindowPresenter(BasePresenter):
         """
         :return: True if this is not the first time flat-fielding is being run, False otherwise.
         """
-        if self.view.filterSelector.currentText() != FLAT_FIELDING:
+        if not self._flat_fielding_is_selected():
             return False
         if OPERATION_HISTORY not in self.stack.metadata:
             return False
@@ -474,3 +475,6 @@ class FiltersWindowPresenter(BasePresenter):
         :param slice_idx: The index of the preview slice.
         """
         self.view.show_error_dialog(f"Negative values found in result preview for slice {slice_idx}.")
+
+    def _flat_fielding_is_selected(self):
+        return self.view.get_selected_filter() == FLAT_FIELDING

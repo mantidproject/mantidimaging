@@ -57,7 +57,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_disconnect_before_after_histograms(self, _):
-        self.view.filterSelector.currentText.return_value = "Rescale"
+        self.view.get_selected_filter.return_value = "Rescale"
         with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
             self.presenter.do_register_active_filter()
 
@@ -349,7 +349,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         Test that a warning is displayed if the user is trying to run flat-fielding again.
         """
-        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -396,7 +396,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         Test that pressing "Cancel" when the flat-fielding warning is displayed means that no operation is run.
         """
-        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -443,7 +443,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images()
@@ -468,7 +468,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_in_all_slices(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images()
@@ -489,7 +489,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_in_more_than_twelve_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images(shape=(25, 8, 10))
