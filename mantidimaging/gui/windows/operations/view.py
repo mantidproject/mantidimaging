@@ -16,7 +16,7 @@ from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from .filter_previews import FilterPreviews
-from .presenter import FiltersWindowPresenter
+from .presenter import FiltersWindowPresenter, FLAT_FIELDING
 from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
@@ -309,7 +309,7 @@ class FiltersWindowView(BaseMainWindowView):
             self.previews.auto_range()
 
     def lock_scale_changed(self):
-        if not self.lockScaleCheckBox.isChecked():
+        if not self.lockScaleCheckBox.isChecked() or self.get_selected_filter() == FLAT_FIELDING:
             self.presenter.notify(PresNotification.UPDATE_PREVIEWS)
 
     def get_selected_filter(self):

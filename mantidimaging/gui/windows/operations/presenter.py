@@ -30,7 +30,7 @@ APPLY_TO_180_MSG = "Operations applied to the sample are also automatically appl
       " degree projection?"
 
 FLAT_FIELDING = "Flat-fielding"
-FLAT_FIELD_HISTOGRAM_REGION = [-0.2, 1.2]
+FLAT_FIELD_REGION = [-0.2, 1.2]
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
@@ -333,7 +333,7 @@ class FiltersWindowPresenter(BasePresenter):
         if lock_scale:
             self.view.previews.record_histogram_regions()
             if is_flat_fielding:
-                self.view.previews.after_region = FLAT_FIELD_HISTOGRAM_REGION
+                self.view.previews.after_region = FLAT_FIELD_REGION
 
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
@@ -392,7 +392,11 @@ class FiltersWindowPresenter(BasePresenter):
         if lock_scale:
             self.view.previews.restore_histogram_regions()
             if is_flat_fielding:
-                self.view.preview_image_after.histogram.autoHistogramRange()
+                self.view.preview_image_after.histogram.setHistogramRange(mn=FLAT_FIELD_REGION[0],
+                                                                          mx=FLAT_FIELD_REGION[1])
+                # We must auto-range the before histogram as when the before and after histograms are linked the
+                # change to the after scale is also applied to the before scale
+                self.view.preview_image_before.histogram.autoHistogramRange()
         else:
             self.view.previews.autorange_histograms()
 

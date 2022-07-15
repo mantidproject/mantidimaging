@@ -7,6 +7,7 @@ from unittest import mock
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers import start_qapplication, mock_versions
+from mantidimaging.gui.windows.operations.presenter import FLAT_FIELDING
 
 
 @mock_versions
@@ -72,9 +73,18 @@ class OperationsWindowsViewTest(unittest.TestCase):
 
         self.window.presenter.do_update_previews.assert_called_once()
 
-    def test_lock_scale_changed_selected(self):
+    def test_lock_scale_changed_selected_not_flat_fielding(self):
         self.window.lockScaleCheckBox.setChecked(True)
         self.window.presenter.do_update_previews = mock.Mock()
+        self.window.get_selected_filter = mock.Mock(return_value="Test")
         self.window.lock_scale_changed()
 
         self.window.presenter.do_update_previews.assert_not_called()
+
+    def test_lock_scale_changed_selected_flat_fielding(self):
+        self.window.lockScaleCheckBox.setChecked(True)
+        self.window.presenter.do_update_previews = mock.Mock()
+        self.window.get_selected_filter = mock.Mock(return_value=FLAT_FIELDING)
+        self.window.lock_scale_changed()
+
+        self.window.presenter.do_update_previews.assert_called_once()

@@ -16,7 +16,7 @@ from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERAT
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
-    _group_consecutive_values, FLAT_FIELD_HISTOGRAM_REGION
+    _group_consecutive_values, FLAT_FIELD_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
 
@@ -265,7 +265,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.auto_range.assert_not_called()
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
-        self.view.preview_image_after.histogram.autoHistogramRange.assert_not_called()
+        self.view.preview_image_after.histogram.setHistogramRange.assert_not_called()
         self.assertEqual(after_region, self.view.previews.after_region)
         self.view.previews.autorange_histograms.assert_not_called()
 
@@ -279,13 +279,15 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = stack
         self.view.lockScaleCheckBox.isChecked.return_value = True
         self.presenter._flat_fielding_is_selected = mock.Mock(return_value=True)
-        self.view.previews.after_region = [FLAT_FIELD_HISTOGRAM_REGION[0] + 10, 10]
+        self.view.previews.after_region = [FLAT_FIELD_REGION[0] + 10, 10]
         self.presenter.do_update_previews()
 
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
-        self.view.preview_image_after.histogram.autoHistogramRange.assert_called_once()
-        self.assertEqual(FLAT_FIELD_HISTOGRAM_REGION, self.view.previews.after_region)
+        self.view.preview_image_after.histogram.setHistogramRange.assert_called_once_with(mn=FLAT_FIELD_REGION[0],
+                                                                                          mx=FLAT_FIELD_REGION[1])
+        self.view.preview_image_before.histogram.autoHistogramRange.assert_called_once()
+        self.assertEqual(FLAT_FIELD_REGION, self.view.previews.after_region)
         self.view.previews.autorange_histograms.assert_not_called()
 
     @parameterized.expand([(True, True), (False, True), (True, False), (False, False)])
