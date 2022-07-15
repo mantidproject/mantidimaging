@@ -16,7 +16,7 @@ from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERAT
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
-    _group_consecutive_values
+    _group_consecutive_values, FLAT_FIELD_HISTOGRAM_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
 
@@ -246,6 +246,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.auto_range.assert_called_once()
         self.view.previews.record_histogram_regions.assert_not_called()
         self.view.previews.restore_histogram_regions.assert_not_called()
+        self.view.previews.autorange_histograms.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
@@ -257,11 +258,35 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
+        self.presenter._flat_fielding_is_selected = mock.Mock(return_value=False)
+        self.view.previews.after_region = after_region = [10, 10]
         self.presenter.do_update_previews()
 
         self.view.previews.auto_range.assert_not_called()
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
+        self.view.preview_image_after.histogram.autoHistogramRange.assert_not_called()
+        self.assertEqual(after_region, self.view.previews.after_region)
+        self.view.previews.autorange_histograms.assert_not_called()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_lock_scale_checked_flat_fielding_special_case(self, apply_mock: mock.Mock,
+                                                           update_preview_image_mock: mock.Mock):
+        stack = mock.Mock()
+        images = generate_images([1, 10, 10])
+        stack.slice_as_image_stack.return_value = images
+        self.presenter.stack = stack
+        self.view.lockScaleCheckBox.isChecked.return_value = True
+        self.presenter._flat_fielding_is_selected = mock.Mock(return_value=True)
+        self.view.previews.after_region = [FLAT_FIELD_HISTOGRAM_REGION[0] + 10, 10]
+        self.presenter.do_update_previews()
+
+        self.view.previews.record_histogram_regions.assert_called_once()
+        self.view.previews.restore_histogram_regions.assert_called_once()
+        self.view.preview_image_after.histogram.autoHistogramRange.assert_called_once()
+        self.assertEqual(FLAT_FIELD_HISTOGRAM_REGION, self.view.previews.after_region)
+        self.view.previews.autorange_histograms.assert_not_called()
 
     @parameterized.expand([(True, True), (False, True), (True, False), (False, False)])
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')

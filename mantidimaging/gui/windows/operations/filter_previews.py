@@ -190,14 +190,14 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_before.viewbox.autoRange()
 
     def record_histogram_regions(self):
-        self.before_region = self.imageview_before.histogram.region.getRegion()
-        self.diff_region = self.imageview_difference.histogram.region.getRegion()
-        self.after_region = self.imageview_after.histogram.region.getRegion()
+        self.before_region = self.imageview_before.histogram_region
+        self.diff_region = self.imageview_difference.histogram_region
+        self.after_region = self.imageview_after.histogram_region
 
     def restore_histogram_regions(self):
-        self.imageview_before.histogram.region.setRegion(self.before_region)
-        self.imageview_difference.histogram.region.setRegion(self.diff_region)
-        self.imageview_after.histogram.region.setRegion(self.after_region)
+        self.imageview_difference.histogram_region = self.diff_region
+        self.imageview_after.histogram_region = self.after_region
+        self.imageview_before.histogram_region = self.before_region
 
     def link_before_after_histogram_scales(self, create_link: bool):
         """
@@ -215,3 +215,8 @@ class FilterPreviews(GraphicsLayoutWidget):
         """
         set_histogram_log_scale(self.imageview_before.histogram)
         set_histogram_log_scale(self.imageview_after.histogram)
+
+    def autorange_histograms(self):
+        self.imageview_before.histogram.autoHistogramRange()
+        self.imageview_after.histogram.autoHistogramRange()
+        self.imageview_difference.histogram.autoHistogramRange()

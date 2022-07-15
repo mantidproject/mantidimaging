@@ -30,6 +30,7 @@ APPLY_TO_180_MSG = "Operations applied to the sample are also automatically appl
       " degree projection?"
 
 FLAT_FIELDING = "Flat-fielding"
+FLAT_FIELD_HISTOGRAM_REGION = [-0.2, 1.2]
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
@@ -323,6 +324,7 @@ class FiltersWindowPresenter(BasePresenter):
             return
 
         is_new_data = self.view.preview_image_before.image_data is None
+        is_flat_fielding = self._flat_fielding_is_selected()
 
         self.view.clear_previews(clear_before=False)
 
@@ -330,6 +332,8 @@ class FiltersWindowPresenter(BasePresenter):
         lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
         if lock_scale:
             self.view.previews.record_histogram_regions()
+            if is_flat_fielding:
+                self.view.previews.after_region = FLAT_FIELD_HISTOGRAM_REGION
 
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
@@ -387,6 +391,11 @@ class FiltersWindowPresenter(BasePresenter):
 
         if lock_scale:
             self.view.previews.restore_histogram_regions()
+            if is_flat_fielding:
+                self.view.preview_image_after.histogram.autoHistogramRange()
+        else:
+            self.view.previews.autorange_histograms()
+
         self.view.previews.set_histogram_log_scale()
 
     @staticmethod
