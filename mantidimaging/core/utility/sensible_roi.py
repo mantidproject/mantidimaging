@@ -3,7 +3,7 @@
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Iterator
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
@@ -30,7 +30,7 @@ class SensibleROI(Iterable):
     def from_list(roi: Union[List[int], List[float]]):
         return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[int]:
         """
         Allows unpacking the ROI with `*roi`
         :return: Iterable of all ROI parts

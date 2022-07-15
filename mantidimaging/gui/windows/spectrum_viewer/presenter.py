@@ -38,6 +38,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
             self.show_new_sample()
 
+    def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
+        if normalise_uuid is not None:
+            self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
+            self.handle_roi_moved()
+
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
             self.view.current_dataset_id = new_dataset_id
@@ -78,3 +83,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             path = path.with_suffix(".csv")
 
         self.model.save_csv(path)
+
+    def handle_enable_normalised(self, enabled: bool) -> None:
+        self.model.normalised = bool(enabled)
+        self.handle_roi_moved()

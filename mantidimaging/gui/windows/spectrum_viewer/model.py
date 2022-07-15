@@ -19,33 +19,43 @@ class SpectrumViewerWindowModel:
     _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
     roi_range: SensibleROI = SensibleROI()
+    normalised: bool = False
 
-    def __init__(self, presenter):
+    def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
 
-    def set_stack(self, stack: ImageStack):
+    def set_stack(self, stack: ImageStack) -> None:
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
         self.roi_range = SensibleROI.from_list([0, 0, width, height])
 
-    def set_normalise_stack(self, normalise_stack: ImageStack):
+    def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
         self._normalise_stack = normalise_stack
 
-    def get_averaged_image(self) -> 'np.ndarray':
+    def get_averaged_image(self) -> Optional['np.ndarray']:
         if self._stack is not None:
             tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
             return self._stack.data[tof_slice].mean(axis=0)
         else:
             return None
 
-    def get_spectrum(self) -> 'np.ndarray':
-        if self._stack is not None:
-            left, top, right, bottom = self.roi_range
-            roi_data = self._stack.data[:, top:bottom, left:right]
-            return roi_data.mean(axis=(1, 2))
-        else:
+    def get_spectrum(self) -> Optional['np.ndarray']:
+        if self._stack is None:
             return None
+
+        left, top, right, bottom = self.roi_range
+        roi_data = self._stack.data[:, top:bottom, left:right]
+        roi_spectrum = roi_data.mean(axis=(1, 2))
+        if self.normalised and self._normalise_stack is not None:
+            roi_norm_data = self._normalise_stack.data[:, top:bottom, left:right]
+            roi_norm_spectrum = roi_norm_data.mean(axis=(1, 2))
+            return np.divide(roi_spectrum,
+                             roi_norm_spectrum,
+                             out=np.zeros_like(roi_spectrum),
+                             where=roi_norm_spectrum != 0)
+        else:
+            return roi_spectrum
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:

@@ -67,6 +67,37 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
 
+    def test_get_normalised_spectrum(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+
+        normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
+        self.model.set_normalise_stack(normalise_stack)
+        self.model.normalised = True
+
+        model_norm_spec = self.model.get_spectrum()
+        self.assertEqual(model_norm_spec.shape, (10, ))
+        npt.assert_array_equal(model_norm_spec, spectrum / 2)
+
+    def test_get_normalised_spectrum_zeros(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+
+        normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
+        normalise_stack.data[5] = 0
+        self.model.set_normalise_stack(normalise_stack)
+        self.model.normalised = True
+
+        model_norm_spec = self.model.get_spectrum()
+        expected_spec = spectrum / 2
+        expected_spec[5] = 0
+        self.assertEqual(model_norm_spec.shape, (10, ))
+        npt.assert_array_equal(model_norm_spec, expected_spec)
+
     def test_set_stack_sets_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         self.model.set_stack(stack)
