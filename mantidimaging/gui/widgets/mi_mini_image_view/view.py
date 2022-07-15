@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from itertools import chain, tee
-from typing import List, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, Union
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
@@ -59,6 +59,14 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     @property
     def histogram(self) -> HistogramLUTItem:
         return self.hist
+
+    @property
+    def histogram_region(self):
+        return self.hist.region.getRegion()
+
+    @histogram_region.setter
+    def histogram_region(self, new_region: tuple[Union[int, list[int]], Union[int, list[int]]]):
+        self.hist.region.setRegion(new_region)
 
     @property
     def image_data(self) -> 'np.ndarray':

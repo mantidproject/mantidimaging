@@ -12,7 +12,6 @@ from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication, QLineEdit
-from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
@@ -30,10 +29,12 @@ APPLY_TO_180_MSG = "Operations applied to the sample are also automatically appl
       " degree projection?"
 
 FLAT_FIELDING = "Flat-fielding"
+FLAT_FIELD_REGION = [-0.2, 1.2]
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
+    from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
@@ -178,7 +179,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.auto_update_triggered.emit()
 
     def do_register_active_filter(self):
-        filter_name = self.view.filterSelector.currentText()
+        filter_name = self.view.get_selected_filter()
 
         # Get registration function for new filter
         register_func = self.model.filter_registration_func(filter_name)
@@ -297,7 +298,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.view.clear_notification_dialog()
                 self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
 
-            if use_new_data and self.view.filterSelector.currentText() == FLAT_FIELDING and negative_stacks:
+            if use_new_data and self._flat_fielding_is_selected() and negative_stacks:
                 self._show_negative_values_error(negative_stacks)
 
         finally:
@@ -323,12 +324,16 @@ class FiltersWindowPresenter(BasePresenter):
             return
 
         is_new_data = self.view.preview_image_before.image_data is None
+        is_flat_fielding = self._flat_fielding_is_selected()
 
         self.view.clear_previews(clear_before=False)
+
         # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
         lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
         if lock_scale:
             self.view.previews.record_histogram_regions()
+            if is_flat_fielding:
+                self.view.previews.after_region = FLAT_FIELD_REGION
 
         if not self.model.selected_filter.operate_on_sinograms:
             subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
@@ -386,10 +391,19 @@ class FiltersWindowPresenter(BasePresenter):
 
         if lock_scale:
             self.view.previews.restore_histogram_regions()
+            if is_flat_fielding:
+                self.view.preview_image_after.histogram.setHistogramRange(mn=FLAT_FIELD_REGION[0],
+                                                                          mx=FLAT_FIELD_REGION[1])
+                # We must auto-range the before histogram as when the before and after histograms are linked the
+                # change to the after scale is also applied to the before scale
+                self.view.preview_image_before.histogram.autoHistogramRange()
+        else:
+            self.view.previews.autorange_histograms()
+
         self.view.previews.set_histogram_log_scale()
 
     @staticmethod
-    def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
+    def _update_preview_image(image_data: Optional[np.ndarray], image: 'MIMiniImageView'):
         image.clear()
         image.setImage(image_data)
 
@@ -408,7 +422,7 @@ class FiltersWindowPresenter(BasePresenter):
         """
         :return: True if this is not the first time flat-fielding is being run, False otherwise.
         """
-        if self.view.filterSelector.currentText() != FLAT_FIELDING:
+        if not self._flat_fielding_is_selected():
             return False
         if OPERATION_HISTORY not in self.stack.metadata:
             return False
@@ -474,3 +488,6 @@ class FiltersWindowPresenter(BasePresenter):
         :param slice_idx: The index of the preview slice.
         """
         self.view.show_error_dialog(f"Negative values found in result preview for slice {slice_idx}.")
+
+    def _flat_fielding_is_selected(self):
+        return self.view.get_selected_filter() == FLAT_FIELDING

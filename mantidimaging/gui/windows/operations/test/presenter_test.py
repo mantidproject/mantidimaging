@@ -16,7 +16,7 @@ from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERAT
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
-    _group_consecutive_values
+    _group_consecutive_values, FLAT_FIELD_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
 
@@ -57,7 +57,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.filter_registration_func')
     def test_disconnect_before_after_histograms(self, _):
-        self.view.filterSelector.currentText.return_value = "Rescale"
+        self.view.get_selected_filter.return_value = "Rescale"
         with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
             self.presenter.do_register_active_filter()
 
@@ -246,6 +246,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.auto_range.assert_called_once()
         self.view.previews.record_histogram_regions.assert_not_called()
         self.view.previews.restore_histogram_regions.assert_not_called()
+        self.view.previews.autorange_histograms.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
@@ -257,11 +258,37 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
+        self.view.get_selected_filter.return_value = "Test"
+        self.view.previews.after_region = after_region = [10, 10]
         self.presenter.do_update_previews()
 
         self.view.previews.auto_range.assert_not_called()
         self.view.previews.record_histogram_regions.assert_called_once()
         self.view.previews.restore_histogram_regions.assert_called_once()
+        self.view.preview_image_after.histogram.setHistogramRange.assert_not_called()
+        self.assertEqual(after_region, self.view.previews.after_region)
+        self.view.previews.autorange_histograms.assert_not_called()
+
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.apply_to_images')
+    def test_lock_scale_checked_flat_fielding_special_case(self, apply_mock: mock.Mock,
+                                                           update_preview_image_mock: mock.Mock):
+        stack = mock.Mock()
+        images = generate_images([1, 10, 10])
+        stack.slice_as_image_stack.return_value = images
+        self.presenter.stack = stack
+        self.view.lockScaleCheckBox.isChecked.return_value = True
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
+        self.view.previews.after_region = [FLAT_FIELD_REGION[0] + 10, 10]
+        self.presenter.do_update_previews()
+
+        self.view.previews.record_histogram_regions.assert_called_once()
+        self.view.previews.restore_histogram_regions.assert_called_once()
+        self.view.preview_image_after.histogram.setHistogramRange.assert_called_once_with(mn=FLAT_FIELD_REGION[0],
+                                                                                          mx=FLAT_FIELD_REGION[1])
+        self.view.preview_image_before.histogram.autoHistogramRange.assert_called_once()
+        self.assertEqual(FLAT_FIELD_REGION, self.view.previews.after_region)
+        self.view.previews.autorange_histograms.assert_not_called()
 
     @parameterized.expand([(True, True), (False, True), (True, False), (False, False)])
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._update_preview_image')
@@ -349,7 +376,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         Test that a warning is displayed if the user is trying to run flat-fielding again.
         """
-        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -396,7 +423,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         """
         Test that pressing "Cancel" when the flat-fielding warning is displayed means that no operation is run.
         """
-        self.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
@@ -443,7 +470,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images()
@@ -468,7 +495,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_in_all_slices(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images()
@@ -489,7 +516,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_in_more_than_twelve_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False
-        self.presenter.view.filterSelector.currentText.return_value = FLAT_FIELDING
+        self.presenter.view.get_selected_filter.return_value = FLAT_FIELDING
         mock_task = mock.Mock()
         mock_task.error = None
         images = generate_images(shape=(25, 8, 10))
