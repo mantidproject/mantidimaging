@@ -7,7 +7,6 @@ import numpy as np
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
-from pyqtgraph import ImageItem
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -21,6 +20,7 @@ from .presenter import Notification as PresNotification
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
+    from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 
 def _strip_filter_name(filter_name: str):
@@ -184,15 +184,15 @@ class FiltersWindowView(BaseMainWindowView):
             self.previews.unlink_all_views()
 
     @property
-    def preview_image_before(self) -> ImageItem:
+    def preview_image_before(self) -> 'MIMiniImageView':
         return self.previews.imageview_before
 
     @property
-    def preview_image_after(self) -> ImageItem:
+    def preview_image_after(self) -> 'MIMiniImageView':
         return self.previews.imageview_after
 
     @property
-    def preview_image_difference(self) -> ImageItem:
+    def preview_image_difference(self) -> 'MIMiniImageView':
         return self.previews.imageview_difference
 
     def show_error_dialog(self, msg=""):

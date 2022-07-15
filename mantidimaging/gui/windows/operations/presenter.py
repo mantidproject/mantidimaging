@@ -12,7 +12,6 @@ from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QApplication, QLineEdit
-from pyqtgraph import ImageItem
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
@@ -35,6 +34,7 @@ FLAT_FIELD_REGION = [-0.2, 1.2]
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
+    from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 REPEAT_FLAT_FIELDING_MSG = "Do you want to run flat-fielding again? This could cause you to lose data."
 
@@ -403,7 +403,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.previews.set_histogram_log_scale()
 
     @staticmethod
-    def _update_preview_image(image_data: Optional[np.ndarray], image: ImageItem):
+    def _update_preview_image(image_data: Optional[np.ndarray], image: 'MIMiniImageView'):
         image.clear()
         image.setImage(image_data)
 

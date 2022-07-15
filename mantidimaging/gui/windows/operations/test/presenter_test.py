@@ -258,7 +258,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = stack
         self.view.lockZoomCheckBox.isChecked.return_value = True
         self.view.lockScaleCheckBox.isChecked.return_value = True
-        self.presenter._flat_fielding_is_selected = mock.Mock(return_value=False)
+        self.view.get_selected_filter.return_value = "Test"
         self.view.previews.after_region = after_region = [10, 10]
         self.presenter.do_update_previews()
 
@@ -278,7 +278,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         stack.slice_as_image_stack.return_value = images
         self.presenter.stack = stack
         self.view.lockScaleCheckBox.isChecked.return_value = True
-        self.presenter._flat_fielding_is_selected = mock.Mock(return_value=True)
+        self.view.get_selected_filter.return_value = FLAT_FIELDING
         self.view.previews.after_region = [FLAT_FIELD_REGION[0] + 10, 10]
         self.presenter.do_update_previews()
 
