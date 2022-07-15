@@ -46,11 +46,16 @@ class SpectrumViewerWindowModel:
 
         left, top, right, bottom = self.roi_range
         roi_data = self._stack.data[:, top:bottom, left:right]
+        roi_spectrum = roi_data.mean(axis=(1, 2))
         if self.normalised and self._normalise_stack is not None:
             roi_norm_data = self._normalise_stack.data[:, top:bottom, left:right]
-            return roi_data.mean(axis=(1, 2)) / roi_norm_data.mean(axis=(1, 2))
+            roi_norm_spectrum = roi_norm_data.mean(axis=(1, 2))
+            return np.divide(roi_spectrum,
+                             roi_norm_spectrum,
+                             out=np.zeros_like(roi_spectrum),
+                             where=roi_norm_spectrum != 0)
         else:
-            return roi_data.mean(axis=(1, 2))
+            return roi_spectrum
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
