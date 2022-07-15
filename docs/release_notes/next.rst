@@ -20,6 +20,7 @@ New Features
 - #1483 : Add line profile to reconstruction window
 - #1480 : Automatic sinograms for sinogram operations
 - #1523 : Lock zoom and lock scale selected by default in operations window
+- #1524 : Flat fielding after histogram locks to appropriate range when using lock scale
 
 Fixes
 -----
