@@ -47,11 +47,11 @@ class SpectrumViewerWindowModel:
         else:
             return None
 
-    def get_spectrum(self) -> Optional['np.ndarray']:
+    def get_spectrum(self, roi_name: str) -> Optional['np.ndarray']:
         if self._stack is None:
             return None
 
-        left, top, right, bottom = self.get_roi("roi")
+        left, top, right, bottom = self.get_roi(roi_name)
         roi_data = self._stack.data[:, top:bottom, left:right]
         roi_spectrum = roi_data.mean(axis=(1, 2))
         if self.normalised and self._normalise_stack is not None:
@@ -77,8 +77,8 @@ class SpectrumViewerWindowModel:
         csv_output = CSVOutput()
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
-        csv_output.add_column("all", self._stack.data.mean(axis=(1, 2)))
-        csv_output.add_column("roi", self.get_spectrum())
+        for roi_name in ("all", "roi"):
+            csv_output.add_column(roi_name, self.get_spectrum(roi_name))
 
         with path.open("w") as outfile:
             csv_output.write(outfile)

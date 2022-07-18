@@ -63,7 +63,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
         self.model.set_stack(stack)
 
-        model_spec = self.model.get_spectrum()
+        model_spec = self.model.get_spectrum("roi")
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
 
@@ -77,7 +77,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_normalise_stack(normalise_stack)
         self.model.normalised = True
 
-        model_norm_spec = self.model.get_spectrum()
+        model_norm_spec = self.model.get_spectrum("roi")
         self.assertEqual(model_norm_spec.shape, (10, ))
         npt.assert_array_equal(model_norm_spec, spectrum / 2)
 
@@ -92,7 +92,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_normalise_stack(normalise_stack)
         self.model.normalised = True
 
-        model_norm_spec = self.model.get_spectrum()
+        model_norm_spec = self.model.get_spectrum("roi")
         expected_spec = spectrum / 2
         expected_spec[5] = 0
         self.assertEqual(model_norm_spec.shape, (10, ))
@@ -115,11 +115,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_stack(stack)
 
         self.model.set_roi('roi', SensibleROI.from_list([0, 0, 3, 3]))
-        model_spec = self.model.get_spectrum()
+        model_spec = self.model.get_spectrum("roi")
         npt.assert_array_equal(model_spec, spectrum)
 
         self.model.set_roi('roi', SensibleROI.from_list([6, 0, 6 + 3, 3]))
-        model_spec = self.model.get_spectrum()
+        model_spec = self.model.get_spectrum("roi")
         npt.assert_array_equal(model_spec, spectrum * 2)
 
     def test_save_csv(self):
