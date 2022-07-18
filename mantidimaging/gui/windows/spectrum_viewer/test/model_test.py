@@ -101,10 +101,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_set_stack_sets_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         self.model.set_stack(stack)
-        npt.assert_array_equal(self.model.roi_range.top, 0)
-        npt.assert_array_equal(self.model.roi_range.left, 0)
-        npt.assert_array_equal(self.model.roi_range.right, 12)
-        npt.assert_array_equal(self.model.roi_range.bottom, 11)
+        self.assertEqual(self.model.get_roi('all'), self.model.get_roi('roi'))
+        npt.assert_array_equal(self.model.get_roi('all').top, 0)
+        npt.assert_array_equal(self.model.get_roi('all').left, 0)
+        npt.assert_array_equal(self.model.get_roi('all').right, 12)
+        npt.assert_array_equal(self.model.get_roi('all').bottom, 11)
 
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
@@ -113,11 +114,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         stack.data[:, :, 6:] *= 2
         self.model.set_stack(stack)
 
-        self.model.roi_range = SensibleROI.from_list([0, 0, 3, 3])
+        self.model.set_roi('roi', SensibleROI.from_list([0, 0, 3, 3]))
         model_spec = self.model.get_spectrum()
         npt.assert_array_equal(model_spec, spectrum)
 
-        self.model.roi_range = SensibleROI.from_list([6, 0, 6 + 3, 3])
+        self.model.set_roi('roi', SensibleROI.from_list([6, 0, 6 + 3, 3]))
         model_spec = self.model.get_spectrum()
         npt.assert_array_equal(model_spec, spectrum * 2)
 

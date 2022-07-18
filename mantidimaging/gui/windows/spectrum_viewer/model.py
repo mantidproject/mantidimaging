@@ -18,7 +18,7 @@ class SpectrumViewerWindowModel:
     _stack: Optional[ImageStack] = None
     _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
-    roi_range: SensibleROI = SensibleROI()
+    _roi_ranges: dict[str, SensibleROI] = {}
     normalised: bool = False
 
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
@@ -28,10 +28,17 @@ class SpectrumViewerWindowModel:
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        self.roi_range = SensibleROI.from_list([0, 0, width, height])
+        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
+        self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
     def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
         self._normalise_stack = normalise_stack
+
+    def set_roi(self, roi_name: str, roi: SensibleROI):
+        self._roi_ranges[roi_name] = roi
+
+    def get_roi(self, roi_name: str):
+        return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> Optional['np.ndarray']:
         if self._stack is not None:
@@ -44,7 +51,7 @@ class SpectrumViewerWindowModel:
         if self._stack is None:
             return None
 
-        left, top, right, bottom = self.roi_range
+        left, top, right, bottom = self.get_roi("roi")
         roi_data = self._stack.data[:, top:bottom, left:right]
         roi_spectrum = roi_data.mean(axis=(1, 2))
         if self.normalised and self._normalise_stack is not None:
