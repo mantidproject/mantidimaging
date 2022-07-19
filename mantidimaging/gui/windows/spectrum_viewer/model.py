@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -11,6 +12,12 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+
+
+class SpecType(Enum):
+    SAMPLE = 1
+    OPEN = 2
+    SAMPLE_NORMED = 3
 
 
 class SpectrumViewerWindowModel:
@@ -46,22 +53,29 @@ class SpectrumViewerWindowModel:
         else:
             return None
 
-    def get_spectrum(self, roi_name: str, normalised: bool) -> Optional['np.ndarray']:
+    @staticmethod
+    def get_stack_spectrum(stack: ImageStack, roi: SensibleROI):
+        left, top, right, bottom = roi
+        roi_data = stack.data[:, top:bottom, left:right]
+        return roi_data.mean(axis=(1, 2))
+
+    def get_spectrum(self, roi_name: str, mode: SpecType) -> Optional['np.ndarray']:
         if self._stack is None:
             return None
 
-        left, top, right, bottom = self.get_roi(roi_name)
-        roi_data = self._stack.data[:, top:bottom, left:right]
-        roi_spectrum = roi_data.mean(axis=(1, 2))
-        if normalised and self._normalise_stack is not None:
-            roi_norm_data = self._normalise_stack.data[:, top:bottom, left:right]
-            roi_norm_spectrum = roi_norm_data.mean(axis=(1, 2))
-            return np.divide(roi_spectrum,
-                             roi_norm_spectrum,
-                             out=np.zeros_like(roi_spectrum),
-                             where=roi_norm_spectrum != 0)
-        else:
-            return roi_spectrum
+        roi = self.get_roi(roi_name)
+        if mode == SpecType.SAMPLE:
+            return self.get_stack_spectrum(self._stack, roi)
+
+        if self._normalise_stack is None:
+            raise RuntimeError("No normalisation stack selected")
+
+        if mode == SpecType.OPEN:
+            return self.get_stack_spectrum(self._normalise_stack, roi)
+        elif mode == SpecType.SAMPLE_NORMED:
+            roi_spectrum = self.get_stack_spectrum(self._stack, roi)
+            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
+        return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
@@ -77,7 +91,7 @@ class SpectrumViewerWindowModel:
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
         for roi_name in ("all", "roi"):
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, False))
+            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
 
         with path.open("w") as outfile:
             csv_output.write(outfile)

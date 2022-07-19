@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class SpectrumViewerWindowPresenter(BasePresenter):
     view: 'SpectrumViewerWindowView'
     model: SpectrumViewerWindowModel
-    normalised: bool = False
+    spectrum_mode: SpecType = SpecType.SAMPLE
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
@@ -60,7 +60,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def show_new_sample(self) -> None:
         self.view.spectrum.image.setImage(self.model.get_averaged_image())
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.normalised), clear=True)
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.spectrum_mode), clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
 
@@ -73,7 +73,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi = self.view.spectrum.get_roi()
         self.model.set_roi("roi", roi)
         self.view.spectrum.spectrum.clearPlots()
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.normalised))
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.spectrum_mode))
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -86,5 +86,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.save_csv(path)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
-        self.normalised = bool(enabled)
+        if enabled:
+            self.spectrum_mode = SpecType.SAMPLE_NORMED
+        else:
+            self.spectrum_mode = SpecType.SAMPLE
         self.handle_roi_moved()
