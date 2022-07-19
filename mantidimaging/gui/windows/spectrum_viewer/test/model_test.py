@@ -15,6 +15,14 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
+class CloseCheckStream(io.StringIO):
+    is_closed: bool = False
+
+    def close(self) -> None:
+        # don't call real close as it clears buffer
+        self.is_closed = True
+
+
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
@@ -130,21 +138,44 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         spectrum = np.arange(0, 10) * 2
         stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
         self.model.set_stack(stack)
-
-        class CloseCheckStream(io.StringIO):
-            self.is_closed: bool = False
-
-            def close(self) -> None:
-                # don't call real close as it clears buffer
-                self.is_closed = True
+        self.model.set_normalise_stack(None)
 
         mock_stream = CloseCheckStream()
         mock_path = mock.create_autospec(Path)
         mock_path.open.return_value = mock_stream
 
-        self.model.save_csv(mock_path)
+        self.model.save_csv(mock_path, False)
         mock_path.open.assert_called_once_with("w")
         self.assertIn("# tof_index,all,roi", mock_stream.getvalue())
         self.assertIn("0.0,0.0,0.0", mock_stream.getvalue())
         self.assertIn("1.0,2.0,2.0", mock_stream.getvalue())
+        self.assertTrue(mock_stream.is_closed)
+
+    def test_save_csv_norm_missing_stack(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10) * 2
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(None)
+        with self.assertRaises(RuntimeError):
+            self.model.save_csv(mock.Mock(), True)
+
+    def test_save_csv_norm(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+
+        open_stack = ImageStack(np.ones([10, 11, 12]) * 2)
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(open_stack)
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+
+        self.model.save_csv(mock_path, True)
+        mock_path.open.assert_called_once_with("w")
+        self.assertIn("# tof_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.getvalue())
+        self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.getvalue())
+        self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.getvalue())
         self.assertTrue(mock_stream.is_closed)

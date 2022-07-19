@@ -83,7 +83,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if path.suffix != ".csv":
             path = path.with_suffix(".csv")
 
-        self.model.save_csv(path)
+        self.model.save_csv(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:

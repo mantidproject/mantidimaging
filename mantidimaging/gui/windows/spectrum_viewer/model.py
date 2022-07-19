@@ -83,7 +83,7 @@ class SpectrumViewerWindowModel:
         else:
             return 0, 0
 
-    def save_csv(self, path: Path) -> None:
+    def save_csv(self, path: Path, normalized: bool) -> None:
         if self._stack is None:
             raise ValueError("No stack selected")
 
@@ -92,6 +92,11 @@ class SpectrumViewerWindowModel:
 
         for roi_name in ("all", "roi"):
             csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
+            if normalized:
+                if self._normalise_stack is None:
+                    raise RuntimeError("No normalisation stack selected")
+                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN))
+                csv_output.add_column(roi_name + "_norm", self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED))
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
