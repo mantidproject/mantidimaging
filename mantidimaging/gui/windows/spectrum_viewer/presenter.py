@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class SpectrumViewerWindowPresenter(BasePresenter):
     view: 'SpectrumViewerWindowView'
     model: SpectrumViewerWindowModel
+    normalised: bool = False
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
@@ -59,7 +60,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def show_new_sample(self) -> None:
         self.view.spectrum.image.setImage(self.model.get_averaged_image())
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi"), clear=True)
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.normalised), clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
 
@@ -72,7 +73,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi = self.view.spectrum.get_roi()
         self.model.set_roi("roi", roi)
         self.view.spectrum.spectrum.clearPlots()
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi"))
+        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.normalised))
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -85,5 +86,5 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.save_csv(path)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
-        self.model.normalised = bool(enabled)
+        self.normalised = bool(enabled)
         self.handle_roi_moved()

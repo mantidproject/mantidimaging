@@ -19,7 +19,6 @@ class SpectrumViewerWindowModel:
     _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
     _roi_ranges: dict[str, SensibleROI] = {}
-    normalised: bool = False
 
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
@@ -47,14 +46,14 @@ class SpectrumViewerWindowModel:
         else:
             return None
 
-    def get_spectrum(self, roi_name: str) -> Optional['np.ndarray']:
+    def get_spectrum(self, roi_name: str, normalised: bool) -> Optional['np.ndarray']:
         if self._stack is None:
             return None
 
         left, top, right, bottom = self.get_roi(roi_name)
         roi_data = self._stack.data[:, top:bottom, left:right]
         roi_spectrum = roi_data.mean(axis=(1, 2))
-        if self.normalised and self._normalise_stack is not None:
+        if normalised and self._normalise_stack is not None:
             roi_norm_data = self._normalise_stack.data[:, top:bottom, left:right]
             roi_norm_spectrum = roi_norm_data.mean(axis=(1, 2))
             return np.divide(roi_spectrum,
@@ -78,7 +77,7 @@ class SpectrumViewerWindowModel:
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
         for roi_name in ("all", "roi"):
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name))
+            csv_output.add_column(roi_name, self.get_spectrum(roi_name, False))
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
