@@ -59,7 +59,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
     def show_new_sample(self) -> None:
-        self.view.spectrum.image.setImage(self.model.get_averaged_image())
+        self.view.set_image(self.model.get_averaged_image())
         self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.spectrum_mode), clear=True)
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
@@ -67,7 +67,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_range_slide_moved(self) -> None:
         tof_range = self.view.spectrum.get_tof_range()
         self.model.tof_range = tof_range
-        self.view.spectrum.image.setImage(self.model.get_averaged_image(), autoLevels=False)
+        self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
     def handle_roi_moved(self) -> None:
         roi = self.view.spectrum.get_roi()

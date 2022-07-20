@@ -13,6 +13,7 @@ from .spectrum_widget import SpectrumWidget
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
+    import numpy as np
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -85,3 +86,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
+
+    def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
+        self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
