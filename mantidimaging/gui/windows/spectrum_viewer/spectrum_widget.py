@@ -65,3 +65,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         pos = CloseEnoughPoint(self.roi.pos())
         size = CloseEnoughPoint(self.roi.size())
         return SensibleROI.from_points(pos, size)
+
+    def remove_roi(self) -> None:
+        self.image.vb.removeItem(self.roi)

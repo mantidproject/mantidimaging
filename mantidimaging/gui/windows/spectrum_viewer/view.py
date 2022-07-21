@@ -94,3 +94,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if clear_plots:
             self.spectrum.spectrum.clearPlots()
         self.spectrum.spectrum.plot(spectrum_data, clear=clear_all)
+
+    def clear(self) -> None:
+        self.spectrum.image.clear()
+        self.spectrum.spectrum.clear()
+        self.spectrum.remove_roi()

@@ -32,12 +32,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.view.current_dataset_id = None
 
-        if uuid is not None:
-            self.model.set_stack(self.main_window.get_stack(uuid))
-            normalise_uuid = self.view.get_normalise_stack()
-            if normalise_uuid is not None:
-                self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
-            self.show_new_sample()
+        if uuid is None:
+            self.model.set_stack(None)
+            self.view.clear()
+            return
+
+        self.model.set_stack(self.main_window.get_stack(uuid))
+        normalise_uuid = self.view.get_normalise_stack()
+        if normalise_uuid is not None:
+            self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
+        self.show_new_sample()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
         if normalise_uuid is not None:

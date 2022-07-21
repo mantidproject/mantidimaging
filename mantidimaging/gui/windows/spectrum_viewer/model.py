@@ -32,8 +32,10 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
 
-    def set_stack(self, stack: ImageStack) -> None:
+    def set_stack(self, stack: Optional[ImageStack]) -> None:
         self._stack = stack
+        if stack is None:
+            return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
         self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
