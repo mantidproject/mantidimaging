@@ -60,7 +60,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def show_new_sample(self) -> None:
         self.view.set_image(self.model.get_averaged_image())
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.spectrum_mode), clear=True)
+        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode), clear_all=True)
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
 
@@ -72,8 +72,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_roi_moved(self) -> None:
         roi = self.view.spectrum.get_roi()
         self.model.set_roi("roi", roi)
-        self.view.spectrum.spectrum.clearPlots()
-        self.view.spectrum.spectrum.plot(self.model.get_spectrum("roi", self.spectrum_mode))
+        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode), clear_plots=True)
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
