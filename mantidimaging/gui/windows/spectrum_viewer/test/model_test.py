@@ -9,9 +9,18 @@ import numpy as np
 import numpy.testing as npt
 
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
+from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ALL
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+
+
+class CloseCheckStream(io.StringIO):
+    is_closed: bool = False
+
+    def close(self) -> None:
+        # don't call real close as it clears buffer
+        self.is_closed = True
 
 
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
@@ -63,7 +72,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
         self.model.set_stack(stack)
 
-        model_spec = self.model.get_spectrum()
+        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
 
@@ -75,9 +84,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         self.model.set_normalise_stack(normalise_stack)
-        self.model.normalised = True
 
-        model_norm_spec = self.model.get_spectrum()
+        model_open_spec = self.model.get_spectrum("roi", SpecType.OPEN)
+        self.assertEqual(model_open_spec.shape, (10, ))
+        self.assertTrue(np.all(model_open_spec == 2))
+
+        model_norm_spec = self.model.get_spectrum("roi", SpecType.SAMPLE_NORMED)
         self.assertEqual(model_norm_spec.shape, (10, ))
         npt.assert_array_equal(model_norm_spec, spectrum / 2)
 
@@ -90,9 +102,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         normalise_stack.data[5] = 0
         self.model.set_normalise_stack(normalise_stack)
-        self.model.normalised = True
 
-        model_norm_spec = self.model.get_spectrum()
+        model_norm_spec = self.model.get_spectrum("roi", SpecType.SAMPLE_NORMED)
         expected_spec = spectrum / 2
         expected_spec[5] = 0
         self.assertEqual(model_norm_spec.shape, (10, ))
@@ -101,10 +112,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_set_stack_sets_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         self.model.set_stack(stack)
-        npt.assert_array_equal(self.model.roi_range.top, 0)
-        npt.assert_array_equal(self.model.roi_range.left, 0)
-        npt.assert_array_equal(self.model.roi_range.right, 12)
-        npt.assert_array_equal(self.model.roi_range.bottom, 11)
+        self.assertEqual(self.model.get_roi(ALL), self.model.get_roi('roi'))
+        npt.assert_array_equal(self.model.get_roi(ALL).top, 0)
+        npt.assert_array_equal(self.model.get_roi(ALL).left, 0)
+        npt.assert_array_equal(self.model.get_roi(ALL).right, 12)
+        npt.assert_array_equal(self.model.get_roi(ALL).bottom, 11)
 
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
@@ -113,12 +125,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         stack.data[:, :, 6:] *= 2
         self.model.set_stack(stack)
 
-        self.model.roi_range = SensibleROI.from_list([0, 0, 3, 3])
-        model_spec = self.model.get_spectrum()
+        self.model.set_roi('roi', SensibleROI.from_list([0, 0, 3, 3]))
+        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
         npt.assert_array_equal(model_spec, spectrum)
 
-        self.model.roi_range = SensibleROI.from_list([6, 0, 6 + 3, 3])
-        model_spec = self.model.get_spectrum()
+        self.model.set_roi('roi', SensibleROI.from_list([6, 0, 6 + 3, 3]))
+        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
         npt.assert_array_equal(model_spec, spectrum * 2)
 
     def test_save_csv(self):
@@ -126,21 +138,44 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         spectrum = np.arange(0, 10) * 2
         stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
         self.model.set_stack(stack)
-
-        class CloseCheckStream(io.StringIO):
-            self.is_closed: bool = False
-
-            def close(self) -> None:
-                # don't call real close as it clears buffer
-                self.is_closed = True
+        self.model.set_normalise_stack(None)
 
         mock_stream = CloseCheckStream()
         mock_path = mock.create_autospec(Path)
         mock_path.open.return_value = mock_stream
 
-        self.model.save_csv(mock_path)
+        self.model.save_csv(mock_path, False)
         mock_path.open.assert_called_once_with("w")
         self.assertIn("# tof_index,all,roi", mock_stream.getvalue())
         self.assertIn("0.0,0.0,0.0", mock_stream.getvalue())
         self.assertIn("1.0,2.0,2.0", mock_stream.getvalue())
+        self.assertTrue(mock_stream.is_closed)
+
+    def test_save_csv_norm_missing_stack(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10) * 2
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(None)
+        with self.assertRaises(RuntimeError):
+            self.model.save_csv(mock.Mock(), True)
+
+    def test_save_csv_norm(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+
+        open_stack = ImageStack(np.ones([10, 11, 12]) * 2)
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(open_stack)
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+
+        self.model.save_csv(mock_path, True)
+        mock_path.open.assert_called_once_with("w")
+        self.assertIn("# tof_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.getvalue())
+        self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.getvalue())
+        self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.getvalue())
         self.assertTrue(mock_stream.is_closed)

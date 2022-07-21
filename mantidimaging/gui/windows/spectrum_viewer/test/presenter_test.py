@@ -143,4 +143,4 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_export_csv()
 
         self.view.get_csv_filename.assert_called_once()
-        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"))
+        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
