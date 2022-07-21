@@ -108,8 +108,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_show_sample(self):
         image_stack = generate_images([10, 11, 12])
-        self.view.spectrum.image = mock.Mock()
-        self.view.spectrum.spectrum = mock.Mock()
         self.presenter.model.set_stack(image_stack)
 
         self.presenter.show_new_sample()
@@ -118,7 +116,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_gui_changes_tof_range(self):
         image_stack = generate_images([30, 11, 12])
         self.view.spectrum.get_tof_range = mock.Mock(return_value=(10, 20))
-        self.view.spectrum.image = mock.Mock()
         self.presenter.model.set_stack(image_stack)
         self.presenter.handle_range_slide_moved()
 
