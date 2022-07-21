@@ -10,6 +10,8 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
+ALL = "all"
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
 
@@ -34,7 +36,7 @@ class SpectrumViewerWindowModel:
         self._stack = stack
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
+        self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
     def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
@@ -90,7 +92,7 @@ class SpectrumViewerWindowModel:
         csv_output = CSVOutput()
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
-        for roi_name in ("all", "roi"):
+        for roi_name in (ALL, "roi"):
             csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
             if normalized:
                 if self._normalise_stack is None:
