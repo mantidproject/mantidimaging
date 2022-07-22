@@ -173,7 +173,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.view.isVisible():
             self.model.reset_cor_model()
             self.do_update_projection()
-            self.do_preview_reconstruct_slice()
+            self.do_preview_reconstruct_slice(reset_roi=True)
         else:
             self.stack_changed_pending = True
 
