@@ -130,4 +130,4 @@ class ImageViewLineROI(LineSegmentROI):
         menu_name = reset_menu_name if reset_menu_name is not None else "Reset ROI line"
         self._reset_option = self._image_view.viewbox.menu.addAction(menu_name)
         self._image_view.viewbox.menu.insertSeparator(self._reset_option)
-        self._reset_option.triggered.connect(lambda: self.reset())
+        self._reset_option.triggered.connect(self.reset)
