@@ -272,7 +272,6 @@ class FiltersWindowPresenter(BasePresenter):
                         use_new_data = self._wait_for_stack_choice(stack, stack.id)
                     # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
                     if stack.has_proj180deg() and use_new_data and not self.applying_to_all:
-                        self.view.clear_previews()
                         # Apply to proj180 synchronously - this function is already running async
                         # and running another async instance causes a race condition in the parallel module
                         # where the shared data can be removed in the middle of the operation of another operation
