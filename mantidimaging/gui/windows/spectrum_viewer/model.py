@@ -41,7 +41,7 @@ class SpectrumViewerWindowModel:
         self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
-    def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
+    def set_normalise_stack(self, normalise_stack: Optional[ImageStack]) -> None:
         self._normalise_stack = normalise_stack
 
     def set_roi(self, roi_name: str, roi: SensibleROI):
