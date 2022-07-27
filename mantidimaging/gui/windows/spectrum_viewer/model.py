@@ -63,6 +63,15 @@ class SpectrumViewerWindowModel:
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.mean(axis=(1, 2))
 
+    def normalise_issue(self) -> str:
+        if self._stack is None or self._normalise_stack is None:
+            return "Need 2 selected stacks"
+        if self._stack is self._normalise_stack:
+            return "Need 2 different stacks"
+        if self._stack.data.shape != self._normalise_stack.data.shape:
+            return "Stack shapes must match"
+        return ""
+
     def get_spectrum(self, roi_name: str, mode: SpecType) -> Optional['np.ndarray']:
         if self._stack is None:
             return None
@@ -77,6 +86,8 @@ class SpectrumViewerWindowModel:
         if mode == SpecType.OPEN:
             return self.get_stack_spectrum(self._normalise_stack, roi)
         elif mode == SpecType.SAMPLE_NORMED:
+            if self.normalise_issue():
+                return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
         return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)

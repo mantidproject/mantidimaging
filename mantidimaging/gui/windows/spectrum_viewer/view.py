@@ -3,8 +3,10 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel
 
+from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .presenter import SpectrumViewerWindowPresenter
@@ -23,12 +25,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseCheckBox: QCheckBox
     imageLayout: QVBoxLayout
     exportButton: QPushButton
+    normaliseErrorIcon: QLabel
     _current_dataset_id: Optional['UUID']
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/spectrum_viewer.ui')
 
         self.main_window = main_window
+
+        icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+        self.normalise_error_icon_pixmap = QPixmap(icon_path)
+
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
         self.spectrum = SpectrumWidget(self)
@@ -99,3 +106,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.image.clear()
         self.spectrum.spectrum.clear()
         self.spectrum.remove_roi()
+
+    def display_normalise_error(self, norm_issue: str):
+        if norm_issue:
+            self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
+            self.normaliseErrorIcon.setToolTip(norm_issue)
+        else:
+            self.normaliseErrorIcon.setPixmap(QPixmap())
+            self.normaliseErrorIcon.setToolTip("")
