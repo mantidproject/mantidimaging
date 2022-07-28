@@ -5,7 +5,7 @@ FROM centos:centos7
 
 WORKDIR /opt/
 
-RUN yum install -y make wget git which xorg-x11-server-Xvfb libxkbcommon-x11 fontconfig qt5-qtbase-devel gcc &&\
+RUN yum install -y make wget git which xorg-x11-server-Xvfb libxkbcommon-x11 fontconfig qt5-qtbase-devel &&\
       yum clean all
 
 # Fixes "D-Bus library appears to be incorrectly set up;" error
