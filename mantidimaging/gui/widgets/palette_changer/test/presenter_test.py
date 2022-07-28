@@ -151,3 +151,16 @@ class PaletteChangerPresenterTest(unittest.TestCase):
     def test_recon_mode_doesnt_call_choice(self, choice_mock):
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
         choice_mock.assert_not_called()
+
+    def test_jenks_break_values(self):
+        self.view.num_materials = 5
+        rng = np.random.Generator(np.random.PCG64(2022))
+        values = np.hstack([rng.normal(loc, 0.03, [500]) for loc in [0.1, 0.2, 0.3, 0.7, 0.9]])
+        values.clip(0, 1)
+        self.presenter.flattened_image = values
+        self.presenter.image = values
+
+        expected = [0.0, 0.1425191163809132, 0.2472192292490485, 0.40716533222825024, 0.7850138036900619, 1.0]
+        actual = self.presenter._generate_jenks_tick_points()
+
+        np.testing.assert_almost_equal(expected, actual, decimal=5)
