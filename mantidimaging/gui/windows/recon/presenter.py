@@ -71,6 +71,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.main_window.stack_changed.connect(self.handle_stack_changed)
         self.stack_changed_pending = False
+        self.stack_selection_change_pending = False
 
     def notify(self, notification, slice_idx=None):
         try:
@@ -125,6 +126,10 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.change_refine_iterations()
 
     def set_stack_uuid(self, uuid):
+        if not self.view.isVisible():
+            self.stack_selection_change_pending = True
+            return
+
         images = self.view.get_stack(uuid)
         if self.model.is_current_stack(uuid):
             return
