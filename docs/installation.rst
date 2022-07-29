@@ -7,7 +7,8 @@ Requirements
 ------------
 
 Operating system
-   Linux. Tested on Ubuntu 18.04, 20.04 and CentOS 7
+ - Linux. Tested on Ubuntu 18.04, 20.04 and CentOS 7
+ - Windows. Tested on Windows 10
 
 Python 3.9
    This can be installed below using Conda if needed.
@@ -43,8 +44,23 @@ Please look for instructions specific to your OS on how to do that:
 (Specific versions can be installed by using the release url, e.g. `https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml`)
 
 5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
-6. [Optional] If you wish to run :code:`mantidimaging-ipython`, you will need to have :code:`ipython` installed. This can be done
-   with the command :code:`conda install ipython`.
+6. **This step is required for Linux users only.** To ensure that MantidImaging can make full use of the memory available on your Linux machine, we need to set the shared memory size to an appropriate value. Please follow the steps below to do this:
+
+  - Open the etc/fstab file on your computer. You can do this by opening a terminal and running this command (with sudo if needed to allow you to edit the file): :code:`gedit /etc/fstab`
+  - In the open fstab file, try to locate a line like this one: :code:`none /dev/shm tmpfs defaults,size=4G 0 0`.
+  - If the line exists:
+
+    - Modify the text after :code:`size=` to replace with :code:`size=90%`. After you have made the change, the line should look like this: :code:`none /dev/shm tmpfs defaults,size=90% 0 0`
+    - Save your changes and exit the text editor.
+    - In a terminal, run this command (with sudo if needed): :code:`mount -o remount /dev/shm`
+
+  - If the line does NOT exist:
+
+    - At the end of the file, add this line: :code:`none /dev/shm tmpfs defaults,size=90% 0 0`
+    - Save your changes and exit the text editor.
+    - In a terminal, run this command (with sudo if needed): :code:`mount /dev/shm`
+
+7. [Optional] If you wish to run :code:`mantidimaging-ipython`, you will need to have :code:`ipython` installed. This can be done with the command :code:`conda install ipython`.
 
 Running the package
 -------------------
