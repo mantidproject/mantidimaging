@@ -53,7 +53,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
 
-        self.view.display_normalise_error(self.model.normalise_issue())
+        self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
@@ -67,7 +67,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
-        self.view.display_normalise_error(self.model.normalise_issue())
+        self.view.set_normalise_error(self.model.normalise_issue())
         self.handle_roi_moved()
 
     def auto_find_flat_stack(self, new_dataset_id):
@@ -116,3 +116,4 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.spectrum_mode = SpecType.SAMPLE
         self.handle_roi_moved()
+        self.view.display_normalise_error()

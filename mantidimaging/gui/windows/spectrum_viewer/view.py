@@ -27,6 +27,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportButton: QPushButton
     normaliseErrorIcon: QLabel
     _current_dataset_id: Optional['UUID']
+    normalise_error_issue: str = ""
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/spectrum_viewer.ui')
@@ -107,10 +108,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum.clear()
         self.spectrum.remove_roi()
 
-    def display_normalise_error(self, norm_issue: str):
-        if norm_issue:
+    def set_normalise_error(self, norm_issue: str):
+        self.normalise_error_issue = norm_issue
+
+        self.display_normalise_error()
+
+    def display_normalise_error(self):
+        if self.normalise_error_issue and self.normaliseCheckBox.isChecked():
             self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
-            self.normaliseErrorIcon.setToolTip(norm_issue)
+            self.normaliseErrorIcon.setToolTip(self.normalise_error_issue)
         else:
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
