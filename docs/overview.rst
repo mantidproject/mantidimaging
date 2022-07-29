@@ -5,7 +5,7 @@ Mantid Imaging contains tools for loading data from neutron imaging experiments,
 
 Mantid Imaging makes use of a range of algorithms, some from external tools including `Astra <http://www.astra-toolbox.com/>`_, `Tomopy <https://tomopy.readthedocs.io/en/latest/>`_, `Algotom <https://github.com/algotom/algotom>`_ and the `Core Imaging Library <https://github.com/TomographicImaging/CIL>`_. Many of these are optimised for multithreading and GPU computing.
 
-Mantid Imaging is written in Python and requires a CUDA capable GPU for full functionality. It runs on Linux. See :ref:`Installation` for more details.
+Mantid Imaging is written in Python and requires a CUDA capable GPU for full functionality. It runs on Linux and Windows. See :ref:`Installation` for more details.
 
 See the :ref:`User Guide` for an example taking data from a set of images to full reconstruction.
 
