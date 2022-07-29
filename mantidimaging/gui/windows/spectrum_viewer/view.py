@@ -108,6 +108,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum.clear()
         self.spectrum.remove_roi()
 
+    def auto_range_image(self):
+        self.spectrum.image.vb.autoRange()
+
     def set_normalise_error(self, norm_issue: str):
         self.normalise_error_issue = norm_issue
 
