@@ -72,16 +72,16 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
-    def get_spectrum(self, roi_name: str, mode: SpecType) -> Optional['np.ndarray']:
+    def get_spectrum(self, roi_name: str, mode: SpecType) -> 'np.ndarray':
         if self._stack is None:
-            return None
+            return np.array([])
 
         roi = self.get_roi(roi_name)
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
 
         if self._normalise_stack is None:
-            raise RuntimeError("No normalisation stack selected")
+            return np.array([])
 
         if mode == SpecType.OPEN:
             return self.get_stack_spectrum(self._normalise_stack, roi)
