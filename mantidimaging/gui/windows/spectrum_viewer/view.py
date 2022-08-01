@@ -98,10 +98,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 
-    def set_spectrum(self, spectrum_data: 'np.ndarray', clear_all=False, clear_plots=False):
-        if clear_plots:
-            self.spectrum.spectrum.clearPlots()
-        self.spectrum.spectrum.plot(spectrum_data, clear=clear_all)
+    def set_spectrum(self, spectrum_data: 'np.ndarray'):
+        self.spectrum.spectrum.clearPlots()
+        self.spectrum.spectrum.plot(spectrum_data)
 
     def clear(self) -> None:
         self.spectrum.image.clear()
