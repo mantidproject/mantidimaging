@@ -9,6 +9,7 @@ from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindow
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
+    from mantidimaging.core.data import ImageStack
     from uuid import UUID
 
 
@@ -16,6 +17,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     view: 'SpectrumViewerWindowView'
     model: SpectrumViewerWindowModel
     spectrum_mode: SpecType = SpecType.SAMPLE
+    current_stack_uuid: Optional['UUID'] = None
+    current_norm_stack_uuid: Optional['UUID'] = None
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
@@ -25,6 +28,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model = SpectrumViewerWindowModel(self)
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
+        if uuid == self.current_stack_uuid:
+            return
+        else:
+            self.current_stack_uuid = uuid
         new_dataset_id = self.get_dataset_id_for_stack(uuid)
 
         if new_dataset_id:
@@ -32,17 +39,36 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.view.current_dataset_id = None
 
-        if uuid is not None:
-            self.model.set_stack(self.main_window.get_stack(uuid))
-            normalise_uuid = self.view.get_normalise_stack()
-            if normalise_uuid is not None:
-                self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
-            self.show_new_sample()
+        if uuid is None:
+            self.model.set_stack(None)
+            self.view.clear()
+            return
+
+        self.model.set_stack(self.main_window.get_stack(uuid))
+        normalise_uuid = self.view.get_normalise_stack()
+        if normalise_uuid is not None:
+            try:
+                norm_stack: Optional['ImageStack'] = self.main_window.get_stack(normalise_uuid)
+            except RuntimeError:
+                norm_stack = None
+            self.model.set_normalise_stack(norm_stack)
+
+        self.view.set_normalise_error(self.model.normalise_issue())
+        self.show_new_sample()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
-        if normalise_uuid is not None:
-            self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
-            self.handle_roi_moved()
+        if normalise_uuid == self.current_norm_stack_uuid:
+            return
+        else:
+            self.current_norm_stack_uuid = normalise_uuid
+
+        if normalise_uuid is None:
+            self.model.set_normalise_stack(None)
+            return
+
+        self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
+        self.view.set_normalise_error(self.model.normalise_issue())
+        self.handle_roi_moved()
 
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
@@ -60,9 +86,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def show_new_sample(self) -> None:
         self.view.set_image(self.model.get_averaged_image())
-        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode), clear_all=True)
+        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
+        self.view.auto_range_image()
 
     def handle_range_slide_moved(self) -> None:
         tof_range = self.view.spectrum.get_tof_range()
@@ -72,7 +99,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_roi_moved(self) -> None:
         roi = self.view.spectrum.get_roi()
         self.model.set_roi("roi", roi)
-        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode), clear_plots=True)
+        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -90,3 +117,4 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.spectrum_mode = SpecType.SAMPLE
         self.handle_roi_moved()
+        self.view.display_normalise_error()

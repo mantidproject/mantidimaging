@@ -62,6 +62,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.show_new_sample.assert_called_once()
 
     def test_handle_sample_change_no_new_stack(self):
+        self.presenter.current_stack_uuid = uuid.uuid4()
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=None)
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
