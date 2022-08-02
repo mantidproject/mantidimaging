@@ -124,7 +124,7 @@
         <item>
          <widget class="DatasetSelectorWidgetView" name="normaliseStackSelector">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
