@@ -4,7 +4,7 @@ Developer Guide
 Getting Started
 ---------------
 
-You will need conda/mamba, CUDA and gcc installed, see the :ref:`Installation` instructions.
+You will need conda/mamba and CUDA installed, see the :ref:`Installation` instructions.
 
 First download the Mantid Imaging source code using Git.
 
