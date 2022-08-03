@@ -29,12 +29,7 @@ have one on your machine.
 .. _packages: https://anaconda.org/mantid/mantidimaging/
 
 
-1. These dependencies must be present on your system before installing the Mantid Imaging environment.
-Please look for instructions specific to your OS on how to do that:
-
-  - CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive
-  - gcc - needed for compiling some python modules
-
+1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
 2. Download and install `Mambaforge <https://github.com/conda-forge/miniforge>`_ or `Miniconda 3 <https://conda.io/miniconda.html>`_
 3. Make sure :code:`mamba` or :code:`conda` is available on your PATH. The steps below assume you are using mamba.
 4. Create a mantidimaging conda environment:
