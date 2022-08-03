@@ -413,3 +413,12 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.presenter._on_volume_recon_done(task)
         self.view.set_recon_buttons_enabled.assert_called_once_with(True)
+
+    def test_handle_stack_changed_requests_roi_reset(self):
+        self.view.isVisible.return_value = True
+        self.presenter.model.reset_cor_model = mock.Mock()
+        self.presenter.do_update_projection = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
+        self.presenter.handle_stack_changed()
+
+        self.presenter.do_preview_reconstruct_slice.assert_called_once_with(reset_roi=True)

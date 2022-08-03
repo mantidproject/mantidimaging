@@ -3,8 +3,10 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel
 
+from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .presenter import SpectrumViewerWindowPresenter
@@ -23,12 +25,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseCheckBox: QCheckBox
     imageLayout: QVBoxLayout
     exportButton: QPushButton
+    normaliseErrorIcon: QLabel
     _current_dataset_id: Optional['UUID']
+    normalise_error_issue: str = ""
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(main_window, 'gui/ui/spectrum_viewer.ui')
 
         self.main_window = main_window
+
+        icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+        self.normalise_error_icon_pixmap = QPixmap(icon_path)
+
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
         self.spectrum = SpectrumWidget(self)
@@ -90,7 +98,27 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 
-    def set_spectrum(self, spectrum_data: 'np.ndarray', clear_all=False, clear_plots=False):
-        if clear_plots:
-            self.spectrum.spectrum.clearPlots()
-        self.spectrum.spectrum.plot(spectrum_data, clear=clear_all)
+    def set_spectrum(self, spectrum_data: 'np.ndarray'):
+        self.spectrum.spectrum.clearPlots()
+        self.spectrum.spectrum.plot(spectrum_data)
+
+    def clear(self) -> None:
+        self.spectrum.image.clear()
+        self.spectrum.spectrum.clear()
+        self.spectrum.remove_roi()
+
+    def auto_range_image(self):
+        self.spectrum.image.vb.autoRange()
+
+    def set_normalise_error(self, norm_issue: str):
+        self.normalise_error_issue = norm_issue
+
+        self.display_normalise_error()
+
+    def display_normalise_error(self):
+        if self.normalise_error_issue and self.normaliseCheckBox.isChecked():
+            self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
+            self.normaliseErrorIcon.setToolTip(self.normalise_error_issue)
+        else:
+            self.normaliseErrorIcon.setPixmap(QPixmap())
+            self.normaliseErrorIcon.setToolTip("")

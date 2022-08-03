@@ -109,6 +109,30 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(model_norm_spec.shape, (10, ))
         npt.assert_array_equal(model_norm_spec, expected_spec)
 
+    def test_get_normalised_spectrum_different_size(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        self.model.set_stack(stack)
+
+        normalise_stack = ImageStack(np.ones([10, 11, 13]))
+        self.model.set_normalise_stack(normalise_stack)
+
+        error_spectrum = self.model.get_spectrum("roi", SpecType.SAMPLE_NORMED)
+        np.testing.assert_array_equal(error_spectrum, np.array([]))
+
+    def test_normalise_issue(self):
+        self.assertIn("selected", self.model.normalise_issue())
+
+        stack = ImageStack(np.ones([10, 11, 12]))
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(stack)
+        self.assertIn("different", self.model.normalise_issue())
+
+        self.model.set_normalise_stack(ImageStack(np.ones([10, 11, 13])))
+        self.assertIn("shapes", self.model.normalise_issue())
+
+        self.model.set_normalise_stack(ImageStack(np.ones([10, 11, 12])))
+        self.assertEqual("", self.model.normalise_issue())
+
     def test_set_stack_sets_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         self.model.set_stack(stack)

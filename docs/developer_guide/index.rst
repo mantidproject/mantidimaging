@@ -4,7 +4,9 @@ Developer Guide
 Getting Started
 ---------------
 
-You will need conda/mamba and CUDA installed, see the :ref:`Installation` instructions.
+You will need conda/mamba and CUDA installed, see the :ref:`Installation` instructions. If you are a Linux user, you will also need to complete step 6 of the installation instructions.
+
+*Note that the Python commands given below are for Linux only. To run the commands on Windows, replace* :code:`python3` *with* :code:`python`.
 
 First download the Mantid Imaging source code using Git.
 

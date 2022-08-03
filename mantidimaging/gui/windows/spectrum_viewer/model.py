@@ -32,14 +32,16 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
 
-    def set_stack(self, stack: ImageStack) -> None:
+    def set_stack(self, stack: Optional[ImageStack]) -> None:
         self._stack = stack
+        if stack is None:
+            return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
         self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
-    def set_normalise_stack(self, normalise_stack: ImageStack) -> None:
+    def set_normalise_stack(self, normalise_stack: Optional[ImageStack]) -> None:
         self._normalise_stack = normalise_stack
 
     def set_roi(self, roi_name: str, roi: SensibleROI):
@@ -61,20 +63,31 @@ class SpectrumViewerWindowModel:
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.mean(axis=(1, 2))
 
-    def get_spectrum(self, roi_name: str, mode: SpecType) -> Optional['np.ndarray']:
+    def normalise_issue(self) -> str:
+        if self._stack is None or self._normalise_stack is None:
+            return "Need 2 selected stacks"
+        if self._stack is self._normalise_stack:
+            return "Need 2 different stacks"
+        if self._stack.data.shape != self._normalise_stack.data.shape:
+            return "Stack shapes must match"
+        return ""
+
+    def get_spectrum(self, roi_name: str, mode: SpecType) -> 'np.ndarray':
         if self._stack is None:
-            return None
+            return np.array([])
 
         roi = self.get_roi(roi_name)
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
 
         if self._normalise_stack is None:
-            raise RuntimeError("No normalisation stack selected")
+            return np.array([])
 
         if mode == SpecType.OPEN:
             return self.get_stack_spectrum(self._normalise_stack, roi)
         elif mode == SpecType.SAMPLE_NORMED:
+            if self.normalise_issue():
+                return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
         return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
