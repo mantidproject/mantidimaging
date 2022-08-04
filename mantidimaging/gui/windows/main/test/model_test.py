@@ -318,14 +318,65 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.remove_container(ds.id)
         self.assertEqual(len(self.model.datasets), 0)
 
-    def test_remove_images_from_dataset(self):
+    def test_remove_non_sample_images_from_dataset_with_sample(self):
         images = [generate_images() for _ in range(2)]
+        # Set the sample 180 to check this isn't removed
+        images[0].proj180deg = generate_images()
         ds = StrictDataset(*images)
         self.model.datasets[ds.id] = ds
+        id_to_remove = images[-1].id
 
         self.assertIsNotNone(ds.flat_before)
-        self.model.remove_container(images[-1].id)
+        deleted_stacks = self.model.remove_container(id_to_remove)
         self.assertIsNone(ds.flat_before)
+        self.assertEqual([id_to_remove], deleted_stacks)
+
+    def test_remove_non_sample_images_from_dataset_without_sample(self):
+        images = [generate_images() for _ in range(2)]
+        ds = StrictDataset(*images)
+        ds.sample = None
+        self.model.datasets[ds.id] = ds
+        id_to_remove = images[-1].id
+
+        self.assertIsNotNone(ds.flat_before)
+        deleted_stacks = self.model.remove_container(id_to_remove)
+        self.assertIsNone(ds.flat_before)
+        self.assertEqual([id_to_remove], deleted_stacks)
+
+    def test_remove_sample_with_180_from_dataset(self):
+        sample = generate_images()
+        sample.proj180deg = generate_images()
+        ds = StrictDataset(sample)
+        self.model.datasets[ds.id] = ds
+
+        expected_result = [sample.id, sample.proj180deg.id]
+        self.assertIsNotNone(ds.sample)
+        deleted_stacks = self.model.remove_container(sample.id)
+        self.assertIsNone(ds.sample)
+        self.assertEqual(expected_result, deleted_stacks)
+
+    def test_remove_sample_without_180_from_dataset(self):
+        sample = generate_images()
+        ds = StrictDataset(sample)
+        self.model.datasets[ds.id] = ds
+
+        expected_result = [sample.id]
+        self.assertIsNotNone(ds.sample)
+        deleted_stacks = self.model.remove_container(sample.id)
+        self.assertIsNone(ds.sample)
+        self.assertEqual(expected_result, deleted_stacks)
+
+    def test_remove_images_from_mixed_dataset(self):
+        images = [generate_images() for _ in range(5)]
+        ids = [image_stack.id for image_stack in images]
+        id_to_remove = ids[0]
+
+        ds = MixedDataset(images)
+        self.model.datasets[ds.id] = ds
+
+        deleted_stacks = self.model.remove_container(id_to_remove)
+        self.assertNotIn(id_to_remove, ds.all_image_ids)
+        self.assertListEqual([id_to_remove], deleted_stacks)
 
     def test_add_dataset_to_model(self):
         ds = StrictDataset(generate_images())
