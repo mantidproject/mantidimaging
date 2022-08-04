@@ -22,6 +22,8 @@ class ReconstructionWindowTest(BaseEyesTest):
     def _show_recon_window(self):
         self.imaging.show_recon_window()
         QTest.qWaitForWindowExposed(self.imaging.recon)
+        # If a recon preview is running then we need to wait until it has completed
+        wait_until(lambda: len(self.imaging.recon.presenter.async_tracker) == 0)
 
     def test_reconstruction_window_opens(self):
         self._show_recon_window()
@@ -32,8 +34,6 @@ class ReconstructionWindowTest(BaseEyesTest):
         self._load_data_set()
 
         self._show_recon_window()
-
-        wait_until(lambda: len(self.imaging.recon.presenter.async_tracker) == 0)
 
         self.check_target(widget=self.imaging.recon)
 
@@ -64,6 +64,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         images.data[0:, 0:1] = np.nan
 
         self._show_recon_window()
+
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_colour_palette_dialog(self):

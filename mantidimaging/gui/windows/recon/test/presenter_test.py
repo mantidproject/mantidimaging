@@ -98,6 +98,16 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertEqual(64.0, self.view.rotation_centre)
         self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
 
+    def test_set_stack_uuid_no_preview_redraw_when_window_closed(self):
+        self.view.isVisible = mock.Mock(return_value=False)
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
+        # reset the model data
+        self.presenter.model.initial_select_data(None)
+
+        self.presenter.set_stack_uuid(self.uuid)
+
+        self.presenter.do_preview_reconstruct_slice.assert_not_called()
+
     def test_set_projection_preview_index(self):
         self.presenter.set_preview_projection_idx(5)
         self.assertEqual(self.presenter.model.preview_projection_idx, 5)
