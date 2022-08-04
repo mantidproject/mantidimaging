@@ -70,9 +70,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         size = CloseEnoughPoint(self.roi.size())
         return SensibleROI.from_points(pos, size)
 
-    def remove_roi(self) -> None:
-        self.image.vb.removeItem(self.roi)
-
     def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
         self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
 
@@ -80,3 +77,9 @@ class SpectrumWidget(GraphicsLayoutWidget):
         tof_range = self.get_tof_range()
         self._set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
+
+    def clear_data(self):
+        self.image.clear()
+        self.spectrum.clear()
+        self.image.vb.removeItem(self.roi)
+        self._tof_range_label.setText('')

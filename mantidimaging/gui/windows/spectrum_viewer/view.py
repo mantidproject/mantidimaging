@@ -103,9 +103,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum.plot(spectrum_data)
 
     def clear(self) -> None:
-        self.spectrum.image.clear()
-        self.spectrum.spectrum.clear()
-        self.spectrum.remove_roi()
+        self.spectrum.clear_data()
 
     def auto_range_image(self):
         self.spectrum.image.vb.autoRange()
