@@ -91,8 +91,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum.add_roi(self.model.get_roi("roi"))
         self.view.auto_range_image()
 
-    def handle_range_slide_moved(self) -> None:
-        tof_range = self.view.spectrum.get_tof_range()
+    def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
