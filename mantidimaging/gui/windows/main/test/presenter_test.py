@@ -402,14 +402,24 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.remove_item_from_tree_view = mock.Mock()
         self.presenter._delete_container(id_to_remove)
 
-        self.assertNotIn(id_to_remove, self.presenter.stack_visualisers.keys())
-        self.assertNotIn(mock_stack, self.presenter.stack_visualisers.values())
-
-        mock_stack.image_view.close.assert_called_once()
-        mock_stack.presenter.delete_data.assert_called_once()
-        mock_stack.deleteLater.assert_called_once()
-
+        self._check_stack_visualiser_removed(id_to_remove, mock_stack)
         self.presenter.remove_item_from_tree_view.assert_called_once_with(id_to_remove)
+        self.view.model_changed.emit.assert_called_once()
+
+    def test_delete_sample_stack_with_180(self):
+        ids_to_remove = ["sample-to-remove", "proj_180_to_remove"]
+        self.model.remove_container = mock.Mock(return_value=ids_to_remove)
+        self.presenter.stack_visualisers[ids_to_remove[0]] = mock_sample = mock.Mock()
+        self.presenter.stack_visualisers[ids_to_remove[1]] = mock_180 = mock.Mock()
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+
+        self.presenter._delete_container(ids_to_remove[0])
+
+        self._check_stack_visualiser_removed(ids_to_remove[0], mock_sample)
+        self._check_stack_visualiser_removed(ids_to_remove[1], mock_180)
+
+        calls = [call(ids_to_remove[0]), call(ids_to_remove[1])]
+        self.presenter.remove_item_from_tree_view.assert_has_calls(calls, any_order=True)
         self.view.model_changed.emit.assert_called_once()
 
     def test_delete_dataset_and_member_image_stacks(self):
@@ -758,6 +768,14 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         result = self.presenter.get_dataset(incorrect_id)
         self.assertIsNone(result)
+
+    def _check_stack_visualiser_removed(self, stack_id, mock_stack_visualiser):
+        self.assertNotIn(stack_id, self.presenter.stack_visualisers.keys())
+        self.assertNotIn(mock_stack_visualiser, self.presenter.stack_visualisers.values())
+
+        mock_stack_visualiser.image_view.close.assert_called_once()
+        mock_stack_visualiser.presenter.delete_data.assert_called_once()
+        mock_stack_visualiser.deleteLater.assert_called_once()
 
 
 if __name__ == '__main__':

@@ -535,11 +535,18 @@ class MainWindowPresenter(BasePresenter):
         Informs the model to delete a container, then updates the view elements.
         :param container_id: The ID of the container to delete.
         """
-        ids_to_remove = self.model.remove_container(container_id)
-        for stack_id in ids_to_remove:
+        # We need the ids of the stacks that have been deleted to tidy up the stack visualiser tabs
+        removed_stack_ids = self.model.remove_container(container_id)
+        for stack_id in removed_stack_ids:
             if stack_id in self.stack_visualisers:
                 self._delete_stack(stack_id)
-        self.remove_item_from_tree_view(container_id)
+
+        # If the container_id provided is not a stack id then we remove the entire container from the tree view,
+        # otherwise we remove the individual stacks that were deleted
+        tree_view_items_to_remove = [container_id] if container_id not in removed_stack_ids else removed_stack_ids
+        for item_id in tree_view_items_to_remove:
+            self.remove_item_from_tree_view(item_id)
+
         self.view.model_changed.emit()
 
     def _delete_stack(self, stack_id: uuid.UUID) -> None:

@@ -170,8 +170,13 @@ class MainWindowModel(object):
         else:
             for dataset in self.datasets.values():
                 if container_id in dataset:
+                    proj_180_id = None
+                    # If we're deleting a sample from a StrictDataset then any linked 180 projection will also be
+                    # deleted
+                    if isinstance(dataset, StrictDataset) and dataset.proj180deg and dataset.sample.id == container_id:
+                        proj_180_id = dataset.proj180deg.id
                     dataset.delete_stack(container_id)
-                    return [container_id]
+                    return [container_id, proj_180_id] if proj_180_id else [container_id]
                 if container_id == dataset.recons.id:
                     ids_to_remove = dataset.recons.ids
                     dataset.delete_recons()
