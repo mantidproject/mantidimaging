@@ -116,11 +116,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_gui_changes_tof_range(self):
         image_stack = generate_images([30, 11, 12])
-        self.view.spectrum.get_tof_range = mock.Mock(return_value=(10, 20))
+        new_tof_range = (10, 20)
         self.presenter.model.set_stack(image_stack)
-        self.presenter.handle_range_slide_moved()
+        self.presenter.handle_range_slide_moved(new_tof_range)
 
-        self.assertEqual(self.presenter.model.tof_range, (10, 20))
+        self.assertEqual(self.presenter.model.tof_range, new_tof_range)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
     def test_handle_export_csv_none(self, mock_save_csv: mock.Mock):

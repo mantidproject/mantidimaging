@@ -20,7 +20,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     range_control: LinearRegionItem
     roi: ROI
 
-    range_changed = pyqtSignal()
+    range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
 
     def __init__(self, parent: 'SpectrumViewerWindowView'):
@@ -33,11 +33,14 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.nextRow()
         self.spectrum = self.addPlot()
 
+        self.nextRow()
+        self._tof_range_label = self.addLabel()
+
         self.ci.layout.setRowStretchFactor(0, 3)
         self.ci.layout.setRowStretchFactor(1, 1)
 
         self.range_control = LinearRegionItem()
-        self.range_control.sigRegionChanged.connect(self.range_changed.emit)
+        self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
         self.roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         self.roi.sigRegionChanged.connect(self.roi_changed.emit)
@@ -46,6 +49,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control.setBounds((range_min, range_max))
         self.range_control.setRegion((range_min, range_max))
         self.spectrum.addItem(self.range_control)
+        self._set_tof_range_label(range_min, range_max)
 
     def get_tof_range(self) -> tuple[int, int]:
         r_min, r_max = self.range_control.getRegion()
@@ -66,5 +70,16 @@ class SpectrumWidget(GraphicsLayoutWidget):
         size = CloseEnoughPoint(self.roi.size())
         return SensibleROI.from_points(pos, size)
 
-    def remove_roi(self) -> None:
+    def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
+        self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
+
+    def _handle_tof_range_changed(self) -> None:
+        tof_range = self.get_tof_range()
+        self._set_tof_range_label(tof_range[0], tof_range[1])
+        self.range_changed.emit(tof_range)
+
+    def clear_data(self):
+        self.image.clear()
+        self.spectrum.clear()
         self.image.vb.removeItem(self.roi)
+        self._tof_range_label.setText('')
