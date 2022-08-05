@@ -145,8 +145,15 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.reset_recon_line_profile()
             self.view.show_status_message("")
             return
+        self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
+
+    def _set_max_preview_indexes(self):
+        images = self.model.images
+        if images is not None:
+            self.view.set_max_projection_index(images.num_projections - 1)
+            self.view.set_max_slice_index(images.height - 1)
 
     def set_preview_projection_idx(self, idx):
         self.model.preview_projection_idx = idx
@@ -178,6 +185,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.view.isVisible():
             self.model.reset_cor_model()
             self.do_update_projection()
+            self._set_max_preview_indexes()
             self.do_preview_reconstruct_slice(reset_roi=True)
         else:
             self.stack_changed_pending = True
