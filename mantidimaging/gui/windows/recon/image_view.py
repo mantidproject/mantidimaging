@@ -25,10 +25,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_sinogram = MIMiniImageView(name="Sinogram", parent=parent)
         self.imageview_recon = MIMiniImageView(name="Recon", parent=parent, recon_mode=True)
 
-        self.slice_line = InfiniteLine(pos=1024,
-                                       angle=0,
-                                       bounds=[0, self.imageview_projection.image_item.width()],
-                                       movable=True)
+        self.slice_line = InfiniteLine(pos=1024, angle=0, movable=True)
         self.imageview_projection.viewbox.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
         self.recon_line_profile = LineProfilePlot(self.imageview_recon)
@@ -62,6 +59,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.setImage(image_data)
         self.imageview_projection.histogram.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
+        self.slice_line.setBounds([0, int(self.imageview_projection.image_item.height()) - 1])
         if tilt_angle:
             self.set_tilt(tilt_angle, image_data.shape[1] // 2)
         else:
