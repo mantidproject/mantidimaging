@@ -26,6 +26,9 @@ class BaseFilter:
     link_histograms = False
     show_negative_overlay = True
     operate_on_sinograms = False
+
+    SINOGRAM_FILTER_INFO = "This filter will work on a\nsinogram view of the data."
+
     __name__ = "BaseFilter"
     """
     The base class for filter algorithms, which should extend this class.
