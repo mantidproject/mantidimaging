@@ -512,3 +512,9 @@ class ReconstructWindowView(BaseMainWindowView):
     def set_recon_buttons_enabled(self, enabled: bool):
         self.reconstructSlice.setEnabled(enabled)
         self.reconstructVolume.setEnabled(enabled)
+
+    def set_max_projection_index(self, max_index: int):
+        self.previewProjectionIndex.setMaximum(max_index)
+
+    def set_max_slice_index(self, max_index: int):
+        self.previewSliceIndex.setMaximum(max_index)

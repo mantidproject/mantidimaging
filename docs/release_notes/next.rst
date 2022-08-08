@@ -36,6 +36,7 @@ Fixes
 - #1351 : Double clicking reconstruct buttons can cause RunTimeError
 - #1562 : Stop reconstruction previews updating when window is closed
 - #1564 : 180 stack not removed from main window when projection stack is deleted
+- #1561 : IndexError in Reconstruction window if select a slice or projection index that's too high
 
 
 Developer Changes

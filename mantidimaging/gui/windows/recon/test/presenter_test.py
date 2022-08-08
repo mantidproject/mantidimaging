@@ -61,6 +61,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.clear_cor_table.assert_called_once()
         self.view.update_projection.assert_called_once()
         self.view.update_sinogram.assert_called_once()
+        self.view.set_max_projection_index.assert_called_once_with(self.data.num_projections - 1)
+        self.view.set_max_slice_index.assert_called_once_with(self.data.height - 1)
 
         # calling again with the same stack shouldn't re-do everything
         self.presenter.set_stack_uuid(self.uuid)
@@ -87,6 +89,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_projection.assert_not_called()
         self.view.reset_recon_line_profile.assert_called_once()
         self.view.show_status_message.assert_called_once_with("")
+        self.view.set_max_projection_index.assert_not_called()
+        self.view.set_max_slice_index.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
@@ -432,3 +436,13 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_stack_changed()
 
         self.presenter.do_preview_reconstruct_slice.assert_called_once_with(reset_roi=True)
+
+    def test_handle_stack_changed_updates_preview_indexes(self):
+        self.view.isVisible.return_value = True
+        self.presenter.model.reset_cor_model = mock.Mock()
+        self.presenter.do_update_projection = mock.Mock()
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
+        self.presenter.handle_stack_changed()
+
+        self.view.set_max_projection_index.assert_called_once_with(self.data.num_projections - 1)
+        self.view.set_max_slice_index.assert_called_once_with(self.data.height - 1)
