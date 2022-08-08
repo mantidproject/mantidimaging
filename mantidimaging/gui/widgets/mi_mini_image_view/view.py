@@ -126,7 +126,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
             value_string = ("%.6f" % pixel_value)[:8]
-            self.details.setText(f"{self.name}: x={pos.x}, y={pos.y}, value={value_string}")
+            self.details.setText(f"x={pos.x}, y={pos.y}, value={value_string}")
 
     def link_sibling_axis(self):
         # Linking multiple viewboxes with locked aspect ratios causes
