@@ -85,10 +85,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.",
-                                        Type.LABEL,
-                                        form=form,
-                                        on_change=on_change)
+        label, _ = add_property_to_form(BaseFilter.SINOGRAM_FILTER_INFO, Type.LABEL, form=form, on_change=on_change)
         _, sigma = add_property_to_form('Sigma',
                                         Type.INT,
                                         default_value=3,

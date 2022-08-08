@@ -65,10 +65,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        label, _ = add_property_to_form("This filter requires sinograms\nto produce a sensible result.",
-                                        Type.LABEL,
-                                        form=form,
-                                        on_change=on_change)
+        label, _ = add_property_to_form(BaseFilter.SINOGRAM_FILTER_INFO, Type.LABEL, form=form, on_change=on_change)
         _, order = add_property_to_form('Polynomial fit order',
                                         Type.INT,
                                         default_value=1,
