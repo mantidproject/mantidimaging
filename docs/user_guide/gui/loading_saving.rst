@@ -1,8 +1,7 @@
 Loading and Saving
 ==================
 
-Loading sand saving data is performed via the *Load dataset*, *Load images*, *Load NeXus file* and *Save* options on the
-*File* menu.
+Loading and saving data is performed via the *Load* and *Save* options on the *File* menu.
 
 Loading
 -------
