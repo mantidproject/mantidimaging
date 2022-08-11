@@ -139,6 +139,10 @@ class StrictDataset(BaseDataset):
         return [angles.value for angles in proj_angles]  # type: ignore
 
     @property
+    def num_nexus_angles_required(self) -> int:
+        return sum(image_stack.num_images for image_stack in self._nexus_stack_order)
+
+    @property
     def image_keys(self) -> List[int]:
         image_keys = []
         if self.dark_before is not None:

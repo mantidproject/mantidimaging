@@ -221,3 +221,21 @@ class StrictDatasetTest(unittest.TestCase):
     def test_incomplete_nexus_rotation_angles(self):
         with self.assertRaises(RuntimeError):
             self.strict_dataset.nexus_rotation_angles
+
+    def test_num_nexus_angles_required_full_nexus_stack(self):
+        shape = (2, 5, 5)
+        self.strict_dataset.dark_before = generate_images(shape)
+        self.strict_dataset.flat_before = generate_images(shape)
+        self.strict_dataset.sample = generate_images(shape)
+        self.strict_dataset.flat_after = generate_images(shape)
+        self.strict_dataset.dark_after = generate_images(shape)
+        self.assertEqual(shape[0] * 5, self.strict_dataset.num_nexus_angles_required)
+
+    def test_num_nexus_angles_required_partial_nexus_stack(self):
+        shape = (2, 5, 5)
+        self.strict_dataset.dark_before = None
+        self.strict_dataset.flat_before = generate_images(shape)
+        self.strict_dataset.sample = generate_images(shape)
+        self.strict_dataset.flat_after = generate_images(shape)
+        self.strict_dataset.dark_after = None
+        self.assertEqual(shape[0] * 3, self.strict_dataset.num_nexus_angles_required)

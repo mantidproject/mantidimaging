@@ -221,6 +221,25 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
+    def test_nexus_no_projection_angles_saves_as_zeros(self):
+        shape = (10, 8, 10)
+        sample = th.generate_images(shape)
+
+        sd = StrictDataset(sample)
+        path = "nexus/file/path"
+        sample_name = "sample-name"
+
+        with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, sample_name)
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
+            rotation_angle_entry = tomo_entry["sample"]["rotation_angle"]
+
+            # test rotation angle fields
+            npt.assert_array_equal(np.array(rotation_angle_entry), np.zeros(shape[0]))
+
+            # test rotation angle links
+            self.assertEqual(tomo_entry["data"]["rotation_angle"], rotation_angle_entry)
+
     @staticmethod
     def test_nexus_complex_dataset_save():
         image_stacks = []
