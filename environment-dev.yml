@@ -14,9 +14,7 @@ dependencies:
       # For running
       - pyqt5==5.15.*
       - pyqtgraph>=0.12.1,<0.13
-      # For developement
-      - pytest==6.2.*
-      - pytest-cov==2.12.*
+      # For development
       - coveralls==3.3.*
       - yapf==0.31.*
       - mypy==0.910
@@ -27,9 +25,12 @@ dependencies:
       - pylint==2.11.*
       - sphinx==4.2.*
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
-      - pytest-randomly==3.10.*
-      - pytest-xdist==2.4.*
       - isort==5.9.*
       - eyes-images==4.25.*
       - parameterized==0.8.*
       - pre-commit==2.15.*
+  # For development
+  - pytest==7.1.*
+  - pytest-cov==3.0.*
+  - pytest-randomly==3.12.*
+  - pytest-xdist==2.5.*
