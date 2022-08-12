@@ -331,3 +331,20 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertIsNone(ds.sample._projection_angles)
         self.assertIsNone(ds.dark_after._projection_angles)
         self.assertIsNone(ds.flat_after._projection_angles)
+
+    def test_projection_angles_set_correctly_when_only_some_are_zero(self):
+        del self.tomo_entry[ROTATION_ANGLE_PATH]
+        rotation_angle_data = np.zeros(10)
+        rotation_angle_data[4] = 45
+        rotation_angle_data[5] = 90
+        angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=rotation_angle_data)
+        angle_dataset.attrs.create("units", "radians")
+
+        self.nexus_loader.scan_nexus_file()
+        ds, _ = self.nexus_loader.get_dataset()
+
+        self.assertIsNone(ds.flat_before._projection_angles)
+        self.assertIsNone(ds.dark_before._projection_angles)
+        assert np.array_equal(ds.sample.projection_angles().value, [rotation_angle_data[4], rotation_angle_data[5]])
+        self.assertIsNone(ds.dark_after._projection_angles)
+        self.assertIsNone(ds.flat_after._projection_angles)

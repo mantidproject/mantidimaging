@@ -133,14 +133,11 @@ class StrictDataset(BaseDataset):
 
     @property
     def nexus_rotation_angles(self) -> List[np.ndarray]:
-        proj_angles = [image_stack.real_projection_angles() for image_stack in self._nexus_stack_order]
-        if None in proj_angles:
-            raise RuntimeError("Incomplete rotation angle data.")
-        return [angles.value for angles in proj_angles]  # type: ignore
-
-    @property
-    def num_nexus_angles_required(self) -> int:
-        return sum(image_stack.num_images for image_stack in self._nexus_stack_order)
+        proj_angles = []
+        for image_stack in self._nexus_stack_order:
+            angles = image_stack.real_projection_angles()
+            proj_angles.append(angles.value if angles else np.zeros(image_stack.num_images))
+        return proj_angles
 
     @property
     def image_keys(self) -> List[int]:

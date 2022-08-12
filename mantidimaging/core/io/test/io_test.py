@@ -221,11 +221,13 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
-    def test_nexus_no_projection_angles_saves_as_zeros(self):
+    def test_nexus_missing_projection_angles_save_as_zeros(self):
         shape = (10, 8, 10)
         sample = th.generate_images(shape)
+        flat_before = th.generate_images(shape)
+        flat_before._projection_angles = flat_before.projection_angles()
 
-        sd = StrictDataset(sample)
+        sd = StrictDataset(sample, flat_before=flat_before)
         path = "nexus/file/path"
         sample_name = "sample-name"
 
@@ -235,7 +237,8 @@ class IOTest(FileOutputtingTestCase):
             rotation_angle_entry = tomo_entry["sample"]["rotation_angle"]
 
             # test rotation angle fields
-            npt.assert_array_equal(np.array(rotation_angle_entry), np.zeros(shape[0]))
+            expected = np.concatenate([flat_before.projection_angles().value, np.zeros(shape[0])])
+            npt.assert_array_equal(expected, np.array(rotation_angle_entry))
 
             # test rotation angle links
             self.assertEqual(tomo_entry["data"]["rotation_angle"], rotation_angle_entry)

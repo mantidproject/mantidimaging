@@ -230,13 +230,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     sample_group.create_dataset("name", data=np.string_(sample_name))
 
     # rotation angle
-    try:
-        angle_data = np.concatenate(dataset.nexus_rotation_angles)
-    except RuntimeError as e:
-        LOG.info(f"Error looking up rotation angles: {str(e)} Using zero values instead")
-        angle_data = np.zeros(dataset.num_nexus_angles_required)
-
-    rotation_angle = sample_group.create_dataset("rotation_angle", data=angle_data)
+    rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
 
     # data field
