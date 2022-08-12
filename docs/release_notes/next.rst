@@ -21,6 +21,7 @@ New Features
 - #1480 : Automatic sinograms for sinogram operations
 - #1523 : Lock zoom and lock scale selected by default in operations window
 - #1524 : Flat fielding after histogram locks to appropriate range when using lock scale
+- #1583 : Remove sinogram Stripe Removal filter as it is not needed
 
 Fixes
 -----
