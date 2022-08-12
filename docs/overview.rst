@@ -38,7 +38,6 @@ The Operations Window provides a selection of tools and filters to process and e
 * Remove all stripes
 * Remove dead stripes
 * Remove large stripes
-* Stripe Removal
 * Remove stripes with filtering
 * Remove stripes with sorting and fitting
 
