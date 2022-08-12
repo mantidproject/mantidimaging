@@ -26,7 +26,7 @@ def get_filter_func_args():
         "Median": {"size": 3, "mode": "nearest", "force_cpu": GPU_NOT_AVAIL},
         "Remove Outliers": {"diff": 0.1},
         "Rebin": {"mode": "constant"},
-        "Stripe Removal": {"sf": {"size": 1}},
+        "Remove all stripes": {"sm_size": 25},
         "Ring Removal": {"theta_min": 2},
         "ROI Normalisation": {"region_of_interest": [0, 0, 5, 5]},
         "Rotate Stack": {"angle": 10}

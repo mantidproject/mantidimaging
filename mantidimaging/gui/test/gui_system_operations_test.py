@@ -33,7 +33,6 @@ OP_LIST = [
     # ("Remove all stripes", []),
     # ("Remove dead stripes", []),
     # ("Remove large stripes", []),
-    # ("Stripe Removal", []),
     # ("Remove stripes with filtering", []),
     # ("Remove stripes with sorting and fitting", []),
     ("Rescale", [["Max input", "10000"]]),

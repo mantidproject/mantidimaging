@@ -208,15 +208,6 @@ class OperationsWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.filters)
 
-    def test_operations_stripe_removal_parameters(self):
-        self._load_data_set()
-
-        self.imaging.show_filters_window()
-        self.imaging.filters.filterSelector.setCurrentText("Stripe Removal")
-        QApplication.processEvents()
-
-        self.check_target(widget=self.imaging.filters)
-
     def test_operations_remove_stripes_with_filtering_parameters(self):
         self._load_data_set()
 
