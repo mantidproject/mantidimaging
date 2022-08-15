@@ -157,17 +157,6 @@ class StrictDatasetTest(unittest.TestCase):
             self.strict_dataset.flat_after.data, self.strict_dataset.dark_after.data
         ])
 
-    def test_rotation_angles(self):
-        for stack in self.strict_dataset._nexus_stack_order:
-            _set_fake_projection_angles(stack)
-        assert np.array_equal(self.strict_dataset.nexus_rotation_angles, [
-            self.strict_dataset.dark_before.projection_angles().value,
-            self.strict_dataset.flat_before.projection_angles().value,
-            self.strict_dataset.sample.projection_angles().value,
-            self.strict_dataset.flat_after.projection_angles().value,
-            self.strict_dataset.dark_after.projection_angles().value
-        ])
-
     def test_image_keys(self):
         self.strict_dataset.dark_before = generate_images((2, 5, 5))
         self.strict_dataset.flat_before = generate_images((2, 5, 5))
@@ -218,6 +207,34 @@ class StrictDatasetTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.strict_dataset.image_keys
 
+    def test_rotation_angles(self):
+        for stack in self.strict_dataset._nexus_stack_order:
+            _set_fake_projection_angles(stack)
+        assert np.array_equal(self.strict_dataset.nexus_rotation_angles, [
+            self.strict_dataset.dark_before.projection_angles().value,
+            self.strict_dataset.flat_before.projection_angles().value,
+            self.strict_dataset.sample.projection_angles().value,
+            self.strict_dataset.flat_after.projection_angles().value,
+            self.strict_dataset.dark_after.projection_angles().value
+        ])
+
     def test_incomplete_nexus_rotation_angles(self):
-        with self.assertRaises(RuntimeError):
-            self.strict_dataset.nexus_rotation_angles
+        expected_list = []
+        for stack in self.strict_dataset._nexus_stack_order:
+            expected_list.append(np.zeros(stack.num_images))
+
+        assert np.array_equal(expected_list, self.strict_dataset.nexus_rotation_angles)
+
+    def test_partially_incomplete_nexus_rotation_angles(self):
+        _set_fake_projection_angles(self.strict_dataset.dark_before)
+        _set_fake_projection_angles(self.strict_dataset.flat_before)
+        _set_fake_projection_angles(self.strict_dataset.dark_after)
+        expected_list = [
+            self.strict_dataset.dark_before.projection_angles().value,
+            self.strict_dataset.flat_before.projection_angles().value,
+            np.zeros(self.strict_dataset.sample.num_images),
+            np.zeros(self.strict_dataset.flat_after.num_images),
+            self.strict_dataset.dark_after.projection_angles().value
+        ]
+
+        assert np.array_equal(expected_list, self.strict_dataset.nexus_rotation_angles)

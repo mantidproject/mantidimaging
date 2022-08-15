@@ -116,13 +116,13 @@ class NexusLoadPresenter:
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-    def _read_rotation_angles(self, image_key: int, before: bool = None) -> np.ndarray:
+    def _read_rotation_angles(self, image_key: int, before: bool = None) -> Optional[np.ndarray]:
         """
         Reads the rotation angles array and coverts them to radians if needed.
         :param image_key: The image key for the angles to read.
         :param before: Whether the rotation angles are for before/after images. This is None when rotation angles
             for sample images are being read.
-        :return: A numpy array of the rotation angles.
+        :return: A numpy array of the rotation angles or None if all angles provided are 0.
         """
         assert self.image_key_dataset is not None
         if before is None:
@@ -135,7 +135,8 @@ class NexusLoadPresenter:
             else:
                 rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
                     self.image_key_dataset[first_sample_image_index:] == image_key)]
-        return rotation_angles
+
+        return rotation_angles if np.any(rotation_angles) else None
 
     def _missing_data_error(self, field: str):
         """
@@ -291,7 +292,6 @@ class NexusLoadPresenter:
             sample_images.set_projection_angles(
                 ProjectionAngles(projection_angles[self.view.start_widget.value():self.view.stop_widget.value():self.
                                                    view.step_widget.value()]))
-
         return sample_images
 
     def _create_images(self, data_array: np.ndarray, name: str) -> ImageStack:
@@ -318,5 +318,7 @@ class NexusLoadPresenter:
             return None
         image_stack = self._create_images(data_array, name)
         if image_stack is not None:
-            image_stack.set_projection_angles(ProjectionAngles(self._read_rotation_angles(image_key, "Before" in name)))
+            projection_angles = self._read_rotation_angles(image_key, "Before" in name)
+            if projection_angles is not None:
+                image_stack.set_projection_angles(ProjectionAngles(projection_angles))
         return image_stack
