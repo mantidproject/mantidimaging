@@ -59,3 +59,4 @@ Developer Changes
 - #1341 : Update to python 3.9, numpy 1.20
 - #1509 : Change nametuples to use NamedTuples from typing
 - #1495 : Document the harmless libdlfaker.so errors on IDAaaS
+- #1427 : Update pytest and coverage to latest versions
