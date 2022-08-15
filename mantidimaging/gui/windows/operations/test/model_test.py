@@ -178,8 +178,8 @@ class FiltersWindowModelTest(unittest.TestCase):
             'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', "-----------------",
             'Arithmetic', 'Circular Mask', 'Clip Values', 'Divide', 'Gaussian', 'Median', 'Monitor Normalisation',
             'NaN Removal', 'Rebin', 'Rescale', 'Ring Removal', 'Rotate Stack', "-----------------",
-            'Remove all stripes', 'Remove dead stripes', 'Remove large stripes', 'Stripe Removal',
-            'Remove stripes with filtering', 'Remove stripes with sorting and fitting'
+            'Remove all stripes', 'Remove dead stripes', 'Remove large stripes', 'Remove stripes with filtering',
+            'Remove stripes with sorting and fitting'
         ], filter_names)
 
 
