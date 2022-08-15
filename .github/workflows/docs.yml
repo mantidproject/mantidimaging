@@ -79,4 +79,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-docs
         with:
-          token: ${{ secrets.GHPAGES_API_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
