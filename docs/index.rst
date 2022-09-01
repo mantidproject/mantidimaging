@@ -32,6 +32,6 @@ such as `Avizo
 
 Please cite as:
 
-Tasev, Dimitar; Akello-Egwel, Dolica; Gigg, Martyn; Jones, Samuel; Nixon, Daniel; Taylor, Will; Tygier, Sam; & Baust, Rachel. (2021). Mantid Imaging (2.3.0), Zenodo https://doi.org/10.5281/zenodo.4728059
+Tasev, Dimitar; Akello-Egwel, Dolica; Baust, Rachel; Gigg, Martyn; Jones, Samuel; Nixon, Daniel; Stock, Samuel; Taylor, Will; & Tygier, Sam. (2021). Mantid Imaging (2.3.0), Zenodo https://doi.org/10.5281/zenodo.4728059
 
 (See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).

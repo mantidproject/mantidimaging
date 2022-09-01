@@ -6,6 +6,8 @@ authors:
     orcid: https://orcid.org/0000-0002-5435-1936
   - family-names: Akello-Egwel
     given-names: Dolica
+  - family-names: Baust
+    given-names: Rachel
   - family-names: Gigg
     given-names: Martyn
   - family-names: Jones
@@ -13,13 +15,13 @@ authors:
     orcid: https://orcid.org/0000-0001-7217-2280
   - family-names: Nixon
     given-names: Daniel
+  - family-names: Stock
+    given-names: Samuel
   - family-names: Taylor
     given-names: Will
   - family-names: Tygier
     given-names: Sam
     orcid: https://orcid.org/0000-0002-7495-8655
-  - family-names: Baust
-    given-names: Rachel
 title: "Mantid Imaging"
 abstract: "Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutron tomography data.  It provides an easy-to-use graphical interface to a wide range of pre/post-processing operations, tilt correction and reconstruction algorithms, accommodating for tomography users with varying data complexity and image analysis background knowledge. It utilises a flexible plugin system that allows easy integration of external software, and has allowed us to re-use software widely known in the neutron tomography community."
 version: "2.3.0"

@@ -6,6 +6,7 @@ Release Notes
    :caption: Contents:
 
    next
+   2.4
    2.3
    2.2
    2.1
