@@ -1,7 +1,41 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.4
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some significant new features:
+
+Windows support
+   This release contains initial Windows support. It should be fully functional, although may have performance differences compared to Linux. It can be installed using conda (See :ref:`Installation`). We are interested in user feedback and aim to ship an installer in a future version.
+
+NEXUS export
+   MI can now save datasets into the NXtomo and NXtomoproc formats.
+
+Operations window improvements
+  * Angle/Z slider
+       In the operations window there is now a slider to move through images in a stack.
+  * Automatic sinograms
+       It is no longer necessary to manually convert to sinograms to use the stripe removal filters
+  * Improvements to levels and zoom
+       These are now locked by default to so it is easier to see the effect of changes to filters. They can be unlocked to enable auto scaling.
+
+Reconstruction improvements
+  * CIL PDHG non-negativity constraint
+  * Line profile
+       Movable line profile through the reconstruction preview
+
+Internal changes
+   In order to support Windows MI has switched its multiprocessing implementation from fork to spawn which has required a change from multiprocessing.SharedArray to multiprocessing.shared_memory.
+
+Experimental spectrum viewer
+   Some initial work on supporting Time of Flight imaging data.
+
+Many fixes and clean ups to the code
+
+Removed some unneeded options
+  * ROI normalisation - preserve max option
+  * Stripe Removal filter (note other 5 stripe removal filters remain)
+  * Console progress bar
+
+There have also been many smaller changes and fixes which are listed below.
 
 New Features
 ------------
@@ -38,6 +72,7 @@ Fixes
 - #1562 : Stop reconstruction previews updating when window is closed
 - #1564 : 180 stack not removed from main window when projection stack is deleted
 - #1561 : IndexError in Reconstruction window if select a slice or projection index that's too high
+- #1565 : Compiler no longer needed for conda install
 
 
 Developer Changes
