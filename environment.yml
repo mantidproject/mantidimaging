@@ -1,6 +1,6 @@
-name: mantidimaging-nightly
+name: mantidimaging
 channels:
-  - mantid/label/unstable
+  - mantid/label/main
   - dtasev
   - astra-toolbox
   - conda-forge
@@ -9,7 +9,7 @@ channels:
   - intel
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
-  - mantidimaging
+  - mantidimaging>=2.4.0,<2.5.0
   - pip
   - pip:
       - pyqt5==5.15.*
