@@ -215,7 +215,7 @@ class CreateDeveloperEnvironment(Command):
 
 setup(
     name="mantidimaging",
-    version="2.4.0",
+    version="2.5.0a1",
     packages=find_packages(),
     package_data={
         "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],
