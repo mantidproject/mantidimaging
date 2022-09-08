@@ -3,9 +3,10 @@
 
 from functools import partial
 
+import tomopy
+
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.tools import importer
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -38,7 +39,6 @@ class CircularMaskFilter(BaseFilter):
             raise ValueError(f'circular_mask_ratio must be > 0 and < 1. Value provided was {circular_mask_ratio}')
 
         progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
-        tomopy = importer.do_importing('tomopy')
 
         with progress:
             progress.update(msg="Applying circular mask")
