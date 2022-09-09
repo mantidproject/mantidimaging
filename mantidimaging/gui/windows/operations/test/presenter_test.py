@@ -447,16 +447,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         assert self.presenter.prev_apply_single_state == prev_apply_single_state
         assert self.presenter.prev_apply_all_state == prev_apply_all_state
 
-    def test_init_crop_coords_does_nothing_when_stack_is_none(self):
+    def test_init_roi_field_does_nothing_when_stack_is_none(self):
         mock_roi_field = mock.Mock()
-        self.presenter.init_crop_coords(mock_roi_field)
+        self.presenter.init_roi_field(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
-    def test_init_crop_coords_does_nothing_when_image_is_greater_than_200_by_200(self):
+    def test_init_roi_field_does_nothing_when_image_is_greater_than_200_by_200(self):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
         self.presenter.stack.data = np.ones((2, 201, 201))
-        self.presenter.init_crop_coords(mock_roi_field)
+        self.presenter.init_roi_field(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
     @parameterized.expand([(190, 201, "0, 0, 200, 190"), (201, 80, "0, 0, 80, 200"), (200, 200, "0, 0, 200, 200")])
@@ -464,7 +464,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
         self.presenter.stack.data = np.ones((2, shape_x, shape_y))
-        self.presenter.init_crop_coords(mock_roi_field)
+        self.presenter.init_roi_field(mock_roi_field)
         mock_roi_field.setText.assert_called_once_with(expected)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')

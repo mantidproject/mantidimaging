@@ -1,6 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+import functools
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -65,6 +65,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
         self.roi_view_averaged = False
+        self._roi_selector_window_count = 0
         self.splitter.setSizes([200, 9999])
         self.splitter.setStretchFactor(0, 1)
 
@@ -242,6 +243,8 @@ class FiltersWindowView(BaseMainWindowView):
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return
 
+        self._roi_selector_window_count += 1
+        roi_field.setEnabled(False)
         window = QMainWindow(self)
         window.setWindowTitle("Select ROI")
         window.setMinimumHeight(600)
@@ -280,18 +283,36 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.roi_view.roi_changed_callback = lambda callback: roi_changed_callback(callback)
 
+        def find_roi_values_from_field():
+            try:
+                values = [int(value) for value in roi_field.text().strip().split(',')]
+                if len(values) == 4:
+                    return values
+            except ValueError:
+                pass
+            return self.roi_view.default_roi()
+
         # prep the MIImageView to display in this context
         self.roi_view.ui.roiBtn.hide()
         self.roi_view.ui.histogram.hide()
         self.roi_view.ui.menuBtn.hide()
         self.roi_view.ui.roiPlot.hide()
+        self.roi_view.set_roi(find_roi_values_from_field())
         self.roi_view.roi.show()
         self.roi_view.ui.gridLayout.setRowStretch(1, 5)
         self.roi_view.ui.gridLayout.setRowStretch(0, 95)
         self.roi_view.button_stack_right.hide()
         self.roi_view.button_stack_left.hide()
+
+        def close_event(event):
+            self._roi_selector_window_count -= 1
+            if not self._roi_selector_window_count:
+                roi_field.setEnabled(True)
+            event.accept()
+
         button = QPushButton("OK", window)
         button.clicked.connect(lambda: window.close())
+        window.closeEvent = functools.partial(close_event)
         self.roi_view.ui.gridLayout.addWidget(button)
 
         window.show()
