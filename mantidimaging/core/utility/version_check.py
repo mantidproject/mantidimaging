@@ -97,7 +97,7 @@ class CheckVersion:
         detailed += f"latest: {self.get_conda_available_version()}.\n"
         detailed += "To update your environment please copy and run the following command:\n"
         if sys.platform == 'linux':
-            detailed += f"source {os.environ['CONDA_EXE'].rsplit('/',1)[0]}/activate {os.environ['CONDA_PREFIX']} && "
+            detailed += f"{self._conda_exe} activate {os.environ['CONDA_PREFIX']} && "
         detailed += f"{self._conda_exe} update -c mantid/label/{suffix} mantidimaging"
         return msg, detailed
 

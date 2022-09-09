@@ -8,6 +8,7 @@ New Features
 
 Fixes
 -----
+- #1589 : Recomend new update command
 
 Developer Changes
 -----------------
