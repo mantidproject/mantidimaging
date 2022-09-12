@@ -1,0 +1,223 @@
+{
+    "Arithmetic": {
+        "params": {},
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "mult2",
+                "params": {
+                    "mult_val": 2
+                }
+            },
+            {
+                "test_name": "mult3",
+                "params": {
+                    "mult_val": 3
+                }
+            },
+            {
+                "test_name": "add5",
+                "params": {
+                    "add_val": 5
+                }
+            },
+            {
+                "test_name": "add8",
+                "params": {
+                    "add_val": 8
+                },
+                "flags": [
+                    "slow"
+                ]
+            },
+            {
+                "test_name": "sub6",
+                "params": {
+                    "sub_val": 6
+                }
+            },
+            {
+                "test_name": "div2",
+                "params": {
+                    "div_val": 2
+                }
+            },
+            {
+                "test_name": "add4_mult3_sub5_div4",
+                "params": {
+                    "add_val": 4,
+                    "mult_val": 3,
+                    "sub_val": 5,
+                    "div_val": 4
+                }
+            }
+        ],
+        "cases_slow": [
+            {
+                "test_name": "mult3_big",
+                "params": {
+                    "mult_val": 3
+                },
+                "source_date": "flower512"
+            }
+        ]
+    },
+    "Gaussian": {
+        "params": {
+            "size": 2,
+            "order": 0,
+            "mode": "reflect"
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "size2",
+                "params": {
+                    "size": 2
+                }
+            },
+            {
+                "test_name": "size3",
+                "params": {
+                    "size": 3
+                }
+            },
+            {
+                "test_name": "size3_reflect",
+                "params": {
+                    "size": 3,
+                    "mode": "reflect"
+                }
+            },
+            {
+                "test_name": "size3_constant",
+                "params": {
+                    "size": 3,
+                    "mode": "constant"
+                }
+            },
+            {
+                "test_name": "size3_nearest",
+                "params": {
+                    "size": 3,
+                    "mode": "nearest"
+                }
+            },
+            {
+                "test_name": "size3_order1",
+                "params": {
+                    "size": 3,
+                    "order": 1
+                }
+            },
+            {
+                "test_name": "size3_order2",
+                "params": {
+                    "size": 3,
+                    "order": 2
+                }
+            },
+            {
+                "test_name": "size3_order3",
+                "params": {
+                    "size": 3,
+                    "order": 3
+                }
+            }
+        ]
+    },
+    "Median": {
+        "params": {
+            "size": 2
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "size2",
+                "params": {
+                    "size": 2
+                }
+            },
+            {
+                "test_name": "size3",
+                "params": {
+                    "size": 3
+                }
+            },
+            {
+                "test_name": "constant",
+                "params": {
+                    "mode": "constant"
+                }
+            },
+            {
+                "test_name": "nearest",
+                "params": {
+                    "mode": "nearest"
+                }
+            },
+            {
+                "test_name": "mirror",
+                "params": {
+                    "mode": "constant"
+                }
+            },
+            {
+                "test_name": "wrap",
+                "params": {
+                    "mode": "constant"
+                }
+            }
+        ]
+    },
+    "Crop Coordinates": {
+        "params": {},
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "zero_fifty",
+                "params": {
+                    "region_of_interest": [
+                        0,
+                        0,
+                        50,
+                        50
+                    ]
+                }
+            },
+            {
+                "test_name": "zero_twentyfive",
+                "params": {
+                    "region_of_interest": [
+                        0,
+                        0,
+                        25,
+                        25
+                    ]
+                }
+            },
+            {
+                "test_name": "twentyfive_fifty",
+                "params": {
+                    "region_of_interest": [
+                        25,
+                        25,
+                        50,
+                        50
+                    ]
+                }
+            },
+            {
+                "test_name": "ten_twenty_thirty_forty",
+                "params": {
+                    "region_of_interest": [
+                        10,
+                        20,
+                        30,
+                        40
+                    ]
+                }
+            }
+        ]
+    }
+}
