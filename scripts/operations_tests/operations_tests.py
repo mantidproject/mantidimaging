@@ -73,21 +73,17 @@ def print_compare_mode_results():
     for test_case in TEST_CASE_RESULTS:
         if test_case.status == "fail":
             failures += 1
-            print(
-                f"[FAIL] {test_case.operation} test #{str(test_case.test_number).zfill(3)}, {test_case.test_name} -> {test_case.message}\n"
-            )
+            print(f"[FAIL] {test_case.operation} test #{test_case.test_number:03d}"
+                  f", {test_case.test_name} -> {test_case.message}\n")
         elif test_case.status == "pass":
             passes += 1
             if args.verbose:
-                print(
-                    f"[PASS] {test_case.operation} test #{str(test_case.test_number).zfill(3)}, {test_case.test_name} -> {test_case.duration}s\n"
-                )
+                print(f"[PASS] {test_case.operation} test #{test_case.test_number:03d},"
+                      f"{test_case.test_name} -> {test_case.duration}s\n")
         elif test_case.status == "new baseline":
             new_baselines += 1
             if args.verbose:
-                print(
-                    f"[NEW] {test_case.operation} test #{str(test_case.test_number).zfill(3)}, {test_case.test_name}\n"
-                )
+                print(f"[NEW] {test_case.operation} test #{test_case.test_number:03d}, {test_case.test_name}\n")
 
     print(f"{failures} failed\n{passes} passed\n{new_baselines} new baseline(s)")
     print(f"{'=' * 42}END{'=' * 42}")
@@ -213,29 +209,25 @@ def create_plots():
 
     for i, (test_name, group) in enumerate(df.groupby("test_name"), start=1):
         group.sort_values("commit_date", inplace=True)
-        traces.append(
-            (
-                i,
-                go.Scatter(
-                    x=group["commit_date"],
-                    y=group["avg"],
-                    text=group["version"],
-                    name=f"{test_name} Average",
-                    error_y=dict(type="data", array=group["stdev"], visible=True),
-                ),
-            )
-        )
-        traces.append(
-            (
-                i,
-                go.Scatter(
-                    x=group["commit_date"],
-                    y=group["quickest"],
-                    text=group["version"],
-                    name=f"{test_name} Minimum",
-                ),
-            )
-        )
+        traces.append((
+            i,
+            go.Scatter(
+                x=group["commit_date"],
+                y=group["avg"],
+                text=group["version"],
+                name=f"{test_name} Average",
+                error_y=dict(type="data", array=group["stdev"], visible=True),
+            ),
+        ))
+        traces.append((
+            i,
+            go.Scatter(
+                x=group["commit_date"],
+                y=group["quickest"],
+                text=group["version"],
+                name=f"{test_name} Minimum",
+            ),
+        ))
         test_names.append(test_name)
 
     fig = make_subplots(rows=len(traces), cols=1, subplot_titles=test_names)
@@ -248,9 +240,11 @@ def create_plots():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-M", "--mode", type=str, choices=["compare", "time"], help="what mode to run in (compare or time)"
-    )
+    parser.add_argument("-M",
+                        "--mode",
+                        type=str,
+                        choices=["compare", "time"],
+                        help="what mode to run in (compare or time)")
     parser.add_argument("-R", "--runs", type=int, default=5, help="number of times to run each test case")
     parser.add_argument("-V", "--verbose", action="store_true", help="print verbose output")
     parser.add_argument("-G", "--graphs", action="store_true", help="print verbose output")
