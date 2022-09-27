@@ -52,7 +52,7 @@ class ArithmeticFilter(BaseFilter):
 
     @staticmethod
     def compute_function(i: int, array: np.ndarray, params: Dict[str, float]):
-        array[i] = array[i] / params['div'] * params['mult'] + params['add'] - params['sub']
+        array[i] = array[i] * (params["mult"] / params["div"]) + (params["add"] - params["sub"])
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
