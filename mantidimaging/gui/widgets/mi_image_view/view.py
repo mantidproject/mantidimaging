@@ -25,8 +25,8 @@ class UnrotateablePlotROI(ROI):
     """
     Like PlotROI but does not add a rotation handle.
     """
-    def __init__(self, size):
-        ROI.__init__(self, pos=[0, 0], size=size)
+    def __init__(self):
+        ROI.__init__(self, pos=[0, 0])
         self.addScaleHandle([1, 1], [0, 0])
 
 
@@ -93,7 +93,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.roi.sigRegionChanged.disconnect(self.roiChanged)
         self.view.removeItem(self.roi)
 
-        self.roi = UnrotateablePlotROI(300)
+        self.roi = UnrotateablePlotROI()
         self.roi.setZValue(30)
         # make ROI red
         self.roi.setPen((255, 0, 0))
@@ -130,6 +130,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         return self.view
 
     def setImage(self, *args, **kwargs):
+        dimensions_changed = self.image_data is None or self.image_data.shape != args[0].shape
         if args[0].ndim == 3:
             # For a 3 dimensional image, we need to specify which axes we are providing and their indices in the
             # array's shape attribute
@@ -138,6 +139,8 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             kwargs['axes'] = kwargs.get('axes', {'t': 0, 'x': 2, 'y': 1, 'c': None})
         ImageView.setImage(self, *args, **kwargs)
         self.check_for_bad_data()
+        if dimensions_changed:
+            self.set_roi(self.default_roi())
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:
@@ -149,9 +152,9 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             sleep(0.02)
             QApplication.processEvents()
 
-    def _refresh_message(self):
-        # updates the ROI average value
-        self._update_roi_region_avg()
+    def _refresh_message(self, recalculate_roi_avg: bool = True):
+        if recalculate_roi_avg:
+            self._update_roi_region_avg()
         try:
             self._update_message(self._last_mouse_hover_location)
         except IndexError:
@@ -257,3 +260,19 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     def close(self):
         self.roi_changed_callback = None
         super().close()
+
+    def set_roi(self, coords: list[int]):
+        roi = SensibleROI.from_list(coords)
+        self.roi.setPos(roi.left, roi.top, update=False)
+        # Keep default update=True for setSize otherwise the scale handle can become detached from the ROI box
+        self.roi.setSize([roi.width, roi.height])
+        self.roiChanged()
+        self._refresh_message(False)
+
+    def default_roi(self):
+        # Recommend an ROI that covers the top left quadrant
+        # However set min dimensions to avoid an ROI that is so small it's difficult to work with
+        min_size = 20
+        roi_width = max(round(self.image_data.shape[2] / 2), min_size)
+        roi_height = max(round(self.image_data.shape[1] / 2), min_size)
+        return [0, 0, roi_width, roi_height]

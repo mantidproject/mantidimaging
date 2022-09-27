@@ -31,6 +31,9 @@ APPLY_TO_180_MSG = "Operations applied to the sample are also automatically appl
 FLAT_FIELDING = "Flat-fielding"
 FLAT_FIELD_REGION = [-0.2, 1.2]
 
+CROP_COORDINATES = "Crop Coordinates"
+ROI_NORMALISATION = "ROI Normalisation"
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowView  # pragma: no cover
@@ -188,8 +191,8 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
 
-        if filter_name == "Crop Coordinates":
-            self.init_crop_coords(filter_widget_kwargs["roi_field"])
+        if filter_name == CROP_COORDINATES or filter_name == ROI_NORMALISATION:
+            self.init_roi_field(filter_widget_kwargs["roi_field"])
 
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
@@ -293,13 +296,16 @@ class FiltersWindowPresenter(BasePresenter):
                 # Feedback to user
                 self.view.clear_notification_dialog()
                 self.view.show_operation_completed(self.model.selected_filter.filter_name)
+
+                selected_filter = self.view.get_selected_filter()
+                if selected_filter == CROP_COORDINATES:
+                    # Reset the ROI field to ensure an appropriate value for the new image size
+                    self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
+                elif selected_filter == FLAT_FIELDING and negative_stacks:
+                    self._show_negative_values_error(negative_stacks)
             else:
                 self.view.clear_notification_dialog()
                 self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
-
-            if use_new_data and self._flat_fielding_is_selected() and negative_stacks:
-                self._show_negative_values_error(negative_stacks)
-
         finally:
             self.view.filter_applied.emit()
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
@@ -437,7 +443,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.applyButton.setEnabled(apply_single_enabled)
         self.view.applyToAllButton.setEnabled(apply_all_enabled)
 
-    def init_crop_coords(self, roi_field: QLineEdit):
+    def init_roi_field(self, roi_field: QLineEdit):
         """
         Sets the initial value of the crop coordinates line edit widget so that it doesn't contain values that are
         larger than the image.

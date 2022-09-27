@@ -11,6 +11,7 @@ New Features and improvements
 Fixes
 -----
 - #1589 : Recomend new update command
+- #1330 : Initial ROI box is sometimes much larger than image for relevant filters
 
 Developer Changes
 -----------------

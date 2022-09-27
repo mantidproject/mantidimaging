@@ -162,10 +162,8 @@ class StackVisualiserView(QDockWidget):
             flags=INPUT_DIALOG_FLAGS)
         if accepted:
             roi = [int(r.strip()) for r in roi.split(",")]
-            self.image_view.roi.setPos((roi[0], roi[1]), update=False)
-            self.image_view.roi.setSize((roi[2] - roi[0], roi[3] - roi[1]))
+            self.image_view.set_roi(roi)
             self.image_view.roi.show()
-            self.image_view.roiChanged()
 
     def copy_roi_to_clipboard(self):
         pos, size = self.image_view.get_roi()
