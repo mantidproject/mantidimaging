@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from typing import Optional
 from unittest.mock import DEFAULT, Mock
 from uuid import uuid4
 
@@ -147,8 +148,12 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
     def test_create_stack_window(self,
                                  mock_sv: mock.Mock,
-                                 setCentralWidget: Mock = Mock(),
-                                 addDockWidget: Mock = Mock()):
+                                 setCentralWidget: Optional[mock.Mock] = None,
+                                 addDockWidget: Optional[mock.Mock] = None):
+
+        setCentralWidget = mock.Mock() if setCentralWidget is None else setCentralWidget
+        addDockWidget = mock.Mock() if addDockWidget is None else addDockWidget
+
         images = generate_images()
         position = "test_position"
         floating = False
