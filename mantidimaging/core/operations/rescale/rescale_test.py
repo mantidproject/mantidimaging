@@ -85,7 +85,7 @@ def test_scale_single_image_bad_offset():
     except ValueError:
         pass
     except Exception as e:
-        assert False, f"Unexpected exception was triggered: {e}"
+        AssertionError(f"Unexpected exception was triggered: {e}")
 
 
 @pytest.mark.parametrize('value', [255.0, 65535.0, 2147483647.0])
