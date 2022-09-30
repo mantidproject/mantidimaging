@@ -10,6 +10,3 @@ channels:
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
   - mantidimaging
-  - pip
-  - pip:
-      - pyqtgraph>=0.12.1,<0.13
