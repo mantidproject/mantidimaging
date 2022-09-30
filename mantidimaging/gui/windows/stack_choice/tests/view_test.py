@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
+from typing import Optional
 from unittest import mock
 from unittest.mock import DEFAULT, Mock, patch
 from uuid import uuid4
@@ -199,7 +200,12 @@ class StackChoiceViewTest(unittest.TestCase):
     @patch.multiple('mantidimaging.gui.windows.stack_choice.view.StackChoiceView',
                     _set_from_old_to_new=DEFAULT,
                     _set_from_new_to_old=DEFAULT)
-    def test_connect_histogram_changes(self, _set_from_old_to_new: Mock = Mock(), _set_from_new_to_old: Mock = Mock()):
+    def test_connect_histogram_changes(self,
+                                       _set_from_old_to_new: Optional[Mock] = None,
+                                       _set_from_new_to_old: Optional[Mock] = None):
+        _set_from_old_to_new = mock.Mock() if _set_from_old_to_new is None else _set_from_old_to_new
+        _set_from_new_to_old = mock.Mock() if _set_from_new_to_old is None else _set_from_new_to_old
+
         self.v.connect_histogram_changes()
 
         # check this is called once to set the same range on the new histogram as is currently selected on the new one

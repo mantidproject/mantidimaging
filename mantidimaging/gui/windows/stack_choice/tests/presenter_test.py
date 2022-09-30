@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+from typing import Optional
 from unittest import mock
 from unittest.mock import DEFAULT, MagicMock, Mock, patch
 from uuid import uuid4
@@ -53,7 +54,8 @@ class StackChoicePresenterTest(unittest.TestCase):
     @patch.multiple("mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter",
                     do_reapply_original_data=MagicMock(side_effect=RuntimeError),
                     show_error=DEFAULT)
-    def test_notify_handles_exceptions(self, _: Mock = Mock(), show_error: Mock = Mock()):
+    def test_notify_handles_exceptions(self, _: Optional[Mock] = None, show_error: Optional[Mock] = None):
+        show_error = mock.Mock() if show_error is None else show_error
         self.p.notify(Notification.CHOOSE_ORIGINAL)
 
         show_error.assert_called_once()
