@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 from functools import partial
-from typing import List
+from typing import List, Optional
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
@@ -99,12 +99,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                          _wait_for_stack_choice=DEFAULT,
                          _do_apply_filter_sync=DEFAULT)
     def test_post_filter_success(self,
-                                 do_update_previews: Mock = Mock(),
-                                 _wait_for_stack_choice: Mock = Mock(),
-                                 _do_apply_filter_sync: Mock = Mock()):
+                                 do_update_previews: Optional[Mock] = None,
+                                 _wait_for_stack_choice: Optional[Mock] = None,
+                                 _do_apply_filter_sync: Optional[Mock] = None):
         """
         Tests when the operation has applied successfully.
         """
+        do_update_previews = Mock() if do_update_previews is None else do_update_previews
+        _wait_for_stack_choice = Mock() if _wait_for_stack_choice is None else _wait_for_stack_choice
+        _do_apply_filter_sync = Mock() if _do_apply_filter_sync is None else _do_apply_filter_sync
+
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_task = mock.Mock()
         mock_task.error = None
