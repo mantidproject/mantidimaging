@@ -30,6 +30,10 @@ class UnrotateablePlotROI(ROI):
         self.addScaleHandle([1, 1], [0, 0])
 
 
+def clip(value, lower, upper):
+    return lower if value < lower else upper if value > upper else value
+
+
 # ImageView objects cannot always be safely garbage collected. To prevent this
 # we need keep a reference to the dead objects.
 graveyard = []
@@ -222,11 +226,17 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         # event holds the coordinates in column-major coordinate
         # while the data is in row-major coordinate, hence why
         # the data access below is [y, x]
-        msg = f"x={pt.y}, y={pt.x}, "
+
         if self.image.ndim == 3:
-            msg += f"z={self.currentIndex}, value={self.image[self.currentIndex, pt.y, pt.x]:.6f}"
+            x = clip(pt.x, 0, self.image.shape[2] - 1)
+            y = clip(pt.y, 0, self.image.shape[1] - 1)
+            value = self.image[self.currentIndex, y, x]
+            msg = f"x={y}, y={x}, z={self.currentIndex}, value={value :.6f}"
         else:
-            msg += f"value={self.image[pt.y, pt.x]}"
+            x = clip(pt.x, 0, self.image.shape[1] - 1)
+            y = clip(pt.y, 0, self.image.shape[0] - 1)
+            value = self.image[y, x]
+            msg = f"x={y}, y={x}, value={value}"
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
