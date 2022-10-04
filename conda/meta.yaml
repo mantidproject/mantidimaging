@@ -37,6 +37,8 @@ requirements:
     - cil-astra=21.4.*
     - ccpi-regulariser=21.0.*
     - jenkspy=0.2.0
+    - pyqt=5.15.*
+    - pyqtgraph>=0.12.1,<0.13
 
 build:
   noarch: python
