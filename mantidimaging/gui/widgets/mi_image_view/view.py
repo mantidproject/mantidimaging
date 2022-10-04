@@ -178,20 +178,6 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
 
-    def timeLineChanged(self):
-        """
-        Re-implements timeLineChanged function, and the only change
-        is that now self.updateImage will NOT auto range the histogram
-        """
-        if not self.ignorePlaying:
-            self.play(0)
-
-        (ind, time) = self.timeIndex(self.timeLine)
-        if ind != self.currentIndex:
-            self.currentIndex = ind
-            self.updateImage(autoHistogramRange=False)
-        self.sigTimeChanged.emit(ind, time)
-
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
         if self.image.ndim != 3:
             return None
