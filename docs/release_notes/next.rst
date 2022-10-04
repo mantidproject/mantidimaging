@@ -15,3 +15,5 @@ Fixes
 
 Developer Changes
 -----------------
+
+- #1472 : Investigate issues reported by flake8-bugbear
