@@ -53,8 +53,7 @@ class StackChoicePresenterTest(unittest.TestCase):
     @patch.multiple("mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter",
                     do_reapply_original_data=MagicMock(side_effect=RuntimeError),
                     show_error=DEFAULT)
-    def test_notify_handles_exceptions(self, _: Mock, show_error: Mock):
-        show_error = mock.Mock() if show_error is None else show_error
+    def test_notify_handles_exceptions(self, _: Mock = Mock(), show_error: Mock = Mock()):
         self.p.notify(Notification.CHOOSE_ORIGINAL)
 
         show_error.assert_called_once()
