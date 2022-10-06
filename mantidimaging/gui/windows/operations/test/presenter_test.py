@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 from functools import partial
-from typing import List, Optional
+from typing import List
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
@@ -19,12 +19,6 @@ from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_
     _group_consecutive_values, FLAT_FIELD_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
-
-
-def _create_mock_if_none(mocked_object) -> Mock:
-    if mocked_object is None:
-        return Mock()
-    return mocked_object
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
@@ -322,13 +316,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         _do_apply_filter_sync=DEFAULT,
     )
     @mock.patch('mantidimaging.gui.windows.operations.presenter.StackChoicePresenter')
-    def test_safe_apply_starts_stack_choice_presenter(self,
-                                                      stack_choice_presenter: Mock,
-                                                      _do_apply_filter: Optional[Mock] = None,
-                                                      _do_apply_filter_sync: Optional[Mock] = None):
-        _do_apply_filter = _create_mock_if_none(_do_apply_filter)
-        _do_apply_filter_sync = _create_mock_if_none(_do_apply_filter_sync)
-
+    def test_safe_apply_starts_stack_choice_presenter(self, stack_choice_presenter: Mock, _do_apply_filter: Mock,
+                                                      _do_apply_filter_sync: Mock):
         task = Mock()
         task.error = None
 
