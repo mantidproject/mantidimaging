@@ -104,17 +104,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                          do_update_previews=DEFAULT,
                          _wait_for_stack_choice=DEFAULT,
                          _do_apply_filter_sync=DEFAULT)
-    def test_post_filter_success(self,
-                                 do_update_previews: Optional[Mock] = None,
-                                 _wait_for_stack_choice: Optional[Mock] = None,
-                                 _do_apply_filter_sync: Optional[Mock] = None):
+    def test_post_filter_success(self, do_update_previews: Mock, _wait_for_stack_choice: Mock,
+                                 _do_apply_filter_sync: Mock):
         """
         Tests when the operation has applied successfully.
         """
-        do_update_previews = _create_mock_if_none(do_update_previews)
-        _wait_for_stack_choice = _create_mock_if_none(_wait_for_stack_choice)
-        _do_apply_filter_sync = _create_mock_if_none(_do_apply_filter_sync)
-
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_task = mock.Mock()
         mock_task.error = None
@@ -131,13 +125,10 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch.multiple('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter',
                          do_update_previews=DEFAULT,
                          _do_apply_filter=DEFAULT)
-    def test_post_filter_fail(self, do_update_previews: Optional[Mock] = None, _do_apply_filter: Optional[Mock] = None):
+    def test_post_filter_fail(self, do_update_previews: Mock, _do_apply_filter: Mock):
         """
         Tests when the operation has encountered an error.
         """
-        do_update_previews = _create_mock_if_none(do_update_previews)
-        _do_apply_filter = _create_mock_if_none(_do_apply_filter)
-
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.view.show_error_dialog = mock.Mock()  # type: ignore
         self.presenter.main_window.presenter = mock.Mock()
@@ -153,17 +144,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                          do_update_previews=DEFAULT,
                          _wait_for_stack_choice=DEFAULT,
                          _do_apply_filter_sync=DEFAULT)
-    def test_post_filter_keep_original(self,
-                                       do_update_previews: Optional[Mock] = None,
-                                       _wait_for_stack_choice: Optional[Mock] = None,
-                                       _do_apply_filter_sync: Optional[Mock] = None):
+    def test_post_filter_keep_original(self, do_update_previews: Mock, _wait_for_stack_choice: Mock,
+                                       _do_apply_filter_sync: Mock):
         """
         Tests when the operation has applied successfully, but user choose to keep original
         """
-        do_update_previews = _create_mock_if_none(do_update_previews)
-        _wait_for_stack_choice = _create_mock_if_none(_wait_for_stack_choice)
-        _do_apply_filter_sync = _create_mock_if_none(_do_apply_filter_sync)
-
         self.presenter.view.safeApply.isChecked.return_value = True
         mock_task = mock.Mock()
         mock_task.error = None
@@ -183,17 +168,11 @@ class FiltersWindowPresenterTest(unittest.TestCase):
                          do_update_previews=DEFAULT,
                          _wait_for_stack_choice=DEFAULT,
                          _do_apply_filter_sync=DEFAULT)
-    def test_post_filter_exception(self,
-                                   do_update_previews: Optional[Mock] = None,
-                                   _wait_for_stack_choice: Optional[Mock] = None,
-                                   _do_apply_filter_sync: Optional[Mock] = None):
+    def test_post_filter_exception(self, do_update_previews: Mock, _wait_for_stack_choice: Mock,
+                                   _do_apply_filter_sync: Mock):
         """
         Tests that an exception in _post_filter() does not prevent filter_is_running being set to False
         """
-        do_update_previews = _create_mock_if_none(do_update_previews)
-        _wait_for_stack_choice = _create_mock_if_none(_wait_for_stack_choice)
-        _do_apply_filter_sync = _create_mock_if_none(_do_apply_filter_sync)
-
         self.presenter.view.safeApply.isChecked.return_value = False
         mock_task = mock.Mock()
         mock_task.error = None
@@ -209,17 +188,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         _do_apply_filter=DEFAULT,
         _do_apply_filter_sync=DEFAULT,
     )
-    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self,
-                                                                  _do_apply_filter: Optional[Mock] = None,
-                                                                  _do_apply_filter_sync: Optional[Mock] = None):
+    def test_images_with_180_deg_proj_calls_filter_on_the_180_deg(self, _do_apply_filter: Mock,
+                                                                  _do_apply_filter_sync: Mock):
         """
         Test that when an `ImageStack` stack is encountered which also has a
         180deg projection stack reference, that 180deg stack is also processed
         with the same operation, to ensure consistency between the two images
         """
-        _do_apply_filter = _create_mock_if_none(_do_apply_filter)
-        _do_apply_filter_sync = _create_mock_if_none(_do_apply_filter_sync)
-
         self.presenter.view.safeApply.isChecked.return_value = False
         self.presenter.applying_to_all = False
         mock_stack = mock.MagicMock()
