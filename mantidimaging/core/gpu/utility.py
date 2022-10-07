@@ -85,7 +85,7 @@ def _load_cuda_kernel(dtype):
     return cuda_kernel
 
 
-def _free_memory_pool(arrays=[]):
+def _free_memory_pool(arrays=None):
     """
     Delete any given GPU arrays and instruct the memory pool to free unused blocks.
     """

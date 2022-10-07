@@ -31,7 +31,7 @@ class SharedTest(unittest.TestCase):
 
     def _create_array_list(self, num_arrays, has_shared_mem):
         array_list = []
-        for n in range(num_arrays):
+        for _ in range(num_arrays):
             mock_array = mock.Mock()
             mock_array.has_shared_memory = has_shared_mem
             mock_array.array_proxy = SharedArrayProxy(None, (2, 2), 'float32') if has_shared_mem else mock.Mock()

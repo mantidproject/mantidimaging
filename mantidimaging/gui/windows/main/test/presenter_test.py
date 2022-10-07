@@ -449,8 +449,9 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_focus_tab_with_id_not_found(self):
         self.model.image_ids = []
         self.model.datasets = []
+        self.model.recon_list_ids = []
 
-        with self.assertRaises(Exception):
+        with self.assertRaises(RuntimeError):
             self.presenter._restore_and_focus_tab(stack_id="not-in-the-stacks-dict")
 
     def test_focus_tab_with_id_in_dataset(self):

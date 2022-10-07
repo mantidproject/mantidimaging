@@ -9,7 +9,7 @@ from importlib.abc import Loader
 from mantidimaging.core.operations.base_filter import BaseFilter
 
 MODULES_OPERATIONS = {}
-for finder, module_name, is_pkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
+for finder, module_name, _ in pkgutil.walk_packages([os.path.dirname(__file__)]):
     assert isinstance(finder, FileFinder)
     spec = finder.find_spec(module_name)
     assert isinstance(spec, ModuleSpec)

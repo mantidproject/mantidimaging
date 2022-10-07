@@ -145,10 +145,8 @@ class MainWindowViewTest(unittest.TestCase):
                          setCentralWidget=DEFAULT,
                          addDockWidget=DEFAULT)
     @mock.patch("mantidimaging.gui.windows.main.view.StackVisualiserView")
-    def test_create_stack_window(self,
-                                 mock_sv: mock.Mock,
-                                 setCentralWidget: Mock = Mock(),
-                                 addDockWidget: Mock = Mock()):
+    def test_create_stack_window(self, mock_sv: mock.Mock, setCentralWidget: mock.Mock, addDockWidget: mock.Mock):
+
         images = generate_images()
         position = "test_position"
         floating = False

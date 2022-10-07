@@ -54,7 +54,7 @@ class OperationsTest(unittest.TestCase):
             images = th.generate_images()
             if filter_name == "Monitor Normalisation":
                 counts = Counts(numpy.ones(images.num_images))
-                images._log_file = mock.Mock(counts=lambda: counts)
+                images._log_file = mock.Mock(counts=lambda counts=counts: counts)
 
             returned = filter.filter_func(images, **filter_args)
             self.assertEqual(id(images), id(returned))
