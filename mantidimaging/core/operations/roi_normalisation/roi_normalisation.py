@@ -93,11 +93,8 @@ class RoiNormalisationFilter(BaseFilter):
                                                 form=form,
                                                 on_change=on_change,
                                                 default_value="0, 0, 200, 200")
-        add_property_to_form("Select Air Region",
-                             "button",
-                             form=form,
-                             on_change=on_change,
-                             run_on_press=lambda: view.roi_visualiser(roi_field))
+        roi_button, _ = add_property_to_form("Select Air Region", "button", form=form, on_change=on_change)
+        roi_button.clicked.connect(lambda: view.roi_visualiser(roi_field, roi_button))
 
         _, mode_field = add_property_to_form('Normalise Mode',
                                              Type.CHOICE,

@@ -79,11 +79,9 @@ class CropCoordinatesFilter(BaseFilter):
                                                 form=form,
                                                 on_change=on_change,
                                                 default_value="0, 0, 200, 200")
-        add_property_to_form("Select ROI",
-                             Type.BUTTON,
-                             form=form,
-                             on_change=on_change,
-                             run_on_press=lambda: view.roi_visualiser(roi_field))
+        roi_button, _ = add_property_to_form("Select ROI", Type.BUTTON, form=form, on_change=on_change)
+        roi_button.clicked.connect(lambda: view.roi_visualiser(roi_field, roi_button))
+
         return {'roi_field': roi_field}
 
     @staticmethod
