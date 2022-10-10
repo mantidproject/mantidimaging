@@ -65,7 +65,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
         self.roi_view_averaged = False
-        self._roi_selector_window_count = 0
         self.splitter.setSizes([200, 9999])
         self.splitter.setStretchFactor(0, 1)
 
@@ -235,7 +234,7 @@ class FiltersWindowView(BaseMainWindowView):
         else:
             self.applyToAllButton.setEnabled(True)
 
-    def roi_visualiser(self, roi_field):
+    def roi_visualiser(self, roi_field, roi_button):
         # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
         try:
             images = self.presenter.stack.slice_as_image_stack(self.presenter.model.preview_image_idx)
@@ -243,8 +242,8 @@ class FiltersWindowView(BaseMainWindowView):
             # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
             return
 
-        self._roi_selector_window_count += 1
         roi_field.setEnabled(False)
+        roi_button.setEnabled(False)
         window = QMainWindow(self)
         window.setWindowTitle("Select ROI")
         window.setMinimumHeight(600)
@@ -305,9 +304,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.roi_view.button_stack_left.hide()
 
         def close_event(event):
-            self._roi_selector_window_count -= 1
-            if not self._roi_selector_window_count:
-                roi_field.setEnabled(True)
+            roi_field.setEnabled(True)
+            roi_button.setEnabled(True)
             event.accept()
 
         button = QPushButton("OK", window)

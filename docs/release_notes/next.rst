@@ -10,8 +10,9 @@ New Features and improvements
 
 Fixes
 -----
-- #1589 : Recomend new update command
+- #1589 : Recommend new update command
 - #1330 : Initial ROI box is sometimes much larger than image for relevant filters
+- #1602 : Prevent multiple ROI selector windows opening from Operations window
 
 Developer Changes
 -----------------
