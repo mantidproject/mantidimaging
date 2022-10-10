@@ -18,3 +18,4 @@ Developer Changes
 -----------------
 
 - #1472 : Investigate issues reported by flake8-bugbear
+- #1607 : Add flake8-bugbear to environment, github actions and precommit
