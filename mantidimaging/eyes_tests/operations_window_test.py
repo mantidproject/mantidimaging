@@ -1,9 +1,10 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from unittest import mock
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
+from mantidimaging.gui.widgets.roi_selector.view import ROISelectorView
 
 
 class OperationsWindowTest(BaseEyesTest):
@@ -225,3 +226,31 @@ class OperationsWindowTest(BaseEyesTest):
         QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)
+
+    def test_operations_roi_visualiser_window(self):
+        self._load_data_set()
+
+        self.imaging.show_filters_window()
+        self.imaging.filters.filterSelector.setCurrentText("Crop Coordinates")
+        QApplication.processEvents()
+
+        roi_button = self._get_operation_button_widget("Select ROI")
+        roi_button.click()
+        QApplication.processEvents()
+
+        roi_window = self._get_top_level_widget(ROISelectorView)
+        self.check_target(widget=roi_window)
+
+        roi_window.close()
+
+    def _get_operation_button_widget(self, button_name: str) -> QWidget:
+        form = self.imaging.filters.filterPropertiesLayout
+        for i in range(form.rowCount()):
+            widget_item = form.itemAt(i * 2)
+
+            if widget_item is not None:
+                button = widget_item.widget()
+                if isinstance(button, QPushButton) and button.text() == button_name:
+                    return button
+
+        raise ValueError(f"Could not find '{button_name}' in form")
