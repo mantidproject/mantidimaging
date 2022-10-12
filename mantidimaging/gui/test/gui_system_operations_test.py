@@ -208,17 +208,9 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.assertFalse(roi_field.isEnabled())
 
         # Check the relevant controls are enabled again when the window is closed
-        self._close_roi_window()
+        self._close_window(ROISelectorView)
         self.assertTrue(roi_button.isEnabled())
         self.assertTrue(roi_field.isEnabled())
 
         self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)
-
-    @classmethod
-    def _close_roi_window(cls):
-        cls._wait_for_widget_visible(ROISelectorView)
-        for widget in cls.app.topLevelWidgets():
-            if isinstance(widget, ROISelectorView):
-                QTest.qWait(SHORT_DELAY)
-                widget.close()

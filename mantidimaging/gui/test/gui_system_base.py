@@ -109,3 +109,11 @@ class GuiSystemBase(unittest.TestCase):
         while self.main_window.dataset_tree_widget.topLevelItemCount():
             self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
             self.main_window._delete_container()
+
+    @classmethod
+    def _close_window(cls, window_type):
+        cls._wait_for_widget_visible(window_type)
+        for widget in cls.app.topLevelWidgets():
+            if isinstance(widget, window_type):
+                QTest.qWait(SHORT_DELAY)
+                widget.close()
