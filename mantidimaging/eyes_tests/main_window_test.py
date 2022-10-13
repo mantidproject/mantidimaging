@@ -72,8 +72,9 @@ class MainWindowTest(BaseEyesTest):
         self._load_data_set()
         self._load_data_set()
 
-        second_stack = self.imaging.dataset_tree_widget.topLevelItem(1).child(0)
-        rect = self.imaging.dataset_tree_widget.visualItemRect(second_stack)
-        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.LeftButton, Qt.NoModifier, rect.center())
+        second_stack_item = self.imaging.dataset_tree_widget.topLevelItem(1).child(0)
+        second_stack_rect = self.imaging.dataset_tree_widget.visualItemRect(second_stack_item)
+        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.LeftButton, Qt.NoModifier,
+                         second_stack_rect.center())
 
         self.check_target()
