@@ -16,6 +16,6 @@ Fixes
 
 Developer Changes
 -----------------
-
 - #1472 : Investigate issues reported by flake8-bugbear
 - #1607 : Add flake8-bugbear to environment, github actions and precommit
+- #1613 : Refactor Operations window ROI selector to be in its own class

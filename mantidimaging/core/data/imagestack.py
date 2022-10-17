@@ -167,11 +167,14 @@ class ImageStack:
 
     def slice_as_image_stack(self, index) -> 'ImageStack':
         "A slice, either projection or sinogram depending on current ordering"
-        return ImageStack(np.asarray([self.data[index]]), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+        return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
     def sino_as_image_stack(self, index) -> 'ImageStack':
         "A single sinogram slice as an ImageStack in projection ordering"
         return ImageStack(np.asarray([self.sino(index)]).swapaxes(0, 1), metadata=deepcopy(self.metadata))
+
+    def slice_as_array(self, index) -> np.ndarray:
+        return np.asarray([self.data[index]])
 
     @property
     def height(self):

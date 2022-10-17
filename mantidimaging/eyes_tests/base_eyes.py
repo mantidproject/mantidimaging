@@ -118,3 +118,9 @@ class BaseEyesTest(unittest.TestCase):
         QApplication.sendPostedEvents()
 
         return vis
+
+    def _get_top_level_widget(cls, widget_type):
+        for widget in cls.app.topLevelWidgets():
+            if isinstance(widget, widget_type):
+                return widget
+        raise ValueError(f"Could not find top level widget of type {widget_type.__name__}")
