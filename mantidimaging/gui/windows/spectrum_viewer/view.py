@@ -1,6 +1,5 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from faulthandler import disable
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
