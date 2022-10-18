@@ -3,6 +3,9 @@
 
 from unittest import mock
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtTest import QTest
+
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
@@ -62,5 +65,16 @@ class MainWindowTest(BaseEyesTest):
     def test_main_window_loaded_2_sets_of_data(self):
         self._load_data_set()
         self._load_data_set()
+
+        self.check_target()
+
+    def test_single_click_changes_tab(self):
+        self._load_data_set()
+        self._load_data_set()
+
+        second_stack_item = self.imaging.dataset_tree_widget.topLevelItem(1).child(0)
+        second_stack_rect = self.imaging.dataset_tree_widget.visualItemRect(second_stack_item)
+        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.LeftButton, Qt.NoModifier,
+                         second_stack_rect.center())
 
         self.check_target()

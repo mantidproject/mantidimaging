@@ -7,6 +7,7 @@ New Features and improvements
 -----------------------------
 
 - #1601 : arithmetic filter optimisation
+- #1616 : Change selected stack with single click on tree widget
 
 Fixes
 -----

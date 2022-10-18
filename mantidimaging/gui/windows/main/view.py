@@ -141,7 +141,7 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
-        self.dataset_tree_widget.itemDoubleClicked.connect(self._bring_stack_tab_to_front)
+        self.dataset_tree_widget.itemClicked.connect(self._bring_stack_tab_to_front)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
