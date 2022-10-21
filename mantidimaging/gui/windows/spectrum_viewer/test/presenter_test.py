@@ -71,6 +71,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.try_to_select_relevant_normalise_stack.assert_not_called()
         self.assertIsNone(self.view.current_dataset_id)
         self.presenter.show_new_sample.assert_not_called()
+        self.view.set_export_button_enabled.assert_called_once_with(False)
 
     def test_handle_sample_change_dataset_unchanged(self):
         initial_dataset_id = self.view.current_dataset_id
@@ -82,6 +83,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_sample_change(uuid.uuid4())
         self.presenter.main_window.get_dataset.assert_not_called()
         self.assertEqual(self.view.current_dataset_id, initial_dataset_id)
+        self.view.set_export_button_enabled.assert_called_once_with(True)
 
     def test_handle_sample_change_to_MixedDataset(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())

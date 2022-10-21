@@ -14,6 +14,7 @@ Fixes
 - #1589 : Recommend new update command
 - #1330 : Initial ROI box is sometimes much larger than image for relevant filters
 - #1602 : Prevent multiple ROI selector windows opening from Operations window
+- #1610 : Apply bug fix to disable Spectrum Viewer export button when no data is loaded
 
 Developer Changes
 -----------------

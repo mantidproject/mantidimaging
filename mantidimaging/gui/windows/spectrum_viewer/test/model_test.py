@@ -7,6 +7,7 @@ import io
 
 import numpy as np
 import numpy.testing as npt
+from parameterized import parameterized
 
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ALL
@@ -203,3 +204,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.getvalue())
         self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.getvalue())
         self.assertTrue(mock_stream.is_closed)
+
+    @parameterized.expand([
+        ("False", None, False),
+        ("True", ImageStack(np.ones([10, 11, 12])), True),
+    ])
+    def test_WHEN_stack_value_set_THEN_can_export_returns_(self, _, image_stack, expected):
+        self.model.set_stack(image_stack)
+        self.assertEqual(self.model.can_export(), expected)

@@ -120,3 +120,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
+
+    def set_export_button_enabled(self, enabled: bool):
+        """
+        Toggle enabled state of the export button
+
+        :param enabled: True to enable the button, False to disable it
+        """
+        self.exportButton.setEnabled(enabled)
