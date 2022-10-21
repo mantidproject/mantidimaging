@@ -39,12 +39,11 @@ def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
     :param ignored_packages: List of ignore rules
     """
 
-    filters = {name: MODULES_OPERATIONS[name].load_module(name) for name in MODULES_OPERATIONS.keys()}
-    filters = {name: filters[name] for name in filters.keys() if hasattr(filters[name], 'FILTER_CLASS')}
-    operation_modules = {name: cast(OperationModule, f) for name, f in filters.items()}
-    if not ignored_packages:
-        return [f.FILTER_CLASS for f in operation_modules.values()]
-    return [
-        operation_modules[name].FILTER_CLASS for name in operation_modules.keys()
-        if not any([ignore in name for ignore in ignored_packages])
-    ]
+    operation_modules = []
+    for name in MODULES_OPERATIONS.keys():
+        if not ignored_packages or not any([ignore in name for ignore in ignored_packages]):
+            module = MODULES_OPERATIONS[name].load_module(name)
+            if hasattr(module, 'FILTER_CLASS'):
+                operation_module = cast(OperationModule, module)
+                operation_modules.append(operation_module.FILTER_CLASS)
+    return operation_modules
