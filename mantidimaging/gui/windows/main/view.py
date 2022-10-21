@@ -23,6 +23,7 @@ from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSe
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
+from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -550,7 +551,8 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)
 
     def _add_to_dataset(self):
-        pass
+        container_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.ADD_STACK, container_id=container_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
@@ -606,3 +608,7 @@ class MainWindowView(BaseMainWindowView):
         :return: The sinogram entry text. Used to avoid circular imports.
         """
         return SINO_TEXT
+
+    def show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
+        self.add_to_datset_dialog = AddImagesToDatasetDialog(self)
+        self.add_to_datset_dialog.show()
