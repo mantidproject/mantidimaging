@@ -10,19 +10,20 @@ from importlib.abc import Loader
 from mantidimaging.core.operations.base_filter import BaseFilter
 
 MODULES_OPERATIONS = {}
-for finder, module_name, _ in pkgutil.walk_packages([os.path.dirname(__file__)]):
-    if getattr(sys, 'frozen', False):
-        # If we're running a PyInstaller executable then we will get back a FrozenImporter object instead of a
-        # FileFinder. FrozenImporter implements load_module directly, but needs to use the full import name for
-        # the module to load it from the PYZ archive.
-        assert hasattr(finder, 'load_module')
-        MODULES_OPERATIONS[f'mantidimaging.core.operations.{module_name}'] = finder
-    else:
-        assert isinstance(finder, FileFinder)
-        spec = finder.find_spec(module_name)
-        assert isinstance(spec, ModuleSpec)
-        assert isinstance(spec.loader, Loader)
-        MODULES_OPERATIONS[module_name] = spec.loader
+if not MODULES_OPERATIONS:
+    for finder, module_name, _ in pkgutil.walk_packages([os.path.dirname(__file__)]):
+        if getattr(sys, 'frozen', False):
+            # If we're running a PyInstaller executable then we will get back a FrozenImporter object instead of a
+            # FileFinder. FrozenImporter implements load_module directly, but needs to use the full import name for
+            # the module to load it from the PYZ archive.
+            assert hasattr(finder, 'load_module')
+            MODULES_OPERATIONS[f'mantidimaging.core.operations.{module_name}'] = finder
+        else:
+            assert isinstance(finder, FileFinder)
+            spec = finder.find_spec(module_name)
+            assert isinstance(spec, ModuleSpec)
+            assert isinstance(spec.loader, Loader)
+            MODULES_OPERATIONS[module_name] = spec.loader
 
 
 class OperationModule(Protocol):
