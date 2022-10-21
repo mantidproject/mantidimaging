@@ -530,8 +530,13 @@ class MainWindowView(BaseMainWindowView):
         :param position: The position of the cursor when the menu was opened relative to the main window.
         """
         menu = QMenu()
+
+        add_action = menu.addAction("Add")
+        add_action.triggered.connect(self._add_to_dataset)
+
         delete_action = menu.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
+
         menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
     def _delete_container(self):
@@ -540,6 +545,9 @@ class MainWindowView(BaseMainWindowView):
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)
+
+    def _add_to_dataset(self):
+        pass
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
