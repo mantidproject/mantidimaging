@@ -376,6 +376,10 @@ class MainWindowPresenter(BasePresenter):
         return sorted(datasets, key=lambda x: x.name)
 
     @property
+    def all_dataset_ids(self) -> Iterable[uuid.UUID]:
+        return self.model.datasets.keys()
+
+    @property
     def stack_visualiser_names(self) -> List[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
