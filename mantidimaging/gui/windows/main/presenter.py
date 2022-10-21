@@ -47,6 +47,7 @@ class Notification(Enum):
     NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
     ADD_RECON = auto()
+    ADD_STACK = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -78,6 +79,8 @@ class MainWindowPresenter(BasePresenter):
                 self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
                 self._add_recon_to_dataset(**baggage)
+            elif signal == Notification.ADD_STACK:
+                self._add_stack_to_dataset(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -616,3 +619,10 @@ class MainWindowPresenter(BasePresenter):
             self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
         else:
             sinograms_item._id = sino_id
+
+    def _add_stack_to_dataset(self, dataset_id: uuid.UUID):
+        """
+        Asks the user to add a stack to a given dataset.
+        :param dataset_id: The ID of the dataset.
+        """
+        self.view.show_add_stack_to_dataset_dialog(dataset_id)
