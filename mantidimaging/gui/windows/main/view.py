@@ -531,8 +531,11 @@ class MainWindowView(BaseMainWindowView):
         """
         menu = QMenu()
 
-        add_action = menu.addAction("Add")
-        add_action.triggered.connect(self._add_to_dataset)
+        container_id = self.dataset_tree_widget.selectedItems()[0].id
+
+        if container_id in self.presenter.all_dataset_ids:
+            add_action = menu.addAction("Add")
+            add_action.triggered.connect(self._add_to_dataset)
 
         delete_action = menu.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
