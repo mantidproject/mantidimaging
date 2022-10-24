@@ -549,7 +549,9 @@ class MainWindowView(BaseMainWindowView):
 
     def _add_to_dataset(self):
         container_id = self.dataset_tree_widget.selectedItems()[0].id
-        self.presenter.notify(PresNotification.ADD_STACK, container_id=container_id)
+        if container_id not in self.presenter.all_dataset_ids:
+            container_id = self.presenter.get_dataset_id_for_stack(container_id)
+        self.presenter.notify(PresNotification.ADD_STACK, dataset_id=container_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
