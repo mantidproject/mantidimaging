@@ -5,5 +5,5 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 
 
 class AddImagesToDatasetDialog(BaseDialogView):
-    def __init__(self, parent):
+    def __init__(self, parent, strict_dataset: bool):
         super().__init__(parent, 'gui/ui/add_to_dataset.ui')
