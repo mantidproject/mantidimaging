@@ -612,6 +612,6 @@ class MainWindowView(BaseMainWindowView):
         return SINO_TEXT
 
     def show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
-        self.add_to_datset_dialog = AddImagesToDatasetDialog(
+        self.add_to_dataset_dialog = AddImagesToDatasetDialog(
             self, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list])
-        self.add_to_datset_dialog.show()
+        self.add_to_dataset_dialog.show()
