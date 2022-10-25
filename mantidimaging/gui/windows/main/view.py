@@ -322,6 +322,9 @@ class MainWindowView(BaseMainWindowView):
     def execute_nexus_save(self):
         self.presenter.notify(PresNotification.NEXUS_SAVE)
 
+    def execute_add_to_dataset(self):
+        self.presenter.notify(PresNotification.DATASET_ADD)
+
     def show_image_save_dialog(self):
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
         self.image_save_dialog.show()
@@ -551,7 +554,7 @@ class MainWindowView(BaseMainWindowView):
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         if container_id not in self.presenter.all_dataset_ids:
             container_id = self.presenter.get_dataset_id_for_stack(container_id)
-        self.presenter.notify(PresNotification.ADD_STACK, dataset_id=container_id)
+        self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, dataset_id=container_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
