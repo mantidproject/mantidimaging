@@ -34,3 +34,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
     @property
     def path(self):
         return self.filePathLineEdit.text()
+
+    @property
+    def images_type(self):
+        return self.imageTypeComboBox.currentText()
