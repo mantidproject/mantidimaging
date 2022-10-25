@@ -47,7 +47,8 @@ class Notification(Enum):
     NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
     ADD_RECON = auto()
-    ADD_STACK = auto()
+    SHOW_ADD_STACK_DIALOG = auto()
+    DATASET_ADD = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -79,8 +80,10 @@ class MainWindowPresenter(BasePresenter):
                 self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
                 self._add_recon_to_dataset(**baggage)
-            elif signal == Notification.ADD_STACK:
-                self._add_stack_to_dataset(**baggage)
+            elif signal == Notification.SHOW_ADD_STACK_DIALOG:
+                self._show_add_stack_to_dataset_dialog(**baggage)
+            elif signal == Notification.DATASET_ADD:
+                self._add_to_dataset()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -620,9 +623,16 @@ class MainWindowPresenter(BasePresenter):
         else:
             sinograms_item._id = sino_id
 
-    def _add_stack_to_dataset(self, dataset_id: uuid.UUID):
+    def _show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
         """
         Asks the user to add a stack to a given dataset.
         :param dataset_id: The ID of the dataset.
         """
         self.view.show_add_stack_to_dataset_dialog(dataset_id)
+
+    def _add_to_dataset(self):
+        assert self.view.add_to_dataset_dialog is not None
+        # data, _ = self.view.add_to_dataset_dialog.presenter.get_data()
+        # self.model.add_dataset_to_model(dataset)
+        # self._add_strict_dataset_to_view(dataset)
+        self.view.model_changed.emit()
