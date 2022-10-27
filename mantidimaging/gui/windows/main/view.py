@@ -153,6 +153,8 @@ class MainWindowView(BaseMainWindowView):
 
         self.setCentralWidget(self.splitter)
 
+        self.add_to_dataset_dialog = None
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
@@ -613,5 +615,5 @@ class MainWindowView(BaseMainWindowView):
 
     def show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(
-            self, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list])
+            self, dataset_id, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list])
         self.add_to_dataset_dialog.show()
