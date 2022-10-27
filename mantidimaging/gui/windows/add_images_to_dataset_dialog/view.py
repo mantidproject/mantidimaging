@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit
 
 from mantidimaging.gui.mvp_base import BaseDialogView
-from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter
+from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification
 
 
 class AddImagesToDatasetDialog(BaseDialogView):
@@ -20,7 +20,10 @@ class AddImagesToDatasetDialog(BaseDialogView):
         self.imageTypeComboBox.setEnabled(strict_dataset)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        self.accepted.connect(self.parent_view.execute_add_to_dataset)
+        self.accepted.connect(self._on_accepted)
+
+    def _on_accepted(self):
+        self.presenter.notify(Notification.IMAGE_FILE_SELECTED)
 
     def choose_file_path(self):
         """
