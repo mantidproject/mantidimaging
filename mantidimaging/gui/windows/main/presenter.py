@@ -633,6 +633,9 @@ class MainWindowPresenter(BasePresenter):
 
     def _add_to_dataset(self):
         assert self.view.add_to_dataset_dialog is not None
-        # self.view.add_to_dataset_dialog.presenter.load_images_into_mixed_dataset()
-        print(self.view.add_to_dataset_dialog.presenter.images)
+        dataset = self.model.datasets[self.view.add_to_dataset_dialog.dataset_id]
+        images = self.view.add_to_dataset_dialog.presenter.images
+        image_attr = self.view.add_to_dataset_dialog.images_type
+        image_attr = image_attr.replace(" ", "_").lower()
+        setattr(dataset, image_attr, images)
         self.view.model_changed.emit()
