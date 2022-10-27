@@ -83,7 +83,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.SHOW_ADD_STACK_DIALOG:
                 self._show_add_stack_to_dataset_dialog(**baggage)
             elif signal == Notification.DATASET_ADD:
-                self._add_to_dataset()
+                self._add_images_to_existing_dataset()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -631,7 +631,7 @@ class MainWindowPresenter(BasePresenter):
         """
         self.view.show_add_stack_to_dataset_dialog(dataset_id)
 
-    def _add_to_dataset(self):
+    def _add_images_to_existing_dataset(self):
         assert self.view.add_to_dataset_dialog is not None
         dataset = self.model.datasets[self.view.add_to_dataset_dialog.dataset_id]
         images = self.view.add_to_dataset_dialog.presenter.images
