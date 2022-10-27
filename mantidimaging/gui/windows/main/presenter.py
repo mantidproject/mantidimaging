@@ -142,7 +142,8 @@ class MainWindowPresenter(BasePresenter):
                               busy=True)
 
     def load_image_stack(self, file_path: str) -> None:
-        start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
+        start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_stack_load_done,
+                              {'file_path': file_path})
 
     def _on_stack_load_done(self, task: 'TaskWorkerThread') -> None:
         log = getLogger(__name__)
@@ -632,7 +633,6 @@ class MainWindowPresenter(BasePresenter):
 
     def _add_to_dataset(self):
         assert self.view.add_to_dataset_dialog is not None
-        # data, _ = self.view.add_to_dataset_dialog.presenter.get_data()
-        # self.model.add_dataset_to_model(dataset)
-        # self._add_strict_dataset_to_view(dataset)
+        # self.view.add_to_dataset_dialog.presenter.load_images_into_mixed_dataset()
+        print(self.view.add_to_dataset_dialog.presenter.images)
         self.view.model_changed.emit()

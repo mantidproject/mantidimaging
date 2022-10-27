@@ -116,7 +116,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.load_image_stack(file_path)
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images_into_mixed_dataset,
                                                  self.presenter._on_stack_load_done, {'file_path': file_path})
 
     def test_add_stack(self):
