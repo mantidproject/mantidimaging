@@ -613,7 +613,11 @@ class MainWindowView(BaseMainWindowView):
         """
         return SINO_TEXT
 
-    def show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
+    def show_add_stack_to_existing_dataset_dialog(self, dataset_id: uuid.UUID):
+        """
+        Displays the dialog for adding an image stack to an existing dataset.
+        :param dataset_id: The ID of the dataset to update.
+        """
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(
             self, dataset_id, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list])
         self.add_to_dataset_dialog.show()
