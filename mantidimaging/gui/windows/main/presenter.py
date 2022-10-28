@@ -629,7 +629,7 @@ class MainWindowPresenter(BasePresenter):
         Asks the user to add a stack to a given dataset.
         :param dataset_id: The ID of the dataset.
         """
-        self.view.show_add_stack_to_dataset_dialog(dataset_id)
+        self.view.show_add_stack_to_existing_dataset_dialog(dataset_id)
 
     def _add_images_to_existing_dataset(self):
         assert self.view.add_to_dataset_dialog is not None
