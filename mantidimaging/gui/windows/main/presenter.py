@@ -632,22 +632,27 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_add_stack_to_existing_dataset_dialog(dataset_id)
 
     def _add_images_to_existing_dataset(self):
+        """
+        Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if
+        necessary.
+        """
         assert self.view.add_to_dataset_dialog is not None
+
         dataset_id = self.view.add_to_dataset_dialog.dataset_id
-        dataset = self.model.datasets[dataset_id]
-        images = self.view.add_to_dataset_dialog.presenter.images
+        dataset = self.get_dataset(dataset_id)
+        new_images = self.view.add_to_dataset_dialog.presenter.images
         images_text = self.view.add_to_dataset_dialog.images_type
         image_attr = images_text.replace(" ", "_").lower()
 
         if getattr(dataset, image_attr) is None:
-            self.add_child_item_to_tree_view(dataset_id, images.id, images_text)
+            self.add_child_item_to_tree_view(dataset_id, new_images.id, images_text)
 
         else:
-            prev_images = getattr(dataset, images)
-            self.replace_child_item_id(dataset_id, prev_images.id, images.id)
-            self.add_child_item_to_tree_view(dataset_id, images.id, images_text)
+            prev_images = getattr(dataset, new_images)
+            self.replace_child_item_id(dataset_id, prev_images.id, new_images.id)
+            self.add_child_item_to_tree_view(dataset_id, new_images.id, images_text)
             self._delete_stack(prev_images.id)
 
-        self.create_single_tabbed_images_stack(images)
-        setattr(dataset, image_attr, images)
+        setattr(dataset, image_attr, new_images)
+        self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
