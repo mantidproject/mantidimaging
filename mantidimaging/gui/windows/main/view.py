@@ -565,7 +565,7 @@ class MainWindowView(BaseMainWindowView):
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
         Sends the signal to the presenter to bring a make a stack tab visible and bring it to the front.
-        :param item: The QTreeDatasetWidgetItem that was double clicked.
+        :param item: The QTreeDatasetWidgetItem that was clicked.
         """
         self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
 
