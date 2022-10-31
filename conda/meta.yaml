@@ -33,8 +33,7 @@ requirements:
     - h5py=3.6.*
     - sarepy=2020.07
     - psutil=5.9.*
-    - cil=21.4.*
-    - cil-astra=21.4.*
+    - cil=22.1.*
     - ccpi-regulariser=21.0.*
     - jenkspy=0.2.0
     - pyqt=5.15.*
