@@ -631,10 +631,6 @@ class MainWindowPresenter(BasePresenter):
         """
         self.view.show_add_stack_to_existing_dataset_dialog(dataset_id)
 
-    def _add_stack_to_tree_view(self, dataset_id: uuid.UUID, images_text: str, images_id: uuid.UUID):
-        # dataset_item = self.view.get_dataset_tree_view_item(dataset_id)
-        pass
-
     def _add_images_to_existing_dataset(self):
         assert self.view.add_to_dataset_dialog is not None
         dataset_id = self.view.add_to_dataset_dialog.dataset_id
@@ -644,11 +640,14 @@ class MainWindowPresenter(BasePresenter):
         image_attr = images_text.replace(" ", "_").lower()
 
         if getattr(dataset, image_attr) is None:
-            self._add_stack_to_tree_view(dataset_id, images_text, images.id)
+            self.add_child_item_to_tree_view(dataset_id, images.id, images_text)
+
         else:
-            # replace id in existing entry
-            pass
-        # get id and close other image stack
-        # create new image stack
+            prev_images = getattr(dataset, images)
+            self.replace_child_item_id(dataset_id, prev_images.id, images.id)
+            self.add_child_item_to_tree_view(dataset_id, images.id, images_text)
+            self._delete_stack(prev_images.id)
+
+        self.create_single_tabbed_images_stack(images)
         setattr(dataset, image_attr, images)
         self.view.model_changed.emit()
