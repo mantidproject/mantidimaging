@@ -34,7 +34,7 @@ requirements:
     - sarepy=2020.07
     - psutil=5.9.*
     - cil=22.1.*
-    - ccpi-regulariser=21.0.*
+    - ccpi-regulariser
     - jenkspy=0.2.0
     - pyqt=5.15.*
     - pyqtgraph=0.13.*
