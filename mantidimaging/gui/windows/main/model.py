@@ -71,7 +71,8 @@ class MainWindowModel(object):
         self.datasets[sd.id] = sd
         return sd
 
-    def load_image_stack(self, file_path: str, progress: 'Progress') -> ImageStack:
+    @staticmethod
+    def load_image_stack(file_path: str, progress: 'Progress') -> ImageStack:
         return loader.load_stack(file_path, progress)
 
     def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
