@@ -24,9 +24,17 @@ class AddImagesToDatasetPresenterTest(unittest.TestCase):
                                                            {'file_path': test_path})
 
     def test_load_images_successful(self):
-        mock_task = mock.MagicMock()
+        mock_task = mock.Mock()
         mock_task.was_successful.return_value = True
 
         self.presenter._on_images_load_done(mock_task)
         assert self.presenter.images is mock_task.result
         self.view.parent_view.execute_add_to_dataset.assert_called_once()
+
+    def test_load_images_failure(self):
+        mock_task = mock.Mock()
+        mock_task.was_successful.return_value = False
+
+        self.presenter._on_images_load_done(mock_task)
+        self.assertIsNone(self.presenter.images)
+        self.view.parent_view.execute_add_to_dataset.assert_not_called()
