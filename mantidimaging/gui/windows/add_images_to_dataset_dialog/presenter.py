@@ -5,6 +5,7 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING
 
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
+from mantidimaging.gui.mvp_base import BasePresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
@@ -14,11 +15,11 @@ class Notification(Enum):
     IMAGE_FILE_SELECTED = auto()
 
 
-class AddImagesToDatasetPresenter:
+class AddImagesToDatasetPresenter(BasePresenter):
     view: 'AddImagesToDatasetDialog'
 
     def __init__(self, view: 'AddImagesToDatasetDialog'):
-        self.view = view
+        super().__init__(view)
         self.images = None
 
     def notify(self, n: Notification):
@@ -29,12 +30,19 @@ class AddImagesToDatasetPresenter:
             self.view.show_exception(str(err), traceback.format_exc())
 
     def load_images(self):
+        """
+        Loads the images from the file path provided by the user.
+        """
         start_async_task_view(self.view, self.view.parent_view.presenter.model.load_image_stack,
                               self._on_images_load_done, {'file_path': self.view.path})
 
     def _on_images_load_done(self, task: 'TaskWorkerThread'):
+        """
+        Checks if loading images was successful and then triggers the necessary updates.
+        :param task: The file loading task.
+        """
         if task.was_successful():
             self.images = task.result
             self.view.parent_view.execute_add_to_dataset()
         else:
-            pass
+            self.show_error(task.error, traceback.format_exc())
