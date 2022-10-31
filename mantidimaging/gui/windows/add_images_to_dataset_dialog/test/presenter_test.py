@@ -22,3 +22,11 @@ class AddImagesToDatasetPresenterTest(unittest.TestCase):
                                                            self.view.parent_view.presenter.model.load_image_stack,
                                                            self.presenter._on_images_load_done,
                                                            {'file_path': test_path})
+
+    def test_load_images_successful(self):
+        mock_task = mock.MagicMock()
+        mock_task.was_successful.return_value = True
+
+        self.presenter._on_images_load_done(mock_task)
+        assert self.presenter.images is mock_task.result
+        self.view.parent_view.execute_add_to_dataset.assert_called_once()
