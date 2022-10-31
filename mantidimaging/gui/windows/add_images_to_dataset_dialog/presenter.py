@@ -20,7 +20,7 @@ class AddImagesToDatasetPresenter(BasePresenter):
 
     def __init__(self, view: 'AddImagesToDatasetDialog'):
         super().__init__(view)
-        self.images = None
+        self._images = None
 
     def notify(self, n: Notification):
         try:
@@ -42,7 +42,11 @@ class AddImagesToDatasetPresenter(BasePresenter):
         :param task: The file loading task.
         """
         if task.was_successful():
-            self.images = task.result
+            self._images = task.result
             self.view.parent_view.execute_add_to_dataset()
         else:
             self.show_error(task.error, traceback.format_exc())
+
+    @property
+    def images(self):
+        return self._images
