@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+import traceback
 import unittest
 from unittest import mock
 
@@ -34,7 +35,9 @@ class AddImagesToDatasetPresenterTest(unittest.TestCase):
     def test_load_images_failure(self):
         mock_task = mock.Mock()
         mock_task.was_successful.return_value = False
+        self.presenter.show_error = mock.Mock()
 
         self.presenter._on_images_load_done(mock_task)
         self.assertIsNone(self.presenter.images)
         self.view.parent_view.execute_add_to_dataset.assert_not_called()
+        self.presenter.show_error.assert_called_once_with(mock_task.error, traceback.format_exc())
