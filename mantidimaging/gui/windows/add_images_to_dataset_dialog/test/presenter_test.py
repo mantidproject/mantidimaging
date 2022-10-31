@@ -1,10 +1,9 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import traceback
 import unittest
 from unittest import mock
 
-from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter
+from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification
 
 
 class AddImagesToDatasetPresenterTest(unittest.TestCase):
@@ -40,4 +39,9 @@ class AddImagesToDatasetPresenterTest(unittest.TestCase):
         self.presenter._on_images_load_done(mock_task)
         self.assertIsNone(self.presenter.images)
         self.view.parent_view.execute_add_to_dataset.assert_not_called()
-        self.presenter.show_error.assert_called_once_with(mock_task.error, traceback.format_exc())
+        self.presenter.show_error.assert_called_once()
+
+    def test_notify_runtime_error(self):
+        self.presenter.load_images = mock.Mock(side_effect=RuntimeError)
+        self.presenter.notify(Notification.IMAGE_FILE_SELECTED)
+        self.view.show_exception.assert_called_once()
