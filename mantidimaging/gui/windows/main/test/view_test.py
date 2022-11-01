@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QDialog
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
-from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
+from mantidimaging.gui.windows.main.presenter import Notification as PresNotification, Notification
 from mantidimaging.gui.windows.main.view import RECON_GROUP_TEXT, SINO_TEXT
 from mantidimaging.test_helpers import start_qapplication, mock_versions
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -463,3 +463,16 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.show_nexus_save_dialog()
         nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.strict_dataset_list)
         nexus_save_dialog_mock.return_value.show.assert_called_once()
+
+    def test_execute_add_to_dataset_calls_notify(self):
+        self.view.execute_add_to_dataset()
+        self.presenter.notify.assert_called_once_with(Notification.DATASET_ADD)
+
+    def test_add_images_to_existing_dataset_sends_container_id(self):
+        mock_dataset = mock.Mock()
+        mock_dataset.id = dataset_id = "dataset-id"
+        self.dataset_tree_widget.selectedItems.return_value = [mock_dataset]
+        self.presenter.all_dataset_ids = [dataset_id]
+
+        self.view._add_images_to_existing_dataset()
+        self.presenter.notify.assert_called_once_with(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=dataset_id)
