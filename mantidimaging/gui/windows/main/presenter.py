@@ -648,10 +648,9 @@ class MainWindowPresenter(BasePresenter):
             self.add_child_item_to_tree_view(dataset_id, new_images.id, images_text)
 
         else:
-            prev_images = getattr(dataset, new_images)
-            self.replace_child_item_id(dataset_id, prev_images.id, new_images.id)
-            self.add_child_item_to_tree_view(dataset_id, new_images.id, images_text)
-            self._delete_stack(prev_images.id)
+            prev_images_id = getattr(dataset, image_attr).id
+            self.replace_child_item_id(dataset_id, prev_images_id, new_images.id)
+            self._delete_stack(prev_images_id)
 
         setattr(dataset, image_attr, new_images)
         self.create_single_tabbed_images_stack(new_images)
