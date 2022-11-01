@@ -30,7 +30,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
 
     def choose_file_path(self):
         """
-        Select the files to add/replace in the dataset.
+        Select a file in the stack path that we wish to add/replace in the dataset.
         """
         selected_file, _ = QFileDialog.getOpenFileName(caption="Images", filter="Image File (*.tif *.tiff)")
         if selected_file:
@@ -39,12 +39,21 @@ class AddImagesToDatasetDialog(BaseDialogView):
 
     @property
     def path(self) -> str:
+        """
+        :return: The path string.
+        """
         return self.filePathLineEdit.text()
 
     @property
     def images_type(self) -> str:
+        """
+        :return: The name of the image stack.
+        """
         return self.imageTypeComboBox.currentText()
 
     @property
     def dataset_id(self) -> uuid.UUID:
+        """
+        :return: The ID of the parent dataset.
+        """
         return self._dataset_id
