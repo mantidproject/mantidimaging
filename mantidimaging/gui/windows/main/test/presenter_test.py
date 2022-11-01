@@ -778,9 +778,17 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack_visualiser.presenter.delete_data.assert_called_once()
         mock_stack_visualiser.deleteLater.assert_called_once()
 
-    def test_show_add_stack_to_dataset_dialog(self):
+    def test_show_add_stack_to_dataset_dialog_called_with_dataset_id(self):
         dataset_id = "dataset-id"
-        self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, dataset_id=dataset_id)
+        self.model.datasets.keys.return_value = [dataset_id]
+        self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id=dataset_id)
+        self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
+
+    def test_show_add_stack_to_dataset_dialog_called_with_stack_id(self):
+        dataset_id = "dataset-id"
+        self.model.datasets.keys.return_value = []
+        self.model.get_parent_dataset.return_value = dataset_id
+        self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id="stack-id")
         self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
 
     def test_add_new_stack_to_dataset(self):
