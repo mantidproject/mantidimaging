@@ -802,8 +802,26 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.model_changed.emit.assert_called_once()
         self.assertIs(self.dataset.flat_before, new_images)
 
-    def test_replace_stack_in_dataset(self):
-        pass
+    def test_replace_existing_stack_in_dataset(self):
+        self.model.datasets = dict()
+        self.model.datasets[self.dataset.id] = self.dataset
+        prev_images_id = self.dataset.flat_before.id
+
+        self.view.add_to_dataset_dialog = mock.Mock()
+        self.view.add_to_dataset_dialog.dataset_id = self.dataset.id
+        self.view.add_to_dataset_dialog.presenter.images = new_images = generate_images()
+        self.view.add_to_dataset_dialog.images_type = "Flat Before"
+
+        self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter.replace_child_item_id = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
+
+        self.presenter._add_images_to_existing_dataset()
+        self.presenter.replace_child_item_id.assert_called_once_with(self.dataset.id, prev_images_id, new_images.id)
+        self.presenter._delete_stack.assert_called_once_with(prev_images_id)
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_images)
+        self.view.model_changed.emit.assert_called_once()
+        self.assertIs(self.dataset.flat_before, new_images)
 
 
 if __name__ == '__main__':
