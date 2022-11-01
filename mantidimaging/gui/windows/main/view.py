@@ -537,7 +537,7 @@ class MainWindowView(BaseMainWindowView):
         """
         menu = QMenu()
 
-        add_action = menu.addAction("Add / Replace")
+        add_action = menu.addAction("Add / Replace Stack")
         add_action.triggered.connect(self._add_images_to_existing_dataset)
 
         delete_action = menu.addAction("Delete")
@@ -557,10 +557,7 @@ class MainWindowView(BaseMainWindowView):
         Notifies presenter to add image stack of dataset of the selected item.
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
-        if container_id not in self.presenter.all_dataset_ids:
-            # get parent ID if selected item is a stack
-            container_id = self.presenter.get_dataset_id_for_stack(container_id)
-        self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, dataset_id=container_id)
+        self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=container_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """

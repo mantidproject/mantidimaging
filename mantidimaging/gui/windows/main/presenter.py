@@ -624,12 +624,15 @@ class MainWindowPresenter(BasePresenter):
         else:
             sinograms_item._id = sino_id
 
-    def _show_add_stack_to_dataset_dialog(self, dataset_id: uuid.UUID):
+    def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID):
         """
         Asks the user to add a stack to a given dataset.
-        :param dataset_id: The ID of the dataset.
+        :param container_id: The ID of the dataset or stack.
         """
-        self.view.show_add_stack_to_existing_dataset_dialog(dataset_id)
+        if container_id not in self.all_dataset_ids:
+            # get parent ID if selected item is a stack
+            container_id = self.get_dataset_id_for_stack(container_id)
+        self.view.show_add_stack_to_existing_dataset_dialog(container_id)
 
     def _add_images_to_existing_dataset(self):
         """
