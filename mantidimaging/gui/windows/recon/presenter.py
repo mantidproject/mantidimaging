@@ -63,6 +63,8 @@ class ReconstructWindowPresenter(BasePresenter):
             'num_iter': [self.view.numIter, self.view.numIterLabel],
             'alpha': [self.view.alphaSpinbox, self.view.alphaLabel],
             'non_negative': [self.view.nonNegativeCheckBox, self.view.nonNegativeLabel],
+            'stochastic': [self.view.stochasticCheckBox, self.view.stochasticLabel],
+            'subsets': [self.view.subsetsSpinBox, self.view.subsetsLabel],
         }
         self.main_window = main_window
 

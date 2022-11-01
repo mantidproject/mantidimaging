@@ -59,6 +59,8 @@ class ReconstructWindowView(BaseMainWindowView):
     pixelSize: QDoubleSpinBox
     alphaSpinbox: QDoubleSpinBox
     nonNegativeCheckBox: QCheckBox
+    stochasticCheckBox: QCheckBox
+    subsetsSpinBox: QSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
