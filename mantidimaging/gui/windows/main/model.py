@@ -66,7 +66,7 @@ class MainWindowModel(object):
         return ds
 
     def load_images_into_mixed_dataset(self, file_path: str, progress: 'Progress') -> MixedDataset:
-        images = loader.load_stack(file_path, progress)
+        images = self.load_image_stack(file_path, progress)
         sd = MixedDataset([images], images.name)
         self.datasets[sd.id] = sd
         return sd
