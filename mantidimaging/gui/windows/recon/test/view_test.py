@@ -23,18 +23,6 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.presenter = self.presenter = mock.Mock()
         self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
-        self.view.resultCor = self.resultCor = mock.Mock()
-        self.view.resultTilt = self.resultTilt = mock.Mock()
-        self.view.resultSlope = self.resultSlope = mock.Mock()
-        self.view.numIter = self.numIter = mock.Mock()
-        self.view.pixelSize = self.pixelSize = mock.Mock()
-        self.view.alphaSpinBox = self.alpha = mock.Mock()
-        self.view.nonNegativeCheckBox = self.non_negative = mock.Mock()
-        self.view.stochasticCheckBox = self.stochastic = mock.Mock()
-        self.view.subsetsSpinBox = self.subsets = mock.Mock()
-        self.view.algorithmName = self.algorithmName = mock.Mock()
-        self.view.filterName = self.filterName = mock.Mock()
-        self.view.maxProjAngle = self.maxProjAngle = mock.Mock()
         self.view.autoFindMethod = self.autoFindMethod = mock.Mock()
 
     @mock.patch("mantidimaging.gui.windows.recon.view.QMessageBox")
@@ -113,11 +101,12 @@ class ReconstructWindowViewTest(unittest.TestCase):
         tilt = Degrees(tilt_val)
         slope = Slope(slope_val)
 
-        self.view.set_results(cor, tilt, slope)
-        self.resultCor.setValue.assert_called_once_with(cor_val)
-        self.resultTilt.setValue.assert_called_once_with(tilt_val)
-        self.resultSlope.setValue.assert_called_once_with(slope_val)
-        self.image_view.set_tilt.assert_called_once_with(tilt)
+        with mock.patch.object(self.image_view, "set_tilt") as set_tilt:
+            self.view.set_results(cor, tilt, slope)
+            self.assertEqual(self.view.rotation_centre, cor_val)
+            self.assertEqual(self.view.tilt, tilt_val)
+            self.assertEqual(self.view.slope, slope_val)
+            set_tilt.assert_called_once_with(tilt)
 
     def test_preview_image_on_button_press(self):
         event_mock = mock.Mock()
@@ -197,55 +186,54 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.tableView.selectRow.assert_called_once_with(row)
 
     def test_rotation_centre_property(self):
-        assert self.view.rotation_centre == self.resultCor.value.return_value
+        self.assertEqual(self.view.rotation_centre, 0)
 
     def test_tilt_property(self):
-        assert self.view.tilt == self.resultTilt.value.return_value
+        self.assertEqual(self.view.tilt, 0)
 
     def test_slope_property(self):
-        assert self.view.slope == self.resultSlope.value.return_value
+        self.assertEqual(self.view.slope, 0)
 
     def test_max_proj_angle(self):
-        assert self.view.max_proj_angle == self.maxProjAngle.value.return_value
+        self.assertEqual(self.view.max_proj_angle, 360)
 
     def test_algorithm_name(self):
-        assert self.view.algorithm_name == self.algorithmName.currentText.return_value
+        self.assertIn(self.view.algorithm_name, ["gridrec", "FBP_CUDA"])
 
     def test_filter_name(self):
-        assert self.view.filter_name == self.filterName.currentText.return_value
+        self.assertIn(self.view.filter_name, ["ramlak", "ram-lak"])
 
     def test_num_iter_property(self):
-        assert self.view.num_iter == self.numIter.value.return_value
+        self.assertEqual(self.view.num_iter, 1)
+
+    def test_stochastic_property(self):
+        self.assertEqual(self.view.stochastic, False)
+
+    def test_subsets_property(self):
+        self.assertEqual(self.view.subsets, 1)
 
     def test_num_iter_setter(self):
         iters = 123
         self.view.num_iter = iters
-        self.numIter.setValue.assert_called_once_with(iters)
+        self.assertEqual(self.view.num_iter, iters)
 
     def test_pixel_size_property(self):
-        assert self.view.pixel_size == self.pixelSize.value.return_value
+        self.assertEqual(self.view.pixel_size, 0)
 
     @mock.patch("mantidimaging.gui.windows.recon.view.QSignalBlocker")
     def test_pixel_size_setter(self, _):
         value = 123
         self.view.pixel_size = value
-        self.pixelSize.setValue.assert_called_once_with(value)
+        self.assertEqual(self.view.pixel_size, value)
 
-    @mock.patch("mantidimaging.gui.windows.recon.view.ReconstructionParameters")
-    def test_recon_params(self, recon_params_mock):
-        self.view.recon_params()
-        recon_params_mock.assert_called_once_with(algorithm=self.algorithmName.currentText.return_value,
-                                                  filter_name=self.filterName.currentText.return_value,
-                                                  num_iter=self.numIter.value.return_value,
-                                                  cor=ScalarCoR(self.resultCor.value.return_value),
-                                                  tilt=Degrees(self.resultTilt.value.return_value),
-                                                  pixel_size=self.pixelSize.value.return_value,
-                                                  alpha=self.alpha.value.return_value,
-                                                  non_negative=self.non_negative.isChecked.return_value,
-                                                  stochastic=self.stochastic.isChecked.return_value,
-                                                  subsets=self.subsets.value.return_value,
-                                                  max_projection_angle=self.maxProjAngle.value.return_value,
-                                                  beam_hardening_coefs=self.view.beam_hardening_coefs)
+    def test_recon_params(self):
+        rp = self.view.recon_params()
+        self.assertIn(rp.algorithm, self.view.algorithm_name)
+        self.assertEqual(rp.num_iter, self.view.num_iter)
+        self.assertEqual(rp.alpha, self.view.alpha)
+        self.assertEqual(rp.non_negative, self.view.non_negative)
+        self.assertEqual(rp.stochastic, self.view.stochastic)
+        self.assertEqual(rp.subsets, self.view.subsets)
 
     def test_set_table_point(self):
         idx = 12
@@ -278,9 +266,10 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_set_filters_for_recon_tool(self):
         filters = ["abc" for _ in range(3)]
-        self.view.set_filters_for_recon_tool(filters)
-        self.filterName.clear.assert_called_once()
-        self.filterName.insertItems.assert_called_once_with(0, filters)
+        with mock.patch.object(self.view, "filterName") as fn:
+            self.view.set_filters_for_recon_tool(filters)
+            fn.clear.assert_called_once()
+            fn.insertItems.assert_called_once_with(0, filters)
 
     @mock.patch("mantidimaging.gui.windows.recon.view.QInputDialog")
     def test_get_number_of_cors_when_accepted_is_true(self, qinputdialog_mock):
