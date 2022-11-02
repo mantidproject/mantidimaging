@@ -78,3 +78,13 @@ class MainWindowTest(BaseEyesTest):
                          second_stack_rect.center())
 
         self.check_target()
+
+    def test_dataset_tree_view_menu(self):
+        self._load_data_set()
+
+        dataset_tree_view_item = self.imaging.dataset_tree_widget.topLevelItem(0).child(0)
+        dataset_tree_item_rect = self.imaging.dataset_tree_widget.visualItemRect(dataset_tree_view_item)
+        QTest.mouseClick(self.images.dataset_tree_widget.viewport(), Qt.RightButton, Qt.NoModifier,
+                         dataset_tree_item_rect.center())
+
+        self.check_target()
