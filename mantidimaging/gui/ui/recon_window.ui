@@ -628,7 +628,7 @@
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QDoubleSpinBox" name="alphaSpinbox">
+                 <widget class="QDoubleSpinBox" name="alphaSpinBox">
                   <property name="decimals">
                    <number>6</number>
                   </property>

@@ -61,7 +61,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
             'filter_name': [self.view.filterName, self.view.filterNameLabel],
             'num_iter': [self.view.numIter, self.view.numIterLabel],
-            'alpha': [self.view.alphaSpinbox, self.view.alphaLabel],
+            'alpha': [self.view.alphaSpinBox, self.view.alphaLabel],
             'non_negative': [self.view.nonNegativeCheckBox, self.view.nonNegativeLabel],
             'stochastic': [self.view.stochasticCheckBox, self.view.stochasticLabel],
             'subsets': [self.view.subsetsSpinBox, self.view.subsetsLabel],

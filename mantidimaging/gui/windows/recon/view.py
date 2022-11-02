@@ -57,7 +57,7 @@ class ReconstructWindowView(BaseMainWindowView):
     numIter: QSpinBox
     maxProjAngle: QDoubleSpinBox
     pixelSize: QDoubleSpinBox
-    alphaSpinbox: QDoubleSpinBox
+    alphaSpinBox: QDoubleSpinBox
     nonNegativeCheckBox: QCheckBox
     stochasticCheckBox: QCheckBox
     subsetsSpinBox: QSpinBox
@@ -182,7 +182,7 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
-        self.alphaSpinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.alphaSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.nonNegativeCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
@@ -397,11 +397,11 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def alpha(self):
-        return self.alphaSpinbox.value()
+        return self.alphaSpinBox.value()
 
     @alpha.setter
     def alpha(self, value: float):
-        self.alphaSpinbox.setValue(value)
+        self.alphaSpinBox.setValue(value)
 
     @property
     def non_negative(self):

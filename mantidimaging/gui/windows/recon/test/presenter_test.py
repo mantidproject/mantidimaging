@@ -37,7 +37,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.numIter = mock.Mock()
         self.view.numIterLabel = mock.Mock()
         self.view.image_view = mock.Mock()
-        self.view.alphaSpinbox = mock.Mock()
+        self.view.alphaSpinBox = mock.Mock()
         self.view.alphaLabel = mock.Mock()
         self.view.nonNegativeCheckBox = mock.Mock()
         self.view.nonNegativeLabel = mock.Mock()

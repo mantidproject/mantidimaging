@@ -28,7 +28,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.resultSlope = self.resultSlope = mock.Mock()
         self.view.numIter = self.numIter = mock.Mock()
         self.view.pixelSize = self.pixelSize = mock.Mock()
-        self.view.alphaSpinbox = self.alpha = mock.Mock()
+        self.view.alphaSpinBox = self.alpha = mock.Mock()
         self.view.nonNegativeCheckBox = self.non_negative = mock.Mock()
         self.view.stochasticCheckBox = self.stochastic = mock.Mock()
         self.view.subsetsSpinBox = self.subsets = mock.Mock()
