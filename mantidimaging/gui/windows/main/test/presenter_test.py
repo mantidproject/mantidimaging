@@ -791,7 +791,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id="stack-id")
         self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
 
-    def test_add_new_stack_to_dataset(self):
+    def test_add_new_stack_to_strict_dataset(self):
         self.model.datasets = dict()
         self.dataset.flat_before = None
         self.model.datasets[self.dataset.id] = self.dataset
@@ -810,7 +810,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.model_changed.emit.assert_called_once()
         self.assertIs(self.dataset.flat_before, new_images)
 
-    def test_replace_existing_stack_in_dataset(self):
+    def test_replace_existing_stack_in_strict_dataset(self):
         self.model.datasets = dict()
         self.model.datasets[self.dataset.id] = self.dataset
         prev_images_id = self.dataset.flat_before.id
@@ -830,6 +830,21 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_images)
         self.view.model_changed.emit.assert_called_once()
         self.assertIs(self.dataset.flat_before, new_images)
+
+    def test_add_stack_to_mixed_dataset(self):
+        self.model.datasets = dict()
+        mixed_dataset = MixedDataset()
+        self.model.datasets[mixed_dataset.id] = mixed_dataset
+
+        self.view.add_to_dataset_dialog = mock.Mock()
+        self.view.add_to_dataset_dialog.dataset_id = mixed_dataset.id
+        self.view.add_to_dataset_dialog.presenter.images = new_images = generate_images()
+        self.presenter.add_child_item_to_tree_view = mock.Mock()
+
+        self.presenter._add_images_to_existing_dataset()
+        self.assertIn(new_images, mixed_dataset.all)
+        self.presenter.add_child_item_to_tree_view.assert_called_once_with(mixed_dataset.id, new_images.id,
+                                                                           new_images.name)
 
 
 if __name__ == '__main__':

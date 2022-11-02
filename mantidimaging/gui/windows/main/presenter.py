@@ -643,18 +643,43 @@ class MainWindowPresenter(BasePresenter):
 
         dataset_id = self.view.add_to_dataset_dialog.dataset_id
         dataset = self.get_dataset(dataset_id)
+
         new_images = self.view.add_to_dataset_dialog.presenter.images
+
+        if isinstance(dataset, MixedDataset):
+            self._add_images_to_existing_mixed_dataset(dataset, new_images)
+        else:
+            self._add_images_to_existing_strict_dataset(dataset, new_images)
+
+        self.create_single_tabbed_images_stack(new_images)
+        self.view.model_changed.emit()
+
+    def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack):
+        """
+        Updates the stack list in the mixed dataset and updates the tree view.
+        :param dataset: The MixedDataset to update.
+        :param new_images: The new images to add.
+        """
+        dataset.add_stack(new_images)
+        self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+
+    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack):
+        """
+        Adds or replaces images in a StrictDataset and updates the tree view if required.
+        :param dataset: The StrictDataset to change.
+        :param new_images: The new images to add.
+        """
         images_text = self.view.add_to_dataset_dialog.images_type
         image_attr = images_text.replace(" ", "_").lower()
 
         if getattr(dataset, image_attr) is None:
-            self.add_child_item_to_tree_view(dataset_id, new_images.id, images_text)
+            # the image type doesn't exist in the dataset
+            self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
 
         else:
+            # the image type already exists in the dataset and needs to be replaced
             prev_images_id = getattr(dataset, image_attr).id
-            self.replace_child_item_id(dataset_id, prev_images_id, new_images.id)
+            self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
             self._delete_stack(prev_images_id)
 
         setattr(dataset, image_attr, new_images)
-        self.create_single_tabbed_images_stack(new_images)
-        self.view.model_changed.emit()
