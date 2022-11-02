@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification
@@ -12,14 +12,16 @@ class AddImagesToDatasetDialog(BaseDialogView):
     imageTypeComboBox: QComboBox
     chooseFileButton: QPushButton
     filePathLineEdit: QLineEdit
+    datasetNameText: QLabel
 
-    def __init__(self, parent, dataset_id: uuid.UUID, strict_dataset: bool):
+    def __init__(self, parent, dataset_id: uuid.UUID, strict_dataset: bool, dataset_name: str):
         super().__init__(parent, 'gui/ui/add_to_dataset.ui')
 
         self.parent_view = parent
         self.presenter = AddImagesToDatasetPresenter(self)
         self._dataset_id = dataset_id
 
+        self.datasetNameText.setText(dataset_name)
         self.imageTypeComboBox.setEnabled(strict_dataset)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
