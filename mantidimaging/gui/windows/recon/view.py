@@ -408,6 +408,14 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.nonNegativeCheckBox.isChecked()
 
     @property
+    def stochastic(self):
+        return self.stochasticCheckBox.isChecked()
+
+    @property
+    def subsets(self):
+        return self.subsetsSpinBox.value()
+
+    @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
         if not self.lbhc_enabled.isChecked():
             return None
@@ -428,6 +436,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
                                         non_negative=self.non_negative,
+                                        stochastic=self.stochastic,
+                                        subsets=self.subsets,
                                         max_projection_angle=self.max_proj_angle,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 
