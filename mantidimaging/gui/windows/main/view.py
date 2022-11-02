@@ -620,5 +620,6 @@ class MainWindowView(BaseMainWindowView):
         :param dataset_id: The ID of the dataset to update.
         """
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(
-            self, dataset_id, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list])
+            self, dataset_id, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list],
+            self.presenter.get_dataset(dataset_id).name)
         self.add_to_dataset_dialog.show()
