@@ -4,22 +4,29 @@
 import unittest
 from unittest import mock
 
+from PyQt5.QtWidgets import QWidget
+
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
-from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
-from mantidimaging.test_helpers import start_qapplication, mock_versions
+from mantidimaging.test_helpers import start_qapplication
 
 
-@mock_versions
+class MockMainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.stack_changed = mock.Mock()
+        self.model_changed = mock.Mock()
+
+
 @start_qapplication
 class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.main_window = MainWindowView()
+        self.main_window = MockMainWindow()
         self.view = ReconstructWindowView(self.main_window)
+
         self.view.presenter = self.presenter = mock.Mock()
         self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
