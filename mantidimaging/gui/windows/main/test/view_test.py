@@ -477,20 +477,25 @@ class MainWindowViewTest(unittest.TestCase):
         self.presenter.notify.assert_called_once_with(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=dataset_id)
 
     def test_show_add_stack_to_existing_dataset_dialog_with_strict_dataset(self):
-        mock_dataset = mock.Mock()
-        mock_dataset.id = strict_dataset_id = "strict-dataset-id"
-        self.presenter.strict_dataset_list = [mock_dataset]
+        mock_strict_dataset = mock.Mock()
+        mock_strict_dataset.id = strict_dataset_id = "strict-dataset-id"
+        mock_strict_dataset.name = strict_dataset_name = "strict-dataset-name"
+        self.presenter.strict_dataset_list = [mock_strict_dataset]
+        self.presenter.get_dataset.return_value = mock_strict_dataset
 
         with mock.patch("mantidimaging.gui.windows.main.view.AddImagesToDatasetDialog") as add_images_mock:
             self.view.show_add_stack_to_existing_dataset_dialog(strict_dataset_id)
 
-        add_images_mock.assert_called_once_with(self.view, strict_dataset_id, True)
+        add_images_mock.assert_called_once_with(self.view, strict_dataset_id, True, strict_dataset_name)
 
     def test_show_add_stack_to_existing_dataset_dialog_with_mixed_dataset(self):
+        mock_mixed_dataset = mock.Mock()
+        mock_mixed_dataset.name = mixed_dataset_name = "mixed-dataset-name"
         mixed_dataset_id = "mixed-dataset-id"
         self.presenter.strict_dataset_list = []
+        self.presenter.get_dataset.return_value = mock_mixed_dataset
 
         with mock.patch("mantidimaging.gui.windows.main.view.AddImagesToDatasetDialog") as add_images_mock:
             self.view.show_add_stack_to_existing_dataset_dialog(mixed_dataset_id)
 
-        add_images_mock.assert_called_once_with(self.view, mixed_dataset_id, False)
+        add_images_mock.assert_called_once_with(self.view, mixed_dataset_id, False, mixed_dataset_name)
