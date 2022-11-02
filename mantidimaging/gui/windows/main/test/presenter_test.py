@@ -824,7 +824,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.replace_child_item_id = mock.Mock()
         self.presenter._delete_stack = mock.Mock()
 
-        self.presenter._add_images_to_existing_dataset()
+        self.presenter.notify(Notification.DATASET_ADD)
         self.presenter.replace_child_item_id.assert_called_once_with(self.dataset.id, prev_images_id, new_images.id)
         self.presenter._delete_stack.assert_called_once_with(prev_images_id)
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_images)
