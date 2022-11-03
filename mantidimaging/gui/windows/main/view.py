@@ -71,6 +71,7 @@ class MainWindowView(BaseMainWindowView):
     menuWorkflow: QMenu
     menuImage: QMenu
     menuHelp: QMenu
+    menuTreeView: Optional[QMenu] = None
 
     actionRecon: QAction
     actionFilters: QAction
@@ -534,15 +535,15 @@ class MainWindowView(BaseMainWindowView):
         Opens the tree view menu.
         :param position: The position of the cursor when the menu was opened relative to the main window.
         """
-        menu = QMenu()
+        self.menuTreeView = QMenu()
 
-        add_action = menu.addAction("Add / Replace Stack")
+        add_action = self.menuTreeView.addAction("Add / Replace Stack")
         add_action.triggered.connect(self._add_images_to_existing_dataset)
 
-        delete_action = menu.addAction("Delete")
+        delete_action = self.menuTreeView.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
 
-        menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+        self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
     def _delete_container(self):
         """
