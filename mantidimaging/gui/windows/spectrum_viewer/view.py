@@ -43,6 +43,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.spectrum)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
+        # Where roi signal is omitted from spectrum_widget.py to be updated on change
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self._current_dataset_id = None
@@ -50,6 +51,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
         self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
+
+        # Create a new ROI on the image on click
+        self.addBtn.clicked.connect(self.set_new_roi)
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
@@ -120,3 +124,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
+
+    def set_new_roi(self) -> None:
+        """
+        Set a new ROI on the image
+        """
+        self.presenter.do_add_roi()
