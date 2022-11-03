@@ -10,7 +10,7 @@ from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 from mantidimaging.gui.windows.recon import ReconstructWindowView
-from mantidimaging.gui.windows.recon.presenter import AutoCorMethod
+from mantidimaging.gui.windows.recon.presenter import AutoCorMethod, Notifications
 from mantidimaging.test_helpers import start_qapplication
 
 
@@ -388,3 +388,14 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.stochasticCheckBox.setChecked(False)
         self.assertFalse(self.view.subsetsSpinBox.isEnabled())
         self.assertFalse(self.view.subsetsLabel.isEnabled())
+
+    def test_WHEN_param_change_THEN_preview_called(self):
+        for func, val in [
+            (self.view.numIter.setValue, 2),
+            (self.view.alphaSpinBox.setValue, 2),
+            (self.view.stochasticCheckBox.setChecked, True),
+            (self.view.subsetsSpinBox.setValue, 2),
+        ]:
+            self.presenter.notify.reset_mock()
+            func(val)
+            self.presenter.notify.assert_called_once_with(Notifications.RECONSTRUCT_PREVIEW_SLICE)
