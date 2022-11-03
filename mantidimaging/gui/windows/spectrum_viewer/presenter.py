@@ -6,6 +6,8 @@ from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType
 
+# from mantidimaging.core.utility.sensible_roi import SensibleROI  # remove after testing
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
@@ -88,17 +90,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image())
         self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
-        self.view.spectrum.add_roi(self.model.get_roi("roi"))
+        self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
-    def handle_roi_moved(self) -> None:
-        roi = self.view.spectrum.get_roi()
-        self.model.set_roi("roi", roi)
-        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
+    def handle_roi_moved(self, roi_name: str = None) -> None:
+        if not roi_name:
+            roi_name = "roi"
+        roi = self.view.spectrum.get_roi(roi_name)
+        self.model.set_roi(roi_name, roi)
+        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -117,3 +121,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.spectrum_mode = SpecType.SAMPLE
         self.handle_roi_moved()
         self.view.display_normalise_error()
+
+    def do_add_roi(self) -> None:
+        """
+        Add a new ROI to the spectrum
+        """
+        roi_name = self.model.roi_name_generator()
+        self.model.set_new_roi(roi_name)  # Set new roi
+        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))  # resource intensive
+
+        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)  # add ROI to the spectrum
+        self.view.auto_range_image()
+        print("Added new ROI")
