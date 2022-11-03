@@ -343,76 +343,72 @@ class ReconstructWindowView(BaseMainWindowView):
         return [row.row() for row in rows]
 
     @property
-    def rotation_centre(self):
+    def rotation_centre(self) -> float:
         return self.resultCor.value()
 
     @rotation_centre.setter
-    def rotation_centre(self, value: float):
+    def rotation_centre(self, value: float) -> None:
         self.resultCor.setValue(value)
 
     @property
-    def tilt(self):
+    def tilt(self) -> float:
         return self.resultTilt.value()
 
     @tilt.setter
-    def tilt(self, value: float):
+    def tilt(self, value: float) -> None:
         self.resultTilt.setValue(value)
 
     @property
-    def slope(self):
+    def slope(self) -> float:
         return self.resultSlope.value()
 
     @slope.setter
-    def slope(self, value: float):
+    def slope(self, value: float) -> None:
         self.resultSlope.setValue(value)
 
     @property
-    def max_proj_angle(self):
+    def max_proj_angle(self) -> float:
         return self.maxProjAngle.value()
 
     @property
-    def algorithm_name(self):
+    def algorithm_name(self) -> str:
         return self.algorithmName.currentText()
 
     @property
-    def filter_name(self):
+    def filter_name(self) -> str:
         return self.filterName.currentText()
 
     @property
-    def num_iter(self):
+    def num_iter(self) -> int:
         return self.numIter.value()
 
     @num_iter.setter
-    def num_iter(self, iters: int):
+    def num_iter(self, iters: int) -> None:
         self.numIter.setValue(iters)
 
     @property
-    def pixel_size(self):
+    def pixel_size(self) -> float:
         return self.pixelSize.value()
 
     @pixel_size.setter
-    def pixel_size(self, value: int):
+    def pixel_size(self, value: int) -> None:
         with QSignalBlocker(self.pixelSize):
             self.pixelSize.setValue(value)
 
     @property
-    def alpha(self):
+    def alpha(self) -> float:
         return self.alphaSpinBox.value()
 
-    @alpha.setter
-    def alpha(self, value: float):
-        self.alphaSpinBox.setValue(value)
-
     @property
-    def non_negative(self):
+    def non_negative(self) -> bool:
         return self.nonNegativeCheckBox.isChecked()
 
     @property
-    def stochastic(self):
+    def stochastic(self) -> bool:
         return self.stochasticCheckBox.isChecked()
 
     @property
-    def subsets(self):
+    def subsets(self) -> int:
         return self.subsetsSpinBox.value()
 
     @property
