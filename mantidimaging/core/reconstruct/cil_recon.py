@@ -69,6 +69,8 @@ class CILRecon(BaseRecon):
         Should return a numpy array,
         """
 
+        print(f"SPDHG params: {recon_params.stochastic=} {recon_params.subsets=}")
+
         if progress:
             progress.add_estimated_steps(recon_params.num_iter + 1)
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
