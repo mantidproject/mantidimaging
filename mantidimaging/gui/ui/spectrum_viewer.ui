@@ -162,7 +162,7 @@
                                 <item>
                                     <widget class="QGroupBox" name="manualGroup">
                                         <property name="title">
-                                            <string>COR Table - refine manually</string>
+                                            <string>ROI Table</string>
                                         </property>
                                         <property name="flat">
                                             <bool>false</bool>
@@ -291,6 +291,11 @@
             <class>DatasetSelectorWidgetView</class>
             <extends>QComboBox</extends>
             <header>mantidimaging.gui.widgets.dataset_selector</header>
+        </customwidget>
+        <customwidget>
+         <class>RemovableRowTableView</class>
+         <extends>QTableView</extends>
+         <header>mantidimaging.gui.widgets</header>
         </customwidget>
     </customwidgets>
     <resources />
