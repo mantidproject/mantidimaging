@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import unittest
+import uuid
 from unittest import mock
 
 from PyQt5.QtWidgets import QDialogButtonBox
@@ -17,9 +18,9 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
-        self.id = "dataset-id"
+        self.dataset_id = uuid.uuid4()
         self.dataset_name = "dataset-name"
-        self.view = AddImagesToDatasetDialog(self.main_window, self.id, True, self.dataset_name)
+        self.view = AddImagesToDatasetDialog(self.main_window, self.dataset_id, True, self.dataset_name)
         self.view.presenter = self.presenter = mock.MagicMock()
 
     def test_on_accepted(self):
@@ -61,4 +62,4 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
         self.assertEqual(self.view.images_type, combo_text)
 
     def test_dataset_id_returns_id(self):
-        self.assertEqual(self.view.dataset_id, self.id)
+        self.assertEqual(self.view.dataset_id, self.dataset_id)

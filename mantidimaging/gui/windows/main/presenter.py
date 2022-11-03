@@ -669,6 +669,7 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The StrictDataset to change.
         :param new_images: The new images to add.
         """
+        assert self.view.add_to_dataset_dialog is not None
         images_text = self.view.add_to_dataset_dialog.images_type
         image_attr = images_text.replace(" ", "_").lower()
 

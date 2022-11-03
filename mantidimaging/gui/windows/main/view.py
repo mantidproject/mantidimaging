@@ -94,6 +94,7 @@ class MainWindowView(BaseMainWindowView):
     image_save_dialog: Optional[ImageSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
+    add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -152,8 +153,6 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget.setHeaderLabel("")
 
         self.setCentralWidget(self.splitter)
-
-        self.add_to_dataset_dialog = None
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -619,7 +618,9 @@ class MainWindowView(BaseMainWindowView):
         Displays the dialog for adding an image stack to an existing dataset.
         :param dataset_id: The ID of the dataset to update.
         """
-        self.add_to_dataset_dialog = AddImagesToDatasetDialog(
-            self, dataset_id, dataset_id in [ds.id for ds in self.presenter.strict_dataset_list],
-            self.presenter.get_dataset(dataset_id).name)
+        dataset = self.presenter.get_dataset(dataset_id)
+        if dataset is None:
+            raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
+        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
+                                                              dataset.name)
         self.add_to_dataset_dialog.show()
