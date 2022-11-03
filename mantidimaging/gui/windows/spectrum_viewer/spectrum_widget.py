@@ -42,7 +42,12 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
+        # Dictionary to contain many rois {name: roi}
+        self.roi_dict: dict[str, SensibleROI] = {}  # hint: "roi_dict: Dict[<str>, <SensibleROI>]
+        # self.roi_dict["roi"] = ROI(pos=(0, 0),rotatable=False,scaleSnap=True,translateSnap=True)
         self.roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
+
+        # make sure each change remits this to connect to - check qt event after to emit with.
         self.roi.sigRegionChanged.connect(self.roi_changed.emit)
 
     def add_range(self, range_min: int, range_max: int):
@@ -55,7 +60,10 @@ class SpectrumWidget(GraphicsLayoutWidget):
         r_min, r_max = self.range_control.getRegion()
         return int(r_min), int(r_max)
 
-    def add_roi(self, roi: SensibleROI):
+    def add_roi(self, roi: SensibleROI, name: str = None):
+        if not name:
+            name = "roi"
+
         self.roi.setPos((roi.left, roi.top))
         self.roi.setSize((roi.width, roi.height))
         self.roi.maxBounds = self.roi.parentBounds()
@@ -63,11 +71,29 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi.addScaleHandle([1, 0], [0, 1])
         self.roi.addScaleHandle([0, 0], [1, 1])
         self.roi.addScaleHandle([0, 1], [1, 0])
-        self.image.vb.addItem(self.roi)
 
-    def get_roi(self) -> SensibleROI:
-        pos = CloseEnoughPoint(self.roi.pos())
-        size = CloseEnoughPoint(self.roi.size())
+        self.roi_dict[name] = self.roi
+
+        # print dict keys
+        print(self.roi_dict.keys())
+
+        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)  # might not need this
+        self.image.vb.addItem(self.roi_dict[name])
+
+    def get_roi(self, roi_name: str = None) -> SensibleROI:
+        """
+        Get the ROI with the given name. If no name is given, the default ROI is returned.
+
+        :param roi_name: The name of the ROI to return.
+        :return: The ROI with the given name.
+        """
+        # gets a new empty roi and returns sensible roi
+        if roi_name in self.roi_dict:
+            pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
+            size = CloseEnoughPoint(self.roi_dict[roi_name].size())
+        else:
+            pos = CloseEnoughPoint(self.roi.pos())
+            size = CloseEnoughPoint(self.roi.size())
         return SensibleROI.from_points(pos, size)
 
     def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
@@ -81,5 +107,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     def clear_data(self):
         self.image.clear()
         self.spectrum.clear()
-        self.image.vb.removeItem(self.roi)
+        for roi in self.roi_dict:
+            self.image.vb.removeItem(roi)
+
         self._tof_range_label.setText('')
