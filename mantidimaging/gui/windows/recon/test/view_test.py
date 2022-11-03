@@ -19,6 +19,8 @@ class MockMainWindow(QWidget):
         super().__init__()
         self.stack_changed = mock.Mock()
         self.model_changed = mock.Mock()
+        self.model_changed = mock.Mock()
+        self.presenter = mock.Mock(datasets=dict())
 
 
 @start_qapplication
@@ -374,3 +376,15 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         self.view.set_recon_buttons_enabled(True)
         assert_button_state_is_correct(is_enabled=True)
+
+    def test_WHEN_stochastic_ticked_THEN_subsets_enabled(self):
+        self.assertFalse(self.view.subsetsSpinBox.isEnabled())
+        self.assertFalse(self.view.subsetsLabel.isEnabled())
+
+        self.view.stochasticCheckBox.setChecked(True)
+        self.assertTrue(self.view.subsetsSpinBox.isEnabled())
+        self.assertTrue(self.view.subsetsLabel.isEnabled())
+
+        self.view.stochasticCheckBox.setChecked(False)
+        self.assertFalse(self.view.subsetsSpinBox.isEnabled())
+        self.assertFalse(self.view.subsetsLabel.isEnabled())

@@ -187,6 +187,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
+        self.stochasticCheckBox.stateChanged.connect(self.subsetsSpinBox.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.subsetsLabel.setEnabled)
+
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
 
