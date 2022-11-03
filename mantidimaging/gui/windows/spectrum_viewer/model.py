@@ -32,6 +32,13 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
 
+    def roi_name_generator(self) -> str:
+        """
+        Returns a new Unique ID for newly created ROIs
+        """
+        self._roi_id_counter += 1
+        return f"roi_{self._roi_id_counter}"
+
     def set_stack(self, stack: Optional[ImageStack]) -> None:
         self._stack = stack
         if stack is None:
@@ -40,6 +47,13 @@ class SpectrumViewerWindowModel:
         height, width = self.get_image_shape()
         self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
+
+    def set_new_roi(self, name: str) -> None:
+        """
+        Sets a new ROI with the given name
+        """
+        height, width = self.get_image_shape()
+        self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
 
     def set_normalise_stack(self, normalise_stack: Optional[ImageStack]) -> None:
         self._normalise_stack = normalise_stack
@@ -105,7 +119,8 @@ class SpectrumViewerWindowModel:
         csv_output = CSVOutput()
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
-        for roi_name in (ALL, "roi"):
+        # Iterate over all ROIs
+        for roi_name in self._roi_ranges.keys():
             csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
             if normalized:
                 if self._normalise_stack is None:
