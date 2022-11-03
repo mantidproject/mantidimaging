@@ -79,12 +79,8 @@ class MainWindowTest(BaseEyesTest):
 
         self.check_target()
 
-    def test_dataset_tree_view_menu(self):
+    def test_show_add_stack_to_existing_dataset_dialog(self):
         self._load_data_set()
+        self.imaging.show_add_stack_to_existing_dataset_dialog(list(self.imaging.presenter.all_dataset_ids)[0])
 
-        dataset_tree_view_item = self.imaging.dataset_tree_widget.topLevelItem(0).child(0)
-        dataset_tree_item_rect = self.imaging.dataset_tree_widget.visualItemRect(dataset_tree_view_item)
-        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.RightButton, Qt.NoModifier,
-                         dataset_tree_item_rect.center())
-
-        self.check_target()
+        self.check_target(widget=self.imaging.add_to_dataset_dialog)
