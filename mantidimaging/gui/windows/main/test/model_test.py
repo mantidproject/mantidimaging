@@ -252,7 +252,7 @@ class MainWindowModelTest(unittest.TestCase):
         file_path = "file_path"
         progress = mock.Mock()
 
-        self.model.load_images(file_path, progress)
+        self.model.load_images_into_mixed_dataset(file_path, progress)
 
         loader.load_stack.assert_called_once_with(file_path, progress)
 

@@ -116,7 +116,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.load_image_stack(file_path)
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images_into_mixed_dataset,
                                                  self.presenter._on_stack_load_done, {'file_path': file_path})
 
     def test_add_stack(self):
@@ -777,6 +777,74 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_stack_visualiser.image_view.close.assert_called_once()
         mock_stack_visualiser.presenter.delete_data.assert_called_once()
         mock_stack_visualiser.deleteLater.assert_called_once()
+
+    def test_show_add_stack_to_dataset_dialog_called_with_dataset_id(self):
+        dataset_id = "dataset-id"
+        self.model.datasets.keys.return_value = [dataset_id]
+        self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id=dataset_id)
+        self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
+
+    def test_show_add_stack_to_dataset_dialog_called_with_stack_id(self):
+        dataset_id = "dataset-id"
+        self.model.datasets.keys.return_value = []
+        self.model.get_parent_dataset.return_value = dataset_id
+        self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id="stack-id")
+        self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
+
+    def test_add_new_stack_to_strict_dataset(self):
+        self.model.datasets = dict()
+        self.dataset.flat_before = None
+        self.model.datasets[self.dataset.id] = self.dataset
+
+        self.view.add_to_dataset_dialog = mock.Mock()
+        self.view.add_to_dataset_dialog.dataset_id = self.dataset.id
+        self.view.add_to_dataset_dialog.presenter.images = new_images = generate_images()
+        self.view.add_to_dataset_dialog.images_type = images_type = "Flat Before"
+
+        self.presenter.add_child_item_to_tree_view = mock.Mock()
+        self.presenter.create_single_tabbed_images_stack = mock.Mock()
+
+        self.presenter._add_images_to_existing_dataset()
+        self.presenter.add_child_item_to_tree_view.assert_called_once_with(self.dataset.id, new_images.id, images_type)
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_images)
+        self.view.model_changed.emit.assert_called_once()
+        self.assertIs(self.dataset.flat_before, new_images)
+
+    def test_replace_existing_stack_in_strict_dataset(self):
+        self.model.datasets = dict()
+        self.model.datasets[self.dataset.id] = self.dataset
+        prev_images_id = self.dataset.flat_before.id
+
+        self.view.add_to_dataset_dialog = mock.Mock()
+        self.view.add_to_dataset_dialog.dataset_id = self.dataset.id
+        self.view.add_to_dataset_dialog.presenter.images = new_images = generate_images()
+        self.view.add_to_dataset_dialog.images_type = "Flat Before"
+
+        self.presenter.create_single_tabbed_images_stack = mock.Mock()
+        self.presenter.replace_child_item_id = mock.Mock()
+        self.presenter._delete_stack = mock.Mock()
+
+        self.presenter.notify(Notification.DATASET_ADD)
+        self.presenter.replace_child_item_id.assert_called_once_with(self.dataset.id, prev_images_id, new_images.id)
+        self.presenter._delete_stack.assert_called_once_with(prev_images_id)
+        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_images)
+        self.view.model_changed.emit.assert_called_once()
+        self.assertIs(self.dataset.flat_before, new_images)
+
+    def test_add_stack_to_mixed_dataset(self):
+        self.model.datasets = dict()
+        mixed_dataset = MixedDataset()
+        self.model.datasets[mixed_dataset.id] = mixed_dataset
+
+        self.view.add_to_dataset_dialog = mock.Mock()
+        self.view.add_to_dataset_dialog.dataset_id = mixed_dataset.id
+        self.view.add_to_dataset_dialog.presenter.images = new_images = generate_images()
+        self.presenter.add_child_item_to_tree_view = mock.Mock()
+
+        self.presenter._add_images_to_existing_dataset()
+        self.assertIn(new_images, mixed_dataset.all)
+        self.presenter.add_child_item_to_tree_view.assert_called_once_with(mixed_dataset.id, new_images.id,
+                                                                           new_images.name)
 
 
 if __name__ == '__main__':

@@ -47,6 +47,8 @@ class Notification(Enum):
     NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
     ADD_RECON = auto()
+    SHOW_ADD_STACK_DIALOG = auto()
+    DATASET_ADD = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -78,6 +80,10 @@ class MainWindowPresenter(BasePresenter):
                 self._restore_and_focus_tab(**baggage)
             elif signal == Notification.ADD_RECON:
                 self._add_recon_to_dataset(**baggage)
+            elif signal == Notification.SHOW_ADD_STACK_DIALOG:
+                self._show_add_stack_to_dataset_dialog(**baggage)
+            elif signal == Notification.DATASET_ADD:
+                self._add_images_to_existing_dataset()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -136,7 +142,8 @@ class MainWindowPresenter(BasePresenter):
                               busy=True)
 
     def load_image_stack(self, file_path: str) -> None:
-        start_async_task_view(self.view, self.model.load_images, self._on_stack_load_done, {'file_path': file_path})
+        start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_stack_load_done,
+                              {'file_path': file_path})
 
     def _on_stack_load_done(self, task: 'TaskWorkerThread') -> None:
         log = getLogger(__name__)
@@ -376,6 +383,10 @@ class MainWindowPresenter(BasePresenter):
         return sorted(datasets, key=lambda x: x.name)
 
     @property
+    def all_dataset_ids(self) -> Iterable[uuid.UUID]:
+        return self.model.datasets.keys()
+
+    @property
     def stack_visualiser_names(self) -> List[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
@@ -612,3 +623,64 @@ class MainWindowPresenter(BasePresenter):
             self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
         else:
             sinograms_item._id = sino_id
+
+    def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID):
+        """
+        Asks the user to add a stack to a given dataset.
+        :param container_id: The ID of the dataset or stack.
+        """
+        if container_id not in self.all_dataset_ids:
+            # get parent ID if selected item is a stack
+            container_id = self.get_dataset_id_for_stack(container_id)
+        self.view.show_add_stack_to_existing_dataset_dialog(container_id)
+
+    def _add_images_to_existing_dataset(self):
+        """
+        Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if
+        necessary.
+        """
+        assert self.view.add_to_dataset_dialog is not None
+
+        dataset_id = self.view.add_to_dataset_dialog.dataset_id
+        dataset = self.get_dataset(dataset_id)
+
+        new_images = self.view.add_to_dataset_dialog.presenter.images
+
+        if isinstance(dataset, MixedDataset):
+            self._add_images_to_existing_mixed_dataset(dataset, new_images)
+        else:
+            self._add_images_to_existing_strict_dataset(dataset, new_images)
+
+        self.create_single_tabbed_images_stack(new_images)
+        self.view.model_changed.emit()
+
+    def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack):
+        """
+        Updates the stack list in the mixed dataset and updates the tree view.
+        :param dataset: The MixedDataset to update.
+        :param new_images: The new images to add.
+        """
+        dataset.add_stack(new_images)
+        self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+
+    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack):
+        """
+        Adds or replaces images in a StrictDataset and updates the tree view if required.
+        :param dataset: The StrictDataset to change.
+        :param new_images: The new images to add.
+        """
+        assert self.view.add_to_dataset_dialog is not None
+        images_text = self.view.add_to_dataset_dialog.images_type
+        image_attr = images_text.replace(" ", "_").lower()
+
+        if getattr(dataset, image_attr) is None:
+            # the image type doesn't exist in the dataset
+            self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
+
+        else:
+            # the image type already exists in the dataset and needs to be replaced
+            prev_images_id = getattr(dataset, image_attr).id
+            self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
+            self._delete_stack(prev_images_id)
+
+        setattr(dataset, image_attr, new_images)

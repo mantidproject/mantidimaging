@@ -69,6 +69,9 @@ class MixedDataset(BaseDataset):
         stacks = [] if stacks is None else stacks
         self._stacks = stacks
 
+    def add_stack(self, stack: ImageStack):
+        self._stacks.append(stack)
+
     @property
     def all(self) -> List[ImageStack]:
         all_images = self._stacks + self.recons.stacks
