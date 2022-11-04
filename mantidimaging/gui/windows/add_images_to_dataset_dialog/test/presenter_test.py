@@ -28,7 +28,7 @@ class AddImagesToDatasetPresenterTest(unittest.TestCase):
         mock_task.was_successful.return_value = True
 
         self.presenter._on_images_load_done(mock_task)
-        assert self.presenter.images is mock_task.result
+        self.assertIs(self.presenter.images, mock_task.result)
         self.view.parent_view.execute_add_to_dataset.assert_called_once()
 
     def test_load_images_failure(self):
