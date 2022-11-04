@@ -20,13 +20,13 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operation_window_opens_with_data(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.check_target(widget=self.imaging.filters)
 
     def test_operation_window_after_data_was_processed(self):
-        self._load_data_set(set_180=True)
+        self._load_strict_data_set(set_180=True)
 
         self.imaging.show_filters_window()
         QApplication.processEvents()
@@ -39,7 +39,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.filters.ask_confirmation.assert_not_called()
 
     def test_operations_crop_coordinates_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Crop Coordinates")
@@ -48,7 +48,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_flat_fielding_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Flat-fielding")
@@ -57,7 +57,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_outliers_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove Outliers")
@@ -66,7 +66,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_ROI_normalisation_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("ROI Normalisation")
@@ -75,7 +75,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_arithmetic_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Arithmetic")
@@ -84,7 +84,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_circular_mask_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Circular Mask")
@@ -93,7 +93,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_clip_values_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Clip Values")
@@ -102,7 +102,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_divide_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Divide")
@@ -111,7 +111,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_gaussian_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Gaussian")
@@ -120,7 +120,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_median_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Median")
@@ -129,7 +129,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_monitor_normalisation_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Monitor Normalisation")
@@ -138,7 +138,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_nan_removal_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("NaN Removal")
@@ -147,7 +147,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_rebin_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rebin")
@@ -156,7 +156,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_rescale_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rescale")
@@ -165,7 +165,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_ring_removal_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Ring Removal")
@@ -174,7 +174,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_rotate_stack_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Rotate Stack")
@@ -183,7 +183,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_all_stripes_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove all stripes")
@@ -192,7 +192,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_dead_stripes_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove dead stripes")
@@ -201,7 +201,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_large_stripes_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove large stripes")
@@ -210,7 +210,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_stripes_with_filtering_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove stripes with filtering")
@@ -219,7 +219,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_remove_stripes_with_sorting_and_fitting_parameters(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Remove stripes with sorting and fitting")
@@ -228,7 +228,7 @@ class OperationsWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.filters)
 
     def test_operations_roi_visualiser_window(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Crop Coordinates")
