@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>149</height>
+    <width>485</width>
+    <height>156</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,13 +16,10 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="imageTypeLabel">
+     <item row="2" column="2">
+      <widget class="QPushButton" name="chooseFileButton">
        <property name="text">
-        <string>Image Type:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <string>Choose File</string>
        </property>
       </widget>
      </item>
@@ -33,46 +30,13 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="chooseFileButton">
+     <item row="1" column="0">
+      <widget class="QLabel" name="imageTypeLabel">
        <property name="text">
-        <string>Choose File</string>
+        <string>Image Type:</string>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="imageTypeComboBox">
-       <item>
-        <property name="text">
-         <string>Sample</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Flat Before</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Flat After</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Dark Before</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Dark After</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="filePathLabel">
-       <property name="text">
-        <string>File Path:</string>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -88,6 +52,76 @@
        <property name="text">
         <string/>
        </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="filePathLabel">
+       <property name="text">
+        <string>File Path:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="page_3">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QComboBox" name="strictDatasetComboBox">
+           <item>
+            <property name="text">
+             <string>Sample</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Flat Before</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Flat After</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Dark Before</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Dark After</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Recon</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_4">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QComboBox" name="mixedDatasetComboBox">
+           <item>
+            <property name="text">
+             <string>Images</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Recon</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
