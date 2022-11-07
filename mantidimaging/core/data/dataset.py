@@ -59,6 +59,9 @@ class BaseDataset:
     def all_image_ids(self) -> List[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
+    def add_recon(self, recon: ImageStack):
+        self.recons.append(recon)
+
     def delete_recons(self):
         self.recons.clear()
 
