@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>156</height>
+    <width>452</width>
+    <height>140</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,68 +61,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QStackedWidget" name="stackedWidget">
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <widget class="QWidget" name="page_3">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QComboBox" name="strictDatasetComboBox">
-           <item>
-            <property name="text">
-             <string>Sample</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Flat Before</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Flat After</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dark Before</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dark After</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Recon</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="page_4">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QComboBox" name="mixedDatasetComboBox">
-           <item>
-            <property name="text">
-             <string>Images</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Recon</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+     <item row="1" column="1" colspan="2">
+      <widget class="QComboBox" name="imageTypeComboBox"/>
      </item>
     </layout>
    </item>

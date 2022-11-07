@@ -21,8 +21,13 @@ class AddImagesToDatasetDialog(BaseDialogView):
         self.presenter = AddImagesToDatasetPresenter(self)
         self._dataset_id = dataset_id
 
+        if strict_dataset:
+            self.imageTypeComboBox.addItems(
+                ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"])
+        else:
+            self.imageTypeComboBox.addItems(["Images", "Recon"])
+
         self.datasetNameText.setText(dataset_name)
-        self.imageTypeComboBox.setEnabled(strict_dataset)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.accepted.connect(self._on_accepted)
