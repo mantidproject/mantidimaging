@@ -24,6 +24,8 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # pragma: no cover
     from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
+RECON_TEXT = "Recon"
+
 
 class StackId(NamedTuple):
     id: uuid.UUID
@@ -660,8 +662,12 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The MixedDataset to update.
         :param new_images: The new images to add.
         """
-        dataset.add_stack(new_images)
-        self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+        if self.view.add_to_dataset_dialog.images_type == RECON_TEXT:
+            dataset.add_recon(new_images)
+            self.add_recon_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+        else:
+            dataset.add_stack(new_images)
+            self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
     def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack):
         """
@@ -671,16 +677,21 @@ class MainWindowPresenter(BasePresenter):
         """
         assert self.view.add_to_dataset_dialog is not None
         images_text = self.view.add_to_dataset_dialog.images_type
-        image_attr = images_text.replace(" ", "_").lower()
 
-        if getattr(dataset, image_attr) is None:
-            # the image type doesn't exist in the dataset
-            self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
-
+        if images_text == RECON_TEXT:
+            self.add_recon_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+            dataset.add_recon(new_images)
         else:
-            # the image type already exists in the dataset and needs to be replaced
-            prev_images_id = getattr(dataset, image_attr).id
-            self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
-            self._delete_stack(prev_images_id)
+            image_attr = images_text.replace(" ", "_").lower()
 
-        setattr(dataset, image_attr, new_images)
+            if getattr(dataset, image_attr) is None:
+                # the image type doesn't exist in the dataset
+                self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
+
+            else:
+                # the image type already exists in the dataset and needs to be replaced
+                prev_images_id = getattr(dataset, image_attr).id
+                self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
+                self._delete_stack(prev_images_id)
+
+            setattr(dataset, image_attr, new_images)
