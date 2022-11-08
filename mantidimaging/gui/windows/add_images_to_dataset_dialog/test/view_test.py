@@ -33,10 +33,6 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
     def test_combo_box_enabled_for_strict_dataset(self):
         assert self.view.imageTypeComboBox.isEnabled()
 
-    def test_combo_box_disabled_for_mixed_dataset(self):
-        view = AddImagesToDatasetDialog(self.main_window, "id", False, "dataset-name")
-        assert not view.imageTypeComboBox.isEnabled()
-
     def test_file_path_empty_and_ok_disabled_without_file_choice(self):
         assert not self.view.buttonBox.button(QDialogButtonBox.Ok).isEnabled()
         self.assertEqual(self.view.filePathLineEdit.text(), "")
