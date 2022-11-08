@@ -16,7 +16,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
-from mantidimaging.gui.windows.main.presenter import Notification
+from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -845,6 +845,29 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIn(new_images, mixed_dataset.all)
         self.presenter.add_child_item_to_tree_view.assert_called_once_with(mixed_dataset.id, new_images.id,
                                                                            new_images.name)
+
+    def test_add_recon_to_mixed_dataset(self):
+        mixed_dataset = MixedDataset([generate_images()])
+        recon = generate_images()
+        recon.name = "recon-name"
+
+        self.view.add_to_dataset_dialog.images_type = RECON_TEXT
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
+        self.presenter._add_images_to_existing_mixed_dataset(mixed_dataset, recon)
+
+        self.assertIn(recon, mixed_dataset.recons.stacks)
+        self.presenter.add_recon_item_to_tree_view.assert_called_once_with(mixed_dataset.id, recon.id, recon.name)
+
+    def test_add_recon_to_strict_dataset(self):
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
+        self.view.add_to_dataset_dialog.images_type = RECON_TEXT
+
+        recon = generate_images()
+        recon.name = "recon-name"
+        self.presenter._add_images_to_existing_strict_dataset(self.dataset, recon)
+
+        self.assertIn(recon, self.dataset.recons.stacks)
+        self.presenter.add_recon_item_to_tree_view.assert_called_once_with(self.dataset.id, recon.id, recon.name)
 
 
 if __name__ == '__main__':
