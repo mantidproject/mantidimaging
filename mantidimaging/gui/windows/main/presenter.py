@@ -662,6 +662,7 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The MixedDataset to update.
         :param new_images: The new images to add.
         """
+        assert self.view.add_to_dataset_dialog is not None
         if self.view.add_to_dataset_dialog.images_type == RECON_TEXT:
             dataset.add_recon(new_images)
             self.add_recon_item_to_tree_view(dataset.id, new_images.id, new_images.name)
