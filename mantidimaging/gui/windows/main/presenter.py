@@ -51,6 +51,7 @@ class Notification(Enum):
     ADD_RECON = auto()
     SHOW_ADD_STACK_DIALOG = auto()
     DATASET_ADD = auto()
+    TAB_CHANGED = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -86,6 +87,8 @@ class MainWindowPresenter(BasePresenter):
                 self._show_add_stack_to_dataset_dialog(**baggage)
             elif signal == Notification.DATASET_ADD:
                 self._add_images_to_existing_dataset()
+            elif signal == Notification.TAB_CHANGED:
+                self._change_tree_view_selection_when_tab_changed()
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -190,8 +193,7 @@ class MainWindowPresenter(BasePresenter):
         :param images: The ImageStack object for the new stack window.
         :param sample_dock: The existing stack window that the new one should be placed on top of.
         """
-        stack_visualiser = self._create_lone_stack_window(images)
-        self._tabify_stack_window(stack_visualiser, sample_dock)
+        self._create_lone_stack_window(images)
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
         return [stack for stack in self.active_stacks.values()]
@@ -227,7 +229,6 @@ class MainWindowPresenter(BasePresenter):
         :return: The stack widget for the sample.
         """
         sample_stack_vis = self._create_lone_stack_window(dataset.sample)
-        self._tabify_stack_window(sample_stack_vis)
 
         if dataset.flat_before and dataset.flat_before.filenames:
             self._create_and_tabify_stack_window(dataset.flat_before, sample_stack_vis)
@@ -267,7 +268,6 @@ class MainWindowPresenter(BasePresenter):
         :return: The first stack visualiser from the dataset.
         """
         first_stack_vis = self._create_lone_stack_window(dataset.all[0])
-        self._tabify_stack_window(first_stack_vis)
 
         for i in range(1, len(dataset.all)):
             self._create_and_tabify_stack_window(dataset.all[i], first_stack_vis)
@@ -282,7 +282,6 @@ class MainWindowPresenter(BasePresenter):
         :return: The new StackVisualiserView.
         """
         stack_vis = self._create_lone_stack_window(images)
-        self._tabify_stack_window(stack_vis)
         self._focus_on_newest_stack_tab()
         return stack_vis
 
@@ -298,7 +297,7 @@ class MainWindowPresenter(BasePresenter):
 
     def _tabify_stack_window(self,
                              stack_window: StackVisualiserView,
-                             tabify_stack: Optional[StackVisualiserView] = None):
+                             tabify_stack: Optional[StackVisualiserView] = None):  # todo - remove
         """
         Places the newly created stack window into a tab.
         :param stack_window: The new stack window.
@@ -696,3 +695,22 @@ class MainWindowPresenter(BasePresenter):
                 self._delete_stack(prev_images_id)
 
             setattr(dataset, image_attr, new_images)
+
+    def _change_tree_view_selection_to_id(self, stack_id: uuid.UUID):
+
+        for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+
+            for j in range(top_level_item.childCount()):
+                child_item = top_level_item.child(j)
+                if child_item.id == stack_id:
+                    self.view.dataset_tree_widget.clearSelection()
+                    child_item.setSelected(True)
+                    return
+                if child_item.childCount() > 0:
+                    pass
+
+    def _change_tree_view_selection_when_tab_changed(self):
+        vis = self.view.tab_widget.currentWidget()
+        if vis is not None:
+            self._change_tree_view_selection_to_id(vis.id)
