@@ -11,7 +11,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QTabWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -146,8 +146,13 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
         self.dataset_tree_widget.itemClicked.connect(self._bring_stack_tab_to_front)
 
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setTabPosition(QTabWidget.South)
+        self.tab_widget.setElideMode()
+
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
+        self.splitter.addWidget(self.tab_widget)
 
         self.dataset_tree_widget.setMinimumWidth(250)
         self.dataset_tree_widget.setMaximumWidth(300)
@@ -412,11 +417,12 @@ class MainWindowView(BaseMainWindowView):
         stack_vis = StackVisualiserView(self, stack)
 
         # this puts the new stack window into the centre of the window
-        self.splitter.addWidget(stack_vis)
-        self.setCentralWidget(self.splitter)
+        # self.splitter.addWidget(stack_vis)
+        # self.setCentralWidget(self.splitter)
+        self.tab_widget.addTab(stack_vis, stack.name)
 
         # add the dock widget into the main window
-        self.addDockWidget(position, stack_vis)
+        # self.addDockWidget(position, stack_vis)
 
         stack_vis.setFloating(floating)
 
