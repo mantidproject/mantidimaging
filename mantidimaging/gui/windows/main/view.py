@@ -11,7 +11,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QTabWidget
+    QTreeWidgetItem, QTreeWidget, QTabWidget, QAbstractItemView
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -26,7 +26,7 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
@@ -145,10 +145,11 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
         self.dataset_tree_widget.itemClicked.connect(self._bring_stack_tab_to_front)
+        self.dataset_tree_widget.setSelectionMode(QAbstractItemView.SingleSelection)
 
         self.tab_widget = QTabWidget()
         self.tab_widget.setTabPosition(QTabWidget.South)
-        self.tab_widget.setElideMode()
+        self.tab_widget.currentChanged.connect(self._tab_changed)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
@@ -184,6 +185,9 @@ class MainWindowView(BaseMainWindowView):
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.model_changed.connect(self.update_shortcuts)
+
+    def _tab_changed(self):
+        self.presenter.notify(Notification.TAB_CHANGED)
 
     def populate_image_menu(self):
         self.menuImage.clear()
