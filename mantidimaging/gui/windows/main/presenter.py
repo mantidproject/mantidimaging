@@ -7,7 +7,7 @@ from logging import getLogger, Logger
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -309,9 +309,19 @@ class MainWindowPresenter(BasePresenter):
             for stack in current_stack_visualisers:
                 if stack_window is not stack:
                     self.view.tabifyDockWidget(stack, stack_window)
-                    return
-        if tabify_stack is not None:
+        elif tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
+
+        self.view.tab_bar = self.view.findChild(QTabBar)
+        if self.view.tab_bar is not None and self.view.tab_connected is False:
+            self.view.tab_bar.tabBarClicked.connect(self._on_tab_bar_clicked)
+            self.view.tab_connected = True
+
+    def _on_tab_bar_clicked(self, index: int):
+        text = self.view.tab_bar.tabText(index)
+        images = self.model.get_images_by_name(text)
+        if images is not None:
+            self._set_tree_view_selection_with_id(images.id)
 
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
         """
@@ -498,6 +508,30 @@ class MainWindowPresenter(BasePresenter):
                             # Delete recon group when last recon item has been removed
                             top_level_item.takeChild(j)
                         return
+
+    def _set_tree_view_selection_with_id(self, uuid_select: uuid.UUID):
+        for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == uuid_select:
+                self._select_tree_widget_item(top_level_item)
+                return
+
+            for j in range(top_level_item.childCount()):
+                child_item = top_level_item.child(j)
+                if child_item.id == uuid_select:
+                    self._select_tree_widget_item(child_item)
+                    return
+                if child_item.childCount() > 0:
+                    for k in range(child_item.childCount()):
+                        recon_item = top_level_item.child(k)
+                        if recon_item.id == uuid_select:
+                            self._select_tree_widget_item(recon_item)
+                            return
+        # runtime error ?
+
+    def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem):
+        self.view.dataset_tree_widget.clearSelection()
+        tree_widget_item.setSelected(True)
 
     @staticmethod
     def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> bool:

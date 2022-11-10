@@ -11,7 +11,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QTabBar
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -26,7 +26,7 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
@@ -96,6 +96,7 @@ class MainWindowView(BaseMainWindowView):
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
     add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
+    tab_bar: Optional[QTabBar] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -155,6 +156,10 @@ class MainWindowView(BaseMainWindowView):
 
         self.setCentralWidget(self.splitter)
 
+        self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
+
+        self.tab_connected = False
+
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
@@ -179,6 +184,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.model_changed.connect(self.update_shortcuts)
+        self.model_changed.connect(self._update_tab_bar)
 
     def populate_image_menu(self):
         self.menuImage.clear()
@@ -205,6 +211,11 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)
         self.menuImage.setEnabled(has_datasets)
+
+    def _update_tab_bar(self):
+        if len(self.presenter.datasets) == 0:
+            self.tab_connected = False
+            self.tab_bar = None
 
     @staticmethod
     def open_online_documentation():
@@ -625,3 +636,6 @@ class MainWindowView(BaseMainWindowView):
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
                                                               dataset.name)
         self.add_to_dataset_dialog.show()
+
+    def _on_tab_bar_clicked(self, stack: StackVisualiserView):
+        self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
