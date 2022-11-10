@@ -581,8 +581,8 @@ class MainWindowPresenter(BasePresenter):
         if stack_id in self.model.recon_list_ids:
             return
         if stack_id in self.model.image_ids:
+            self.view.tab_widget.setCurrentWidget(self.stack_visualisers[stack_id])
             self.stack_visualisers[stack_id].setVisible(True)
-            self.stack_visualisers[stack_id].raise_()
         else:
             raise RuntimeError(f"Unable to find stack with ID {stack_id}")
 
