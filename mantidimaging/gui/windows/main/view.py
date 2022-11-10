@@ -149,6 +149,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.tab_widget = QTabWidget()
         self.tab_widget.setTabPosition(QTabWidget.South)
+        self.tab_widget.setStyleSheet("QTabBar::tab { height: 30px; width: 130px }")
         self.tab_widget.currentChanged.connect(self._tab_changed)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
