@@ -421,14 +421,7 @@ class MainWindowView(BaseMainWindowView):
         stack_vis = StackVisualiserView(self, stack)
 
         # this puts the new stack window into the centre of the window
-        # self.splitter.addWidget(stack_vis)
-        # self.setCentralWidget(self.splitter)
         self.tab_widget.addTab(stack_vis, stack.name)
-
-        # add the dock widget into the main window
-        # self.addDockWidget(position, stack_vis)
-
-        stack_vis.setFloating(floating)
 
         self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
