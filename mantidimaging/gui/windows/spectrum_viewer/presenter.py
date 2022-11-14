@@ -95,12 +95,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
-    def handle_roi_moved(self, roi_name: str = None) -> None:
-        if not roi_name:
-            roi_name = "roi"
-        roi = self.view.spectrum.get_roi(roi_name)
-        self.model.set_roi(roi_name, roi)
-        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
+    def handle_roi_moved(self) -> None:
+        """
+        Handle changes to any ROI position and size.
+        """
+        roi_names = self.model.get_list_of_roi_names()
+        for name in roi_names:
+            roi = self.view.spectrum.get_roi(name)
+            self.model.set_roi(name, roi)
+            self.view.set_spectrum(self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -125,9 +128,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Add a new ROI to the spectrum
         """
         roi_name = self.model.roi_name_generator()
-        self.model.set_new_roi(roi_name)  # Set new roi
-        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))  # resource intensive
-
-        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)  # add ROI to the spectrum
+        self.model.set_new_roi(roi_name)
+        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
+        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.auto_range_image()
-        print("Added new ROI")
