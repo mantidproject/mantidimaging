@@ -4,11 +4,11 @@
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
-from pyqtgraph import GraphicsLayoutWidget, PlotItem, LinearRegionItem, ROI
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem
 
-from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
     from .view import SpectrumViewerWindowView
@@ -18,7 +18,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     spectrum: PlotItem
     range_control: LinearRegionItem
-    roi: ROI
+    roi_dict: ROI
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
@@ -42,13 +42,23 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
-        # Dictionary to contain many rois {name: roi}
         self.roi_dict: dict[str, SensibleROI] = {}  # hint: "roi_dict: Dict[<str>, <SensibleROI>]
-        # self.roi_dict["roi"] = ROI(pos=(0, 0),rotatable=False,scaleSnap=True,translateSnap=True)
-        self.roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
 
-        # make sure each change remits this to connect to - check qt event after to emit with.
-        self.roi.sigRegionChanged.connect(self.roi_changed.emit)
+        self.max_roi_size = [0, 0]
+
+    def set_max_roi_size(self, width: int, height: int) -> None:
+        """
+        If width or height larger than max_roi_size,
+        set max_roi_size to higher width or height
+
+        :param width: width of the image
+        :param height: height of the image
+        """
+
+        if width > self.max_roi_size[0]:
+            self.max_roi_size[0] = width
+        if height > self.max_roi_size[1]:
+            self.max_roi_size[1] = height
 
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
@@ -60,23 +70,26 @@ class SpectrumWidget(GraphicsLayoutWidget):
         r_min, r_max = self.range_control.getRegion()
         return int(r_min), int(r_max)
 
-    def add_roi(self, roi: SensibleROI, name: str = None):
-        if not name:
-            name = "roi"
+    def add_roi(self, roi: SensibleROI, name: str = None) -> None:
+        """
+        Add an ROI to the image view.
 
-        self.roi.setPos((roi.left, roi.top))
-        self.roi.setSize((roi.width, roi.height))
-        self.roi.maxBounds = self.roi.parentBounds()
-        self.roi.addScaleHandle([1, 1], [0, 0])
-        self.roi.addScaleHandle([1, 0], [0, 1])
-        self.roi.addScaleHandle([0, 0], [1, 1])
-        self.roi.addScaleHandle([0, 1], [1, 0])
+        :param roi: The ROI to add.
+        :param name: The name of the ROI.
+        """
 
-        self.roi_dict[name] = self.roi
+        my_roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
 
-        # print dict keys
-        print(self.roi_dict.keys())
+        my_roi.setPos((roi.left, roi.top))
+        my_roi.setSize((roi.width, roi.height))
+        self.set_max_roi_size(roi.width, roi.height)
+        my_roi.maxBounds = my_roi.parentBounds()
+        my_roi.addScaleHandle([1, 1], [0, 0])
+        my_roi.addScaleHandle([1, 0], [0, 1])
+        my_roi.addScaleHandle([0, 0], [1, 1])
+        my_roi.addScaleHandle([0, 1], [1, 0])
 
+        self.roi_dict[name] = my_roi
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)  # might not need this
         self.image.vb.addItem(self.roi_dict[name])
 
@@ -87,13 +100,13 @@ class SpectrumWidget(GraphicsLayoutWidget):
         :param roi_name: The name of the ROI to return.
         :return: The ROI with the given name.
         """
-        # gets a new empty roi and returns sensible roi
-        if roi_name in self.roi_dict:
+        if roi_name in self.roi_dict.keys():
             pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
             size = CloseEnoughPoint(self.roi_dict[roi_name].size())
-        else:
-            pos = CloseEnoughPoint(self.roi.pos())
-            size = CloseEnoughPoint(self.roi.size())
+            return SensibleROI.from_points(pos, size)
+
+        pos = CloseEnoughPoint((0, 0))
+        size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
         return SensibleROI.from_points(pos, size)
 
     def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
