@@ -31,13 +31,22 @@ class SpectrumViewerWindowModel:
 
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
+        self._roi_id_counter = 0
 
     def roi_name_generator(self) -> str:
         """
         Returns a new Unique ID for newly created ROIs
+
+        :return: A new unique ID
         """
         self._roi_id_counter += 1
         return f"roi_{self._roi_id_counter}"
+
+    def get_list_of_roi_names(self) -> list[str]:
+        """
+        Get a list of rois available in the model
+        """
+        return list(self._roi_ranges.keys())
 
     def set_stack(self, stack: Optional[ImageStack]) -> None:
         self._stack = stack
@@ -113,14 +122,19 @@ class SpectrumViewerWindowModel:
             return 0, 0
 
     def save_csv(self, path: Path, normalized: bool) -> None:
+        """
+        Iterates over all ROIs and saves the spectrum for each one to a CSV file.
+
+        :param path: The path to save the CSV file to.
+        :param normalized: Whether to save the normalized spectrum.
+        """
         if self._stack is None:
             raise ValueError("No stack selected")
 
         csv_output = CSVOutput()
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
-        # Iterate over all ROIs
-        for roi_name in self._roi_ranges.keys():
+        for roi_name in self.get_list_of_roi_names():
             csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
             if normalized:
                 if self._normalise_stack is None:
