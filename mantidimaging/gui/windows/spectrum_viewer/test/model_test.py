@@ -28,6 +28,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
 
+    def tearDown(self) -> None:
+        # reset rois
+        self.model._roi_ranges = {}
+
     def test_set_stack(self):
         stack = generate_images([10, 11, 12])
         self.model.set_stack(stack)
@@ -203,3 +207,16 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.getvalue())
         self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.getvalue())
         self.assertTrue(mock_stream.is_closed)
+
+    def test_WHEN_roi_name_generator_called_THEN_correct_names_returned_visible_to_model(self):
+        self.assertEqual(self.model.roi_name_generator(), "roi_1")
+        self.assertEqual(self.model.roi_name_generator(), "roi_2")
+        self.assertEqual(self.model.roi_name_generator(), "roi_3")
+
+    def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
+        self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
+
+    def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
+        self.model.set_new_roi("new_roi")
+        self.assertTrue(self.model.get_roi("new_roi"))
+        self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
