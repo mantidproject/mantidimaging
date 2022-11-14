@@ -51,6 +51,7 @@ class Notification(Enum):
     ADD_RECON = auto()
     SHOW_ADD_STACK_DIALOG = auto()
     DATASET_ADD = auto()
+    TAB_CLICKED = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -86,6 +87,8 @@ class MainWindowPresenter(BasePresenter):
                 self._show_add_stack_to_dataset_dialog(**baggage)
             elif signal == Notification.DATASET_ADD:
                 self._add_images_to_existing_dataset()
+            elif signal == Notification.TAB_CLICKED:
+                self._on_tab_clicked(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -253,7 +256,7 @@ class MainWindowPresenter(BasePresenter):
         if n_stack_visualisers <= 1:
             return
 
-        tab_bar = self.view.findChild(QTabBar)
+        tab_bar = self.view.findChildren(QTabBar)[-1]
         if tab_bar is not None:
             last_stack_pos = n_stack_visualisers
             # make Qt process the addition of the dock onto the main window
@@ -309,19 +312,12 @@ class MainWindowPresenter(BasePresenter):
             for stack in current_stack_visualisers:
                 if stack_window is not stack:
                     self.view.tabifyDockWidget(stack, stack_window)
-        elif tabify_stack is not None:
+                    return
+        if tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 
-        self.view.tab_bar = self.view.findChild(QTabBar)
-        if self.view.tab_bar is not None and self.view.tab_connected is False:
-            self.view.tab_bar.tabBarClicked.connect(self._on_tab_bar_clicked)
-            self.view.tab_connected = True
-
-    def _on_tab_bar_clicked(self, index: int):
-        text = self.view.tab_bar.tabText(index)
-        images = self.model.get_images_by_name(text)
-        if images is not None:
-            self._set_tree_view_selection_with_id(images.id)
+    def _on_tab_clicked(self, stack: StackVisualiserView):
+        self._set_tree_view_selection_with_id(stack.id)
 
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
         """
