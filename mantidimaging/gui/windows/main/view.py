@@ -11,7 +11,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QTabBar
+    QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -96,7 +96,6 @@ class MainWindowView(BaseMainWindowView):
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
     add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
-    tab_bar: Optional[QTabBar] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -158,8 +157,6 @@ class MainWindowView(BaseMainWindowView):
 
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
-        self.tab_connected = False
-
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
@@ -184,7 +181,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
         self.model_changed.connect(self.update_shortcuts)
-        self.model_changed.connect(self._update_tab_bar)
 
     def populate_image_menu(self):
         self.menuImage.clear()
@@ -211,11 +207,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)
         self.menuImage.setEnabled(has_datasets)
-
-    def _update_tab_bar(self):
-        if len(self.presenter.datasets) == 0:
-            self.tab_connected = False
-            self.tab_bar = None
 
     @staticmethod
     def open_online_documentation():
