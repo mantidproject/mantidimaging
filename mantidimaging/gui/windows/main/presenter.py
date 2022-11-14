@@ -256,7 +256,7 @@ class MainWindowPresenter(BasePresenter):
         if n_stack_visualisers <= 1:
             return
 
-        tab_bar = self.view.findChildren(QTabBar)[-1]
+        tab_bar = self.view.findChild(QTabBar)
         if tab_bar is not None:
             last_stack_pos = n_stack_visualisers
             # make Qt process the addition of the dock onto the main window

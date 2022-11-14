@@ -31,13 +31,6 @@ class MainWindowModel(object):
                     return image
         return None
 
-    def get_images_by_name(self, images_name: uuid.UUID) -> Optional[ImageStack]:
-        for dataset in self.datasets.values():
-            for image in dataset.all:
-                if images_name == image.name:
-                    return image
-        return None
-
     def do_load_dataset(self, parameters: LoadingParameters, progress) -> StrictDataset:
         sample = loader.load_p(parameters.sample, parameters.dtype, progress)
         ds = StrictDataset(sample)
