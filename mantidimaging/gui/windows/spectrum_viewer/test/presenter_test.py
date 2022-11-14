@@ -142,3 +142,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         self.view.get_csv_filename.assert_called_once()
         mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
+
+    def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
