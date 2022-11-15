@@ -497,3 +497,8 @@ class MainWindowViewTest(unittest.TestCase):
             self.view.show_add_stack_to_existing_dataset_dialog(mixed_dataset_id)
 
         add_images_mock.assert_called_once_with(self.view, mixed_dataset_id, False, mixed_dataset_name)
+
+    def test_tab_bar_clicked(self):
+        mock_stack = mock.Mock()
+        self.view._on_tab_bar_clicked(mock_stack)
+        self.presenter.notify.assert_called_once_with(Notification.TAB_CLICKED, stack=mock_stack)
