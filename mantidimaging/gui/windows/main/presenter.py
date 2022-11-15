@@ -486,7 +486,10 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def remove_item_from_tree_view(self, uuid_remove: uuid.UUID) -> None:
-
+        """
+        Removes an item from the tree view using a given ID.
+        :param uuid_remove: The ID of the item to remove.
+        """
         for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_remove:
@@ -506,6 +509,10 @@ class MainWindowPresenter(BasePresenter):
                         return
 
     def _set_tree_view_selection_with_id(self, uuid_select: uuid.UUID):
+        """
+        Selects an item on the tree view using the given ID.
+        :param uuid_select: The ID of the item to select.
+        """
         for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_select:
@@ -519,13 +526,17 @@ class MainWindowPresenter(BasePresenter):
                     return
                 if child_item.childCount() > 0:
                     for k in range(child_item.childCount()):
-                        recon_item = top_level_item.child(k)
+                        recon_item = child_item.child(k)
                         if recon_item.id == uuid_select:
                             self._select_tree_widget_item(recon_item)
                             return
         # runtime error ?
 
     def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem):
+        """
+        Clears the existing selection on the dataset tree view and selects a given item.
+        :param tree_widget_item: The item to select.
+        """
         self.view.dataset_tree_widget.clearSelection()
         tree_widget_item.setSelected(True)
 
