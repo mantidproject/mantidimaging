@@ -92,7 +92,7 @@ class MainWindowTest(BaseEyesTest):
 
     def test_clicking_tab_changes_tree_view_selection(self):
         sample_vis = self._load_strict_data_set()
-        sample_vis._raise()
+        sample_vis.raise_()
         self._load_strict_data_set()
 
         self.check_target()
