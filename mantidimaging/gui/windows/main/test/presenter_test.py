@@ -869,6 +869,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIn(recon, self.dataset.recons.stacks)
         self.presenter.add_recon_item_to_tree_view.assert_called_once_with(self.dataset.id, recon.id, recon.name)
 
+    def test_select_tree_widget_item(self):
+        tree_widget_item = mock.Mock()
+        self.presenter._select_tree_widget_item(tree_widget_item)
+        tree_widget_item.setSelected.assert_called_once_with(True)
+        self.view.dataset_tree_widget.clearSelection.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
