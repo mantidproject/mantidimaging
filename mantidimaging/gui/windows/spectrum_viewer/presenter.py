@@ -6,8 +6,6 @@ from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType
 
-# from mantidimaging.core.utility.sensible_roi import SensibleROI  # remove after testing
-
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
