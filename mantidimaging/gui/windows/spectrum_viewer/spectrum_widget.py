@@ -18,7 +18,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     spectrum: PlotItem
     range_control: LinearRegionItem
-    roi_dict: ROI
+    roi_dict: dict[str, SensibleROI]
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
@@ -42,7 +42,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
-        self.roi_dict: dict[str, SensibleROI] = {}  # hint: "roi_dict: Dict[<str>, <SensibleROI>]
+        self.roi_dict = {}
 
         self.max_roi_size = [0, 0]
 
