@@ -46,20 +46,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         self.max_roi_size = [0, 0]
 
-    def set_max_roi_size(self, width: int, height: int) -> None:
-        """
-        If width or height larger than max_roi_size,
-        set max_roi_size to higher width or height
-
-        :param width: width of the image
-        :param height: height of the image
-        """
-
-        if width > self.max_roi_size[0]:
-            self.max_roi_size[0] = width
-        if height > self.max_roi_size[1]:
-            self.max_roi_size[1] = height
-
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
         self.range_control.setRegion((range_min, range_max))
@@ -82,12 +68,14 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         my_roi.setPos((roi.left, roi.top))
         my_roi.setSize((roi.width, roi.height))
-        self.set_max_roi_size(roi.width, roi.height)
         my_roi.maxBounds = my_roi.parentBounds()
         my_roi.addScaleHandle([1, 1], [0, 0])
         my_roi.addScaleHandle([1, 0], [0, 1])
         my_roi.addScaleHandle([0, 0], [1, 1])
         my_roi.addScaleHandle([0, 1], [1, 0])
+
+        self.max_roi_size[0] = roi.width
+        self.max_roi_size[1] = roi.height
 
         self.roi_dict[name] = my_roi
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)  # might not need this

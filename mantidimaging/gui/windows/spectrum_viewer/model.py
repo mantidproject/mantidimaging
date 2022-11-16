@@ -10,8 +10,6 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
-ALL = "all"
-
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
 
@@ -54,7 +52,7 @@ class SpectrumViewerWindowModel:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
+        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
     def set_new_roi(self, name: str) -> None:
