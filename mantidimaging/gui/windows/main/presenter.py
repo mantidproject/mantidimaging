@@ -530,7 +530,6 @@ class MainWindowPresenter(BasePresenter):
                         if recon_item.id == uuid_select:
                             self._select_tree_widget_item(recon_item)
                             return
-        # runtime error ?
 
     def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem):
         """
