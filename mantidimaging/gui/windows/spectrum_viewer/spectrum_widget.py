@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import random
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
@@ -56,6 +57,25 @@ class SpectrumWidget(GraphicsLayoutWidget):
         r_min, r_max = self.range_control.getRegion()
         return int(r_min), int(r_max)
 
+    def random_colour_generator(self, colour_blind_friendly: bool = False) -> tuple[int, int, int]:
+        """
+        A random colour generator to colour ROIs boarders.
+        Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
+        By default colour_blind_friendly is set to False
+
+        :param colour_blind_friendly: If True, the colours will be colour blind friendly.
+
+        :return: A random colour in RGB format. (0-255, 0-255, 0-255)
+        """
+        if colour_blind_friendly:
+            accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
+                                  (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26), (75, 0, 146),
+                                  (254, 254, 98), (211, 95, 183), (0, 90, 181), (220, 50, 43), (26, 133, 255),
+                                  (212, 17, 89)]
+            return random.choice(accessible_colours)
+        colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        return colour
+
     def add_roi(self, roi: SensibleROI, name: str = None) -> None:
         """
         Add an ROI to the image view.
@@ -65,7 +85,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
 
         my_roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
-
+        roi_colour = self.random_colour_generator()
+        my_roi.setPen(roi_colour)
         my_roi.setPos((roi.left, roi.top))
         my_roi.setSize((roi.width, roi.height))
         my_roi.maxBounds = my_roi.parentBounds()
