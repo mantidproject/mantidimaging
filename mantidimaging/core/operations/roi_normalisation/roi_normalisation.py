@@ -23,6 +23,9 @@ def modes() -> List[str]:
     return ['Stack Average', 'Flat Field']
 
 
+DEFAULT_NORMALISATION_MODE = modes()[0]
+
+
 class RoiNormalisationFilter(BaseFilter):
     """Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the
     image. This scaling operation allows to account for beam fluctuations and different exposure times of
@@ -41,7 +44,7 @@ class RoiNormalisationFilter(BaseFilter):
     @staticmethod
     def filter_func(images: ImageStack,
                     region_of_interest: SensibleROI = None,
-                    normalisation_mode: str = modes()[0],
+                    normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
                     flat_field: Optional[ImageStack] = None,
                     progress=None):
         """Normalise by beam intensity.
@@ -90,11 +93,8 @@ class RoiNormalisationFilter(BaseFilter):
                                                 form=form,
                                                 on_change=on_change,
                                                 default_value="0, 0, 200, 200")
-        add_property_to_form("Select Air Region",
-                             "button",
-                             form=form,
-                             on_change=on_change,
-                             run_on_press=lambda: view.roi_visualiser(roi_field))
+        roi_button, _ = add_property_to_form("Select Air Region", "button", form=form, on_change=on_change)
+        roi_button.clicked.connect(lambda: view.roi_visualiser(roi_field, roi_button))
 
         _, mode_field = add_property_to_form('Normalise Mode',
                                              Type.CHOICE,

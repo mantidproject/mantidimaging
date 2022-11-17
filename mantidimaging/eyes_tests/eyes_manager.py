@@ -90,6 +90,7 @@ class EyesManager:
             raise ValueError("widget is not a QWidget")
 
         QTest.qWaitForWindowExposed(widget)
+        QApplication.sendPostedEvents()
         QApplication.processEvents()
         window_image = widget.grab()
 

@@ -44,7 +44,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
     def test_minimise(self):
         for i in range(2, 6):
-            QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=i))
+            QTimer.singleShot(SHORT_DELAY, lambda i=i: self._click_InputDialog(set_int=i))
             QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
 
             QTest.qWait(SHORT_DELAY)

@@ -23,6 +23,7 @@ from mantidimaging.gui.dialogs.multiple_stack_select.view import MultipleStackSe
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import populate_menu
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
+from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
@@ -70,6 +71,7 @@ class MainWindowView(BaseMainWindowView):
     menuWorkflow: QMenu
     menuImage: QMenu
     menuHelp: QMenu
+    menuTreeView: Optional[QMenu] = None
 
     actionRecon: QAction
     actionFilters: QAction
@@ -93,6 +95,7 @@ class MainWindowView(BaseMainWindowView):
     image_save_dialog: Optional[ImageSaveDialog] = None
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
+    add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -141,7 +144,7 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
-        self.dataset_tree_widget.itemDoubleClicked.connect(self._bring_stack_tab_to_front)
+        self.dataset_tree_widget.itemClicked.connect(self._bring_stack_tab_to_front)
 
         self.splitter = QSplitter(Qt.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
@@ -320,6 +323,9 @@ class MainWindowView(BaseMainWindowView):
 
     def execute_nexus_save(self):
         self.presenter.notify(PresNotification.NEXUS_SAVE)
+
+    def execute_add_to_dataset(self):
+        self.presenter.notify(PresNotification.DATASET_ADD)
 
     def show_image_save_dialog(self):
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
@@ -529,10 +535,15 @@ class MainWindowView(BaseMainWindowView):
         Opens the tree view menu.
         :param position: The position of the cursor when the menu was opened relative to the main window.
         """
-        menu = QMenu()
-        delete_action = menu.addAction("Delete")
+        self.menuTreeView = QMenu()
+
+        add_action = self.menuTreeView.addAction("Add / Replace Stack")
+        add_action.triggered.connect(self._add_images_to_existing_dataset)
+
+        delete_action = self.menuTreeView.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
-        menu.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+
+        self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
     def _delete_container(self):
         """
@@ -541,10 +552,17 @@ class MainWindowView(BaseMainWindowView):
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)
 
+    def _add_images_to_existing_dataset(self):
+        """
+        Notifies presenter to add image stack of dataset of the selected item.
+        """
+        container_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=container_id)
+
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
         Sends the signal to the presenter to bring a make a stack tab visible and bring it to the front.
-        :param item: The QTreeDatasetWidgetItem that was double clicked.
+        :param item: The QTreeDatasetWidgetItem that was clicked.
         """
         self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
 
@@ -595,3 +613,15 @@ class MainWindowView(BaseMainWindowView):
         :return: The sinogram entry text. Used to avoid circular imports.
         """
         return SINO_TEXT
+
+    def show_add_stack_to_existing_dataset_dialog(self, dataset_id: uuid.UUID):
+        """
+        Displays the dialog for adding an image stack to an existing dataset.
+        :param dataset_id: The ID of the dataset to update.
+        """
+        dataset = self.presenter.get_dataset(dataset_id)
+        if dataset is None:
+            raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
+        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
+                                                              dataset.name)
+        self.add_to_dataset_dialog.show()

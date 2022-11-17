@@ -3,13 +3,14 @@
 
 import uuid
 from collections import UserList
-from typing import List
+from typing import List, Optional
 
 from mantidimaging.core.data import ImageStack
 
 
 class ReconList(UserList):
-    def __init__(self, data: List[ImageStack] = []):
+    def __init__(self, data: Optional[List[ImageStack]] = None):
+        data = [] if data is None else data
         super().__init__(data)
         self._id: uuid.UUID = uuid.uuid4()
 

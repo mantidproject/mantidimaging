@@ -46,7 +46,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         cls._wait_for_widget_visible(DatasetSelectorDialog)
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, DatasetSelectorDialog):
-                for x in range(20):
+                for _ in range(20):
                     QApplication.processEvents(QEventLoop.ProcessEventsFlag.AllEvents, SHORT_DELAY)
                     if widget.dataset_selector_widget.currentText():
                         break

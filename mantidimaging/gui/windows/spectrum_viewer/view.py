@@ -130,3 +130,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
+
+    def set_export_button_enabled(self, enabled: bool):
+        """
+        Toggle enabled state of the export button
+
+        :param enabled: True to enable the button, False to disable it
+        """
+        self.exportButton.setEnabled(enabled)

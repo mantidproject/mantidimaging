@@ -136,7 +136,7 @@ class CompilePyQtUiFiles(Command):
     @staticmethod
     def find_ui_files():
         matches = []
-        for root, dirnames, filenames in os.walk("./mantidimaging/"):
+        for root, _, filenames in os.walk("./mantidimaging/"):
             for filename in fnmatch.filter(filenames, "*.ui"):
                 matches.append(os.path.join(root, filename))
         return matches

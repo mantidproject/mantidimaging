@@ -60,11 +60,11 @@ def test_counts_compare():
 def assert_raises(exc_type, callable, *args, **kwargs):
     try:
         callable(*args, **kwargs)
-        assert False, "Did not raise"
+        raise AssertionError("Did not raise")
     except exc_type:
         return
     except Exception:
-        assert False, "Did not raise expected exception."
+        raise AssertionError("Did not raise expected exception.")
 
 
 @pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])

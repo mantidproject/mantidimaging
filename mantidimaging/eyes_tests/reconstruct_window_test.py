@@ -31,7 +31,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_opens_with_data(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self._show_recon_window()
 
@@ -68,7 +68,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.recon)
 
     def test_reconstruction_window_colour_palette_dialog(self):
-        self._load_data_set()
+        self._load_strict_data_set()
 
         self._show_recon_window()
         self.imaging.recon.image_view.imageview_recon.setImage(np.zeros((512, 512)))
