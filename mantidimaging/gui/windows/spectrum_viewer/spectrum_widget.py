@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem
@@ -19,7 +19,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     spectrum: PlotItem
     range_control: LinearRegionItem
-    roi_dict: dict[str, SensibleROI]
+    roi_dict: dict[Optional[str], ROI]
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
@@ -99,7 +99,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.max_roi_size[1] = roi.height
 
         self.roi_dict[name] = my_roi
-        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)  # might not need this
+        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
 
     def get_roi(self, roi_name: str = None) -> SensibleROI:
