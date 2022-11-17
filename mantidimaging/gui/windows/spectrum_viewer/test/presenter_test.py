@@ -25,7 +25,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.current_dataset_id = uuid.uuid4()
         self.view.spectrum = mock.create_autospec(SpectrumWidget)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
-        self.presenter.model.set_stack(generate_images())
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
         self.assertIsNone(self.presenter.get_dataset_id_for_stack(None))
@@ -147,6 +146,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
+        self.presenter.model.set_stack(generate_images())
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())

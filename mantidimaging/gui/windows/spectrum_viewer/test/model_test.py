@@ -15,8 +15,6 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
-ALL = "all"
-
 
 class CloseCheckStream(io.StringIO):
     is_closed: bool = False
@@ -30,7 +28,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
-        self.model.set_stack(generate_images())
 
     def test_set_stack(self):
         stack = generate_images([10, 11, 12])
@@ -140,11 +137,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_set_stack_sets_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         self.model.set_stack(stack)
-        self.assertEqual(self.model.get_roi(ALL), self.model.get_roi('roi'))
-        npt.assert_array_equal(self.model.get_roi(ALL).top, 0)
-        npt.assert_array_equal(self.model.get_roi(ALL).left, 0)
-        npt.assert_array_equal(self.model.get_roi(ALL).right, 12)
-        npt.assert_array_equal(self.model.get_roi(ALL).bottom, 11)
+        self.assertEqual(self.model.get_roi("all"), self.model.get_roi('roi'))
+        npt.assert_array_equal(self.model.get_roi("all").top, 0)
+        npt.assert_array_equal(self.model.get_roi("all").left, 0)
+        npt.assert_array_equal(self.model.get_roi("all").right, 12)
+        npt.assert_array_equal(self.model.get_roi("all").bottom, 11)
 
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
@@ -214,14 +211,17 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.model.roi_name_generator(), "roi_3")
 
     def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
+        self.model.set_stack(generate_images())
         self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
 
     def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
+        self.model.set_stack(generate_images())
         self.model.set_new_roi("new_roi")
         self.assertTrue(self.model.get_roi("new_roi"))
         self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
 
     def test_WHEN_get_roi_called_with_non_existent_name_THEN_error_raised(self):
+        self.model.set_stack(generate_images())
         with self.assertRaises(KeyError):
             self.model.get_roi("non_existent_roi")
 
