@@ -25,6 +25,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.current_dataset_id = uuid.uuid4()
         self.view.spectrum = mock.create_autospec(SpectrumWidget)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
+        self.presenter.model.set_stack(generate_images())
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
         self.assertIsNone(self.presenter.get_dataset_id_for_stack(None))

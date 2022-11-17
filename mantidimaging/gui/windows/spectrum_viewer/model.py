@@ -25,11 +25,12 @@ class SpectrumViewerWindowModel:
     _stack: Optional[ImageStack] = None
     _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
-    _roi_ranges: dict[str, SensibleROI] = {}
+    _roi_ranges: dict[str, SensibleROI]
 
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
         self._roi_id_counter = 0
+        self._roi_ranges = {}
 
     def roi_name_generator(self) -> str:
         """

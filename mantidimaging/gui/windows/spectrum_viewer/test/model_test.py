@@ -30,12 +30,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
-
-    def tearDown(self) -> None:
-        # Remove any rois from _roi_ranges that are not 'all' or 'roi'
-        for roi_name in list(self.model._roi_ranges.keys()):
-            if roi_name not in [ALL, "roi"]:
-                del self.model._roi_ranges[roi_name]
+        self.model.set_stack(generate_images())
 
     def test_set_stack(self):
         stack = generate_images([10, 11, 12])
