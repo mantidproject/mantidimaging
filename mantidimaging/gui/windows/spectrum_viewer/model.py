@@ -68,7 +68,15 @@ class SpectrumViewerWindowModel:
     def set_roi(self, roi_name: str, roi: SensibleROI):
         self._roi_ranges[roi_name] = roi
 
-    def get_roi(self, roi_name: str):
+    def get_roi(self, roi_name: str) -> SensibleROI:
+        """
+        Get the ROI with the given name from the model
+
+        :param roi_name: The name of the ROI to get
+        :return: The ROI with the given name
+        """
+        if roi_name not in self._roi_ranges.keys():
+            raise KeyError(f"ROI {roi_name} does not exist")
         return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> Optional['np.ndarray']:

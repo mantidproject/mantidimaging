@@ -113,10 +113,12 @@ class SpectrumWidget(GraphicsLayoutWidget):
             pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
             size = CloseEnoughPoint(self.roi_dict[roi_name].size())
             return SensibleROI.from_points(pos, size)
-
-        pos = CloseEnoughPoint((0, 0))
-        size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
-        return SensibleROI.from_points(pos, size)
+        elif roi_name == "all":
+            pos = CloseEnoughPoint((0, 0))
+            size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
+            return SensibleROI.from_points(pos, size)
+        else:
+            raise KeyError(f"ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'")
 
     def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
         self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')

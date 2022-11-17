@@ -9,10 +9,12 @@ import numpy as np
 import numpy.testing as npt
 
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
-from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ALL
+from mantidimaging.gui.windows.spectrum_viewer.model import SpecType
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+
+ALL = "all"
 
 
 class CloseCheckStream(io.StringIO):
@@ -29,8 +31,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model = SpectrumViewerWindowModel(self.presenter)
 
     def tearDown(self) -> None:
-        # reset rois
-        self.model._roi_ranges = {}
+        # Remove any rois from _roi_ranges that are not 'all' or 'roi'
+        for roi_name in list(self.model._roi_ranges.keys()):
+            if roi_name not in [ALL, "roi"]:
+                del self.model._roi_ranges[roi_name]
 
     def test_set_stack(self):
         stack = generate_images([10, 11, 12])
@@ -220,3 +224,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_new_roi("new_roi")
         self.assertTrue(self.model.get_roi("new_roi"))
         self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
+
+    def test_WHEN_get_roi_called_with_non_existent_name_THEN_error_raised(self):
+        with self.assertRaises(KeyError):
+            self.model.get_roi("non_existent_roi")
