@@ -229,7 +229,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_get_roi_called_with_non_existent_name_THEN_error_raised(self):
         with self.assertRaises(KeyError):
             self.model.get_roi("non_existent_roi")
-            
+
     @parameterized.expand([
         ("False", None, False),
         ("True", ImageStack(np.ones([10, 11, 12])), True),
