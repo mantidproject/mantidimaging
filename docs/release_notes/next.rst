@@ -7,6 +7,7 @@ New Features and improvements
 -----------------------------
 
 - #1601 : arithmetic filter optimisation
+- #1620 : Add multiple ROI to spectrum viewer
 
 Fixes
 -----
