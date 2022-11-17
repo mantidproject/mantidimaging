@@ -26,7 +26,7 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import MainWindowPresenter
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
@@ -154,6 +154,8 @@ class MainWindowView(BaseMainWindowView):
         self.dataset_tree_widget.setHeaderLabel("")
 
         self.setCentralWidget(self.splitter)
+
+        self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -625,3 +627,6 @@ class MainWindowView(BaseMainWindowView):
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
                                                               dataset.name)
         self.add_to_dataset_dialog.show()
+
+    def _on_tab_bar_clicked(self, stack: StackVisualiserView):
+        self.presenter.notify(Notification.TAB_CLICKED, stack=stack)

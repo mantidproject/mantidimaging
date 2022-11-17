@@ -7,7 +7,7 @@ from logging import getLogger, Logger
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -51,6 +51,7 @@ class Notification(Enum):
     ADD_RECON = auto()
     SHOW_ADD_STACK_DIALOG = auto()
     DATASET_ADD = auto()
+    TAB_CLICKED = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -86,6 +87,8 @@ class MainWindowPresenter(BasePresenter):
                 self._show_add_stack_to_dataset_dialog(**baggage)
             elif signal == Notification.DATASET_ADD:
                 self._add_images_to_existing_dataset()
+            elif signal == Notification.TAB_CLICKED:
+                self._on_tab_clicked(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -313,6 +316,9 @@ class MainWindowPresenter(BasePresenter):
         if tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 
+    def _on_tab_clicked(self, stack: StackVisualiserView):
+        self._set_tree_view_selection_with_id(stack.id)
+
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
         """
         Creates the tree view items for a strict dataset.
@@ -480,7 +486,10 @@ class MainWindowPresenter(BasePresenter):
         self.view.show_recon_window()
 
     def remove_item_from_tree_view(self, uuid_remove: uuid.UUID) -> None:
-
+        """
+        Removes an item from the tree view using a given ID.
+        :param uuid_remove: The ID of the item to remove.
+        """
         for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
             top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
             if top_level_item.id == uuid_remove:
@@ -498,6 +507,37 @@ class MainWindowPresenter(BasePresenter):
                             # Delete recon group when last recon item has been removed
                             top_level_item.takeChild(j)
                         return
+
+    def _set_tree_view_selection_with_id(self, uuid_select: uuid.UUID):
+        """
+        Selects an item on the tree view using the given ID.
+        :param uuid_select: The ID of the item to select.
+        """
+        for i in range(self.view.dataset_tree_widget.topLevelItemCount()):
+            top_level_item = self.view.dataset_tree_widget.topLevelItem(i)
+            if top_level_item.id == uuid_select:
+                self._select_tree_widget_item(top_level_item)
+                return
+
+            for j in range(top_level_item.childCount()):
+                child_item = top_level_item.child(j)
+                if child_item.id == uuid_select:
+                    self._select_tree_widget_item(child_item)
+                    return
+                if child_item.childCount() > 0:
+                    for k in range(child_item.childCount()):
+                        recon_item = child_item.child(k)
+                        if recon_item.id == uuid_select:
+                            self._select_tree_widget_item(recon_item)
+                            return
+
+    def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem):
+        """
+        Clears the existing selection on the dataset tree view and selects a given item.
+        :param tree_widget_item: The item to select.
+        """
+        self.view.dataset_tree_widget.clearSelection()
+        tree_widget_item.setSelected(True)
 
     @staticmethod
     def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> bool:
