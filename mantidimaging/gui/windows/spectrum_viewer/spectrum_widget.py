@@ -15,6 +15,62 @@ if TYPE_CHECKING:
     from .view import SpectrumViewerWindowView
 
 
+# Create ROI object class
+class SpectrumROI(object):
+    """
+    Spectrum ROI object containing ROI and associated data.
+    """
+    def __init__(self, name):
+        self._name = name
+        self._roi = None
+        self._colour = None
+        self._size = None
+        self._pos = None
+
+    def __repr__(self):
+        return str(self._roi)
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self._name = name
+
+    @property
+    def roi(self) -> ROI:
+        return self._roi
+
+    @roi.setter
+    def roi(self, roi: ROI) -> None:
+        self._roi = roi
+
+    @property
+    def colour(self) -> tuple[int, int, int]:
+        return self._colour
+
+    @colour.setter
+    def colour(self, colour: tuple[int, int, int]) -> None:
+        self._colour = colour
+
+    @property
+    def size(self):
+        return super().size()
+
+    @size.setter
+    def size(self, size: tuple[int, int]) -> None:
+        self._size = size
+
+    @property
+    def pos(self):
+        return super().pos()
+
+    @pos.setter
+    def pos(self, pos: tuple[int, int]) -> None:
+        self._pos = pos
+
+
 class SpectrumWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     spectrum: PlotItem
@@ -63,8 +119,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
         By default colour_blind_friendly is set to False
 
-        :param colour_blind_friendly: If True, the colours will be colour blind friendly.
-
         :return: A random colour in RGB format. (0-255, 0-255, 0-255)
         """
         accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
@@ -91,12 +145,21 @@ class SpectrumWidget(GraphicsLayoutWidget):
         my_roi.addScaleHandle([0, 0], [1, 1])
         my_roi.addScaleHandle([0, 1], [1, 0])
 
+        roi_object = SpectrumROI(name)
+        roi_object.roi = my_roi
+        roi_object.colour = roi_colour
+        roi_object.size = (roi.width, roi.height)
+        roi_object.pos = (roi.left, roi.top)
+
         self.max_roi_size[0] = roi.width
         self.max_roi_size[1] = roi.height
 
-        self.roi_dict[name] = my_roi
+        self.roi_dict[name] = roi_object.roi
+        # self.roi_dict[name]['roi'] = my_roi
+        # self.roi_dict[name]["colour"] = roi_colour
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
+        print(roi_object.name)
 
     def get_roi(self, roi_name: str = None) -> SensibleROI:
         """
@@ -114,7 +177,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
             size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
             return SensibleROI.from_points(pos, size)
         else:
-            raise KeyError(f"ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'")
+            raise KeyError("ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'".format(
+                roi_name=roi_name))
 
     def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
         self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
