@@ -146,17 +146,17 @@ def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None,
 
     if setup:
         setup_orig = cls.setUp if hasattr(cls, 'setUp') else do_nothing
-        setattr(cls, 'setUp', setUp)
+        cls.setUp = setUp
 
     if teardown:
         teardown_orig = cls.tearDown if hasattr(cls, 'tearDown') else do_nothing
-        setattr(cls, 'tearDown', tearDown)
+        cls.tearDown = tearDown
 
     if setup_class:
         setup_class_orig = cls.setUpClass if hasattr(cls, 'setUpClass') else do_nothing
-        setattr(cls, 'setUpClass', classmethod(setUpClass))
+        cls.setUpClass = classmethod(setUpClass)
 
     if teardown_class:
         teardown_class_orig = cls.tearDownClass if hasattr(cls, 'tearDownClass') else do_nothing
-        setattr(cls, 'tearDownClass', classmethod(tearDownClass))
+        cls.tearDownClass = classmethod(tearDownClass)
     return cls

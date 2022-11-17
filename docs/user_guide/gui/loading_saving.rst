@@ -122,3 +122,38 @@ When *Save as NeXus File* is selected the save NeXus dialog appears. Only Datase
 with sample images data can be saved as NeXus files. A sample name and an output
 directory are required before a save can be attempted.
 
+Dataset Tree View
+-----------------
+
+When a dataset has been successfully loaded, it will be possible to see its elements listed in the dataset tree view.
+
+.. image:: ../../_static/dataset_tree_view.png
+    :alt: Dataset tree view
+
+Adding / Replacing Data
+***********************
+
+The stacks that comprise an existing dataset can be deleted or -- in the case of *strict* datasets only -- replaced. This can be
+done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.
+
+.. image:: ../../_static/add_to_dataset_dialog.png
+    :alt: Dataset tree view
+
+As in the case of loading images from the main menu, selecting a single file will cause Mantid Imaging to load all like
+images in the same directory.
+
+The type of images that you wish to load can be selected from the drop-down menu. If this image type already exists in
+the dataset then the new images will replace it and the previous data will be deleted. If Recon is chosen then the
+images will be added to the dataset's recons list.
+
+For "simple" datasets that do not have Projections, Flat Before, etc there is only the option of adding additional
+stacks or recons.
+
+Deleting Data
+*************
+
+Deleting data can also be achieved by right-clicking on the dataset tree view. This can be used to delete individual
+stacks as well as entire datasets.
+
+.. image:: ../../_static/delete_data.png
+    :alt: Deleting data in the tree view

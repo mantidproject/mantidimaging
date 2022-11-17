@@ -57,8 +57,10 @@ class ReconstructWindowView(BaseMainWindowView):
     numIter: QSpinBox
     maxProjAngle: QDoubleSpinBox
     pixelSize: QDoubleSpinBox
-    alphaSpinbox: QDoubleSpinBox
+    alphaSpinBox: QDoubleSpinBox
     nonNegativeCheckBox: QCheckBox
+    stochasticCheckBox: QCheckBox
+    subsetsSpinBox: QSpinBox
     resultCor: QDoubleSpinBox
     resultTilt: QDoubleSpinBox
     resultSlope: QDoubleSpinBox
@@ -180,10 +182,15 @@ class ReconstructWindowView(BaseMainWindowView):
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
         self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
-        self.alphaSpinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.alphaSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.nonNegativeCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.stochasticCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.subsetsSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+
+        self.stochasticCheckBox.stateChanged.connect(self.subsetsSpinBox.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.subsetsLabel.setEnabled)
 
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
@@ -341,69 +348,73 @@ class ReconstructWindowView(BaseMainWindowView):
         return [row.row() for row in rows]
 
     @property
-    def rotation_centre(self):
+    def rotation_centre(self) -> float:
         return self.resultCor.value()
 
     @rotation_centre.setter
-    def rotation_centre(self, value: float):
+    def rotation_centre(self, value: float) -> None:
         self.resultCor.setValue(value)
 
     @property
-    def tilt(self):
+    def tilt(self) -> float:
         return self.resultTilt.value()
 
     @tilt.setter
-    def tilt(self, value: float):
+    def tilt(self, value: float) -> None:
         self.resultTilt.setValue(value)
 
     @property
-    def slope(self):
+    def slope(self) -> float:
         return self.resultSlope.value()
 
     @slope.setter
-    def slope(self, value: float):
+    def slope(self, value: float) -> None:
         self.resultSlope.setValue(value)
 
     @property
-    def max_proj_angle(self):
+    def max_proj_angle(self) -> float:
         return self.maxProjAngle.value()
 
     @property
-    def algorithm_name(self):
+    def algorithm_name(self) -> str:
         return self.algorithmName.currentText()
 
     @property
-    def filter_name(self):
+    def filter_name(self) -> str:
         return self.filterName.currentText()
 
     @property
-    def num_iter(self):
+    def num_iter(self) -> int:
         return self.numIter.value()
 
     @num_iter.setter
-    def num_iter(self, iters: int):
+    def num_iter(self, iters: int) -> None:
         self.numIter.setValue(iters)
 
     @property
-    def pixel_size(self):
+    def pixel_size(self) -> float:
         return self.pixelSize.value()
 
     @pixel_size.setter
-    def pixel_size(self, value: int):
+    def pixel_size(self, value: int) -> None:
         with QSignalBlocker(self.pixelSize):
             self.pixelSize.setValue(value)
 
     @property
-    def alpha(self):
-        return self.alphaSpinbox.value()
-
-    @alpha.setter
-    def alpha(self, value: float):
-        self.alphaSpinbox.setValue(value)
+    def alpha(self) -> float:
+        return self.alphaSpinBox.value()
 
     @property
-    def non_negative(self):
+    def non_negative(self) -> bool:
         return self.nonNegativeCheckBox.isChecked()
+
+    @property
+    def stochastic(self) -> bool:
+        return self.stochasticCheckBox.isChecked()
+
+    @property
+    def subsets(self) -> int:
+        return self.subsetsSpinBox.value()
 
     @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
@@ -426,6 +437,8 @@ class ReconstructWindowView(BaseMainWindowView):
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
                                         non_negative=self.non_negative,
+                                        stochastic=self.stochastic,
+                                        subsets=self.subsets,
                                         max_projection_angle=self.max_proj_angle,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 

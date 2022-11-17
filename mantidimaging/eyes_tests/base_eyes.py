@@ -13,12 +13,13 @@ from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 from applitools.common import MatchLevel
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io.loader import loader
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 import mantidimaging.core.parallel.utility as pu
 from mantidimaging.core.io.filenames import FilenameGroup
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
@@ -96,7 +97,7 @@ class BaseEyesTest(unittest.TestCase):
         menu_location = widget.menuBar().rect().bottomLeft()
         menu.popup(widget.mapFromGlobal(menu_location))
 
-    def _load_data_set(self, set_180: bool = False):
+    def _load_strict_data_set(self, set_180: bool = False):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
         filenames = [str(p) for p in filename_group.all_files()][::2]
@@ -118,3 +119,18 @@ class BaseEyesTest(unittest.TestCase):
         QApplication.sendPostedEvents()
 
         return vis
+
+    def _create_mixed_dataset(self):
+        mixed_dataset = MixedDataset([generate_images()], "a-mixed-dataset")
+
+        self.imaging.presenter.model.add_dataset_to_model(mixed_dataset)
+        self.imaging.presenter.create_mixed_dataset_tree_view_items(mixed_dataset)
+        self.imaging.presenter.create_mixed_dataset_stack_windows(mixed_dataset)
+
+        QApplication.sendPostedEvents()
+
+    def _get_top_level_widget(cls, widget_type):
+        for widget in cls.app.topLevelWidgets():
+            if isinstance(widget, widget_type):
+                return widget
+        raise ValueError(f"Could not find top level widget of type {widget_type.__name__}")

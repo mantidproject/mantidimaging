@@ -8,8 +8,9 @@ from uuid import UUID
 from parameterized import parameterized
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget
+from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget, QPushButton
 
+from mantidimaging.gui.widgets.roi_selector.view import ROISelectorView
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
@@ -73,6 +74,18 @@ class TestGuiSystemOperations(GuiSystemBase):
                     return widget_item.widget()
 
         raise ValueError(f"Could not find '{param_name}' in form")
+
+    @staticmethod
+    def _get_operation_button_widget(form: QFormLayout, button_name: str) -> QWidget:
+        for i in range(form.rowCount()):
+            widget_item = form.itemAt(i * 2)
+
+            if widget_item is not None:
+                button = widget_item.widget()
+                if isinstance(button, QPushButton) and button.text() == button_name:
+                    return button
+
+        raise ValueError(f"Could not find '{button_name}' in form")
 
     @parameterized.expand(OP_LIST)
     def test_run_operation_stack(self, op_name, params):
@@ -173,6 +186,31 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
+
+        self.main_window.filters.close()
+        QTest.qWait(SHOW_DELAY)
+
+    @parameterized.expand([(OP_LIST[3][0], "Select ROI", "ROI"), (OP_LIST[13][0], "Select Air Region", "Air Region")])
+    def test_opening_roi_selector_window_toggles_controls_correctly(self, op_name, button_name, field_name):
+        QTest.qWait(SHOW_DELAY)
+        index = self.op_window.filterSelector.findText(op_name)
+        self.op_window.filterSelector.setCurrentIndex(index)
+        QTest.qWait(SHOW_DELAY)
+
+        # Check the relevant controls are disabled when the window is opened
+        roi_button = self._get_operation_button_widget(self.op_window.filterPropertiesLayout, button_name)
+        roi_field = self._get_operation_parameter_widget(self.op_window.filterPropertiesLayout, field_name)
+        self.assertTrue(roi_button.isEnabled())
+        self.assertTrue(roi_field.isEnabled())
+        QTest.mouseClick(roi_button, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHOW_DELAY)
+        self.assertFalse(roi_button.isEnabled())
+        self.assertFalse(roi_field.isEnabled())
+
+        # Check the relevant controls are enabled again when the window is closed
+        self._close_window(ROISelectorView)
+        self.assertTrue(roi_button.isEnabled())
+        self.assertTrue(roi_field.isEnabled())
 
         self.main_window.filters.close()
         QTest.qWait(SHOW_DELAY)

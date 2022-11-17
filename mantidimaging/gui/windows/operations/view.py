@@ -3,20 +3,19 @@
 import functools
 from typing import TYPE_CHECKING
 
-import numpy as np
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QLabel, QMainWindow, QMenu, QMessageBox,
-                             QPushButton, QSizePolicy, QSplitter, QStyle, QVBoxLayout)
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QMessageBox, QPushButton, QSizePolicy,
+                             QSplitter, QStyle, QVBoxLayout)
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility import delete_all_widgets_from_layout
-from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from .filter_previews import FilterPreviews
 from .presenter import FiltersWindowPresenter, FLAT_FIELDING
 from .presenter import Notification as PresNotification
+from ...widgets.roi_selector.view import ROISelectorView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -65,7 +64,6 @@ class FiltersWindowView(BaseMainWindowView):
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
         self.roi_view_averaged = False
-        self._roi_selector_window_count = 0
         self.splitter.setSizes([200, 9999])
         self.splitter.setStretchFactor(0, 1)
 
@@ -235,86 +233,33 @@ class FiltersWindowView(BaseMainWindowView):
         else:
             self.applyToAllButton.setEnabled(True)
 
-    def roi_visualiser(self, roi_field):
-        # Start the stack visualiser and ensure that it uses the ROI from here in the rest of this
-        try:
-            images = self.presenter.stack.slice_as_image_stack(self.presenter.model.preview_image_idx)
-        except IndexError:
-            # Happens if nothing has been loaded, so do nothing as nothing can't be visualised
+    def roi_visualiser(self, roi_field, roi_button):
+        if self.presenter.stack is None:
+            # If nothing has been loaded then we can't visualise anything
             return
 
-        self._roi_selector_window_count += 1
         roi_field.setEnabled(False)
-        window = QMainWindow(self)
-        window.setWindowTitle("Select ROI")
-        window.setMinimumHeight(600)
-        window.setMinimumWidth(600)
-        self.roi_view = MIImageView(window)
-        window.setCentralWidget(self.roi_view)
-        self.roi_view.setWindowTitle("Select ROI for operation")
-
-        def set_averaged_image():
-            averaged_images = np.sum(self.presenter.stack.data, axis=0)
-            self.roi_view.setImage(averaged_images.reshape((1, averaged_images.shape[0], averaged_images.shape[1])))
-            self.roi_view_averaged = True
-
-        def toggle_average_images(images_):
-            if self.roi_view_averaged:
-                self.roi_view.setImage(images_.data)
-                self.roi_view_averaged = False
-            else:
-                set_averaged_image()
-            self.roi_view.roi.show()
-            self.roi_view.ui.roiPlot.hide()
-
-        # Add context menu bits:
-        menu = QMenu(self.roi_view)
-        toggle_show_averaged_image = QAction("Toggle show averaged image", menu)
-        toggle_show_averaged_image.triggered.connect(lambda: toggle_average_images(images))
-        menu.addAction(toggle_show_averaged_image)
-        menu.addSeparator()
-        self.roi_view.imageItem.menu = menu
-
-        set_averaged_image()
+        roi_button.setEnabled(False)
 
         def roi_changed_callback(callback):
             roi_field.setText(callback.to_list_string())
             roi_field.editingFinished.emit()
 
-        self.roi_view.roi_changed_callback = lambda callback: roi_changed_callback(callback)
+        # Get the ROI values from the input field
+        try:
+            roi_values = [int(value) for value in roi_field.text().strip().split(',')]
+        except ValueError:
+            roi_values = None
 
-        def find_roi_values_from_field():
-            try:
-                values = [int(value) for value in roi_field.text().strip().split(',')]
-                if len(values) == 4:
-                    return values
-            except ValueError:
-                pass
-            return self.roi_view.default_roi()
-
-        # prep the MIImageView to display in this context
-        self.roi_view.ui.roiBtn.hide()
-        self.roi_view.ui.histogram.hide()
-        self.roi_view.ui.menuBtn.hide()
-        self.roi_view.ui.roiPlot.hide()
-        self.roi_view.set_roi(find_roi_values_from_field())
-        self.roi_view.roi.show()
-        self.roi_view.ui.gridLayout.setRowStretch(1, 5)
-        self.roi_view.ui.gridLayout.setRowStretch(0, 95)
-        self.roi_view.button_stack_right.hide()
-        self.roi_view.button_stack_left.hide()
+        window = ROISelectorView(self, self.presenter.stack, self.presenter.model.preview_image_idx, roi_values,
+                                 roi_changed_callback)
 
         def close_event(event):
-            self._roi_selector_window_count -= 1
-            if not self._roi_selector_window_count:
-                roi_field.setEnabled(True)
+            roi_field.setEnabled(True)
+            roi_button.setEnabled(True)
             event.accept()
 
-        button = QPushButton("OK", window)
-        button.clicked.connect(lambda: window.close())
         window.closeEvent = functools.partial(close_event)
-        self.roi_view.ui.gridLayout.addWidget(button)
-
         window.show()
 
     def toggle_filters_section(self):

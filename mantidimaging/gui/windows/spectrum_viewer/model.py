@@ -127,6 +127,13 @@ class SpectrumViewerWindowModel:
         else:
             return 0, 0
 
+    def can_export(self) -> bool:
+        """
+        Check if data is available to export
+        @return: True if data is available to export and False otherwise
+        """
+        return self._stack is not None
+
     def save_csv(self, path: Path, normalized: bool) -> None:
         """
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.

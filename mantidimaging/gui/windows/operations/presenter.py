@@ -80,7 +80,7 @@ def _group_consecutive_values(slices: List[int]) -> List[str]:
     :return: A list of strings for the index ranges e.g. 1-5, 7-20, etc
     """
     ranges = []
-    for k, iterable in groupby(enumerate(slices), sub):
+    for _, iterable in groupby(enumerate(slices), sub):
         rng = list(iterable)
         if len(rng) == 1:
             s = str(rng[0][1])
