@@ -869,6 +869,58 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIn(recon, self.dataset.recons.stacks)
         self.presenter.add_recon_item_to_tree_view.assert_called_once_with(self.dataset.id, recon.id, recon.name)
 
+    def test_select_tree_widget_item(self):
+        tree_widget_item = mock.Mock()
+        self.presenter._select_tree_widget_item(tree_widget_item)
+        tree_widget_item.setSelected.assert_called_once_with(True)
+        self.view.dataset_tree_widget.clearSelection.assert_called_once()
+
+    def test_select_top_level_item(self):
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = mock_top_level_item = mock.Mock()
+        mock_top_level_item.id = mock_id = "id"
+
+        self.presenter._set_tree_view_selection_with_id(mock_id)
+        self.view.dataset_tree_widget.clearSelection.assert_called_once()
+        mock_top_level_item.setSelected.assert_called_once_with(True)
+
+    def test_select_stack_item(self):
+        mock_stack_widget = mock.Mock()
+        mock_stack_widget.id = mock_id = "stack-id"
+
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = mock_top_level_item = mock.Mock()
+        mock_top_level_item.id = "dataset-id"
+
+        mock_top_level_item.childCount.return_value = 1
+        mock_stack_item = mock_top_level_item.child.return_value
+        mock_stack_item.id = mock_id
+
+        self.presenter.notify(Notification.TAB_CLICKED, stack=mock_stack_widget)
+
+        self.view.dataset_tree_widget.clearSelection.assert_called_once()
+        mock_stack_item.setSelected.assert_called_once_with(True)
+
+    def test_select_recon_item(self):
+        mock_recon_widget = mock.Mock()
+        mock_recon_widget.id = mock_id = "recon-id"
+
+        self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
+        self.view.dataset_tree_widget.topLevelItem.return_value = mock_top_level_item = mock.Mock()
+        mock_top_level_item.id = "dataset-id"
+
+        mock_top_level_item.childCount.return_value = 1
+        mock_recon_group = mock_top_level_item.child.return_value
+        mock_recon_group.childCount.return_value = 1
+        mock_recon_group.id = "recon-group-id"
+        mock_recon_item = mock_recon_group.child.return_value
+        mock_recon_item.id = mock_id
+
+        self.presenter.notify(Notification.TAB_CLICKED, stack=mock_recon_widget)
+
+        self.view.dataset_tree_widget.clearSelection.assert_called_once()
+        mock_recon_item.setSelected.assert_called_once_with(True)
+
 
 if __name__ == '__main__':
     unittest.main()

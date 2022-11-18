@@ -10,6 +10,7 @@ New Features and improvements
 - #1616 : Change selected stack with single click on tree widget
 - #1625 : Allow adding extra stacks to a dataset
 - #1625 : Load recons to an existing dataset
+- #1625 : Change selection in tree view when switching tabs
 
 Fixes
 -----
