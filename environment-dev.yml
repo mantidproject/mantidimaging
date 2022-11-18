@@ -31,3 +31,4 @@ dependencies:
   - pytest-xdist==2.5.*
   - coverage==6.4.*
   - pyfakefs==5.0.*
+  - pyinstaller==5.6.*
