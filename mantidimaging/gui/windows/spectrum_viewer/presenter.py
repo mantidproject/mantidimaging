@@ -90,7 +90,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image())
         self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
-        self.view.spectrum.add_roi(self.model.get_roi("roi"))
+        self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
 
     def handle_range_slide_moved(self, tof_range) -> None:
@@ -98,9 +98,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
     def handle_roi_moved(self) -> None:
-        roi = self.view.spectrum.get_roi()
-        self.model.set_roi("roi", roi)
-        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
+        """
+        Handle changes to any ROI position and size.
+        """
+        roi_names = self.model.get_list_of_roi_names()
+        for name in roi_names:
+            roi = self.view.spectrum.get_roi(name)
+            self.model.set_roi(name, roi)
+            self.view.set_spectrum(self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_export_button_enabled(self) -> None:
         """
@@ -125,3 +130,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.spectrum_mode = SpecType.SAMPLE
         self.handle_roi_moved()
         self.view.display_normalise_error()
+
+    def do_add_roi(self) -> None:
+        """
+        Add a new ROI to the spectrum
+        """
+        roi_name = self.model.roi_name_generator()
+        self.model.set_new_roi(roi_name)
+        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
+        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        self.view.auto_range_image()

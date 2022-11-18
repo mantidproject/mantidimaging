@@ -10,8 +10,6 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
-ALL = "all"
-
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
 
@@ -27,10 +25,27 @@ class SpectrumViewerWindowModel:
     _stack: Optional[ImageStack] = None
     _normalise_stack: Optional[ImageStack] = None
     tof_range: tuple[int, int] = (0, 0)
-    _roi_ranges: dict[str, SensibleROI] = {}
+    _roi_ranges: dict[str, SensibleROI]
 
     def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
         self.presenter = presenter
+        self._roi_id_counter = 0
+        self._roi_ranges = {}
+
+    def roi_name_generator(self) -> str:
+        """
+        Returns a new Unique ID for newly created ROIs
+
+        :return: A new unique ID
+        """
+        self._roi_id_counter += 1
+        return f"roi_{self._roi_id_counter}"
+
+    def get_list_of_roi_names(self) -> list[str]:
+        """
+        Get a list of rois available in the model
+        """
+        return list(self._roi_ranges.keys())
 
     def set_stack(self, stack: Optional[ImageStack]) -> None:
         self._stack = stack
@@ -38,8 +53,15 @@ class SpectrumViewerWindowModel:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        self.set_roi(ALL, SensibleROI.from_list([0, 0, width, height]))
+        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
+
+    def set_new_roi(self, name: str) -> None:
+        """
+        Sets a new ROI with the given name
+        """
+        height, width = self.get_image_shape()
+        self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
 
     def set_normalise_stack(self, normalise_stack: Optional[ImageStack]) -> None:
         self._normalise_stack = normalise_stack
@@ -47,7 +69,15 @@ class SpectrumViewerWindowModel:
     def set_roi(self, roi_name: str, roi: SensibleROI):
         self._roi_ranges[roi_name] = roi
 
-    def get_roi(self, roi_name: str):
+    def get_roi(self, roi_name: str) -> SensibleROI:
+        """
+        Get the ROI with the given name from the model
+
+        :param roi_name: The name of the ROI to get
+        :return: The ROI with the given name
+        """
+        if roi_name not in self._roi_ranges.keys():
+            raise KeyError(f"ROI {roi_name} does not exist")
         return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> Optional['np.ndarray']:
@@ -106,13 +136,19 @@ class SpectrumViewerWindowModel:
         return self._stack is not None
 
     def save_csv(self, path: Path, normalized: bool) -> None:
+        """
+        Iterates over all ROIs and saves the spectrum for each one to a CSV file.
+
+        :param path: The path to save the CSV file to.
+        :param normalized: Whether to save the normalized spectrum.
+        """
         if self._stack is None:
             raise ValueError("No stack selected")
 
         csv_output = CSVOutput()
         csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
 
-        for roi_name in (ALL, "roi"):
+        for roi_name in self.get_list_of_roi_names():
             csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
             if normalized:
                 if self._normalise_stack is None:

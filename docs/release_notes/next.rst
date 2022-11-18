@@ -5,8 +5,8 @@ This contains changes for the next not yet released Mantid Imaging versions.
 
 New Features and improvements
 -----------------------------
-
 - #1601 : arithmetic filter optimisation
+- #1620 : Add multiple ROI to spectrum viewer
 - #1616 : Change selected stack with single click on tree widget
 - #1625 : Allow adding extra stacks to a dataset
 - #1625 : Load recons to an existing dataset
