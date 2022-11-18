@@ -15,6 +15,49 @@ if TYPE_CHECKING:
     from .view import SpectrumViewerWindowView
 
 
+class SpectrumROI(ROI):
+    """
+    Spectrum ROI object subclassed from pyqtgraph ROI containing ROI and associated data.
+
+    :param name: Name of the ROI
+    :param sensible_roi: Sensible ROI object containing the ROI data
+    :param args: Arguments to pass to the ROI object
+    :param kwargs: Keyword arguments to pass to the ROI object
+    """
+    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._name = name
+        self._colour = (0, 0, 0)
+        self.setPos((sensible_roi.left, sensible_roi.top))
+        self.setSize((sensible_roi.width, sensible_roi.height))
+        self.maxBounds = self.parentBounds()
+        self.addScaleHandle([1, 1], [0, 0])
+        self.addScaleHandle([1, 0], [0, 1])
+        self.addScaleHandle([0, 0], [1, 1])
+        self.addScaleHandle([0, 1], [1, 0])
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self._name = name
+
+    @property
+    def roi(self) -> ROI:
+        return self
+
+    @property
+    def colour(self) -> tuple[int, int, int]:
+        return self._colour
+
+    @colour.setter
+    def colour(self, colour: tuple[int, int, int]) -> None:
+        self._colour = colour
+        self.setPen(self._colour)
+
+
 class SpectrumWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     spectrum: PlotItem
@@ -45,8 +88,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         self.roi_dict = {}
 
-        self.max_roi_size = [0, 0]
-
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
         self.range_control.setRegion((range_min, range_max))
@@ -70,7 +111,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
                               (211, 95, 183), (0, 90, 181), (220, 50, 43), (26, 133, 255), (212, 17, 89)]
         return random.choice(accessible_colours)
 
-    def add_roi(self, roi: SensibleROI, name: str = None) -> None:
+    def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
         Add an ROI to the image view.
 
@@ -78,25 +119,15 @@ class SpectrumWidget(GraphicsLayoutWidget):
         :param name: The name of the ROI.
         """
 
-        my_roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
-        roi_colour = self.random_colour_generator()
-        my_roi.setPen(roi_colour)
-        my_roi.setPos((roi.left, roi.top))
-        my_roi.setSize((roi.width, roi.height))
-        my_roi.maxBounds = my_roi.parentBounds()
-        my_roi.addScaleHandle([1, 1], [0, 0])
-        my_roi.addScaleHandle([1, 0], [0, 1])
-        my_roi.addScaleHandle([0, 0], [1, 1])
-        my_roi.addScaleHandle([0, 1], [1, 0])
+        roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
+        roi_object.colour = self.random_colour_generator()
 
-        self.max_roi_size[0] = roi.width
-        self.max_roi_size[1] = roi.height
-
-        self.roi_dict[name] = my_roi
+        self.roi_dict[name] = roi_object.roi
+        self.max_roi_size = roi_object.size()
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
 
-    def get_roi(self, roi_name: str = None) -> SensibleROI:
+    def get_roi(self, roi_name: str) -> SensibleROI:
         """
         Get the ROI with the given name. If no name is given, the default ROI is returned.
 
@@ -109,7 +140,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
             return SensibleROI.from_points(pos, size)
         elif roi_name == "all":
             pos = CloseEnoughPoint((0, 0))
-            size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
+            size = CloseEnoughPoint(self.max_roi_size)
             return SensibleROI.from_points(pos, size)
         else:
             raise KeyError("ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'".format(
