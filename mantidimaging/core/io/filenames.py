@@ -3,7 +3,7 @@
 
 from pathlib import Path
 import re
-from typing import List, Iterator, Optional
+from typing import List, Iterator, Optional, Union
 from logging import getLogger
 
 LOG = getLogger(__name__)
@@ -81,7 +81,8 @@ class FilenameGroup:
         self.log_path: Optional[Path] = None
 
     @classmethod
-    def from_file(cls, path: Path) -> "FilenameGroup":
+    def from_file(cls, path: Union[Path, str]) -> "FilenameGroup":
+        path = Path(path)
         if path.is_dir():
             raise ValueError(f"path is a directory: {path}")
         directory = path.parent

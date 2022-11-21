@@ -4,6 +4,7 @@ import traceback
 import uuid
 from enum import Enum, auto
 from logging import getLogger, Logger
+from pathlib import Path
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
 import numpy as np
@@ -111,7 +112,7 @@ class MainWindowPresenter(BasePresenter):
                 return stack_id.id
         return None
 
-    def add_log_to_sample(self, stack_id: uuid.UUID, log_file: str) -> None:
+    def add_log_to_sample(self, stack_id: uuid.UUID, log_file: Path) -> None:
         self.model.add_log_to_sample(stack_id, log_file)
 
     def _do_rename_stack(self, current_name: str, new_name: str) -> None:

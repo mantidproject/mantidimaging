@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
-                                           find_images, find_first_file_that_is_possibly_a_sample, find_log,
+                                           find_images, find_first_file_that_is_possibly_a_sample, find_log_for_image,
                                            find_180deg_proj)
 from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
@@ -88,7 +88,7 @@ def read_in_file_information(input_path: str,
     return fi
 
 
-def load_log(log_file: str) -> IMATLogFile:
+def load_log(log_file: Path) -> IMATLogFile:
     with open(log_file, 'r') as f:
         return IMATLogFile(f.readlines(), log_file)
 
@@ -158,15 +158,6 @@ def load(input_path: Optional[str] = None,
     return image_stack
 
 
-def find_and_verify_sample_log(sample_directory: str, image_filenames: List[str]) -> str:
-    sample_log = find_log(dirname=Path(sample_directory), log_name=sample_directory)
-
-    log = load_log(sample_log)
-    log.raise_if_angle_missing(image_filenames)
-
-    return sample_log
-
-
 def create_loading_parameters_for_file_path(file_path: str,
                                             logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
@@ -184,10 +175,11 @@ def create_loading_parameters_for_file_path(file_path: str,
                                               in_prefix=get_prefix(sample_file),
                                               in_format=image_format)
 
-    try:
-        sample_log: Optional[str] = find_and_verify_sample_log(sample_directory, last_file_info.filenames)
-    except FileNotFoundError:
-        sample_log = None
+    sample_log: Optional[Path] = find_log_for_image(Path(sample_file))
+
+    if sample_log is not None:
+        log = load_log(sample_log)
+        log.raise_if_angle_missing(last_file_info.filenames)
 
     loading_parameters.sample = ImageParameters(input_path=sample_directory,
                                                 format=image_format,
@@ -204,7 +196,7 @@ def create_loading_parameters_for_file_path(file_path: str,
     if len(flat_before_images) > 0:
         flat_before_image = flat_before_images[0]
         flat_before_directory = os.path.dirname(flat_before_image)
-        flat_before_log = find_log(Path(sample_directory), flat_before_directory, logger)
+        flat_before_log = find_log_for_image(Path(flat_before_image))
 
         loading_parameters.flat_before = ImageParameters(input_path=flat_before_directory,
                                                          format=image_format,
@@ -220,7 +212,7 @@ def create_loading_parameters_for_file_path(file_path: str,
     if len(flat_after_images) > 0:
         flat_after_image = flat_after_images[0]
         flat_after_directory = os.path.dirname(flat_after_image)
-        flat_after_log = find_log(Path(sample_directory), flat_after_directory, logger)
+        flat_after_log = find_log_for_image(Path(flat_after_image))
 
         loading_parameters.flat_after = ImageParameters(input_path=flat_after_directory,
                                                         format=image_format,

@@ -72,36 +72,36 @@ class LoaderTest(TestCase):
         flat_before = lp.flat_before
         self.assertEqual(image_format, flat_before.format)
         self.assertEqual(None, flat_before.indices)
-        self.assertEqual("/b/Flat_Before_log.txt", flat_before.log_file)
-        self.assertEqual("/b/Flat_Before", flat_before.input_path)
-        self.assertEqual("/b/Flat_Before/Flat_Before", flat_before.prefix)
+        self._files_equal("/b/Flat_Before_log.txt", flat_before.log_file)
+        self._files_equal("/b/Flat_Before", flat_before.input_path)
+        self._files_equal("/b/Flat_Before/Flat_Before", flat_before.prefix)
 
         # Flat after checking
         flat_after = lp.flat_after
         self.assertEqual(image_format, flat_after.format)
         self.assertEqual(None, flat_after.indices)
-        self.assertEqual("/b/Flat_After_log.txt", flat_after.log_file)
-        self.assertEqual("/b/Flat_After", flat_after.input_path)
-        self.assertEqual("/b/Flat_After/Flat_After", flat_after.prefix)
+        self._files_equal("/b/Flat_After_log.txt", flat_after.log_file)
+        self._files_equal("/b/Flat_After", flat_after.input_path)
+        self._files_equal("/b/Flat_After/Flat_After", flat_after.prefix)
 
         # Dark before checking
         dark_before = lp.dark_before
         self.assertEqual(image_format, dark_before.format)
         self.assertEqual(None, dark_before.indices)
-        self.assertEqual("/b/Dark_Before", dark_before.input_path)
-        self.assertEqual("/b/Dark_Before/Dark_Before", dark_before.prefix)
+        self._files_equal("/b/Dark_Before", dark_before.input_path)
+        self._files_equal("/b/Dark_Before/Dark_Before", dark_before.prefix)
 
         # Dark after checking
         dark_after = lp.dark_after
         self.assertEqual(image_format, dark_after.format)
         self.assertEqual(None, dark_after.indices)
-        self.assertEqual("/b/Dark_After", dark_after.input_path)
-        self.assertEqual("/b/Dark_After/Dark_After", dark_after.prefix)
+        self._files_equal("/b/Dark_After", dark_after.input_path)
+        self._files_equal("/b/Dark_After/Dark_After", dark_after.prefix)
 
         # 180 degree checking
         proj180 = lp.proj_180deg
         self.assertEqual(image_format, proj180.format)
         self.assertEqual(None, proj180.indices)
-        self.assertEqual("/b/180deg/180deg_000.tif", proj180.input_path)
+        self._files_equal("/b/180deg/180deg_000.tif", proj180.input_path)
         self.assertEqual(None, proj180.log_file)
-        self.assertEqual("/b/180deg/180deg", proj180.prefix)
+        self._files_equal("/b/180deg/180deg", proj180.prefix)

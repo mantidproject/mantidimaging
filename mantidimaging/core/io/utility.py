@@ -10,6 +10,10 @@ from logging import getLogger, Logger
 from pathlib import Path
 from typing import List, Optional, Union, Tuple
 
+from mantidimaging.core.io.filenames import FilenameGroup
+
+log = getLogger(__name__)
+
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
 SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
@@ -69,7 +73,6 @@ def get_file_names(path: Optional[Union[Path, str]],
 
     :return: All the file names, sorted by ascending
     """
-    log = getLogger(__name__)
 
     # Return no found files on None path
     if path is None:
@@ -163,21 +166,13 @@ def find_images(sample_dirname: Path,
     return []
 
 
-def find_log(dirname: Path, log_name: str, logger: Logger = None) -> str:
-    """
-
-    :param dirname: The directory in which the sample images were found
-    :param log_name: The log name is typically the directory name of the sample
-    :param logger: The logger that find_log should report back via, should an error occur.
-    :return:
-    """
-    expected_path = dirname / '..'
-    try:
-        return get_file_names(expected_path.absolute(), "txt", prefix=log_name)[0]
-    except RuntimeError:
-        if logger is not None:
-            logger.info(f"Could not find a log file for {log_name} in {dirname}")
-    return ""
+def find_log_for_image(image_file_name: Path) -> Optional[Path]:
+    fg = FilenameGroup.from_file(image_file_name)
+    fg.find_log_file()
+    if fg.log_path is None:
+        log.info(f"Could not find a log file for {image_file_name}")
+        return None
+    return fg.log_path
 
 
 def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Optional[Logger] = None) -> str:
