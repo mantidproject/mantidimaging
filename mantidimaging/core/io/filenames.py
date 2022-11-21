@@ -108,7 +108,7 @@ class FilenameGroup:
                 self.metadata_path = filename
         self.all_indexes.sort()
 
-    def find_log_file(self):
+    def find_log_file(self) -> None:
         parent_directory = self.directory.parent
         log_pattern = self.directory.name + "*" + ".txt"
         log_paths = list(parent_directory.glob(log_pattern))

@@ -105,7 +105,7 @@ def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progre
 def load_stack(file_path: str, progress: Optional[Progress] = None) -> ImageStack:
     image_format = get_file_extension(file_path)
     prefix = get_prefix(file_path)
-    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)  # type: ignore
+    file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)
 
     return load(file_names=file_names, progress=progress)
 
