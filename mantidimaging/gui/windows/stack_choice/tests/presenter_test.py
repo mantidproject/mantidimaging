@@ -15,28 +15,29 @@ from mantidimaging.core.data.imagestack import ImageStack
 
 
 class StackChoicePresenterTest(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
+    def setUp(self, _):
         self.original_stack = th.generate_images()
         self.new_stack = th.generate_images()
-        self.v = mock.MagicMock()
         self.op_p = mock.MagicMock()
         self.uuid = uuid4()
         self.p = StackChoicePresenter(original_stack=self.original_stack,
                                       new_stack=self.new_stack,
                                       operations_presenter=self.op_p,
-                                      stack_uuid=self.uuid,
-                                      view=self.v)
+                                      stack_uuid=self.uuid)
+        self.v = self.p.view
 
-    def test_presenter_doesnt_raise_lists_for_original_stack(self):
+    @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
+    def test_presenter_doesnt_raise_lists_for_original_stack(self, _):
         single_stack_uuid = uuid4()
         original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
-        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid, mock.MagicMock())
+        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid)
 
     @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
     def test_presenter_throws_if_uuid_is_not_in_stack(self, _):
         original_stack = [(th.generate_images(), uuid4()), (th.generate_images(), uuid4())]
         with self.assertRaises(RuntimeError):
-            StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), uuid4(), None)
+            StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), uuid4())
 
     def test_show_calls_show_in_the_view(self):
         self.p.show()

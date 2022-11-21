@@ -21,23 +21,17 @@ def _get_stack_from_uuid(original_stack, stack_uuid):
 
 
 class StackChoicePresenter(StackChoicePresenterMixin):
-    def __init__(self,
-                 original_stack: Union[List[Tuple[ImageStack, UUID]], ImageStack],
-                 new_stack: ImageStack,
-                 operations_presenter: 'FiltersWindowPresenter',
-                 stack_uuid: Optional[UUID],
-                 view: Optional[StackChoiceView] = None):
+    def __init__(self, original_stack: Union[List[Tuple[ImageStack, UUID]], ImageStack], new_stack: ImageStack,
+                 operations_presenter: 'FiltersWindowPresenter', stack_uuid: Optional[UUID]):
         self.operations_presenter = operations_presenter
 
-        if view is None:
-            # Check if multiple stacks to choose from
-            if isinstance(original_stack, list):
-                self.original_stack = _get_stack_from_uuid(original_stack, stack_uuid)
-            else:
-                self.original_stack = original_stack
-            view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
+        # Check if multiple stacks to choose from
+        if isinstance(original_stack, list):
+            self.original_stack = _get_stack_from_uuid(original_stack, stack_uuid)
+        else:
+            self.original_stack = original_stack
 
-        self.view = view
+        self.view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
         self.new_stack = new_stack
         self.stack_uuid = stack_uuid
         self.done = False
