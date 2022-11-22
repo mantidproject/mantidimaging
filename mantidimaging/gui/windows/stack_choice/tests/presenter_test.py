@@ -23,15 +23,14 @@ class StackChoicePresenterTest(unittest.TestCase):
         self.uuid = uuid4()
         self.p = StackChoicePresenter(original_stack=self.original_stack,
                                       new_stack=self.new_stack,
-                                      operations_presenter=self.op_p,
-                                      stack_uuid=self.uuid)
+                                      operations_presenter=self.op_p)
         self.v = self.p.view
 
     @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
     def test_presenter_doesnt_raise_lists_for_original_stack(self, _):
         single_stack_uuid = uuid4()
         original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
-        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid)
+        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock())
 
     def test_show_calls_show_in_the_view(self):
         self.p.show()

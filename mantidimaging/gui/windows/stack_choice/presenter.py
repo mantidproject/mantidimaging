@@ -2,8 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import traceback
-from typing import TYPE_CHECKING, Optional
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
@@ -15,14 +14,13 @@ if TYPE_CHECKING:
 
 class StackChoicePresenter(StackChoicePresenterMixin):
     def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
-                 operations_presenter: 'FiltersWindowPresenter', stack_uuid: Optional[UUID]):
+                 operations_presenter: 'FiltersWindowPresenter'):
 
         self.operations_presenter = operations_presenter
         self.original_stack = original_stack
 
         self.view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
         self.new_stack = new_stack
-        self.stack_uuid = stack_uuid
         self.done = False
         self.use_new_data = False
 

@@ -132,7 +132,7 @@ class TestGuiSystemOperations(GuiSystemBase):
 
         def mock_wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
             print("mock_wait_for_stack_choice")
-            stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
+            stack_choice = StackChoicePresenter(self.original_images_stack[stack_uuid], new_stack, self)
             stack_choice.show()
             QTest.qWait(SHOW_DELAY)
             if keep_stack == "new":
