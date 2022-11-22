@@ -676,6 +676,46 @@ class MainWindowPresenter(BasePresenter):
             container_id = self.get_dataset_id_for_stack(container_id)
         self.view.show_add_stack_to_existing_dataset_dialog(container_id)
 
+    @staticmethod
+    def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
+        """
+        Find the data type as a string of a stack.
+        :param stack_id: The ID of the stack.
+        :param dataset: The parent dataset of the stack.
+        :return: A string of the stack's data type.
+        """
+        if stack_id in [recon.id for recon in dataset.recons]:
+            return "Recon"
+        if isinstance(dataset, MixedDataset):
+            return "Images"
+        if stack_id == dataset.sample.id:
+            return "Sample"
+        if stack_id == dataset.flat_before.id:
+            return "Flat Before"
+        if stack_id == dataset.flat_after.id:
+            return "Flat After"
+        if stack_id == dataset.dark_before.id:
+            return "Dark Before"
+        if stack_id == dataset.dark_after.id:
+            return "Dark After"
+
+    def _create_dataset_info_dict(self):
+        move_stack_ds = dict()
+        for key in self.model.datasets.keys():
+            move_stack_ds[self.model.datasets[key].name] = isinstance(self.model.datasets[key], StrictDataset)
+        return move_stack_ds
+
+    def _show_move_stack_dialog(self, stack_id: uuid.UUID):
+        """
+        Shows the move stack dialog.
+        :param stack_id: The ID of the stack to move.
+        """
+        dataset_id = self.get_dataset_id_for_stack(stack_id)
+        dataset = self.get_dataset(dataset_id)
+        stack_data_type = self._get_stack_data_type(stack_id, dataset)
+        self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type,
+                                         self._create_dataset_info_dict())
+
     def _add_images_to_existing_dataset(self):
         """
         Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if
