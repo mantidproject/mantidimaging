@@ -34,6 +34,10 @@ class MoveStackDialog(BaseDialogView):
         self._create_destination_type_options(self._destination_dataset_is_strict)
 
     def _create_destination_type_options(self, destination_dataset_is_strict: bool):
+        """
+        Create optional data types for the destination depending on where the destination dataset is strict or mixed.
+        :param destination_dataset_is_strict: Whether the destination dataset is strict.
+        """
         if destination_dataset_is_strict:
             self.destinationTypeComboBox.addItems(
                 ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"])
@@ -44,6 +48,9 @@ class MoveStackDialog(BaseDialogView):
         self.presenter.notify(Notification.ACCEPTED)
 
     def _on_destination_dataset_change(self):
+        """
+        Check if the new dataset selection is strict or mixed and change the data type accordingly.
+        """
         selected_dataset_is_strict = self.destination_dataset_info[self.destinationNameComboBox.currentText()]
         if selected_dataset_is_strict == self._destination_dataset_is_strict:
             return
