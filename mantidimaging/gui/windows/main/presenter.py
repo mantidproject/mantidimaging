@@ -52,6 +52,7 @@ class Notification(Enum):
     SHOW_ADD_STACK_DIALOG = auto()
     DATASET_ADD = auto()
     TAB_CLICKED = auto()
+    SHOW_MOVE_STACK_DIALOG = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -89,6 +90,8 @@ class MainWindowPresenter(BasePresenter):
                 self._add_images_to_existing_dataset()
             elif signal == Notification.TAB_CLICKED:
                 self._on_tab_clicked(**baggage)
+            elif signal == Notification.SHOW_MOVE_STACK_DIALOG:
+                self._show_move_stack_dialog(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -393,6 +396,13 @@ class MainWindowPresenter(BasePresenter):
     @property
     def all_dataset_ids(self) -> Iterable[uuid.UUID]:
         return self.model.datasets.keys()
+
+    @property
+    def all_stack_ids(self) -> Iterable[uuid.UUID]:
+        stack_ids = []
+        for ds in self.model.datasets.values():
+            stack_ids += ds.all_image_ids
+        return stack_ids
 
     @property
     def stack_visualiser_names(self) -> List[str]:
