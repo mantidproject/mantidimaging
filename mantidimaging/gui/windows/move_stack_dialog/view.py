@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QLabel, QComboBox
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.move_stack_dialog.presenter import MoveStackPresenter, Notification
 
+STRICT_DATASET_ATTRS = ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"]
+
 
 class MoveStackDialog(BaseDialogView):
 
@@ -32,8 +34,9 @@ class MoveStackDialog(BaseDialogView):
 
         self.destinationNameComboBox.addItems([name for name in is_dataset_strict.keys()])
         self._destination_dataset_is_strict = is_dataset_strict[self.destinationNameComboBox.currentText()]
-        self._create_destination_type_options(self._destination_dataset_is_strict)
+
         self.destinationNameComboBox.currentIndexChanged.connect(self._on_destination_dataset_changed)
+        self._create_destination_type_options(self._destination_dataset_is_strict)
 
     def _create_destination_type_options(self, destination_dataset_is_strict: bool):
         """
@@ -41,8 +44,10 @@ class MoveStackDialog(BaseDialogView):
         :param destination_dataset_is_strict: Whether the destination dataset is strict.
         """
         if destination_dataset_is_strict:
-            self.destinationTypeComboBox.addItems(
-                ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"])
+            if self.destinationNameComboBox.currentText() == self.originDatasetName.text():
+                self.destinationTypeComboBox.addItems(set(STRICT_DATASET_ATTRS) - {self.originDataType.text()})
+            else:
+                self.destinationTypeComboBox.addItems(STRICT_DATASET_ATTRS)
         else:
             self.destinationTypeComboBox.addItems(["Images", "Recon"])
 
@@ -54,9 +59,6 @@ class MoveStackDialog(BaseDialogView):
         Check if the new dataset selection is strict or mixed and change the data type accordingly.
         """
         selected_dataset_is_strict = self.destination_dataset_info[self.destinationNameComboBox.currentText()]
-        if selected_dataset_is_strict == self._destination_dataset_is_strict:
-            return
-
         self.destinationTypeComboBox.clear()
         self._create_destination_type_options(selected_dataset_is_strict)
         self._destination_dataset_is_strict = selected_dataset_is_strict
