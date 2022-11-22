@@ -709,7 +709,11 @@ class MainWindowPresenter(BasePresenter):
         if stack_id == dataset.dark_after.id:
             return "Dark After"
 
-    def _create_dataset_info_dict(self):
+    def _create_dataset_is_strict_dict(self) -> Dict[str, bool]:
+        """
+        Create the dictionary containing the is-strict information that will be used by the MoveStackDialog class.
+        :return: The dictionary with the dataset name and bool indicating if it is strict.
+        """
         move_stack_ds = dict()
         for key in self.model.datasets.keys():
             move_stack_ds[self.model.datasets[key].name] = isinstance(self.model.datasets[key], StrictDataset)
@@ -724,7 +728,7 @@ class MainWindowPresenter(BasePresenter):
         dataset = self.get_dataset(dataset_id)
         stack_data_type = self._get_stack_data_type(stack_id, dataset)
         self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type,
-                                         self._create_dataset_info_dict())
+                                         self._create_dataset_is_strict_dict())
 
     def _add_images_to_existing_dataset(self):
         """

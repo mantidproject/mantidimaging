@@ -642,6 +642,7 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
 
     def show_move_stack_dialog(self, dataset_id: uuid.UUID, stack_id: uuid.UUID, dataset_name: str,
-                               stack_data_type: str, datasets_info: Dict[bool]):
-        self.move_stack_dialog = MoveStackDialog(self, dataset_id, dataset_name, stack_data_type, datasets_info)
+                               stack_data_type: str, is_dataset_strict: Dict[str, bool]):
+        self.move_stack_dialog = MoveStackDialog(self, dataset_id, stack_id, dataset_name, stack_data_type,
+                                                 is_dataset_strict)
         self.move_stack_dialog.show()
