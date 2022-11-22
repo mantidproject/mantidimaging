@@ -17,21 +17,23 @@ class MoveStackDialog(BaseDialogView):
     destinationNameComboBox: QComboBox
     destinationTypeComboBox: QComboBox
 
-    def __init__(self, parent, origin_dataset_id: uuid.UUID, origin_dataset_name: str, origin_data_type: str,
-                 dataset_is_strict: Dict[bool]):
+    def __init__(self, parent, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
+                 origin_data_type: str, is_dataset_strict: Dict[str, bool]):
         super().__init__(parent, 'gui/ui/move_stack_dialog.ui')
 
         self.originDatasetName.setText(origin_dataset_name)
         self.originDataType.setText(origin_data_type)
         self._origin_dataset_id = origin_dataset_id
-        self.destination_dataset_info = dataset_is_strict
+        self.destination_dataset_info = is_dataset_strict
+        self._stack_id = stack_id
 
         self.parent_view = parent
         self.presenter = MoveStackPresenter(self)
 
-        self.destinationNameComboBox.addItems([name for name in dataset_is_strict.keys()])
-        self._destination_dataset_is_strict = dataset_is_strict[self.destinationNameComboBox.currentText()]
+        self.destinationNameComboBox.addItems([name for name in is_dataset_strict.keys()])
+        self._destination_dataset_is_strict = is_dataset_strict[self.destinationNameComboBox.currentText()]
         self._create_destination_type_options(self._destination_dataset_is_strict)
+        self.destinationNameComboBox.currentIndexChanged.connect(self._on_destination_dataset_changed)
 
     def _create_destination_type_options(self, destination_dataset_is_strict: bool):
         """
@@ -47,7 +49,7 @@ class MoveStackDialog(BaseDialogView):
     def _on_accepted(self):
         self.presenter.notify(Notification.ACCEPTED)
 
-    def _on_destination_dataset_change(self):
+    def _on_destination_dataset_changed(self):
         """
         Check if the new dataset selection is strict or mixed and change the data type accordingly.
         """
