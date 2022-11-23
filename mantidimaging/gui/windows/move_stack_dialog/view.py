@@ -74,3 +74,7 @@ class MoveStackDialog(BaseDialogView):
     @property
     def destination_data_type(self) -> str:
         return self.destinationTypeComboBox.currentText()
+
+    @property
+    def destination_dataset_name(self) -> str:
+        return self.destinationNameComboBox.currentText()
