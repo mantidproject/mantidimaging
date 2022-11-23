@@ -51,8 +51,9 @@ class MoveStackDialog(BaseDialogView):
         else:
             self.destinationTypeComboBox.addItems(["Images", "Recon"])
 
-    def _on_accepted(self):
+    def accept(self):
         self.presenter.notify(Notification.ACCEPTED)
+        self.close()
 
     def _on_destination_dataset_changed(self):
         """
