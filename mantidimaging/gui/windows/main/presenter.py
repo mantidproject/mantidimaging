@@ -799,14 +799,17 @@ class MainWindowPresenter(BasePresenter):
 
         origin_dataset = self.get_dataset(origin_dataset_id)
         stack_to_move = self.get_stack(stack_id)
+        self.remove_item_from_tree_view(stack_id)
 
         destination_dataset = self.model.get_dataset_by_name(destination_dataset_name)
         if destination_data_type is RECON_TEXT:
             destination_dataset.add_recon(stack_to_move)
         elif isinstance(destination_dataset, MixedDataset):
             destination_dataset.add_stack(stack_to_move)
+            self.add_child_item_to_tree_view(destination_dataset.id, stack_to_move.id, destination_data_type)
         else:
             image_attr = destination_data_type.replace(" ", "_").lower()
             setattr(destination_dataset, image_attr, stack_to_move)
+            self.add_child_item_to_tree_view(destination_dataset.id, stack_to_move.id, destination_data_type)
 
         origin_dataset.delete_stack(stack_id)
