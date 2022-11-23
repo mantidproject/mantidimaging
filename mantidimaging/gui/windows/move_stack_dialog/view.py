@@ -62,3 +62,15 @@ class MoveStackDialog(BaseDialogView):
         self.destinationTypeComboBox.clear()
         self._create_destination_type_options(selected_dataset_is_strict)
         self._destination_dataset_is_strict = selected_dataset_is_strict
+
+    @property
+    def origin_dataset_id(self) -> uuid.UUID:
+        return self._origin_dataset_id
+
+    @property
+    def stack_id(self) -> uuid.UUID:
+        return self._stack_id
+
+    @property
+    def destination_data_type(self) -> str:
+        return self.destinationTypeComboBox.currentText()
