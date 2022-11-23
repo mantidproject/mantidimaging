@@ -30,5 +30,5 @@ class MoveStackPresenter(BasePresenter):
         stack_id = self.view.stack_id
         destination_data_type = self.view.destination_data_type
         destination_dataset_name = self.view.destination_dataset_name
-        self.view.parent_view.presenter.execute_move_stack(origin_dataset_id, stack_id, destination_data_type,
-                                                           destination_dataset_name)
+        self.view.parent_view.execute_move_stack(origin_dataset_id, stack_id, destination_data_type,
+                                                 destination_dataset_name)
