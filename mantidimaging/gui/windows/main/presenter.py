@@ -93,6 +93,8 @@ class MainWindowPresenter(BasePresenter):
                 self._on_tab_clicked(**baggage)
             elif signal == Notification.SHOW_MOVE_STACK_DIALOG:
                 self._show_move_stack_dialog(**baggage)
+            elif signal == Notification.MOVE_STACK:
+                self._move_stack(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -791,3 +793,7 @@ class MainWindowPresenter(BasePresenter):
                 self._delete_stack(prev_images_id)
 
             setattr(dataset, image_attr, new_images)
+
+    def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_data_type: str,
+                    destination_dataset_name: str):
+        pass
