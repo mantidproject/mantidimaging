@@ -326,11 +326,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter._do_apply_filter = mock.MagicMock()  # type: ignore
         task = mock.MagicMock()
         task.error = None
+        self.presenter.original_images_stack = {stack.id: mock.Mock() for stack in self.mock_stacks}
 
         self.presenter._post_filter(self.mock_stacks, task)
 
         self.assertEqual(2, stack_choice_presenter.call_count)
         self.assertEqual(2, stack_choice_presenter.return_value.show.call_count)
+        self.assertDictEqual(self.presenter.original_images_stack, {})
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.StackChoicePresenter')
     def test_unchecked_safe_apply_does_not_start_stack_choice_presenter(self, stack_choice_presenter):
@@ -347,15 +349,16 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_original_stack_assigned_when_safe_apply_checked(self, _):
         stack = mock.MagicMock()
+        stack.id = "123"
         self.presenter.stack = stack
-        stack_data = "THIS IS USEFUL STACK DATA"
-        stack.copy.return_value = stack_data
+        stack_copy = "THIS IS USEFUL STACK DATA"
+        stack.copy.return_value = stack_copy
         self.presenter._do_apply_filter = mock.MagicMock()
 
         self.presenter.do_apply_filter()
 
         stack.copy.assert_called_once()
-        self.assertEqual(stack_data, self.presenter.original_images_stack)
+        self.assertDictEqual({stack.id: stack_copy}, self.presenter.original_images_stack)
 
     def test_set_filter_by_name(self):
         NAME = "ROI Normalisation"
