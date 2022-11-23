@@ -331,8 +331,13 @@ class MainWindowView(BaseMainWindowView):
     def execute_add_to_dataset(self):
         self.presenter.notify(PresNotification.DATASET_ADD)
 
-    def execute_move_stack(self):
-        self.presenter.notify(PresNotification.MOVE_STACK)
+    def execute_move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_data_type: str,
+                           destination_dataset_name: str):
+        self.presenter.notify(PresNotification.MOVE_STACK,
+                              origin_dataset_id=origin_dataset_id,
+                              stack_id=stack_id,
+                              destination_data_type=destination_data_type,
+                              destination_dataset_name=destination_dataset_name)
 
     def show_image_save_dialog(self):
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
