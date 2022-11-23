@@ -796,4 +796,17 @@ class MainWindowPresenter(BasePresenter):
 
     def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_data_type: str,
                     destination_dataset_name: str):
-        pass
+
+        origin_dataset = self.get_dataset(origin_dataset_id)
+        stack_to_move = self.get_stack(stack_id)
+
+        destination_dataset = self.model.get_dataset_by_name(destination_dataset_name)
+        if destination_data_type is RECON_TEXT:
+            destination_dataset.add_recon(stack_to_move)
+        elif isinstance(destination_dataset, MixedDataset):
+            destination_dataset.add_stack(stack_to_move)
+        else:
+            image_attr = destination_data_type.replace(" ", "_").lower()
+            setattr(destination_dataset, image_attr, stack_to_move)
+
+        origin_dataset.delete_stack(stack_id)
