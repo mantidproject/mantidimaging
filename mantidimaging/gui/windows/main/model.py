@@ -242,3 +242,9 @@ class MainWindowModel(object):
 
     def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
         return self.datasets[parent_id].recons.id
+
+    def get_dataset_by_name(self, dataset_name: str):
+        for ds in self.datasets.values():
+            if ds.name == dataset_name:
+                return ds
+        raise RuntimeError(f"Failed to get Dataset with name {dataset_name}")
