@@ -53,6 +53,7 @@ class Notification(Enum):
     DATASET_ADD = auto()
     TAB_CLICKED = auto()
     SHOW_MOVE_STACK_DIALOG = auto()
+    MOVE_STACK = auto()
 
 
 class MainWindowPresenter(BasePresenter):

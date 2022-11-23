@@ -331,6 +331,9 @@ class MainWindowView(BaseMainWindowView):
     def execute_add_to_dataset(self):
         self.presenter.notify(PresNotification.DATASET_ADD)
 
+    def execute_move_stack(self):
+        self.presenter.notify(PresNotification.MOVE_STACK)
+
     def show_image_save_dialog(self):
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
         self.image_save_dialog.show()
