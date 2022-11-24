@@ -7,7 +7,7 @@ from unittest import mock
 
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
-from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, logger, FILE_TYPES, TypeInfo
+from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, FILE_TYPES, TypeInfo
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
@@ -88,7 +88,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
                                     look_without_suffix=False,
                                     image_format=image_format)
         self.assertEqual(4, find_images.call_count)
-        find_180deg_proj.assert_called_once_with(Path(dirname), image_format, logger)
+        find_180deg_proj.assert_called_once_with(Path(dirname), image_format)
         self.assertEqual(self.fields["Sample Log"].path, 3)
         self.assertEqual(self.fields["Flat Before Log"].path, 3)
         self.assertFalse(self.fields["Flat Before Log"].use)

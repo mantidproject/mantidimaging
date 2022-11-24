@@ -99,7 +99,7 @@ class LoadPresenter:
                 field.set_images(images)
             elif file_info.mode == "180":
                 field = self.view.fields[file_info_name]
-                field.path = find_180deg_proj(sample_dirname, self.image_format, logger)
+                field.path = find_180deg_proj(sample_dirname, self.image_format)
 
         try:
             self.set_sample_log(self.view.fields["Sample Log"], self.last_file_info.filenames)

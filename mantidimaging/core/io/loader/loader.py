@@ -237,7 +237,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                         format=image_format)
 
     # 180 Degree projection
-    proj_180deg = find_180deg_proj(Path(sample_directory), image_format, logger)
+    proj_180deg = find_180deg_proj(Path(sample_directory), image_format)
     if proj_180deg != "":
         loading_parameters.proj_180deg = ImageParameters(input_path=proj_180deg,
                                                          prefix=get_prefix(proj_180deg),
