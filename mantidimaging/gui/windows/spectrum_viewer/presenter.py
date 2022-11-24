@@ -140,3 +140,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.auto_range_image()
+        self.do_add_roi_to_table(roi_name)
+
+    def do_add_roi_to_table(self, roi_name: str) -> None:
+        """
+        Add a given ROI to the table
+        """
+        # self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        row = self.model.selected_row
+        roi_colour = self.view.spectrum.roi_dict[roi_name].colour
+        print(
+            f"Presenter row, roi_name and colour to be sent to view add_roi_table_row: {row}, {roi_name}, {roi_colour}")
+        self.view.add_roi_table_row(row, roi_name, roi_colour)
