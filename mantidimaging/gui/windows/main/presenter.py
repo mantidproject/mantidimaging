@@ -760,6 +760,11 @@ class MainWindowPresenter(BasePresenter):
         self.view.model_changed.emit()
 
     def _add_recon_to_dataset_and_tree_view(self, dataset: Union[MixedDataset, StrictDataset], recon: ImageStack):
+        """
+        Adds a recon to the dataset and updates the tree view.
+        :param dataset: The dataset.
+        :param recon: The recon ImageStack.
+        """
         dataset.add_recon(recon)
         self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
 
@@ -772,18 +777,18 @@ class MainWindowPresenter(BasePresenter):
         dataset.add_stack(new_images)
         self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
-    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack, images_text: str):
+    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack, stack_type: str):
         """
         Adds or replaces images in a StrictDataset and updates the tree view if required.
         :param dataset: The StrictDataset to change.
         :param new_images: The new images to add.
         """
-        image_attr = images_text.replace(" ", "_").lower()
-        new_images.name = self._create_strict_dataset_stack_name(images_text, dataset.name)
+        image_attr = stack_type.replace(" ", "_").lower()
+        new_images.name = self._create_strict_dataset_stack_name(stack_type, dataset.name)
 
         if getattr(dataset, image_attr) is None:
             # the image type doesn't exist in the dataset
-            self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
+            self.add_child_item_to_tree_view(dataset.id, new_images.id, stack_type)
 
         else:
             # the image type already exists in the dataset and needs to be replaced

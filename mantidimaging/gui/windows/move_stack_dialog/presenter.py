@@ -26,9 +26,8 @@ class MoveStackPresenter(BasePresenter):
             self.view.show_exception(str(err), traceback.format_exc())
 
     def _on_accepted(self):
-        origin_dataset_id = self.view.origin_dataset_id
-        stack_id = self.view.stack_id
-        destination_data_type = self.view.destination_data_type
-        destination_dataset_name = self.view.destination_dataset_name
-        self.view.parent_view.execute_move_stack(origin_dataset_id, stack_id, destination_data_type,
-                                                 destination_dataset_name)
+        """
+        Calls the execute move stack method in the main view.
+        """
+        self.view.parent_view.execute_move_stack(self.view.origin_dataset_id, self.view.stack_id,
+                                                 self.view.destination_stack_type, self.view.destination_dataset_name)
