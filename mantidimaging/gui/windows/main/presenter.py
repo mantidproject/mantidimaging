@@ -703,14 +703,15 @@ class MainWindowPresenter(BasePresenter):
             return "Images"
         if stack_id == dataset.sample.id:
             return "Sample"
-        if stack_id == dataset.flat_before.id:
+        if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
             return "Flat Before"
-        if stack_id == dataset.flat_after.id:
+        if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
             return "Flat After"
-        if stack_id == dataset.dark_before.id:
+        if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
             return "Dark Before"
-        if stack_id == dataset.dark_after.id:
+        if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
             return "Dark After"
+        raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
 
     def _create_dataset_is_strict_dict(self) -> Dict[str, bool]:
         """
@@ -729,6 +730,8 @@ class MainWindowPresenter(BasePresenter):
         """
         dataset_id = self.get_dataset_id_for_stack(stack_id)
         dataset = self.get_dataset(dataset_id)
+        if dataset is None:
+            raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
         stack_data_type = self._get_stack_data_type(stack_id, dataset)
         self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type,
                                          self._create_dataset_is_strict_dict())
@@ -790,25 +793,42 @@ class MainWindowPresenter(BasePresenter):
 
         setattr(dataset, image_attr, new_images)
 
-    def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_data_type: str,
+    def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
                     destination_dataset_name: str):
-
+        """
+        Moves a stack from one dataset to another.
+        :param origin_dataset_id: The ID of the origin dataset.
+        :param stack_id: The ID of the stack to move.
+        :param destination_stack_type: The data type the dataset should be when moved.
+        :param destination_dataset_name: The name of the destination dataset.
+        """
         origin_dataset = self.get_dataset(origin_dataset_id)
+        if origin_dataset is None:
+            raise RuntimeError(
+                f"Unable to find origin dataset with ID {origin_dataset_id} when attempting to move stack")
+
         stack_to_move = self.get_stack(stack_id)
         self.remove_item_from_tree_view(stack_id)
 
         destination_dataset = self.model.get_dataset_by_name(destination_dataset_name)
-        if destination_data_type is RECON_TEXT:
+        if destination_stack_type is RECON_TEXT:
             self._add_recon_to_dataset_and_tree_view(destination_dataset, stack_to_move)
         elif isinstance(destination_dataset, MixedDataset):
             self._add_images_to_existing_mixed_dataset(destination_dataset, stack_to_move)
         else:
-            data_type = self.view.move_stack_dialog.destination_data_type
+            assert self.view.move_stack_dialog is not None
+            data_type = self.view.move_stack_dialog.destination_stack_type
             self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, data_type)
-            stack = self.get_stack(stack_id)
-            stack.name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
+            self.get_stack(stack_id).name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
 
         origin_dataset.delete_stack(stack_id)
 
-    def _create_strict_dataset_stack_name(self, image_type: str, dataset_name: str):
-        return f"{image_type} {dataset_name}"
+    @staticmethod
+    def _create_strict_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
+        """
+        Creates a name for strict dataset stacks by using the dataset name and the image type.
+        :param stack_type: The type of stack in the StrictDataset.
+        :param dataset_name: The name of the dataset.
+        :return: A string for the stack name.
+        """
+        return f"{stack_type} {dataset_name}"
