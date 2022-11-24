@@ -73,7 +73,7 @@ class MoveStackDialog(BaseDialogView):
         return self._stack_id
 
     @property
-    def destination_data_type(self) -> str:
+    def destination_stack_type(self) -> str:
         return self.destinationTypeComboBox.currentText()
 
     @property
