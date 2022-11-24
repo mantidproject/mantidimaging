@@ -167,12 +167,12 @@ def find_images(sample_dirname: Path,
 
 
 def find_log_for_image(image_file_name: Path) -> Optional[Path]:
-    fg = FilenameGroup.from_file(image_file_name)
-    fg.find_log_file()
-    if fg.log_path is None:
+    filename_group = FilenameGroup.from_file(image_file_name)
+    filename_group.find_log_file()
+    if filename_group.log_path is None:
         log.info(f"Could not find a log file for {image_file_name}")
         return None
-    return fg.log_path
+    return filename_group.log_path
 
 
 def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Optional[Logger] = None) -> str:

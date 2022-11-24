@@ -46,8 +46,8 @@ class LoaderTest(TestCase):
             self.fs.create_file(output_directory / filename)
 
         for stack_type in ["Flat_Before", "Flat_After", "Dark_Before", "Dark_After", "Tomo"]:
-            for ii in range(0, 5):
-                filename = Path(output_directory / stack_type / f"{stack_type}_{ii:04d}.tif")
+            for image_number in range(0, 5):
+                filename = Path(output_directory / stack_type / f"{stack_type}_{image_number:04d}.tif")
                 self.fs.create_file(filename)
 
         self.fs.create_file(output_directory / "180deg" / "180deg_000.tif")
