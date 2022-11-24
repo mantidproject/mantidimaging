@@ -95,8 +95,7 @@ class LoadPresenter:
                                      file_info.name,
                                      suffix=file_info.suffix,
                                      look_without_suffix="Before" in file_info_name,
-                                     image_format=self.image_format,
-                                     logger=logger)
+                                     image_format=self.image_format)
                 field.set_images(images)
             elif file_info.mode == "180":
                 field = self.view.fields[file_info_name]
@@ -127,10 +126,10 @@ class LoadPresenter:
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        images = find_images(selected_dir, name, suffix, image_format=self.image_format, logger=logger)
+        images = find_images(selected_dir, name, suffix, image_format=self.image_format)
         if not images:
             base_name = os.path.basename(selected_file).rpartition("_")[0]
-            images = find_images(selected_dir, base_name, "", image_format=self.image_format, logger=logger)
+            images = find_images(selected_dir, base_name, "", image_format=self.image_format)
         field.set_images(images)
 
     def get_parameters(self) -> LoadingParameters:

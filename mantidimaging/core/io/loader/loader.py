@@ -191,8 +191,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                      "Flat",
                                      suffix="Before",
                                      look_without_suffix=True,
-                                     image_format=image_format,
-                                     logger=logger)
+                                     image_format=image_format)
     if len(flat_before_images) > 0:
         flat_before_image = flat_before_images[0]
         flat_before_directory = os.path.dirname(flat_before_image)
@@ -204,11 +203,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                          log_file=flat_before_log)
 
     # Flat after
-    flat_after_images = find_images(Path(sample_directory),
-                                    "Flat",
-                                    suffix="After",
-                                    image_format=image_format,
-                                    logger=logger)
+    flat_after_images = find_images(Path(sample_directory), "Flat", suffix="After", image_format=image_format)
     if len(flat_after_images) > 0:
         flat_after_image = flat_after_images[0]
         flat_after_directory = os.path.dirname(flat_after_image)
@@ -224,8 +219,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                      "Dark",
                                      suffix="Before",
                                      look_without_suffix=True,
-                                     image_format=image_format,
-                                     logger=logger)
+                                     image_format=image_format)
     if len(dark_before_images) > 0:
         dark_before_image = dark_before_images[0]
         dark_before_directory = os.path.dirname(dark_before_image)
@@ -234,11 +228,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                          format=image_format)
 
     # Dark after
-    dark_after_images = find_images(Path(sample_directory),
-                                    "Dark",
-                                    suffix="After",
-                                    image_format=image_format,
-                                    logger=logger)
+    dark_after_images = find_images(Path(sample_directory), "Dark", suffix="After", image_format=image_format)
     if len(dark_after_images) > 0:
         dark_after_image = dark_after_images[0]
         dark_after_directory = os.path.dirname(dark_after_image)

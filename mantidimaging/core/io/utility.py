@@ -140,8 +140,7 @@ def find_images(sample_dirname: Path,
                 image_type: str,
                 suffix: str,
                 image_format: str,
-                look_without_suffix: bool = False,
-                logger: Optional[Logger] = None) -> List[str]:
+                look_without_suffix: bool = False) -> List[str]:
     # same folder
     file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
     if file_names is not None:
@@ -160,8 +159,7 @@ def find_images(sample_dirname: Path,
         try:
             return get_file_names(expected_folder_path.absolute(), image_format)
         except RuntimeError:
-            if logger is not None:
-                logger.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
+            log.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
 
     return []
 

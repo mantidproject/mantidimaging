@@ -71,26 +71,22 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
                                     'Flat',
                                     suffix='Before',
                                     look_without_suffix=True,
-                                    image_format=image_format,
-                                    logger=logger)
+                                    image_format=image_format)
         find_images.assert_any_call(Path(dirname),
                                     'Flat',
                                     suffix='After',
                                     look_without_suffix=False,
-                                    image_format=image_format,
-                                    logger=logger)
+                                    image_format=image_format)
         find_images.assert_any_call(Path(dirname),
                                     'Dark',
                                     suffix='Before',
                                     look_without_suffix=True,
-                                    image_format=image_format,
-                                    logger=logger)
+                                    image_format=image_format)
         find_images.assert_any_call(Path(dirname),
                                     'Dark',
                                     suffix='After',
                                     look_without_suffix=False,
-                                    image_format=image_format,
-                                    logger=logger)
+                                    image_format=image_format)
         self.assertEqual(4, find_images.call_count)
         find_180deg_proj.assert_called_once_with(Path(dirname), image_format, logger)
         self.assertEqual(self.fields["Sample Log"].path, 3)
@@ -122,7 +118,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.p.do_update_flat_or_dark(field)
 
-        find_images.assert_called_once_with(Path('/'), name, suffix, image_format='', logger=logger)
+        find_images.assert_called_once_with(Path('/'), name, suffix, image_format='')
         field.set_images.assert_called_once_with(find_images.return_value)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
@@ -137,10 +133,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.p.do_update_flat_or_dark(field)
 
-        calls = [
-            mock.call(Path('/'), name, suffix, image_format='', logger=logger),
-            mock.call(Path('/'), "aaa", "", image_format='', logger=logger)
-        ]
+        calls = [mock.call(Path('/'), name, suffix, image_format=''), mock.call(Path('/'), "aaa", "", image_format='')]
         find_images.assert_has_calls(calls)
         field.set_images.assert_called_once_with(files_list)
 
