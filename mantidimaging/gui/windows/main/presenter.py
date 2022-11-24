@@ -776,6 +776,7 @@ class MainWindowPresenter(BasePresenter):
         :param new_images: The new images to add.
         """
         image_attr = images_text.replace(" ", "_").lower()
+        new_images.name = self._create_strict_dataset_stack_name(images_text, dataset.name)
 
         if getattr(dataset, image_attr) is None:
             # the image type doesn't exist in the dataset
@@ -802,7 +803,12 @@ class MainWindowPresenter(BasePresenter):
         elif isinstance(destination_dataset, MixedDataset):
             self._add_images_to_existing_mixed_dataset(destination_dataset, stack_to_move)
         else:
-            self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move,
-                                                        self.view.move_stack_dialog.destination_data_type)
+            data_type = self.view.move_stack_dialog.destination_data_type
+            self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, data_type)
+            stack = self.get_stack(stack_id)
+            stack.name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
 
         origin_dataset.delete_stack(stack_id)
+
+    def _create_strict_dataset_stack_name(self, image_type: str, dataset_name: str):
+        return f"{image_type} {dataset_name}"
