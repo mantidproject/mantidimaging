@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 from dataclasses import dataclass
-from logging import getLogger, Logger
+from logging import getLogger
 from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
 
@@ -158,8 +158,7 @@ def load(input_path: Optional[str] = None,
     return image_stack
 
 
-def create_loading_parameters_for_file_path(file_path: str,
-                                            logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
+def create_loading_parameters_for_file_path(file_path: str) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
         return None

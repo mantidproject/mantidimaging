@@ -469,7 +469,7 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
-        loading_params = create_loading_parameters_for_file_path(file_path, logger)
+        loading_params = create_loading_parameters_for_file_path(file_path)
         if loading_params is None:
             return False
 
