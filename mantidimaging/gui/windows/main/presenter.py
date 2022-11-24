@@ -745,13 +745,20 @@ class MainWindowPresenter(BasePresenter):
 
         new_images = self.view.add_to_dataset_dialog.presenter.images
 
-        if isinstance(dataset, MixedDataset):
+        if self.view.add_to_dataset_dialog.images_type == RECON_TEXT:
+            self._add_recon_to_dataset_and_tree_view(dataset, new_images)
+        elif isinstance(dataset, MixedDataset):
             self._add_images_to_existing_mixed_dataset(dataset, new_images)
         else:
-            self._add_images_to_existing_strict_dataset(dataset, new_images)
+            self._add_images_to_existing_strict_dataset(dataset, new_images,
+                                                        self.view.add_to_dataset_dialog.images_type)
 
         self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
+
+    def _add_recon_to_dataset_and_tree_view(self, dataset: Union[MixedDataset, StrictDataset], recon: ImageStack):
+        dataset.add_recon(recon)
+        self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
 
     def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack):
         """
@@ -759,40 +766,28 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The MixedDataset to update.
         :param new_images: The new images to add.
         """
-        assert self.view.add_to_dataset_dialog is not None
-        if self.view.add_to_dataset_dialog.images_type == RECON_TEXT:
-            dataset.add_recon(new_images)
-            self.add_recon_item_to_tree_view(dataset.id, new_images.id, new_images.name)
-        else:
-            dataset.add_stack(new_images)
-            self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
+        dataset.add_stack(new_images)
+        self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
-    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack):
+    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack, images_text: str):
         """
         Adds or replaces images in a StrictDataset and updates the tree view if required.
         :param dataset: The StrictDataset to change.
         :param new_images: The new images to add.
         """
-        assert self.view.add_to_dataset_dialog is not None
-        images_text = self.view.add_to_dataset_dialog.images_type
+        image_attr = images_text.replace(" ", "_").lower()
 
-        if images_text == RECON_TEXT:
-            self.add_recon_item_to_tree_view(dataset.id, new_images.id, new_images.name)
-            dataset.add_recon(new_images)
+        if getattr(dataset, image_attr) is None:
+            # the image type doesn't exist in the dataset
+            self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
+
         else:
-            image_attr = images_text.replace(" ", "_").lower()
+            # the image type already exists in the dataset and needs to be replaced
+            prev_images_id = getattr(dataset, image_attr).id
+            self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
+            self._delete_stack(prev_images_id)
 
-            if getattr(dataset, image_attr) is None:
-                # the image type doesn't exist in the dataset
-                self.add_child_item_to_tree_view(dataset.id, new_images.id, images_text)
-
-            else:
-                # the image type already exists in the dataset and needs to be replaced
-                prev_images_id = getattr(dataset, image_attr).id
-                self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
-                self._delete_stack(prev_images_id)
-
-            setattr(dataset, image_attr, new_images)
+        setattr(dataset, image_attr, new_images)
 
     def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_data_type: str,
                     destination_dataset_name: str):
@@ -803,13 +798,11 @@ class MainWindowPresenter(BasePresenter):
 
         destination_dataset = self.model.get_dataset_by_name(destination_dataset_name)
         if destination_data_type is RECON_TEXT:
-            destination_dataset.add_recon(stack_to_move)
+            self._add_recon_to_dataset_and_tree_view(destination_dataset, stack_to_move)
         elif isinstance(destination_dataset, MixedDataset):
-            destination_dataset.add_stack(stack_to_move)
-            self.add_child_item_to_tree_view(destination_dataset.id, stack_to_move.id, destination_data_type)
+            self._add_images_to_existing_mixed_dataset(destination_dataset, stack_to_move)
         else:
-            image_attr = destination_data_type.replace(" ", "_").lower()
-            setattr(destination_dataset, image_attr, stack_to_move)
-            self.add_child_item_to_tree_view(destination_dataset.id, stack_to_move.id, destination_data_type)
+            self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move,
+                                                        self.view.move_stack_dialog.destination_data_type)
 
         origin_dataset.delete_stack(stack_id)
