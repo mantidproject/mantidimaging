@@ -22,18 +22,15 @@ class UtilityTest(TestCase):
 
         self.assertEqual(['png'], utility.get_candidate_file_extensions('png'))
 
-    def test_get_file_names(self):
-        # Create test file with .tiff extension
+    def test_WHEN_tif_file_exists_THEN_tif_file_found_in_list(self):
         tiff_filename = Path('/dirname/test.tiff')
         self.fs.create_file(tiff_filename)
 
-        # Search for files with .tif extension
         found_files = utility.get_file_names("/dirname", 'tif')
 
-        # Expect to find the .tiff file
         self._file_list_count_equal([tiff_filename], found_files)
 
-    def test_find_log_for_image(self):
+    def test_WHEN_image_has_logfile_THEN_logfile_found_(self):
         log_name = Path("/a/b/TomoIMAT00010675_FlowerFine_log.txt")
         image_name = Path("/a/b/Tomo/IMAT_Flower_Tomo_000000.tif")
         self.fs.create_file(log_name)
