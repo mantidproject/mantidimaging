@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING, Optional, NamedTuple, Dict
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
-from mantidimaging.core.io.utility import get_file_extension, get_prefix, find_images, find_log, find_180deg_proj
+from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
+                                           find_180deg_proj)
 from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 
@@ -102,16 +103,14 @@ class LoadPresenter:
                 field.path = find_180deg_proj(sample_dirname, self.image_format, logger)
 
         try:
-            self.set_sample_log(self.view.fields["Sample Log"], sample_dirname, self.view.sample.directory(),
-                                self.last_file_info.filenames)
+            self.set_sample_log(self.view.fields["Sample Log"], self.last_file_info.filenames)
         except RuntimeError as err:
             self.view.show_error(str(err), traceback.format_exc())
 
         self.view.fields["Sample Log"].use = False
 
         for pos in ["Before", "After"]:
-            self.view.fields[f"Flat {pos} Log"].path = find_log(sample_dirname,
-                                                                self.view.fields[f"Flat {pos}"].directory(), logger)
+            self.view.fields[f"Flat {pos} Log"].path = find_log_for_image(self.view.fields[f"Flat {pos}"].path_text())
             self.view.fields[f"Flat {pos} Log"].use = False
 
         self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
@@ -152,7 +151,7 @@ class LoadPresenter:
             if image_group + " Log" in self.view.fields:
                 log_field = self.view.fields[image_group + " Log"]
                 if log_field.use.isChecked():
-                    params.log_file = log_field.path_text()
+                    params.log_file = Path(log_field.path_text())
 
             lp.set(image_group, params)
 
@@ -200,7 +199,7 @@ class LoadPresenter:
         log.raise_if_angle_missing(image_filenames)
         self._update_field_action(field, file_name)
 
-    def set_sample_log(self, sample_log: Field, sample_dirname, log_name, image_filenames):
-        sample_log_filepath = find_log(sample_dirname, log_name, logger)
+    def set_sample_log(self, sample_log: Field, image_filenames):
+        sample_log_filepath = find_log_for_image(Path(image_filenames[0]))
         self.ensure_sample_log_consistency(sample_log, sample_log_filepath, image_filenames)
         sample_log.path = sample_log_filepath

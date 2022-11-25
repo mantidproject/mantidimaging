@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from pathlib import Path
 
 from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, IMATLogFile, TextLogParser
 
@@ -20,7 +21,7 @@ def generate_txt_logfile() -> IMATLogFile:
         "Sun Feb 10 00:26:29 2019   Projection:  8  angle: 2.5216   Monitor 3 before:  5786535   Monitor 3 after:  5929002",  # noqa: E501
         "Sun Feb 10 00:27:02 2019   Projection:  9  angle: 2.8368   Monitor 3 before:  5938142   Monitor 3 after:  6078866",  # noqa: E501
     ]
-    return IMATLogFile(data, "/tmp/fake")
+    return IMATLogFile(data, Path("/tmp/fake"))
 
 
 def generate_csv_logfile() -> IMATLogFile:
@@ -37,4 +38,4 @@ def generate_csv_logfile() -> IMATLogFile:
         "Sun Feb 10 00:26:29 2019,Projection,8,angle: 2.5216,Monitor 3 before: 5786535,Monitor 3 after:  5929002",
         "Sun Feb 10 00:27:02 2019,Projection,9,angle: 2.8368,Monitor 3 before: 5938142,Monitor 3 after:  6078866",
     ]
-    return IMATLogFile(data, "/tmp/fake")
+    return IMATLogFile(data, Path("/tmp/fake"))

@@ -5,6 +5,7 @@ import csv
 import re
 from enum import Enum, auto
 from itertools import zip_longest
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import numpy
@@ -107,7 +108,7 @@ class CSVLogParser:
 
 
 class IMATLogFile:
-    def __init__(self, data: List[str], source_file: str):
+    def __init__(self, data: List[str], source_file: Path):
         self._source_file = source_file
 
         self.parser = self.find_parser(data)
@@ -123,7 +124,7 @@ class IMATLogFile:
             raise RuntimeError("The format of the log file is not recognised.")
 
     @property
-    def source_file(self) -> str:
+    def source_file(self) -> Path:
         return self._source_file
 
     def projection_numbers(self):

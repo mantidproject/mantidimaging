@@ -11,6 +11,9 @@ from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter,
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
+    def _files_equal(self, file1, file2):
+        self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
+
     def setUp(self):
         self.fields = {name: mock.Mock() for name in FILE_TYPES}
         self.v = mock.MagicMock(fields=self.fields)
@@ -24,17 +27,17 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with("Sample")
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log", return_value=3)
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log_for_image", return_value=3)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images", return_value=1)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_in_file_information",
-                return_value=FileInformation([], (0, 0, 0), True))
+                return_value=FileInformation(["a"], (0, 0, 0), True))
     @mock.patch(
         "mantidimaging.gui.windows.image_load_dialog.presenter.get_file_extension", )
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix")
     def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information, mock_load_log,
-                              find_images, find_180deg_proj, find_log):
+                              find_images, find_180deg_proj, find_log_for_image):
         selected_file = "SelectedFile"
         sample_file_name = "SampleFileName"
         path_text = "PathText"
@@ -63,7 +66,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         for name in ["Flat Before", "Flat After", "Dark Before", "Dark After"]:
             self.fields[name].set_images.assert_called_once_with(1)
         self.assertEqual(2, self.fields["180 degree"].path)
-        find_log.assert_any_call(Path(dirname), dirname, logger)
+        find_log_for_image.assert_any_call(Path("a"))
         find_images.assert_any_call(Path(dirname),
                                     'Flat',
                                     suffix='Before',
@@ -284,7 +287,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         lp = self.p.get_parameters()
 
-        self.assertEqual(lp.sample.log_file, path_text)
+        self._files_equal(lp.sample.log_file, path_text)
         self.assertEqual(lp.sample.input_path, sample_input_path)
         self.assertEqual(lp.sample.format, image_format)
         self.assertEqual(lp.sample.prefix, "/path")
@@ -292,11 +295,11 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.assertEqual(lp.name, sample_file_name)
         self.assertEqual(lp.pixel_size, pixel_size)
         self.assertEqual(lp.flat_before.prefix, "/path")
-        self.assertEqual(lp.flat_before.log_file, flat_log_file_name)
+        self._files_equal(lp.flat_before.log_file, flat_log_file_name)
         self.assertEqual(lp.flat_before.format, image_format)
         self.assertEqual(lp.flat_before.input_path, flat_directory)
         self.assertEqual(lp.flat_after.prefix, "/path")
-        self.assertEqual(lp.flat_after.log_file, flat_log_file_name)
+        self._files_equal(lp.flat_after.log_file, flat_log_file_name)
         self.assertEqual(lp.flat_after.format, image_format)
         self.assertEqual(lp.flat_after.input_path, flat_directory)
         self.assertEqual(lp.dark_before.input_path, dark_directory)
