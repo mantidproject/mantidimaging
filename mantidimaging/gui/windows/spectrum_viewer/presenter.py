@@ -93,6 +93,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
 
+    def get_default_table_state(self) -> list:
+        """
+        Get the default state of the table
+        """
+        return ["roi", self.view.spectrum.roi_dict["roi"].colour]
+
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
@@ -146,9 +152,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Add a given ROI to the table
         """
-        # self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
         row = self.model.selected_row
         roi_colour = self.view.spectrum.roi_dict[roi_name].colour
-        print(
-            f"Presenter row, roi_name and colour to be sent to view add_roi_table_row: {row}, {roi_name}, {roi_colour}")
         self.view.add_roi_table_row(row, roi_name, roi_colour)
+
+    def do_clear_all_rois(self) -> None:
+        """
+        Clear all ROIs from the spectrum viewer
+        """
+
+        self.model.remove_all_roi()
+        self.view.spectrum.remove_all_rois()

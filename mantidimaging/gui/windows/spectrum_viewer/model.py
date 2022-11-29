@@ -170,3 +170,10 @@ class SpectrumViewerWindowModel:
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
+
+    def remove_all_roi(self) -> None:
+        """
+        Remove all ROIs from the model if not 'all' and 'roi'
+        """
+        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in ["all", "roi"]}
+        self._roi_id_counter = 0  # Reset the counter for the next new ROI

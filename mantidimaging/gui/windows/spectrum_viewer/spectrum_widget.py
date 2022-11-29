@@ -154,10 +154,12 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self._set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
 
-    def clear_data(self):
-        self.image.clear()
-        self.spectrum.clear()
-        for roi in self.roi_dict:
-            self.image.vb.removeItem(roi)
-
-        self._tof_range_label.setText('')
+    def remove_all_rois(self) -> None:
+        """
+        Remove all ROIs if not 'roi' and 'all' ROIs.
+        """
+        roi_dict_copy = self.roi_dict.copy()
+        for roi_name in roi_dict_copy.keys():
+            if roi_name not in ["roi", "all"]:
+                self.image.vb.removeItem(self.roi_dict[roi_name])
+                del self.roi_dict[roi_name]

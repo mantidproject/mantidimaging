@@ -27,10 +27,23 @@ class Column(Enum):
 
 
 class TableModel(QAbstractTableModel):
+    """
+    A subclass of QAbstractTableModel.
+    Model for table view of ROI names and colours in Spectrum Viewer window to allow
+    user to select which ROIs to plot.
+
+
+    @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
+    """
     def __init__(self, data):
         super(TableModel, self).__init__()
+        # if self._data is None:
+        #     self._data = [str, tuple]
+        # else:
         self._data = data
         print((f"Data is {self._data}"))
+        # # selected row
+        # self.current_row = None
 
     def rowCount(self, index):
         return len(self._data)
@@ -42,53 +55,43 @@ class TableModel(QAbstractTableModel):
         """
         Set data in table roi name and colour - str and Tuple(int,int,int)
         """
+        # if table is empty, return empty
         if role == Qt.DisplayRole:
+            # print(f"active row data is {self._data[index.row()][index.column()]}")
+            # set background colour of selected row
+            if index.column() == 1:
+                QBrush(QColor(*self._data[index.row()][index.column()]))
+
             return self._data[index.row()][index.column()]
 
-        # if role == Qt.ForegroundRole:
-        #     if index.column() == 1:
-        #         return QColor(*self._data[index.row()][index.column()])
-        # change text colour?
         if role == Qt.BackgroundRole:
             if index.column() == 1:
+                # ■ . Special Character for colour box - set text colour
                 return QBrush(QColor(*self._data[index.row()][index.column()]))
-                # return QColor(*self._data[index.row()][index.column()])
+
+        if role == Qt.ForegroundRole:
+            if index.column() == 1:
+                # ■ . Special Character for colour box - set text colour
+                # viewOption.palette.setColor(QPalette.b)
+                return QBrush(QColor(*self._data[index.row()][index.column()]))
 
     def appendNewRow(self, row: int, roi_name: str, roi_colour: tuple):
+
         print(f"Appending new row {row} with {roi_name} and {roi_colour}")
         item_list = [roi_name, roi_colour]
         self._data.append(item_list)
 
         self.layoutChanged.emit()
 
-    # def set_point(self, row: int, roi_name: str, roi_colour: tuple):
+    # def flags(self, index):
     #     """
-    #     Set data str and tuple in table
+    #     Set table to be editable
     #     """
-    #     item = self._data[row]
-    #     self.dataChanged.emit(self.index(row, 0), self.index(row, 1))
-
-    # def add_point(self, row: int, roi_name: str, roi_colour: tuple):
-    #     """
-    #     Add new row to table
-    #     """
-    #     if row is None:
-    #         self._data.append([roi_name, roi_colour])
-    #     else:
-    #         self._data.insert(row, [roi_name, roi_colour])
-
-    # def insertRows(self, row: int, count: int, roi_name: str, roi_colour: tuple):
-    #     """
-    #     Insert new row of two columns string and tuple
-    #     """
-    #     self.beginInsertRows(QModelIndex(), row, row + count - 1)
-    #     self._data.insert(row, [roi_name, roi_colour])
-    #     self.endInsertRows()
-
-    # self.beginInsertRows(QModelIndex(), row, row + count - 1)
-
-    # for _ in range(count):
-    #     self.add_point(row, roi_name, roi_colour)
+    #     print(f"Flags are enabled")
+    #     print(Qt.ItemIsEnabled)
+    #     print(Qt.ItemIsSelectable)
+    #     print(Qt.ItemIsEditable)
+    #     return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def sort_points(self):
         """
@@ -106,6 +109,13 @@ class TableModel(QAbstractTableModel):
                     return "ROI"
                 if section == 1:
                     return "Colour"
+
+    def clear_table(self) -> None:
+        """
+        Clear all data in table except 'roi' (first element in _data list)
+        """
+        self._data = self._data[:1]
+        self.layoutChanged.emit()
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -145,6 +155,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         # Create a new ROI on the image on click
         self.addBtn.clicked.connect(self.set_new_roi)
+        self.clearAllBtn.clicked.connect(self.clear_all_rois)
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
@@ -159,7 +170,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
 
-        # self.roi_table_model = self.tableView.model()
+        self.roi_table_model  # Initialise model
 
         # self.roi_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
         # self.roi_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
@@ -180,14 +191,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def roi_table_model(self):
-        print("roi_table_model")
-        print(self.tableView)
-        data = [
-            ["roi", (26, 133, 255)],
-        ]
+        default_state = self.presenter.get_default_table_state()
         if self.tableView.model() is None:
-            mdl = TableModel(data)
-            # mdl = TableModel(self.tableView)
+            mdl = TableModel([default_state])
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
@@ -221,18 +227,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
-
-    # def on_table_row_count_change(self, _=None, __=None):
-    #     """
-    #     Called when rows have been added or removed from the point table.
-
-    #     Used to conditionally enable UI controls that depend on a certain
-    #     amount of entries in the table.
-    #     """
-    #     # Disable clear buttons when there are no rows in the table
-    #     empty = self.tableView.model().empty
-    #     self.removeBtn.setEnabled(not empty)
-    #     self.clearAllBtn.setEnabled(not empty)
 
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
@@ -284,5 +278,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
+        # ■
+        # self.roi_table_model.appendNewRow(row, name, colour)
         self.roi_table_model.appendNewRow(row, name, colour)
         self.tableView.selectRow(row)
+
+    def clear_all_rois(self) -> None:
+        """
+        Clear all ROIs from the image
+        """
+        self.roi_table_model.clear_table()
+        self.presenter.do_clear_all_rois()
