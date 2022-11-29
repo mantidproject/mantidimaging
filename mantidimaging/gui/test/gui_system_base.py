@@ -74,6 +74,8 @@ class GuiSystemBase(unittest.TestCase):
                     widget.setIntValue(set_int)
                 QTest.qWait(SHORT_DELAY)
                 widget.accept()
+                return
+        raise RuntimeError("_click_InputDialog did not find QInputDialog")
 
     def _close_welcome(self):
         self.main_window.welcome_window.view.close()
