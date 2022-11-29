@@ -59,6 +59,8 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             if isinstance(widget, CORInspectionDialogView):
                 QTest.qWait(SHORT_DELAY)
                 QTest.mouseClick(widget.finishButton, Qt.MouseButton.LeftButton)
+                return
+        raise RuntimeError("_click_InputDialog did not find CORInspectionDialogView")
 
     def test_refine(self):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=4))
