@@ -31,6 +31,18 @@ class SpectrumViewerWindowModel:
         self.presenter = presenter
         self._roi_id_counter = 0
         self._roi_ranges = {}
+        self._selected_row = 0
+
+    @property
+    def selected_row(self):
+        return self._selected_row
+
+    @selected_row.setter
+    def selected_row(self, value):
+        self._selected_row = value
+
+    def reset_selected_row(self):
+        self.selected_row = 0
 
     def roi_name_generator(self) -> str:
         """
