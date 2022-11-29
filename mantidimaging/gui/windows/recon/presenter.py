@@ -307,6 +307,7 @@ class ReconstructWindowPresenter(BasePresenter):
                                          self.view.recon_params(), False)
 
         res = dialog.exec()
+        dialog.deleteLater()
         LOG.debug('COR refine dialog result: {}'.format(res))
         if res == CORInspectionDialogView.Accepted:
             new_cor = dialog.optimal_rotation_centre
