@@ -71,6 +71,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY * 2)
+            wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
         QTest.qWait(SHOW_DELAY)
 
