@@ -853,7 +853,10 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.add_to_dataset_dialog.images_type = RECON_TEXT
         self.presenter.add_recon_item_to_tree_view = mock.Mock()
-        self.presenter._add_images_to_existing_mixed_dataset(mixed_dataset, recon)
+        self.presenter.get_dataset = mock.Mock(return_value=mixed_dataset)
+        self.view.add_to_dataset_dialog.presenter.images = recon
+
+        self.presenter._add_images_to_existing_dataset()
 
         self.assertIn(recon, mixed_dataset.recons.stacks)
         self.presenter.add_recon_item_to_tree_view.assert_called_once_with(mixed_dataset.id, recon.id, recon.name)
@@ -864,7 +867,11 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         recon = generate_images()
         recon.name = "recon-name"
-        self.presenter._add_images_to_existing_strict_dataset(self.dataset, recon)
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
+        self.presenter.get_dataset = mock.Mock(return_value=self.dataset)
+        self.view.add_to_dataset_dialog.presenter.images = recon
+
+        self.presenter._add_images_to_existing_dataset()
 
         self.assertIn(recon, self.dataset.recons.stacks)
         self.presenter.add_recon_item_to_tree_view.assert_called_once_with(self.dataset.id, recon.id, recon.name)
