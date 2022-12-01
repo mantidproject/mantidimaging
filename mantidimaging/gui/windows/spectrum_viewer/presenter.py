@@ -166,19 +166,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_colour = self.view.spectrum.roi_dict[roi_name].colour
         self.view.add_roi_table_row(row, roi_name, roi_colour)
 
-    def do_clear_all_rois(self) -> None:
+    def do_remove_roi(self, roi_name=None) -> None:
         """
-        Clear all ROIs from the spectrum viewer
-        """
-
-        self.model.remove_all_roi()
-        self.view.spectrum.remove_all_rois()
-
-    def do_remove_selected_roi(self, roi_name) -> None:
-        """
-        Remove the currently selected ROI from the spectrum viewer
+        Remove a given ROI from the table by ROI name or all ROIs from the table
 
         @param roi_name: Name of the ROI to remove
         """
-        self.model.remove_roi(roi_name)
-        self.view.spectrum.remove_roi(roi_name)
+
+        if roi_name is None:
+            self.model.remove_all_roi()
+
+            for roi_item in self.get_roi_names():
+                self.view.spectrum.remove_roi(roi_item)
+            # self.view.spectrum.remove_all_rois()
+        else:
+            self.model.remove_roi(roi_name)
+            self.view.spectrum.remove_roi(roi_name)

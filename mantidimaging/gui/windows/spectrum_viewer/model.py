@@ -177,3 +177,16 @@ class SpectrumViewerWindowModel:
         """
         self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in ["all", "roi"]}
         self._roi_id_counter = 0  # Reset the counter for the next new ROI
+
+    def remove_roi(self, roi_name) -> None:
+        """
+        Remove the selected ROI from the model
+        """
+
+        if roi_name in self._roi_ranges.keys():
+            if roi_name in ["all", "roi"]:
+                raise RuntimeError("Cannot remove the 'all' or 'roi' ROIs")
+            self._roi_ranges.pop(roi_name)
+        else:
+            raise KeyError(
+                f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")

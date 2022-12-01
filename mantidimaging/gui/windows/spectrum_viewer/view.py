@@ -58,6 +58,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
         self.clearAllBtn.clicked.connect(self.clear_all_rois)
+        self.removeBtn.clicked.connect(self.remove_roi)
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
@@ -72,16 +73,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
 
+        self.tableView.setAlternatingRowColors(True)
+
         self.roi_table_model  # Initialise model
 
-        # self.roi_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
-        # self.roi_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
-        # self.roi_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
+        def on_row_change(item, _):
+            """
+            Handle cell change in table view and update selected ROI and toggle visibility of action buttons
 
-        # self.roi_table_model.dataChanged.connect()
+            @param item: item in table
+            """
+            self.removeBtn.setEnabled(False)
+            self.selected_row_data = self.roi_table_model.row_data(item.row())
 
-        # Update initial UI state
-        # self.on_table_row_count_change()
+            if self.selected_row_data[0] != 'roi':
+                self.removeBtn.setEnabled(True)
+                self.selected_row = item.row()
+
+        self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
     def clear_cor_table(self):
         return self.roi_table_model.removeAllRows()
@@ -188,4 +197,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear all ROIs from the image
         """
         self.roi_table_model.clear_table()
-        self.presenter.do_clear_all_rois()
+        self.presenter.do_remove_roi()
+
+    def remove_roi(self) -> None:
+        """
+        Clear the selected ROI in the table view
+        """
+
+        if self.selected_row_data:
+            self.roi_table_model.remove_row(self.selected_row)
+            self.presenter.do_remove_roi(self.selected_row_data[0])
+            self.removeBtn.setEnabled(False)

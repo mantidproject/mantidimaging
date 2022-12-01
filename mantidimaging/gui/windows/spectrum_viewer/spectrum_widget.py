@@ -158,12 +158,13 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self._set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
 
-    def remove_all_rois(self) -> None:
+    def remove_roi(self, roi_name: str) -> None:
         """
-        Remove all ROIs if not 'roi' and 'all' ROIs.
+        Remove a given ROI by name unless it is 'roi' or 'all'.
+
+        :param roi_name: The name of the ROI to remove.
         """
-        roi_dict_copy = self.roi_dict.copy()
-        for roi_name in roi_dict_copy.keys():
-            if roi_name not in ["roi", "all"]:
-                self.image.vb.removeItem(self.roi_dict[roi_name])
-                del self.roi_dict[roi_name]
+
+        if roi_name in self.roi_dict.keys() and roi_name not in ["roi", "all"]:
+            self.image.vb.removeItem(self.roi_dict[roi_name])
+            del self.roi_dict[roi_name]
