@@ -137,6 +137,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_moved()
         self.view.display_normalise_error()
 
+    def get_roi_names(self) -> list:
+        """
+        Return a list of ROI names
+
+        @return: list of ROI names
+        """
+        return self.model.get_list_of_roi_names()
+
     def do_add_roi(self) -> None:
         """
         Add a new ROI to the spectrum
@@ -150,7 +158,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
         """
-        Add a given ROI to the table
+        Add a given ROI to the table by ROI name
+
+        @param roi_name: Name of the ROI to add
         """
         row = self.model.selected_row
         roi_colour = self.view.spectrum.roi_dict[roi_name].colour
@@ -163,3 +173,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.remove_all_roi()
         self.view.spectrum.remove_all_rois()
+
+    def do_remove_selected_roi(self, roi_name) -> None:
+        """
+        Remove the currently selected ROI from the spectrum viewer
+
+        @param roi_name: Name of the ROI to remove
+        """
+        self.model.remove_roi(roi_name)
+        self.view.spectrum.remove_roi(roi_name)

@@ -1,7 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import random
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal
@@ -87,6 +86,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
         self.roi_dict = {}
+        self.colour_index = 0
 
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
@@ -109,7 +109,11 @@ class SpectrumWidget(GraphicsLayoutWidget):
         accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
                               (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26), (75, 0, 146), (254, 254, 98),
                               (211, 95, 183), (0, 90, 181), (220, 50, 43), (26, 133, 255), (212, 17, 89)]
-        return random.choice(accessible_colours)
+        if self.colour_index == len(accessible_colours):
+            self.colour_index = 0
+        colour = accessible_colours[self.colour_index]
+        self.colour_index += 1
+        return colour
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:
         """

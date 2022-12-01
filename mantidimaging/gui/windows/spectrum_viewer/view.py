@@ -2,10 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
-from enum import Enum
 
-from PyQt5.QtCore import QAbstractTableModel, Qt
-from PyQt5.QtGui import QPixmap, QColor, QBrush
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView
 
 from mantidimaging.core.utility import finder
@@ -14,108 +12,12 @@ from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .presenter import SpectrumViewerWindowPresenter
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
+from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
     import numpy as np
-
-
-class Column(Enum):
-    name = 0
-    colour = 1
-
-
-class TableModel(QAbstractTableModel):
-    """
-    A subclass of QAbstractTableModel.
-    Model for table view of ROI names and colours in Spectrum Viewer window to allow
-    user to select which ROIs to plot.
-
-
-    @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
-    """
-    def __init__(self, data):
-        super(TableModel, self).__init__()
-        # if self._data is None:
-        #     self._data = [str, tuple]
-        # else:
-        self._data = data
-        print((f"Data is {self._data}"))
-        # # selected row
-        # self.current_row = None
-
-    def rowCount(self, index):
-        return len(self._data)
-
-    def columnCount(self, index):
-        return len(self._data[0])
-
-    def data(self, index, role):
-        """
-        Set data in table roi name and colour - str and Tuple(int,int,int)
-        """
-        # if table is empty, return empty
-        if role == Qt.DisplayRole:
-            # print(f"active row data is {self._data[index.row()][index.column()]}")
-            # set background colour of selected row
-            if index.column() == 1:
-                QBrush(QColor(*self._data[index.row()][index.column()]))
-
-            return self._data[index.row()][index.column()]
-
-        if role == Qt.BackgroundRole:
-            if index.column() == 1:
-                # ■ . Special Character for colour box - set text colour
-                return QBrush(QColor(*self._data[index.row()][index.column()]))
-
-        if role == Qt.ForegroundRole:
-            if index.column() == 1:
-                # ■ . Special Character for colour box - set text colour
-                # viewOption.palette.setColor(QPalette.b)
-                return QBrush(QColor(*self._data[index.row()][index.column()]))
-
-    def appendNewRow(self, row: int, roi_name: str, roi_colour: tuple):
-
-        print(f"Appending new row {row} with {roi_name} and {roi_colour}")
-        item_list = [roi_name, roi_colour]
-        self._data.append(item_list)
-
-        self.layoutChanged.emit()
-
-    # def flags(self, index):
-    #     """
-    #     Set table to be editable
-    #     """
-    #     print(f"Flags are enabled")
-    #     print(Qt.ItemIsEnabled)
-    #     print(Qt.ItemIsSelectable)
-    #     print(Qt.ItemIsEditable)
-    #     return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
-
-    def sort_points(self):
-        """
-        Sort table by ROI name
-        """
-        self._data.sort(key=lambda x: x[0])
-
-    def headerData(self, section, orientation, role):
-        """
-        Set horizontal colum header names to ROI and Colour
-        """
-        if role == Qt.DisplayRole:
-            if orientation == Qt.Horizontal:
-                if section == 0:
-                    return "ROI"
-                if section == 1:
-                    return "Colour"
-
-    def clear_table(self) -> None:
-        """
-        Clear all data in table except 'roi' (first element in _data list)
-        """
-        self._data = self._data[:1]
-        self.layoutChanged.emit()
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -153,7 +55,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
 
-        # Create a new ROI on the image on click
+        # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
         self.clearAllBtn.clicked.connect(self.clear_all_rois)
 
@@ -278,9 +180,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
-        # ■
-        # self.roi_table_model.appendNewRow(row, name, colour)
-        self.roi_table_model.appendNewRow(row, name, colour)
+        self.roi_table_model.appendNewRow(name, colour)
         self.tableView.selectRow(row)
 
     def clear_all_rois(self) -> None:
