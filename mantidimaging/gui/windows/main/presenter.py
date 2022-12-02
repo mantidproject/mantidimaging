@@ -3,7 +3,7 @@
 import traceback
 import uuid
 from enum import Enum, auto
-from logging import getLogger, Logger
+from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
 
@@ -152,7 +152,6 @@ class MainWindowPresenter(BasePresenter):
                               {'file_path': file_path})
 
     def _on_stack_load_done(self, task: 'TaskWorkerThread') -> None:
-        log = getLogger(__name__)
 
         if task.was_successful():
             self.create_mixed_dataset_tree_view_items(task.result)
@@ -160,17 +159,16 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
             task.result = None
         else:
-            self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+            self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
     def _on_dataset_load_done(self, task: 'TaskWorkerThread') -> None:
-        log = getLogger(__name__)
 
         if task.was_successful():
             self._add_strict_dataset_to_view(task.result)
             self.view.model_changed.emit()
             task.result = None
         else:
-            self._handle_task_error(self.LOAD_ERROR_STRING, log, task)
+            self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
     def _add_strict_dataset_to_view(self, dataset: StrictDataset):
         """
@@ -182,9 +180,9 @@ class MainWindowPresenter(BasePresenter):
         self.create_strict_dataset_tree_view_items(dataset)
         self.add_alternative_180_if_required(dataset)
 
-    def _handle_task_error(self, base_message: str, log: Logger, task: 'TaskWorkerThread') -> None:
+    def _handle_task_error(self, base_message: str, task: 'TaskWorkerThread') -> None:
         msg = base_message.format(task.error)
-        log.error(msg)
+        logger.error(msg)
         self.show_error(msg, traceback.format_exc())
 
     def _create_and_tabify_stack_window(self, images: ImageStack, sample_dock: StackVisualiserView) -> None:
@@ -369,10 +367,9 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task: 'TaskWorkerThread') -> None:
-        log = getLogger(__name__)
 
         if not task.was_successful():
-            self._handle_task_error(self.SAVE_ERROR_STRING, log, task)
+            self._handle_task_error(self.SAVE_ERROR_STRING, task)
 
     @property
     def stack_visualiser_list(self) -> List[StackId]:
@@ -469,7 +466,7 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
-        loading_params = create_loading_parameters_for_file_path(file_path, logger)
+        loading_params = create_loading_parameters_for_file_path(file_path)
         if loading_params is None:
             return False
 
