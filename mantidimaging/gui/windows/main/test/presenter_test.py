@@ -1005,6 +1005,19 @@ class MainWindowPresenterTest(unittest.TestCase):
         assert is_strict_dict[strict_dataset_name]
         assert not is_strict_dict[mixed_dataset_name]
 
+    def test_show_move_stack_dialog(self):
+        sample = generate_images()
+        ds = StrictDataset(sample)
+        ds.name = dataset_name = "dataset-name"
+        self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=ds.id)
+        self.presenter.get_dataset = mock.Mock(return_value=ds)
+        is_strict = {dataset_name: True}
+        self.presenter._create_dataset_is_strict_dict = mock.Mock(return_value=is_strict)
+        self.presenter._get_stack_data_type = mock.Mock(return_value="Sample")
+
+        self.presenter._show_move_stack_dialog(sample.id)
+        self.view.show_move_stack_dialog.assert_called_once_with(ds.id, sample.id, dataset_name, "Sample", is_strict)
+
 
 if __name__ == '__main__':
     unittest.main()
