@@ -1064,6 +1064,33 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertNotIn(stack_to_move, origin_dataset)
 
+    def test_move_stack_to_strict_dataset(self):
+        stack_to_move = generate_images()
+        origin_dataset = MixedDataset([stack_to_move])
+
+        self.presenter.get_dataset = mock.Mock(return_value=origin_dataset)
+        self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
+
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter._add_images_to_existing_strict_dataset = mock.Mock()
+        self.model.get_dataset_by_name.return_value = destination_dataset = StrictDataset(generate_images())
+        destination_dataset.name = destination_dataset_name = "destination-dataset-name"
+
+        self.view.move_stack_dialog = mock.Mock()
+        self.view.move_stack_dialog.destination_stack_type = data_type = "Flat After"
+        self._add_images_to_existing_strict_dataset = mock.Mock()
+        new_stack_name = "New Dataset Flat After"
+        self.presenter._create_strict_dataset_stack_name = mock.Mock(return_value=new_stack_name)
+
+        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, data_type, destination_dataset_name)
+        self.presenter.get_dataset.assert_called_once_with(origin_dataset.id)
+        self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
+        self.presenter._add_images_to_existing_strict_dataset.assert_called_once_with(
+            destination_dataset, stack_to_move, data_type)
+
+        self.assertNotIn(stack_to_move, origin_dataset)
+        assert stack_to_move.name == new_stack_name
+
 
 if __name__ == '__main__':
     unittest.main()

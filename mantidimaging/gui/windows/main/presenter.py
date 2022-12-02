@@ -826,7 +826,7 @@ class MainWindowPresenter(BasePresenter):
             assert self.view.move_stack_dialog is not None
             data_type = self.view.move_stack_dialog.destination_stack_type
             self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, data_type)
-            self.get_stack(stack_id).name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
+            stack_to_move.name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
 
         origin_dataset.delete_stack(stack_id)
 
