@@ -700,17 +700,19 @@ class MainWindowPresenter(BasePresenter):
         if stack_id in [recon.id for recon in dataset.recons]:
             return "Recon"
         if isinstance(dataset, MixedDataset):
-            return "Images"
-        if stack_id == dataset.sample.id:
-            return "Sample"
-        if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
-            return "Flat Before"
-        if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
-            return "Flat After"
-        if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
-            return "Dark Before"
-        if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
-            return "Dark After"
+            if stack_id in dataset:
+                return "Images"
+        else:
+            if stack_id == dataset.sample.id:
+                return "Sample"
+            if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
+                return "Flat Before"
+            if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
+                return "Flat After"
+            if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
+                return "Dark Before"
+            if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
+                return "Dark After"
         raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
 
     def _create_dataset_is_strict_dict(self) -> Dict[str, bool]:

@@ -943,6 +943,54 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertListEqual(all_ids, self.presenter.all_stack_ids)
 
+    def test_get_stack_data_type_returns_recon(self):
+        recon = generate_images()
+        recon_id = recon.id
+        dataset = MixedDataset()
+        dataset.recons.append(recon)
+        self.assertEqual(self.presenter._get_stack_data_type(recon_id, dataset), "Recon")
+
+    def test_get_stack_data_type_returns_images(self):
+        images = generate_images()
+        images_id = images.id
+        dataset = MixedDataset([images])
+        self.assertEqual(self.presenter._get_stack_data_type(images_id, dataset), "Images")
+
+    def test_get_stack_data_type_returns_sample(self):
+        sample = generate_images()
+        sample_id = sample.id
+        dataset = StrictDataset(sample)
+        self.assertEqual(self.presenter._get_stack_data_type(sample_id, dataset), "Sample")
+
+    def test_get_stack_data_type_returns_flat_before(self):
+        flat_before = generate_images()
+        flat_before_id = flat_before.id
+        dataset = StrictDataset(sample=generate_images(), flat_before=flat_before)
+        self.assertEqual(self.presenter._get_stack_data_type(flat_before_id, dataset), "Flat Before")
+
+    def test_get_stack_data_type_returns_flat_after(self):
+        flat_after = generate_images()
+        flat_after_id = flat_after.id
+        dataset = StrictDataset(sample=generate_images(), flat_after=flat_after)
+        self.assertEqual(self.presenter._get_stack_data_type(flat_after_id, dataset), "Flat After")
+
+    def test_get_stack_data_type_returns_dark_before(self):
+        dark_before = generate_images()
+        dark_before_id = dark_before.id
+        dataset = StrictDataset(sample=generate_images(), dark_before=dark_before)
+        self.assertEqual(self.presenter._get_stack_data_type(dark_before_id, dataset), "Dark Before")
+
+    def test_get_stack_data_type_returns_dark_after(self):
+        dark_after = generate_images()
+        dark_after_id = dark_after.id
+        dataset = StrictDataset(sample=generate_images(), dark_after=dark_after)
+        self.assertEqual(self.presenter._get_stack_data_type(dark_after_id, dataset), "Dark After")
+
+    def test_get_stack_data_type_raises(self):
+        empty_ds = MixedDataset()
+        with self.assertRaises(RuntimeError):
+            self.presenter._get_stack_data_type("bad-id", empty_ds)
+
 
 if __name__ == '__main__':
     unittest.main()
