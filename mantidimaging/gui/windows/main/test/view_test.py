@@ -526,4 +526,14 @@ class MainWindowViewTest(unittest.TestCase):
                                                       stack_id=stack_to_move_id)
 
     def test_show_move_stack_dialog(self):
-        pass
+        dataset_id = "dataset-id"
+        stack_id = "stack-id"
+        dataset_name = "dataset-name"
+        stack_data_type = "Dark After"
+        is_dataset_strict = dict()
+
+        with mock.patch("mantidimaging.gui.windows.main.view.MoveStackDialog") as move_stack_mock:
+            self.view.show_move_stack_dialog(dataset_id, stack_id, dataset_name, stack_data_type, is_dataset_strict)
+            move_stack_mock.assert_called_once_with(self.view, dataset_id, stack_id, dataset_name, stack_data_type,
+                                                    is_dataset_strict)
+            move_stack_mock.return_value.show.assert_called_once()
