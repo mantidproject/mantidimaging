@@ -1018,6 +1018,34 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._show_move_stack_dialog(sample.id)
         self.view.show_move_stack_dialog.assert_called_once_with(ds.id, sample.id, dataset_name, "Sample", is_strict)
 
+    def test_show_move_stack_dialog_raises(self):
+        self.presenter.get_dataset = mock.Mock(return_value=None)
+        with self.assertRaises(RuntimeError):
+            self.presenter._show_move_stack_dialog("stack-id")
+
+    def test_move_stack_raises(self):
+        self.presenter.get_dataset = mock.Mock(return_value=None)
+        with self.assertRaises(RuntimeError):
+            self.presenter._move_stack("origin-dataset-id", "stack-id", "Flat After", "destination-dataset-name")
+
+    def test_stack_moved_to_recon(self):
+        stack_to_move = generate_images()
+        origin_dataset = MixedDataset([stack_to_move])
+
+        self.presenter.get_dataset = mock.Mock(return_value=origin_dataset)
+        self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
+
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter._add_recon_to_dataset_and_tree_view = mock.Mock()
+        self.model.get_dataset_by_name.return_value = destination_dataset = MixedDataset()
+
+        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, RECON_TEXT, "destination-dataset-name")
+        self.presenter.get_dataset.assert_called_once_with(origin_dataset.id)
+        self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
+        self.presenter._add_recon_to_dataset_and_tree_view.assert_called_once_with(destination_dataset, stack_to_move)
+
+        self.assertNotIn(stack_to_move, origin_dataset)
+
 
 if __name__ == '__main__':
     unittest.main()
