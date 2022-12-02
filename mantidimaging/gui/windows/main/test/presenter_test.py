@@ -928,6 +928,21 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget.clearSelection.assert_called_once()
         mock_recon_item.setSelected.assert_called_once_with(True)
 
+    def test_all_stack_ids(self):
+        self.model.datasets = dict()
+
+        mixed_stacks = [generate_images() for _ in range(5)]
+        mixed_dataset = MixedDataset(mixed_stacks)
+
+        strict_stacks = [generate_images() for _ in range(5)]
+        strict_dataset = StrictDataset(*strict_stacks)
+
+        all_ids = [stack.id for stack in mixed_stacks] + [stack.id for stack in strict_stacks]
+        self.model.datasets[mixed_dataset.id] = mixed_dataset
+        self.model.datasets[strict_dataset.id] = strict_dataset
+
+        self.assertListEqual(all_ids, self.presenter.all_stack_ids)
+
 
 if __name__ == '__main__':
     unittest.main()
