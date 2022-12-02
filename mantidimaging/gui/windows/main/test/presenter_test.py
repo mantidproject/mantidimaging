@@ -991,6 +991,20 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter._get_stack_data_type("bad-id", empty_ds)
 
+    def test_create_dataset_is_strict_dict(self):
+        self.model.datasets = dict()
+
+        mixed_dataset = MixedDataset([generate_images()])
+        mixed_dataset.name = mixed_dataset_name = "mixed-dataset-name"
+        strict_dataset = StrictDataset(generate_images())
+        strict_dataset.name = strict_dataset_name = "strict-dataset-name"
+        self.model.datasets[mixed_dataset.id] = mixed_dataset
+        self.model.datasets[strict_dataset.id] = strict_dataset
+
+        is_strict_dict = self.presenter._create_dataset_is_strict_dict()
+        assert is_strict_dict[strict_dataset_name]
+        assert not is_strict_dict[mixed_dataset_name]
+
 
 if __name__ == '__main__':
     unittest.main()
