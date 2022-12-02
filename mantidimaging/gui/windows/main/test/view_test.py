@@ -502,3 +502,28 @@ class MainWindowViewTest(unittest.TestCase):
         mock_stack = mock.Mock()
         self.view._on_tab_bar_clicked(mock_stack)
         self.presenter.notify.assert_called_once_with(Notification.TAB_CLICKED, stack=mock_stack)
+
+    def test_execute_move_stack(self):
+        origin_dataset_id = "origin-dataset-id"
+        stack_id = "stack-id"
+        destination_data_type = "Flat Before"
+        destination_dataset_name = "destination-dataset-name"
+
+        self.view.execute_move_stack(origin_dataset_id, stack_id, destination_data_type, destination_dataset_name)
+        self.presenter.notify.assert_called_once_with(PresNotification.MOVE_STACK,
+                                                      origin_dataset_id=origin_dataset_id,
+                                                      stack_id=stack_id,
+                                                      destination_data_type=destination_data_type,
+                                                      destination_dataset_name=destination_dataset_name)
+
+    def test_move_stack(self):
+        stack_to_move = mock.Mock()
+        stack_to_move.id = stack_to_move_id = "stack-to-move-id"
+        self.view.dataset_tree_widget.selectedItems = mock.Mock(return_value=[stack_to_move])
+
+        self.view._move_stack()
+        self.presenter.notify.assert_called_once_with(PresNotification.SHOW_MOVE_STACK_DIALOG,
+                                                      stack_id=stack_to_move_id)
+
+    def test_show_move_stack_dialog(self):
+        pass
