@@ -1046,6 +1046,24 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertNotIn(stack_to_move, origin_dataset)
 
+    def test_stack_moved_to_mixed_dataset_images(self):
+        stack_to_move = generate_images()
+        origin_dataset = StrictDataset(stack_to_move)
+
+        self.presenter.get_dataset = mock.Mock(return_value=origin_dataset)
+        self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
+
+        self.presenter.remove_item_from_tree_view = mock.Mock()
+        self.presenter._add_images_to_existing_mixed_dataset = mock.Mock()
+        self.model.get_dataset_by_name.return_value = destination_dataset = MixedDataset()
+
+        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, "Images", "destination-dataset-name")
+        self.presenter.get_dataset.assert_called_once_with(origin_dataset.id)
+        self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
+        self.presenter._add_images_to_existing_mixed_dataset.assert_called_once_with(destination_dataset, stack_to_move)
+
+        self.assertNotIn(stack_to_move, origin_dataset)
+
 
 if __name__ == '__main__':
     unittest.main()
