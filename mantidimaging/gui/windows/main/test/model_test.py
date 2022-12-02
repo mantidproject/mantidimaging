@@ -514,8 +514,12 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.do_nexus_saving(sd.id, path, sample_name)
         nexus_save.assert_called_once_with(sd, path, sample_name)
 
-    def test_get_model_by_name(self):
+    def test_get_dataset_by_name(self):
         ds = StrictDataset(generate_images())
         ds.name = dataset_name = "my-dataset-name"
         self.model.add_dataset_to_model(ds)
         self.assertIs(self.model.get_dataset_by_name(dataset_name), ds)
+
+    def test_get_dataset_by_name_raises(self):
+        with self.assertRaises(RuntimeError):
+            self.model.get_dataset_by_name("bad-name")
