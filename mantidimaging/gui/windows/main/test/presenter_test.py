@@ -1015,7 +1015,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._create_dataset_is_strict_dict = mock.Mock(return_value=is_strict)
         self.presenter._get_stack_data_type = mock.Mock(return_value="Sample")
 
-        self.presenter._show_move_stack_dialog(sample.id)
+        self.presenter.notify(Notification.SHOW_MOVE_STACK_DIALOG, stack_id=sample.id)
         self.view.show_move_stack_dialog.assert_called_once_with(ds.id, sample.id, dataset_name, "Sample", is_strict)
 
     def test_show_move_stack_dialog_raises(self):
