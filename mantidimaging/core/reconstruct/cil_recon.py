@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
+import time
 from logging import getLogger
 from threading import Lock
 from typing import List, Optional
@@ -79,6 +80,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            t0 = time.perf_counter()
             sino = BaseRecon.prepare_sinogram(sino, recon_params)
             pixel_num_h = sino.shape[1]
             pixel_size = 1.
@@ -113,6 +115,8 @@ class CILRecon(BaseRecon):
             finally:
                 if progress:
                     progress.mark_complete()
+            t1 = time.perf_counter()
+            LOG.info(f"single_sino time: {t1-t0}s for shape {sino.shape}")
             return pdhg.solution.as_array()
 
     @staticmethod
@@ -158,6 +162,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            t0 = time.perf_counter()
             LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
                      f"output shape {recon_volume_shape}\n"
                      f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
@@ -201,6 +206,8 @@ class CILRecon(BaseRecon):
                     pdhg.next()
                 volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+            t1 = time.perf_counter()
+            LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
             return ImageStack(volume)
 
 
