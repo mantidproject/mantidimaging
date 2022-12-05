@@ -1039,7 +1039,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._add_recon_to_dataset_and_tree_view = mock.Mock()
         self.model.get_dataset_by_name.return_value = destination_dataset = MixedDataset()
 
-        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, RECON_TEXT, "destination-dataset-name")
+        self.presenter.notify(Notification.MOVE_STACK,
+                              origin_dataset_id=origin_dataset.id,
+                              stack_id=stack_to_move.id,
+                              destination_stack_type=RECON_TEXT,
+                              destination_dataset_name="destination-dataset-name")
         self.presenter.get_dataset.assert_called_once_with(origin_dataset.id)
         self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
         self.presenter._add_recon_to_dataset_and_tree_view.assert_called_once_with(destination_dataset, stack_to_move)
