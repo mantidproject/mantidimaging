@@ -1,6 +1,5 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
 import unittest
 from unittest import mock
 
@@ -26,4 +25,6 @@ class MoveStackPresenterTest(unittest.TestCase):
                                                                          destination_dataset_name)
 
     def test_notify_exception(self):
-        pass
+        self.presenter._on_accepted = mock.Mock(side_effect=RuntimeError)
+        self.presenter.notify(Notification.ACCEPTED)
+        self.view.show_error_dialog.assert_called_once()
