@@ -54,6 +54,10 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
     @classmethod
     def _click_cor_inspect(cls):
+        """
+        Needs to be queued with QTimer.singleShot before triggering the message box
+        Will raise a RuntimeError if a CORInspectionDialogView is not found
+        """
         cls._wait_for_widget_visible(CORInspectionDialogView)
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, CORInspectionDialogView):

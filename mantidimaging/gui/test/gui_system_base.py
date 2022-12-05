@@ -38,6 +38,11 @@ class GuiSystemBase(unittest.TestCase):
         QTest.qWait(SHORT_DELAY)
 
     def tearDown(self) -> None:
+        """
+        Closes the main window
+        Will report any leaked images
+        Expects all other windows to be closed, otherwise will raise a RuntimeError
+        """
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
@@ -67,7 +72,10 @@ class GuiSystemBase(unittest.TestCase):
 
     @classmethod
     def _click_InputDialog(cls, set_int: Optional[int] = None):
-        """Needs to be queued with QTimer.singleShot before triggering the message box"""
+        """
+        Needs to be queued with QTimer.singleShot before triggering the message box
+        Will raise a RuntimeError if a QInputDialog is not found
+        """
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, QInputDialog) and widget.isVisible():
                 if set_int:
