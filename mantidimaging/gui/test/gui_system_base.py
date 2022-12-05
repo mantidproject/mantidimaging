@@ -38,6 +38,11 @@ class GuiSystemBase(unittest.TestCase):
         QTest.qWait(SHORT_DELAY)
 
     def tearDown(self) -> None:
+        """
+        Closes the main window
+        Will report any leaked images
+        Expects all other windows to be closed, otherwise will raise a RuntimeError
+        """
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
@@ -47,6 +52,10 @@ class GuiSystemBase(unittest.TestCase):
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
             leak_tracker.clear()
+
+        for widget in self.app.topLevelWidgets():
+            if widget.isVisible():
+                RuntimeError(f"\n\nWindow still open {widget=}")
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
@@ -63,13 +72,18 @@ class GuiSystemBase(unittest.TestCase):
 
     @classmethod
     def _click_InputDialog(cls, set_int: Optional[int] = None):
-        """Needs to be queued with QTimer.singleShot before triggering the message box"""
+        """
+        Needs to be queued with QTimer.singleShot before triggering the message box
+        Will raise a RuntimeError if a QInputDialog is not found
+        """
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, QInputDialog) and widget.isVisible():
                 if set_int:
                     widget.setIntValue(set_int)
                 QTest.qWait(SHORT_DELAY)
                 widget.accept()
+                return
+        raise RuntimeError("_click_InputDialog did not find QInputDialog")
 
     def _close_welcome(self):
         self.main_window.welcome_window.view.close()
