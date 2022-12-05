@@ -6,7 +6,7 @@ import itertools
 import os
 import re
 import numpy as np
-from logging import getLogger, Logger
+from logging import getLogger
 from pathlib import Path
 from typing import List, Optional, Union, Tuple
 
@@ -140,8 +140,7 @@ def find_images(sample_dirname: Path,
                 image_type: str,
                 suffix: str,
                 image_format: str,
-                look_without_suffix: bool = False,
-                logger: Optional[Logger] = None) -> List[str]:
+                look_without_suffix: bool = False) -> List[str]:
     # same folder
     file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
     if file_names is not None:
@@ -160,8 +159,7 @@ def find_images(sample_dirname: Path,
         try:
             return get_file_names(expected_folder_path.absolute(), image_format)
         except RuntimeError:
-            if logger is not None:
-                logger.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
+            log.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
 
     return []
 
@@ -175,13 +173,12 @@ def find_log_for_image(image_file_name: Path) -> Optional[Path]:
     return filename_group.log_path
 
 
-def find_180deg_proj(sample_dirname: Path, image_format: str, logger: Optional[Logger] = None) -> str:
+def find_180deg_proj(sample_dirname: Path, image_format: str) -> str:
     expected_path = sample_dirname / '..' / '180deg'
     try:
         return get_file_names(expected_path.absolute(), image_format)[0]
     except RuntimeError:
-        if logger is not None:
-            logger.info(f"Could not find 180 degree projection in {expected_path}")
+        log.info(f"Could not find 180 degree projection in {expected_path}")
     return ""
 
 

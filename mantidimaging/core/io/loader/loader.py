@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import os
 from dataclasses import dataclass
-from logging import getLogger, Logger
+from logging import getLogger
 from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
 
@@ -158,8 +158,7 @@ def load(input_path: Optional[str] = None,
     return image_stack
 
 
-def create_loading_parameters_for_file_path(file_path: str,
-                                            logger: Optional[Logger] = None) -> Optional[LoadingParameters]:
+def create_loading_parameters_for_file_path(file_path: str) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
         return None
@@ -191,8 +190,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                      "Flat",
                                      suffix="Before",
                                      look_without_suffix=True,
-                                     image_format=image_format,
-                                     logger=logger)
+                                     image_format=image_format)
     if len(flat_before_images) > 0:
         flat_before_image = flat_before_images[0]
         flat_before_directory = os.path.dirname(flat_before_image)
@@ -204,11 +202,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                          log_file=flat_before_log)
 
     # Flat after
-    flat_after_images = find_images(Path(sample_directory),
-                                    "Flat",
-                                    suffix="After",
-                                    image_format=image_format,
-                                    logger=logger)
+    flat_after_images = find_images(Path(sample_directory), "Flat", suffix="After", image_format=image_format)
     if len(flat_after_images) > 0:
         flat_after_image = flat_after_images[0]
         flat_after_directory = os.path.dirname(flat_after_image)
@@ -224,8 +218,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                      "Dark",
                                      suffix="Before",
                                      look_without_suffix=True,
-                                     image_format=image_format,
-                                     logger=logger)
+                                     image_format=image_format)
     if len(dark_before_images) > 0:
         dark_before_image = dark_before_images[0]
         dark_before_directory = os.path.dirname(dark_before_image)
@@ -234,11 +227,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                          format=image_format)
 
     # Dark after
-    dark_after_images = find_images(Path(sample_directory),
-                                    "Dark",
-                                    suffix="After",
-                                    image_format=image_format,
-                                    logger=logger)
+    dark_after_images = find_images(Path(sample_directory), "Dark", suffix="After", image_format=image_format)
     if len(dark_after_images) > 0:
         dark_after_image = dark_after_images[0]
         dark_after_directory = os.path.dirname(dark_after_image)
@@ -247,7 +236,7 @@ def create_loading_parameters_for_file_path(file_path: str,
                                                         format=image_format)
 
     # 180 Degree projection
-    proj_180deg = find_180deg_proj(Path(sample_directory), image_format, logger)
+    proj_180deg = find_180deg_proj(Path(sample_directory), image_format)
     if proj_180deg != "":
         loading_parameters.proj_180deg = ImageParameters(input_path=proj_180deg,
                                                          prefix=get_prefix(proj_180deg),
