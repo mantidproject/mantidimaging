@@ -4,6 +4,7 @@
 import os
 import uuid
 from logging import getLogger
+from pathlib import Path
 from typing import Optional, List, Union, TYPE_CHECKING, Dict
 from uuid import UUID
 
@@ -268,7 +269,7 @@ class MainWindowView(BaseMainWindowView):
         if selected_file == "":
             return
 
-        self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=selected_file)
+        self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=Path(selected_file))
 
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")

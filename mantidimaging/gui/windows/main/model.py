@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from logging import getLogger
+from pathlib import Path
 from typing import Dict, Optional, List, Union, NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
@@ -145,7 +146,7 @@ class MainWindowModel(object):
     def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to find strict dataset containing ImageStack with ID {images_id}")
 
-    def add_log_to_sample(self, images_id: uuid.UUID, log_file: str):
+    def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path):
         images = self.get_images_by_uuid(images_id)
         if images is None:
             raise RuntimeError

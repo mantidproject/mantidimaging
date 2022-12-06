@@ -1,20 +1,19 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import os
 from pathlib import Path
 
-from mantidimaging.helper import initialise_logging
 from mantidimaging.core.io import utility
-from mantidimaging.test_helpers import FileOutputtingTestCase
+from pyfakefs.fake_filesystem_unittest import TestCase
 
 
-class UtilityTest(FileOutputtingTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class UtilityTest(TestCase):
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
 
-        # force silent outputs
-        initialise_logging()
+    def _file_list_count_equal(self, list1, list2):
+        """Check that 2 lists of paths refer to the same files. Order independent"""
+        self.assertCountEqual((Path(s).absolute() for s in list1), (Path(s).absolute() for s in list2))
 
     def test_get_candidate_file_extensions(self):
         self.assertEqual(['tif', 'tiff'], utility.get_candidate_file_extensions('tif'))
@@ -23,20 +22,20 @@ class UtilityTest(FileOutputtingTestCase):
 
         self.assertEqual(['png'], utility.get_candidate_file_extensions('png'))
 
-    def test_get_file_names(self):
-        # Create test file with .tiff extension
-        tiff_filename = os.path.join(self.output_directory, 'test.tiff')
-        with open(tiff_filename, 'wb') as tf:
-            tf.write(b'\0')
+    def test_WHEN_tif_file_exists_THEN_tif_file_found_in_list(self):
+        tiff_filename = Path('/dirname/test.tiff')
+        self.fs.create_file(tiff_filename)
 
-        # Search for files with .tif extension
-        found_files = utility.get_file_names(self.output_directory, 'tif')
+        found_files = utility.get_file_names("/dirname", 'tif')
 
-        # Expect to find the .tiff file
-        self.assertEqual([tiff_filename], found_files)
+        self._file_list_count_equal([tiff_filename], found_files)
 
-    def test_find_log(self):
-        with open(os.path.join(self.output_directory, "../sample_log.txt"), 'w') as f:
-            f.write("sample logs")
+    def test_WHEN_image_has_logfile_THEN_logfile_found_(self):
+        log_name = Path("/a/b/TomoIMAT00010675_FlowerFine_log.txt")
+        image_name = Path("/a/b/Tomo/IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(log_name)
+        self.fs.create_file(image_name)
 
-        self.assertNotEqual("", utility.find_log(Path(self.output_directory), "sample"))
+        log_found = utility.find_log_for_image(image_name)
+
+        self.assertEqual(log_name, log_found)
