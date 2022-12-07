@@ -190,3 +190,19 @@ class SpectrumViewerWindowModel:
         else:
             raise KeyError(
                 f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename the selected ROI from the model
+
+        :param old_name: The current name of the ROI
+        :param new_name: The new name of the ROI
+        :raises KeyError: If the ROI does not exist
+        :raises RuntimeError: If the ROI is 'all' or 'roi'
+        """
+        if old_name in self._roi_ranges.keys():
+            if old_name in ["all", "roi"]:
+                raise RuntimeError("Cannot rename the 'all' or 'roi' ROIs")
+            self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
+        else:
+            raise KeyError(f"Cannot rename ROI {old_name} Available ROIs:{self._roi_ranges.keys()}")

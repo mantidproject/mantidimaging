@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QMessageBox
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -76,10 +76,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setAlternatingRowColors(True)
 
         self.roi_table_model  # Initialise model
+        self.selected_row, self.selected_row_data, self.current_roi = None, None, None
 
-        def on_row_change(item, _):
+        def on_row_change(item, _) -> None:
             """
-            Handle cell change in table view and update selected ROI and toggle visibility of action buttons
+            Handle cell change in table view and update selected ROI and
+            toggle visibility of action buttons
 
             @param item: item in table
             """
@@ -89,11 +91,33 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if self.selected_row_data[0] != 'roi':
                 self.removeBtn.setEnabled(True)
                 self.selected_row = item.row()
+                self.current_roi = self.selected_row_data[0]
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
-    def clear_cor_table(self):
-        return self.roi_table_model.removeAllRows()
+        def on_data_change() -> None:
+            """
+            Handle ROI name change for a selected ROI and update the ROI name in the spectrum widget
+
+            If the ROI name is empty or already exists in the table that is not the selected row,
+            a warning popup will be displayed and the ROI name will be reverted to the previous name
+            """
+            proposed_roi_name = self.selected_row_data[0].lower()
+
+            if proposed_roi_name not in ["", "all", "roi"]:
+                for roi_item in range(self.roi_table_model.rowCount()):
+                    existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
+                    if existing_roi_name == proposed_roi_name and roi_item != self.selected_row:
+                        QMessageBox.warning(self, "Duplication Warning", "ROI name already exists")
+                        proposed_roi_name = self.current_roi
+                        return
+                self.presenter.rename_roi(self.current_roi, self.selected_row_data[0])
+                return
+            QMessageBox.warning(self, "ROI Name Warning",
+                                "ROI name cannot be empty or equal to default names: 'all', 'roi'")
+            self.selected_row_data[0] = self.current_roi
+
+        self.roi_table_model.dataChanged.connect(on_data_change)
 
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
@@ -175,7 +199,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Toggle enabled state of the export button
 
-        :param enabled: True to enable the button, False to disable it
+        @param enabled: True to enable the button, False to disable it
         """
         self.exportButton.setEnabled(enabled)
 
@@ -183,9 +207,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Add a new row to the ROI table
 
-        :param row: The row number
-        :param name: The name of the ROI
-        :param colour: The colour of the ROI
+        @param row: The row number
+        @param name: The name of the ROI
+        @param colour: The colour of the ROI
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")

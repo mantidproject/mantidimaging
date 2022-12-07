@@ -14,6 +14,12 @@ if TYPE_CHECKING:
 
 
 class SpectrumViewerWindowPresenter(BasePresenter):
+    """
+    The presenter for the spectrum viewer window.
+
+    This presenter is responsible for handling user interaction with the view and
+    updating the model and view accordingly to look after the state of the window.
+    """
     view: 'SpectrumViewerWindowView'
     model: SpectrumViewerWindowModel
     spectrum_mode: SpecType = SpecType.SAMPLE
@@ -178,7 +184,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
             for roi_item in self.get_roi_names():
                 self.view.spectrum.remove_roi(roi_item)
-            # self.view.spectrum.remove_all_rois()
         else:
             self.model.remove_roi(roi_name)
             self.view.spectrum.remove_roi(roi_name)
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename a given ROI from the table by ROI name
+
+        @param old_name: Name of the ROI to rename
+        @param new_name: New name of the ROI
+        """
+        self.model.rename_roi(old_name, new_name)
+        self.view.spectrum.rename_roi(old_name, new_name)

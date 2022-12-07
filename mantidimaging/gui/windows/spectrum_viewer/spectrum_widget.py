@@ -168,3 +168,14 @@ class SpectrumWidget(GraphicsLayoutWidget):
         if roi_name in self.roi_dict.keys() and roi_name not in ["roi", "all"]:
             self.image.vb.removeItem(self.roi_dict[roi_name])
             del self.roi_dict[roi_name]
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename a given ROI by name unless it is 'roi' or 'all'.
+
+        @param old_name: The name of the ROI to rename.
+        @param new_name: The new name of the ROI.
+        @raise KeyError: If the new name is already in use or equal to 'roi' or 'all'.
+        """
+        if old_name in self.roi_dict.keys() and new_name not in ["roi", "all"]:
+            self.roi_dict[new_name] = self.roi_dict.pop(old_name)
