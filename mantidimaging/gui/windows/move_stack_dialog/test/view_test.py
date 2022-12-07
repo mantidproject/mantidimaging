@@ -62,3 +62,14 @@ class MoveStackDialogTest(unittest.TestCase):
             self.view.destinationTypeComboBox.itemText(i) for i in range(self.view.destinationTypeComboBox.count())
         ]
         self.assertListEqual(destination_stack_type_options, ["Images", "Recon"])
+
+    def test_moved_stack_within_dataset_options(self):
+        """
+        When a stack is moved to the same dataset, it should not be possible to move it to the same data type
+        (i.e. a Flat Before can become a Recon but moving it to Flat Before should not be possible)
+        """
+        self.view.destinationNameComboBox.setCurrentText(self.origin_dataset_name)
+        destination_stack_type_options = [
+            self.view.destinationTypeComboBox.itemText(i) for i in range(self.view.destinationTypeComboBox.count())
+        ]
+        self.assertNotIn(self.origin_data_type, destination_stack_type_options)
