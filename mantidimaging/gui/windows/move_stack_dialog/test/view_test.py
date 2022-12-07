@@ -30,6 +30,10 @@ class MoveStackDialogTest(unittest.TestCase):
         self.view = MoveStackDialog(self.main_window, self.origin_dataset_id, self.stack_id, self.origin_dataset_name,
                                     self.origin_data_type, self.is_dataset_strict)
 
+    def test_origin_stack_information_matched(self):
+        assert self.origin_dataset_name == self.view.originDatasetName.text()
+        assert self.origin_data_type == self.view.originDataType.text()
+
     def test_combo_box_contains_dataset_names(self):
         assert self.view.destinationNameComboBox.count() == len(self.is_dataset_strict)
         index = 0
