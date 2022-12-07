@@ -4,6 +4,7 @@ import unittest
 from unittest import mock
 
 from mantidimaging.gui.windows.main import MainWindowView
+from mantidimaging.gui.windows.move_stack_dialog.presenter import Notification
 
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog, STRICT_DATASET_ATTRS
 from mantidimaging.test_helpers import start_qapplication
@@ -29,6 +30,7 @@ class MoveStackDialogTest(unittest.TestCase):
         }
         self.view = MoveStackDialog(self.main_window, self.origin_dataset_id, self.stack_id, self.origin_dataset_name,
                                     self.origin_data_type, self.is_dataset_strict)
+        self.view.presenter = self.presenter = mock.Mock()
 
     def test_origin_stack_information_matched(self):
         assert self.origin_dataset_name == self.view.originDatasetName.text()
@@ -73,3 +75,19 @@ class MoveStackDialogTest(unittest.TestCase):
             self.view.destinationTypeComboBox.itemText(i) for i in range(self.view.destinationTypeComboBox.count())
         ]
         self.assertNotIn(self.origin_data_type, destination_stack_type_options)
+
+    def test_accept(self):
+        self.view.close = mock.Mock()
+        self.view.accept()
+        self.presenter.notify.assert_called_once_with(Notification.ACCEPTED)
+        self.view.close.assert_called_once()
+
+    def test_origin_dataset_id(self):
+        assert self.view.origin_dataset_id == self.origin_dataset_id
+
+    def test_stack_id(self):
+        assert self.view.stack_id == self.stack_id
+
+    def test_destination_stack_type(self):
+        self.view.destinationNameComboBox.setCurrentText(self.strict_dataset_name)
+        assert self.view.destination_dataset_name == self.strict_dataset_name
