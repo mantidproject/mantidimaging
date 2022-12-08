@@ -250,3 +250,24 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_stack(generate_images())
         with self.assertRaises(KeyError):
             self.model.remove_roi("non_existent_roi")
+
+    def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
+        self.model.set_stack(generate_images())
+        self.model.set_new_roi("new_roi")
+        self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
+        self.model.rename_roi("new_roi", "imaging_is_the_coolest")
+        self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi", "imaging_is_the_coolest"])
+
+    def test_WHEN_invalid_roi_renamed_THEN_keyerror_raised(self):
+        self.model.set_stack(generate_images())
+        with self.assertRaises(KeyError):
+            self.model.rename_roi("non_existent_roi", "imaging_is_the_coolest")
+
+    @parameterized.expand([
+        ("all"),
+        ("roi"),
+    ])
+    def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self, roi_name):
+        self.model.set_stack(generate_images())
+        with self.assertRaises(RuntimeError):
+            self.model.rename_roi(roi_name, "imaging_is_the_coolest")
