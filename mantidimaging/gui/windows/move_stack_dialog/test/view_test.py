@@ -1,6 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
+import uuid
 from unittest import mock
 
 from mantidimaging.gui.windows.main import MainWindowView
@@ -15,8 +16,8 @@ class MoveStackDialogTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
-        self.origin_dataset_id = "origin-dataset-id"
-        self.stack_id = "stack-id"
+        self.origin_dataset_id = uuid.uuid4()
+        self.stack_id = uuid.uuid4()
         self.origin_dataset_name = "Origin Dataset"
         self.origin_data_type = "Flat Before"
 
