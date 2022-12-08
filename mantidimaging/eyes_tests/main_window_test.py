@@ -117,10 +117,12 @@ class MainWindowTest(BaseEyesTest):
         self.check_target(self.imaging.move_stack_dialog)
 
     def test_move_stack_dialog_mixed_to_strict(self):
+        mixed_ds = self._create_mixed_dataset()
         sample_vis = self._load_strict_data_set()
-        strict_ds = self.imaging.presenter.model.get_parent_dataset(sample_vis.id)
+        strict_ds_id = self.imaging.presenter.model.get_parent_dataset(sample_vis.id)
+        strict_ds = self.imaging.get_dataset(strict_ds_id)
 
-        self.imaging.presenter._set_tree_view_selection_with_id(strict_ds.all[0])
+        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds.all[0])
 
         self.imaging._move_stack()
         self.imaging.move_stack_dialog.destinationNameComboBox.setCurrentText(strict_ds.name)
