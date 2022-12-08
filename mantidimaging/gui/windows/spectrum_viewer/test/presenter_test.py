@@ -148,5 +148,42 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.do_add_roi()
+        with mock.patch(
+                "mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"
+        ):
+            self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
+
+    def test_WHEN_do_add_roi_to_table_called_THEN_roi_added_to_table(self):
+        self.presenter.model.set_stack(generate_images())
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.view.spectrum.roi_dict = {"roi_1": mock.Mock()}
+        self.presenter.do_add_roi_to_table("roi_1")
+        self.view.add_roi_table_row.assert_called_once_with(0, "roi_1", mock.ANY)
+
+    def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
+        self.presenter.model.set_stack(generate_images())
+        with mock.patch(
+                "mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"
+        ):
+            self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.do_remove_roi("roi_1")
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+
+    def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
+        self.presenter.model.set_stack(generate_images())
+        with mock.patch(
+                "mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"
+        ):
+            self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.rename_roi("roi_1", "imaging_is_the_best")
+        self.assertEqual(["all", "roi", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
+
+    @parameterized.expand(["all", "roi"])
+    def test_WHEN_ROI_renamed_to_existing_name_THEN_runtimeerror(self, name):
+        self.presenter.model.set_stack(generate_images())
+        with self.assertRaises(RuntimeError):
+            self.presenter.rename_roi("roi", name)
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
