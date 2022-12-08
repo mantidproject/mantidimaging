@@ -18,10 +18,10 @@ class SpectrumROI(ROI):
     """
     Spectrum ROI object subclassed from pyqtgraph ROI containing ROI and associated data.
 
-    :param name: Name of the ROI
-    :param sensible_roi: Sensible ROI object containing the ROI data
-    :param args: Arguments to pass to the ROI object
-    :param kwargs: Keyword arguments to pass to the ROI object
+    @param name: Name of the ROI
+    @param sensible_roi: Sensible ROI object containing the ROI data
+    @param args: Arguments to pass to the ROI object
+    @param kwargs: Keyword arguments to pass to the ROI object
     """
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,6 +58,11 @@ class SpectrumROI(ROI):
 
 
 class SpectrumWidget(GraphicsLayoutWidget):
+    """
+    The widget containing the spectrum plot and the image projection.
+
+    @param parent: The parent widget
+    """
     image: MIMiniImageView
     spectrum: PlotItem
     range_control: LinearRegionItem
@@ -104,7 +109,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
         By default colour_blind_friendly is set to False
 
-        :return: A random colour in RGB format. (0-255, 0-255, 0-255)
+        @return: A random colour in RGB format. (0-255, 0-255, 0-255)
         """
         accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
                               (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26), (75, 0, 146), (254, 254, 98),
@@ -119,8 +124,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         Add an ROI to the image view.
 
-        :param roi: The ROI to add.
-        :param name: The name of the ROI.
+        @param roi: The ROI to add.
+        @param name: The name of the ROI.
         """
 
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
@@ -135,8 +140,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         Get the ROI with the given name. If no name is given, the default ROI is returned.
 
-        :param roi_name: The name of the ROI to return.
-        :return: The ROI with the given name.
+        @param roi_name: The name of the ROI to return.
+        @return: The ROI with the given name.
         """
         if roi_name in self.roi_dict.keys():
             pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
@@ -162,7 +167,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         Remove a given ROI by name unless it is 'roi' or 'all'.
 
-        :param roi_name: The name of the ROI to remove.
+        @param roi_name: The name of the ROI to remove.
         """
 
         if roi_name in self.roi_dict.keys() and roi_name not in ["roi", "all"]:
