@@ -129,6 +129,8 @@ class BaseEyesTest(unittest.TestCase):
 
         QApplication.sendPostedEvents()
 
+        return mixed_dataset
+
     def _get_top_level_widget(cls, widget_type):
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, widget_type):
