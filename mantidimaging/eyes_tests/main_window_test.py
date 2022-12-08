@@ -122,7 +122,7 @@ class MainWindowTest(BaseEyesTest):
         strict_ds_id = self.imaging.presenter.model.get_parent_dataset(sample_vis.id)
         strict_ds = self.imaging.get_dataset(strict_ds_id)
 
-        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds.all[0])
+        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds.all[0].id)
 
         self.imaging._move_stack()
         self.imaging.move_stack_dialog.destinationNameComboBox.setCurrentText(strict_ds.name)
@@ -133,7 +133,7 @@ class MainWindowTest(BaseEyesTest):
         mixed_ds_2 = self._create_mixed_dataset()
         mixed_ds_2.name = "other-mixed-ds-name"
 
-        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds_1.all[0])
+        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds_1.all[0].id)
 
         self.imaging._move_stack()
         self.imaging.move_stack_dialog.destinationNameComboBox.setCurrentText(mixed_ds_2.name)
