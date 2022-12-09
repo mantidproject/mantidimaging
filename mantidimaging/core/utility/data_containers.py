@@ -9,6 +9,7 @@ and helps the type hints to tell you that you might be passing the wrong value (
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Optional, NamedTuple
 
 import numpy
@@ -129,7 +130,7 @@ class ImageParameters:
     format: str
     prefix: str
     indices: Optional[Indices] = None
-    log_file: Optional[str] = None
+    log_file: Optional[Path] = None
 
 
 class LoadingParameters:

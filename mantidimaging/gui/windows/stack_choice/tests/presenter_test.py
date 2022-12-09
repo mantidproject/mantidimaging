@@ -15,28 +15,22 @@ from mantidimaging.core.data.imagestack import ImageStack
 
 
 class StackChoicePresenterTest(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
+    def setUp(self, _):
         self.original_stack = th.generate_images()
         self.new_stack = th.generate_images()
-        self.v = mock.MagicMock()
         self.op_p = mock.MagicMock()
         self.uuid = uuid4()
         self.p = StackChoicePresenter(original_stack=self.original_stack,
                                       new_stack=self.new_stack,
-                                      operations_presenter=self.op_p,
-                                      stack_uuid=self.uuid,
-                                      view=self.v)
-
-    def test_presenter_doesnt_raise_lists_for_original_stack(self):
-        single_stack_uuid = uuid4()
-        original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
-        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), single_stack_uuid, mock.MagicMock())
+                                      operations_presenter=self.op_p)
+        self.v = self.p.view
 
     @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
-    def test_presenter_throws_if_uuid_is_not_in_stack(self, _):
-        original_stack = [(th.generate_images(), uuid4()), (th.generate_images(), uuid4())]
-        with self.assertRaises(RuntimeError):
-            StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock(), uuid4(), None)
+    def test_presenter_doesnt_raise_lists_for_original_stack(self, _):
+        single_stack_uuid = uuid4()
+        original_stack = [(th.generate_images(), single_stack_uuid), (th.generate_images(), uuid4())]
+        StackChoicePresenter(original_stack, mock.MagicMock(), mock.MagicMock())
 
     def test_show_calls_show_in_the_view(self):
         self.p.show()
@@ -65,20 +59,7 @@ class StackChoicePresenterTest(unittest.TestCase):
 
         self.p.do_clean_up_original_data.assert_called_once()
 
-    def test_clean_up_original_images_stack(self):
-        self.op_p.original_images_stack = [(1, self.uuid), (2, uuid4())]
-
-        self.p._clean_up_original_images_stack()
-
-        self.assertEqual(1, len(self.op_p.original_images_stack))
-        self.assertEqual(2, self.op_p.original_images_stack[0][0])
-
-        self.p._clean_up_original_images_stack()
-
-        self.assertEqual(None, self.op_p.original_images_stack)
-
     def test_do_reapply_original_data(self):
-        self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
         img1 = ImageStack(np.zeros((3, 3, 3)) + 1)
         img1.metadata = {"name": 1}
@@ -91,18 +72,15 @@ class StackChoicePresenterTest(unittest.TestCase):
 
         self.assertEqual(self.p.new_stack.data[0, 0, 0], 1)
         self.assertEqual(self.p.new_stack.metadata["name"], 1)
-        self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
 
     def test_do_clean_up_original_data(self):
         self.p.original_stack = mock.MagicMock()
-        self.p._clean_up_original_images_stack = mock.MagicMock()
         self.p.close_view = mock.MagicMock()
 
         self.p.do_clean_up_original_data()
 
-        self.p._clean_up_original_images_stack.assert_called_once()
         self.assertTrue(self.v.choice_made)
         self.p.close_view.assert_called_once()
 

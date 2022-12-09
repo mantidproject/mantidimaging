@@ -1,5 +1,7 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from pathlib import Path
+
 import numpy as np
 import os
 from typing import Optional, List, Union, Tuple, TYPE_CHECKING
@@ -21,6 +23,8 @@ class Field:
     _stop_spinbox: Optional[QSpinBox] = None
     _increment_spinbox: Optional[QSpinBox] = None
     _shape_widget: Optional[QTreeWidgetItem] = None
+    _tree: QTreeWidget
+    _path: Optional[QTreeWidgetItem]
 
     def __init__(self, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton,
                  file_info: 'TypeInfo'):
@@ -31,7 +35,7 @@ class Field:
         self.select_button = select_button
         self.file_info = file_info
 
-    def set_images(self, image_files: List[str]):
+    def set_images(self, image_files: List[str]) -> None:
         if len(image_files) > 0:
             self.path = image_files[0]
             self.update_shape(len(image_files))
@@ -50,21 +54,22 @@ class Field:
         return self._use
 
     @use.setter
-    def use(self, value: bool):
+    def use(self, value: bool) -> None:
         self._use.setChecked(value)
 
     @property
-    def path(self):
+    def path(self) -> QTreeWidgetItem:
         if self._path is None:
             self._path = QTreeWidgetItem(self._widget)
             self._path.setText(0, "Path")
         return self._path
 
     @path.setter
-    def path(self, value: str):
-        assert isinstance(value,
-                          str), f"The object passed as path for this field is not a string. " \
-                                f"Instead got {type(value)}"
+    def path(self, value: Union[Path, str]) -> None:
+        if isinstance(value, Path):
+            value = str(value)
+        elif not isinstance(value, str):
+            raise RuntimeError(f"The object passed as path for this field is not a string. Instead got {type(value)}")
         if value != "":
             self.path.setText(1, value)
             self.widget.setText(1, self.file())
@@ -88,7 +93,7 @@ class Field:
         """
         return str(self.path.text(1))
 
-    def _init_indices(self):
+    def _init_indices(self) -> None:
         indices_item = QTreeWidgetItem(self._widget)
         indices_item.setText(0, "File indices")
         _spinbox_layout = QHBoxLayout()
@@ -120,7 +125,7 @@ class Field:
         return self._start_spinbox
 
     @_start.setter
-    def _start(self, value: int):
+    def _start(self, value: int) -> None:
         self._start.setValue(value)
 
     @property
@@ -132,7 +137,7 @@ class Field:
         return self._stop_spinbox
 
     @_stop.setter
-    def _stop(self, value: int):
+    def _stop(self, value: int) -> None:
         self._stop.setValue(value)
 
     @property
@@ -144,7 +149,7 @@ class Field:
         return self._increment_spinbox
 
     @_increment.setter
-    def _increment(self, value: int):
+    def _increment(self, value: int) -> None:
         self._increment.setValue(value)
 
     @property
@@ -155,14 +160,14 @@ class Field:
         return self._shape_widget
 
     @_shape.setter
-    def _shape(self, value: str):
+    def _shape(self, value: str) -> None:
         self._shape.setText(1, value)
 
     @property
     def indices(self) -> Indices:
         return Indices(self._start.value(), self._stop.value(), self._increment.value())
 
-    def update_indices(self, number_of_images):
+    def update_indices(self, number_of_images: int) -> None:
         """
         :param number_of_images: Number of images that will be loaded in from
                                  the current selection
@@ -179,7 +184,7 @@ class Field:
         # Enforce the maximum step (ensure a minimum of 1)
         self._increment.setMaximum(max(number_of_images, 1))
 
-    def set_step(self, value: int):
+    def set_step(self, value: int) -> None:
         if self._increment_spinbox is not None:
             self._increment_spinbox.setValue(value)
 
@@ -192,7 +197,7 @@ class Field:
         exp_mem = round(single_mem * num_images, 2)
         return num_images, exp_mem
 
-    def update_shape(self, shape: Union[int, Tuple[int, int]]):
+    def update_shape(self, shape: Union[int, Tuple[int, int]]) -> None:
         if isinstance(shape, int):
             self._shape = f"{str(shape)} images"
         else:

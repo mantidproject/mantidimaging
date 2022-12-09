@@ -7,7 +7,7 @@ from functools import partial
 from itertools import groupby
 from logging import getLogger
 from time import sleep
-from typing import List, TYPE_CHECKING, Optional, Tuple, Union
+from typing import List, TYPE_CHECKING, Optional, Tuple
 from uuid import UUID
 
 import numpy as np
@@ -102,7 +102,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.model = FiltersWindowModel(self)
         self._main_window = main_window
 
-        self.original_images_stack: Union[List[Tuple[ImageStack, UUID]]] = []
+        self.original_images_stack: dict[UUID, ImageStack] = {}
         self.applying_to_all = False
         self.filter_is_running = False
 
@@ -222,7 +222,7 @@ class FiltersWindowPresenter(BasePresenter):
 
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
-                self.original_images_stack = self.stack.copy()
+                self.original_images_stack = {self.stack.id: self.stack.copy()}
 
         # if is a 180degree stack and a user says no, cancel apply filter.
         if self.is_a_proj180deg(self.stack) and not self.view.ask_confirmation(APPLY_TO_180_MSG):
@@ -239,16 +239,17 @@ class FiltersWindowPresenter(BasePresenter):
         stacks = self.main_window.get_all_stacks()
         if self.view.safeApply.isChecked():
             with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
-                self.original_images_stack = []
+                self.original_images_stack = {}
                 for stack in stacks:
-                    self.original_images_stack.append((stack.copy(), stack.id))
+                    self.original_images_stack[stack.id] = stack.copy()
 
         if len(stacks) > 0:
             self.applying_to_all = True
         self._do_apply_filter(stacks)
 
     def _wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
-        stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
+        stack_choice = StackChoicePresenter(self.original_images_stack[stack_uuid], new_stack, self)
+        del self.original_images_stack[stack_uuid]
         if self.model.show_negative_overlay():
             stack_choice.enable_nonpositive_check()
         stack_choice.show()

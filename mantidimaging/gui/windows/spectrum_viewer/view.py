@@ -101,8 +101,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name is empty or already exists in the table that is not the selected row,
             a warning popup will be displayed and the ROI name will be reverted to the previous name
             """
-            print(f"selected row: {self.selected_row_data}")
-            print(f"The data type of selected row: {type(self.selected_row_data)}")
             proposed_roi_name = self.selected_row_data[0]
 
             if proposed_roi_name.lower() not in ["", "all", "roi"]:
