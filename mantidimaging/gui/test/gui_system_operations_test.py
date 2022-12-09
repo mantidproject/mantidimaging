@@ -57,6 +57,9 @@ class TestGuiSystemOperations(GuiSystemBase):
         self.op_window = self.main_window.filters
 
     def tearDown(self) -> None:
+        if self.main_window.filters:
+            self.main_window.filters.close()
+        QTest.qWait(SHOW_DELAY)
         self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
@@ -107,9 +110,6 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
 
-        self.main_window.filters.close()
-        QTest.qWait(SHOW_DELAY)
-
     @parameterized.expand(product(OP_LIST[:3], ["new", "original"]))
     def test_run_operation_stack_safe(self, op_info, keep_stack):
         op_name, params = op_info
@@ -132,7 +132,7 @@ class TestGuiSystemOperations(GuiSystemBase):
 
         def mock_wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
             print("mock_wait_for_stack_choice")
-            stack_choice = StackChoicePresenter(self.original_images_stack, new_stack, self, stack_uuid)
+            stack_choice = StackChoicePresenter(self.original_images_stack[stack_uuid], new_stack, self)
             stack_choice.show()
             QTest.qWait(SHOW_DELAY)
             if keep_stack == "new":
@@ -150,8 +150,6 @@ class TestGuiSystemOperations(GuiSystemBase):
 
             QTest.qWait(SHORT_DELAY)
             wait_until(lambda: self.op_window.presenter.filter_is_running is False)
-            self.main_window.filters.close()
-            QTest.qWait(SHOW_DELAY)
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
     def test_selecting_auto_update_triggers_preview(self, mock_do_update_previews):
@@ -187,9 +185,6 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
 
-        self.main_window.filters.close()
-        QTest.qWait(SHOW_DELAY)
-
     @parameterized.expand([(OP_LIST[3][0], "Select ROI", "ROI"), (OP_LIST[13][0], "Select Air Region", "Air Region")])
     def test_opening_roi_selector_window_toggles_controls_correctly(self, op_name, button_name, field_name):
         QTest.qWait(SHOW_DELAY)
@@ -211,6 +206,3 @@ class TestGuiSystemOperations(GuiSystemBase):
         self._close_window(ROISelectorView)
         self.assertTrue(roi_button.isEnabled())
         self.assertTrue(roi_field.isEnabled())
-
-        self.main_window.filters.close()
-        QTest.qWait(SHOW_DELAY)

@@ -2,8 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 import traceback
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.gui.windows.stack_choice.presenter_base import StackChoicePresenterMixin
@@ -13,33 +12,15 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.operations.presenter import FiltersWindowPresenter  # pragma: no cover
 
 
-def _get_stack_from_uuid(original_stack, stack_uuid):
-    for stack, uuid in original_stack:
-        if uuid == stack_uuid:
-            return stack
-    raise RuntimeError("No useful stacks passed to Stack Choice Presenter")
-
-
 class StackChoicePresenter(StackChoicePresenterMixin):
-    def __init__(self,
-                 original_stack: Union[List[Tuple[ImageStack, UUID]], ImageStack],
-                 new_stack: ImageStack,
-                 operations_presenter: 'FiltersWindowPresenter',
-                 stack_uuid: Optional[UUID],
-                 view: Optional[StackChoiceView] = None):
+    def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
+                 operations_presenter: 'FiltersWindowPresenter'):
+
         self.operations_presenter = operations_presenter
+        self.original_stack = original_stack
 
-        if view is None:
-            # Check if multiple stacks to choose from
-            if isinstance(original_stack, list):
-                self.original_stack = _get_stack_from_uuid(original_stack, stack_uuid)
-            else:
-                self.original_stack = original_stack
-            view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
-
-        self.view = view
+        self.view = StackChoiceView(self.original_stack, new_stack, self, parent=operations_presenter.view)
         self.new_stack = new_stack
-        self.stack_uuid = stack_uuid
         self.done = False
         self.use_new_data = False
 
@@ -58,25 +39,13 @@ class StackChoicePresenter(StackChoicePresenterMixin):
         except Exception as e:
             self.show_error(e, traceback.format_exc())
 
-    def _clean_up_original_images_stack(self):
-        if isinstance(self.operations_presenter.original_images_stack, list) \
-                and len(self.operations_presenter.original_images_stack) > 1:
-            for index, (_, uuid) in enumerate(self.operations_presenter.original_images_stack):
-                if uuid == self.stack_uuid:
-                    self.operations_presenter.original_images_stack.pop(index)
-                    break
-        else:
-            self.operations_presenter.original_images_stack = None
-
     def do_reapply_original_data(self):
         self.new_stack.shared_array = self.original_stack.shared_array
         self.new_stack.metadata = self.original_stack.metadata
-        self._clean_up_original_images_stack()
         self.view.choice_made = True
         self.close_view()
 
     def do_clean_up_original_data(self):
-        self._clean_up_original_images_stack()
         self.view.choice_made = True
         self.close_view()
 

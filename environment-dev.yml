@@ -30,3 +30,4 @@ dependencies:
   - pytest-randomly==3.12.*
   - pytest-xdist==2.5.*
   - coverage==6.4.*
+  - pyfakefs==5.0.*

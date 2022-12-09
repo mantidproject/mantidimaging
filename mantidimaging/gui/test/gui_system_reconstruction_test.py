@@ -54,11 +54,17 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
     @classmethod
     def _click_cor_inspect(cls):
+        """
+        Needs to be queued with QTimer.singleShot before triggering the message box
+        Will raise a RuntimeError if a CORInspectionDialogView is not found
+        """
         cls._wait_for_widget_visible(CORInspectionDialogView)
         for widget in cls.app.topLevelWidgets():
             if isinstance(widget, CORInspectionDialogView):
                 QTest.qWait(SHORT_DELAY)
                 QTest.mouseClick(widget.finishButton, Qt.MouseButton.LeftButton)
+                return
+        raise RuntimeError("_click_InputDialog did not find CORInspectionDialogView")
 
     def test_refine(self):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=4))
@@ -69,6 +75,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY * 2)
+            wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
         QTest.qWait(SHOW_DELAY)
 

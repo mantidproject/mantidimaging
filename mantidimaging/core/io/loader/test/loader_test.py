@@ -1,104 +1,61 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-import os
 from unittest import mock
+from pathlib import Path
 
 from mantidimaging.core.io import loader
 from mantidimaging.core.io.loader import load_stack
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path, DEFAULT_PIXEL_DEPTH, \
     DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM
-from mantidimaging.test_helpers import FileOutputtingTestCase
+from pyfakefs.fake_filesystem_unittest import TestCase
 
 
-class LoaderTest(FileOutputtingTestCase):
+class LoaderTest(TestCase):
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+
+    def _files_equal(self, file1, file2):
+        self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
+
+    def _file_list_count_equal(self, list1, list2):
+        """Check that 2 lists of paths refer to the same files. Order independent"""
+        self.assertCountEqual((Path(s).absolute() for s in list1), (Path(s).absolute() for s in list2))
+
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
 
     @mock.patch("mantidimaging.core.io.loader.loader.load")
-    @mock.patch("mantidimaging.core.io.loader.loader.get_file_names")
-    def test_load_stack(self, get_file_names_mock: mock.Mock, load_mock: mock.Mock):
-        file_names = mock.Mock()
+    def test_load_stack_finds_files(self, load_mock: mock.Mock):
         progress = mock.Mock()
-        file_path = "/path/to/file/that/is/fake.tif"
-        get_file_names_mock.return_value = file_names
+        file_paths_tomo = [f"/a/tomo_{x:04d}.tiff" for x in range(5)]
+        file_paths_other = [f"/a/flat_{x:04d}.tiff" for x in range(5)] + ["/a/tomo.log"]
+        for filename in file_paths_tomo + file_paths_other:
+            self.fs.create_file(filename)
 
-        load_stack(file_path, progress)
+        load_stack(file_paths_tomo[0], progress)
 
-        load_mock.assert_called_once_with(file_names=file_names, progress=progress)
-        get_file_names_mock.assert_called_once_with(path="/path/to/file/that/is",
-                                                    img_format="tif",
-                                                    prefix="/path/to/file/that/is/fake.ti")
+        load_mock.assert_called_once()
+        found_files = load_mock.call_args.kwargs['file_names']
+        self._file_list_count_equal(file_paths_tomo, found_files)
 
-    def _create_test_sample(self):
-        # Logs
-        with open(os.path.join(self.output_directory, "Tomo_log.txt"), "w") as f:
-            f.write("log")
-        with open(os.path.join(self.output_directory, "Flat_After_log.txt"), "w") as f:
-            f.write("log")
-        with open(os.path.join(self.output_directory, "Flat_Before_log.txt"), "w") as f:
-            f.write("log")
-
-        # Flat
-        os.mkdir(os.path.join(self.output_directory, "Flat_Before"))
-        os.mkdir(os.path.join(self.output_directory, "Flat_After"))
-        for ii in range(0, 10):
-            with open(os.path.join(self.output_directory, "Flat_Before", f"Flat_Before_00{ii}.tif"), "wb") as f:
-                f.write(b"\0")
-
-            with open(os.path.join(self.output_directory, "Flat_After", f"Flat_After_00{ii}.tif"), "wb") as f:
-                f.write(b"\0")
-
-        # Dark
-        os.mkdir(os.path.join(self.output_directory, "Dark_Before"))
-        os.mkdir(os.path.join(self.output_directory, "Dark_After"))
-        for ii in range(0, 10):
-            with open(os.path.join(self.output_directory, "Dark_Before", f"Dark_Before_00{ii}.tif"), "wb") as f:
-                f.write(b"\0")
-
-            with open(os.path.join(self.output_directory, "Dark_After", f"Dark_After_00{ii}.tif"), "wb") as f:
-                f.write(b"\0")
-
-        # Tomo
-        os.mkdir(os.path.join(self.output_directory, "Tomo"))
-        for ii in range(0, 200):
-            with open(os.path.join(self.output_directory, "Tomo", f"Tomo_00{ii}.tif"), "wb") as f:
-                f.write(b"\0")
-
-        # 180 degree projection
-        os.mkdir(os.path.join(self.output_directory, "180deg"))
-        with open(os.path.join(self.output_directory, "180deg", "180deg_000.tif"), "wb") as f:
-            f.write(b"\0")
-
-    @mock.patch("mantidimaging.core.io.loader.loader.find_and_verify_sample_log")
+    @mock.patch("mantidimaging.core.io.loader.loader.load_log")
     @mock.patch("mantidimaging.core.io.loader.loader.read_in_file_information")
-    def test_create_loading_parameters_for_file_path(self, mock_read_in_file_information,
-                                                     mock_find_and_verify_sample_log):
-        self._create_test_sample()
-        tomo_dir = os.path.join(self.output_directory, "Tomo")
-        tomo_prefix = os.path.join(tomo_dir, "Tomo")
+    def test_create_loading_parameters_for_file_path(self, _load_log, _read_in_file_information):
+        output_directory = Path("/b")
+        for filename in ["Tomo_log.txt", "Flat_After_log.txt", "Flat_Before_log.txt"]:
+            self.fs.create_file(output_directory / filename)
+
+        for stack_type in ["Flat_Before", "Flat_After", "Dark_Before", "Dark_After", "Tomo"]:
+            for image_number in range(0, 5):
+                filename = Path(output_directory / stack_type / f"{stack_type}_{image_number:04d}.tif")
+                self.fs.create_file(filename)
+
+        self.fs.create_file(output_directory / "180deg" / "180deg_000.tif")
+
         image_format = "tif"
-        flat_before_dir = os.path.join(self.output_directory, "Flat_Before")
-        flat_before_prefix = os.path.join(flat_before_dir, "Flat_Before")
-        flat_before_log = os.path.join(self.output_directory, "Flat_Before_log.txt")
 
-        flat_after_dir = os.path.join(self.output_directory, "Flat_After")
-        flat_after_prefix = os.path.join(flat_after_dir, "Flat_After")
-        flat_after_log = os.path.join(self.output_directory, "Flat_After_log.txt")
+        lp = create_loading_parameters_for_file_path(output_directory)
 
-        dark_before_dir = os.path.join(self.output_directory, "Dark_Before")
-        dark_before_prefix = os.path.join(dark_before_dir, "Dark_Before")
-
-        dark_after_dir = os.path.join(self.output_directory, "Dark_After")
-        dark_after_prefix = os.path.join(dark_after_dir, "Dark_After")
-
-        proj_180_file_prefix = os.path.join(self.output_directory, "180deg", "180deg")
-        proj_180_file = proj_180_file_prefix + "_000.tif"
-
-        lp = create_loading_parameters_for_file_path(self.output_directory)
-
-        mock_read_in_file_information.assert_called_once_with(tomo_dir, in_prefix=tomo_prefix, in_format=image_format)
-        mock_find_and_verify_sample_log.assert_called_once_with(tomo_dir,
-                                                                mock_read_in_file_information.return_value.filenames)
         self.assertEqual(DEFAULT_PIXEL_DEPTH, lp.dtype)
         self.assertEqual(DEFAULT_PIXEL_SIZE, lp.pixel_size)
         self.assertEqual(DEFAULT_IS_SINOGRAM, lp.sinograms)
@@ -107,44 +64,44 @@ class LoaderTest(FileOutputtingTestCase):
         sample = lp.sample
         self.assertEqual(image_format, sample.format)
         self.assertEqual(None, sample.indices)
-        self.assertEqual(tomo_dir, sample.input_path)
-        self.assertEqual(mock_find_and_verify_sample_log.return_value, sample.log_file)
-        self.assertEqual(tomo_prefix, sample.prefix)
+        self._files_equal("/b/Tomo", sample.input_path)
+        self._files_equal("/b/Tomo_log.txt", sample.log_file)
+        self._files_equal("/b/Tomo/Tomo", sample.prefix)
 
         # Flat before checking
         flat_before = lp.flat_before
         self.assertEqual(image_format, flat_before.format)
         self.assertEqual(None, flat_before.indices)
-        self.assertEqual(flat_before_log, flat_before.log_file)
-        self.assertEqual(flat_before_dir, flat_before.input_path)
-        self.assertEqual(flat_before_prefix, flat_before.prefix)
+        self._files_equal("/b/Flat_Before_log.txt", flat_before.log_file)
+        self._files_equal("/b/Flat_Before", flat_before.input_path)
+        self._files_equal("/b/Flat_Before/Flat_Before", flat_before.prefix)
 
         # Flat after checking
         flat_after = lp.flat_after
         self.assertEqual(image_format, flat_after.format)
         self.assertEqual(None, flat_after.indices)
-        self.assertEqual(flat_after_log, flat_after.log_file)
-        self.assertEqual(flat_after_dir, flat_after.input_path)
-        self.assertEqual(flat_after_prefix, flat_after.prefix)
+        self._files_equal("/b/Flat_After_log.txt", flat_after.log_file)
+        self._files_equal("/b/Flat_After", flat_after.input_path)
+        self._files_equal("/b/Flat_After/Flat_After", flat_after.prefix)
 
         # Dark before checking
         dark_before = lp.dark_before
         self.assertEqual(image_format, dark_before.format)
         self.assertEqual(None, dark_before.indices)
-        self.assertEqual(dark_before_dir, dark_before.input_path)
-        self.assertEqual(dark_before_prefix, dark_before.prefix)
+        self._files_equal("/b/Dark_Before", dark_before.input_path)
+        self._files_equal("/b/Dark_Before/Dark_Before", dark_before.prefix)
 
         # Dark after checking
         dark_after = lp.dark_after
         self.assertEqual(image_format, dark_after.format)
         self.assertEqual(None, dark_after.indices)
-        self.assertEqual(dark_after_dir, dark_after.input_path)
-        self.assertEqual(dark_after_prefix, dark_after.prefix)
+        self._files_equal("/b/Dark_After", dark_after.input_path)
+        self._files_equal("/b/Dark_After/Dark_After", dark_after.prefix)
 
         # 180 degree checking
         proj180 = lp.proj_180deg
         self.assertEqual(image_format, proj180.format)
         self.assertEqual(None, proj180.indices)
-        self.assertEqual(proj_180_file, proj180.input_path)
+        self._files_equal("/b/180deg/180deg_000.tif", proj180.input_path)
         self.assertEqual(None, proj180.log_file)
-        self.assertEqual(proj_180_file_prefix, proj180.prefix)
+        self._files_equal("/b/180deg/180deg", proj180.prefix)
