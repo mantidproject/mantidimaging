@@ -3,6 +3,7 @@
 
 import time
 from logging import getLogger
+from math import sqrt
 from threading import Lock
 from typing import List, Optional
 
@@ -37,6 +38,12 @@ class CILRecon(BaseRecon):
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
         Grad = GradientOperator(image_geometry)
+
+        if image_geometry.voxel_num_z == 0:
+            Grad.set_norm(sqrt(8))
+        else:
+            Grad.set_norm(sqrt(12))
+
         K = BlockOperator(alpha * Grad, A2d)
 
         # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
