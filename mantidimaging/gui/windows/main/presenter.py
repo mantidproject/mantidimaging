@@ -827,6 +827,7 @@ class MainWindowPresenter(BasePresenter):
             stack_to_move.name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
 
         origin_dataset.delete_stack(stack_id)
+        self.view.model_changed.emit()
 
     @staticmethod
     def _create_strict_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
