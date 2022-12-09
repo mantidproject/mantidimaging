@@ -180,13 +180,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
 
         if roi_name is None:
-            self.model.remove_all_roi()
-
             for roi_item in self.get_roi_names():
                 self.view.spectrum.remove_roi(roi_item)
+            self.model.remove_all_roi()
         else:
-            self.model.remove_roi(roi_name)
             self.view.spectrum.remove_roi(roi_name)
+            self.model.remove_roi(roi_name)
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
@@ -195,5 +194,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param old_name: Name of the ROI to rename
         @param new_name: New name of the ROI
         """
-        self.model.rename_roi(old_name, new_name)
+
         self.view.spectrum.rename_roi(old_name, new_name)
+        self.model.rename_roi(old_name, new_name)
