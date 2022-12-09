@@ -45,7 +45,9 @@ class MoveStackDialog(BaseDialogView):
         """
         if destination_dataset_is_strict:
             if self.destinationNameComboBox.currentText() == self.originDatasetName.text():
-                self.destinationTypeComboBox.addItems(set(STRICT_DATASET_ATTRS) - {self.originDataType.text()})
+                same_ds_list = STRICT_DATASET_ATTRS.copy()
+                same_ds_list.remove(self.originDataType.text())
+                self.destinationTypeComboBox.addItems(same_ds_list)
             else:
                 self.destinationTypeComboBox.addItems(STRICT_DATASET_ATTRS)
         else:
