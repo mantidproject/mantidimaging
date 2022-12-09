@@ -506,14 +506,14 @@ class MainWindowViewTest(unittest.TestCase):
     def test_execute_move_stack(self):
         origin_dataset_id = "origin-dataset-id"
         stack_id = "stack-id"
-        destination_data_type = "Flat Before"
+        destination_stack_type = "Flat Before"
         destination_dataset_name = "destination-dataset-name"
 
-        self.view.execute_move_stack(origin_dataset_id, stack_id, destination_data_type, destination_dataset_name)
+        self.view.execute_move_stack(origin_dataset_id, stack_id, destination_stack_type, destination_dataset_name)
         self.presenter.notify.assert_called_once_with(PresNotification.MOVE_STACK,
                                                       origin_dataset_id=origin_dataset_id,
                                                       stack_id=stack_id,
-                                                      destination_data_type=destination_data_type,
+                                                      destination_stack_type=destination_stack_type,
                                                       destination_dataset_name=destination_dataset_name)
 
     def test_move_stack(self):
