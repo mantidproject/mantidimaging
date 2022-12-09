@@ -76,7 +76,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setAlternatingRowColors(True)
 
         self.roi_table_model  # Initialise model
-        self.selected_row, self.selected_row_data, self.current_roi = None, None, None
 
         def on_row_change(item, _) -> None:
             """
@@ -102,6 +101,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name is empty or already exists in the table that is not the selected row,
             a warning popup will be displayed and the ROI name will be reverted to the previous name
             """
+            print(f"selected row: {self.selected_row_data}")
+            print(f"The data type of selected row: {type(self.selected_row_data)}")
             proposed_roi_name = self.selected_row_data[0]
 
             if proposed_roi_name.lower() not in ["", "all", "roi"]:
@@ -111,7 +112,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                         QMessageBox.warning(self, "Duplication Warning", "ROI name already exists")
                         proposed_roi_name = self.current_roi
                         return
-                self.presenter.rename_roi(self.current_roi, self.selected_row_data[0])
+                self.presenter.rename_roi(self.current_roi, str(self.selected_row_data[0]))
                 return
             QMessageBox.warning(self, "ROI Name Warning",
                                 "ROI name cannot be empty or equal to default names: 'all', 'roi'")
