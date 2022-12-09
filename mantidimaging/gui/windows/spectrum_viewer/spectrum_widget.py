@@ -182,5 +182,5 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param new_name: The new name of the ROI.
         @raise KeyError: If the new name is already in use or equal to 'roi' or 'all'.
         """
-        if old_name in self.roi_dict.keys() and new_name not in ["roi", "all"]:
+        if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
