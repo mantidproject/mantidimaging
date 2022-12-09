@@ -102,12 +102,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name is empty or already exists in the table that is not the selected row,
             a warning popup will be displayed and the ROI name will be reverted to the previous name
             """
-            proposed_roi_name = self.selected_row_data[0].lower()
+            proposed_roi_name = self.selected_row_data[0]
 
-            if proposed_roi_name not in ["", "all", "roi"]:
+            if proposed_roi_name.lower() not in ["", "all", "roi"]:
                 for roi_item in range(self.roi_table_model.rowCount()):
                     existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
-                    if existing_roi_name == proposed_roi_name and roi_item != self.selected_row:
+                    if existing_roi_name == proposed_roi_name.lower() and roi_item != self.selected_row:
                         QMessageBox.warning(self, "Duplication Warning", "ROI name already exists")
                         proposed_roi_name = self.current_roi
                         return
@@ -115,7 +115,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 return
             QMessageBox.warning(self, "ROI Name Warning",
                                 "ROI name cannot be empty or equal to default names: 'all', 'roi'")
-            self.selected_row_data[0] = self.current_roi
+            proposed_roi_name = self.current_roi
 
         self.roi_table_model.dataChanged.connect(on_data_change)
 
