@@ -196,7 +196,7 @@ class SpectrumViewerWindowModel:
         if roi_name in self._roi_ranges.keys():
             if roi_name in ["all", "roi"]:
                 raise RuntimeError("Cannot remove the 'all' or 'roi' ROIs")
-            self._roi_ranges.pop(roi_name)
+            del self._roi_ranges[roi_name]
         else:
             raise KeyError(
                 f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")
