@@ -1,7 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import random
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal
@@ -15,7 +14,55 @@ if TYPE_CHECKING:
     from .view import SpectrumViewerWindowView
 
 
+class SpectrumROI(ROI):
+    """
+    Spectrum ROI object subclassed from pyqtgraph ROI containing ROI and associated data.
+
+    @param name: Name of the ROI
+    @param sensible_roi: Sensible ROI object containing the ROI data
+    @param args: Arguments to pass to the ROI object
+    @param kwargs: Keyword arguments to pass to the ROI object
+    """
+    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._name = name
+        self._colour = (0, 0, 0)
+        self.setPos((sensible_roi.left, sensible_roi.top))
+        self.setSize((sensible_roi.width, sensible_roi.height))
+        self.maxBounds = self.parentBounds()
+        self.addScaleHandle([1, 1], [0, 0])
+        self.addScaleHandle([1, 0], [0, 1])
+        self.addScaleHandle([0, 0], [1, 1])
+        self.addScaleHandle([0, 1], [1, 0])
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self._name = name
+
+    @property
+    def roi(self) -> ROI:
+        return self
+
+    @property
+    def colour(self) -> tuple[int, int, int]:
+        return self._colour
+
+    @colour.setter
+    def colour(self, colour: tuple[int, int, int]) -> None:
+        self._colour = colour
+        self.setPen(self._colour)
+
+
 class SpectrumWidget(GraphicsLayoutWidget):
+    """
+    The widget containing the spectrum plot and the image projection.
+
+    @param parent: The parent widget
+    """
     image: MIMiniImageView
     spectrum: PlotItem
     range_control: LinearRegionItem
@@ -44,8 +91,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
         self.roi_dict = {}
-
-        self.max_roi_size = [0, 0]
+        self.colour_index = 0
 
     def add_range(self, range_min: int, range_max: int):
         self.range_control.setBounds((range_min, range_max))
@@ -63,45 +109,39 @@ class SpectrumWidget(GraphicsLayoutWidget):
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
         By default colour_blind_friendly is set to False
 
-        :return: A random colour in RGB format. (0-255, 0-255, 0-255)
+        @return: A random colour in RGB format. (0-255, 0-255, 0-255)
         """
         accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
                               (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26), (75, 0, 146), (254, 254, 98),
                               (211, 95, 183), (0, 90, 181), (220, 50, 43), (26, 133, 255), (212, 17, 89)]
-        return random.choice(accessible_colours)
+        if self.colour_index == len(accessible_colours):
+            self.colour_index = 0
+        colour = accessible_colours[self.colour_index]
+        self.colour_index += 1
+        return colour
 
-    def add_roi(self, roi: SensibleROI, name: str = None) -> None:
+    def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
         Add an ROI to the image view.
 
-        :param roi: The ROI to add.
-        :param name: The name of the ROI.
+        @param roi: The ROI to add.
+        @param name: The name of the ROI.
         """
 
-        my_roi = ROI(pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
-        roi_colour = self.random_colour_generator()
-        my_roi.setPen(roi_colour)
-        my_roi.setPos((roi.left, roi.top))
-        my_roi.setSize((roi.width, roi.height))
-        my_roi.maxBounds = my_roi.parentBounds()
-        my_roi.addScaleHandle([1, 1], [0, 0])
-        my_roi.addScaleHandle([1, 0], [0, 1])
-        my_roi.addScaleHandle([0, 0], [1, 1])
-        my_roi.addScaleHandle([0, 1], [1, 0])
+        roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
+        roi_object.colour = self.random_colour_generator()
 
-        self.max_roi_size[0] = roi.width
-        self.max_roi_size[1] = roi.height
-
-        self.roi_dict[name] = my_roi
+        self.roi_dict[name] = roi_object.roi
+        self.max_roi_size = roi_object.size()
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
 
-    def get_roi(self, roi_name: str = None) -> SensibleROI:
+    def get_roi(self, roi_name: str) -> SensibleROI:
         """
         Get the ROI with the given name. If no name is given, the default ROI is returned.
 
-        :param roi_name: The name of the ROI to return.
-        :return: The ROI with the given name.
+        @param roi_name: The name of the ROI to return.
+        @return: The ROI with the given name.
         """
         if roi_name in self.roi_dict.keys():
             pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
@@ -109,7 +149,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
             return SensibleROI.from_points(pos, size)
         elif roi_name == "all":
             pos = CloseEnoughPoint((0, 0))
-            size = CloseEnoughPoint((self.max_roi_size[0], self.max_roi_size[1]))
+            size = CloseEnoughPoint(self.max_roi_size)
             return SensibleROI.from_points(pos, size)
         else:
             raise KeyError("ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'".format(
@@ -123,10 +163,24 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self._set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
 
-    def clear_data(self):
-        self.image.clear()
-        self.spectrum.clear()
-        for roi in self.roi_dict:
-            self.image.vb.removeItem(roi)
+    def remove_roi(self, roi_name: str) -> None:
+        """
+        Remove a given ROI by name unless it is 'roi' or 'all'.
 
-        self._tof_range_label.setText('')
+        @param roi_name: The name of the ROI to remove.
+        """
+
+        if roi_name in self.roi_dict.keys() and roi_name not in ["roi", "all"]:
+            self.image.vb.removeItem(self.roi_dict[roi_name])
+            del self.roi_dict[roi_name]
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename a given ROI by name unless it is 'roi' or 'all'.
+
+        @param old_name: The name of the ROI to rename.
+        @param new_name: The new name of the ROI.
+        @raise KeyError: If the new name is already in use or equal to 'roi' or 'all'.
+        """
+        if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
+            self.roi_dict[new_name] = self.roi_dict.pop(old_name)

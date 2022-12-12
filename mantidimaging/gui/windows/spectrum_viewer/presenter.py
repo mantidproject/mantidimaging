@@ -14,6 +14,12 @@ if TYPE_CHECKING:
 
 
 class SpectrumViewerWindowPresenter(BasePresenter):
+    """
+    The presenter for the spectrum viewer window.
+
+    This presenter is responsible for handling user interaction with the view and
+    updating the model and view accordingly to look after the state of the window.
+    """
     view: 'SpectrumViewerWindowView'
     model: SpectrumViewerWindowModel
     spectrum_mode: SpecType = SpecType.SAMPLE
@@ -93,6 +99,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
 
+    def get_default_table_state(self) -> list:
+        """
+        Get the default state of the table
+        """
+        return ["roi", self.view.spectrum.roi_dict["roi"].colour]
+
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
@@ -131,6 +143,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_moved()
         self.view.display_normalise_error()
 
+    def get_roi_names(self) -> list:
+        """
+        Return a list of ROI names
+
+        @return: list of ROI names
+        """
+        return self.model.get_list_of_roi_names()
+
     def do_add_roi(self) -> None:
         """
         Add a new ROI to the spectrum
@@ -140,3 +160,34 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.auto_range_image()
+        self.do_add_roi_to_table(roi_name)
+
+    def do_add_roi_to_table(self, roi_name: str) -> None:
+        """
+        Add a given ROI to the table by ROI name
+
+        @param roi_name: Name of the ROI to add
+        """
+        row = self.model.selected_row
+        roi_colour = self.view.spectrum.roi_dict[roi_name].colour
+        self.view.add_roi_table_row(row, roi_name, roi_colour)
+
+    def do_remove_roi(self, roi_name: str) -> None:
+        """
+        Remove a given ROI from the table by ROI name or all ROIs from the table
+
+        @param roi_name: Name of the ROI to remove
+        """
+        self.view.spectrum.remove_roi(roi_name)
+        self.model.remove_roi(roi_name)
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename a given ROI from the table by ROI name
+
+        @param old_name: Name of the ROI to rename
+        @param new_name: New name of the ROI
+        """
+
+        self.view.spectrum.rename_roi(old_name, new_name)
+        self.model.rename_roi(old_name, new_name)
