@@ -11,7 +11,7 @@ import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
@@ -687,32 +687,6 @@ class MainWindowPresenter(BasePresenter):
             container_id = self.get_dataset_id_for_stack(container_id)
         self.view.show_add_stack_to_existing_dataset_dialog(container_id)
 
-    @staticmethod
-    def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
-        """
-        Find the data type as a string of a stack.
-        :param stack_id: The ID of the stack.
-        :param dataset: The parent dataset of the stack.
-        :return: A string of the stack's data type.
-        """
-        if stack_id in [recon.id for recon in dataset.recons]:
-            return "Recon"
-        if isinstance(dataset, MixedDataset):
-            if stack_id in dataset:
-                return "Images"
-        else:
-            if stack_id == dataset.sample.id:
-                return "Sample"
-            if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
-                return "Flat Before"
-            if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
-                return "Flat After"
-            if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
-                return "Dark Before"
-            if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
-                return "Dark After"
-        raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
-
     def _create_dataset_is_strict_dict(self) -> Dict[str, bool]:
         """
         Create the dictionary containing the is-strict information that will be used by the MoveStackDialog class.
@@ -732,7 +706,7 @@ class MainWindowPresenter(BasePresenter):
         dataset = self.get_dataset(dataset_id)
         if dataset is None:
             raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
-        stack_data_type = self._get_stack_data_type(stack_id, dataset)
+        stack_data_type = _get_stack_data_type(stack_id, dataset)
         self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type,
                                          self._create_dataset_is_strict_dict())
 
