@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import numpy as np
 
@@ -195,3 +195,29 @@ class StrictDataset(BaseDataset):
                     self.recons.remove(recon)
         else:
             raise KeyError(_delete_stack_error_message(images_id))
+
+
+def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
+    """
+    Find the data type as a string of a stack.
+    :param stack_id: The ID of the stack.
+    :param dataset: The parent dataset of the stack.
+    :return: A string of the stack's data type.
+    """
+    if stack_id in [recon.id for recon in dataset.recons]:
+        return "Recon"
+    if isinstance(dataset, MixedDataset):
+        if stack_id in dataset:
+            return "Images"
+    else:
+        if stack_id == dataset.sample.id:
+            return "Sample"
+        if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
+            return "Flat Before"
+        if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
+            return "Flat After"
+        if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
+            return "Dark Before"
+        if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
+            return "Dark After"
+    raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
