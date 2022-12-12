@@ -244,7 +244,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_stack(generate_images())
         with self.assertRaises(RuntimeError):
             self.model.remove_roi("all")
-            self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
+        self.assertEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
 
     def test_WHEN_invalid_roi_removed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
