@@ -75,6 +75,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.tableView.setAlternatingRowColors(True)
 
+        self.selected_row_data: list = []
+        self.selected_row: int = 0
+        self.current_roi: str = ""
+
         self.roi_table_model  # Initialise model
 
         def on_row_change(item, _) -> None:
