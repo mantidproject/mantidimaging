@@ -4,6 +4,7 @@ import uuid
 from typing import Dict
 
 from PyQt5.QtWidgets import QLabel, QComboBox
+from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.move_stack_dialog.presenter import MoveStackPresenter, Notification
@@ -16,7 +17,6 @@ class MoveStackDialog(BaseDialogView):
     originDatasetName: QLabel
     originDataType: QLabel
 
-    destinationNameComboBox: QComboBox
     destinationTypeComboBox: QComboBox
 
     def __init__(self, parent, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
@@ -32,11 +32,14 @@ class MoveStackDialog(BaseDialogView):
         self.parent_view = parent
         self.presenter = MoveStackPresenter(self)
 
-        self.destinationNameComboBox.addItems([name for name in is_dataset_strict.keys()])
-        self._destination_dataset_is_strict = is_dataset_strict[self.destinationNameComboBox.currentText()]
+        self.datasetSelector = DatasetSelectorWidgetView(self)
+        self.datasetSelector.subscribe_to_main_window(parent)
+        self.layout().addWidget(self.datasetSelector, 3, 1)
+        # self.destinationNameComboBox.addItems([name for name in is_dataset_strict.keys()])
+        # self._destination_dataset_is_strict = is_dataset_strict[self.destinationNameComboBox.currentText()]
 
-        self.destinationNameComboBox.currentIndexChanged.connect(self._on_destination_dataset_changed)
-        self._create_destination_type_options(self._destination_dataset_is_strict)
+        # self.destinationNameComboBox.currentIndexChanged.connect(self._on_destination_dataset_changed)
+        # self._create_destination_type_options(self._destination_dataset_is_strict)
 
     def _create_destination_type_options(self, destination_dataset_is_strict: bool):
         """
