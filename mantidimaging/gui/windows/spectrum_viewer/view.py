@@ -57,7 +57,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
-        self.clearAllBtn.clicked.connect(self.clear_all_rois)
         self.removeBtn.clicked.connect(self.remove_roi)
 
         self._configure_dropdown(self.sampleStackSelector)
@@ -217,13 +216,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour)
         self.tableView.selectRow(row)
-
-    def clear_all_rois(self) -> None:
-        """
-        Clear all ROIs from the image
-        """
-        self.roi_table_model.clear_table()
-        self.presenter.do_remove_roi()
 
     def remove_roi(self) -> None:
         """

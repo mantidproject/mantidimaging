@@ -206,16 +206,6 @@
                                                             </property>
                                                         </widget>
                                                     </item>
-                                                    <item row="1" column="0">
-                                                        <widget class="QPushButton" name="clearAllBtn">
-                                                            <property name="toolTip">
-                                                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes all rows from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                                                            </property>
-                                                            <property name="text">
-                                                                <string>Clear All</string>
-                                                            </property>
-                                                        </widget>
-                                                    </item>
                                                 </layout>
                                             </item>
                                         </layout>
