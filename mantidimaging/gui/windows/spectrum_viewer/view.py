@@ -108,13 +108,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                     existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
                     if existing_roi_name == proposed_roi_name.lower() and roi_item != self.selected_row:
                         QMessageBox.warning(self, "Duplication Warning", "ROI name already exists")
-                        proposed_roi_name = self.current_roi
+                        self.selected_row_data[0] = self.current_roi
                         return
                 self.presenter.rename_roi(self.current_roi, str(self.selected_row_data[0]))
                 return
             QMessageBox.warning(self, "ROI Name Warning",
                                 "ROI name cannot be empty or equal to default names: 'all', 'roi'")
-            proposed_roi_name = self.current_roi
+            self.selected_row_data[0] = self.current_roi
 
         self.roi_table_model.dataChanged.connect(on_data_change)
 
