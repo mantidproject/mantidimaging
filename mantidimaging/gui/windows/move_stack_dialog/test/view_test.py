@@ -21,14 +21,6 @@ class MoveStackDialogTest(unittest.TestCase):
         self.origin_dataset_name = "Origin Dataset"
         self.origin_data_type = "Flat Before"
 
-        self.strict_dataset_name = "Strict Dataset"
-        self.mixed_dataset_name = "Mixed Dataset"
-
-        self.is_dataset_strict = {
-            self.strict_dataset_name: True,
-            self.mixed_dataset_name: False,
-            self.origin_dataset_name: True
-        }
         self.view = MoveStackDialog(self.main_window, self.origin_dataset_id, self.stack_id, self.origin_dataset_name,
                                     self.origin_data_type)
         self.view.presenter = self.presenter = mock.Mock()
