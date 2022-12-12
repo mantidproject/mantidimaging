@@ -655,3 +655,6 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog = MoveStackDialog(self, dataset_id, stack_id, dataset_name, stack_data_type,
                                                  is_dataset_strict)
         self.move_stack_dialog.show()
+
+    def is_dataset_strict(self, ds_id: UUID) -> bool:
+        return self.presenter.is_dataset_strict(ds_id)

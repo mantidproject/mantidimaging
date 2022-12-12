@@ -249,3 +249,9 @@ class MainWindowModel(object):
             if ds.name == dataset_name:
                 return ds
         raise RuntimeError(f"Failed to get Dataset with name {dataset_name}")
+
+    def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
+        for ds in self.datasets.values():
+            if isinstance(ds, StrictDataset) and ds.id == ds_id:
+                return True
+        return False

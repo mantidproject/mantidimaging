@@ -74,3 +74,6 @@ class DatasetSelectorWidgetView(QComboBox):
 
     def select_eligible_stack(self) -> None:
         self.presenter.notify(Notification.SELECT_ELIGIBLE_STACK)
+
+    def current_is_strict(self) -> bool:
+        return self.presenter.current_is_strict

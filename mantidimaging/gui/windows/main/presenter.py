@@ -812,3 +812,6 @@ class MainWindowPresenter(BasePresenter):
         :return: A string for the stack name.
         """
         return f"{stack_type} {dataset_name}"
+
+    def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
+        return self.model.is_dataset_strict(ds_id)
