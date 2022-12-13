@@ -245,7 +245,13 @@ class MainWindowModel(object):
         return self.datasets[parent_id].recons.id
 
     def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
+        """
+        :param ds_id: The dataset ID
+        :return: True if the dataset is Strict, False otherwise
+        """
         for ds in self.datasets.values():
-            if isinstance(ds, StrictDataset) and ds.id == ds_id:
-                return True
-        return False
+            if ds.id == ds_id:
+                if isinstance(ds, StrictDataset):
+                    return True
+                return False
+        raise RuntimeError(f"Unable to find dataset with ID {ds_id}")

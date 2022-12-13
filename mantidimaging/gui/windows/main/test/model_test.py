@@ -523,3 +523,7 @@ class MainWindowModelTest(unittest.TestCase):
         mixed_ds = MixedDataset([generate_images()])
         self.model.add_dataset_to_model(mixed_ds)
         self.assertFalse(self.model.is_dataset_strict(mixed_ds.id))
+
+    def test_is_dataset_strict_raises(self):
+        with self.assertRaises(RuntimeError):
+            self.model.is_dataset_strict(uuid.uuid4())
