@@ -99,4 +99,6 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
 
     @property
     def current_is_strict(self) -> bool:
+        if self.current_dataset is None:
+            return False
         return self.view.main_window.is_dataset_strict(self.current_dataset)
