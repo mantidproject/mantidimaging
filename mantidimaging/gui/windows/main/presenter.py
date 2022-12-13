@@ -762,15 +762,16 @@ class MainWindowPresenter(BasePresenter):
         setattr(dataset, image_attr, new_images)
 
     def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
-                    destination_dataset_name: str):
+                    destination_dataset_id: uuid.UUID):
         """
         Moves a stack from one dataset to another.
         :param origin_dataset_id: The ID of the origin dataset.
         :param stack_id: The ID of the stack to move.
         :param destination_stack_type: The data type the dataset should be when moved.
-        :param destination_dataset_name: The name of the destination dataset.
+        :param destination_dataset_id: The ID of the destination dataset.
         """
         origin_dataset = self.get_dataset(origin_dataset_id)
+        destination_dataset = self.get_dataset(destination_dataset_id)
         if origin_dataset is None:
             raise RuntimeError(
                 f"Unable to find origin dataset with ID {origin_dataset_id} when attempting to move stack")
@@ -778,7 +779,6 @@ class MainWindowPresenter(BasePresenter):
         stack_to_move = self.get_stack(stack_id)
         self.remove_item_from_tree_view(stack_id)
 
-        destination_dataset = self.model.get_dataset_by_name(destination_dataset_name)
         if destination_stack_type is RECON_TEXT:
             self._add_recon_to_dataset_and_tree_view(destination_dataset, stack_to_move)
         elif isinstance(destination_dataset, MixedDataset):
@@ -787,7 +787,7 @@ class MainWindowPresenter(BasePresenter):
             assert self.view.move_stack_dialog is not None
             data_type = self.view.move_stack_dialog.destination_stack_type
             self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, data_type)
-            stack_to_move.name = self._create_strict_dataset_stack_name(data_type, destination_dataset_name)
+            stack_to_move.name = self._create_strict_dataset_stack_name(data_type, destination_dataset.name)
 
         origin_dataset.delete_stack(stack_id)
         self.view.model_changed.emit()
