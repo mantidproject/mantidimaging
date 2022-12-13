@@ -38,7 +38,9 @@ class MoveStackPresenter(BasePresenter):
                                                  self.view.destination_stack_type, self.view.destination_dataset_name)
 
     def _on_dataset_changed(self):
-
+        """
+        Change the contents of the destination type combo box when the destination dataset has changed.
+        """
         self.view.destinationTypeComboBox.clear()
 
         if self.view.datasetSelector.current_is_strict():
