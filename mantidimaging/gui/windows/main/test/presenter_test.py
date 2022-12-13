@@ -943,32 +943,16 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertListEqual(all_ids, self.presenter.all_stack_ids)
 
-    def test_create_dataset_is_strict_dict(self):
-        self.model.datasets = dict()
-
-        mixed_dataset = MixedDataset([generate_images()])
-        mixed_dataset.name = mixed_dataset_name = "mixed-dataset-name"
-        strict_dataset = StrictDataset(generate_images())
-        strict_dataset.name = strict_dataset_name = "strict-dataset-name"
-        self.model.datasets[mixed_dataset.id] = mixed_dataset
-        self.model.datasets[strict_dataset.id] = strict_dataset
-
-        is_strict_dict = self.presenter._create_dataset_is_strict_dict()
-        assert is_strict_dict[strict_dataset_name]
-        assert not is_strict_dict[mixed_dataset_name]
-
     def test_show_move_stack_dialog(self):
         sample = generate_images()
         ds = StrictDataset(sample)
         ds.name = dataset_name = "dataset-name"
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=ds.id)
         self.presenter.get_dataset = mock.Mock(return_value=ds)
-        is_strict = {dataset_name: True}
-        self.presenter._create_dataset_is_strict_dict = mock.Mock(return_value=is_strict)
         self.presenter._get_stack_data_type = mock.Mock(return_value="Sample")
 
         self.presenter.notify(Notification.SHOW_MOVE_STACK_DIALOG, stack_id=sample.id)
-        self.view.show_move_stack_dialog.assert_called_once_with(ds.id, sample.id, dataset_name, "Sample", is_strict)
+        self.view.show_move_stack_dialog.assert_called_once_with(ds.id, sample.id, dataset_name, "Sample")
 
     def test_show_move_stack_dialog_raises(self):
         self.presenter.get_dataset = mock.Mock(return_value=None)
