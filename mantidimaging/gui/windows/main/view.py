@@ -650,9 +650,10 @@ class MainWindowView(BaseMainWindowView):
     def _on_tab_bar_clicked(self, stack: StackVisualiserView):
         self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
 
-    def show_move_stack_dialog(self, dataset_id: uuid.UUID, stack_id: uuid.UUID, dataset_name: str,
+    def show_move_stack_dialog(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
                                stack_data_type: str):
-        self.move_stack_dialog = MoveStackDialog(self, dataset_id, stack_id, dataset_name, stack_data_type)
+        self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
+                                                 stack_data_type)
         self.move_stack_dialog.show()
 
     def is_dataset_strict(self, ds_id: UUID) -> bool:
