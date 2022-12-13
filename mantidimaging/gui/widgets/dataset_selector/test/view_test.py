@@ -50,3 +50,6 @@ class DatasetSelectorWidgetViewTest(unittest.TestCase):
         self.view.try_to_select_relevant_stack("flat")
         self.assertEqual(self.view.currentIndex(), 0)
         self.assertEqual(self.view.currentText(), "flat_0001")
+
+    def test_current_is_strict(self):
+        self.assertEqual(self.view.current_is_strict(), self.presenter.current_is_strict)
