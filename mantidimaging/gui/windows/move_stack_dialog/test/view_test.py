@@ -27,8 +27,8 @@ class MoveStackDialogTest(unittest.TestCase):
         self.view.dataset_selector = self.dataset_selector = mock.Mock()
 
     def test_origin_stack_information_matched(self):
-        assert self.origin_dataset_name == self.view.originDatasetName.text()
-        assert self.origin_data_type == self.view.originDataType.text()
+        self.assertEqual(self.origin_dataset_name, self.view.originDatasetName.text())
+        self.assertEqual(self.origin_data_type, self.view.originDataType.text())
 
     def test_accept(self):
         self.view.close = mock.Mock()
@@ -41,7 +41,7 @@ class MoveStackDialogTest(unittest.TestCase):
         self.presenter.notify.assert_called_once_with(Notification.DATASET_CHANGED)
 
     def test_origin_dataset_id(self):
-        assert self.view.origin_dataset_id == self.origin_dataset_id
+        self.assertEqual(self.view.origin_dataset_id, self.origin_dataset_id)
 
     def test_stack_id(self):
-        assert self.view.stack_id == self.stack_id
+        self.assertEqual(self.view.stack_id, self.stack_id)
