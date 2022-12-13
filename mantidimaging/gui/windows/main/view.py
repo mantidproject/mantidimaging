@@ -5,7 +5,7 @@ import os
 import uuid
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, List, Union, TYPE_CHECKING, Dict
+from typing import Optional, List, Union, TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -651,9 +651,8 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
 
     def show_move_stack_dialog(self, dataset_id: uuid.UUID, stack_id: uuid.UUID, dataset_name: str,
-                               stack_data_type: str, is_dataset_strict: Dict[str, bool]):
-        self.move_stack_dialog = MoveStackDialog(self, dataset_id, stack_id, dataset_name, stack_data_type,
-                                                 is_dataset_strict)
+                               stack_data_type: str):
+        self.move_stack_dialog = MoveStackDialog(self, dataset_id, stack_id, dataset_name, stack_data_type)
         self.move_stack_dialog.show()
 
     def is_dataset_strict(self, ds_id: UUID) -> bool:

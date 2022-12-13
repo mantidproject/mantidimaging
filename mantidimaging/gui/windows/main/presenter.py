@@ -687,16 +687,6 @@ class MainWindowPresenter(BasePresenter):
             container_id = self.get_dataset_id_for_stack(container_id)
         self.view.show_add_stack_to_existing_dataset_dialog(container_id)
 
-    def _create_dataset_is_strict_dict(self) -> Dict[str, bool]:
-        """
-        Create the dictionary containing the is-strict information that will be used by the MoveStackDialog class.
-        :return: The dictionary with the dataset name and bool indicating if it is strict.
-        """
-        move_stack_ds = dict()
-        for key in self.model.datasets.keys():
-            move_stack_ds[self.model.datasets[key].name] = isinstance(self.model.datasets[key], StrictDataset)
-        return move_stack_ds
-
     def _show_move_stack_dialog(self, stack_id: uuid.UUID):
         """
         Shows the move stack dialog.
@@ -707,8 +697,7 @@ class MainWindowPresenter(BasePresenter):
         if dataset is None:
             raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
         stack_data_type = _get_stack_data_type(stack_id, dataset)
-        self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type,
-                                         self._create_dataset_is_strict_dict())
+        self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type)
 
     def _add_images_to_existing_dataset(self):
         """
