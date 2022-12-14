@@ -959,8 +959,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter._show_move_stack_dialog("stack-id")
 
-    def test_move_stack_raises(self):
-        self.presenter.get_dataset = mock.Mock(return_value=None)
+    def test_move_stack_raises_when_origin_dataset_not_found(self):
+        self.presenter.get_dataset = mock.Mock(side_effect=[None, StrictDataset(generate_images())])
+        with self.assertRaises(RuntimeError):
+            self.presenter._move_stack("origin-dataset-id", "stack-id", "Flat After", "destination-dataset-id")
+
+    def test_move_stack_raises_when_destination_dataset_not_found(self):
+        self.presenter.get_dataset = mock.Mock(side_effect=[StrictDataset(generate_images()), None])
         with self.assertRaises(RuntimeError):
             self.presenter._move_stack("origin-dataset-id", "stack-id", "Flat After", "destination-dataset-id")
 
