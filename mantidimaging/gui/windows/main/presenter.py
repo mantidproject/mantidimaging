@@ -775,6 +775,9 @@ class MainWindowPresenter(BasePresenter):
         if origin_dataset is None:
             raise RuntimeError(
                 f"Unable to find origin dataset with ID {origin_dataset_id} when attempting to move stack")
+        if destination_dataset is None:
+            raise RuntimeError(
+                f"Unable to find destination dataset with ID {destination_dataset_id} when attempting to move stack")
 
         stack_to_move = self.get_stack(stack_id)
         self.remove_item_from_tree_view(stack_id)
