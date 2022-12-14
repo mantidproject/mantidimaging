@@ -21,6 +21,12 @@ class SpecType(Enum):
 
 
 class SpectrumViewerWindowModel:
+    """
+    The model for the spectrum viewer window.
+    This model is responsible for storing the state of the window and providing
+    the presenter with the data it needs to update the view.
+    The model is also responsible for saving ROI data to a csv file.
+    """
     presenter: 'SpectrumViewerWindowPresenter'
     _stack: Optional[ImageStack] = None
     _normalise_stack: Optional[ImageStack] = None
@@ -31,6 +37,18 @@ class SpectrumViewerWindowModel:
         self.presenter = presenter
         self._roi_id_counter = 0
         self._roi_ranges = {}
+        self._selected_row = 0
+
+    @property
+    def selected_row(self):
+        return self._selected_row
+
+    @selected_row.setter
+    def selected_row(self, value):
+        self._selected_row = value
+
+    def reset_selected_row(self):
+        self.selected_row = 0
 
     def roi_name_generator(self) -> str:
         """
@@ -59,6 +77,8 @@ class SpectrumViewerWindowModel:
     def set_new_roi(self, name: str) -> None:
         """
         Sets a new ROI with the given name
+
+        @param name: The name of the new ROI
         """
         height, width = self.get_image_shape()
         self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
@@ -73,8 +93,8 @@ class SpectrumViewerWindowModel:
         """
         Get the ROI with the given name from the model
 
-        :param roi_name: The name of the ROI to get
-        :return: The ROI with the given name
+        @param roi_name: The name of the ROI to get
+        @return: The ROI with the given name
         """
         if roi_name not in self._roi_ranges.keys():
             raise KeyError(f"ROI {roi_name} does not exist")
@@ -139,8 +159,8 @@ class SpectrumViewerWindowModel:
         """
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
 
-        :param path: The path to save the CSV file to.
-        :param normalized: Whether to save the normalized spectrum.
+        @param path: The path to save the CSV file to.
+        @param normalized: Whether to save the normalized spectrum.
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -158,3 +178,34 @@ class SpectrumViewerWindowModel:
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
+
+    def remove_roi(self, roi_name) -> None:
+        """
+        Remove the selected ROI from the model
+
+        @param roi_name: The name of the ROI to remove
+        """
+
+        if roi_name in self._roi_ranges.keys():
+            if roi_name in ["all", "roi"]:
+                raise RuntimeError("Cannot remove the 'all' or 'roi' ROIs")
+            del self._roi_ranges[roi_name]
+        else:
+            raise KeyError(
+                f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")
+
+    def rename_roi(self, old_name: str, new_name: str) -> None:
+        """
+        Rename the selected ROI from the model
+
+        @param old_name: The current name of the ROI
+        @param new_name: The new name of the ROI
+        @raises KeyError: If the ROI does not exist
+        @raises RuntimeError: If the ROI is 'all' or 'roi'
+        """
+        if old_name in self._roi_ranges.keys():
+            if old_name in ["all", "roi"]:
+                raise RuntimeError("Cannot rename the 'all' or 'roi' ROIs")
+            self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
+        else:
+            raise KeyError(f"Cannot rename ROI {old_name} Available ROIs:{self._roi_ranges.keys()}")

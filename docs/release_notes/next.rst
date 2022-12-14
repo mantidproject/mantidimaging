@@ -12,6 +12,7 @@ New Features and improvements
 - #1625 : Load recons to an existing dataset
 - #1625 : Change selection in tree view when switching tabs
 - #1626 : Move stacks between datasets
+- #1622 : Add, Remove and Rename ROIs in spectrum viewer
 
 Fixes
 -----
