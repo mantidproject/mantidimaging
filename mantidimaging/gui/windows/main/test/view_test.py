@@ -536,3 +536,8 @@ class MainWindowViewTest(unittest.TestCase):
             move_stack_mock.assert_called_once_with(self.view, origin_dataset_id, stack_id, origin_dataset_name,
                                                     stack_data_type)
             move_stack_mock.return_value.show.assert_called_once()
+
+    def test_is_dataset_strict(self):
+        ds_id = "ds-id"
+        self.view.is_dataset_strict(ds_id)
+        self.presenter.is_dataset_strict.assert_called_once_with(ds_id)
