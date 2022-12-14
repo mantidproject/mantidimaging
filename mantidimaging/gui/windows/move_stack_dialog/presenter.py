@@ -35,7 +35,7 @@ class MoveStackPresenter(BasePresenter):
         Calls the execute move stack method in the main view.
         """
         self.view.parent_view.execute_move_stack(self.view.origin_dataset_id, self.view.stack_id,
-                                                 self.view.destination_stack_type, self.view.destination_dataset_name)
+                                                 self.view.destination_stack_type, self.view.destination_dataset_id)
 
     def _on_dataset_changed(self):
         """

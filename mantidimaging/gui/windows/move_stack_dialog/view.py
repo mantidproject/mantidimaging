@@ -52,3 +52,7 @@ class MoveStackDialog(BaseDialogView):
     @property
     def destination_stack_type(self) -> str:
         return self.destinationTypeComboBox.currentText()
+
+    @property
+    def destination_dataset_id(self) -> uuid.UUID:
+        return self.datasetSelector.current()  # type: ignore

@@ -22,12 +22,11 @@ class MoveStackPresenterTest(unittest.TestCase):
         self.view.origin_dataset_id = origin_dataset_id = "origin-dataset-id"
         self.view.stack_id = stack_id = "stack-id"
         self.view.destination_stack_type = destination_stack_type = "destination_stack_type"
-        self.view.destination_dataset_name = destination_dataset_name = "destination-dataset-name"
+        self.view.destination_dataset_id = destination_dataset_id = "destination-dataset-id"
 
         self.presenter.notify(Notification.ACCEPTED)
         self.view.parent_view.execute_move_stack.assert_called_once_with(origin_dataset_id, stack_id,
-                                                                         destination_stack_type,
-                                                                         destination_dataset_name)
+                                                                         destination_stack_type, destination_dataset_id)
 
     def test_notify_exception(self):
         self.presenter._on_accepted = mock.Mock(side_effect=RuntimeError)
