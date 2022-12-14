@@ -44,7 +44,7 @@ class MoveStackPresenter(BasePresenter):
         self.view.destinationTypeComboBox.clear()
 
         if self.view.datasetSelector.current_is_strict():
-            if self.view.datasetSelector.current == self.view.origin_dataset_id:
+            if self.view.datasetSelector.current() == self.view.origin_dataset_id:
                 same_ds_list = STRICT_DATASET_ATTRS.copy()
                 same_ds_list.remove(self.view.originDataType.text())
                 self.view.destinationTypeComboBox.addItems(same_ds_list)
