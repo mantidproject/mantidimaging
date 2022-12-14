@@ -35,7 +35,7 @@ class MoveStackPresenterTest(unittest.TestCase):
 
     def test_destination_combo_box_when_moving_to_same_strict_dataset(self):
         self.view.datasetSelector.current_is_strict.return_value = True
-        self.view.datasetSelector.current = self.view.origin_dataset_id = "dataset-id"
+        self.view.datasetSelector.current.return_value = self.view.origin_dataset_id = "dataset-id"
         self.view.originDataType.text.return_value = origin_data_type = "Flat Before"
         self.presenter.notify(Notification.DATASET_CHANGED)
 
@@ -46,7 +46,7 @@ class MoveStackPresenterTest(unittest.TestCase):
 
     def test_destination_combo_box_when_moving_to_different_strict_dataset(self):
         self.view.datasetSelector.current_is_strict.return_value = True
-        self.view.datasetSelector.current = "dest-dataset-id"
+        self.view.datasetSelector.current.return_value = "dest-dataset-id"
         self.view.origin_dataset_id = "origin-dataset-id"
         self.presenter.notify(Notification.DATASET_CHANGED)
 
