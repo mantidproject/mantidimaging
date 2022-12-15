@@ -12,7 +12,7 @@ import PyInstaller.__main__
 
 
 def create_run_options():
-    run_options = ['../mantidimaging/__main__.py', '--name=mantidimaging']
+    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging']
 
     add_hidden_imports(run_options)
     add_missing_submodules(run_options)
