@@ -502,3 +502,42 @@ class MainWindowViewTest(unittest.TestCase):
         mock_stack = mock.Mock()
         self.view._on_tab_bar_clicked(mock_stack)
         self.presenter.notify.assert_called_once_with(Notification.TAB_CLICKED, stack=mock_stack)
+
+    def test_execute_move_stack(self):
+        origin_dataset_id = "origin-dataset-id"
+        stack_id = "stack-id"
+        destination_stack_type = "Flat Before"
+        destination_dataset_id = "destination-dataset-id"
+
+        self.view.execute_move_stack(origin_dataset_id, stack_id, destination_stack_type, destination_dataset_id)
+        self.presenter.notify.assert_called_once_with(PresNotification.MOVE_STACK,
+                                                      origin_dataset_id=origin_dataset_id,
+                                                      stack_id=stack_id,
+                                                      destination_stack_type=destination_stack_type,
+                                                      destination_dataset_id=destination_dataset_id)
+
+    def test_move_stack(self):
+        stack_to_move = mock.Mock()
+        stack_to_move.id = stack_to_move_id = "stack-to-move-id"
+        self.view.dataset_tree_widget.selectedItems = mock.Mock(return_value=[stack_to_move])
+
+        self.view._move_stack()
+        self.presenter.notify.assert_called_once_with(PresNotification.SHOW_MOVE_STACK_DIALOG,
+                                                      stack_id=stack_to_move_id)
+
+    def test_show_move_stack_dialog(self):
+        origin_dataset_id = "origin-dataset-id"
+        stack_id = "stack-id"
+        origin_dataset_name = "origin-dataset-name"
+        stack_data_type = "Dark After"
+
+        with mock.patch("mantidimaging.gui.windows.main.view.MoveStackDialog") as move_stack_mock:
+            self.view.show_move_stack_dialog(origin_dataset_id, stack_id, origin_dataset_name, stack_data_type)
+            move_stack_mock.assert_called_once_with(self.view, origin_dataset_id, stack_id, origin_dataset_name,
+                                                    stack_data_type)
+            move_stack_mock.return_value.show.assert_called_once()
+
+    def test_is_dataset_strict(self):
+        ds_id = "ds-id"
+        self.view.is_dataset_strict(ds_id)
+        self.presenter.is_dataset_strict.assert_called_once_with(ds_id)

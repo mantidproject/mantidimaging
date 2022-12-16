@@ -513,3 +513,17 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_nexus_saving(sd.id, path, sample_name)
         nexus_save.assert_called_once_with(sd, path, sample_name)
+
+    def test_is_dataset_strict_returns_true(self):
+        strict_ds = StrictDataset(generate_images())
+        self.model.add_dataset_to_model(strict_ds)
+        self.assertTrue(self.model.is_dataset_strict(strict_ds.id))
+
+    def test_is_dataset_strict_returns_false(self):
+        mixed_ds = MixedDataset([generate_images()])
+        self.model.add_dataset_to_model(mixed_ds)
+        self.assertFalse(self.model.is_dataset_strict(mixed_ds.id))
+
+    def test_is_dataset_strict_raises(self):
+        with self.assertRaises(RuntimeError):
+            self.model.is_dataset_strict(uuid.uuid4())

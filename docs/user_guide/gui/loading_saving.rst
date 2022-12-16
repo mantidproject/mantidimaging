@@ -14,7 +14,10 @@ When *Load dataset* is selected, the following dialog will appear:
 .. image:: ../../_static/loading_screen.png
     :alt: Initial Load dialog
 
-This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern. The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree projections and sample logs.
+This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF
+file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern.
+The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree
+projections and sample logs.
 
 Once data has been selected, its shape is inspected and the stack index fields
 are populated as shown below:
@@ -81,7 +84,8 @@ Note that the log can also be chosen in the :ref:`Load Dataset` dialog.
 Load projection angles
 ----------------------
 
-This can be used to load a file with projection angles. Angles are expected in DEGREES as comma separated values on a single line, or a single angle value per line.
+This can be used to load a file with projection angles. Angles are expected in DEGREES as comma separated values on a
+single line, or a single angle value per line.
 
 180 Degree Projections
 ----------------------
@@ -91,7 +95,8 @@ been found, then it will try to look for a projection that is <= 1 degree away f
 be asked if you wish to use the next closest image. Bear in mind that the absence of a 180 degree projection means that
 the "Correlate 0 and 180" algorithm will not be available for the reconstruction.
 
-A new 180 projection can be loaded with the :code:`Load 180 degree projection` option. This will override any already loaded 180 projection. This option will only work correctly with a stack loaded through the :ref:`Load dataset` method.
+A new 180 projection can be loaded with the :code:`Load 180 degree projection` option. This will override any already
+loaded 180 projection. This option will only work correctly with a stack loaded through the :ref:`Load dataset` method.
 
 Saving
 ------
@@ -133,8 +138,8 @@ When a dataset has been successfully loaded, it will be possible to see its elem
 Adding / Replacing Data
 ***********************
 
-The stacks that comprise an existing dataset can be deleted or -- in the case of *strict* datasets only -- replaced. This can be
-done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.
+The stacks that comprise an existing dataset can be deleted or -- in the case of *strict* datasets only -- replaced.
+This can be done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.
 
 .. image:: ../../_static/add_to_dataset_dialog.png
     :alt: Dataset tree view
@@ -148,6 +153,15 @@ images will be added to the dataset's recons list.
 
 For "simple" datasets that do not have Projections, Flat Before, etc there is only the option of adding additional
 stacks or recons.
+
+Moving Data
+***********
+
+Data can also be moved from one dataset to another, or one stack type to another, by right-clicking the stack you wish
+to move and choosing the Move Stack option.
+
+.. image:: ../../_static/move_stack.png
+    :alt: Dataset tree view
 
 Deleting Data
 *************

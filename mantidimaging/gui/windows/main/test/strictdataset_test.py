@@ -6,7 +6,8 @@ import unittest
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list
+from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list, \
+    _get_stack_data_type
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -238,3 +239,38 @@ class StrictDatasetTest(unittest.TestCase):
         ]
 
         assert np.array_equal(expected_list, self.strict_dataset.nexus_rotation_angles)
+
+    def test_get_stack_data_type_returns_sample(self):
+        sample = generate_images()
+        sample_id = sample.id
+        dataset = StrictDataset(sample)
+        self.assertEqual(_get_stack_data_type(sample_id, dataset), "Sample")
+
+    def test_get_stack_data_type_returns_flat_before(self):
+        flat_before = generate_images()
+        flat_before_id = flat_before.id
+        dataset = StrictDataset(sample=generate_images(), flat_before=flat_before)
+        self.assertEqual(_get_stack_data_type(flat_before_id, dataset), "Flat Before")
+
+    def test_get_stack_data_type_returns_flat_after(self):
+        flat_after = generate_images()
+        flat_after_id = flat_after.id
+        dataset = StrictDataset(sample=generate_images(), flat_after=flat_after)
+        self.assertEqual(_get_stack_data_type(flat_after_id, dataset), "Flat After")
+
+    def test_get_stack_data_type_returns_dark_before(self):
+        dark_before = generate_images()
+        dark_before_id = dark_before.id
+        dataset = StrictDataset(sample=generate_images(), dark_before=dark_before)
+        self.assertEqual(_get_stack_data_type(dark_before_id, dataset), "Dark Before")
+
+    def test_get_stack_data_type_returns_dark_after(self):
+        dark_after = generate_images()
+        dark_after_id = dark_after.id
+        dataset = StrictDataset(sample=generate_images(), dark_after=dark_after)
+        self.assertEqual(_get_stack_data_type(dark_after_id, dataset), "Dark After")
+
+    def test_get_stack_data_type_raises(self):
+        empty_ds = StrictDataset(generate_images())
+        with self.assertRaises(RuntimeError):
+            _get_stack_data_type("bad-id", empty_ds)

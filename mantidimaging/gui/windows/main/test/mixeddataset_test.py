@@ -3,7 +3,7 @@
 
 import unittest
 
-from mantidimaging.core.data.dataset import MixedDataset
+from mantidimaging.core.data.dataset import MixedDataset, _get_stack_data_type
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -45,3 +45,16 @@ class MixedDatasetTest(unittest.TestCase):
         self.mixed_dataset.sinograms = sinograms = generate_images()
         self.mixed_dataset.delete_stack(sinograms.id)
         self.assertNotIn(sinograms, self.mixed_dataset.all)
+
+    def test_get_stack_data_type_returns_recon(self):
+        recon = generate_images()
+        recon_id = recon.id
+        dataset = MixedDataset()
+        dataset.recons.append(recon)
+        self.assertEqual(_get_stack_data_type(recon_id, dataset), "Recon")
+
+    def test_get_stack_data_type_returns_images(self):
+        images = generate_images()
+        images_id = images.id
+        dataset = MixedDataset([images])
+        self.assertEqual(_get_stack_data_type(images_id, dataset), "Images")

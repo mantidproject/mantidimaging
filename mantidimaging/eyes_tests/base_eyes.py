@@ -120,7 +120,7 @@ class BaseEyesTest(unittest.TestCase):
 
         return vis
 
-    def _create_mixed_dataset(self):
+    def _create_mixed_dataset(self) -> MixedDataset:
         mixed_dataset = MixedDataset([generate_images()], "a-mixed-dataset")
 
         self.imaging.presenter.model.add_dataset_to_model(mixed_dataset)
@@ -128,6 +128,8 @@ class BaseEyesTest(unittest.TestCase):
         self.imaging.presenter.create_mixed_dataset_stack_windows(mixed_dataset)
 
         QApplication.sendPostedEvents()
+
+        return mixed_dataset
 
     def _get_top_level_widget(cls, widget_type):
         for widget in cls.app.topLevelWidgets():

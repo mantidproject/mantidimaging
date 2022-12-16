@@ -30,6 +30,7 @@ from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
+from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
@@ -97,6 +98,7 @@ class MainWindowView(BaseMainWindowView):
     nexus_load_dialog: Optional[NexusLoadDialog] = None
     nexus_save_dialog: Optional[NexusSaveDialog] = None
     add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
+    move_stack_dialog: Optional[MoveStackDialog] = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -330,6 +332,14 @@ class MainWindowView(BaseMainWindowView):
     def execute_add_to_dataset(self):
         self.presenter.notify(PresNotification.DATASET_ADD)
 
+    def execute_move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
+                           destination_dataset_id: uuid.UUID):
+        self.presenter.notify(PresNotification.MOVE_STACK,
+                              origin_dataset_id=origin_dataset_id,
+                              stack_id=stack_id,
+                              destination_stack_type=destination_stack_type,
+                              destination_dataset_id=destination_dataset_id)
+
     def show_image_save_dialog(self):
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
         self.image_save_dialog.show()
@@ -543,6 +553,10 @@ class MainWindowView(BaseMainWindowView):
         add_action = self.menuTreeView.addAction("Add / Replace Stack")
         add_action.triggered.connect(self._add_images_to_existing_dataset)
 
+        if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
+            move_action = self.menuTreeView.addAction("Move Stack")
+            move_action.triggered.connect(self._move_stack)
+
         delete_action = self.menuTreeView.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
 
@@ -561,6 +575,10 @@ class MainWindowView(BaseMainWindowView):
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=container_id)
+
+    def _move_stack(self):
+        stack_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
         """
@@ -631,3 +649,12 @@ class MainWindowView(BaseMainWindowView):
 
     def _on_tab_bar_clicked(self, stack: StackVisualiserView):
         self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
+
+    def show_move_stack_dialog(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
+                               stack_data_type: str):
+        self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
+                                                 stack_data_type)
+        self.move_stack_dialog.show()
+
+    def is_dataset_strict(self, ds_id: UUID) -> bool:
+        return self.presenter.is_dataset_strict(ds_id)
