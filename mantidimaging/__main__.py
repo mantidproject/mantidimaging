@@ -3,6 +3,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 if __name__ == '__main__':
-    from mantidimaging import main
+    from multiprocessing import freeze_support
+    # freeze_support adds support for multiprocessing when the application has been frozen to produce a Windows
+    # executable. It is only required for Windows and will have no effect when invoked on any other OS.
+    # It will also have no effect when the script is run normally by the Python interpreter.
+    freeze_support()
 
+    from mantidimaging import main
     main.main()
