@@ -3,13 +3,16 @@
 import os
 import pkgutil
 import sys
-from typing import List, Protocol, cast
+from typing import List, Protocol, cast, Union, TYPE_CHECKING
 from importlib.machinery import FileFinder, ModuleSpec
 from importlib.abc import Loader
 
+if TYPE_CHECKING:
+    from PyInstaller.loader.pyimod02_importers import FrozenImporter
+
 from mantidimaging.core.operations.base_filter import BaseFilter
 
-MODULES_OPERATIONS = {}
+MODULES_OPERATIONS: dict[str, Union['FrozenImporter', Loader]] = {}
 if not MODULES_OPERATIONS:
     for finder, module_name, _ in pkgutil.walk_packages([os.path.dirname(__file__)]):
         if getattr(sys, 'frozen', False):
