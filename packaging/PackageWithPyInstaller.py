@@ -12,12 +12,11 @@ import PyInstaller.__main__
 
 
 def create_run_options():
-    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging']
+    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks']
 
     add_hidden_imports(run_options)
     add_missing_submodules(run_options)
     add_data_files(run_options)
-    add_conda_dynamic_libs(run_options)
     add_optional_arguments(run_options)
 
     return run_options
@@ -36,6 +35,10 @@ def add_hidden_imports(run_options):
 
     run_options.extend([f'--hidden-import={name}' for name in imports])
 
+    # Adding dynamic libraries would usually be done via a hook, however when we need to collect them for hidden imports
+    # the hook doesn't seem to be picked up by PyInstaller, so we do it here instead.
+    run_options.extend(add_conda_dynamic_libs(['tomopy']))
+
 
 def add_missing_submodules(run_options):
     imports = ['cupy']
@@ -52,12 +55,13 @@ def add_data_files(run_options):
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
-def add_conda_dynamic_libs(run_options):
-    distributions = ['tomopy', 'cil']
-
+def add_conda_dynamic_libs(distributions):
+    options = []
     for dist_name in distributions:
         binaries = conda_support.collect_dynamic_libs(dist_name)
-        run_options.extend([f'--add-binary={src}{os.pathsep}{dest}' for src, dest in binaries])
+        options.extend([f'--add-binary={src}{os.pathsep}{dest}' for src, dest in binaries])
+
+    return options
 
 
 def add_optional_arguments(run_options):
