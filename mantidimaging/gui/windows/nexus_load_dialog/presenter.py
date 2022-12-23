@@ -112,7 +112,6 @@ class NexusLoadPresenter:
                 self.rotation_angles = self.rotation_angles[:]
 
                 self._look_for_recon_entries()
-                print(self.nexus_recons)
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
@@ -192,9 +191,13 @@ class NexusLoadPresenter:
         return None
 
     def _look_for_recon_entries(self):
+        """
+        Tries to find recon entries in the NeXus file.
+        :return:
+        """
         assert self.nexus_file is not None
         for key in self.nexus_file.keys():
-            if "definition" in self.nexus_file[key].keys():
+            if DEFINITION in self.nexus_file[key].keys():
                 if np.array(self.nexus_file[key][DEFINITION]).tostring().decode("utf-8") == NXTOMOPROC:
                     self.nexus_recons.append(self.nexus_file[key])
 
