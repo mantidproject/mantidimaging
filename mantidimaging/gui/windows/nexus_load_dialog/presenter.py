@@ -37,6 +37,8 @@ TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 ROTATION_ANGLE_PATH = "sample/rotation_angle"
+DEFINITION = "definition"
+NXTOMOPROC = "NXtomoproc"
 
 
 def _missing_data_message(data_string: str) -> str:
@@ -60,6 +62,7 @@ class NexusLoadPresenter:
         self.image_key_dataset = None
         self.rotation_angles = None
         self.title = ""
+        self.nexus_recons = []
 
         self.sample_array = None
         self.dark_before_array = None
@@ -107,6 +110,8 @@ class NexusLoadPresenter:
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
                 self.rotation_angles = self.rotation_angles[:]
+
+                self._look_for_recon_entries()
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
@@ -184,6 +189,13 @@ class NexusLoadPresenter:
         self._missing_data_error(TOMO_ENTRY)
         self.view.disable_ok_button()
         return None
+
+    def _look_for_recon_entries(self):
+        assert self.nexus_file is not None
+        for key in self.nexus_file.keys():
+            if "definition" in self.nexus_file[key].keys():
+                if np.array(self.nexus_file[key][DEFINITION]).tostring().decone("utf-8") == NXTOMOPROC:
+                    self.nexus_recons.append(self.nexus_file[key])
 
     def _look_for_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
         """
