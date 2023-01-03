@@ -143,7 +143,7 @@ def _parse_version(package_version_string: Optional[str]) -> version.Version:
     if package_version_string is None:
         raise ValueError
 
-    normalised_version_string = package_version_string.replace("_", ".")
+    normalised_version_string = package_version_string.replace("_", ".post")
     return version.parse(normalised_version_string)
 
 
