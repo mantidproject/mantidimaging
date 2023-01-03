@@ -54,6 +54,7 @@ class TestCheckVersion(unittest.TestCase):
         ["1.1.0a_18", "1.1.0_18", False],
         ["1.1.0a_18", "1.1.0rc_18", False],
         ["1.1.0rc_18", "1.1.0a_19", True],
+        ["1.1.0a1_18", "1.1.0a1_19", False],
     ])
     def test_version_is_uptodate(self, local, remote, is_uptodate):
         local_parsed = _parse_version(local)
