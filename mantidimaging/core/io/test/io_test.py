@@ -8,6 +8,7 @@ from unittest import mock
 import h5py
 import numpy as np
 import numpy.testing as npt
+from mantidimaging.core.operation_history.const import TIMESTAMP
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
@@ -333,6 +334,7 @@ class IOTest(FileOutputtingTestCase):
         sd = StrictDataset(sample)
 
         recon = th.generate_images(seed=2)
+        recon.metadata[TIMESTAMP] = None
         recon.name = recon_name = "Recon"
         sd.recons.append(recon)
 
@@ -366,6 +368,23 @@ class IOTest(FileOutputtingTestCase):
                 np.max(
                     np.array(nexus_file[recon_name]["data"]["data"]) -
                     _rescale_recon_data(recon.data).astype("uint16"))) <= 1
+
+    def test_use_recon_date_from_image_stack(self):
+        sample = th.generate_images()
+        sample._projection_angles = sample.projection_angles()
+
+        sd = StrictDataset(sample)
+
+        recon = th.generate_images(seed=2)
+        recon.name = recon_name = "Recon"
+        gemini = "2022-06-18"
+        recon.metadata[TIMESTAMP] = datetime.date.fromisoformat(gemini)
+        sd.recons.append(recon)
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+            self.assertIn(str(datetime.date.fromisoformat(gemini)),
+                          _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ from typing import List, Union, Optional, Dict, Callable
 
 import h5py
 import numpy as np
+from mantidimaging.core.operation_history.const import TIMESTAMP
 from skimage import io as skio
 import astropy.io.fits as fits
 
@@ -276,7 +277,10 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
 
     reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
     reconstruction.create_dataset("version", data=np.string_(CheckVersion().get_version()))
-    reconstruction.create_dataset("date", data=np.string_("T".join(str(datetime.datetime.now()).split())))
+    recon_timestamp = recon.metadata.get(TIMESTAMP)
+    if recon_timestamp is None:
+        recon_timestamp = datetime.datetime.now().isoformat()
+    reconstruction.create_dataset("date", data=np.string_(recon_timestamp))
     reconstruction.create_group("parameters")
 
     data = recon_entry.create_group("data")
