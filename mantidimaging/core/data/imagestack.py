@@ -127,14 +127,11 @@ class ImageStack:
                 return o
 
         self.metadata[const.OPERATION_HISTORY].append({
-            const.TIMESTAMP:
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            const.OPERATION_NAME:
-            func_name,
+            const.TIMESTAMP: datetime.datetime.now().isoformat(),
+            const.OPERATION_NAME: func_name,
             const.OPERATION_KEYWORD_ARGS: {k: prepare(v)
                                            for k, v in kwargs.items() if accepted_type(v)},
-            const.OPERATION_DISPLAY_NAME:
-            display_name
+            const.OPERATION_DISPLAY_NAME: display_name
         })
 
     def copy(self, flip_axes=False) -> 'ImageStack':
