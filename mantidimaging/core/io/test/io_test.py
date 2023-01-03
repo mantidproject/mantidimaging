@@ -355,7 +355,7 @@ class IOTest(FileOutputtingTestCase):
                              "neutron")
 
             self.assertEqual(_decode_nexus_class(nexus_file[recon_name]["SAMPLE"]), "NXsample")
-            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"]), "sample description")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["SAMPLE"]["name"]), recon_name)
 
             self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["program"]),
                              "Mantid Imaging")
