@@ -19,10 +19,12 @@ class TestCheckVersion(unittest.TestCase):
                 self.versions._conda_installed_label = "main"
                 self.versions._conda_available_version = "1.0.0_1"
 
-    def test_parse_version(self):
-        parsed = _parse_version("9.9.9_1234")
+    @parameterized.expand([["9.9.9_1234"], ["9.9.9.post1234"]])
+    def test_parse_version(self, version_string):
+        parsed = _parse_version(version_string)
 
-        self.assertEqual(parsed.release, (9, 9, 9, 1234))
+        self.assertEqual(parsed.release, (9, 9, 9))
+        self.assertEqual(parsed.post, 1234)
 
     def test_parse_version_no_commits(self):
         parsed = _parse_version("9.9.9")
@@ -36,10 +38,11 @@ class TestCheckVersion(unittest.TestCase):
         self.assertEqual(parsed.pre, ("rc", 0))
 
     def test_parse_version_release_candidate_with_commits(self):
-        parsed = _parse_version("9.9.9rc_2")
+        parsed = _parse_version("9.9.9rc.post2")
 
         self.assertEqual(parsed.release, (9, 9, 9))
-        self.assertEqual(parsed.pre, ("rc", 2))
+        self.assertEqual(parsed.pre, ("rc", 0))
+        self.assertEqual(parsed.post, 2)
 
     @parameterized.expand([
         ["8.9.9_1234", "9.9.9_1234", False],
@@ -55,6 +58,7 @@ class TestCheckVersion(unittest.TestCase):
         ["1.1.0a_18", "1.1.0rc_18", False],
         ["1.1.0rc_18", "1.1.0a_19", True],
         ["1.1.0a1_18", "1.1.0a1_19", False],
+        ["1.1.0a1_18", "1.1.0a1.post19", False],
     ])
     def test_version_is_uptodate(self, local, remote, is_uptodate):
         local_parsed = _parse_version(local)
