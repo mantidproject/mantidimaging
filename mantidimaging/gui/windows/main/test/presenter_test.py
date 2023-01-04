@@ -48,6 +48,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget = mock.Mock()
         self.view.get_dataset_tree_view_item = mock.Mock()
 
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
+
         def stack_id():
             return uuid.uuid4()
 
@@ -165,16 +170,20 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.proj180deg = generate_images(shape=(1, 20, 20))
         self.dataset.proj180deg.filenames = ["filename"]
 
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
-
         self.create_stack_mocks(self.dataset)
 
         self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
+
+    def test_create_recon_windows(self):
+
+        self.dataset.add_recon(generate_images())
+        self.dataset.add_recon(generate_images())
+        self.create_stack_mocks(self.dataset)
+
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
+        self.assertEqual(7, len(self.presenter.stack_visualisers))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser")
