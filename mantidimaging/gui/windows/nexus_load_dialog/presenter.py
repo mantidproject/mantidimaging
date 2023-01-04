@@ -193,8 +193,7 @@ class NexusLoadPresenter:
 
     def _look_for_recon_entries(self):
         """
-        Tries to find recon entries in the NeXus file.
-        :return:
+        Tries to find recon entries in the NeXus file then stores the data in a list.
         """
         assert self.nexus_file is not None
         for key in self.nexus_file.keys():
