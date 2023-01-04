@@ -564,8 +564,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset = StrictDataset(*generate_images_with_filenames(5))
         dataset.proj180deg = generate_images((1, 20, 20))
         dataset.proj180deg.filenames = ["filename"]
+        recon = generate_images()
+        recon.name = recon_name = "Recon"
+        dataset.add_recon(recon)
 
         dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
         self.presenter.create_strict_dataset_tree_view_items(dataset)
 
         s_call = call(dataset_tree_item_mock, dataset.sample.id, "Projections")
@@ -576,6 +580,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         _180_call = call(dataset_tree_item_mock, dataset.proj180deg.id, "180")
 
         self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
+        self.presenter.add_recon_item_to_tree_view.assert_called_once_with(dataset.id, dataset.recons[0].id, recon_name)
         self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
     def test_add_recon_item_to_tree_view_first_item(self):
