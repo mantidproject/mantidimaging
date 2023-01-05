@@ -60,10 +60,11 @@ class CheckVersion:
     def is_prerelease(self) -> bool:
         return version.Version(self.get_version()).is_prerelease
 
-    def get_conda_available_version(self) -> Optional[str]:
+    def get_conda_available_version(self) -> str:
         """Get latest version number from conda"""
         if self._conda_available_version is None:
             self._retrieve_conda_available_version()
+        assert self._conda_available_version is not None
         return self._conda_available_version
 
     def needs_update(self) -> bool:
@@ -120,10 +121,7 @@ class CheckVersion:
 versions = CheckVersion()
 
 
-def _parse_version(package_version_string: Optional[str]) -> version.Version:
-    if package_version_string is None:
-        raise ValueError
-
+def _parse_version(package_version_string: str) -> version.Version:
     normalised_version_string = package_version_string.replace("_", ".post")
     return version.parse(normalised_version_string)
 
