@@ -11,6 +11,7 @@ from collections import defaultdict
 from pathlib import Path
 import tempfile
 import shutil
+from importlib.machinery import SourceFileLoader
 
 from setuptools import find_packages, setup
 try:
@@ -20,6 +21,11 @@ except ModuleNotFoundError:
     BuildDoc = False
 
 THIS_PATH = os.path.dirname(__file__)
+
+try:
+    versions = SourceFileLoader('versions', 'mantidimaging/versions.py').load_module()
+except FileNotFoundError:
+    raise FileNotFoundError('conda/make_versions.py should be run to create the versions.py file')
 
 
 class PublishDocsToGitHubPages(Command):
@@ -215,7 +221,7 @@ class CreateDeveloperEnvironment(Command):
 
 setup(
     name="mantidimaging",
-    version="2.5.0a1",
+    version=versions.package_version,
     packages=find_packages(),
     package_data={
         "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],

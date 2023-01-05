@@ -1,14 +1,11 @@
-{% set name = 'mantidimaging' %}
-
-  {% set version_tag = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
-  {% set version_number = environ.get('GIT_DESCRIBE_NUMBER', '0') | string %}
-  {% set version_number = '.post' + version_number if version_number != '0' else '' %}
-
-  {% set version = version_tag + version_number %}
+{% set version_tag = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
+{% set version_number = environ.get('GIT_DESCRIBE_NUMBER', '0') | string %}
+{% set version_number = '.post' + version_number if version_number != '0' else '' %}
+{% set version = version_tag + version_number %}
 
 package:
-  name: {{ name | lower }}
-  version: {{ version }}
+  name: 'mantidimaging'
+  version: '{{ version }}'
 
 source:
   git_url: ../
@@ -42,8 +39,6 @@ requirements:
 build:
   noarch: python
   number: 1
-  script:
-    - {{ PYTHON }} -m pip install --ignore-installed .
   entry_points:
     - mantidimaging = mantidimaging.main:main
     - mantidimaging-ipython = mantidimaging.ipython:main
