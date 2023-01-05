@@ -52,6 +52,8 @@ class CheckVersion:
         print(f"Install method {self._package_type}")
         if self._package_type == "conda":
             print(f"conda_available_version {self.get_conda_available_version()}")
+        if git_hash:
+            print(f"Git hash {git_hash}")
 
     def get_version(self) -> str:
         """Get built in version"""
