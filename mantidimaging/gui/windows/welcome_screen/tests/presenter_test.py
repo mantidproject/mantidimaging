@@ -57,11 +57,11 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
         self.assertTrue(WelcomeScreenPresenter.show_today())
 
         settings.setValue("welcome_screen/show_at_start", False)
-        settings.setValue("welcome_screen/last_run_version", "0.0.0_1")
+        settings.setValue("welcome_screen/last_run_version", "0.0.0")
         self.assertTrue(WelcomeScreenPresenter.show_today())
 
         settings.setValue("welcome_screen/show_at_start", False)
-        settings.setValue("welcome_screen/last_run_version", "1.0.0_1")
+        settings.setValue("welcome_screen/last_run_version", "1.0.0")
         self.assertFalse(WelcomeScreenPresenter.show_today())
 
     def test_show_at_start_change(self):

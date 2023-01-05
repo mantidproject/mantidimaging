@@ -15,9 +15,8 @@ class TestCheckVersion(unittest.TestCase):
         with mock.patch("mantidimaging.core.utility.version_check.CheckVersion._retrieve_versions"):
             with mock.patch("shutil.which"):
                 self.versions = CheckVersion()
-                self.versions._conda_installed_version = "1.0.0_1"
-                self.versions._conda_installed_label = "main"
-                self.versions._conda_available_version = "1.0.0_1"
+                self.versions._version = "1.0.0.post1"
+                self.versions._conda_available_version = "1.0.0.post1"
 
     @parameterized.expand([["9.9.9_1234"], ["9.9.9.post1234"]])
     def test_parse_version(self, version_string):
@@ -69,18 +68,32 @@ class TestCheckVersion(unittest.TestCase):
     def test_needs_update(self):
         self.assertFalse(self.versions.needs_update())
 
-    def test_is_conda_uptodate(self):
-        self.versions._conda_available_version = "1.0.0_1"
-        self.assertTrue(self.versions.is_conda_uptodate())
+    @parameterized.expand([
+        ["1.0.0", False],
+        ["1.1.0", True],
+    ])
+    def test_needs_update_conda(self, available, needed):
+        self.versions._version = "1.0.0"
+        self.versions._package_type = "conda"
+        self.versions._conda_available_version = available
 
-        self.versions._conda_available_version = "2.0.0_1"
-        self.assertFalse(self.versions.is_conda_uptodate())
+        self.assertEqual(self.versions.needs_update(), needed)
+
+    @parameterized.expand([
+        ["1.0.0", False],
+        ["1.0.0a1", True],
+        ["1.0.0a1.post1", True],
+    ])
+    def test_version_is_prerelease(self, version, prerelease):
+        self.versions._version = version
+
+        self.assertEqual(self.versions.is_prerelease(), prerelease)
 
     def test_conda_update_message(self):
-        self.versions._conda_available_version = "2.0.0_1"
+        self.versions._conda_available_version = "2.0.0"
         msg, detailed = self.versions.conda_update_message()
-        self.assertTrue("Found version 1.0.0_1" in msg)
-        self.assertTrue("latest: 2.0.0_1" in msg)
+        self.assertTrue("Found version 1.0.0.post1" in msg)
+        self.assertTrue("latest: 2.0.0" in msg)
         self.assertTrue("To update your environment" in detailed)
 
     @mock.patch("builtins.print")
@@ -88,28 +101,14 @@ class TestCheckVersion(unittest.TestCase):
         self.versions.show_versions()
         mock_print.assert_called()
 
-    @mock.patch("subprocess.check_output")
-    def test_retrieve_conda_installed_version(self, mock_check_output):
-        no_package = "# packages in environment at mantidimaging-dev:\n#\n# Name  Version Build  Channel"
-        package = f"{no_package}\nmantidimaging 1.1.0_1018 py38_1 mantid/label/main"
-        mock_check_output.return_value = no_package.encode()
-        self.versions._retrieve_conda_installed_version()
-        self.assertEqual(self.versions.get_conda_installed_version(), "")
-        self.assertEqual(self.versions.get_conda_installed_label(), "unstable")
-
-        mock_check_output.return_value = package.encode()
-        self.versions._retrieve_conda_installed_version()
-        self.assertEqual(self.versions.get_conda_installed_version(), "1.1.0_1018")
-        self.assertEqual(self.versions.get_conda_installed_label(), "main")
-
     @mock.patch("requests.get")
     def test_retrieve_conda_available_version(self, mock_get):
         mock_get.return_value = mock.Mock(content='{"latest_version": "1.1.0_1018", "versions": ["1.1.0_1090"]}')
-        self.versions._conda_installed_label = "main"
+        self.versions._version = "1.0.0"
         self.versions._retrieve_conda_available_version()
         self.assertEqual(self.versions.get_conda_available_version(), "1.1.0_1018")
 
-        self.versions._conda_installed_label = "unstable"
+        self.versions._version = "1.0.0a1"
         self.versions._retrieve_conda_available_version()
         self.assertEqual(self.versions.get_conda_available_version(), "1.1.0_1090")
 

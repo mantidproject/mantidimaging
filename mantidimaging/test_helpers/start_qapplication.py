@@ -92,25 +92,19 @@ def start_multiprocessing_pool(cls):
 
 def mock_versions(cls):
     def setUpClass():
-        cls.mock_version_patch = mock.patch(
-            'mantidimaging.gui.windows.welcome_screen.presenter.versions.get_conda_installed_version')
-        cls.mock_version = cls.mock_version_patch.start()
-        cls.mock_version.return_value = "1.0.0_1"
-
-        cls.mock_version_label_patch = mock.patch(
-            'mantidimaging.gui.windows.welcome_screen.presenter.versions.get_conda_installed_label')
-        cls.mock_version_label = cls.mock_version_label_patch.start()
-        cls.mock_version_label.return_value = "main"
+        cls.mock_get_version_patch = mock.patch(
+            'mantidimaging.gui.windows.welcome_screen.presenter.versions.get_version')
+        cls.mock_get_version = cls.mock_get_version_patch.start()
+        cls.mock_get_version.return_value = "1.0.0"
 
         cls.mock_version_available_patch = mock.patch(
             'mantidimaging.gui.windows.welcome_screen.presenter.versions.get_conda_available_version')
         cls.mock_version_available = cls.mock_version_available_patch.start()
-        cls.mock_version_available.return_value = "1.0.0_1"
+        cls.mock_version_available.return_value = "1.0.0"
 
     def tearDownClass():
-        cls.mock_version_patch.stop()
-        cls.mock_version_label_patch.stop()
         cls.mock_version_available_patch.stop()
+        cls.mock_get_version_patch.stop()
 
     return augment_test_setup_methods(cls, setup_class=setUpClass, teardown_class=tearDownClass)
 
