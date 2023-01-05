@@ -11,7 +11,12 @@ from typing import Optional
 from packaging import version
 import shutil
 
-from mantidimaging import __version__
+try:
+    from mantidimaging.versions import package_version, git_hash, package_type  # type: ignore
+except ImportError:
+    package_version = '0.0.0.dev1'
+    git_hash = ''
+    package_type = ''
 
 LOG = getLogger(__name__)
 
@@ -28,7 +33,7 @@ class CheckVersion:
     _conda_available_version: Optional[str]
 
     def __init__(self):
-        self._version = __version__
+        self._version = package_version
         self._conda_installed_version = None
         self._conda_installed_label = None
         self._conda_available_version = None
