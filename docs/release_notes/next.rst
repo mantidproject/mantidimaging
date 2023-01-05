@@ -14,6 +14,7 @@ New Features and improvements
 - #1626 : Move stacks between datasets
 - #1622 : Add, Remove and Rename ROIs in spectrum viewer
 - #1464 : NeXus Recon: Add entry/reconstruction/date information
+- #1468 : NeXus Recon: Load recons
 
 Fixes
 -----
