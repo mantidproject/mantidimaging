@@ -3,7 +3,7 @@
 import datetime
 import os
 from logging import getLogger
-from typing import List, Union, Optional, Dict, Callable
+from typing import List, Union, Optional, Dict, Callable, Tuple
 
 import h5py
 import numpy as np
@@ -251,7 +251,6 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     :param nexus_file: The NeXus file.
     :param recon: The recon data.
     """
-
     recon_entry = nexus_file.create_group(recon.name)
     _set_nx_class(recon_entry, "NXentry")
 
@@ -288,6 +287,24 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
 
     data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
     data["data"][:] = _rescale_recon_data(recon.data)
+
+    x_arr, y_arr, z_arr = _create_pixel_size_arrays(recon)
+    data.create_dataset("x", shape=x_arr.shape, dtype="float16", data=x_arr)
+    data.create_dataset("y", shape=y_arr.shape, dtype="float16", data=y_arr)
+    data.create_dataset("z", shape=z_arr.shape, dtype="float16", data=z_arr)
+
+
+def _create_pixel_size_arrays(recon: ImageStack) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Create the pixel size arrays for the NXtomproc x/y/z fields.
+    :param recon: The recon data.
+    :return: The tuple of the x/y/z arrays.
+    """
+    pixel_size = recon.pixel_size
+    x_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[0])])
+    y_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[1])])
+    z_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[2])])
+    return x_arr, y_arr, z_arr
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
