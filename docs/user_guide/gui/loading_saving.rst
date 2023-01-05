@@ -127,6 +127,9 @@ When *Save as NeXus File* is selected the save NeXus dialog appears. Only Datase
 with sample images data can be saved as NeXus files. A sample name and an output
 directory are required before a save can be attempted.
 
+.. note::
+    Recon data is currently saved as float16.
+
 Dataset Tree View
 -----------------
 
