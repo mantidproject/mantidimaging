@@ -60,10 +60,7 @@ class TestCheckVersion(unittest.TestCase):
         ["1.1.0a1_18", "1.1.0a1.post19", False],
     ])
     def test_version_is_uptodate(self, local, remote, is_uptodate):
-        local_parsed = _parse_version(local)
-        remote_parsed = _parse_version(remote)
-
-        self.assertEqual(_version_is_uptodate(local_parsed, remote_parsed), is_uptodate)
+        self.assertEqual(_version_is_uptodate(local, remote), is_uptodate)
 
     def test_needs_update(self):
         self.assertFalse(self.versions.needs_update())

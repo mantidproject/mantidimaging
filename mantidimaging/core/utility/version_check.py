@@ -78,8 +78,7 @@ class CheckVersion:
             # If unable to get conda versions then assume everything is good
             return True
 
-        return _version_is_uptodate(_parse_version(self.get_version()),
-                                    _parse_version(self.get_conda_available_version()))
+        return _version_is_uptodate(self.get_version(), self.get_conda_available_version())
 
     def conda_update_message(self) -> tuple:
         conda_exe = self.find_conda_executable()
@@ -126,5 +125,5 @@ def _parse_version(package_version_string: str) -> version.Version:
     return version.parse(normalised_version_string)
 
 
-def _version_is_uptodate(local: version.Version, remote: version.Version):
-    return local >= remote
+def _version_is_uptodate(local: str, remote: str):
+    return _parse_version(local) >= _parse_version(remote)
