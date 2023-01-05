@@ -15,6 +15,7 @@ New Features and improvements
 - #1622 : Add, Remove and Rename ROIs in spectrum viewer
 - #1464 : NeXus Recon: Add entry/reconstruction/date information
 - #1463 : NeXus Recon: Add entry/SAMPLE/name information
+- #1467 : NeXus Recon: Add other entry/data information
 
 Fixes
 -----
