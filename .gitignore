@@ -1,4 +1,5 @@
 .noseids
+mantidimaging/versions.py
 
 # Generated documentation
 docs/build/
