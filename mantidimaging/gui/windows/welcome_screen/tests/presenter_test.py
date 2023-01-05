@@ -104,7 +104,7 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
             issues.append("issue" + num_string)
             log_msgs.append("msg" + num_string)
 
-        versions_mock.is_conda_uptodate.return_value = False
+        versions_mock.needs_update.return_value = True
         versions_mock.conda_update_message.return_value = (issues[0], log_msgs[0])
         cuda_check_mock.not_found_message.return_value = (issues[1], log_msgs[1])
         cuda_check_mock.CudaChecker.return_value.cuda_is_present.return_value = False
@@ -119,7 +119,7 @@ class WelcomeScreenPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
     def test_no_issues_added(self, cuda_check_mock, versions_mock):
-        versions_mock.is_conda_uptodate.return_value = True
+        versions_mock.needs_update.return_value = False
         cuda_check_mock.CudaChecker.return_value.cuda_is_present.return_value = True
 
         self.p.check_issues()

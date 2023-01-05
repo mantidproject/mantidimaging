@@ -74,7 +74,7 @@ class WelcomeScreenPresenter(BasePresenter):
 
     def check_issues(self):
         issues = []
-        if not versions.is_conda_uptodate():
+        if versions.needs_update():
             msg, detailed = versions.conda_update_message()
             issues.append(msg)
             LOG.info(detailed)

@@ -79,6 +79,11 @@ class CheckVersion:
             self._retrieve_conda_available_version()
         return self._conda_available_version
 
+    def needs_update(self) -> bool:
+        if not self.is_conda_uptodate():
+            return True
+        return False
+
     def is_conda_uptodate(self) -> bool:
         """Check if up to date with lasted version in conda"""
         if (self.get_conda_installed_version() == "" or self.get_conda_available_version() == ""):

@@ -66,6 +66,9 @@ class TestCheckVersion(unittest.TestCase):
 
         self.assertEqual(_version_is_uptodate(local_parsed, remote_parsed), is_uptodate)
 
+    def test_needs_update(self):
+        self.assertFalse(self.versions.needs_update())
+
     def test_is_conda_uptodate(self):
         self.versions._conda_available_version = "1.0.0_1"
         self.assertTrue(self.versions.is_conda_uptodate())
