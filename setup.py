@@ -22,10 +22,7 @@ except ModuleNotFoundError:
 
 THIS_PATH = os.path.dirname(__file__)
 
-try:
-    versions = SourceFileLoader('versions', 'mantidimaging/versions.py').load_module()
-except FileNotFoundError:
-    raise FileNotFoundError('conda/make_versions.py should be run to create the versions.py file')
+versions = SourceFileLoader('versions', 'mantidimaging/__init__.py').load_module()
 
 
 class PublishDocsToGitHubPages(Command):
@@ -221,7 +218,7 @@ class CreateDeveloperEnvironment(Command):
 
 setup(
     name="mantidimaging",
-    version=versions.package_version,
+    version=versions.__version__,
     packages=find_packages(),
     package_data={
         "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],
