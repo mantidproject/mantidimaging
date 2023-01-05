@@ -365,3 +365,9 @@ class NexusLoaderTest(unittest.TestCase):
 
         self.nexus_loader._look_for_recon_entries()
         self.assertEqual(len(self.nexus_loader.recon_data), 1)
+
+    def test_get_dataset_creates_recon_list(self):
+        self.nexus_loader.recon_data = [generate_images(), generate_images()]
+        self.nexus_loader.scan_nexus_file()
+        ds, _ = self.nexus_loader.get_dataset()
+        self.assertEqual(len(ds.recons), 2)
