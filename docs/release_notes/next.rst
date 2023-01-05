@@ -14,6 +14,7 @@ New Features and improvements
 - #1626 : Move stacks between datasets
 - #1622 : Add, Remove and Rename ROIs in spectrum viewer
 - #1464 : NeXus Recon: Add entry/reconstruction/date information
+- #1463 : NeXus Recon: Add entry/SAMPLE/name information
 - #1468 : NeXus Recon: Load recons
 
 Fixes
@@ -28,3 +29,4 @@ Developer Changes
 - #1472 : Investigate issues reported by flake8-bugbear
 - #1607 : Add flake8-bugbear to environment, github actions and precommit
 - #1613 : Refactor Operations window ROI selector to be in its own class
+- #1652 : PEP440 compliant versions for alpha builds

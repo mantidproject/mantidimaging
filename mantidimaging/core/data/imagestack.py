@@ -36,7 +36,6 @@ class ImageStack:
         :param metadata: Properties to copy when creating a new stack from an existing one
         :param sinograms: Set data ordering, if false: [t,y,x] if true: [y,t,x]
         :param name: A name for the stack
-
         """
 
         if isinstance(data, pu.SharedArray):

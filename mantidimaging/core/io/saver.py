@@ -271,7 +271,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
 
     sample = recon_entry.create_group("SAMPLE")
     _set_nx_class(sample, "NXsample")
-    sample.create_dataset("name", data=np.string_("sample description"))
+    sample.create_dataset("name", data=np.string_(recon.name))
 
     reconstruction = recon_entry.create_group("reconstruction")
     _set_nx_class(reconstruction, "NXprocess")
