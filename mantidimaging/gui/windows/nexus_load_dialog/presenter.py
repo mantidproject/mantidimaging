@@ -347,6 +347,10 @@ class NexusLoadPresenter:
         return image_stack
 
     def _create_recon_list(self) -> ReconList:
+        """
+        Uses the array of recon data extracted from the NeXus file to create a ReconList object.
+        :return: The ReconList object containing recons from the NeXus file.
+        """
         recon_list = ReconList()
         for recon_array in self.recon_data:
             recon_list.append(ImageStack(recon_array))
