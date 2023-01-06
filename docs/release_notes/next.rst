@@ -30,3 +30,4 @@ Developer Changes
 - #1607 : Add flake8-bugbear to environment, github actions and precommit
 - #1613 : Refactor Operations window ROI selector to be in its own class
 - #1652 : PEP440 compliant versions for alpha builds
+- #1595 : Store version number in package

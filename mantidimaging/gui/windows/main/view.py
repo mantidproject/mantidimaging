@@ -119,7 +119,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.open_dialogs = open_dialogs
         if self.open_dialogs:
-            if versions.get_conda_installed_label() != "main":
+            if versions.is_prerelease():
                 self.setWindowTitle("Mantid Imaging Unstable")
                 bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_unstable_64px.png")
             else:

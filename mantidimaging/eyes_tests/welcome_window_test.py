@@ -15,12 +15,13 @@ class WelcomeWindowTest(BaseEyesTest):
         cuda_check.CudaChecker.return_value.cuda_is_present.return_value = True
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
+        versions.needs_update.return_value = False
 
         self.imaging.show_about()
 
         self.check_target(widget=self.imaging.welcome_window.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
-        versions.is_conda_uptodate.assert_called_once()
+        versions.needs_update.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
@@ -29,17 +30,18 @@ class WelcomeWindowTest(BaseEyesTest):
         cuda_check.not_found_message.return_value = ("Bad Cuda", "detailed")
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
+        versions.needs_update.return_value = False
 
         self.imaging.actionAbout.trigger()
 
         self.check_target(widget=self.imaging.welcome_window.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
-        versions.is_conda_uptodate.assert_called_once()
+        versions.needs_update.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
     def test_about_window_good_conda(self, cuda_check, versions):
-        versions.is_conda_uptodate.return_value = True
+        versions.needs_update.return_value = False
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
 
@@ -47,12 +49,12 @@ class WelcomeWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.welcome_window.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
-        versions.is_conda_uptodate.assert_called_once()
+        versions.needs_update.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.versions")
     @mock.patch("mantidimaging.gui.windows.welcome_screen.presenter.cuda_check")
     def test_about_window_bad_conda(self, cuda_check, versions):
-        versions.is_conda_uptodate.return_value = False
+        versions.needs_update.return_value = True
         versions.conda_update_message.return_value = ("Bad Conda", "detailed")
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
@@ -61,4 +63,4 @@ class WelcomeWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.welcome_window.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
-        versions.is_conda_uptodate.assert_called_once()
+        versions.needs_update.assert_called_once()
