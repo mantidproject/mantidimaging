@@ -364,7 +364,7 @@ class IOTest(FileOutputtingTestCase):
             self.assertIn(str(datetime.date.today()),
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
-            assert abs(np.max(np.array(nexus_file[recon_name]["data"]["data"]) - recon.data)) <= 1
+            npt.assert_allclose(np.array(nexus_file[recon_name]["data"]["data"]), recon.data, rtol=1e-3)
 
     def test_use_recon_date_from_image_stack(self):
         sample = th.generate_images()
