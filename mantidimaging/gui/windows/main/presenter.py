@@ -249,6 +249,8 @@ class MainWindowPresenter(BasePresenter):
             self._create_and_tabify_stack_window(
                 dataset.sample.proj180deg,  # type: ignore
                 sample_stack_vis)
+        for recon in dataset.recons:
+            self._create_and_tabify_stack_window(recon, sample_stack_vis)
 
         self._focus_on_newest_stack_tab()
         return sample_stack_vis
@@ -345,6 +347,8 @@ class MainWindowPresenter(BasePresenter):
                 dataset_tree_item,
                 dataset.sample.proj180deg.id,  # type: ignore
                 "180")
+        for recon in dataset.recons:
+            self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 

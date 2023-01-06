@@ -7,6 +7,7 @@ from typing import List, Union, Optional, Dict, Callable
 
 import h5py
 import numpy as np
+
 from mantidimaging.core.operation_history.const import TIMESTAMP
 from skimage import io as skio
 import astropy.io.fits as fits
@@ -286,8 +287,8 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")
 
-    data.create_dataset("data", shape=recon.data.shape, dtype="uint16")
-    data["data"][:] = _rescale_recon_data(recon.data)
+    data.create_dataset("data", shape=recon.data.shape, dtype="float16")
+    data["data"][:] = recon.data
 
 
 def _set_nx_class(group: h5py.Group, class_name: str):
