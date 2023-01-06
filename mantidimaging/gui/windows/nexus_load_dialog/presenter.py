@@ -4,10 +4,11 @@ import enum
 import traceback
 from enum import auto, Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, Optional, Union, Tuple
+from typing import TYPE_CHECKING, Optional, Union, Tuple, List
 
 import h5py
 import numpy as np
+from mantidimaging.core.data.reconlist import ReconList
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -37,6 +38,8 @@ TOMO_ENTRY = "tomo_entry"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 ROTATION_ANGLE_PATH = "sample/rotation_angle"
+DEFINITION = "definition"
+NXTOMOPROC = "NXtomoproc"
 
 
 def _missing_data_message(data_string: str) -> str:
@@ -60,6 +63,7 @@ class NexusLoadPresenter:
         self.image_key_dataset = None
         self.rotation_angles = None
         self.title = ""
+        self.recon_data: List[np.array] = []
 
         self.sample_array = None
         self.dark_before_array = None
@@ -107,6 +111,8 @@ class NexusLoadPresenter:
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
                 self.rotation_angles = self.rotation_angles[:]
+
+                self._look_for_recon_entries()
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
@@ -185,6 +191,17 @@ class NexusLoadPresenter:
         self.view.disable_ok_button()
         return None
 
+    def _look_for_recon_entries(self):
+        """
+        Tries to find recon entries in the NeXus file then stores the data in a list.
+        """
+        assert self.nexus_file is not None
+        for key in self.nexus_file.keys():
+            if DEFINITION in self.nexus_file[key].keys():
+                if np.array(self.nexus_file[key][DEFINITION]).tostring().decode("utf-8") == NXTOMOPROC:
+                    nexus_recon = self.nexus_file[key]
+                    self.recon_data.append(np.array(nexus_recon["data"]["data"]))
+
     def _look_for_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
         """
         Retrieve data from the tomo entry field.
@@ -261,16 +278,22 @@ class NexusLoadPresenter:
         """
         sample_images = self._create_sample_images()
         sample_images.name = self.title
-        return StrictDataset(sample=sample_images,
-                             flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
-                                                                         ImageKeys.FlatField.value),
-                             flat_after=self._create_images_if_required(self.flat_after_array, "Flat After",
-                                                                        ImageKeys.FlatField.value),
-                             dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before",
-                                                                         ImageKeys.DarkField.value),
-                             dark_after=self._create_images_if_required(self.dark_after_array, "Dark After",
-                                                                        ImageKeys.DarkField.value),
-                             name=self.title), self.title
+        ds = StrictDataset(sample=sample_images,
+                           flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
+                                                                       ImageKeys.FlatField.value),
+                           flat_after=self._create_images_if_required(self.flat_after_array, "Flat After",
+                                                                      ImageKeys.FlatField.value),
+                           dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before",
+                                                                       ImageKeys.DarkField.value),
+                           dark_after=self._create_images_if_required(self.dark_after_array, "Dark After",
+                                                                      ImageKeys.DarkField.value),
+                           name=self.title)
+
+        if self.recon_data:
+            recon_list = self._create_recon_list()
+            ds.recons = recon_list
+
+        return ds, self.title
 
     def _create_sample_images(self):
         """
@@ -322,3 +345,13 @@ class NexusLoadPresenter:
             if projection_angles is not None:
                 image_stack.set_projection_angles(ProjectionAngles(projection_angles))
         return image_stack
+
+    def _create_recon_list(self) -> ReconList:
+        """
+        Uses the array of recon data extracted from the NeXus file to create a ReconList object.
+        :return: The ReconList object containing recons from the NeXus file.
+        """
+        recon_list = ReconList()
+        for recon_array in self.recon_data:
+            recon_list.append(ImageStack(recon_array))
+        return recon_list
