@@ -48,6 +48,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.dataset_tree_widget = mock.Mock()
         self.view.get_dataset_tree_view_item = mock.Mock()
 
+        self.dataset.flat_before.filenames = ["filename"] * 10
+        self.dataset.dark_before.filenames = ["filename"] * 10
+        self.dataset.flat_after.filenames = ["filename"] * 10
+        self.dataset.dark_after.filenames = ["filename"] * 10
+
         def stack_id():
             return uuid.uuid4()
 
@@ -165,16 +170,20 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.proj180deg = generate_images(shape=(1, 20, 20))
         self.dataset.proj180deg.filenames = ["filename"]
 
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
-
         self.create_stack_mocks(self.dataset)
 
         self.presenter.create_strict_dataset_stack_windows(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
+
+    def test_create_recon_windows(self):
+
+        self.dataset.add_recon(generate_images())
+        self.dataset.add_recon(generate_images())
+        self.create_stack_mocks(self.dataset)
+
+        self.presenter.create_strict_dataset_stack_windows(self.dataset)
+        self.assertEqual(7, len(self.presenter.stack_visualisers))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser")
@@ -555,8 +564,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset = StrictDataset(*generate_images_with_filenames(5))
         dataset.proj180deg = generate_images((1, 20, 20))
         dataset.proj180deg.filenames = ["filename"]
+        recon = generate_images()
+        recon.name = recon_name = "Recon"
+        dataset.add_recon(recon)
 
         dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
+        self.presenter.add_recon_item_to_tree_view = mock.Mock()
         self.presenter.create_strict_dataset_tree_view_items(dataset)
 
         s_call = call(dataset_tree_item_mock, dataset.sample.id, "Projections")
@@ -567,6 +580,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         _180_call = call(dataset_tree_item_mock, dataset.proj180deg.id, "180")
 
         self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
+        self.presenter.add_recon_item_to_tree_view.assert_called_once_with(dataset.id, dataset.recons[0].id, recon_name)
         self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
     def test_add_recon_item_to_tree_view_first_item(self):

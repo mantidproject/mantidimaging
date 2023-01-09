@@ -48,7 +48,7 @@ class WelcomeScreenPresenter(BasePresenter):
         show_at_start = settings.value("welcome_screen/show_at_start", defaultValue=True, type=bool)
         if not show_at_start:
             last_run_version = settings.value("welcome_screen/last_run_version", defaultValue="")
-            if last_run_version != versions.get_conda_installed_version():
+            if last_run_version != versions.get_version():
                 return True
         else:
             return show_at_start
@@ -70,11 +70,11 @@ class WelcomeScreenPresenter(BasePresenter):
     def show_at_start_changed(self):
         show_at_start = self.view.get_show_at_start()
         self.settings.setValue("welcome_screen/show_at_start", show_at_start)
-        self.settings.setValue("welcome_screen/last_run_version", versions.get_conda_installed_version())
+        self.settings.setValue("welcome_screen/last_run_version", versions.get_version())
 
     def check_issues(self):
         issues = []
-        if not versions.is_conda_uptodate():
+        if versions.needs_update():
             msg, detailed = versions.conda_update_message()
             issues.append(msg)
             LOG.info(detailed)

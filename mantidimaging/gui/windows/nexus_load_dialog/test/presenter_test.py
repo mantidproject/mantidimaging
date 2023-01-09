@@ -6,6 +6,7 @@ from unittest import mock
 
 import h5py
 import numpy as np
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
@@ -348,3 +349,25 @@ class NexusLoaderTest(unittest.TestCase):
         assert np.array_equal(ds.sample.projection_angles().value, [rotation_angle_data[4], rotation_angle_data[5]])
         self.assertIsNone(ds.dark_after._projection_angles)
         self.assertIsNone(ds.flat_after._projection_angles)
+
+    def test_recon_entry_found_in_file(self):
+        recon = generate_images()
+        recon.name = "Recon"
+
+        recon_entry = self.nexus.create_group(recon.name)
+        recon_entry.attrs["NX_class"] = np.string_("NXentry")
+        recon_entry.create_dataset("title", data=np.string_(recon.name))
+        recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+        data = recon_entry.create_group("data")
+        data.attrs["NX_class"] = np.string_("NXdata")
+        data.create_dataset("data", shape=recon.data.shape, dtype="float16")
+        data["data"][:] = recon.data
+
+        self.nexus_loader._look_for_recon_entries()
+        self.assertEqual(len(self.nexus_loader.recon_data), 1)
+
+    def test_get_dataset_creates_recon_list(self):
+        self.nexus_loader.recon_data = [generate_images(), generate_images()]
+        self.nexus_loader.scan_nexus_file()
+        ds, _ = self.nexus_loader.get_dataset()
+        self.assertEqual(len(ds.recons), 2)
