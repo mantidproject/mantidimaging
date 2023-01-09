@@ -395,11 +395,11 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             _save_recon_to_nexus(nexus_file, recon)
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["x"]),
-                                   np.array([pixel_size * i for i in range(1, recon.data.shape[0] + 1)]))
+                                   np.array([pixel_size * i for i in range(recon.data.shape[0])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["y"]),
-                                   np.array([pixel_size * i for i in range(1, recon.data.shape[1] + 1)]))
+                                   np.array([pixel_size * i for i in range(recon.data.shape[1])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["z"]),
-                                   np.array([pixel_size * i for i in range(1, recon.data.shape[2] + 1)]))
+                                   np.array([pixel_size * i for i in range(recon.data.shape[2])]))
 
 
 if __name__ == '__main__':

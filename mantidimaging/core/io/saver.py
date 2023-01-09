@@ -301,9 +301,9 @@ def _create_pixel_size_arrays(recon: ImageStack) -> Tuple[np.ndarray, np.ndarray
     :return: The tuple of the x/y/z arrays.
     """
     pixel_size = recon.pixel_size
-    x_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[0])])
-    y_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[1])])
-    z_arr = np.array([pixel_size * (1 + i) for i in range(recon.data.shape[2])])
+    x_arr = np.arange(recon.data.shape[0]) * pixel_size
+    y_arr = np.arange(recon.data.shape[1]) * pixel_size
+    z_arr = np.arange(recon.data.shape[2]) * pixel_size
     return x_arr, y_arr, z_arr
 
 
