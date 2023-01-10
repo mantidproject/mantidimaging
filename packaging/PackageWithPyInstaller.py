@@ -18,6 +18,7 @@ def create_run_options():
     add_missing_submodules(run_options)
     add_data_files(run_options)
     add_optional_arguments(run_options)
+    add_exclude_modules(run_options)
 
     return run_options
 
@@ -69,6 +70,12 @@ def add_conda_dynamic_libs(module_name, pattern):
 def add_optional_arguments(run_options):
     optional_args = ['--noconfirm', '--clean']
     run_options.extend(optional_args)
+
+
+def add_exclude_modules(run_options):
+    excludes = ['matplotlib', 'dask', 'pandas']
+    for exclude in excludes:
+        run_options.extend(['--exclude-module', exclude])
 
 
 if __name__ == "__main__":
