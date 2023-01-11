@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
 
 import numpy as np
-from skimage import io as skio
 import astropy.io.fits as fits
+from tifffile import tifffile
 
 if TYPE_CHECKING:
     import numpy.typing as npt
@@ -45,7 +45,7 @@ def _fitsread(filename: str) -> np.ndarray:
 
 
 def _imread(filename: str) -> np.ndarray:
-    return skio.imread(filename)
+    return tifffile.imread(filename)
 
 
 def supported_formats() -> List[str]:
