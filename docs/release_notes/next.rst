@@ -16,6 +16,7 @@ New Features and improvements
 - #1464 : NeXus Recon: Add entry/reconstruction/date information
 - #1463 : NeXus Recon: Add entry/SAMPLE/name information
 - #1468 : NeXus Recon: Load recons
+- #1467 : NeXus Recon: Add other entry/data information
 - #1661 : Use `tifffile` for writing and reading tiff files
 
 Fixes

@@ -15,7 +15,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.saver import _rescale_recon_data
+from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -382,6 +382,21 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, "sample-name")
             self.assertIn(str(datetime.date.fromisoformat(gemini)),
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
+
+    @staticmethod
+    def test_save_recon_xyz_data():
+        recon = th.generate_images()
+        recon.name = recon_name = "Recon"
+        recon.pixel_size = pixel_size = 3
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            _save_recon_to_nexus(nexus_file, recon)
+            npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["x"]),
+                                   np.array([pixel_size * i for i in range(recon.data.shape[0])]))
+            npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["y"]),
+                                   np.array([pixel_size * i for i in range(recon.data.shape[1])]))
+            npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["z"]),
+                                   np.array([pixel_size * i for i in range(recon.data.shape[2])]))
 
 
 if __name__ == '__main__':
