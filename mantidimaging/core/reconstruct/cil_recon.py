@@ -35,6 +35,8 @@ class CILRecon(BaseRecon):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
+        assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
+
         # This is slow to calculate, this approximation is good to with in 5%
         # When running in debug mode, check the approximation and raise an error if it is bad
         approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
