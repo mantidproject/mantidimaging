@@ -51,7 +51,7 @@ class IndicatorIconView(QGraphicsPixmapItem):
     def set_icon(self, icon_path: str, color: Optional[List[int]] = None):
         if color is not None:
             im = Image.open(icon_path)
-            image_data = np.asarray(im)
+            image_data = np.array(im)
             # Set the RGB part to the red channel multiplied by the requested color
             red_channel = image_data[:, :, 0] / 255
             image_data[:, :, 0] = red_channel * color[0]
