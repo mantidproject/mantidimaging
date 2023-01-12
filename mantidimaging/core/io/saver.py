@@ -7,9 +7,9 @@ from typing import List, Union, Optional, Dict, Callable, Tuple
 
 import h5py
 import numpy as np
+from tifffile import tifffile
 
 from mantidimaging.core.operation_history.const import TIMESTAMP
-from skimage import io as skio
 import astropy.io.fits as fits
 
 from .utility import DEFAULT_IO_FILE_FORMAT
@@ -35,7 +35,7 @@ def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, descrip
 
 
 def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
-    skio.imsave(filename, data, description=description, metadata=None, software="Mantid Imaging")
+    tifffile.imwrite(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
 def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.ndarray] = None, overwrite: bool = False):

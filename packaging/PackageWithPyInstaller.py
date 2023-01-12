@@ -18,6 +18,7 @@ def create_run_options():
     add_missing_submodules(run_options)
     add_data_files(run_options)
     add_optional_arguments(run_options)
+    add_exclude_modules(run_options)
 
     return run_options
 
@@ -37,7 +38,8 @@ def add_hidden_imports(run_options):
 
     # Adding dynamic libraries would usually be done via a hook, however when we need to collect them for hidden imports
     # the hook doesn't seem to be picked up by PyInstaller, so we do it here instead.
-    run_options.extend(add_conda_dynamic_libs(['tomopy']))
+    run_options.extend(add_conda_dynamic_libs('tomopy', 'tomo'))
+    run_options.extend(add_conda_dynamic_libs('mkl', 'mkl'))
 
 
 def add_missing_submodules(run_options):
@@ -55,11 +57,12 @@ def add_data_files(run_options):
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
-def add_conda_dynamic_libs(distributions):
+def add_conda_dynamic_libs(module_name, pattern):
     options = []
-    for dist_name in distributions:
-        binaries = conda_support.collect_dynamic_libs(dist_name)
-        options.extend([f'--add-binary={src}{os.pathsep}{dest}' for src, dest in binaries])
+    binaries = conda_support.collect_dynamic_libs(module_name)
+    for src, dest in binaries:
+        if pattern in Path(src).name:
+            options.append(f'--add-binary={src}{os.pathsep}{dest}')
 
     return options
 
@@ -67,6 +70,12 @@ def add_conda_dynamic_libs(distributions):
 def add_optional_arguments(run_options):
     optional_args = ['--noconfirm', '--clean']
     run_options.extend(optional_args)
+
+
+def add_exclude_modules(run_options):
+    excludes = ['matplotlib', 'dask', 'pandas']
+    for exclude in excludes:
+        run_options.extend(['--exclude-module', exclude])
 
 
 if __name__ == "__main__":
