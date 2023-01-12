@@ -3,10 +3,11 @@
 
 from typing import List, Optional, Tuple, Callable
 
+import numpy as np
+from PIL import Image
 from pyqtgraph import ViewBox
 from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu, QAction
 from PyQt5.QtGui import QPixmap, QImage, QColor
-from skimage import io as skio
 
 
 class IndicatorIconView(QGraphicsPixmapItem):
@@ -49,7 +50,8 @@ class IndicatorIconView(QGraphicsPixmapItem):
 
     def set_icon(self, icon_path: str, color: Optional[List[int]] = None):
         if color is not None:
-            image_data = skio.imread(icon_path, plugin="imageio")
+            im = Image.open(icon_path)
+            image_data = np.array(im)
             # Set the RGB part to the red channel multiplied by the requested color
             red_channel = image_data[:, :, 0] / 255
             image_data[:, :, 0] = red_channel * color[0]
