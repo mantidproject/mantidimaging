@@ -39,7 +39,7 @@ class CILRecon(BaseRecon):
         # When running in debug mode, check the approximation and raise an error if it is bad
         approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
         if LOG.isEnabledFor(DEBUG):
-            num_a2d_norm = A2d.norm()
+            num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
             diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
             LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
             if diff > 0.05:
