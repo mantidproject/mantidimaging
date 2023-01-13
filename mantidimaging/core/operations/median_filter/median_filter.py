@@ -12,7 +12,6 @@ from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
@@ -22,6 +21,7 @@ from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
+    from mantidimaging.core.data import ImageStack
 
 KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 

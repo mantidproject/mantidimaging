@@ -2,8 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Union
-from collections.abc import Sequence
+from typing import Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class CloseEnoughPoint:

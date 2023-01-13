@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Any, Dict
+from typing import Any, Dict, TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.gui.windows.operations import FiltersWindowView
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
+    from mantidimaging.gui.windows.operations import FiltersWindowView
+    from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
 
 
 class RescaleFilter(BaseFilter):

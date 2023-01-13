@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, Any
-from mantidimaging.core.data.imagestack import ImageStack
+from typing import Dict, Any, TYPE_CHECKING
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from algotom.prep.removal import remove_all_stripe
-from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from numpy import ndarray
+    from mantidimaging.core.data.imagestack import ImageStack
+    from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 
 
 class RemoveAllStripesFilter(BaseFilter):

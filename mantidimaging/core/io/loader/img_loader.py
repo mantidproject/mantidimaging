@@ -6,15 +6,14 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 """
 from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
-import numpy as np
-
-if TYPE_CHECKING:
-    import numpy.typing as npt
-
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
-from ...utility.data_containers import Indices
+
+if TYPE_CHECKING:
+    import numpy as np
+    import numpy.typing as npt
+    from ...utility.data_containers import Indices
 
 
 def execute(load_func: Callable[[str], np.ndarray],

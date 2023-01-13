@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
@@ -18,6 +17,9 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 def modes() -> List[str]:

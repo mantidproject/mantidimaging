@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, Any
+from typing import Dict, Any, TYPE_CHECKING
 
-from PyQt5.QtWidgets import QSpinBox
 from algotom.prep.removal import remove_stripe_based_fitting
-from numpy import ndarray
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
-from mantidimaging.core.data.imagestack import ImageStack
+
+if TYPE_CHECKING:
+    from numpy import ndarray
+    from mantidimaging.core.data.imagestack import ImageStack
+    from PyQt5.QtWidgets import QSpinBox
 
 
 class RemoveStripeSortingFittingFilter(BaseFilter):

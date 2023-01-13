@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Union, Optional, List
-
-from PyQt5.QtWidgets import QLineEdit
+from typing import Union, Optional, List, TYPE_CHECKING
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
+    from PyQt5.QtWidgets import QLineEdit
 
 
 class CropCoordinatesFilter(BaseFilter):

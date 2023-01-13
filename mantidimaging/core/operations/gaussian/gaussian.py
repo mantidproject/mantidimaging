@@ -4,16 +4,19 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class GaussianFilter(BaseFilter):

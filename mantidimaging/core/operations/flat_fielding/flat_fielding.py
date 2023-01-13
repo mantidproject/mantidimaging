@@ -3,18 +3,20 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Any, Dict
+from typing import Any, Dict, TYPE_CHECKING
 from PyQt5.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 # The smallest and largest allowed pixel value
 MINIMUM_PIXEL_VALUE = 1e-9

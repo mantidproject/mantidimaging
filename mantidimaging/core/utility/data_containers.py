@@ -10,10 +10,11 @@ and helps the type hints to tell you that you might be passing the wrong value (
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
 from dataclasses import dataclass
-from pathlib import Path
-from typing import List, Optional, NamedTuple
+from typing import List, Optional, NamedTuple, TYPE_CHECKING
 
-import numpy
+if TYPE_CHECKING:
+    from pathlib import Path
+    import numpy
 
 
 @dataclass

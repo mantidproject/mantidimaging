@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 from functools import partial
+from typing import TYPE_CHECKING
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.utility.progress_reporting import Progress
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class ClipValuesFilter(BaseFilter):

@@ -3,16 +3,19 @@
 from __future__ import annotations
 
 from functools import partial
+from typing import TYPE_CHECKING
 
 import skimage.transform
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class RebinFilter(BaseFilter):

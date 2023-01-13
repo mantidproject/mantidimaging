@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from parameterized import parameterized
 import unittest
-from typing import Tuple
+from typing import Tuple, TYPE_CHECKING
 from unittest import mock
 
 import numpy as np
@@ -12,8 +12,10 @@ import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.flat_fielding.flat_fielding import enable_correct_fields_only
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.flat_fielding import FlatFieldFilter
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class FlatFieldingTest(unittest.TestCase):

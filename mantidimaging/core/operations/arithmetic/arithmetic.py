@@ -2,17 +2,17 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import Callable, Dict
+from typing import Callable, Dict, TYPE_CHECKING
 
-import numpy as np
-from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
-
-from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
-
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
+
+if TYPE_CHECKING:
+    import numpy as np
+    from mantidimaging.gui.mvp_base import BaseMainWindowView
+    from mantidimaging.core.data import ImageStack
+    from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
 
 
 class ArithmeticFilter(BaseFilter):

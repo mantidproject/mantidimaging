@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Union, List, Iterator
+from typing import Union, List, Iterator, TYPE_CHECKING
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
 @dataclass

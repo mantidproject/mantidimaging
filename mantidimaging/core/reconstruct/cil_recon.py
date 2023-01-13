@@ -6,7 +6,7 @@ import time
 from logging import getLogger, DEBUG
 from math import sqrt
 from threading import Lock
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
@@ -18,11 +18,13 @@ from cil.plugins.astra.operators import ProjectionOperator
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
-from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.size_calculator import full_size_KB
 from mantidimaging.core.utility.memory_usage import system_free_memory
+
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import uuid
 from collections import UserList
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from mantidimaging.core.data import ImageStack
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class ReconList(UserList):

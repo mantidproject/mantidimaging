@@ -3,21 +3,21 @@
 from __future__ import annotations
 
 import os
-from functools import partial
 from logging import getLogger
 from multiprocessing import shared_memory
-from multiprocessing.shared_memory import SharedMemory
 from typing import Tuple, TYPE_CHECKING, Optional, Callable
 
 import numpy as np
-
-if TYPE_CHECKING:
-    import numpy.typing as npt
 
 from mantidimaging.core.utility.memory_usage import system_free_memory
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.size_calculator import full_size_KB, full_size_bytes
 from mantidimaging.core.parallel import manager as pm
+
+if TYPE_CHECKING:
+    from functools import partial
+    import numpy.typing as npt
+    from multiprocessing.shared_memory import SharedMemory
 
 LOG = getLogger(__name__)
 
