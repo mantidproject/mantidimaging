@@ -7,7 +7,7 @@ import os
 import pkgutil
 import sys
 from pathlib import Path
-from PyInstaller.utils.hooks import conda_support
+from PyInstaller.utils.hooks import conda_support, collect_data_files
 import PyInstaller.__main__
 
 
@@ -52,8 +52,10 @@ def add_data_files(run_options):
     # the package
     data_files = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
                   ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
+                  ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
                   ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
 
+    data_files += collect_data_files("cupy")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
