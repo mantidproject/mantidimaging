@@ -1,7 +1,9 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from logging import getLogger
+import time
+from logging import getLogger, DEBUG
+from math import sqrt
 from threading import Lock
 from typing import List, Optional
 
@@ -33,9 +35,28 @@ class CILRecon(BaseRecon):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
+        assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
+
+        # This is slow to calculate, this approximation is good to with in 5%
+        # When running in debug mode, check the approximation and raise an error if it is bad
+        approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
+        if LOG.isEnabledFor(DEBUG):
+            num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
+            diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
+            LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
+            if diff > 0.05:
+                raise RuntimeError(f"Bad ProjectionOperator norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}\n")
+        A2d.set_norm(approx_a2d_norm)
+
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
         Grad = GradientOperator(image_geometry)
+
+        if image_geometry.voxel_num_z == 0:
+            Grad.set_norm(sqrt(8))
+        else:
+            Grad.set_norm(sqrt(12))
+
         K = BlockOperator(alpha * Grad, A2d)
 
         # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
@@ -79,6 +100,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            t0 = time.perf_counter()
             sino = BaseRecon.prepare_sinogram(sino, recon_params)
             pixel_num_h = sino.shape[1]
             pixel_size = 1.
@@ -113,6 +135,8 @@ class CILRecon(BaseRecon):
             finally:
                 if progress:
                     progress.mark_complete()
+            t1 = time.perf_counter()
+            LOG.info(f"single_sino time: {t1-t0}s for shape {sino.shape}")
             return pdhg.solution.as_array()
 
     @staticmethod
@@ -158,6 +182,7 @@ class CILRecon(BaseRecon):
             LOG.warning("CIL recon already in progress")
 
         with cil_mutex:
+            t0 = time.perf_counter()
             LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
                      f"output shape {recon_volume_shape}\n"
                      f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
@@ -201,6 +226,8 @@ class CILRecon(BaseRecon):
                     pdhg.next()
                 volume = pdhg.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+            t1 = time.perf_counter()
+            LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
             return ImageStack(volume)
 
 
