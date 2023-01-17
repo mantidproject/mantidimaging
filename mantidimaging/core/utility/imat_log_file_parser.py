@@ -1,16 +1,19 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import csv
 import re
 from enum import Enum, auto
 from itertools import zip_longest
-from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING
 
 import numpy
 
 from mantidimaging.core.utility.data_containers import Counts, ProjectionAngles
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def _get_projection_number(s: str) -> int:

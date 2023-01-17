@@ -1,12 +1,13 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import datetime
 import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO
+from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING
 
 import numpy as np
 
@@ -14,9 +15,11 @@ from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts, Indices
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
+
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 
 
 class ImageStack:

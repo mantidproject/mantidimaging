@@ -1,9 +1,10 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import datetime
 import os
 from logging import getLogger
-from typing import List, Union, Optional, Dict, Callable, Tuple
+from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
 
 import h5py
 import numpy as np
@@ -13,12 +14,14 @@ from mantidimaging.core.operation_history.const import TIMESTAMP
 import astropy.io.fits as fits
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from ..data.dataset import StrictDataset
-from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
-from ..utility.data_containers import Indices
 from ..utility.progress_reporting import Progress
 from ..utility.version_check import CheckVersion
+
+if TYPE_CHECKING:
+    from ..data.dataset import StrictDataset
+    from ..data.imagestack import ImageStack
+    from ..utility.data_containers import Indices
 
 LOG = getLogger(__name__)
 

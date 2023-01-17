@@ -1,17 +1,21 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from functools import partial
+from typing import TYPE_CHECKING
 
 import numpy as np
 import scipy.ndimage as scipy_ndimage
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
+    from mantidimaging.core.utility.progress_reporting import Progress
 
 OUTLIERS_DARK = 'dark'
 OUTLIERS_BRIGHT = 'bright'

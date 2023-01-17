@@ -1,16 +1,20 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, TYPE_CHECKING
 import unittest
 from unittest import mock
 
 import numpy
 
-from mantidimaging.core.operations.loader import load_filter_packages, BaseFilter
+from mantidimaging.core.operations.loader import load_filter_packages
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.utility.data_containers import Counts
 from mantidimaging.core.gpu import utility as gpu
+
+if TYPE_CHECKING:
+    from mantidimaging.core.operations.base_filter import BaseFilter
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
 

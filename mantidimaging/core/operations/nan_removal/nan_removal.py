@@ -1,21 +1,24 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
-from collections.abc import Callable
 from functools import partial
 from logging import getLogger
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtWidgets import QFormLayout, QWidget
 import scipy.ndimage as scipy_ndimage
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
-from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QFormLayout, QWidget
+    from mantidimaging.core.data import ImageStack
+    from mantidimaging.gui.mvp_base import BaseMainWindowView
+    from collections.abc import Callable
 
 
 def enable_correct_fields_only(mode_field, replace_value_field):

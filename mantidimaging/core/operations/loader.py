@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import os
 import pkgutil
 import sys
@@ -9,8 +10,7 @@ from importlib.abc import Loader
 
 if TYPE_CHECKING:
     from PyInstaller.loader.pyimod02_importers import FrozenImporter
-
-from mantidimaging.core.operations.base_filter import BaseFilter
+    from mantidimaging.core.operations.base_filter import BaseFilter
 
 MODULES_OPERATIONS: dict[str, Union['FrozenImporter', Loader]] = {}
 if not MODULES_OPERATIONS:
@@ -48,6 +48,6 @@ def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
         if not ignored_packages or not any([ignore in name for ignore in ignored_packages]):
             module = MODULES_OPERATIONS[name].load_module(name)
             if hasattr(module, 'FILTER_CLASS'):
-                operation_module = cast(OperationModule, module)
+                operation_module = cast("OperationModule", module)
                 operation_modules.append(operation_module.FILTER_CLASS)
     return operation_modules

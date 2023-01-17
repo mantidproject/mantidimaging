@@ -1,14 +1,16 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 from numpy.polynomial import Polynomial
 
-from mantidimaging.core.data import ImageStack
-from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
-from mantidimaging.core.utility.progress_reporting import Progress
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
+    from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+    from mantidimaging.core.utility.progress_reporting import Progress
 
 
 class BaseRecon:
