@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 from typing import TYPE_CHECKING, Union, Optional, Any
 
 from PyQt5.QtCore import QRect

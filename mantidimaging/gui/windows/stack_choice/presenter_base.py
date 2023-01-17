@@ -1,5 +1,6 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from mantidimaging.gui.mvp_base.presenter import BasePresenter
 from mantidimaging.gui.windows.stack_choice.view import Notification

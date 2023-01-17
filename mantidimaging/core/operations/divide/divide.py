@@ -1,16 +1,18 @@
 # Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from functools import partial
-from typing import Union, Callable, Dict, Any
-
-from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
+from typing import Union, Callable, Dict, Any, TYPE_CHECKING
 
 from mantidimaging import helper as h
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import Type
+
+if TYPE_CHECKING:
+    from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
+    from mantidimaging.gui.mvp_base import BasePresenter
+    from mantidimaging.core.data import ImageStack
 
 
 class DivideFilter(BaseFilter):
