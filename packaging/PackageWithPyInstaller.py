@@ -41,6 +41,7 @@ def add_hidden_imports(run_options):
     # the hook doesn't seem to be picked up by PyInstaller, so we do it here instead.
     run_options.extend(add_conda_dynamic_libs('tomopy', 'tomo'))
     run_options.extend(add_conda_dynamic_libs('mkl', 'mkl'))
+    run_options.extend(add_conda_dynamic_libs('cupy', 'nvrtc'))
 
 
 def add_missing_submodules(run_options):
