@@ -29,7 +29,7 @@ def _decode_nexus_class(nexus_data) -> str:
 
 
 def _nexus_dataset_to_string(nexus_dataset) -> str:
-    return np.array(nexus_dataset).tostring().decode("utf-8")
+    return np.array(nexus_dataset).tobytes().decode("utf-8")
 
 
 def test_rescale_negative_recon_data():
