@@ -36,3 +36,4 @@ Developer Changes
 - #1652 : PEP440 compliant versions for alpha builds
 - #1595 : Store version number in package
 - #1663 : Postponed Evaluation of Annotations
+- #1670 : `tostring()` Deprecation Warning
