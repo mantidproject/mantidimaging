@@ -36,7 +36,7 @@ class FiltersWindowModel(object):
         def _name(ops):
             return ops.filter_name.lower()
 
-        self.filters.sort(key=lambda ops: _name(ops))
+        self.filters.sort(key=_name)
 
         self._format_filters()
 
