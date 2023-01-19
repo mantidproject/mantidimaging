@@ -26,7 +26,8 @@ Fixes
 - #1330 : Initial ROI box is sometimes much larger than image for relevant filters
 - #1602 : Prevent multiple ROI selector windows opening from Operations window
 - #1610 : Apply bug fix to disable Spectrum Viewer export button when no data is loaded
-- #1659 : PyInsaller missing cupy files
+- #1659 : PyInstaller missing cupy files
+- #1657 : PyInstaller: order of operations in menu is not sorted
 
 Developer Changes
 -----------------

@@ -31,6 +31,13 @@ class FiltersWindowModel(object):
         self.presenter = presenter
         # Update the local filter registry
         self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
+
+        # Sort by name for PyInstaller
+        def _name(ops):
+            return ops.filter_name.lower()
+
+        self.filters.sort(key=_name)
+
         self._format_filters()
 
         self.preview_image_idx = 0
