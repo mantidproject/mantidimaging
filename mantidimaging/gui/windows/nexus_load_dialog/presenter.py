@@ -199,7 +199,7 @@ class NexusLoadPresenter:
         assert self.nexus_file is not None
         for key in self.nexus_file.keys():
             if DEFINITION in self.nexus_file[key].keys():
-                if np.array(self.nexus_file[key][DEFINITION]).tostring().decode("utf-8") == NXTOMOPROC:
+                if np.array(self.nexus_file[key][DEFINITION]).tobytes().decode("utf-8") == NXTOMOPROC:
                     nexus_recon = self.nexus_file[key]
                     self.recon_data.append(np.array(nexus_recon["data"]["data"]))
 
