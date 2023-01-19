@@ -34,7 +34,7 @@ class FiltersWindowModel(object):
 
         # Sort by name for PyInstaller
         def _name(ops):
-            return ops.filter_name
+            return ops.filter_name.lower()
 
         self.filters.sort(key=lambda ops: _name(ops))
 
