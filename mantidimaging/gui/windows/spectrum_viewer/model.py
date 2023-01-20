@@ -66,11 +66,22 @@ class SpectrumViewerWindowModel:
         return list(self._roi_ranges.keys())
 
     def set_stack(self, stack: Optional[ImageStack]) -> None:
+        """
+        Sets the stack to be used by the model
+        If that stack is None, then the model will be reset
+        If the stack has changed, then the ROI ranges will be reset
+        and additional ROIs excluding default ROIs will be removed
+
+        @param stack: The new stack to be used by the model
+        """
         self._stack = stack
         if stack is None:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
+        # Remove additional ROIs if they exist on sample change
+        if len(self._roi_ranges) > 2:
+            self.presenter.do_remove_roi()
         self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
         self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
@@ -209,3 +220,10 @@ class SpectrumViewerWindowModel:
             self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
         else:
             raise KeyError(f"Cannot rename ROI {old_name} Available ROIs:{self._roi_ranges.keys()}")
+
+    def remove_all_roi(self) -> None:
+        """
+        Remove all ROIs from the model excluding default ROIs 'all' and 'roi'
+        """
+        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in ["all", "roi"]}
+        self._roi_id_counter = 0  # Reset the counter to 0

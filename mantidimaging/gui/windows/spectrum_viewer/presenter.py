@@ -93,11 +93,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
     def show_new_sample(self) -> None:
+        """
+        Show the new sample in the view and update the spectrum and
+        image view accordingly. If swapping between samples, any
+        additional ROIs will be removed leaving only the default ROI.
+        """
         self.view.set_image(self.model.get_averaged_image())
         self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
-        self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
+        if "roi" not in self.view.spectrum.roi_dict:
+            self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
+        self.view.spectrum.reset_roi_size()
 
     def get_default_table_state(self) -> list:
         """
@@ -172,15 +179,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_colour = self.view.spectrum.roi_dict[roi_name].colour
         self.view.add_roi_table_row(row, roi_name, roi_colour)
 
-    def do_remove_roi(self, roi_name: str) -> None:
-        """
-        Remove a given ROI from the table by ROI name or all ROIs from the table
-
-        @param roi_name: Name of the ROI to remove
-        """
-        self.view.spectrum.remove_roi(roi_name)
-        self.model.remove_roi(roi_name)
-
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
         Rename a given ROI from the table by ROI name
@@ -191,3 +189,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.view.spectrum.rename_roi(old_name, new_name)
         self.model.rename_roi(old_name, new_name)
+
+    def do_remove_roi(self, roi_name=None) -> None:
+        """
+        Remove a given ROI from the table by ROI name or all ROIs from
+        the table if no name is passed as an argument
+
+        @param roi_name: Name of the ROI to remove
+        """
+
+        if roi_name is None:
+            self.view.clear_all_rois()
+            for roi in self.get_roi_names():
+                self.view.spectrum.remove_roi(roi)
+            self.model.remove_all_roi()
+        else:
+            self.view.spectrum.remove_roi(roi_name)
+            self.model.remove_roi(roi_name)

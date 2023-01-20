@@ -221,8 +221,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Clear the selected ROI in the table view
         """
-
         if self.selected_row_data:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(self.selected_row_data[0])
             self.removeBtn.setEnabled(False)
+
+    def clear_all_rois(self) -> None:
+        """
+        Clear all ROIs from the table view
+        """
+        self.roi_table_model.clear_table()
