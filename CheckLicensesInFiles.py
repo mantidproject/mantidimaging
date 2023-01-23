@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -61,5 +61,7 @@ if __name__ == "__main__":
         print('The following files contain errors in their licenses:\n')
         print('\n'.join(files_in_error))
         exit(1)
+    else:
+        print("All files have correct licenses")
 
     exit(0)
