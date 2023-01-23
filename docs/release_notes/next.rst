@@ -38,3 +38,4 @@ Developer Changes
 - #1595 : Store version number in package
 - #1663 : Postponed Evaluation of Annotations
 - #1670 : `tostring()` Deprecation Warning
+- #1673 : Update license year across the repository from 2022 to 2023
