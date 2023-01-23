@@ -61,5 +61,7 @@ if __name__ == "__main__":
         print('The following files contain errors in their licenses:\n')
         print('\n'.join(files_in_error))
         exit(1)
+    else:
+        print("All files have correct licenses")
 
     exit(0)
