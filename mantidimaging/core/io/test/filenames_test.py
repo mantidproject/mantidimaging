@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 import unittest
 
-import pytest
 from parameterized import parameterized
 from pyfakefs.fake_filesystem_unittest import TestCase
 
@@ -106,7 +105,6 @@ class FilenameGroupTest(TestCase):
         self.assertEqual(all_files[1], Path("foo", "IMAT_Flower_Tomo_000001.tif"))
         self.assertEqual(all_files[2], Path("foo", "IMAT_Flower_Tomo_000002.tif"))
 
-    @pytest.mark.xfail
     def test_find_all_files(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
         for file_name in file_list:
@@ -117,7 +115,6 @@ class FilenameGroupTest(TestCase):
 
         self.assertEqual(fg.all_indexes, list(range(10)))
 
-    @pytest.mark.xfail
     def test_find_all_files_different_digits(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:01d}.tif") for i in range(5, 15)]
         for file_name in file_list:
