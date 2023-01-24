@@ -1,4 +1,4 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ root_doc = 'index'
 
 # General information about the project.
 project = 'MantidImaging'
-copyright = '2017-2022, Mantid Project'
+copyright = '2017-2023, Mantid Project'
 author = 'Dimitar Tasev, Dolica Akello-Egwel, Rachel Baust, Martyn Gigg, Samuel Jones, Dan Nixon, Samuel Stock, ' \
          'Will Taylor, Sam Tygier'
 
