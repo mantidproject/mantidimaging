@@ -406,6 +406,16 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["z"]),
                                    np.array([pixel_size * i for i in range(recon.data.shape[2])]))
 
+    def test_raw_file_field(self):
+        recon = th.generate_images()
+        recon.name = recon_name = "Recon"
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            _save_recon_to_nexus(nexus_file, recon, self.sample_path)
+            self.assertEqual(
+                _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["parameters"]["raw_file"]),
+                self.sample_path)
+
 
 if __name__ == '__main__':
     unittest.main()
