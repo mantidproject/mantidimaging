@@ -70,7 +70,7 @@ class CommandLineArguments:
         return cls._instance
 
     @classmethod
-    def path(cls) -> str:
+    def path(cls) -> list:
         """
         Returns the command line images path.
         """
