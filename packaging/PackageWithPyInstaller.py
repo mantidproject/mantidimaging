@@ -13,7 +13,7 @@ import PyInstaller.__main__
 
 
 def create_run_options():
-    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks']
+    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onefile']
 
     add_hidden_imports(run_options)
     add_missing_submodules(run_options)
