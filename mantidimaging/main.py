@@ -30,7 +30,7 @@ def parse_args():
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
 
-    parser.add_argument("--path", type=str, help="Path for the data you wish to load.")
+    parser.add_argument("--path", type=str, help="Comma separated Paths with no spaces for the data you wish to load.")
     parser.add_argument("--operation", type=str, help="The initial operation to run on the dataset.")
     parser.add_argument("--recon",
                         default=False,
