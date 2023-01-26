@@ -47,8 +47,7 @@ class CommandLineArguments:
             cls._instance = super().__new__(cls)
             valid_paths: list[str] = []
             if path:
-                path_list = path.split(",")
-                for filepath in path_list:
+                for filepath in path.split(","):
                     if not os.path.exists(filepath):
                         _log_and_exit(f"Path {filepath} doesn't exist. Exiting.")
                     else:
