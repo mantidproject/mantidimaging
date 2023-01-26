@@ -45,13 +45,15 @@ class CommandLineArguments:
         """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            valid_paths: list[str] = []
             if path:
-                for filepath in path.split(","):
+                path_list = path.split(",")
+                for filepath in path_list:
                     if not os.path.exists(filepath):
                         _log_and_exit(f"Path {filepath} doesn't exist. Exiting.")
                     else:
-                        print(f"Loading {filepath}")
-                        cls._images_path.append(filepath)
+                        valid_paths.append(filepath)
+                cls._images_path = valid_paths
             if operation:
                 if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
