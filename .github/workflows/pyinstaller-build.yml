@@ -1,0 +1,25 @@
+name: PyInstaller Build
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+  release:
+  
+jobs:
+  test:
+    runs-on:
+      - ubuntu-latest
+      - windows-latest
+      
+    steps:
+      - uses: action/checkout@v3
+        with:
+          fetch-depth: "0"
+          
+      - name: PyInstaller Build
+        shell: bash -l {0}
+        run: |
+          cd packaging
+          python PackageWithPyInstaller.py
