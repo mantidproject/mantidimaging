@@ -99,6 +99,7 @@ class FilenameGroup:
             yield self.directory / self.pattern.generate(index)
 
     def find_all_files(self) -> None:
+        self.all_indexes = []
         for filename in self.directory.iterdir():
             if self.pattern.match(filename.name):
                 self.all_indexes.append(self.pattern.get_index(filename.name))
