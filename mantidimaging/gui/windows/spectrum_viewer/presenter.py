@@ -73,7 +73,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if normalise_uuid is None:
             self.model.set_normalise_stack(None)
             return
-
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
         self.view.set_normalise_error(self.model.normalise_issue())
         self.handle_roi_moved()
@@ -102,9 +101,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
         if "roi" not in self.view.spectrum.roi_dict:
+            self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
             self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
-        self.view.spectrum.reset_roi_size()
+        self.view.spectrum.reset_roi_size(self.model.get_image_shape())
 
     def get_default_table_state(self) -> list:
         """
