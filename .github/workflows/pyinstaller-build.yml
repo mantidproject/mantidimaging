@@ -9,9 +9,7 @@ on:
   
 jobs:
   test:
-    runs-on:
-      - ubuntu-latest
-      - windows-latest
+    runs-on: ubuntu-latest
       
     steps:
       - uses: action/checkout@v3
