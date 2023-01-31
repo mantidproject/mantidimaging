@@ -68,17 +68,28 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         raise RuntimeError("_click_InputDialog did not find CORInspectionDialogView")
 
     def test_refine(self):
+        print("test_refine")
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=4))
+        print("test_refine 1")
         QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
+        print("test_refine 2")
         wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+        print("test_refine 3")
 
         for _ in range(5):
+            print(f"test_refine loop {_} 1")
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
+            print(f"test_refine loop {_} 2")
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
+            print(f"test_refine loop {_} 3")
             QTest.qWait(SHORT_DELAY * 2)
+            print(f"test_refine loop {_} 4")
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
+            print(f"test_refine loop {_} 5")
 
+        print("test_refine 4")
         QTest.qWait(SHOW_DELAY)
+        print("test_refine 5")
 
     def test_refine_stress(self):
         for i in range(5):

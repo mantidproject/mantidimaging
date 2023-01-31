@@ -34,6 +34,7 @@ class GuiSystemBase(unittest.TestCase):
     app: QApplication
 
     def setUp(self) -> None:
+        print("GuiSystemBase.setUp")
         self.main_window = MainWindowView()
         self.main_window.show()
         QTest.qWait(SHORT_DELAY)
@@ -44,6 +45,7 @@ class GuiSystemBase(unittest.TestCase):
         Will report any leaked images
         Expects all other windows to be closed, otherwise will raise a RuntimeError
         """
+        print("GuiSystemBase.tearDown")
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
