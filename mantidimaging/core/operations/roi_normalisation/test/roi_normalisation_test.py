@@ -1,17 +1,21 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import unittest
 from unittest import mock
+from typing import TYPE_CHECKING
 
 import numpy as np
 import numpy.testing as npt
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.operations.roi_normalisation import RoiNormalisationFilter
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data.imagestack import ImageStack
 
 
 @start_multiprocessing_pool

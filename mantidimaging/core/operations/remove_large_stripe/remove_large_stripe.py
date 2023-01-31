@@ -1,10 +1,10 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from functools import partial
 from typing import TYPE_CHECKING, Dict, Any
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 from algotom.prep.removal import remove_large_stripe
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
@@ -14,6 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 if TYPE_CHECKING:
     from mantidimaging.core.data.imagestack import ImageStack
     from numpy import ndarray
+    from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
 
 
 class RemoveLargeStripesFilter(BaseFilter):

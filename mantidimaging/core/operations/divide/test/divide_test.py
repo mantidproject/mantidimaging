@@ -1,14 +1,18 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from parameterized import parameterized
 import unittest
 from unittest import mock
 import numpy as np
+from typing import TYPE_CHECKING
 
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operations.divide import DivideFilter
+
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class DivideTest(unittest.TestCase):

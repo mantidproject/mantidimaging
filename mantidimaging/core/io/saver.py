@@ -1,9 +1,10 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import datetime
 import os
 from logging import getLogger
-from typing import List, Union, Optional, Dict, Callable, Tuple
+from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
 
 import h5py
 import numpy as np
@@ -13,12 +14,14 @@ from mantidimaging.core.operation_history.const import TIMESTAMP
 import astropy.io.fits as fits
 
 from .utility import DEFAULT_IO_FILE_FORMAT
-from ..data.dataset import StrictDataset
-from ..data.imagestack import ImageStack
 from ..operations.rescale import RescaleFilter
-from ..utility.data_containers import Indices
 from ..utility.progress_reporting import Progress
 from ..utility.version_check import CheckVersion
+
+if TYPE_CHECKING:
+    from ..data.dataset import StrictDataset
+    from ..data.imagestack import ImageStack
+    from ..utility.data_containers import Indices
 
 LOG = getLogger(__name__)
 
@@ -243,10 +246,11 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     data["image_key"] = detector["image_key"]
 
     for recon in dataset.recons:
-        _save_recon_to_nexus(nexus_file, recon)
+        assert dataset.sample.filenames is not None
+        _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
 
 
-def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
+def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):
     """
     Saves a recon to a NeXus file.
     :param nexus_file: The NeXus file.
@@ -281,7 +285,9 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack):
     if recon_timestamp is None:
         recon_timestamp = datetime.datetime.now().isoformat()
     reconstruction.create_dataset("date", data=np.string_(recon_timestamp))
-    reconstruction.create_group("parameters")
+
+    parameters = reconstruction.create_group("parameters")
+    parameters.create_dataset("raw_file", data=np.string_(sample_path))
 
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")

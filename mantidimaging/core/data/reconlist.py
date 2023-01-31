@@ -1,11 +1,13 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import uuid
 from collections import UserList
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from mantidimaging.core.data import ImageStack
+if TYPE_CHECKING:
+    from mantidimaging.core.data import ImageStack
 
 
 class ReconList(UserList):

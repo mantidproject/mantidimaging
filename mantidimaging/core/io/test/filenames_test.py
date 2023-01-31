@@ -1,13 +1,13 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from pathlib import Path
 import unittest
-from unittest import mock
 
 from parameterized import parameterized
+from pyfakefs.fake_filesystem_unittest import TestCase
 
-from mantidimaging.test_helpers import FileOutputtingTestCase
 from ..filenames import FilenameGroup, FilenamePattern
 
 
@@ -77,7 +77,10 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertTrue(p2.match_metadata("foo.json"))
 
 
-class FilenameGroupTest(FileOutputtingTestCase):
+class FilenameGroupTest(TestCase):
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+
     def test_filenamepattern_from_file_unindexed(self):
         p1 = Path("foo", "bar", "baz.tiff")
         f1 = FilenameGroup.from_file(p1)
@@ -104,22 +107,20 @@ class FilenameGroupTest(FileOutputtingTestCase):
 
     def test_find_all_files(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
-        path_mock = mock.Mock()
-        path_mock.iterdir.return_value = file_list
+        for file_name in file_list:
+            self.fs.create_file(file_name)
 
-        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
-        fg = FilenameGroup(path_mock, pattern, [])
+        fg = FilenameGroup.from_file(file_list[7])
         fg.find_all_files()
 
         self.assertEqual(fg.all_indexes, list(range(10)))
 
     def test_find_all_files_different_digits(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:01d}.tif") for i in range(5, 15)]
-        path_mock = mock.Mock()
-        path_mock.iterdir.return_value = file_list
+        for file_name in file_list:
+            self.fs.create_file(file_name)
 
-        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_1.tif")
-        fg = FilenameGroup(path_mock, pattern, [])
+        fg = FilenameGroup.from_file("IMAT_Flower_Tomo_1.tif")
         fg.find_all_files()
 
         self.assertEqual(fg.all_indexes, list(range(5, 15)))
@@ -127,21 +128,20 @@ class FilenameGroupTest(FileOutputtingTestCase):
     def test_find_all_files_metadata(self):
         file_list = [Path(f"IMAT_Flower_Tomo_{i:06d}.tif") for i in range(10)]
         file_list.append(Path("IMAT_Flower_Tomo.json"))
-        path_mock = mock.Mock()
-        path_mock.iterdir.return_value = file_list
+        for file_name in file_list:
+            self.fs.create_file(file_name)
 
-        pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000000.tif")
-        fg = FilenameGroup(path_mock, pattern, [])
+        fg = FilenameGroup.from_file("IMAT_Flower_Tomo_000000.tif")
         fg.find_all_files()
 
         self.assertEqual(fg.metadata_path, Path("IMAT_Flower_Tomo.json"))
 
     def test_find_log(self):
-        log = Path(self.output_directory, "tomo.txt")
-        log.touch()
-        Path(self.output_directory, "tomo").mkdir()
-        sample = Path(self.output_directory, "tomo", "IMAT_Flower_Tomo_000000.tif")
-        sample.touch()
+        log = Path("/foo", "tomo.txt")
+        self.fs.create_file(log)
+
+        sample = Path("/foo", "tomo", "IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(sample)
 
         fg = FilenameGroup.from_file(sample)
         fg.find_log_file()
@@ -149,14 +149,13 @@ class FilenameGroupTest(FileOutputtingTestCase):
         self.assertEqual(fg.log_path, log)
 
     def test_find_log_best(self):
-        log = Path(self.output_directory, "Dark_log.txt")
-        log.touch()
-        Path(self.output_directory, "Dark_aaa_log.txt").touch()
-        Path(self.output_directory, "Dark_bbb_log.txt").touch()
+        log = Path("/foo", "Dark_log.txt")
+        self.fs.create_file(log)
+        self.fs.create_file(Path("/foo", "Dark_aaa_log.txt"))
+        self.fs.create_file(Path("/foo", "Dark_bbb_log.txt"))
 
-        Path(self.output_directory, "Dark").mkdir()
-        sample = Path(self.output_directory, "Dark", "IMAT_Flower_Tomo_000000.tif")
-        sample.touch()
+        sample = Path("/foo", "Dark", "IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(sample)
 
         fg = FilenameGroup.from_file(sample)
         fg.find_log_file()

@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 """
 The gui package is not imported here, because it will pull in all of PyQt
 packages, which we do not want when using only the CLI. This is both a speedup

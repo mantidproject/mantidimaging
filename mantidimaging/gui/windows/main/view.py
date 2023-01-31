@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import os
 import uuid
@@ -136,7 +137,8 @@ class MainWindowView(BaseMainWindowView):
 
         args = CommandLineArguments()
         if args.path():
-            self.presenter.load_stacks_from_folder(args.path())
+            for filepath in list(args.path()):
+                self.presenter.load_stacks_from_folder(filepath)
 
         if args.operation():
             self.presenter.show_operation(args.operation())

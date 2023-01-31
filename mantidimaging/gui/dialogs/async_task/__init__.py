@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from .model import AsyncTaskDialogModel, TaskWorkerThread  # noqa: F401
 from .view import AsyncTaskDialogView, start_async_task_view  # noqa: F401

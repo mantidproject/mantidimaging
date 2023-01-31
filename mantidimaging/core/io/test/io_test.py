@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import datetime
 import os
 import unittest
@@ -28,7 +29,13 @@ def _decode_nexus_class(nexus_data) -> str:
 
 
 def _nexus_dataset_to_string(nexus_dataset) -> str:
-    return np.array(nexus_dataset).tostring().decode("utf-8")
+    return np.array(nexus_dataset).tobytes().decode("utf-8")
+
+
+def _create_sample_with_filename() -> ImageStack:
+    sample = th.generate_images()
+    sample.filenames = [f"image{str(i)}.tiff" for i in range(sample.data.shape[0])]
+    return sample
 
 
 def test_rescale_negative_recon_data():
@@ -46,6 +53,8 @@ class IOTest(FileOutputtingTestCase):
 
         # force silent outputs
         initialise_logging()
+
+        self.sample_path = "sample/file/path.tiff"
 
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
 
@@ -302,7 +311,7 @@ class IOTest(FileOutputtingTestCase):
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
-        sample = th.generate_images()
+        sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
         sd = StrictDataset(sample)
@@ -328,7 +337,7 @@ class IOTest(FileOutputtingTestCase):
 
     def test_save_recon_to_nexus(self):
 
-        sample = th.generate_images()
+        sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
         sd = StrictDataset(sample)
@@ -367,7 +376,7 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_allclose(np.array(nexus_file[recon_name]["data"]["data"]), recon.data, rtol=1e-3)
 
     def test_use_recon_date_from_image_stack(self):
-        sample = th.generate_images()
+        sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
         sd = StrictDataset(sample)
@@ -383,20 +392,29 @@ class IOTest(FileOutputtingTestCase):
             self.assertIn(str(datetime.date.fromisoformat(gemini)),
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
-    @staticmethod
-    def test_save_recon_xyz_data():
+    def test_save_recon_xyz_data(self):
         recon = th.generate_images()
         recon.name = recon_name = "Recon"
         recon.pixel_size = pixel_size = 3
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            _save_recon_to_nexus(nexus_file, recon)
+            _save_recon_to_nexus(nexus_file, recon, self.sample_path)
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["x"]),
                                    np.array([pixel_size * i for i in range(recon.data.shape[0])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["y"]),
                                    np.array([pixel_size * i for i in range(recon.data.shape[1])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["z"]),
                                    np.array([pixel_size * i for i in range(recon.data.shape[2])]))
+
+    def test_raw_file_field(self):
+        recon = th.generate_images()
+        recon.name = recon_name = "Recon"
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            _save_recon_to_nexus(nexus_file, recon, self.sample_path)
+            self.assertEqual(
+                _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["parameters"]["raw_file"]),
+                self.sample_path)
 
 
 if __name__ == '__main__':

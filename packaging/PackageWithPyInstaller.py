@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 # Package the application using PyInstaller
 #
@@ -7,12 +8,12 @@ import os
 import pkgutil
 import sys
 from pathlib import Path
-from PyInstaller.utils.hooks import conda_support
+from PyInstaller.utils.hooks import conda_support, collect_data_files
 import PyInstaller.__main__
 
 
 def create_run_options():
-    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks']
+    run_options = ['../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onefile']
 
     add_hidden_imports(run_options)
     add_missing_submodules(run_options)
@@ -40,6 +41,7 @@ def add_hidden_imports(run_options):
     # the hook doesn't seem to be picked up by PyInstaller, so we do it here instead.
     run_options.extend(add_conda_dynamic_libs('tomopy', 'tomo'))
     run_options.extend(add_conda_dynamic_libs('mkl', 'mkl'))
+    run_options.extend(add_conda_dynamic_libs('cupy', 'nvrtc'))
 
 
 def add_missing_submodules(run_options):
@@ -52,8 +54,10 @@ def add_data_files(run_options):
     # the package
     data_files = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
                   ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
+                  ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
                   ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
 
+    data_files += collect_data_files("cupy")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 

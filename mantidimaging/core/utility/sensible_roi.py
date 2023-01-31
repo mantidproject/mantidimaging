@@ -1,11 +1,13 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Union, List, Iterator
+from typing import Union, List, Iterator, TYPE_CHECKING
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
 @dataclass

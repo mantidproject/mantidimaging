@@ -1,9 +1,10 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from itertools import product
 from unittest import mock
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from parameterized import parameterized
 from PyQt5.QtTest import QTest
@@ -17,6 +18,9 @@ from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SH
 from mantidimaging.gui.windows.operations.view import FiltersWindowView
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+
+if TYPE_CHECKING:
+    from uuid import UUID
 
 OP_LIST = [
     ("Arithmetic", [["Multiply", "2"]]),

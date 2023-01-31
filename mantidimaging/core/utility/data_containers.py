@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 """
 Containers for data. They don't do much apart from storing the data,
 and optionally provide helpful operations.
@@ -9,10 +10,11 @@ and helps the type hints to tell you that you might be passing the wrong value (
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
 from dataclasses import dataclass
-from pathlib import Path
-from typing import List, Optional, NamedTuple
+from typing import List, Optional, NamedTuple, TYPE_CHECKING
 
-import numpy
+if TYPE_CHECKING:
+    from pathlib import Path
+    import numpy
 
 
 @dataclass

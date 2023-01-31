@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from pathlib import Path
 import re
@@ -98,6 +99,7 @@ class FilenameGroup:
             yield self.directory / self.pattern.generate(index)
 
     def find_all_files(self) -> None:
+        self.all_indexes = []
         for filename in self.directory.iterdir():
             if self.pattern.match(filename.name):
                 self.all_indexes.append(self.pattern.get_index(filename.name))
