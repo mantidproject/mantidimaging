@@ -137,8 +137,7 @@ class MainWindowView(BaseMainWindowView):
 
         args = CommandLineArguments()
         if args.path():
-            paths_list: List[str] = list(filter(None, args.path()))
-            for filepath in paths_list:
+            for filepath in list(args.path()):
                 self.presenter.load_stacks_from_folder(filepath)
 
         if args.operation():
