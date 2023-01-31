@@ -35,7 +35,7 @@ def _log_and_exit(msg: str):
 
 class CommandLineArguments:
     _instance = None
-    _images_path = [""]
+    _images_path: list[str] = []
     _init_operation = ""
     _show_recon = False
 
