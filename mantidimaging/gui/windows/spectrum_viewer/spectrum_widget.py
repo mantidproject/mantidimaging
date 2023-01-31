@@ -186,6 +186,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
     def reset_roi_size(self, image_shape) -> None:
         """
         Reset the size of the ROI to the maximum size of the image.
+
+        @param image_shape: The shape of the image.
         """
         self.roi_dict["roi"].setSize(list(image_shape))
         self.roi_dict["roi"].setPos([0, 0])
