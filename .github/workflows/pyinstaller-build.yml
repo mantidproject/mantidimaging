@@ -19,5 +19,6 @@ jobs:
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
+          pip install pyinstaller
           cd packaging
           python PackageWithPyInstaller.py
