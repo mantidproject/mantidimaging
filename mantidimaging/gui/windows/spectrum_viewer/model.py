@@ -79,11 +79,12 @@ class SpectrumViewerWindowModel:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        # Remove additional ROIs if they exist on sample change
+        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
+        # Remove additional ROIs if they exist on sample change and reset
         if len(self._roi_ranges) > 2:
             self.presenter.do_remove_roi()
-        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
-        self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
+        else:
+            self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
 
     def set_new_roi(self, name: str) -> None:
         """
