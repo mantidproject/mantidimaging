@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 from logging import getLogger
 import os
 
@@ -34,7 +35,7 @@ def _log_and_exit(msg: str):
 
 class CommandLineArguments:
     _instance = None
-    _images_path = ""
+    _images_path: list[str] = []
     _init_operation = ""
     _show_recon = False
 
@@ -44,11 +45,14 @@ class CommandLineArguments:
         """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            valid_paths: list[str] = []
             if path:
-                if not os.path.exists(path):
-                    _log_and_exit(f"Path {path} doesn't exist. Exiting.")
-                else:
-                    cls._images_path = path
+                for filepath in path.split(","):
+                    if not os.path.exists(filepath):
+                        _log_and_exit(f"Path {filepath} doesn't exist. Exiting.")
+                    else:
+                        valid_paths.append(filepath)
+                cls._images_path = valid_paths
             if operation:
                 if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
@@ -67,7 +71,7 @@ class CommandLineArguments:
         return cls._instance
 
     @classmethod
-    def path(cls) -> str:
+    def path(cls) -> list:
         """
         Returns the command line images path.
         """

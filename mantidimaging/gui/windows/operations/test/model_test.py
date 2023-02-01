@@ -1,11 +1,14 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
+import random
 import unittest
 from functools import partial
 
 from unittest import mock
 import numpy as np
+from mantidimaging.core.operations.loader import load_filter_packages
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operation_history import const
@@ -171,8 +174,15 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.assertEqual(1, self.model._find_filter_index_from_filter_name("2"))
 
     def test_filter_names(self):
-        self.model.presenter.divider = "-----------------"
-        filter_names = self.model.filter_names
+
+        filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
+        random.shuffle(filters)
+
+        with mock.patch("mantidimaging.gui.windows.operations.model.load_filter_packages") as load_filter_packages_mock:
+            load_filter_packages_mock.return_value = filters
+            model = FiltersWindowModel(mock.MagicMock)
+            model.presenter.divider = "-----------------"
+            filter_names = model.filter_names
 
         self.assertEqual([
             'Crop Coordinates', 'Flat-fielding', 'Remove Outliers', 'ROI Normalisation', "-----------------",

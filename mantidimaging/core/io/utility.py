@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import glob
 import itertools
@@ -7,10 +8,12 @@ import os
 import re
 import numpy as np
 from logging import getLogger
-from pathlib import Path
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Union, Tuple, TYPE_CHECKING
 
 from mantidimaging.core.io.filenames import FilenameGroup
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 log = getLogger(__name__)
 

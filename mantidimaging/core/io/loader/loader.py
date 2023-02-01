@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import os
 from dataclasses import dataclass
 from logging import getLogger
@@ -10,17 +11,17 @@ import numpy as np
 import astropy.io.fits as fits
 from tifffile import tifffile
 
-if TYPE_CHECKING:
-    import numpy.typing as npt
-
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log_for_image,
                                            find_180deg_proj)
 from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
-from mantidimaging.core.utility.progress_reporting import Progress
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
+    from mantidimaging.core.data import ImageStack
+    from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
 

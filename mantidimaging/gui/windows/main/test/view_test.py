@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 import unittest
 from unittest.mock import DEFAULT, Mock
@@ -318,7 +319,8 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
     @mock.patch("mantidimaging.gui.windows.main.view.MainWindowPresenter")
     def test_load_path_from_command_line(self, main_window_presenter, welcome_screen_presenter, command_line_args):
-        command_line_args.return_value.path.return_value = test_path = "./"
+        test_path = "./"
+        command_line_args.return_value.path.return_value = [test_path]
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
         MainWindowView()

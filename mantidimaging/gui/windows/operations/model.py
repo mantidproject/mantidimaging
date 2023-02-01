@@ -1,5 +1,6 @@
-# Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
 from functools import partial
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
@@ -30,6 +31,13 @@ class FiltersWindowModel(object):
         self.presenter = presenter
         # Update the local filter registry
         self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
+
+        # Sort by name for PyInstaller
+        def _name(ops):
+            return ops.filter_name.lower()
+
+        self.filters.sort(key=_name)
+
         self._format_filters()
 
         self.preview_image_idx = 0
