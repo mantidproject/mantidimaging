@@ -112,3 +112,53 @@ jobs:
           done
         timeout-minutes: 15
         if: always()
+
+# individual tests
+      - name: GUI Tests System gui_system_reconstruction_test.py test_correlate
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_correlate
+          done
+        timeout-minutes: 15
+        if: always()
+      - name: GUI Tests System gui_system_reconstruction_test.py test_minimise
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_minimise
+          done
+        timeout-minutes: 15
+        if: always()
+      - name: GUI Tests System gui_system_reconstruction_test.py test_refine
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_refine
+          done
+        timeout-minutes: 15
+        if: always()
+      - name: GUI Tests System gui_system_reconstruction_test.py test_refine_stress
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_refine_stress
+          done
+        timeout-minutes: 15
+        if: always()
+      - name: GUI Tests System gui_system_reconstruction_test.py test_selecting_auto_update_triggers_preview
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_selecting_auto_update_triggers_preview
+          done
+        timeout-minutes: 15
+        if: always()
+      - name: GUI Tests System gui_system_reconstruction_test.py test_clicking_update_now_btn_triggers_preview
+        shell: bash -l {0}
+        run: |
+          for x in `seq 5`; do
+          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_clicking_update_now_btn_triggers_preview
+          done
+        timeout-minutes: 15
+        if: always()
