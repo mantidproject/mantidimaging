@@ -16,6 +16,7 @@ jobs:
   test:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         n: [1,2,3,4,5]
 
