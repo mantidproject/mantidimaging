@@ -1,0 +1,68 @@
+name: PyInstaller Windows Build
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+  release:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+        shell: bash
+
+      - name: Cache Mambaforge and Pip packages
+        uses: actions/cache@v2
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: |
+            ~/conda_pkgs_dir
+            ~/.cache/pip
+          key:
+            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: mantidimaging-dev
+          auto-activate-base: false
+          use-mamba: true
+
+      - name: Cache Mambaforge environment
+        uses: actions/cache@v2
+        id: cache-mambaforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ${{env.CONDA}}/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Mantid Imaging developer dependencies
+        if: steps.cache-mambaforge-environment.outputs.cache-hit != 'true'
+        shell: bash -l {0}
+        run: |
+          conda deactivate
+          python ./setup.py create_dev_env
+
+      - name: PyInstaller Build
+        shell: bash -l {0}
+        run: |
+          conda activate mantidimaging-dev
+          pip install pyinstaller
+          cd packaging
+          python PackageWithPyInstaller.py
