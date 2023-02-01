@@ -112,9 +112,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         @return: A random colour in RGB format. (0-255, 0-255, 0-255)
         """
-        accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (0, 108, 209), (225, 190, 106),
-                              (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26), (75, 0, 146), (254, 254, 98),
-                              (211, 95, 183), (0, 90, 181), (220, 50, 43), (26, 133, 255), (212, 17, 89)]
+        accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (64, 176, 166), (230, 97, 0), (93, 58, 155),
+                              (26, 255, 26), (254, 254, 98), (211, 95, 183), (220, 50, 43)]
         if self.colour_index == len(accessible_colours):
             self.colour_index = 0
         colour = accessible_colours[self.colour_index]
@@ -128,7 +127,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param roi: The ROI to add.
         @param name: The name of the ROI.
         """
-
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.random_colour_generator()
 
@@ -185,3 +183,16 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
+
+    def reset_roi_size(self, image_shape) -> None:
+        """
+        Reset the size of the ROI to the maximum size of the image.
+
+        @param image_shape: The shape of the image.
+        """
+        height, width = image_shape
+        self.roi_dict["roi"].setSize([width, height])
+        self.roi_dict["roi"].setPos([0, 0])
+        self.roi_dict["roi"].maxBounds = self.roi_dict["roi"].parentBounds()
+        self.image.vb.addItem(self.roi_dict["roi"])
+        self.roi_dict["roi"].sigRegionChanged.connect(self.roi_changed.emit)
