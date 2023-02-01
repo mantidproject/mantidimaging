@@ -19,6 +19,9 @@ New Features and improvements
 - #1467 : NeXus Recon: Add other entry/data information
 - #1661 : Use `tifffile` for writing and reading tiff files
 - #1512 : Speedups for CIL setup
+- #1465 : NeXus Recon: Add entry/reconstruction/parameters information
+- #1666 : PyInstaller single file
+- #1665 : PyInstaller exe icon
 
 Fixes
 -----
@@ -39,3 +42,4 @@ Developer Changes
 - #1663 : Postponed Evaluation of Annotations
 - #1670 : `tostring()` Deprecation Warning
 - #1673 : Update license year across the repository from 2022 to 2023
+- #1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
