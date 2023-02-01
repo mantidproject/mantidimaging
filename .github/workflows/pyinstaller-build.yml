@@ -65,6 +65,12 @@ jobs:
         run: |
           cp -Ta /usr/share/miniconda3/envs/mantidimaging-dev.cache /usr/share/miniconda3/envs/mantidimaging-dev
           
+      - name: Other dependencies
+        shell: bash -l {0}
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y xvfb libxcb* libxkb*
+          
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
