@@ -44,3 +44,4 @@ Developer Changes
 - #1670 : `tostring()` Deprecation Warning
 - #1673 : Update license year across the repository from 2022 to 2023
 - #1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
+- #1683 : Add single-file PyInstaller build to Actions
