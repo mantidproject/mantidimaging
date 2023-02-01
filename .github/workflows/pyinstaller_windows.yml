@@ -66,3 +66,9 @@ jobs:
           pip install pyinstaller
           cd packaging
           python PackageWithPyInstaller.py
+
+      - name: Archive PyInstalled File
+        uses: actions/upload-artifact@v3
+        with:
+          name: MantidImaging
+          path: output/MantidImaging.exe
