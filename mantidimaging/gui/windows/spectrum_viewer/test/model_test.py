@@ -144,6 +144,22 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         npt.assert_array_equal(self.model.get_roi("all").right, 12)
         npt.assert_array_equal(self.model.get_roi("all").bottom, 11)
 
+    def test_if_set_stack_called_with_additional_rois_present_THEN_do_remove_roi_called(self):
+        self.model.set_stack(generate_images())
+        self.model.set_new_roi("new_roi")
+        self.model.set_new_roi("new_roi_2")
+
+        self.assertListEqual(self.model.get_list_of_roi_names(), ['all', 'roi', 'new_roi', 'new_roi_2'])
+        self.model.set_stack(generate_images())
+        self.presenter.do_remove_roi.assert_called_once()
+
+    def test_if_set_stack_called_with_no_additional_rois_present_THEN_do_remove_roi_not_called(self):
+        self.model.set_stack(generate_images())
+
+        self.assertListEqual(self.model.get_list_of_roi_names(), ['all', 'roi'])
+        self.model.set_stack(generate_images())
+        self.presenter.do_remove_roi.assert_not_called()
+
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         spectrum = np.arange(0, 10)
@@ -251,6 +267,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_stack(generate_images())
         with self.assertRaises(KeyError):
             self.model.remove_roi("non_existent_roi")
+
+    def test_WHEN_remove_all_rois_called_THEN_all_but_default_rois_removed(self):
+        self.model.set_stack(generate_images())
+        self.model.set_new_roi("new_roi")
+        self.model.set_new_roi("new_roi_2")
+        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi", "new_roi_2"])
+        self.model.remove_all_roi()
+        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
 
     def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
         self.model.set_stack(generate_images())

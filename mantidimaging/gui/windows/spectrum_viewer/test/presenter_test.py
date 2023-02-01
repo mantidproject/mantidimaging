@@ -111,11 +111,19 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.try_to_select_relevant_normalise_stack.assert_not_called()
 
     def test_show_sample(self):
+        self.view.spectrum.roi_dict = {}
         image_stack = generate_images([10, 11, 12])
         self.presenter.model.set_stack(image_stack)
 
         self.presenter.show_new_sample()
         self.view.spectrum.add_range.assert_called_once_with(0, 9)
+
+    def test_roi_exists_WHEN_show_new_sample_called_THEN_add_roi_not_called(self):
+        image_stack = generate_images([10, 11, 12])
+        self.presenter.model.set_stack(image_stack)
+        self.view.spectrum.roi_dict = {"roi": mock.Mock()}
+        self.presenter.show_new_sample()
+        self.view.spectrum.add_roi.assert_not_called()
 
     def test_gui_changes_tof_range(self):
         image_stack = generate_images([30, 11, 12])
@@ -187,4 +195,15 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.model.set_stack(generate_images())
         with self.assertRaises(RuntimeError):
             self.presenter.rename_roi("roi", name)
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+
+    def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
+        self.presenter.model.set_stack(generate_images())
+        with mock.patch(
+                "mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"
+        ):
+            self.presenter.do_add_roi()
+            self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.do_remove_roi()
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
