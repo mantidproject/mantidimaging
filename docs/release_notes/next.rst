@@ -21,6 +21,7 @@ New Features and improvements
 - #1512 : Speedups for CIL setup
 - #1465 : NeXus Recon: Add entry/reconstruction/parameters information
 - #1666 : PyInstaller single file
+- #1665 : PyInstaller exe icon
 
 Fixes
 -----
