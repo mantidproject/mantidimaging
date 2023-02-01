@@ -78,7 +78,7 @@ class SpectrumViewerWindowModel:
         if stack is None:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
-        height, width = self.get_image_shape()
+        width, height = self.get_image_shape()
         self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
         # Remove additional ROIs if they exist on sample change and reset
         if len(self._roi_ranges) > 2:
