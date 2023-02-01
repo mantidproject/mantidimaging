@@ -190,7 +190,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         @param image_shape: The shape of the image.
         """
-        self.roi_dict["roi"].setSize(list(image_shape))
+        height, width = image_shape
+        self.roi_dict["roi"].setSize([width, height])
         self.roi_dict["roi"].setPos([0, 0])
         self.roi_dict["roi"].maxBounds = self.roi_dict["roi"].parentBounds()
         self.image.vb.addItem(self.roi_dict["roi"])
