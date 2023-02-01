@@ -68,6 +68,7 @@ jobs:
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
+          conda activate mantidimaging-dev
           pip install pyinstaller
           cd packaging
           python PackageWithPyInstaller.py
