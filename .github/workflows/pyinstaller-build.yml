@@ -77,4 +77,4 @@ jobs:
           conda activate mantidimaging-dev
           pip install pyinstaller
           cd packaging
-          python PackageWithPyInstaller.py
+          xvfb-run python PackageWithPyInstaller.py
