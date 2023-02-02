@@ -101,7 +101,7 @@ class BaseEyesTest(unittest.TestCase):
     def _load_strict_data_set(self, set_180: bool = False):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
-        filenames = [str(p) for p in filename_group.all_files()][::2]
+        filenames = [str(p) for p in filename_group.all_files()][::3]
         image_stack = loader.load(file_names=filenames)
         dataset = StrictDataset(image_stack)
         image_stack.name = "Stack 1"
