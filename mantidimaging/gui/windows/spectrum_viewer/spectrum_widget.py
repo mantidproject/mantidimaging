@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
+import numpy as np
+
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem
 
@@ -82,6 +84,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.nextRow()
         self.spectrum = self.addPlot()
 
+        self.spectrum_data_dict: dict[str, Optional['np.ndarray']] = {}
         self.nextRow()
         self._tof_range_label = self.addLabel()
 
@@ -91,7 +94,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
-        self.roi_dict = {}
+        self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
 
     def add_range(self, range_min: int, range_max: int):
