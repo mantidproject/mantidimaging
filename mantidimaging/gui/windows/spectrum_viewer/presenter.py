@@ -104,7 +104,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if "roi" not in self.view.spectrum.roi_dict:
             self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
             self.view.set_spectrum("roi", self.model.get_spectrum("roi", self.spectrum_mode))
-            # self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
         self.view.auto_range_image()
         self.view.spectrum.reset_roi_size(self.model.get_image_shape())
 
