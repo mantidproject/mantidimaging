@@ -178,7 +178,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
-        Rename a given ROI by name unless it is 'roi' or 'all'.
+        Rename a given ROI and corresponding spectrum by name
+        unless it is called 'roi' or 'all'
 
         @param old_name: The name of the ROI to rename.
         @param new_name: The new name of the ROI.
@@ -186,6 +187,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
+            self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
 
     def reset_roi_size(self, image_shape) -> None:
         """
