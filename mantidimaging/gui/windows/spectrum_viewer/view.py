@@ -47,7 +47,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.spectrum)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
-        #  Where roi signal is omitted from spectrum_widget.py to be updated on change
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self._current_dataset_id = None
