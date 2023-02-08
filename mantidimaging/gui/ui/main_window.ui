@@ -226,7 +226,7 @@
   </action>
   <action name="actionSpectrumViewer">
    <property name="text">
-    <string>Spectrum Viewer (Beta)</string>
+    <string>Spectrum Viewer</string>
    </property>
   </action>
  </widget>
