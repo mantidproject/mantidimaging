@@ -12,6 +12,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
+    import numpy as np
     from .view import SpectrumViewerWindowView
 
 
@@ -82,6 +83,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.nextRow()
         self.spectrum = self.addPlot()
 
+        self.spectrum_data_dict: dict[str, Optional['np.ndarray']] = {}
         self.nextRow()
         self._tof_range_label = self.addLabel()
 
@@ -91,7 +93,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
-        self.roi_dict = {}
+        self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
 
     def add_range(self, range_min: int, range_max: int):
@@ -175,7 +177,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
-        Rename a given ROI by name unless it is 'roi' or 'all'.
+        Rename a given ROI and corresponding spectrum by name
+        unless it is called 'roi' or 'all'
 
         @param old_name: The name of the ROI to rename.
         @param new_name: The new name of the ROI.
@@ -183,6 +186,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
+            self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
 
     def reset_roi_size(self, image_shape) -> None:
         """

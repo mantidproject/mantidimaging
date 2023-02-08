@@ -33,6 +33,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
+        self._roi_name = "roi"
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -99,11 +100,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         additional ROIs will be removed leaving only the default ROI.
         """
         self.view.set_image(self.model.get_averaged_image())
-        self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
+        self.view.set_spectrum(self._roi_name, self.model.get_spectrum(self._roi_name, self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
-        if "roi" not in self.view.spectrum.roi_dict:
-            self.view.set_spectrum(self.model.get_spectrum("roi", self.spectrum_mode))
-            self.view.spectrum.add_roi(self.model.get_roi("roi"), "roi")
+        if self._roi_name not in self.view.spectrum.roi_dict:
+            self.view.spectrum.add_roi(self.model.get_roi(self._roi_name), self._roi_name)
+            self.view.set_spectrum(self._roi_name, self.model.get_spectrum(self._roi_name, self.spectrum_mode))
         self.view.auto_range_image()
         self.view.spectrum.reset_roi_size(self.model.get_image_shape())
 
@@ -111,7 +112,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Get the default state of the table
         """
-        return ["roi", self.view.spectrum.roi_dict["roi"].colour]
+        return [self._roi_name, self.view.spectrum.roi_dict[self._roi_name].colour]
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
@@ -125,7 +126,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         for name in roi_names:
             roi = self.view.spectrum.get_roi(name)
             self.model.set_roi(name, roi)
-            self.view.set_spectrum(self.model.get_spectrum(name, self.spectrum_mode))
+            self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_export_button_enabled(self) -> None:
         """
@@ -165,7 +166,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         roi_name = self.model.roi_name_generator()
         self.model.set_new_roi(roi_name)
-        self.view.set_spectrum(self.model.get_spectrum(roi_name, self.spectrum_mode))
+        self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)

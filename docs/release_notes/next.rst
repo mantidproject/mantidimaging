@@ -22,6 +22,7 @@ New Features and improvements
 - #1465 : NeXus Recon: Add entry/reconstruction/parameters information
 - #1666 : PyInstaller single file
 - #1665 : PyInstaller exe icon
+- #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
 
 Fixes
 -----

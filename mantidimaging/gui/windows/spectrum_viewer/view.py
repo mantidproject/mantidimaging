@@ -47,7 +47,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.spectrum)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
-        # Where roi signal is omitted from spectrum_widget.py to be updated on change
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self._current_dataset_id = None
@@ -168,12 +167,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 
-    def set_spectrum(self, spectrum_data: 'np.ndarray'):
+    def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
+        self.spectrum.spectrum_data_dict[name] = spectrum_data
         self.spectrum.spectrum.clearPlots()
-        self.spectrum.spectrum.plot(spectrum_data)
+
+        for key, value in self.spectrum.spectrum_data_dict.items():
+            # roi_dict may not be populated with yet on method call
+            if key in self.spectrum.roi_dict:
+                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
     def clear(self) -> None:
         self.spectrum.clear_data()
+        self.spectrum.spectrum_data_dict = {}
 
     def auto_range_image(self):
         self.spectrum.image.vb.autoRange()
@@ -226,9 +231,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(self.selected_row_data[0])
             self.removeBtn.setEnabled(False)
+            self.spectrum.spectrum_data_dict.pop(self.selected_row_data[0])
+            self.spectrum.spectrum.removeItem(self.selected_row_data[0])
+            self.presenter.handle_roi_moved()  # Update plot View
 
     def clear_all_rois(self) -> None:
         """
         Clear all ROIs from the table view
         """
         self.roi_table_model.clear_table()
+        self.spectrum.spectrum_data_dict = {}
+        self.spectrum.spectrum.clearPlots()
