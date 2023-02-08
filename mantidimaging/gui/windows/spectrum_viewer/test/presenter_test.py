@@ -117,6 +117,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         self.presenter.show_new_sample()
         self.view.spectrum.add_range.assert_called_once_with(0, 9)
+        self.view.set_spectrum.assert_called()
 
     def test_roi_exists_WHEN_show_new_sample_called_THEN_add_roi_not_called(self):
         image_stack = generate_images([10, 11, 12])
