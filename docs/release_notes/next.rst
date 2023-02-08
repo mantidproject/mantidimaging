@@ -23,6 +23,7 @@ New Features and improvements
 - #1666 : PyInstaller single file
 - #1665 : PyInstaller exe icon
 - #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
+- #1691 : Remove "Beta" from spectrum viewer
 
 Fixes
 -----
