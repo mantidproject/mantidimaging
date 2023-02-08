@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-import numpy as np
-
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem
 
@@ -14,6 +12,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
+    import numpy as np
     from .view import SpectrumViewerWindowView
 
 
