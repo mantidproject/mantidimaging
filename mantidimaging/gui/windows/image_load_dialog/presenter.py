@@ -50,7 +50,7 @@ class LoadPresenter:
         self.last_file_info: Optional[FileInformation] = None
         self.dtype = '32'
 
-    def do_update_field(self, field: Field):
+    def do_update_field(self, field: Field) -> None:
         if field.file_info.mode == "sample":
             self.do_update_sample()
         elif field.file_info.mode == "images":
@@ -60,14 +60,14 @@ class LoadPresenter:
         elif field.file_info.mode in ["log", "180"]:
             self.do_update_single_file(field)
 
-    def do_update_sample(self):
+    def do_update_sample(self) -> None:
         """
         Updates the memory usage and the indices in the dialog.
         """
         selected_file = self.view.select_file("Sample")
         if not selected_file:
             self.view.ok_button.setEnabled(False)
-            return False
+            return
 
         self.view.sample.path = selected_file
         self.view.sample.widget.setExpanded(True)
@@ -110,8 +110,12 @@ class LoadPresenter:
         self.view.fields["Sample Log"].use = False
 
         for pos in ["Before", "After"]:
-            self.view.fields[f"Flat {pos} Log"].path = find_log_for_image(self.view.fields[f"Flat {pos}"].path_text())
-            self.view.fields[f"Flat {pos} Log"].use = False
+            flat_path = self.view.fields[f"Flat {pos}"].path_text()
+            if flat_path:
+                log_path = find_log_for_image(Path(flat_path))
+                if log_path:
+                    self.view.fields[f"Flat {pos} Log"].path = log_path
+                    self.view.fields[f"Flat {pos} Log"].use = False
 
         self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
 
@@ -120,7 +124,7 @@ class LoadPresenter:
         self.view.enable_preview_all_buttons()
         self.view.ok_button.setEnabled(True)
 
-    def do_update_flat_or_dark(self, field: Field):
+    def do_update_flat_or_dark(self, field: Field) -> None:
         name = field.file_info.name
         suffix = field.file_info.suffix
         selected_file = self.view.select_file(name)
@@ -169,12 +173,12 @@ class LoadPresenter:
 
         return lp
 
-    def _update_field_action(self, field: Field, file_name):
+    def _update_field_action(self, field: Field, file_name) -> None:
         if file_name is not None:
             field.path = file_name
             field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field):
+    def do_update_single_file(self, field: Field) -> None:
         name = field.file_info.name
         is_image_file = field.file_info.mode in ["image", "180"]
         file_name = self.view.select_file(name, is_image_file)
@@ -182,24 +186,26 @@ class LoadPresenter:
             return
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field):
+    def do_update_sample_log(self, field: Field) -> None:
         name = field.file_info.name
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
         file_name = self.view.select_file(name, False)
 
         # this is set when the user selects sample data
-        self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
+        if file_name:
+            self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
 
-    def ensure_sample_log_consistency(self, field: Field, file_name, image_filenames):
+    def ensure_sample_log_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
         if file_name is None or file_name == "":
             return
 
-        log = load_log(file_name)
+        log = load_log(Path(file_name))
         log.raise_if_angle_missing(image_filenames)
         self._update_field_action(field, file_name)
 
-    def set_sample_log(self, sample_log: Field, image_filenames):
+    def set_sample_log(self, sample_log: Field, image_filenames: list[str]) -> None:
         sample_log_filepath = find_log_for_image(Path(image_filenames[0]))
-        self.ensure_sample_log_consistency(sample_log, sample_log_filepath, image_filenames)
-        sample_log.path = sample_log_filepath
+        if sample_log_filepath:
+            self.ensure_sample_log_consistency(sample_log, str(sample_log_filepath), image_filenames)
+            sample_log.path = sample_log_filepath
