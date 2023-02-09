@@ -61,14 +61,12 @@ jobs:
 
       - name: PyInstaller Build
         shell: bash -l {0}
+        env:
+          CUDA_PATH: "C:\\Miniconda3\\envs\\mantidimaging-dev"
         run: |
           conda activate mantidimaging-dev
+          echo $env:CUDA_PATH
           pip install pyinstaller
-          mamba install -y cudatoolkit=10.2*
-          mamba install -y cupy=10.2.*
-          set CUDA_PATH="C:\\Miniconda3\\envs\\mantidimaging-dev"
-          echo "Cuda path:"
-          echo $CUDA_PATH
           cd packaging
           python PackageWithPyInstaller.py
 
