@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
     from mantidimaging.core.data import ImageStack
     from mantidimaging.core.utility.progress_reporting import Progress
+    from mantidimaging.core.io.filenames import FilenameGroup
 
 LOG = getLogger(__name__)
 
@@ -109,6 +110,10 @@ def load_stack(file_path: str, progress: Optional[Progress] = None) -> ImageStac
     file_names = get_file_names(path=os.path.dirname(file_path), img_format=image_format, prefix=prefix)
 
     return load(file_names=file_names, progress=progress)
+
+
+def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
+    return load(file_names=[str(p) for p in group.all_files()], progress=progress)
 
 
 def load(input_path: Optional[str] = None,
