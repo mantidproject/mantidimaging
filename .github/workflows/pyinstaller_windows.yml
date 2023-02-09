@@ -58,11 +58,12 @@ jobs:
         run: |
           conda deactivate
           python ./setup.py create_dev_env
+          
+      - name: cuda-toolkit
+        uses: Jimver/cuda-toolkit@v0.2.8
 
       - name: PyInstaller Build
         shell: bash -l {0}
-        env:
-          CUDA_PATH: "C:\\Miniconda3\\envs\\mantidimaging-dev"
         run: |
           conda activate mantidimaging-dev
           echo "Cuda path:"
