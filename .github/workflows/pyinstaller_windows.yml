@@ -66,6 +66,7 @@ jobs:
           pip install pyinstaller
           mamba install -y cudatoolkit=10.2*
           mamba install -y cupy=10.2.*
+          set CUDA_PATH="C:\\Miniconda3\\envs\\mantidimaging-dev"
           cd packaging
           python PackageWithPyInstaller.py
 
