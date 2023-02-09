@@ -64,8 +64,8 @@ jobs:
         run: |
           conda activate mantidimaging-dev
           pip install pyinstaller
-          pip install cudatoolkit
-          pip install cupy==10.2.*
+          mamba install -y cudatoolkit=10.2*
+          mamba install -y cupy=10.2.*
           cd packaging
           python PackageWithPyInstaller.py
 
