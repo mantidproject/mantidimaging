@@ -65,6 +65,8 @@ jobs:
           CUDA_PATH: "C:\\Miniconda3\\envs\\mantidimaging-dev"
         run: |
           conda activate mantidimaging-dev
+          echo "Cuda path:"
+          echo $CUDA_PATH
           echo $env:CUDA_PATH
           pip install pyinstaller
           cd packaging
