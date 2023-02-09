@@ -92,22 +92,34 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         print("test_refine 5")
 
     def test_refine_stress(self):
+        print("test_refine_stress")
         for i in range(5):
-            print(f"test_refine_stress iteration {i}")
+            print(f"test_refine_stress iteration a {i}")
             QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
+            print(f"test_refine_stress iteration b {i}")
             QTest.qWait(SHORT_DELAY)
+            print(f"test_refine_stress iteration c {i}")
             wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
+            print(f"test_refine_stress iteration d {i}")
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=3))
+            print(f"test_refine_stress iteration e {i}")
             QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
+            print(f"test_refine_stress iteration f {i}")
             wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+            print(f"test_refine_stress iteration g {i}")
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
+            print(f"test_refine_stress iteration h {i}")
             QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
+            print(f"test_refine_stress iteration i {i}")
             QTest.qWait(SHORT_DELAY * 2)
+            print(f"test_refine_stress iteration j {i}")
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
+            print(f"test_refine_stress iteration k {i}")
 
         QTest.qWait(SHOW_DELAY)
+        print("test_refine_stress iteration end")
 
     @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_preview_reconstruct_slice")
     def test_selecting_auto_update_triggers_preview(self, mock_do_preview_reconstruct_slice):
