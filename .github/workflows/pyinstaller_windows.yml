@@ -66,7 +66,7 @@ jobs:
         shell: bash -l {0}
         run: |
           conda activate mantidimaging-dev
-          echo "Cuda path: $CUDA_PATH
+          echo "Cuda path: $CUDA_PATH"
           mamba install -y cupy=10.2.* --force-reinstall
           pip install pyinstaller
           cd packaging
