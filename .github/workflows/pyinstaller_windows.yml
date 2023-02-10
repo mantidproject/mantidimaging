@@ -61,6 +61,8 @@ jobs:
           
       - name: cuda-toolkit
         uses: Jimver/cuda-toolkit@v0.2.8
+        with:
+          cuda: '10.2.0'
 
       - name: PyInstaller Build
         shell: bash -l {0}
