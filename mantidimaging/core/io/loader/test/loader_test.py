@@ -5,7 +5,6 @@ from unittest import mock
 from pathlib import Path
 
 from mantidimaging.core.io import loader
-from mantidimaging.core.io.loader import load_stack
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path, DEFAULT_PIXEL_DEPTH, \
     DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM
 from pyfakefs.fake_filesystem_unittest import TestCase
@@ -24,20 +23,6 @@ class LoaderTest(TestCase):
 
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
-
-    @mock.patch("mantidimaging.core.io.loader.loader.load")
-    def test_load_stack_finds_files(self, load_mock: mock.Mock):
-        progress = mock.Mock()
-        file_paths_tomo = [f"/a/tomo_{x:04d}.tiff" for x in range(5)]
-        file_paths_other = [f"/a/flat_{x:04d}.tiff" for x in range(5)] + ["/a/tomo.log"]
-        for filename in file_paths_tomo + file_paths_other:
-            self.fs.create_file(filename)
-
-        load_stack(file_paths_tomo[0], progress)
-
-        load_mock.assert_called_once()
-        found_files = load_mock.call_args.kwargs['file_names']
-        self._file_list_count_equal(file_paths_tomo, found_files)
 
     @mock.patch("mantidimaging.core.io.loader.loader.load_log")
     @mock.patch("mantidimaging.core.io.loader.loader.read_in_file_information")
