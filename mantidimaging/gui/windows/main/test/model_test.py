@@ -249,13 +249,16 @@ class MainWindowModelTest(unittest.TestCase):
         get_images_mock.return_value.set_projection_angles.assert_called_once_with(proj_angles)
 
     @mock.patch("mantidimaging.gui.windows.main.model.loader")
-    def test_load_stack(self, loader: mock.MagicMock):
+    @mock.patch("mantidimaging.gui.windows.main.model.FilenameGroup")
+    def test_load_stack(self, fng_mock: mock.MagicMock, loader: mock.MagicMock):
         file_path = "file_path"
         progress = mock.Mock()
+        group = mock.Mock()
+        fng_mock.from_file.return_value = group
 
         self.model.load_images_into_mixed_dataset(file_path, progress)
 
-        loader.load_stack.assert_called_once_with(file_path, progress)
+        loader.load_stack_from_group.assert_called_once_with(group, progress)
 
     def test_no_image_with_matching_id(self):
         self.assertIsNone(self.model.get_images_by_uuid(uuid.uuid4()))
