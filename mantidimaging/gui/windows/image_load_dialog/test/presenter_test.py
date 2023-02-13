@@ -8,6 +8,7 @@ from unittest import mock
 
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.gui.windows.image_load_dialog.field import Field
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, FILE_TYPES, TypeInfo
 
 
@@ -16,7 +17,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
 
     def setUp(self):
-        self.fields = {name: mock.Mock() for name in FILE_TYPES}
+        self.fields = {name: mock.create_autospec(Field) for name in FILE_TYPES}
         self.v = mock.MagicMock(fields=self.fields)
         self.v.sample = self.fields["Sample"]
         self.p = LoadPresenter(self.v)
@@ -24,9 +25,10 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
     def test_do_update_sample_with_no_selected_file(self):
         self.v.select_file.return_value = None
 
-        self.assertFalse(self.p.do_update_sample())
+        self.p.do_update_sample()
 
         self.v.select_file.assert_called_once_with("Sample")
+        self.v.ok_button.setEnabled.assert_called_once_with(False)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log_for_image", return_value=3)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
@@ -52,6 +54,10 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.v.sample.file.return_value = sample_file_name
         self.v.sample.path_text.return_value = path_text
         self.v.sample.directory.return_value = dirname
+
+        self.fields["Flat Before"].path_text.return_value = path_text
+        self.fields["Flat After"].path_text.return_value = path_text
+
         get_file_extension.return_value = image_format
         get_prefix.return_value = prefix
 
@@ -213,7 +219,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
 
-        mock_load_log.assert_called_once_with(file_name)
+        mock_load_log.assert_called_once_with(Path(file_name))
         mock_log.raise_if_angle_missing.assert_called_once_with(test_filenames)
         self.assertIsNotNone(field.path)
         self.assertIsNotNone(field.use)
