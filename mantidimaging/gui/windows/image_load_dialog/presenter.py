@@ -51,20 +51,23 @@ class LoadPresenter:
         self.dtype = '32'
 
     def do_update_field(self, field: Field) -> None:
-        if field.file_info.mode == "sample":
-            self.do_update_sample()
-        elif field.file_info.mode == "images":
-            self.do_update_flat_or_dark(field)
-        elif field.file_info.name == "Sample Log":
-            self.do_update_sample_log(field)
-        elif field.file_info.mode in ["log", "180"]:
-            self.do_update_single_file(field)
+        name = field.file_info.name
+        is_image_file = field.file_info.mode != "log"
+        selected_file = self.view.select_file(name, is_image_file)
 
-    def do_update_sample(self) -> None:
+        if field.file_info.mode == "sample":
+            self.do_update_sample(selected_file)
+        elif field.file_info.mode == "images":
+            self.do_update_flat_or_dark(field, selected_file)
+        elif field.file_info.name == "Sample Log":
+            self.do_update_sample_log(field, selected_file)
+        elif field.file_info.mode in ["log", "180"]:
+            self.do_update_single_file(field, selected_file)
+
+    def do_update_sample(self, selected_file: Optional[str]) -> None:
         """
         Updates the memory usage and the indices in the dialog.
         """
-        selected_file = self.view.select_file("Sample")
         if not selected_file:
             self.view.ok_button.setEnabled(False)
             return
@@ -124,14 +127,12 @@ class LoadPresenter:
         self.view.enable_preview_all_buttons()
         self.view.ok_button.setEnabled(True)
 
-    def do_update_flat_or_dark(self, field: Field) -> None:
-        name = field.file_info.name
+    def do_update_flat_or_dark(self, field: Field, selected_file: Optional[str]) -> None:
         suffix = field.file_info.suffix
-        selected_file = self.view.select_file(name)
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        images = find_images(selected_dir, name, suffix, image_format=self.image_format)
+        images = find_images(selected_dir, field.file_info.name, suffix, image_format=self.image_format)
         if not images:
             base_name = os.path.basename(selected_file).rpartition("_")[0]
             images = find_images(selected_dir, base_name, "", image_format=self.image_format)
@@ -178,19 +179,14 @@ class LoadPresenter:
             field.path = file_name
             field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field) -> None:
-        name = field.file_info.name
-        is_image_file = field.file_info.mode in ["image", "180"]
-        file_name = self.view.select_file(name, is_image_file)
+    def do_update_single_file(self, field: Field, file_name: Optional[str]) -> None:
         if file_name is None:
             return
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field) -> None:
-        name = field.file_info.name
+    def do_update_sample_log(self, field: Field, file_name: Optional[str]) -> None:
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
-        file_name = self.view.select_file(name, False)
 
         # this is set when the user selects sample data
         if file_name:
