@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, 
     QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
-from mantidimaging.core.utility.data_containers import LoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, FILE_TYPES, TypeInfo
 from mantidimaging.gui.windows.image_load_dialog.field import Field
-from .presenter import LoadPresenter, FILE_TYPES, TypeInfo
+from .presenter import LoadPresenter
 from ...mvp_base import BaseDialogView
 
 

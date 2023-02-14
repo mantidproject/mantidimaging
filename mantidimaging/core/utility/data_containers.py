@@ -153,3 +153,22 @@ class LoadingParameters:
         if name == "180 degree":
             short_name = "proj_180deg"
         self.__setattr__(short_name, img_params)
+
+
+class TypeInfo(NamedTuple):
+    name: str
+    suffix: str
+    mode: str
+
+
+FILE_TYPES: dict[str, TypeInfo] = {
+    "Sample": TypeInfo("Sample", "", "sample"),
+    "Flat Before": TypeInfo("Flat", "Before", "images"),
+    "Flat After": TypeInfo("Flat", "After", "images"),
+    "Dark Before": TypeInfo("Dark", "Before", "images"),
+    "Dark After": TypeInfo("Dark", "After", "images"),
+    "180 degree": TypeInfo("180 degree", "", "180"),
+    "Sample Log": TypeInfo("Sample Log", "", "log"),
+    "Flat Before Log": TypeInfo("Flat Before Log", "", "log"),
+    "Flat After Log": TypeInfo("Flat After Log", "", "log"),
+}

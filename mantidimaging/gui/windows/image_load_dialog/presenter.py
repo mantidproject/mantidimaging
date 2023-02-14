@@ -6,38 +6,19 @@ import os
 import traceback
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, NamedTuple, Dict
+from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
 from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
                                            find_180deg_proj)
-from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters, FILE_TYPES
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog  # pragma: no cover
 
 logger = getLogger(__name__)
-
-
-class TypeInfo(NamedTuple):
-    name: str
-    suffix: str
-    mode: str
-
-
-FILE_TYPES: Dict[str, TypeInfo] = {
-    "Sample": TypeInfo("Sample", "", "sample"),
-    "Flat Before": TypeInfo("Flat", "Before", "images"),
-    "Flat After": TypeInfo("Flat", "After", "images"),
-    "Dark Before": TypeInfo("Dark", "Before", "images"),
-    "Dark After": TypeInfo("Dark", "After", "images"),
-    "180 degree": TypeInfo("180 degree", "", "180"),
-    "Sample Log": TypeInfo("Sample Log", "", "log"),
-    "Flat Before Log": TypeInfo("Flat Before Log", "", "log"),
-    "Flat After Log": TypeInfo("Flat After Log", "", "log"),
-}
 
 
 class LoadPresenter:

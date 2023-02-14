@@ -9,7 +9,8 @@ from unittest import mock
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.image_load_dialog.field import Field
-from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter, FILE_TYPES, TypeInfo
+from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter
+from mantidimaging.core.utility.data_containers import FILE_TYPES, TypeInfo
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
