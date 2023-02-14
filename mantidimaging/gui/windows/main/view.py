@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 from mantidimaging.core.utility.projection_angle_parser import ProjectionAngleFileParser
@@ -225,6 +226,14 @@ class MainWindowView(BaseMainWindowView):
     def show_image_load_dialog(self):
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
+
+    def show_image_load_dialog_with_path(self, file_path: str) -> bool:
+        sample_file = find_first_file_that_is_possibly_a_sample(file_path)
+        if sample_file is not None:
+            self.image_load_dialog = ImageLoadDialog(self)
+            self.image_load_dialog.presenter.do_update_sample(sample_file)
+            self.image_load_dialog.show()
+        return sample_file is not None
 
     def show_nexus_load_dialog(self):
         self.nexus_load_dialog = NexusLoadDialog(self)
@@ -494,8 +503,7 @@ class MainWindowView(BaseMainWindowView):
             if not os.path.exists(file_path):
                 continue
             if os.path.isdir(file_path):
-                # Load directory as stack
-                sample_loading = self.presenter.load_stacks_from_folder(file_path)
+                sample_loading = self.show_image_load_dialog_with_path(file_path)
                 if not sample_loading:
                     QMessageBox.critical(
                         self, "Load not possible!", "Please provide a directory that has .tif or .tiff files in it, or "
