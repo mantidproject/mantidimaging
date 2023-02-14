@@ -5,15 +5,12 @@ from pathlib import Path
 
 import numpy as np
 import os
-from typing import Optional, List, Union, Tuple, TYPE_CHECKING
+from typing import Optional, List, Union, Tuple
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
 from mantidimaging.core.utility import size_calculator
-from mantidimaging.core.utility.data_containers import Indices
-
-if TYPE_CHECKING:
-    from .presenter import TypeInfo
+from mantidimaging.core.utility.data_containers import Indices, TypeInfo
 
 
 class Field:
@@ -28,7 +25,7 @@ class Field:
     _path: Optional[QTreeWidgetItem]
 
     def __init__(self, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton,
-                 file_info: 'TypeInfo'):
+                 file_info: TypeInfo):
         self._tree = tree
         self._widget = widget
         self._use = use
