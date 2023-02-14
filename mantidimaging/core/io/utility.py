@@ -189,7 +189,7 @@ def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
     # Grab all .tif or .tiff files
     possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
 
-    for possible_file in possible_files:
+    for possible_file in sorted(possible_files):
         lower_filename = os.path.basename(possible_file).lower()
         if "flat" not in lower_filename and "dark" not in lower_filename and "180" not in lower_filename:
             return possible_file
