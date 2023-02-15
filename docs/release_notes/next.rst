@@ -24,6 +24,7 @@ New Features and improvements
 - #1665 : PyInstaller exe icon
 - #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
 - #1691 : Remove "Beta" from spectrum viewer
+- #1697 : For NXtomoproc store data in float32
 
 Fixes
 -----
