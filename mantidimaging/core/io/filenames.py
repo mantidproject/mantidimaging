@@ -7,6 +7,8 @@ import re
 from typing import List, Iterator, Optional, Union
 from logging import getLogger
 
+from mantidimaging.core.utility.data_containers import FILE_TYPES
+
 LOG = getLogger(__name__)
 
 
@@ -119,3 +121,20 @@ class FilenameGroup:
             # choose shortest match
             shortest = min(log_paths, key=lambda p: len(p.name))
             self.log_path = self.directory / shortest
+
+    def find_related(self, file_type: FILE_TYPES) -> Optional[FilenameGroup]:
+        sample_first_name = next(self.all_files()).name
+
+        test_names = [file_type.fname.replace(" ", "_")]
+        if file_type.suffix == "Before":
+            test_names.append(file_type.tname)
+        test_names.extend([s.lower() for s in test_names])
+        if self.directory.name in ["Tomo", "tomo"]:
+            for test_name in test_names:
+                new_dir = self.directory.parent / test_name
+                if new_dir.exists():
+                    new_path = new_dir / sample_first_name.replace("Tomo", test_name).replace("tomo", test_name)
+                    if new_path.exists():
+                        return self.from_file(new_path)
+
+        return None
