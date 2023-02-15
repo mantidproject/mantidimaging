@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox
+    QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
-from mantidimaging.core.utility.data_containers import LoadingParameters, FILE_TYPES, TypeInfo
+from mantidimaging.core.utility.data_containers import LoadingParameters, FILE_TYPES
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from .presenter import LoadPresenter
 from ...mvp_base import BaseDialogView
@@ -26,7 +26,7 @@ class ImageLoadDialog(BaseDialogView):
 
     fields: Dict[str, Field]
 
-    def __init__(self, parent):
+    def __init__(self, parent: QWidget) -> None:
         super().__init__(parent, 'gui/ui/image_load_dialog.ui')
 
         self.parent_view = parent
@@ -38,8 +38,8 @@ class ImageLoadDialog(BaseDialogView):
         self.tree.header().setStretchLastSection(False)
         self.tree.setTabKeyNavigation(True)
 
-        for n, file_info in enumerate(FILE_TYPES.items()):
-            self.fields[file_info[0]] = self.create_file_input(n, file_info[1])
+        for n, file_info in enumerate(FILE_TYPES):
+            self.fields[file_info.fname] = self.create_file_input(n, file_info)
 
         self.sample = self.fields["Sample"]
 
@@ -58,7 +58,7 @@ class ImageLoadDialog(BaseDialogView):
         self.pixelSize.setValue(DEFAULT_PIXEL_SIZE)
         self.pixel_bit_depth.setCurrentText(DEFAULT_PIXEL_DEPTH)
 
-    def create_file_input(self, position: int, file_info: TypeInfo) -> Field:
+    def create_file_input(self, position: int, file_info: FILE_TYPES) -> Field:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
         use = QCheckBox(self)

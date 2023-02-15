@@ -1,6 +1,8 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+from enum import Enum
 """
 Containers for data. They don't do much apart from storing the data,
 and optionally provide helpful operations.
@@ -155,20 +157,22 @@ class LoadingParameters:
         self.__setattr__(short_name, img_params)
 
 
-class TypeInfo(NamedTuple):
-    name: str
-    suffix: str
-    mode: str
+class FILE_TYPES(Enum):
+    SAMPLE = ("Sample", "", "sample")
+    FLAT_BEFORE = ("Flat", "Before", "images")
+    FLAT_AFTER = ("Flat", "After", "images")
+    DARK_BEFORE = ("Dark", "Before", "images")
+    DARK_AFTER = ("Dark", "After", "images")
+    PROJ_180 = ("180 degree", "", "180")
+    SAMPLE_LOG = ("Sample Log", "", "log")
+    FLAT_BEFORE_LOG = ("Flat Before Log", "", "log")
+    FLAT_AFTER_LOG = ("Flat After Log", "", "log")
 
+    def __init__(self, tname: str, suffix: str, mode: str) -> None:
+        self.tname = tname
+        self.suffix = suffix
+        self.mode = mode
 
-FILE_TYPES: dict[str, TypeInfo] = {
-    "Sample": TypeInfo("Sample", "", "sample"),
-    "Flat Before": TypeInfo("Flat", "Before", "images"),
-    "Flat After": TypeInfo("Flat", "After", "images"),
-    "Dark Before": TypeInfo("Dark", "Before", "images"),
-    "Dark After": TypeInfo("Dark", "After", "images"),
-    "180 degree": TypeInfo("180 degree", "", "180"),
-    "Sample Log": TypeInfo("Sample Log", "", "log"),
-    "Flat Before Log": TypeInfo("Flat Before Log", "", "log"),
-    "Flat After Log": TypeInfo("Flat After Log", "", "log"),
-}
+    @property
+    def fname(self) -> str:
+        return (self.tname + " " + self.suffix).strip()
