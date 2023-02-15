@@ -9,6 +9,7 @@ from parameterized import parameterized
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from ..filenames import FilenameGroup, FilenamePattern
+from ...utility.data_containers import FILE_TYPES
 
 
 class FilenamePatternTest(unittest.TestCase):
@@ -161,3 +162,21 @@ class FilenameGroupTest(TestCase):
         fg.find_log_file()
 
         self.assertEqual(fg.log_path, log)
+
+    @parameterized.expand([
+        ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat_Before/foo_Flat_Before_%06d.tif"),
+        ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat/foo_Flat_%06d.tif"),
+        ("/a/tomo/foo_tomo_%06d.tif", "/a/flat_before/foo_flat_before_%06d.tif"),
+    ])
+    def test_find_related(self, tomo_pattern, flat_pattern):
+        tomo_list = [Path(tomo_pattern % i) for i in range(10)]
+        flat_before_list = [Path(flat_pattern % i) for i in range(10)]
+        for file_name in tomo_list + flat_before_list:
+            self.fs.create_file(file_name)
+
+        fg = FilenameGroup.from_file(tomo_list[0])
+        flat_before_fg = fg.find_related(FILE_TYPES.FLAT_BEFORE)
+        self.assertIsNotNone(flat_before_fg)
+        flat_before_fg.find_all_files()
+
+        self.assertCountEqual(flat_before_list, list(flat_before_fg.all_files()))
