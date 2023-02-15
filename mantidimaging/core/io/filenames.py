@@ -123,6 +123,9 @@ class FilenameGroup:
             self.log_path = self.directory / shortest
 
     def find_related(self, file_type: FILE_TYPES) -> Optional[FilenameGroup]:
+        if file_type == FILE_TYPES.PROJ_180:
+            return self._find_related_180_proj()
+
         sample_first_name = next(self.all_files()).name
 
         test_names = [file_type.fname.replace(" ", "_")]
@@ -134,6 +137,25 @@ class FilenameGroup:
                 new_dir = self.directory.parent / test_name
                 if new_dir.exists():
                     new_path = new_dir / sample_first_name.replace("Tomo", test_name).replace("tomo", test_name)
+                    if new_path.exists():
+                        return self.from_file(new_path)
+
+        return None
+
+    def _find_related_180_proj(self) -> Optional[FilenameGroup]:
+        sample_first_name = next(self.all_files()).name
+
+        test_name = "180deg"
+        if self.directory.name in ["Tomo", "tomo"]:
+            new_dir = self.directory.parent / test_name
+            if new_dir.exists():
+                for trim_numbers in [True, False]:
+                    if trim_numbers:
+                        new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
+                    else:
+                        new_name = sample_first_name
+                    new_name = new_name.replace("Tomo", test_name).replace("tomo", test_name)
+                    new_path = new_dir / new_name
                     if new_path.exists():
                         return self.from_file(new_path)
 

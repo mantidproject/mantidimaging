@@ -180,3 +180,20 @@ class FilenameGroupTest(TestCase):
         flat_before_fg.find_all_files()
 
         self.assertCountEqual(flat_before_list, list(flat_before_fg.all_files()))
+
+    @parameterized.expand([
+        ("/a/180deg/foo_180deg.tif"),
+        ("/a/180deg/foo_180deg_000000.tif"),
+    ])
+    def test_find_related_proj_180(self, proj_name):
+        tomo_list = [Path("/a/Tomo/foo_Tomo_%06d.tif" % i) for i in range(10)]
+        proj_180_list = [Path(proj_name)]
+        for file_name in tomo_list + proj_180_list:
+            self.fs.create_file(file_name)
+
+        fg = FilenameGroup.from_file(tomo_list[0])
+        proj_180_fg = fg.find_related(FILE_TYPES.PROJ_180)
+        self.assertIsNotNone(proj_180_fg)
+        proj_180_fg.find_all_files()
+
+        self.assertCountEqual(proj_180_list, list(proj_180_fg.all_files()))
