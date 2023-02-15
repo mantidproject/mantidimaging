@@ -32,7 +32,7 @@ class LoadPresenter:
         self.dtype = '32'
 
     def do_update_field(self, field: Field) -> None:
-        name = field.file_info.name
+        name = field.file_info.fname
         is_image_file = field.file_info.mode != "log"
         selected_file = self.view.select_file(name, is_image_file)
 
@@ -40,7 +40,7 @@ class LoadPresenter:
             self.do_update_sample(selected_file)
         elif field.file_info.mode == "images":
             self.do_update_flat_or_dark(field, selected_file)
-        elif field.file_info.name == "Sample Log":
+        elif field.file_info.fname == "Sample Log":
             self.do_update_sample_log(field, selected_file)
         elif field.file_info.mode in ["log", "180"]:
             self.do_update_single_file(field, selected_file)
@@ -73,17 +73,17 @@ class LoadPresenter:
 
         sample_dirname = Path(dirname)
 
-        for file_info_name, file_info in FILE_TYPES.items():
+        for file_info in FILE_TYPES:
             if file_info.mode == "images":
-                field = self.view.fields[file_info_name]
+                field = self.view.fields[file_info.fname]
                 images = find_images(sample_dirname,
-                                     file_info.name,
+                                     file_info.tname,
                                      suffix=file_info.suffix,
-                                     look_without_suffix="Before" in file_info_name,
+                                     look_without_suffix=file_info.suffix == "Before",
                                      image_format=self.image_format)
                 field.set_images(images)
             elif file_info.mode == "180":
-                field = self.view.fields[file_info_name]
+                field = self.view.fields[file_info.fname]
                 field.path = find_180deg_proj(sample_dirname, self.image_format)
 
         try:
@@ -113,7 +113,7 @@ class LoadPresenter:
         if not selected_file:
             return
         selected_dir = Path(os.path.dirname(selected_file))
-        images = find_images(selected_dir, field.file_info.name, suffix, image_format=self.image_format)
+        images = find_images(selected_dir, field.file_info.fname, suffix, image_format=self.image_format)
         if not images:
             base_name = os.path.basename(selected_file).rpartition("_")[0]
             images = find_images(selected_dir, base_name, "", image_format=self.image_format)
@@ -122,7 +122,7 @@ class LoadPresenter:
     def get_parameters(self) -> LoadingParameters:
         lp = LoadingParameters()
 
-        for image_group in [k for k, v in FILE_TYPES.items() if v.mode in ["images", "sample"]]:
+        for image_group in [ft.fname for ft in FILE_TYPES if ft.mode in ["images", "sample"]]:
             image_field = self.view.fields[image_group]
             if not image_field.use.isChecked() or image_field.path_text() == "":
                 continue
