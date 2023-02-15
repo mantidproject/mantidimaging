@@ -292,7 +292,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")
 
-    data.create_dataset("data", shape=recon.data.shape, dtype="float16")
+    data.create_dataset("data", shape=recon.data.shape, dtype="float32")
     data["data"][:] = recon.data
 
     x_arr, y_arr, z_arr = _create_pixel_size_arrays(recon)
