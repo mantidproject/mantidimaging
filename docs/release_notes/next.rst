@@ -24,6 +24,7 @@ New Features and improvements
 - #1665 : PyInstaller exe icon
 - #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
 - #1691 : Remove "Beta" from spectrum viewer
+- #1697 : For NXtomoproc store data in float32
 
 Fixes
 -----
@@ -47,3 +48,4 @@ Developer Changes
 - #1673 : Update license year across the repository from 2022 to 2023
 - #1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
 - #1695 : Use FilenameGroup for Load Images
+- #1693 : Increase test coverage for spectrum widget

@@ -13,7 +13,6 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
     import numpy as np
-    from .view import SpectrumViewerWindowView
 
 
 class SpectrumROI(ROI):
@@ -73,11 +72,10 @@ class SpectrumWidget(GraphicsLayoutWidget):
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
 
-    def __init__(self, parent: 'SpectrumViewerWindowView'):
-        super().__init__(parent)
-        self.parent = parent
+    def __init__(self):
+        super().__init__()
 
-        self.image = MIMiniImageView(name="Projection", parent=parent)
+        self.image = MIMiniImageView(name="Projection")
         self.addItem(self.image, 0, 0)
 
         self.nextRow()

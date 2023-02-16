@@ -43,7 +43,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
-        self.spectrum = SpectrumWidget(self)
+        self.spectrum = SpectrumWidget()
         self.imageLayout.addWidget(self.spectrum)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
