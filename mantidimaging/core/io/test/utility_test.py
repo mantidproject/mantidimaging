@@ -5,17 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from mantidimaging.core.io import utility
-from pyfakefs.fake_filesystem_unittest import TestCase
+
+from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
-class UtilityTest(TestCase):
-    def setUp(self) -> None:
-        self.setUpPyfakefs()
-
-    def _file_list_count_equal(self, list1, list2):
-        """Check that 2 lists of paths refer to the same files. Order independent"""
-        self.assertCountEqual((Path(s).absolute() for s in list1), (Path(s).absolute() for s in list2))
-
+class UtilityTest(FakeFSTestCase):
     def test_get_candidate_file_extensions(self):
         self.assertEqual(['tif', 'tiff'], utility.get_candidate_file_extensions('tif'))
 
@@ -39,4 +33,4 @@ class UtilityTest(TestCase):
 
         log_found = utility.find_log_for_image(image_name)
 
-        self.assertEqual(log_name, log_found)
+        self._files_equal(log_name, log_found)

@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import sys
 from functools import partial
+from pathlib import Path
 from typing import Optional
 
 from unittest import mock
@@ -12,6 +13,7 @@ import numpy as np
 import numpy.random
 import numpy.testing as npt
 from io import StringIO
+import pyfakefs.fake_filesystem_unittest
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
@@ -155,3 +157,21 @@ def assert_called_once_with(mock: mock.Mock, *args):
             assert actual.keywords == expected.keywords
         else:
             assert actual == expected, f"Expected {expected}, got {actual}"
+
+
+class FakeFSTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.setUpPyfakefs()
+
+    def _files_equal(self, file1, file2) -> None:
+        self.assertIsNotNone(file1)
+        self.assertIsNotNone(file2)
+        self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
+
+    def _file_list_count_equal(self, list1, list2) -> None:
+        """Check that 2 lists of paths refer to the same files. Order independent"""
+        self.assertCountEqual((Path(s).absolute() for s in list1), (Path(s).absolute() for s in list2))
+
+    def _file_in_sequence(self, file1, list1) -> None:
+        self.assertIn(Path(file1).absolute(), (Path(s).absolute() for s in list1))
