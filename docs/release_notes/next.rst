@@ -52,4 +52,4 @@ Developer Changes
 - #1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer
 - #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
 - #1641 : More robust logging and error handling in automated testing
-
+- #1643 : Deprecations in GitHub actions
