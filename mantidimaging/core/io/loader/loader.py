@@ -15,20 +15,35 @@ from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names, get_prefix, get_file_extension,
                                            find_images, find_first_file_that_is_possibly_a_sample, find_log_for_image,
                                            find_180deg_proj)
-from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices
+from mantidimaging.core.utility.data_containers import ImageParameters, LoadingParameters, Indices, FILE_TYPES
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.core.io.filenames import FilenameGroup
 
 if TYPE_CHECKING:
     import numpy.typing as npt
     from mantidimaging.core.data import ImageStack
     from mantidimaging.core.utility.progress_reporting import Progress
-    from mantidimaging.core.io.filenames import FilenameGroup
 
 LOG = getLogger(__name__)
 
 DEFAULT_IS_SINOGRAM = False
 DEFAULT_PIXEL_SIZE = 0
 DEFAULT_PIXEL_DEPTH = "float32"
+
+
+@dataclass
+class NewImageParameters:
+    file_group: FilenameGroup
+    log_file: Optional[Path] = None
+
+
+class NewLoadingParameters:
+    image_stacks: dict[FILE_TYPES, NewImageParameters] = {}
+
+    pixel_size: int = DEFAULT_PIXEL_SIZE
+    name: str
+    dtype: str = DEFAULT_PIXEL_DEPTH
+    sinograms: bool = DEFAULT_IS_SINOGRAM
 
 
 def _fitsread(filename: str) -> np.ndarray:
@@ -154,6 +169,32 @@ def load(input_path: Optional[str] = None,
         LOG.debug('No metadata file found')
 
     return image_stack
+
+
+def new_create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoadingParameters]:
+    sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
+    if sample_file is None:
+        return None
+
+    loading_parameters = NewLoadingParameters()
+    loading_parameters.name = os.path.basename(sample_file)
+
+    sample_fg = FilenameGroup.from_file(sample_file)
+    sample_fg.find_all_files()
+    sample_fg.find_log_file()
+    loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_fg, sample_fg.log_path)
+
+    for file_type in [ft for ft in FILE_TYPES if ft.mode in ["images", "180"]]:
+        fg = sample_fg.find_related(file_type)
+        if fg is None:
+            continue
+
+        fg.find_all_files()
+        if file_type.tname == "Flat":
+            fg.find_log_file()
+        loading_parameters.image_stacks[file_type] = NewImageParameters(fg, fg.log_path)
+
+    return loading_parameters
 
 
 def create_loading_parameters_for_file_path(file_path: str) -> Optional[LoadingParameters]:

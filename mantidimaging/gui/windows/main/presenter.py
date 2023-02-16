@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
-from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.io.loader.loader import new_create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
@@ -484,11 +484,12 @@ class MainWindowPresenter(BasePresenter):
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
-        loading_params = create_loading_parameters_for_file_path(file_path)
+        loading_params = new_create_loading_parameters_for_file_path(Path(file_path))
         if loading_params is None:
             return False
 
-        self.load_image_files(loading_params)
+        start_async_task_view(self.view, self.model.new_do_load_dataset, self._on_dataset_load_done,
+                              {'parameters': loading_params})
         return True
 
     def wizard_action_load(self) -> None:
