@@ -9,6 +9,7 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.reconlist import ReconList
+from mantidimaging.core.utility.data_containers import FILE_TYPES
 
 
 def _delete_stack_error_message(images_id: uuid.UUID) -> str:
@@ -196,6 +197,15 @@ class StrictDataset(BaseDataset):
                     self.recons.remove(recon)
         else:
             raise KeyError(_delete_stack_error_message(images_id))
+
+    def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack):
+        attr_name = file_type.fname.lower().replace(" ", "_")
+        if file_type == FILE_TYPES.PROJ_180:
+            attr_name = "proj180deg"
+        if hasattr(self, attr_name):
+            setattr(self, attr_name, image_stack)
+        else:
+            raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
 
 
 def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
