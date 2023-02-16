@@ -5,7 +5,7 @@ from pathlib import Path
 
 from mantidimaging.core.io import loader
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_DEPTH, \
-    DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, new_create_loading_parameters_for_file_path
+    DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, create_loading_parameters_for_file_path
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
@@ -39,7 +39,7 @@ class LoaderTest(TestCase):
 
         self.fs.create_file(output_directory / "180deg" / "180deg_0000.tif")
 
-        lp = new_create_loading_parameters_for_file_path(output_directory)
+        lp = create_loading_parameters_for_file_path(output_directory)
 
         self.assertEqual(DEFAULT_PIXEL_DEPTH, lp.dtype)
         self.assertEqual(DEFAULT_PIXEL_SIZE, lp.pixel_size)

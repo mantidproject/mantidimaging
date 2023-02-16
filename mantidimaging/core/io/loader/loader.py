@@ -170,7 +170,7 @@ def load(input_path: Optional[str] = None,
     return image_stack
 
 
-def new_create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoadingParameters]:
+def create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
     if sample_file is None:
         return None
