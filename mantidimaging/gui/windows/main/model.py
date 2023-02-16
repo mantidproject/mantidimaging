@@ -10,7 +10,8 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
+from mantidimaging.core.io.loader.loader import NewLoadingParameters
+from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.progress_reporting import Progress
@@ -33,6 +34,35 @@ class MainWindowModel(object):
                 if images_uuid == image.id:
                     return image
         return None
+
+    def new_do_load_dataset(self, parameters: NewLoadingParameters, progress: Progress) -> StrictDataset:
+        def load(fg):
+            return loader.load_stack_from_group(fg, progress)
+
+        sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE].file_group)
+        ds = StrictDataset(sample)
+        sample._is_sinograms = parameters.sinograms
+        sample.pixel_size = parameters.pixel_size
+
+        if log_file := parameters.image_stacks[FILE_TYPES.SAMPLE].log_file:
+            ds.sample.log_file = loader.load_log(log_file)
+
+        for file_type in [
+                FILE_TYPES.FLAT_BEFORE,
+                FILE_TYPES.FLAT_AFTER,
+                FILE_TYPES.DARK_BEFORE,
+                FILE_TYPES.DARK_AFTER,
+                FILE_TYPES.PROJ_180,
+        ]:
+            if im_param := parameters.image_stacks.get(file_type):
+                image_stack = load(im_param.file_group)
+                if log_file := im_param.log_file:
+                    image_stack.log_file = loader.load_log(log_file)
+
+                ds.set_stack(file_type, image_stack)
+
+        self.datasets[ds.id] = ds
+        return ds
 
     def do_load_dataset(self, parameters: LoadingParameters, progress) -> StrictDataset:
         sample = loader.load_p(parameters.sample, parameters.dtype, progress)
