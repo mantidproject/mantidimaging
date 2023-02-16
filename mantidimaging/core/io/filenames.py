@@ -88,6 +88,9 @@ class FilenameGroup:
         path = Path(path)
         if path.is_dir():
             raise ValueError(f"path is a directory: {path}")
+        if 'WindowsPath' in type(path).__name__:
+            # for a windows like path, resolve actual case
+            path = path.resolve()
         directory = path.parent
         name = path.name
         pattern = FilenamePattern.from_name(name)
