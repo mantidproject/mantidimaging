@@ -1,7 +1,6 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from unittest import mock
 from pathlib import Path
 
 from mantidimaging.core.io import loader
@@ -28,9 +27,7 @@ class LoaderTest(TestCase):
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
 
-    @mock.patch("mantidimaging.core.io.loader.loader.load_log")
-    @mock.patch("mantidimaging.core.io.loader.loader.read_in_file_information")
-    def test_create_loading_parameters_for_file_path_new(self, _load_log, _read_in_file_information):
+    def test_create_loading_parameters_for_file_path(self):
         output_directory = Path("/b")
         for filename in ["Tomo_log.txt", "Flat_After_log.txt", "Flat_Before_log.txt"]:
             self.fs.create_file(output_directory / filename)
