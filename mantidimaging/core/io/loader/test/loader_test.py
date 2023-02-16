@@ -6,24 +6,12 @@ from pathlib import Path
 from mantidimaging.core.io import loader
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_DEPTH, \
     DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, create_loading_parameters_for_file_path
-from pyfakefs.fake_filesystem_unittest import TestCase
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
+from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
-class LoaderTest(TestCase):
-    def setUp(self) -> None:
-        self.setUpPyfakefs()
-
-    def _files_equal(self, file1, file2):
-        self.assertIsNotNone(file1)
-        self.assertIsNotNone(file2)
-        self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
-
-    def _file_list_count_equal(self, list1, list2):
-        """Check that 2 lists of paths refer to the same files. Order independent"""
-        self.assertCountEqual((Path(s).absolute() for s in list1), (Path(s).absolute() for s in list2))
-
+class LoaderTest(FakeFSTestCase):
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
 
@@ -46,28 +34,28 @@ class LoaderTest(TestCase):
         self.assertEqual(DEFAULT_IS_SINOGRAM, lp.sinograms)
 
         sample = lp.image_stacks[FILE_TYPES.SAMPLE]
-        self.assertIn(Path("/b/Tomo/Tomo_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/Tomo/Tomo_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
         self._files_equal("/b/Tomo_log.txt", sample.log_file)
 
         sample = lp.image_stacks[FILE_TYPES.FLAT_BEFORE]
-        self.assertIn(Path("/b/Flat_Before/Flat_Before_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/Flat_Before/Flat_Before_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
         self._files_equal("/b/Flat_Before_log.txt", sample.log_file)
 
         sample = lp.image_stacks[FILE_TYPES.FLAT_AFTER]
-        self.assertIn(Path("/b/Flat_After/Flat_After_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/Flat_After/Flat_After_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
         self._files_equal("/b/Flat_After_log.txt", sample.log_file)
 
         sample = lp.image_stacks[FILE_TYPES.DARK_BEFORE]
-        self.assertIn(Path("/b/Dark_Before/Dark_Before_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/Dark_Before/Dark_Before_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
 
         sample = lp.image_stacks[FILE_TYPES.DARK_AFTER]
-        self.assertIn(Path("/b/Dark_After/Dark_After_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/Dark_After/Dark_After_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
 
         sample = lp.image_stacks[FILE_TYPES.PROJ_180]
-        self.assertIn(Path("/b/180deg/180deg_0000.tif"), sample.file_group.all_files())
+        self._file_in_sequence(Path("/b/180deg/180deg_0000.tif"), sample.file_group.all_files())
         self.assertEqual(1, len(list(sample.file_group.all_files())))
