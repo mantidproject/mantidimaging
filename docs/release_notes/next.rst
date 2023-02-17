@@ -49,3 +49,4 @@ Developer Changes
 - #1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
 - #1695 : Use FilenameGroup for Load Images
 - #1693 : Increase test coverage for spectrum widget
+- #1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer

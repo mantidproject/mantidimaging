@@ -122,11 +122,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Handle changes to any ROI position and size.
         """
-        roi_names = self.model.get_list_of_roi_names()
-        for name in roi_names:
+        for name in self.model.get_list_of_roi_names():
             roi = self.view.spectrum.get_roi(name)
-            self.model.set_roi(name, roi)
-            self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+            if roi != self.model.get_roi(name):
+                self.model.set_roi(name, roi)
+                self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_export_button_enabled(self) -> None:
         """
@@ -207,4 +207,5 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.remove_all_roi()
         else:
             self.view.spectrum.remove_roi(roi_name)
+            self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
             self.model.remove_roi(roi_name)
