@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QMessageBox
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -109,13 +109,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 for roi_item in range(self.roi_table_model.rowCount()):
                     existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
                     if existing_roi_name == self.selected_row_data[0].lower() and roi_item != self.selected_row:
-                        QMessageBox.warning(self, "Duplication Warning", "ROI name already exists")
+                        self.show_warning_dialog("Duplication Warning\nROI name already exists")
                         self.selected_row_data[0] = self.current_roi
                         return
                 self.presenter.rename_roi(self.current_roi, str(self.selected_row_data[0]))
                 return
-            QMessageBox.warning(self, "ROI Name Warning",
-                                "ROI name cannot be empty or equal to default names: 'all', 'roi'")
+            self.show_warning_dialog("ROI Name Warning\n"
+                                     "ROI name cannot be empty or equal to default names: 'all', 'roi'")
             self.selected_row_data[0] = self.current_roi
 
         self.roi_table_model.dataChanged.connect(on_data_change)
