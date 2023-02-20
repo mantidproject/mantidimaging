@@ -43,6 +43,7 @@ def get_application(name=''):
         Qt slots swallows exceptions. We need to catch them, but not exit.
         """
         global uncaught_exception
+        print(f"get_application.handle_uncaught_exceptions: {exc_type=}", flush=True)
         # store first exception caught
         if uncaught_exception is None:
             uncaught_exception = f"{exc_type=}, {exc_value=}"
@@ -72,9 +73,11 @@ def start_qapplication(cls):
             pytest.fail(f"Uncaught exception {uncaught_exception}")
 
     def setUpClass():
+        print("start_qapplication.setUpClass", flush=True)
         cls.app = get_application()
 
     def tearDownClass():
+        print("start_qapplication.tearDownClass", flush=True)
         if os.getenv("APPLITOOLS_API_KEY") is None:
             gc.collect()
 

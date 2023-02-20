@@ -231,6 +231,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
     def warn_user(self, title, message):
+        LOG.warning(f"warn_user() {title}: {message}")
         QMessageBox.warning(self, title, message)
 
     def remove_selected_cor(self):
