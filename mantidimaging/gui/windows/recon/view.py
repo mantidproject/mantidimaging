@@ -8,7 +8,7 @@ from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
-                             QVBoxLayout, QWidget, QMessageBox, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
+                             QVBoxLayout, QWidget, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
 from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import ImageStack
@@ -225,13 +225,9 @@ class ReconstructWindowView(BaseMainWindowView):
             return
         if selected_images.has_proj180deg() and \
                 not self.presenter.proj_180_degree_shape_matches_images(selected_images):
-            self.warn_user(
-                "Potential Failure",
+            self.show_error_dialog(
                 "The shapes of the selected stack and it's 180 degree projections do not match! This is "
                 "going to cause an error when calculating the COR. Fix the shape before continuing!")
-
-    def warn_user(self, title, message):
-        QMessageBox.warning(self, title, message)
 
     def remove_selected_cor(self):
         return self.tableView.removeSelectedRows()
