@@ -16,6 +16,9 @@ from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_
 @start_multiprocessing_pool
 class TestGuiSystemReconstruction(GuiSystemBase):
     def setUp(self) -> None:
+        patcher_user_warning = mock.patch("mantidimaging.gui.windows.recon.view.ReconstructWindowView.warn_user")
+        self.mock_user_warning = patcher_user_warning.start()
+        self.addCleanup(patcher_user_warning.stop)
         super().setUp()
         self._close_welcome()
         self._load_data_set()
@@ -33,6 +36,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         assert isinstance(self.main_window.recon, ReconstructWindowView)
         self.assertFalse(self.main_window.recon.isVisible())
         self._close_image_stacks()
+        self.mock_user_warning.assert_not_called()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
