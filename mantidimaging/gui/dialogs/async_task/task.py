@@ -50,7 +50,7 @@ class TaskWorkerThread(QThread):
             self.result = call_with_known_parameters(self.task_function, **self.kwargs)
 
         except Exception as e:
-            log.exception("Failed to execute task")
+            log.exception(f"Failed to execute task: {e}")
             self.result = None
             self.error = e
 
