@@ -386,8 +386,8 @@ class ReconstructWindowPresenter(BasePresenter):
         def completed(task: TaskWorkerThread):
             if task.result is None and task.error is not None:
                 selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
-                self.view.warn_user(
-                    "Failure!", f"Finding the COR failed, likely caused by the selected stack's 180 "
+                self.view.show_error_dialog(
+                    f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "
                     f"Error: {str(task.error)} "
                     f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
@@ -419,7 +419,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def _completed_finding_cors(task: TaskWorkerThread):
             if task.error is not None:
-                self.view.warn_user("Failure!", "Finding the COR failed.\n\n" f"Error: {str(task.error)}")
+                self.view.show_error_dialog(f"Finding the COR failed.\n\n Error: {str(task.error)}")
             else:
                 cors = task.result
                 for slice_idx, cor in zip(slice_indices, cors):
