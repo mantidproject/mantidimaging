@@ -63,7 +63,6 @@ class QTreeDatasetWidgetItem(QTreeWidgetItem):
 
 class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
-    UNCAUGHT_EXCEPTION = "Uncaught exception"
 
     # Emitted when a new stack is created or an existing one deleted
     model_changed = pyqtSignal()
@@ -482,7 +481,7 @@ class MainWindowView(BaseMainWindowView):
             stack.shared_array = None
 
     def uncaught_exception(self, user_error_msg, log_error_msg):
-        QMessageBox.critical(self, self.UNCAUGHT_EXCEPTION, f"{user_error_msg}")
+        self.show_error_dialog(self, f"Uncaught exception {user_error_msg}")
         getLogger(__name__).error(log_error_msg)
 
     def show_stack_select_dialog(self):
