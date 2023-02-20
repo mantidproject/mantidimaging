@@ -51,3 +51,5 @@ Developer Changes
 - #1693 : Increase test coverage for spectrum widget
 - #1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer
 - #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
+- #1641 : More robust logging and error handling in automated testing
+
