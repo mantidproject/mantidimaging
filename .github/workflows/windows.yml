@@ -81,7 +81,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_loading_test.py
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_loading_test.py
           done
         timeout-minutes: 15
         if: always()
@@ -90,7 +90,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_operations_test.py
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_operations_test.py
           done
         timeout-minutes: 15
         if: false
@@ -99,7 +99,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py
           done
         timeout-minutes: 15
         if: always()
@@ -108,7 +108,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_windows_test.py
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_windows_test.py
           done
         timeout-minutes: 15
         if: always()
@@ -118,7 +118,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_correlate
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_correlate
           done
         timeout-minutes: 15
         if: always()
@@ -126,7 +126,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_minimise
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_minimise
           done
         timeout-minutes: 15
         if: always()
@@ -134,7 +134,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k "test_refine and not test_refine_stress"
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k "test_refine and not test_refine_stress"
           done
         timeout-minutes: 15
         if: always()
@@ -142,7 +142,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_refine_stress
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_refine_stress
           done
         timeout-minutes: 15
         if: always()
@@ -150,7 +150,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_selecting_auto_update_triggers_preview
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_selecting_auto_update_triggers_preview
           done
         timeout-minutes: 15
         if: always()
@@ -158,7 +158,7 @@ jobs:
         shell: bash -l {0}
         run: |
           for x in `seq 5`; do
-          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_clicking_update_now_btn_triggers_preview
+          python -X faulthandler -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10 -o log_cli=true mantidimaging/gui/test/gui_system_reconstruction_test.py -k test_clicking_update_now_btn_triggers_preview
           done
         timeout-minutes: 15
         if: always()
