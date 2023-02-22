@@ -12,7 +12,7 @@ jobs:
     name: Validate CITATION.cff
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.3.0
 
       - name: Install cffconvert
         run: |
