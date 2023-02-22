@@ -50,3 +50,4 @@ Developer Changes
 - #1695 : Use FilenameGroup for Load Images
 - #1693 : Increase test coverage for spectrum widget
 - #1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer
+- #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
