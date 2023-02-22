@@ -15,7 +15,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
-from mantidimaging.core.utility.data_containers import ProjectionAngles, LoadingParameters
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
@@ -128,10 +128,9 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
 
-    def load_image_files(self, par: Optional[LoadingParameters] = None) -> None:
-        if par is None:
-            assert self.view.image_load_dialog is not None
-            par = self.view.image_load_dialog.get_parameters()
+    def load_image_files(self) -> None:
+        assert self.view.image_load_dialog is not None
+        par = self.view.image_load_dialog.get_parameters()
 
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
 
