@@ -77,7 +77,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
         self.view.set_normalise_error(self.model.normalise_issue())
-        self.handle_roi_moved()
+        self.redraw_all_rois()
 
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
@@ -128,6 +128,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
+    def redraw_all_rois(self) -> None:
+        """
+        Redraw all ROIs and spectrum plots
+        """
+        for name in self.model.get_list_of_roi_names():
+            self.model.set_roi(name, self.view.spectrum.get_roi(name))
+            self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+
     def handle_export_button_enabled(self) -> None:
         """
         Enable the export button if the current stack is not None
@@ -149,7 +157,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.spectrum_mode = SpecType.SAMPLE_NORMED
         else:
             self.spectrum_mode = SpecType.SAMPLE
-        self.handle_roi_moved()
+        self.redraw_all_rois()
         self.view.display_normalise_error()
 
     def get_roi_names(self) -> list:
