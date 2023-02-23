@@ -36,6 +36,7 @@ Fixes
 - #1669 : Fix table or ROIs falling out of synchronisation with ROIs visible in the image when changing between samples
 - #1659 : PyInstaller missing cupy files
 - #1657 : PyInstaller: order of operations in menu is not sorted
+- #1712 : Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer
 
 Developer Changes
 -----------------
