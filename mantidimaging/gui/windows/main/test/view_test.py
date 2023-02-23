@@ -125,11 +125,13 @@ class MainWindowViewTest(unittest.TestCase):
                                                       new_name="oranges")
 
     @mock.patch("mantidimaging.gui.windows.main.view.getLogger")
-    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
-    def test_uncaught_exception(self, mock_qtmessagebox, mock_getlogger):
+    @mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_error_dialog")
+    def test_uncaught_exception(self, mock_show_error_dialog, mock_getlogger):
         self.view.uncaught_exception("user-error", "log-error")
 
-        mock_qtmessagebox.critical.assert_called_once_with(self.view, self.view.UNCAUGHT_EXCEPTION, "user-error")
+        mock_show_error_dialog.assert_called_once()
+        print(mock_show_error_dialog.call_args)
+        self.assertIn("user-error", mock_show_error_dialog.call_args[0][1])
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
 
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")

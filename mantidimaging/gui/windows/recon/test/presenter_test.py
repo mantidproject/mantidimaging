@@ -332,8 +332,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task.error = ValueError("Task Error")
         completed_function(task)
 
-        self.view.warn_user.assert_called_once_with(
-            "Failure!",
+        self.view.show_error_dialog.assert_called_once_with(
             "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
             "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
             "projection to (10, 10)")

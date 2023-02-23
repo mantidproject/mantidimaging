@@ -17,18 +17,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
         with:
           fetch-depth: 0
 
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+          echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache Mambaforge and Pip packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         env:
           CACHE_NUMBER: 0
         with:
@@ -39,7 +39,7 @@ jobs:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Cache Mambaforge environment
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         id: cache-mambaforge-environment
         env:
           CACHE_NUMBER: 0
@@ -49,7 +49,7 @@ jobs:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Setup Mambaforge
-        uses: conda-incubator/setup-miniconda@v2.1.1
+        uses: conda-incubator/setup-miniconda@v2.2.0
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge

@@ -30,21 +30,17 @@ class BaseMainWindowView(QMainWindow):
         """
         pass
 
-    def show_error_dialog(self, msg=""):
-        """
-        Shows an error message.
-
-        :param msg: Error message string
-        """
+    def show_error_dialog(self, msg: str):
+        LOG.error(f"show_error_dialog(): {msg}")
         QMessageBox.critical(self, "Error", str(msg))
 
-    def show_info_dialog(self, msg=""):
-        """
-        Shows an information message.
-
-        :param msg: Information message string.
-        """
+    def show_info_dialog(self, msg: str):
+        LOG.info(f"show_info_dialog(): {msg}")
         QMessageBox.information(self, "Information", str(msg))
+
+    def show_warning_dialog(self, msg: str):
+        LOG.warning(f"show_warning_dialog(): {msg}")
+        QMessageBox.warning(self, "Warning", str(msg))
 
 
 class BaseDialogView(QDialog):

@@ -25,11 +25,11 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+          echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Cache Mambaforge and Pip packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         env:
           CACHE_NUMBER: 0
         with:
@@ -40,7 +40,7 @@ jobs:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Cache Mambaforge environment
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         id: cache-mambaforge-environment
         env:
           CACHE_NUMBER: 0
@@ -50,7 +50,7 @@ jobs:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Setup Mambaforge
-        uses: conda-incubator/setup-miniconda@v2.1.1
+        uses: conda-incubator/setup-miniconda@v2.2.0
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
@@ -104,7 +104,7 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --ignore=mantidimaging/eyes_tests --durations=10
+          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
@@ -117,7 +117,7 @@ jobs:
       - name: GUI Tests System
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov --run-system-tests --durations=10
+          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools
@@ -128,7 +128,7 @@ jobs:
           APPLITOOLS_BATCH_ID: ${{ github.sha }}
           GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov mantidimaging/eyes_tests --durations=10
+          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true mantidimaging/eyes_tests --durations=10
         timeout-minutes: 15
 
       - name: Coveralls
