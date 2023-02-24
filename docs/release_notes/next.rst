@@ -25,6 +25,7 @@ New Features and improvements
 - #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
 - #1691 : Remove "Beta" from spectrum viewer
 - #1697 : For NXtomoproc store data in float32
+- #1711 : Update CIL to 22.2.0
 
 Fixes
 -----
