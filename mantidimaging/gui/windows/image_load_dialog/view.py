@@ -7,8 +7,9 @@ from typing import Optional, Dict
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
 
-from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH
-from mantidimaging.core.utility.data_containers import LoadingParameters, FILE_TYPES
+from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH, \
+    NewLoadingParameters
+from mantidimaging.core.utility.data_containers import FILE_TYPES
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from .presenter import LoadPresenter
 from ...mvp_base import BaseDialogView
@@ -105,7 +106,7 @@ class ImageLoadDialog(BaseDialogView):
         # FIXME direct attribute access
         self.sample.set_step(self.presenter.last_file_info.shape[0] // 10)
 
-    def get_parameters(self) -> LoadingParameters:
+    def get_parameters(self) -> NewLoadingParameters:
         return self.presenter.get_parameters()
 
     def show_error(self, msg, traceback):

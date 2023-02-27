@@ -40,7 +40,7 @@ class NewLoadingParameters:
     image_stacks: dict[FILE_TYPES, NewImageParameters] = {}
 
     pixel_size: int = DEFAULT_PIXEL_SIZE
-    name: str
+    name: str = ""
     dtype: str = DEFAULT_PIXEL_DEPTH
     sinograms: bool = DEFAULT_IS_SINOGRAM
 
