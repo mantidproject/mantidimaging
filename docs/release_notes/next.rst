@@ -26,6 +26,7 @@ New Features and improvements
 - #1691 : Remove "Beta" from spectrum viewer
 - #1697 : For NXtomoproc store data in float32
 - #1711 : Update CIL to 22.2.0
+- #1714 : Improve ROI hover behavior within Spectrum Viewer to be more intuitive.
 
 Fixes
 -----
