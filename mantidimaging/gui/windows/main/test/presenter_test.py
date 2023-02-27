@@ -108,12 +108,11 @@ class MainWindowPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_dataset_stack(self, start_async_mock: mock.Mock):
         parameters_mock = mock.Mock()
-        parameters_mock.sample.input_path.return_value = "123"
         self.view.image_load_dialog.get_parameters.return_value = parameters_mock
 
         self.presenter.load_image_files()
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_dataset,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.new_do_load_dataset,
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")

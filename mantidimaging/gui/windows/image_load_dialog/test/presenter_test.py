@@ -233,77 +233,68 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_load_log.assert_not_called()
         mock_log.raise_if_angle_missing.assert_not_called()
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix", return_value="/path")
-    def test_get_parameters(self, get_prefix):
-        path_text = "/path/text"
-        sample_input_path = "/sample/input/path"
-        image_format = ".tif"
-        sample_indices = [1, 1]
-        sample_file_name = "/path/sample_file_name"
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup.find_all_files")
+    def test_get_parameters(self, _):
+        sample_path = "/sample/tomo/tomo_0001.tiff"
+        sample_file = "tomo_0001.tiff"
+        sample_log_path = "/sample/tomo.log"
+
+        self.fields["Sample"].path_text.return_value = sample_path
+        self.fields["Sample"].file.return_value = sample_file
+        self.fields["Sample"].use.isChecked.return_value = True
+        self.fields["Sample Log"].path_text.return_value = sample_log_path
+
+        # sample_indices = [1, 1] #TODO
+
+        flat_before_path = "/sample/flat_before/flat_before_0001.tiff"
+        flat_before_log = "/sample/flat_before.log"
+        flat_after_path = "/sample/flat_after/flat_after_0001.tiff"
+        flat_after_log = "/sample/flat_after.log"
+        dark_before_path = "/sample/dark_before/dark_before_0001.tiff"
+        dark_after_path = "/sample/dark_after/dark_after_0001.tiff"
+        proj_180_path = "/sample/180deg/180deg.tiff"
+        self.fields["Flat Before"].use.isChecked.return_value = True
+        self.fields["Flat Before"].path_text.return_value = flat_before_path
+        self.fields["Flat Before Log"].path_text.return_value = flat_before_log
+        self.fields["Flat After"].use.isChecked.return_value = True
+        self.fields["Flat After"].path_text.return_value = flat_after_path
+        self.fields["Flat After Log"].path_text.return_value = flat_after_log
+        self.fields["Dark Before"].path_text.return_value = dark_before_path
+        self.fields["Dark After"].path_text.return_value = dark_after_path
+        self.fields["180 degree"].path_text.return_value = proj_180_path
+
         pixel_size = 24
-        flat_file_name = "/path/flat_file_name"
-        flat_log_file_name = "/path/flat/log/file_name"
-        flat_directory = "/path/directory"
-        dark_directory = "/path/dark/directory"
-        proj180deg_directory = "/path/proj180/directory"
-        proj180deg_file = "/path/proj180/directory/file"
         dtype = "float32"
         sinograms = True
-        sample_path_text = "/path/of/sample"
-        dark_before_path_text = "/path/of/dark"
-        self.fields["Sample Log"].path_text.return_value = path_text
-        self.fields["Sample Log"].use.isChecked.return_value = True
-        self.v.sample.directory.return_value = sample_input_path
-        self.p.image_format = image_format
-        self.v.sample.indices = sample_indices
-        self.v.sample.file.return_value = sample_file_name
         self.v.pixelSize.value.return_value = pixel_size
-        self.fields["Flat Before"].use.isChecked.return_value = True
-        self.fields["Flat Before"].path_text.return_value = flat_file_name
-        self.fields["Flat Before Log"].path_text.return_value = flat_log_file_name
-        self.fields["Flat Before"].directory.return_value = flat_directory
-        self.fields["Flat After"].use.isChecked.return_value = True
-        self.fields["Flat After"].path_text.return_value = flat_file_name
-        self.fields["Flat After Log"].path_text.return_value = flat_log_file_name
-        self.fields["Flat After"].directory.return_value = flat_directory
-        self.fields["Dark Before"].directory.return_value = dark_directory
-        self.fields["Dark After"].directory.return_value = dark_directory
         self.v.pixel_bit_depth.currentText.return_value = dtype
         self.v.images_are_sinograms.isChecked.return_value = sinograms
-        self.fields["180 degree"].path_text.return_value = proj180deg_file
-        self.fields["180 degree"].directory.return_value = proj180deg_directory
-        self.v.sample.path_text.return_value = sample_path_text
-        self.fields["Dark Before"].path_text.return_value = dark_before_path_text
 
         lp = self.p.get_parameters()
 
-        self._files_equal(lp.sample.log_file, path_text)
-        self.assertEqual(lp.sample.input_path, sample_input_path)
-        self.assertEqual(lp.sample.format, image_format)
-        self.assertEqual(lp.sample.prefix, "/path")
-        self.assertEqual(lp.sample.indices, sample_indices)
-        self.assertEqual(lp.name, sample_file_name)
-        self.assertEqual(lp.pixel_size, pixel_size)
-        self.assertEqual(lp.flat_before.prefix, "/path")
-        self._files_equal(lp.flat_before.log_file, flat_log_file_name)
-        self.assertEqual(lp.flat_before.format, image_format)
-        self.assertEqual(lp.flat_before.input_path, flat_directory)
-        self.assertEqual(lp.flat_after.prefix, "/path")
-        self._files_equal(lp.flat_after.log_file, flat_log_file_name)
-        self.assertEqual(lp.flat_after.format, image_format)
-        self.assertEqual(lp.flat_after.input_path, flat_directory)
-        self.assertEqual(lp.dark_before.input_path, dark_directory)
-        self.assertEqual(lp.dark_before.prefix, "/path")
-        self.assertEqual(lp.dark_before.format, image_format)
-        self.assertEqual(lp.dark_after.input_path, dark_directory)
-        self.assertEqual(lp.dark_after.prefix, "/path")
-        self.assertEqual(lp.dark_after.format, image_format)
-        self.assertEqual(lp.proj_180deg.input_path, proj180deg_directory)
-        self.assertEqual(lp.proj_180deg.prefix, "/path/proj180/directory/file")
-        self.assertEqual(lp.proj_180deg.format, image_format)
+        lp_sample = lp.image_stacks[FILE_TYPES.SAMPLE]
+        lp_flat_before = lp.image_stacks[FILE_TYPES.FLAT_BEFORE]
+        lp_flat_after = lp.image_stacks[FILE_TYPES.FLAT_AFTER]
+        lp_dark_before = lp.image_stacks[FILE_TYPES.DARK_BEFORE]
+        lp_dark_after = lp.image_stacks[FILE_TYPES.DARK_AFTER]
+        lp_proj_180deg = lp.image_stacks[FILE_TYPES.PROJ_180]
+
+        self._files_equal(next(lp_sample.file_group.all_files()), sample_path)
+        self._files_equal(lp_sample.log_file, sample_log_path)
+
+        self._files_equal(next(lp_flat_before.file_group.all_files()), flat_before_path)
+        self._files_equal(next(lp_flat_after.file_group.all_files()), flat_after_path)
+        self._files_equal(next(lp_dark_before.file_group.all_files()), dark_before_path)
+        self._files_equal(next(lp_dark_after.file_group.all_files()), dark_after_path)
+        self._files_equal(next(lp_proj_180deg.file_group.all_files()), proj_180_path)
+
+        self._files_equal(lp_flat_before.log_file, flat_before_log)
+        self._files_equal(lp_flat_after.log_file, flat_after_log)
+        self.assertIsNone(lp_dark_before.log_file)
+        self.assertIsNone(lp_dark_after.log_file)
+        self.assertIsNone(lp_proj_180deg.log_file)
+
+        self.assertEqual(lp.name, sample_file)
         self.assertEqual(lp.dtype, dtype)
         self.assertEqual(lp.sinograms, sinograms)
         self.assertEqual(lp.pixel_size, pixel_size)
-        self.assertTrue(mock.call(sample_path_text) in get_prefix.call_args_list)
-        self.assertTrue(mock.call(flat_file_name) in get_prefix.call_args_list)
-        self.assertTrue(mock.call(dark_before_path_text) in get_prefix.call_args_list)

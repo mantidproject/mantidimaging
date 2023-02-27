@@ -176,3 +176,10 @@ class FILE_TYPES(Enum):
     @property
     def fname(self) -> str:
         return (self.tname + " " + self.suffix).strip()
+
+
+log_for_file_type = {
+    FILE_TYPES.SAMPLE: FILE_TYPES.SAMPLE_LOG,
+    FILE_TYPES.FLAT_BEFORE: FILE_TYPES.FLAT_BEFORE_LOG,
+    FILE_TYPES.FLAT_AFTER: FILE_TYPES.FLAT_AFTER_LOG,
+}

@@ -8,11 +8,13 @@ from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
+from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
-from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation
+from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation, NewLoadingParameters, \
+    NewImageParameters
 from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
                                            find_180deg_proj)
-from mantidimaging.core.utility.data_containers import LoadingParameters, ImageParameters, FILE_TYPES
+from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 
 if TYPE_CHECKING:
@@ -119,41 +121,28 @@ class LoadPresenter:
             images = find_images(selected_dir, base_name, "", image_format=self.image_format)
         field.set_images(images)
 
-    def get_parameters(self) -> LoadingParameters:
-        lp = LoadingParameters()
-
-        for image_group in [ft.fname for ft in FILE_TYPES if ft.mode in ["images", "sample"]]:
-            image_field = self.view.fields[image_group]
-            if not image_field.use.isChecked() or image_field.path_text() == "":
+    def get_parameters(self) -> NewLoadingParameters:
+        loading_param = NewLoadingParameters()
+        for file_type in FILE_TYPES:
+            field = self.view.fields[file_type.fname]
+            if not field.use.isChecked() or field.path_text() == "":
                 continue
+            file_group = FilenameGroup.from_file(Path(field.path_text()))
+            file_group.find_all_files()
+            image_param = NewImageParameters(file_group)
 
-            params = ImageParameters(input_path=image_field.directory(),
-                                     format=self.image_format,
-                                     prefix=get_prefix(image_field.path_text()))
-
-            if image_group == "Sample":
-                params.indices = image_field.indices
-
-            if image_group + " Log" in self.view.fields:
-                log_field = self.view.fields[image_group + " Log"]
+            if file_type in log_for_file_type:
+                log_field = self.view.fields[log_for_file_type[file_type].fname]
                 if log_field.use.isChecked():
-                    params.log_file = Path(log_field.path_text())
+                    image_param.log_file = Path(log_field.path_text())
 
-            lp.set(image_group, params)
+            loading_param.image_stacks[file_type] = image_param
 
-        field_180 = self.view.fields["180 degree"]
-        if field_180.use.isChecked() and field_180.path_text() != "":
-            lp.proj_180deg = ImageParameters(input_path=field_180.directory(),
-                                             prefix=os.path.splitext(field_180.path_text())[0],
-                                             format=self.image_format)
-
-        lp.name = self.view.sample.file()
-        lp.pixel_size = self.view.pixelSize.value()
-        lp.dtype = self.view.pixel_bit_depth.currentText()
-        lp.sinograms = self.view.images_are_sinograms.isChecked()
-        lp.pixel_size = self.view.pixelSize.value()
-
-        return lp
+        loading_param.name = self.view.fields[FILE_TYPES.SAMPLE.fname].file()
+        loading_param.pixel_size = self.view.pixelSize.value()
+        loading_param.dtype = self.view.pixel_bit_depth.currentText()
+        loading_param.sinograms = self.view.images_are_sinograms.isChecked()
+        return loading_param
 
     def _update_field_action(self, field: Field, file_name) -> None:
         if file_name is not None:

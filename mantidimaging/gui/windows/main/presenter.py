@@ -132,7 +132,8 @@ class MainWindowPresenter(BasePresenter):
         assert self.view.image_load_dialog is not None
         par = self.view.image_load_dialog.get_parameters()
 
-        start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done, {'parameters': par})
+        start_async_task_view(self.view, self.model.new_do_load_dataset, self._on_dataset_load_done,
+                              {'parameters': par})
 
     def load_nexus_file(self) -> None:
         assert self.view.nexus_load_dialog is not None
