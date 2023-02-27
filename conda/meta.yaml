@@ -31,7 +31,7 @@ requirements:
     - h5py=3.6.*
     - sarepy=2020.07
     - psutil=5.9.*
-    - cil=22.1.*
+    - cil=22.2.0
     - ccpi-regulariser
     - jenkspy=0.2.0
     - pyqt=5.15.*
