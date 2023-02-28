@@ -95,12 +95,6 @@ class CILRecon(BaseRecon):
 
     @staticmethod
     def get_data(sino, ag, recon_params: ReconstructionParameters):
-        # this will duplicate the memory
-        # data = ag.allocate(None)
-        # data.fill(sino)
-
-        # maybe we could do
-
         data = AcquisitionData(sino, deep_copy=False, geometry=ag, suppress_warning=True)
 
         if recon_params.stochastic:
@@ -137,8 +131,6 @@ class CILRecon(BaseRecon):
         Should return a numpy array,
         """
 
-        print(f"SPDHG params: {recon_params.stochastic=} {recon_params.subsets=}")
-
         num_iter = recon_params.num_iter
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
@@ -165,13 +157,9 @@ class CILRecon(BaseRecon):
 
             # let's create a CIL AcquisitionData or BlockDataContainer
             data = CILRecon.get_data(sino, ag, recon_params)
-            # data = ag.allocate(None)
-            # data.fill(sino)
 
             ig = ag.get_ImageGeometry()
-            # K, f1, f2, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
-            # F = BlockFunction(f1, f2)
             K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
             max_iteration = 100000
@@ -283,8 +271,6 @@ class CILRecon(BaseRecon):
             ag.set_angles(angles=angles, angle_unit='radian')
             ag.set_labels(data_order)
 
-            # data = ag.allocate(None)
-            # data.fill(BaseRecon.prepare_sinogram(images.data, recon_params))
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params)
 
             ig = ag.get_ImageGeometry()
@@ -315,15 +301,6 @@ class CILRecon(BaseRecon):
                             max_iteration=max_iteration,
                             update_objective_interval=update_objective_interval)
 
-            # pdhg =PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
-
-            # with progress:
-            #     for iter in range(recon_params.num_iter):
-            #         progress.update(steps=1,
-            #                         msg=f'CIL: Iteration {iter+1} of {recon_params.num_iter}:'
-            #                         f'Objective {pdhg.get_last_objective():.2f}',
-            #                         force_continue=False)
-            #         pdhg.next()
             with progress:
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
