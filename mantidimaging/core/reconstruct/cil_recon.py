@@ -10,7 +10,7 @@ from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry
+from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox
@@ -106,6 +106,14 @@ class CILRecon(BaseRecon):
             # split the data and put it in a BlockDataContainer
             # unfortunately now the data will be duplicated in memory
             data = data.partition(recon_params.subsets, 'staggered')
+            geo = []
+            for i in range(len(data)):
+                data.get_item(i).reorder('astra')
+                geo.append(data.get_item(i).geometry)
+            # COMPAT - workaround for https://github.com/TomographicImaging/CIL/issues/1445
+            data.geometry = BlockGeometry(*geo)
+        else:
+            data.reorder('astra')
 
         return data
 
@@ -273,7 +281,6 @@ class CILRecon(BaseRecon):
             # data = ag.allocate(None)
             # data.fill(BaseRecon.prepare_sinogram(images.data, recon_params))
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params)
-            data.reorder('astra')
 
             ig = ag.get_ImageGeometry()
             K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
