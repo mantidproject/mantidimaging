@@ -28,6 +28,7 @@ New Features and improvements
 - #1711 : Update CIL to 22.2.0
 - #1714 : Improve ROI hover behavior within Spectrum Viewer to be more intuitive.
 - #1664 : PyInstaller version at build time
+- #1632 : Add Stochastic PDHG
 
 Fixes
 -----
