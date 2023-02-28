@@ -134,8 +134,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.max_roi_size = roi_object.size()
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
-        # On hover, the ROI border turns red and line thickens
-        self.roi_dict[name].hoverPen = mkPen((255, 51, 51), width=3)
+        # On hover, the ROI border line width increases
+        self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
