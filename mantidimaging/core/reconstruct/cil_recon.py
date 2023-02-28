@@ -41,16 +41,17 @@ class CILRecon(BaseRecon):
 
         assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
 
-        # This is slow to calculate, this approximation is good to with in 5%
-        # When running in debug mode, check the approximation and raise an error if it is bad
-        approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
-        if LOG.isEnabledFor(DEBUG):
-            num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
-            diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
-            LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
-            if diff > 0.05:
-                raise RuntimeError(f"Bad ProjectionOperator norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}\n")
-        A2d.set_norm(approx_a2d_norm)
+        if not recon_params.stochastic:
+            # This is slow to calculate, this approximation is good to with in 5%
+            # When running in debug mode, check the approximation and raise an error if it is bad
+            approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
+            if LOG.isEnabledFor(DEBUG):
+                num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
+                diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
+                LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
+                if diff > 0.05:
+                    raise RuntimeError(f"Bad ProjectionOperator norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}\n")
+            A2d.set_norm(approx_a2d_norm)
 
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
