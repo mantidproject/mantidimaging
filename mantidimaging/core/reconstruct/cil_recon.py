@@ -139,8 +139,13 @@ class CILRecon(BaseRecon):
 
         print(f"SPDHG params: {recon_params.stochastic=} {recon_params.subsets=}")
 
+        num_iter = recon_params.num_iter
+        if recon_params.stochastic:
+            # The UI will pass the number of epochs in this case
+            num_iter *= recon_params.subsets
+
         if progress:
-            progress.add_estimated_steps(recon_params.num_iter + 1)
+            progress.add_estimated_steps(num_iter + 1)
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
         if cil_mutex.locked():
@@ -194,17 +199,13 @@ class CILRecon(BaseRecon):
                             max_iteration=max_iteration,
                             update_objective_interval=update_objective_interval)
 
-            num_iter = recon_params.num_iter
-            if recon_params.stochastic:
-                # The UI will pass the number of epochs in this case
-                num_iter *= recon_params.subsets
             try:
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 for iter in range(num_iter):
                     if progress:
                         progress.update(steps=1,
-                                        msg=f'CIL: Iteration {iter + 1} of {recon_params.num_iter}'
+                                        msg=f'CIL: Iteration {iter + 1} of {num_iter}'
                                         f': Objective {algo.get_last_objective():.2f}',
                                         force_continue=False)
                     algo.next()
@@ -231,9 +232,12 @@ class CILRecon(BaseRecon):
         :return: 3D image data for reconstructed volume
         """
 
-        progress = Progress.ensure_instance(progress,
-                                            task_name='CIL reconstruction',
-                                            num_steps=recon_params.num_iter + 1)
+        num_iter = recon_params.num_iter
+        if recon_params.stochastic:
+            # The UI will pass the number of epochs in this case
+            num_iter *= recon_params.subsets
+
+        progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
         shape = images.data.shape
         if images.is_sinograms:
             data_order = DataOrder.ASTRA_AG_LABELS
@@ -311,11 +315,6 @@ class CILRecon(BaseRecon):
                             max_iteration=max_iteration,
                             update_objective_interval=update_objective_interval)
 
-            num_iter = recon_params.num_iter
-            if recon_params.stochastic:
-                # The UI will pass the number of epochs in this case
-                num_iter *= recon_params.subsets
-
             # pdhg =PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
             # with progress:
@@ -331,7 +330,7 @@ class CILRecon(BaseRecon):
                 for iter in range(num_iter):
                     if progress:
                         progress.update(steps=1,
-                                        msg=f'CIL: Iteration {iter + 1} of {recon_params.num_iter}'
+                                        msg=f'CIL: Iteration {iter + 1} of {num_iter}'
                                         f': Objective {algo.get_last_objective():.2f}',
                                         force_continue=False)
                     algo.next()
