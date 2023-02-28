@@ -6,6 +6,7 @@ from __future__ import annotations
 #
 import os
 import pkgutil
+import subprocess
 import sys
 from pathlib import Path
 from PyInstaller.utils.hooks import conda_support, collect_data_files
@@ -55,9 +56,11 @@ def add_missing_submodules(run_options):
 def add_data_files(run_options):
     # Each tuple in the list should give the location of the data files to copy and the destination to copy them to in
     # the package
+    subprocess.check_call(["python", "../conda/make_versions.py", "pyinstaller"])
     data_files = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
                   ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
                   ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
+                  ('../mantidimaging/versions.py', 'mantidimaging/'),
                   ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
 
     data_files += collect_data_files("cupy")
