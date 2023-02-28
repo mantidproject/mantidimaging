@@ -32,12 +32,10 @@ cil_mutex = Lock()
 
 
 class CILRecon(BaseRecon):
-
     @staticmethod
     def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
                                  recon_params: ReconstructionParameters):
-        
-        
+
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
@@ -66,20 +64,15 @@ class CILRecon(BaseRecon):
         if recon_params.stochastic:
             # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
             fs = []
-            for i, geom in enumerate(acquisition_data.geometry):
-                fs.append(
-                    L2NormSquared(b=acquisition_data.get_item(i))
-                )
+            for i, _ in enumerate(acquisition_data.geometry):
+                fs.append(L2NormSquared(b=acquisition_data.get_item(i)))
             fs.append(MixedL21Norm())
 
             F = BlockFunction(*fs)
 
             # needs to unrol the A2d BlockOperator and put it in another, followed by
             # the gradient operator, as in the deterministic case
-            K = BlockOperator(
-                * A2d.get_as_list(), 
-                alpha * Grad
-            )
+            K = BlockOperator(*A2d.get_as_list(), alpha * Grad)
 
         else:
             # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
@@ -105,18 +98,16 @@ class CILRecon(BaseRecon):
         # data = ag.allocate(None)
         # data.fill(sino)
 
-        # maybe we could do 
-        
+        # maybe we could do
+
         data = AcquisitionData(sino, deep_copy=False, geometry=ag, suppress_warning=True)
-        
+
         if recon_params.stochastic:
             # split the data and put it in a BlockDataContainer
             # unfortunately now the data will be duplicated in memory
             data = data.partition(recon_params.subsets, 'staggered')
 
         return data
-
-
 
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
@@ -158,7 +149,7 @@ class CILRecon(BaseRecon):
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
             ag.set_angles(angles=proj_angles.value, angle_unit='radian')
 
-            # let's create a CIL AcquisitionData or BlockDataContainer 
+            # let's create a CIL AcquisitionData or BlockDataContainer
             data = CILRecon.get_data(sino, ag, recon_params)
             # data = ag.allocate(None)
             # data.fill(sino)
@@ -168,7 +159,6 @@ class CILRecon(BaseRecon):
 
             # F = BlockFunction(f1, f2)
             K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
-            
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
@@ -176,22 +166,31 @@ class CILRecon(BaseRecon):
             if recon_params.stochastic:
                 num_batches = recon_params.subsets
                 # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2/3) * 1/num_batches] * num_batches + [1/3]
-                algo = SPDHG(f=F, g=G, operator=K, prob=probs, max_iteration=max_iteration,
-                        update_objective_interval=update_objective_interval)
+                probs = [(2 / 3) * 1 / num_batches] * num_batches + [1 / 3]
+                algo = SPDHG(f=F,
+                             g=G,
+                             operator=K,
+                             prob=probs,
+                             max_iteration=max_iteration,
+                             update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
                 tau = 1 / (sigma * normK**2)
-                algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=max_iteration,
-                        update_objective_interval=update_objective_interval)
+                algo = PDHG(f=F,
+                            g=G,
+                            operator=K,
+                            tau=tau,
+                            sigma=sigma,
+                            max_iteration=max_iteration,
+                            update_objective_interval=update_objective_interval)
 
-            num_iter = recon_params.num_iter 
+            num_iter = recon_params.num_iter
             if recon_params.stochastic:
                 # The UI will pass the number of epochs in this case
-                num_iter *= recon_params.subsets 
+                num_iter *= recon_params.subsets
             try:
-                # this may be confusing for the user in case of SPDHG, because they will 
+                # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 for iter in range(num_iter):
                     if progress:
@@ -279,30 +278,37 @@ class CILRecon(BaseRecon):
             ig = ag.get_ImageGeometry()
             K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
 
-
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
                 num_batches = recon_params.subsets
                 # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2/3) * 1/num_batches] * num_batches + [1/3]
-                algo = SPDHG(f=F, g=G, operator=K, prob=probs, max_iteration=max_iteration,
-                        update_objective_interval=update_objective_interval)
+                probs = [(2 / 3) * 1 / num_batches] * num_batches + [1 / 3]
+                algo = SPDHG(f=F,
+                             g=G,
+                             operator=K,
+                             prob=probs,
+                             max_iteration=max_iteration,
+                             update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
                 tau = 1 / (sigma * normK**2)
-                algo = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=max_iteration,
-                        update_objective_interval=update_objective_interval)
+                algo = PDHG(f=F,
+                            g=G,
+                            operator=K,
+                            tau=tau,
+                            sigma=sigma,
+                            max_iteration=max_iteration,
+                            update_objective_interval=update_objective_interval)
 
-            num_iter = recon_params.num_iter 
+            num_iter = recon_params.num_iter
             if recon_params.stochastic:
                 # The UI will pass the number of epochs in this case
-                num_iter *= recon_params.subsets 
+                num_iter *= recon_params.subsets
 
-
-            # pdhg = PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
+            # pdhg =PDHG(f=F, g=G, operator=K, tau=tau, sigma=sigma, max_iteration=100000, update_objective_interval=10)
 
             # with progress:
             #     for iter in range(recon_params.num_iter):
@@ -312,7 +318,7 @@ class CILRecon(BaseRecon):
             #                         force_continue=False)
             #         pdhg.next()
             with progress:
-                # this may be confusing for the user in case of SPDHG, because they will 
+                # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 for iter in range(num_iter):
                     if progress:
@@ -321,7 +327,7 @@ class CILRecon(BaseRecon):
                                         f': Objective {algo.get_last_objective():.2f}',
                                         force_continue=False)
                     algo.next()
-            
+
                 volume = algo.solution.as_array()
                 LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
             t1 = time.perf_counter()
