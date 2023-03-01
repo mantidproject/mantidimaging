@@ -36,10 +36,10 @@ class MainWindowModel(object):
         return None
 
     def new_do_load_dataset(self, parameters: NewLoadingParameters, progress: Progress) -> StrictDataset:
-        def load(fg):
-            return loader.load_stack_from_group(fg, progress, dtype=parameters.dtype)
+        def load(im_param):
+            return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
-        sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE].file_group)
+        sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE])
         ds = StrictDataset(sample)
         sample._is_sinograms = parameters.sinograms
         sample.pixel_size = parameters.pixel_size
@@ -55,7 +55,7 @@ class MainWindowModel(object):
                 FILE_TYPES.PROJ_180,
         ]:
             if im_param := parameters.image_stacks.get(file_type):
-                image_stack = load(im_param.file_group)
+                image_stack = load(im_param)
                 if log_file := im_param.log_file:
                     image_stack.log_file = loader.load_log(log_file)
 

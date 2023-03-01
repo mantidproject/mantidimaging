@@ -34,6 +34,7 @@ DEFAULT_PIXEL_DEPTH = "float32"
 class NewImageParameters:
     file_group: FilenameGroup
     log_file: Optional[Path] = None
+    indices: Optional[Indices] = None
 
 
 @dataclass
@@ -110,10 +111,16 @@ def load_log(log_file: Path) -> IMATLogFile:
         return IMATLogFile(f.readlines(), log_file)
 
 
-def load_stack_from_group(group: FilenameGroup,
-                          progress: Optional[Progress] = None,
-                          dtype: npt.DTypeLike = np.float32) -> ImageStack:
-    return load(file_names=[str(p) for p in group.all_files()], progress=progress, dtype=dtype)
+def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
+    file_names = [str(p) for p in group.all_files()]
+    return load(file_names=file_names, progress=progress)
+
+
+def load_stack_from_image_params(image_params: NewImageParameters,
+                                 progress: Optional[Progress] = None,
+                                 dtype: npt.DTypeLike = np.float32):
+    file_names = [str(p) for p in image_params.file_group.all_files()]
+    return load(file_names=file_names, progress=progress, dtype=dtype, indices=image_params.indices)
 
 
 def load(input_path: Optional[str] = None,
