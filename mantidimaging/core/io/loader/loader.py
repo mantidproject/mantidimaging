@@ -14,7 +14,7 @@ from tifffile import tifffile
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names,
                                            find_first_file_that_is_possibly_a_sample)
-from mantidimaging.core.utility.data_containers import ImageParameters, Indices, FILE_TYPES
+from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.io.filenames import FilenameGroup
 
@@ -108,15 +108,6 @@ def read_in_file_information(input_path: str,
 def load_log(log_file: Path) -> IMATLogFile:
     with open(log_file, 'r') as f:
         return IMATLogFile(f.readlines(), log_file)
-
-
-def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progress) -> ImageStack:
-    return load(input_path=parameters.input_path,
-                in_prefix=parameters.prefix,
-                in_format=parameters.format,
-                indices=parameters.indices,
-                dtype=dtype,
-                progress=progress)
 
 
 def load_stack_from_group(group: FilenameGroup,
