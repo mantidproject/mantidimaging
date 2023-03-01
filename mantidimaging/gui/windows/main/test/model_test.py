@@ -38,11 +38,11 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertIs(image_mock, self.model.get_images_by_uuid(uid))
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_stack_from_group')
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
     def test_do_load_stack_sample_only(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
-        sample_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock)
+        sample_mock = NewImageParameters(mock.Mock())
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = True
         lp.pixel_size = 101
@@ -54,12 +54,12 @@ class MainWindowModelTest(unittest.TestCase):
         load_log_mock.assert_not_called()
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_stack_from_group')
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
     def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
-        sample_mock = mock.Mock()
         log_file_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
+        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
@@ -71,24 +71,24 @@ class MainWindowModelTest(unittest.TestCase):
         load_log_mock.assert_called_once_with(log_file_mock)
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_group')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
                                            load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
-        sample_mock = mock.Mock()
         log_file_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
+        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
 
-        flat_before_mock = mock.Mock()
         flat_before_log_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.FLAT_BEFORE] = NewImageParameters(flat_before_mock, flat_before_log_mock)
-        flat_after_mock = mock.Mock()
+        flat_before_mock = NewImageParameters(mock.Mock(), flat_before_log_mock)
+        lp.image_stacks[FILE_TYPES.FLAT_BEFORE] = flat_before_mock
         flat_after_log_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.FLAT_AFTER] = NewImageParameters(flat_after_mock, flat_after_log_mock)
+        flat_after_mock = NewImageParameters(mock.Mock(), flat_after_log_mock)
+        lp.image_stacks[FILE_TYPES.FLAT_AFTER] = flat_after_mock
         progress_mock = mock.Mock()
 
         sample_images_mock = mock.Mock()
@@ -118,25 +118,25 @@ class MainWindowModelTest(unittest.TestCase):
         ])
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_group')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
                                                       load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
-        sample_mock = mock.Mock()
         log_file_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
+        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
 
-        dark_before_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.DARK_BEFORE] = NewImageParameters(dark_before_mock)
-        dark_after_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.DARK_AFTER] = NewImageParameters(dark_after_mock)
+        dark_before_mock = NewImageParameters(mock.Mock())
+        lp.image_stacks[FILE_TYPES.DARK_BEFORE] = dark_before_mock
+        dark_after_mock = NewImageParameters(mock.Mock())
+        lp.image_stacks[FILE_TYPES.DARK_AFTER] = dark_after_mock
 
-        proj_180deg_mock = mock.Mock()
-        lp.image_stacks[FILE_TYPES.PROJ_180] = NewImageParameters(proj_180deg_mock)
+        proj_180deg_mock = NewImageParameters(mock.Mock())
+        lp.image_stacks[FILE_TYPES.PROJ_180] = proj_180deg_mock
 
         progress_mock = mock.Mock()
 
