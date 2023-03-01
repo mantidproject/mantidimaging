@@ -6,7 +6,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-VERSION_PATH = str(Path(__file__).parent.parent.absolute()) + '/mantidimaging/versions.py'
+VERSION_PATH = Path(__file__).parent.parent / 'mantidimaging' / 'versions.py'
 
 git_describe = subprocess.check_output(['git', 'describe', '--long', '--abbrev=40'], encoding='utf8')
 if git_describe.count('-') != 2:
