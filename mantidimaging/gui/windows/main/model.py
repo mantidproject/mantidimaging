@@ -11,7 +11,7 @@ from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import NewLoadingParameters
-from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles, FILE_TYPES
+from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.progress_reporting import Progress
@@ -60,40 +60,6 @@ class MainWindowModel(object):
                     image_stack.log_file = loader.load_log(log_file)
 
                 ds.set_stack(file_type, image_stack)
-
-        self.datasets[ds.id] = ds
-        return ds
-
-    def do_load_dataset(self, parameters: LoadingParameters, progress) -> StrictDataset:
-        sample = loader.load_p(parameters.sample, parameters.dtype, progress)
-        ds = StrictDataset(sample)
-
-        sample._is_sinograms = parameters.sinograms
-        sample.pixel_size = parameters.pixel_size
-
-        if parameters.sample.log_file:
-            ds.sample.log_file = loader.load_log(parameters.sample.log_file)
-
-        if parameters.flat_before:
-            flat_before = loader.load_p(parameters.flat_before, parameters.dtype, progress)
-            ds.flat_before = flat_before
-            if parameters.flat_before.log_file:
-                flat_before.log_file = loader.load_log(parameters.flat_before.log_file)
-        if parameters.flat_after:
-            flat_after = loader.load_p(parameters.flat_after, parameters.dtype, progress)
-            ds.flat_after = flat_after
-            if parameters.flat_after.log_file:
-                flat_after.log_file = loader.load_log(parameters.flat_after.log_file)
-
-        if parameters.dark_before:
-            dark_before = loader.load_p(parameters.dark_before, parameters.dtype, progress)
-            ds.dark_before = dark_before
-        if parameters.dark_after:
-            dark_after = loader.load_p(parameters.dark_after, parameters.dtype, progress)
-            ds.dark_after = dark_after
-
-        if parameters.proj_180deg:
-            sample.proj180deg = loader.load_p(parameters.proj_180deg, parameters.dtype, progress)
 
         self.datasets[ds.id] = ds
         return ds
