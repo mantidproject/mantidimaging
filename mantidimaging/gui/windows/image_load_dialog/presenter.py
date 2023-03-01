@@ -136,6 +136,9 @@ class LoadPresenter:
                 if log_field.use.isChecked():
                     image_param.log_file = Path(log_field.path_text())
 
+            if file_type == FILE_TYPES.SAMPLE:
+                image_param.indices = field.indices
+
             loading_param.image_stacks[file_type] = image_param
 
         loading_param.name = self.view.fields[FILE_TYPES.SAMPLE.fname].file()
