@@ -37,7 +37,7 @@ class MainWindowModel(object):
 
     def new_do_load_dataset(self, parameters: NewLoadingParameters, progress: Progress) -> StrictDataset:
         def load(fg):
-            return loader.load_stack_from_group(fg, progress)
+            return loader.load_stack_from_group(fg, progress, dtype=parameters.dtype)
 
         sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE].file_group)
         ds = StrictDataset(sample)

@@ -119,8 +119,10 @@ def load_p(parameters: ImageParameters, dtype: 'npt.DTypeLike', progress: Progre
                 progress=progress)
 
 
-def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
-    return load(file_names=[str(p) for p in group.all_files()], progress=progress)
+def load_stack_from_group(group: FilenameGroup,
+                          progress: Optional[Progress] = None,
+                          dtype: npt.DTypeLike = np.float32) -> ImageStack:
+    return load(file_names=[str(p) for p in group.all_files()], progress=progress, dtype=dtype)
 
 
 def load(input_path: Optional[str] = None,

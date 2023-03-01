@@ -11,7 +11,8 @@ import numpy as np
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
-from mantidimaging.core.utility.data_containers import LoadingParameters, ProjectionAngles
+from mantidimaging.core.io.loader.loader import NewLoadingParameters, NewImageParameters
+from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -37,142 +38,136 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertIs(image_mock, self.model.get_images_by_uuid(uid))
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_p')
-    def test_do_load_stack_sample_only(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
-        lp = LoadingParameters()
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_group')
+    def test_do_load_stack_sample_only(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
+        lp = NewLoadingParameters()
         sample_mock = mock.Mock()
-        sample_mock.log_file = None
-        lp.sample = sample_mock
+        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock)
         lp.dtype = "dtype_test"
         lp.sinograms = True
         lp.pixel_size = 101
         progress_mock = mock.Mock()
 
-        self.model.do_load_dataset(lp, progress_mock)
+        self.model.new_do_load_dataset(lp, progress_mock)
 
-        load_p_mock.assert_called_once_with(sample_mock, lp.dtype, progress_mock)
+        load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
         load_log_mock.assert_not_called()
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_p')
-    def test_do_load_stack_sample_and_sample_log(self, load_p_mock: mock.Mock, load_log_mock: mock.Mock):
-        lp = LoadingParameters()
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_group')
+    def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
+        lp = NewLoadingParameters()
         sample_mock = mock.Mock()
-        lp.sample = sample_mock
+        log_file_mock = mock.Mock()
+        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
         progress_mock = mock.Mock()
 
-        self.model.do_load_dataset(lp, progress_mock)
+        self.model.new_do_load_dataset(lp, progress_mock)
 
-        load_p_mock.assert_called_once_with(sample_mock, lp.dtype, progress_mock)
-        load_log_mock.assert_called_once_with(sample_mock.log_file)
+        load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
+        load_log_mock.assert_called_once_with(log_file_mock)
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_group')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
-    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
+    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
                                            load_log_mock: mock.Mock):
-        lp = LoadingParameters()
+        lp = NewLoadingParameters()
         sample_mock = mock.Mock()
-        lp.sample = sample_mock
+        log_file_mock = mock.Mock()
+        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
 
         flat_before_mock = mock.Mock()
-        lp.flat_before = flat_before_mock
+        flat_before_log_mock = mock.Mock()
+        lp.image_stacks[FILE_TYPES.FLAT_BEFORE] = NewImageParameters(flat_before_mock, flat_before_log_mock)
         flat_after_mock = mock.Mock()
-        lp.flat_after = flat_after_mock
+        flat_after_log_mock = mock.Mock()
+        lp.image_stacks[FILE_TYPES.FLAT_AFTER] = NewImageParameters(flat_after_mock, flat_after_log_mock)
         progress_mock = mock.Mock()
 
         sample_images_mock = mock.Mock()
         flatb_images_mock = mock.Mock()
         flata_images_mock = mock.Mock()
-        load_p_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock]
+        load_mock.side_effect = [sample_images_mock, flatb_images_mock, flata_images_mock]
 
         ds_mock = dataset_mock.return_value
 
-        self.model.do_load_dataset(lp, progress_mock)
+        self.model.new_do_load_dataset(lp, progress_mock)
 
-        load_p_mock.assert_has_calls([
-            mock.call(sample_mock, lp.dtype, progress_mock),
-            mock.call(flat_before_mock, lp.dtype, progress_mock),
-            mock.call(flat_after_mock, lp.dtype, progress_mock)
+        load_mock.assert_has_calls([
+            mock.call(sample_mock, progress_mock, dtype=lp.dtype),
+            mock.call(flat_before_mock, progress_mock, dtype=lp.dtype),
+            mock.call(flat_after_mock, progress_mock, dtype=lp.dtype)
         ])
-        load_log_mock.assert_has_calls([
-            mock.call(sample_mock.log_file),
-            mock.call(flat_before_mock.log_file),
-            mock.call(flat_after_mock.log_file)
-        ])
+        load_log_mock.assert_has_calls(
+            [mock.call(log_file_mock),
+             mock.call(flat_before_log_mock),
+             mock.call(flat_after_log_mock)])
 
         dataset_mock.assert_called_with(sample_images_mock)
-        assert ds_mock.flat_before == flatb_images_mock
-        assert ds_mock.flat_after == flata_images_mock
+
+        ds_mock.set_stack.assert_has_calls([
+            mock.call(FILE_TYPES.FLAT_BEFORE, flatb_images_mock),
+            mock.call(FILE_TYPES.FLAT_AFTER, flata_images_mock),
+        ])
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_p')
+    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_group')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
-    def test_do_load_stack_sample_and_flat_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_p_mock: mock.Mock,
-                                                               load_log_mock: mock.Mock):
-        lp = LoadingParameters()
+    def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
+                                                      load_log_mock: mock.Mock):
+        lp = NewLoadingParameters()
         sample_mock = mock.Mock()
-        lp.sample = sample_mock
+        log_file_mock = mock.Mock()
+        lp.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_mock, log_file_mock)
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
-
-        flat_before_mock = mock.Mock()
-        lp.flat_before = flat_before_mock
-        flat_after_mock = mock.Mock()
-        lp.flat_after = flat_after_mock
 
         dark_before_mock = mock.Mock()
-        lp.dark_before = dark_before_mock
+        lp.image_stacks[FILE_TYPES.DARK_BEFORE] = NewImageParameters(dark_before_mock)
         dark_after_mock = mock.Mock()
-        lp.dark_after = dark_after_mock
+        lp.image_stacks[FILE_TYPES.DARK_AFTER] = NewImageParameters(dark_after_mock)
 
         proj_180deg_mock = mock.Mock()
-        lp.proj_180deg = proj_180deg_mock
+        lp.image_stacks[FILE_TYPES.PROJ_180] = NewImageParameters(proj_180deg_mock)
 
         progress_mock = mock.Mock()
 
         sample_images_mock = mock.Mock()
-        flatb_images_mock = mock.Mock()
-        flata_images_mock = mock.Mock()
         darkb_images_mock = mock.Mock()
         darka_images_mock = mock.Mock()
-        load_p_mock.side_effect = [
-            sample_images_mock, flatb_images_mock, flata_images_mock, darkb_images_mock, darka_images_mock,
-            mock.Mock()
-        ]
+        proj180_images_mock = mock.Mock()
+        load_mock.side_effect = [sample_images_mock, darkb_images_mock, darka_images_mock, proj180_images_mock]
 
         ds_mock = dataset_mock.return_value
 
-        self.model.do_load_dataset(lp, progress_mock)
+        self.model.new_do_load_dataset(lp, progress_mock)
 
-        load_p_mock.assert_has_calls([
-            mock.call(sample_mock, lp.dtype, progress_mock),
-            mock.call(flat_before_mock, lp.dtype, progress_mock),
-            mock.call(flat_after_mock, lp.dtype, progress_mock),
-            mock.call(dark_before_mock, lp.dtype, progress_mock),
-            mock.call(dark_after_mock, lp.dtype, progress_mock),
-            mock.call(proj_180deg_mock, lp.dtype, progress_mock)
+        load_mock.assert_has_calls([
+            mock.call(sample_mock, progress_mock, dtype=lp.dtype),
+            mock.call(dark_before_mock, progress_mock, dtype=lp.dtype),
+            mock.call(dark_after_mock, progress_mock, dtype=lp.dtype),
+            mock.call(proj_180deg_mock, progress_mock, dtype=lp.dtype),
         ])
 
         load_log_mock.assert_has_calls([
-            mock.call(sample_mock.log_file),
-            mock.call(flat_before_mock.log_file),
-            mock.call(flat_after_mock.log_file)
+            mock.call(log_file_mock),
         ])
 
         dataset_mock.assert_called_with(sample_images_mock)
 
-        assert ds_mock.flat_before == flatb_images_mock
-        assert ds_mock.flat_after == flata_images_mock
-        assert ds_mock.dark_before == darkb_images_mock
-        assert ds_mock.dark_after == darka_images_mock
+        ds_mock.set_stack.assert_has_calls([
+            mock.call(FILE_TYPES.DARK_BEFORE, darkb_images_mock),
+            mock.call(FILE_TYPES.DARK_AFTER, darka_images_mock),
+            mock.call(FILE_TYPES.PROJ_180, proj180_images_mock),
+        ])
 
     @mock.patch('mantidimaging.core.io.loader.load_log')
     def test_add_log_to_sample(self, load_log: mock.Mock):
