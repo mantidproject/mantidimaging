@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
 from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
@@ -36,8 +36,9 @@ class NewImageParameters:
     log_file: Optional[Path] = None
 
 
+@dataclass
 class NewLoadingParameters:
-    image_stacks: dict[FILE_TYPES, NewImageParameters] = {}
+    image_stacks: dict[FILE_TYPES, NewImageParameters] = field(default_factory=dict)
 
     pixel_size: int = DEFAULT_PIXEL_SIZE
     name: str = ""
