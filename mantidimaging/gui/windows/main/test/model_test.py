@@ -12,7 +12,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.io.loader.loader import NewLoadingParameters, NewImageParameters
-from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
+from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -69,6 +69,27 @@ class MainWindowModelTest(unittest.TestCase):
 
         load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
         load_log_mock.assert_called_once_with(log_file_mock)
+
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    @mock.patch('mantidimaging.core.io.loader.loader.load')
+    def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
+        lp = NewLoadingParameters()
+        all_files = ["filename"] * 10
+        mock_filename_group = mock.Mock()
+        mock_filename_group.all_files.return_value = all_files
+        sample_mock = NewImageParameters(mock_filename_group)
+        indices = Indices(0, 100, 2)
+        sample_mock.indices = indices
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
+        lp.dtype = "dtype_test"
+        lp.sinograms = True
+        lp.pixel_size = 101
+        progress_mock = mock.Mock()
+
+        self.model.new_do_load_dataset(lp, progress_mock)
+
+        load_mock.assert_called_once_with(file_names=all_files, progress=progress_mock, dtype=lp.dtype, indices=indices)
+        load_log_mock.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
