@@ -121,32 +121,17 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_load_log.assert_called_once()
         mock_log.raise_if_angle_missing.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
-    def test_do_update_flat_or_dark(self, find_images):
-        file_name = "/ExampleFilename"
-        ft = FILE_TYPES.FLAT_BEFORE
-        field = mock.MagicMock(file_info=ft)
-
-        self.p.do_update_flat_or_dark(field, file_name)
-
-        find_images.assert_called_once_with(Path('/'), ft.fname, ft.suffix, image_format='')
-        field.set_images.assert_called_once_with(find_images.return_value)
-
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
-    def test_do_update_flat_or_dark_second_attempt(self, find_images):
+    @mock.patch("mantidimaging.core.io.filenames.FilenameGroup.all_files")
+    @mock.patch("mantidimaging.core.io.filenames.FilenameGroup.find_all_files")
+    def test_do_update_flat_or_dark(self, mock_find_all_files, mock_all_files):
         file_name = "/aaa_0000.tiff"
         ft = FILE_TYPES.FLAT_BEFORE
         field = mock.MagicMock(file_info=ft)
         files_list = [file_name, "aaa_0001.tiff"]
-        find_images.side_effect = [[], files_list]
+        mock_all_files.return_value = files_list
 
         self.p.do_update_flat_or_dark(field, file_name)
 
-        calls = [
-            mock.call(Path('/'), ft.fname, ft.suffix, image_format=''),
-            mock.call(Path('/'), "aaa", "", image_format='')
-        ]
-        find_images.assert_has_calls(calls)
         field.set_images.assert_called_once_with(files_list)
 
     def test_do_update_single_file(self):
