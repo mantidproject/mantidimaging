@@ -11,7 +11,7 @@ import numpy as np
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
-from mantidimaging.core.io.loader.loader import NewLoadingParameters, ImageParameters
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -40,7 +40,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
     def test_do_load_stack_sample_only(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
-        lp = NewLoadingParameters()
+        lp = LoadingParameters()
         sample_mock = ImageParameters(mock.Mock())
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
@@ -56,7 +56,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
     def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
-        lp = NewLoadingParameters()
+        lp = LoadingParameters()
         log_file_mock = mock.Mock()
         sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
@@ -73,7 +73,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.loader.load')
     def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
-        lp = NewLoadingParameters()
+        lp = LoadingParameters()
         all_files = ["filename"] * 10
         mock_filename_group = mock.Mock()
         mock_filename_group.all_files.return_value = all_files
@@ -96,7 +96,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
                                            load_log_mock: mock.Mock):
-        lp = NewLoadingParameters()
+        lp = LoadingParameters()
         log_file_mock = mock.Mock()
         sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
@@ -143,7 +143,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
     def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
                                                       load_log_mock: mock.Mock):
-        lp = NewLoadingParameters()
+        lp = LoadingParameters()
         log_file_mock = mock.Mock()
         sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
