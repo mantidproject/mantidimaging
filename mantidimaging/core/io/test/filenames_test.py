@@ -101,6 +101,12 @@ class FilenameGroupTest(FakeFSTestCase):
         all_files = list(f1.all_files())
         self._file_list_count_equal(all_files, [p1])
 
+    def test_first_files(self):
+        filename = "IMAT_Flower_Tomo_000001.tif"
+        f1 = FilenameGroup.from_file(filename)
+
+        self._files_equal(f1.first_file(), filename)
+
     def test_all_files(self):
         pattern = FilenamePattern.from_name("IMAT_Flower_Tomo_000007.tif")
         f1 = FilenameGroup(Path("foo"), pattern, [0, 1, 2])

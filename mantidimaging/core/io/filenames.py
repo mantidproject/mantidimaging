@@ -102,6 +102,9 @@ class FilenameGroup:
         for index in self.all_indexes:
             yield self.directory / self.pattern.generate(index)
 
+    def first_file(self):
+        return next(self.all_files())
+
     def find_all_files(self) -> None:
         self.all_indexes = []
         for filename in self.directory.iterdir():
@@ -128,7 +131,7 @@ class FilenameGroup:
         if file_type == FILE_TYPES.PROJ_180:
             return self._find_related_180_proj()
 
-        sample_first_name = next(self.all_files()).name
+        sample_first_name = self.first_file().name
 
         test_names = [file_type.fname.replace(" ", "_")]
         if file_type.suffix == "Before":
@@ -145,7 +148,7 @@ class FilenameGroup:
         return None
 
     def _find_related_180_proj(self) -> Optional[FilenameGroup]:
-        sample_first_name = next(self.all_files()).name
+        sample_first_name = self.first_file().name
 
         test_name = "180deg"
         if self.directory.name in ["Tomo", "tomo"]:
