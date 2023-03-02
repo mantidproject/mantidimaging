@@ -54,7 +54,7 @@ class LoadingParameters:
     sinograms: bool = DEFAULT_IS_SINOGRAM
 
 
-def _fitsread(filename: str) -> np.ndarray:
+def _fitsread(filename: Union[Path, str]) -> np.ndarray:
     """
     Read one image and return it as a 2d numpy array
 
@@ -69,7 +69,7 @@ def _fitsread(filename: str) -> np.ndarray:
     return image[0].data
 
 
-def _imread(filename: str) -> np.ndarray:
+def _imread(filename: Union[Path, str]) -> np.ndarray:
     return tifffile.imread(filename)
 
 
@@ -77,7 +77,7 @@ def supported_formats() -> List[str]:
     return ['fits', 'fit', 'tif', 'tiff']
 
 
-def get_loader(in_format: str) -> Callable[[str], np.ndarray]:
+def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
     if in_format in ['fits', 'fit']:
         load_func = _fitsread
     elif in_format in ['tiff', 'tif']:
