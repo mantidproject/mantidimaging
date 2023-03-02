@@ -94,6 +94,12 @@ class FileInformation:
     sinograms: bool
 
 
+def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
+    load_func = get_loader(file_path.suffix.replace(".", ""))
+    img = load_func(file_path)
+    return img.shape
+
+
 def read_in_file_information(input_path: str,
                              in_prefix: str = '',
                              in_format: str = DEFAULT_IO_FILE_FORMAT,
