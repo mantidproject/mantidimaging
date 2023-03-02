@@ -15,7 +15,6 @@ from dataclasses import dataclass
 from typing import List, Optional, NamedTuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pathlib import Path
     import numpy
 
 
@@ -126,35 +125,6 @@ class ReconstructionParameters:
 
 
 Indices = NamedTuple("Indices", [("start", int), ("end", int), ("step", int)])
-
-
-@dataclass
-class ImageParameters:
-    input_path: str
-    format: str
-    prefix: str
-    indices: Optional[Indices] = None
-    log_file: Optional[Path] = None
-
-
-class LoadingParameters:
-    sample: ImageParameters
-    flat_before: Optional[ImageParameters] = None
-    flat_after: Optional[ImageParameters] = None
-    dark_before: Optional[ImageParameters] = None
-    dark_after: Optional[ImageParameters] = None
-    proj_180deg: Optional[ImageParameters] = None
-
-    pixel_size: int
-    name: str
-    dtype: str
-    sinograms: bool
-
-    def set(self, name: str, img_params: ImageParameters):
-        short_name = name.lower().replace(" ", "_")
-        if name == "180 degree":
-            short_name = "proj_180deg"
-        self.__setattr__(short_name, img_params)
 
 
 class FILE_TYPES(Enum):
