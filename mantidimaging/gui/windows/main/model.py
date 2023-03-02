@@ -10,7 +10,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader.loader import NewLoadingParameters
+from mantidimaging.core.io.loader.loader import LoadingParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class MainWindowModel(object):
                     return image
         return None
 
-    def new_do_load_dataset(self, parameters: NewLoadingParameters, progress: Progress) -> StrictDataset:
+    def new_do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
         def load(im_param):
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 

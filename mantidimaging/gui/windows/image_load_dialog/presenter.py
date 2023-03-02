@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
-from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation, NewLoadingParameters, \
+from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation, LoadingParameters, \
     ImageParameters
 from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
                                            find_180deg_proj)
@@ -121,8 +121,8 @@ class LoadPresenter:
             images = find_images(selected_dir, base_name, "", image_format=self.image_format)
         field.set_images(images)
 
-    def get_parameters(self) -> NewLoadingParameters:
-        loading_param = NewLoadingParameters()
+    def get_parameters(self) -> LoadingParameters:
+        loading_param = LoadingParameters()
         for file_type in FILE_TYPES:
             field = self.view.fields[file_type.fname]
             if not field.use.isChecked() or field.path_text() == "":

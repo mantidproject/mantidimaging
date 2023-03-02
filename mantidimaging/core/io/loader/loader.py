@@ -38,7 +38,7 @@ class ImageParameters:
 
 
 @dataclass
-class NewLoadingParameters:
+class LoadingParameters:
     image_stacks: dict[FILE_TYPES, ImageParameters] = field(default_factory=dict)
 
     pixel_size: int = DEFAULT_PIXEL_SIZE
@@ -171,12 +171,12 @@ def load(input_path: Optional[str] = None,
     return image_stack
 
 
-def create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoadingParameters]:
+def create_loading_parameters_for_file_path(file_path: Path) -> Optional[LoadingParameters]:
     sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
     if sample_file is None:
         return None
 
-    loading_parameters = NewLoadingParameters()
+    loading_parameters = LoadingParameters()
     loading_parameters.name = os.path.basename(sample_file)
 
     sample_fg = FilenameGroup.from_file(sample_file)
