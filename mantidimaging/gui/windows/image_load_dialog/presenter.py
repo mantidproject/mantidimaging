@@ -2,17 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import traceback
 from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
-from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation, LoadingParameters, \
-    ImageParameters
-from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
-                                           find_180deg_proj)
+from mantidimaging.core.io.loader.loader import (FileInformation, LoadingParameters, ImageParameters,
+                                                 read_image_dimensions)
+from mantidimaging.core.io.utility import find_log_for_image
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 
@@ -53,61 +51,35 @@ class LoadPresenter:
         """
         Updates the memory usage and the indices in the dialog.
         """
+        sample_field = self.view.fields[FILE_TYPES.SAMPLE.fname]
 
-        self.view.sample.path = selected_file
-        self.view.sample.widget.setExpanded(True)
+        sample = FilenameGroup.from_file(Path(selected_file))
+        self.update_field_with_filegroup(FILE_TYPES.SAMPLE, sample)
 
-        sample_filename = self.view.sample.file()
-        self.image_format = get_file_extension(sample_filename)
-
-        filename = self.view.sample.path_text()
-        dirname = self.view.sample.directory()
-        try:
-            self.last_file_info = read_in_file_information(dirname,
-                                                           in_prefix=get_prefix(filename),
-                                                           in_format=self.image_format)
-        except Exception as e:
-            getLogger(__name__).error(f"Failed to read file {sample_filename} {e}")
-            self.view.show_error("Failed to read this file. See log for details.", traceback.format_exc())
-            self.last_file_info = None
-            return
-
-        sample_dirname = Path(dirname)
-
-        for file_info in FILE_TYPES:
-            if file_info.mode == "images":
-                field = self.view.fields[file_info.fname]
-                images = find_images(sample_dirname,
-                                     file_info.tname,
-                                     suffix=file_info.suffix,
-                                     look_without_suffix=file_info.suffix == "Before",
-                                     image_format=self.image_format)
-                field.set_images(images)
-            elif file_info.mode == "180":
-                field = self.view.fields[file_info.fname]
-                field.path = find_180deg_proj(sample_dirname, self.image_format)
-
-        try:
-            self.set_sample_log(self.view.fields["Sample Log"], self.last_file_info.filenames)
-        except RuntimeError as err:
-            self.view.show_error(str(err), traceback.format_exc())
-
-        self.view.fields["Sample Log"].use = False
-
-        for pos in ["Before", "After"]:
-            flat_path = self.view.fields[f"Flat {pos}"].path_text()
-            if flat_path:
-                log_path = find_log_for_image(Path(flat_path))
-                if log_path:
-                    self.view.fields[f"Flat {pos} Log"].path = log_path
-                    self.view.fields[f"Flat {pos} Log"].use = False
-
-        self.view.images_are_sinograms.setChecked(self.last_file_info.sinograms)
-
-        self.view.sample.update_indices(self.last_file_info.shape[0])
-        self.view.sample.update_shape(self.last_file_info.shape[1:])
+        sample_field.widget.setExpanded(True)
+        sample_shape = read_image_dimensions(Path(selected_file))
+        self.view.sample.update_indices(len(sample.all_indexes))
+        self.view.sample.update_shape(sample_shape)
         self.view.enable_preview_all_buttons()
         self.view.ok_button.setEnabled(True)
+
+        for file_info in FILE_TYPES:
+            if file_info.mode in ["images", "180"]:
+                related_group = sample.find_related(file_info)
+                if related_group:
+                    self.update_field_with_filegroup(file_info, related_group)
+
+    def update_field_with_filegroup(self, file_info: FILE_TYPES, file_group: FilenameGroup):
+        file_group.find_all_files()
+        file_list = list(file_group.all_files())
+        self.view.fields[file_info.fname].set_images(file_list)
+
+        if file_info in log_for_file_type:
+            file_group.find_log_file()
+
+            log_field = self.view.fields[log_for_file_type[file_info].fname]
+            log_field.path = file_group.log_path
+            log_field.use = False
 
     def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
         fg = FilenameGroup.from_file(Path(selected_file))

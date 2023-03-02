@@ -33,7 +33,7 @@ class Field:
         self.select_button = select_button
         self.file_info = file_info
 
-    def set_images(self, image_files: List[str]) -> None:
+    def set_images(self, image_files: List[Path]) -> None:
         if len(image_files) > 0:
             self.path = image_files[0]
             self.update_shape(len(image_files))
