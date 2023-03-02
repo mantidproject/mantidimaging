@@ -35,7 +35,7 @@ class MainWindowModel(object):
                     return image
         return None
 
-    def new_do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
+    def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
         def load(im_param):
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
