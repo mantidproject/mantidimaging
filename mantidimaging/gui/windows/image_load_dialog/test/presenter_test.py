@@ -23,11 +23,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.v.sample = self.fields["Sample"]
         self.p = LoadPresenter(self.v)
 
-    def test_do_update_sample_with_no_selected_file(self):
-        self.p.do_update_sample(None)
-
-        self.v.ok_button.setEnabled.assert_called_once_with(False)
-
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark")
     def test_do_update_field(self, mock_do_update_flat_or_dark):
         selected_file = "SelectedFile"
@@ -39,6 +34,17 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.v.select_file.assert_called_once_with(ft.fname, True)
         mock_do_update_flat_or_dark.assert_called_once_with(field, selected_file)
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark")
+    def test_do_update_field_no_selected(self, mock_do_update_flat_or_dark):
+        self.v.select_file.return_value = None
+        ft = FILE_TYPES.FLAT_BEFORE
+        field = mock.MagicMock(file_info=ft)
+
+        self.p.do_update_field(field)
+
+        self.v.select_file.assert_called_once_with(ft.fname, True)
+        mock_do_update_flat_or_dark.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log_for_image", return_value=3)
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
@@ -114,14 +120,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.v.sample.update_shape.assert_called_once_with((0, 0))
         mock_load_log.assert_called_once()
         mock_log.raise_if_angle_missing.assert_called_once()
-
-    def test_do_update_flat_or_dark_returns_without_setting_anything(self):
-        file_name = None
-        field = mock.MagicMock()
-
-        self.p.do_update_flat_or_dark(field, file_name)
-
-        field.set_images.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images")
     def test_do_update_flat_or_dark(self, find_images):
