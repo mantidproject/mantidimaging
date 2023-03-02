@@ -37,6 +37,9 @@ class LoadPresenter:
         name = field.file_info.fname
         is_image_file = field.file_info.mode != "log"
         selected_file = self.view.select_file(name, is_image_file)
+        if selected_file is None:
+            # When select file is canceled
+            return
 
         if field.file_info.mode == "sample":
             self.do_update_sample(selected_file)
@@ -47,13 +50,10 @@ class LoadPresenter:
         elif field.file_info.mode in ["log", "180"]:
             self.do_update_single_file(field, selected_file)
 
-    def do_update_sample(self, selected_file: Optional[str]) -> None:
+    def do_update_sample(self, selected_file: str) -> None:
         """
         Updates the memory usage and the indices in the dialog.
         """
-        if not selected_file:
-            self.view.ok_button.setEnabled(False)
-            return
 
         self.view.sample.path = selected_file
         self.view.sample.widget.setExpanded(True)
@@ -110,10 +110,9 @@ class LoadPresenter:
         self.view.enable_preview_all_buttons()
         self.view.ok_button.setEnabled(True)
 
-    def do_update_flat_or_dark(self, field: Field, selected_file: Optional[str]) -> None:
+    def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
         suffix = field.file_info.suffix
-        if not selected_file:
-            return
+
         selected_dir = Path(os.path.dirname(selected_file))
         images = find_images(selected_dir, field.file_info.fname, suffix, image_format=self.image_format)
         if not images:
@@ -155,18 +154,15 @@ class LoadPresenter:
             field.path = file_name
             field.use = True  # type: ignore
 
-    def do_update_single_file(self, field: Field, file_name: Optional[str]) -> None:
-        if file_name is None:
-            return
+    def do_update_single_file(self, field: Field, file_name: str) -> None:
         self._update_field_action(field, file_name)
 
-    def do_update_sample_log(self, field: Field, file_name: Optional[str]) -> None:
+    def do_update_sample_log(self, field: Field, file_name: str) -> None:
         if self.last_file_info is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
         # this is set when the user selects sample data
-        if file_name:
-            self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
+        self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
 
     def ensure_sample_log_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
         if file_name is None or file_name == "":
