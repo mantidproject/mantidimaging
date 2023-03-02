@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Optional
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import read_in_file_information, FileInformation, NewLoadingParameters, \
-    NewImageParameters
+    ImageParameters
 from mantidimaging.core.io.utility import (get_file_extension, get_prefix, find_images, find_log_for_image,
                                            find_180deg_proj)
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type
@@ -129,7 +129,7 @@ class LoadPresenter:
                 continue
             file_group = FilenameGroup.from_file(Path(field.path_text()))
             file_group.find_all_files()
-            image_param = NewImageParameters(file_group)
+            image_param = ImageParameters(file_group)
 
             if file_type in log_for_file_type:
                 log_field = self.view.fields[log_for_file_type[file_type].fname]

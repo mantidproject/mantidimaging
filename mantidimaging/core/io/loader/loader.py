@@ -31,7 +31,7 @@ DEFAULT_PIXEL_DEPTH = "float32"
 
 
 @dataclass
-class NewImageParameters:
+class ImageParameters:
     file_group: FilenameGroup
     log_file: Optional[Path] = None
     indices: Optional[Indices] = None
@@ -39,7 +39,7 @@ class NewImageParameters:
 
 @dataclass
 class NewLoadingParameters:
-    image_stacks: dict[FILE_TYPES, NewImageParameters] = field(default_factory=dict)
+    image_stacks: dict[FILE_TYPES, ImageParameters] = field(default_factory=dict)
 
     pixel_size: int = DEFAULT_PIXEL_SIZE
     name: str = ""
@@ -116,7 +116,7 @@ def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = N
     return load(file_names=file_names, progress=progress)
 
 
-def load_stack_from_image_params(image_params: NewImageParameters,
+def load_stack_from_image_params(image_params: ImageParameters,
                                  progress: Optional[Progress] = None,
                                  dtype: npt.DTypeLike = np.float32):
     file_names = [str(p) for p in image_params.file_group.all_files()]
@@ -182,7 +182,7 @@ def create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoad
     sample_fg = FilenameGroup.from_file(sample_file)
     sample_fg.find_all_files()
     sample_fg.find_log_file()
-    loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = NewImageParameters(sample_fg, sample_fg.log_path)
+    loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = ImageParameters(sample_fg, sample_fg.log_path)
 
     for file_type in [ft for ft in FILE_TYPES if ft.mode in ["images", "180"]]:
         fg = sample_fg.find_related(file_type)
@@ -192,6 +192,6 @@ def create_loading_parameters_for_file_path(file_path: Path) -> Optional[NewLoad
         fg.find_all_files()
         if file_type.tname == "Flat":
             fg.find_log_file()
-        loading_parameters.image_stacks[file_type] = NewImageParameters(fg, fg.log_path)
+        loading_parameters.image_stacks[file_type] = ImageParameters(fg, fg.log_path)
 
     return loading_parameters
