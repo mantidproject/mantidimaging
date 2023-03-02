@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.image_load_dialog.field import Field
@@ -46,80 +47,73 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.v.select_file.assert_called_once_with(ft.fname, True)
         mock_do_update_flat_or_dark.assert_not_called()
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_log_for_image", return_value=3)
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_180deg_proj", return_value=2)
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.find_images", return_value=1)
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_in_file_information",
-                return_value=FileInformation(["a"], (0, 0, 0), True))
-    @mock.patch(
-        "mantidimaging.gui.windows.image_load_dialog.presenter.get_file_extension", )
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.get_prefix")
-    def test_do_update_sample(self, get_prefix, get_file_extension, read_in_file_information, mock_load_log,
-                              find_images, find_180deg_proj, find_log_for_image):
-        selected_file = "SelectedFile"
-        sample_file_name = "SampleFileName"
-        path_text = "PathText"
-        image_format = "ImageFormat"
-        prefix = "FilePrefix"
-        dirname = "/Dirname"
+    def test_update_field_with_filegroup_sample(self):
+        mock_file_group = mock.create_autospec(FilenameGroup)
+        file_list = [mock.Mock()]
+        file_log_path = mock.Mock()
+        mock_file_group.all_files.return_value = file_list
+        mock_file_group.log_path = file_log_path
 
-        mock_log = mock.create_autospec(IMATLogFile)
-        mock_load_log.return_value = mock_log
-        self.v.sample.file.return_value = sample_file_name
-        self.v.sample.path_text.return_value = path_text
-        self.v.sample.directory.return_value = dirname
+        mock_field_path = mock.PropertyMock()
+        type(self.fields["Sample Log"]).path = mock_field_path
 
-        self.fields["Flat Before"].path_text.return_value = path_text
-        self.fields["Flat After"].path_text.return_value = path_text
+        self.p.update_field_with_filegroup(FILE_TYPES.SAMPLE, mock_file_group)
 
-        get_file_extension.return_value = image_format
-        get_prefix.return_value = prefix
+        mock_file_group.find_all_files.assert_called_once_with()
+        mock_file_group.find_log_file.assert_called_once_with()
+        self.fields["Sample"].set_images.assert_called_once_with(file_list)
+        mock_field_path.assert_called_once_with(file_log_path)
+
+    def test_update_field_with_filegroup_dark_before(self):
+        mock_file_group = mock.create_autospec(FilenameGroup)
+        file_list = [mock.Mock()]
+        mock_file_group.all_files.return_value = file_list
+
+        self.p.update_field_with_filegroup(FILE_TYPES.DARK_BEFORE, mock_file_group)
+
+        mock_file_group.find_all_files.assert_called_once_with()
+        mock_file_group.find_log_file.assert_not_called()
+        self.fields["Dark Before"].set_images.assert_called_once_with(file_list)
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_image_dimensions")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.update_field_with_filegroup")
+    def test_do_update_sample_no_related(self, mock_update_field, mock_read_image_dimensions, mock_filename_group):
+        selected_file = "/a/b/img_000.tif"
+        mock_read_image_dimensions.return_value = [10, 11]
+        mock_sample_fg = mock.create_autospec(FilenameGroup)
+        mock_filename_group.from_file.return_value = mock_sample_fg
+        mock_sample_fg.all_indexes = [0, 1, 2, 3]
+        mock_sample_fg.find_related.return_value = None
 
         self.p.do_update_sample(selected_file)
 
-        self.assertEqual(selected_file, self.v.sample.path)
-        self.v.sample.widget.setExpanded.assert_called_once_with(True)
-        self.assertEqual(image_format, self.p.image_format)
-        get_file_extension.assert_called_once_with(sample_file_name)
-        get_prefix.assert_called_once_with(path_text)
-        read_in_file_information.assert_called_once_with(dirname, in_prefix=prefix, in_format=image_format)
-        self.assertEqual((0, 0, 0), self.p.last_file_info.shape)
-        for name in ["Flat Before", "Flat After", "Dark Before", "Dark After"]:
-            self.fields[name].set_images.assert_called_once_with(1)
-        self.assertEqual(2, self.fields["180 degree"].path)
-        find_log_for_image.assert_any_call(Path("a"))
-        find_images.assert_any_call(Path(dirname),
-                                    'Flat',
-                                    suffix='Before',
-                                    look_without_suffix=True,
-                                    image_format=image_format)
-        find_images.assert_any_call(Path(dirname),
-                                    'Flat',
-                                    suffix='After',
-                                    look_without_suffix=False,
-                                    image_format=image_format)
-        find_images.assert_any_call(Path(dirname),
-                                    'Dark',
-                                    suffix='Before',
-                                    look_without_suffix=True,
-                                    image_format=image_format)
-        find_images.assert_any_call(Path(dirname),
-                                    'Dark',
-                                    suffix='After',
-                                    look_without_suffix=False,
-                                    image_format=image_format)
-        self.assertEqual(4, find_images.call_count)
-        find_180deg_proj.assert_called_once_with(Path(dirname), image_format)
-        self.assertEqual(self.fields["Sample Log"].path, 3)
-        self.assertEqual(self.fields["Flat Before Log"].path, 3)
-        self.assertFalse(self.fields["Flat Before Log"].use)
-        self.assertFalse(self.fields["Sample Log"].use)
-        self.v.images_are_sinograms.setChecked.assert_called_once_with(True)
-        self.v.sample.update_indices.assert_called_once_with(0)
-        self.v.sample.update_shape.assert_called_once_with((0, 0))
-        mock_load_log.assert_called_once()
-        mock_log.raise_if_angle_missing.assert_called_once()
+        mock_update_field.assert_called_once_with(FILE_TYPES.SAMPLE, mock_sample_fg)
+        self.fields["Sample"].update_indices.assert_called_once_with(4)
+        self.fields["Sample"].update_shape.assert_called_once_with([10, 11])
+        self.v.ok_button.setEnabled.assert_called_once_with(True)
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_image_dimensions")
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.update_field_with_filegroup")
+    def test_do_update_sample_related_flat_before(self, mock_update_field, mock_read_image_dimensions,
+                                                  mock_filename_group):
+        selected_file = "/a/b/img_000.tif"
+        mock_read_image_dimensions.return_value = [10, 11]
+        mock_sample_fg = mock.create_autospec(FilenameGroup)
+        mock_fb_fg = mock.create_autospec(FilenameGroup)
+        mock_filename_group.from_file.return_value = mock_sample_fg
+        mock_sample_fg.all_indexes = [0, 1, 2, 3]
+        mock_sample_fg.find_related.side_effect = lambda ft: mock_fb_fg if ft == FILE_TYPES.FLAT_BEFORE else None
+
+        self.p.do_update_sample(selected_file)
+
+        updated_fields = [c.args[0] for c in mock_update_field.mock_calls]
+        self.assertIn(FILE_TYPES.SAMPLE, updated_fields)
+        self.assertIn(FILE_TYPES.FLAT_BEFORE, updated_fields)
+        self.assertNotIn(FILE_TYPES.FLAT_AFTER, updated_fields)
+        self.assertNotIn(FILE_TYPES.DARK_BEFORE, updated_fields)
+        self.assertNotIn(FILE_TYPES.DARK_AFTER, updated_fields)
 
     @mock.patch("mantidimaging.core.io.filenames.FilenameGroup.all_files")
     @mock.patch("mantidimaging.core.io.filenames.FilenameGroup.find_all_files")
