@@ -112,7 +112,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.load_image_files()
 
-        start_async_mock.assert_called_once_with(self.view, self.presenter.model.new_do_load_dataset,
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.do_load_dataset,
                                                  self.presenter._on_dataset_load_done, {'parameters': parameters_mock})
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
