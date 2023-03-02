@@ -11,7 +11,7 @@ import numpy as np
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.data.reconlist import ReconList
-from mantidimaging.core.io.loader.loader import NewLoadingParameters, NewImageParameters
+from mantidimaging.core.io.loader.loader import NewLoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -41,7 +41,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
     def test_do_load_stack_sample_only(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
-        sample_mock = NewImageParameters(mock.Mock())
+        sample_mock = ImageParameters(mock.Mock())
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = True
@@ -58,7 +58,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
         log_file_mock = mock.Mock()
-        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
@@ -77,7 +77,7 @@ class MainWindowModelTest(unittest.TestCase):
         all_files = ["filename"] * 10
         mock_filename_group = mock.Mock()
         mock_filename_group.all_files.return_value = all_files
-        sample_mock = NewImageParameters(mock_filename_group)
+        sample_mock = ImageParameters(mock_filename_group)
         indices = Indices(0, 100, 2)
         sample_mock.indices = indices
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
@@ -98,17 +98,17 @@ class MainWindowModelTest(unittest.TestCase):
                                            load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
         log_file_mock = mock.Mock()
-        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
 
         flat_before_log_mock = mock.Mock()
-        flat_before_mock = NewImageParameters(mock.Mock(), flat_before_log_mock)
+        flat_before_mock = ImageParameters(mock.Mock(), flat_before_log_mock)
         lp.image_stacks[FILE_TYPES.FLAT_BEFORE] = flat_before_mock
         flat_after_log_mock = mock.Mock()
-        flat_after_mock = NewImageParameters(mock.Mock(), flat_after_log_mock)
+        flat_after_mock = ImageParameters(mock.Mock(), flat_after_log_mock)
         lp.image_stacks[FILE_TYPES.FLAT_AFTER] = flat_after_mock
         progress_mock = mock.Mock()
 
@@ -145,18 +145,18 @@ class MainWindowModelTest(unittest.TestCase):
                                                       load_log_mock: mock.Mock):
         lp = NewLoadingParameters()
         log_file_mock = mock.Mock()
-        sample_mock = NewImageParameters(mock.Mock(), log_file_mock)
+        sample_mock = ImageParameters(mock.Mock(), log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
         lp.pixel_size = 101
 
-        dark_before_mock = NewImageParameters(mock.Mock())
+        dark_before_mock = ImageParameters(mock.Mock())
         lp.image_stacks[FILE_TYPES.DARK_BEFORE] = dark_before_mock
-        dark_after_mock = NewImageParameters(mock.Mock())
+        dark_after_mock = ImageParameters(mock.Mock())
         lp.image_stacks[FILE_TYPES.DARK_AFTER] = dark_after_mock
 
-        proj_180deg_mock = NewImageParameters(mock.Mock())
+        proj_180deg_mock = ImageParameters(mock.Mock())
         lp.image_stacks[FILE_TYPES.PROJ_180] = proj_180deg_mock
 
         progress_mock = mock.Mock()
