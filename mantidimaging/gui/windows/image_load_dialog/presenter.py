@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import os
 import traceback
 from logging import getLogger
 from pathlib import Path
@@ -111,14 +110,9 @@ class LoadPresenter:
         self.view.ok_button.setEnabled(True)
 
     def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
-        suffix = field.file_info.suffix
-
-        selected_dir = Path(os.path.dirname(selected_file))
-        images = find_images(selected_dir, field.file_info.fname, suffix, image_format=self.image_format)
-        if not images:
-            base_name = os.path.basename(selected_file).rpartition("_")[0]
-            images = find_images(selected_dir, base_name, "", image_format=self.image_format)
-        field.set_images(images)
+        fg = FilenameGroup.from_file(Path(selected_file))
+        fg.find_all_files()
+        field.set_images(list(fg.all_files()))
 
     def get_parameters(self) -> LoadingParameters:
         """
