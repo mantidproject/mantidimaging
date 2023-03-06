@@ -7,7 +7,6 @@ from pathlib import Path
 from unittest import mock
 
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter
@@ -172,8 +171,6 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         field.path = None
         field.use = None
         test_filenames = ["file1", "file2"]
-
-        self.p.last_file_info = FileInformation(test_filenames, (2, 10, 10), False)
 
         self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
 
