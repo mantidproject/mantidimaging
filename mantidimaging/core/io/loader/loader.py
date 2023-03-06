@@ -100,25 +100,6 @@ def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
     return img.shape
 
 
-def read_in_file_information(input_path: str,
-                             in_prefix: str = '',
-                             in_format: str = DEFAULT_IO_FILE_FORMAT,
-                             data_dtype: 'npt.DTypeLike' = np.float32) -> FileInformation:
-    input_file_names = get_file_names(input_path, in_format, in_prefix)
-    image_stack = load(input_path,
-                       in_prefix=in_prefix,
-                       in_format=in_format,
-                       dtype=data_dtype,
-                       indices=[0, 1, 1],
-                       file_names=input_file_names)
-
-    # construct and return the new shape
-    shape: Tuple[int, int, int] = (len(input_file_names), ) + image_stack.data[0].shape
-
-    fi = FileInformation(filenames=input_file_names, shape=shape, sinograms=image_stack.is_sinograms)
-    return fi
-
-
 def load_log(log_file: Path) -> IMATLogFile:
     with open(log_file, 'r') as f:
         return IMATLogFile(f.readlines(), log_file)
