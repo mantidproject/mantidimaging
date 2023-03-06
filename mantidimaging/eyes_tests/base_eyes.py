@@ -16,6 +16,7 @@ from applitools.common import MatchLevel
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io.loader import loader
+from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
 import mantidimaging.core.parallel.utility as pu
@@ -101,8 +102,7 @@ class BaseEyesTest(unittest.TestCase):
     def _load_strict_data_set(self, set_180: bool = False):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
-        filenames = [str(p) for p in filename_group.all_files()][::2]
-        image_stack = loader.load(file_names=filenames)
+        image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
         dataset = StrictDataset(image_stack)
         image_stack.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)

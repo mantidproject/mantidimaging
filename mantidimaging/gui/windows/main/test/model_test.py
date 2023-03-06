@@ -74,9 +74,7 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch('mantidimaging.core.io.loader.loader.load')
     def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
         lp = LoadingParameters()
-        all_files = ["filename"] * 10
         mock_filename_group = mock.Mock()
-        mock_filename_group.all_files.return_value = all_files
         sample_mock = ImageParameters(mock_filename_group)
         indices = Indices(0, 100, 2)
         sample_mock.indices = indices
@@ -88,7 +86,10 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_load_dataset(lp, progress_mock)
 
-        load_mock.assert_called_once_with(file_names=all_files, progress=progress_mock, dtype=lp.dtype, indices=indices)
+        load_mock.assert_called_once_with(filename_group=mock_filename_group,
+                                          progress=progress_mock,
+                                          dtype=lp.dtype,
+                                          indices=indices)
         load_log_mock.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
@@ -220,7 +221,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         stack_mock.assert_called_with(images_id)
 
-    @mock.patch('mantidimaging.core.io.loader.load')
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_group')
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
         dataset_id = "id"
@@ -228,7 +229,8 @@ class MainWindowModelTest(unittest.TestCase):
         load.return_value = _180_stack = generate_images()
         self.model.add_180_deg_to_dataset(dataset_id=dataset_id, _180_deg_file=_180_file)
 
-        load.assert_called_with(file_names=[_180_file])
+        load_arg = load.call_args[0][0]
+        self.assertEqual(load_arg.first_file().name, _180_file)
         self.assertEqual(_180_stack, dataset_mock.proj180deg)
 
     @mock.patch('mantidimaging.core.io.loader.load')

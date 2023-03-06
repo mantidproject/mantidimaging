@@ -4,11 +4,14 @@ from __future__ import annotations
 import datetime
 import os
 import unittest
+from pathlib import Path
 from unittest import mock
 
 import h5py
 import numpy as np
 import numpy.testing as npt
+
+from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.operation_history.const import TIMESTAMP
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -142,12 +145,14 @@ class IOTest(FileOutputtingTestCase):
 
         # saver.save_preproc_images(expected_images)
         saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
-
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, expected_images.data.shape[0], saver_indices)
 
-        # this does not load any flats or darks as they were not saved out
-        loaded_images = loader.load(self.output_directory, in_format=img_format, indices=loader_indices)
+        filename = saver.DEFAULT_NAME_PREFIX + "_000000." + img_format
+        group = FilenameGroup.from_file(Path(self.output_directory) / filename)
+        group.find_all_files()
+
+        loaded_images = loader.load(group, indices=loader_indices)
 
         if loader_indices:
             assert len(loaded_images.data) == expected_len, \
@@ -170,7 +175,11 @@ class IOTest(FileOutputtingTestCase):
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, images.data.shape[0])
 
-        loaded_images = loader.load(self.output_directory, in_format=img_format)
+        filename = saver.DEFAULT_NAME_PREFIX + "_000000.tiff"
+        group = FilenameGroup.from_file(Path(self.output_directory) / filename)
+        group.find_all_files()
+
+        loaded_images = loader.load(group)
 
         npt.assert_equal(loaded_images.data, images.data)
 
@@ -184,7 +193,10 @@ class IOTest(FileOutputtingTestCase):
         saver.image_save(images, self.output_directory)
 
         # Load image stack back
-        loaded_images = loader.load(self.output_directory)
+        filename = saver.DEFAULT_NAME_PREFIX + "_000000.tif"
+        group = FilenameGroup.from_file(Path(self.output_directory) / filename)
+        group.find_all_files()
+        loaded_images = loader.load(group)
 
         # Ensure properties have been preserved
         self.assertEqual(loaded_images.metadata, images.metadata)
