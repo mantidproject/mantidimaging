@@ -4,7 +4,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-import os
 from typing import Optional, List, Union, Tuple
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
@@ -56,38 +55,27 @@ class Field:
         self._use.setChecked(value)
 
     @property
-    def path(self) -> QTreeWidgetItem:
+    def path_widget(self) -> QTreeWidgetItem:
         if self._path is None:
             self._path = QTreeWidgetItem(self._widget)
             self._path.setText(0, "Path")
         return self._path
+
+    @property
+    def path(self) -> Optional[Path]:
+        if path_text := self.path_widget.text(1):
+            return Path(path_text)
+        else:
+            return None
 
     @path.setter
     def path(self, value: Path) -> None:
         if not isinstance(value, Path):
             raise RuntimeError(f"The object passed as path for this field is not a Path. Instead got {type(value)}")
         if value != "":
-            self.path.setText(1, str(value))
+            self.path_widget.setText(1, str(value))
             self.widget.setText(1, value.name)
             self.use.setChecked(True)
-
-    def file(self) -> str:
-        """
-        :return: The file that the use has selected
-        """
-        return os.path.basename(self.path_text())
-
-    def directory(self) -> str:
-        """
-        :return: The directory of the path as a Python string
-        """
-        return os.path.dirname(self.path_text())
-
-    def path_text(self) -> str:
-        """
-        :return: The directory of the path as a Python string
-        """
-        return str(self.path.text(1))
 
     def _init_indices(self) -> None:
         indices_item = QTreeWidgetItem(self._widget)
