@@ -32,6 +32,9 @@ DEFAULT_PIXEL_DEPTH = "float32"
 
 @dataclass
 class ImageParameters:
+    """
+    Dataclass to hold info about an image stack that is to be loaded. Used with LoadingParameters
+    """
     file_group: FilenameGroup
     log_file: Optional[Path] = None
     indices: Optional[Indices] = None
@@ -39,6 +42,10 @@ class ImageParameters:
 
 @dataclass
 class LoadingParameters:
+    """
+    Dataclass to hold info about a dataset that is about to be loaded. Used to transfer information from ImageLoadDialog
+    to the loading code.
+    """
     image_stacks: dict[FILE_TYPES, ImageParameters] = field(default_factory=dict)
 
     pixel_size: int = DEFAULT_PIXEL_SIZE

@@ -122,6 +122,9 @@ class LoadPresenter:
         field.set_images(images)
 
     def get_parameters(self) -> LoadingParameters:
+        """
+        Gather information from the dialog into a LoadingParameters
+        """
         loading_param = LoadingParameters()
         for file_type in FILE_TYPES:
             field = self.view.fields[file_type.fname]
