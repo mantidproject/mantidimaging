@@ -90,26 +90,30 @@ class LoadPresenter:
         """
         Gather information from the dialog into a LoadingParameters
         """
+        sample_field = self.view.fields[FILE_TYPES.SAMPLE.fname]
+        if sample_field.path is None:
+            raise RuntimeError("No sample selected")
+
         loading_param = LoadingParameters()
         for file_type in FILE_TYPES:
             field = self.view.fields[file_type.fname]
-            if not field.use.isChecked() or field.path_text() == "":
+            if not field.use.isChecked() or field.path is None:
                 continue
-            file_group = FilenameGroup.from_file(Path(field.path_text()))
+            file_group = FilenameGroup.from_file(field.path)
             file_group.find_all_files()
             image_param = ImageParameters(file_group)
 
             if file_type in log_for_file_type:
                 log_field = self.view.fields[log_for_file_type[file_type].fname]
                 if log_field.use.isChecked():
-                    image_param.log_file = Path(log_field.path_text())
+                    image_param.log_file = log_field.path
 
             if file_type == FILE_TYPES.SAMPLE:
                 image_param.indices = field.indices
 
             loading_param.image_stacks[file_type] = image_param
 
-        loading_param.name = self.view.fields[FILE_TYPES.SAMPLE.fname].file()
+        loading_param.name = sample_field.path.name
         loading_param.pixel_size = self.view.pixelSize.value()
         loading_param.dtype = self.view.pixel_bit_depth.currentText()
         loading_param.sinograms = self.view.images_are_sinograms.isChecked()

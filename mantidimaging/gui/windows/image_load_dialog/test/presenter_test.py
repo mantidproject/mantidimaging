@@ -203,33 +203,31 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup.find_all_files")
     def test_get_parameters(self, _):
-        sample_path = "/sample/tomo/tomo_0001.tiff"
-        sample_file = "tomo_0001.tiff"
-        sample_log_path = "/sample/tomo.log"
+        sample_path = Path("/sample/tomo/tomo_0001.tiff")
+        sample_log_path = Path("/sample/tomo.log")
 
-        self.fields["Sample"].path_text.return_value = sample_path
-        self.fields["Sample"].file.return_value = sample_file
+        type(self.fields["Sample"]).path = mock.PropertyMock(return_value=sample_path)
         self.fields["Sample"].use.isChecked.return_value = True
-        self.fields["Sample Log"].path_text.return_value = sample_log_path
+        type(self.fields["Sample Log"]).path = mock.PropertyMock(return_value=sample_log_path)
 
         # sample_indices = [1, 1] #TODO
 
-        flat_before_path = "/sample/flat_before/flat_before_0001.tiff"
-        flat_before_log = "/sample/flat_before.log"
-        flat_after_path = "/sample/flat_after/flat_after_0001.tiff"
-        flat_after_log = "/sample/flat_after.log"
-        dark_before_path = "/sample/dark_before/dark_before_0001.tiff"
-        dark_after_path = "/sample/dark_after/dark_after_0001.tiff"
-        proj_180_path = "/sample/180deg/180deg.tiff"
+        flat_before_path = Path("/sample/flat_before/flat_before_0001.tiff")
+        flat_before_log = Path("/sample/flat_before.log")
+        flat_after_path = Path("/sample/flat_after/flat_after_0001.tiff")
+        flat_after_log = Path("/sample/flat_after.log")
+        dark_before_path = Path("/sample/dark_before/dark_before_0001.tiff")
+        dark_after_path = Path("/sample/dark_after/dark_after_0001.tiff")
+        proj_180_path = Path("/sample/180deg/180deg.tiff")
         self.fields["Flat Before"].use.isChecked.return_value = True
-        self.fields["Flat Before"].path_text.return_value = flat_before_path
-        self.fields["Flat Before Log"].path_text.return_value = flat_before_log
+        type(self.fields["Flat Before"]).path = mock.PropertyMock(return_value=flat_before_path)
+        type(self.fields["Flat Before Log"]).path = mock.PropertyMock(return_value=flat_before_log)
         self.fields["Flat After"].use.isChecked.return_value = True
-        self.fields["Flat After"].path_text.return_value = flat_after_path
-        self.fields["Flat After Log"].path_text.return_value = flat_after_log
-        self.fields["Dark Before"].path_text.return_value = dark_before_path
-        self.fields["Dark After"].path_text.return_value = dark_after_path
-        self.fields["180 degree"].path_text.return_value = proj_180_path
+        type(self.fields["Flat After"]).path = mock.PropertyMock(return_value=flat_after_path)
+        type(self.fields["Flat After Log"]).path = mock.PropertyMock(return_value=flat_after_log)
+        type(self.fields["Dark Before"]).path = mock.PropertyMock(return_value=dark_before_path)
+        type(self.fields["Dark After"]).path = mock.PropertyMock(return_value=dark_after_path)
+        type(self.fields["180 degree"]).path = mock.PropertyMock(return_value=proj_180_path)
 
         pixel_size = 24
         dtype = "float32"
@@ -262,7 +260,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.assertIsNone(lp_dark_after.log_file)
         self.assertIsNone(lp_proj_180deg.log_file)
 
-        self.assertEqual(lp.name, sample_file)
+        self.assertEqual(lp.name, sample_path.name)
         self.assertEqual(lp.dtype, dtype)
         self.assertEqual(lp.sinograms, sinograms)
         self.assertEqual(lp.pixel_size, pixel_size)
