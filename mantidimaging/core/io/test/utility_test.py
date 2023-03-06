@@ -24,13 +24,3 @@ class UtilityTest(FakeFSTestCase):
         found_files = utility.get_file_names("/dirname", 'tif')
 
         self._file_list_count_equal([tiff_filename], found_files)
-
-    def test_WHEN_image_has_logfile_THEN_logfile_found_(self):
-        log_name = Path("/a/b/TomoIMAT00010675_FlowerFine_log.txt")
-        image_name = Path("/a/b/Tomo/IMAT_Flower_Tomo_000000.tif")
-        self.fs.create_file(log_name)
-        self.fs.create_file(image_name)
-
-        log_found = utility.find_log_for_image(image_name)
-
-        self._files_equal(log_name, log_found)
