@@ -130,8 +130,7 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.uncaught_exception("user-error", "log-error")
 
         mock_show_error_dialog.assert_called_once()
-        print(mock_show_error_dialog.call_args)
-        self.assertIn("user-error", mock_show_error_dialog.call_args[0][1])
+        self.assertIn("user-error", mock_show_error_dialog.call_args[0][0])
         mock_getlogger.return_value.error.assert_called_once_with("log-error")
 
     @mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter")
