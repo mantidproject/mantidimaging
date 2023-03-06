@@ -63,14 +63,12 @@ class Field:
         return self._path
 
     @path.setter
-    def path(self, value: Union[Path, str]) -> None:
-        if isinstance(value, Path):
-            value = str(value)
-        elif not isinstance(value, str):
-            raise RuntimeError(f"The object passed as path for this field is not a string. Instead got {type(value)}")
+    def path(self, value: Path) -> None:
+        if not isinstance(value, Path):
+            raise RuntimeError(f"The object passed as path for this field is not a Path. Instead got {type(value)}")
         if value != "":
-            self.path.setText(1, value)
-            self.widget.setText(1, self.file())
+            self.path.setText(1, str(value))
+            self.widget.setText(1, value.name)
             self.use.setChecked(True)
 
     def file(self) -> str:
