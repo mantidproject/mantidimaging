@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Optional
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, read_image_dimensions
-from mantidimaging.core.io.utility import find_log_for_image
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 
@@ -149,9 +148,3 @@ class LoadPresenter:
         log = load_log(Path(file_name))
         log.raise_if_angle_missing(image_filenames)
         self._update_field_action(field, file_name)
-
-    def set_sample_log(self, sample_log: Field, image_filenames: list[str]) -> None:
-        sample_log_filepath = find_log_for_image(Path(image_filenames[0]))
-        if sample_log_filepath:
-            self.ensure_sample_log_consistency(sample_log, str(sample_log_filepath), image_filenames)
-            sample_log.path = sample_log_filepath
