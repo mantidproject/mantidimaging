@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING, Optional
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
-from mantidimaging.core.io.loader.loader import (FileInformation, LoadingParameters, ImageParameters,
-                                                 read_image_dimensions)
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, read_image_dimensions
 from mantidimaging.core.io.utility import find_log_for_image
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type
 from mantidimaging.gui.windows.image_load_dialog.field import Field
@@ -22,12 +21,12 @@ logger = getLogger(__name__)
 
 class LoadPresenter:
     view: 'ImageLoadDialog'
+    sample_fg: Optional[FilenameGroup] = None
 
     def __init__(self, view: 'ImageLoadDialog'):
         self.view = view
         self.image_format = ''
         self.single_mem = 0
-        self.last_file_info: Optional[FileInformation] = None
         self.dtype = '32'
 
     def do_update_field(self, field: Field) -> None:
@@ -54,6 +53,7 @@ class LoadPresenter:
         sample_field = self.view.fields[FILE_TYPES.SAMPLE.fname]
 
         sample = FilenameGroup.from_file(Path(selected_file))
+        self.sample_fg = sample
         self.update_field_with_filegroup(FILE_TYPES.SAMPLE, sample)
 
         sample_field.widget.setExpanded(True)
@@ -117,18 +117,19 @@ class LoadPresenter:
 
     def _update_field_action(self, field: Field, file_name) -> None:
         if file_name is not None:
-            field.path = file_name
+            field.path = Path(file_name)
             field.use = True  # type: ignore
 
     def do_update_single_file(self, field: Field, file_name: str) -> None:
         self._update_field_action(field, file_name)
 
     def do_update_sample_log(self, field: Field, file_name: str) -> None:
-        if self.last_file_info is None:
+        if self.sample_fg is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
         # this is set when the user selects sample data
-        self.ensure_sample_log_consistency(field, file_name, self.last_file_info.filenames)
+        sample_names = [p.name for p in self.sample_fg.all_files()]
+        self.ensure_sample_log_consistency(field, file_name, sample_names)
 
     def ensure_sample_log_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
         if file_name is None or file_name == "":

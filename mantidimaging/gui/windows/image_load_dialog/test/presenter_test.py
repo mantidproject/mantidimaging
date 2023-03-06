@@ -134,7 +134,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self.p.do_update_single_file(field, file_name)
 
-        self.assertEqual(field.path, file_name)
+        self.assertEqual(field.path, Path(file_name))
 
     def test_do_update_single_file_no_file_selected(self):
         file_name = "file_name"
@@ -146,17 +146,8 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     def test_do_update_sample_log_no_sample_selected(self):
         field = mock.MagicMock()
-        self.p.last_file_info = None
+        self.p.sample_fg = None
         self.assertRaises(RuntimeError, self.p.do_update_sample_log, field, "")
-
-    def test_do_update_sample_log_no_file_selected(self):
-        file_name = "file_name"
-        field = mock.MagicMock(file_info=FILE_TYPES.SAMPLE_LOG)
-
-        self.p.last_file_info = FileInformation([], (0, 0, 0), False)
-        self.p.do_update_sample_log(field, None)
-
-        self.assertNotEqual(field.path, file_name)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
     def test_do_update_sample_log(self, mock_ensure):
@@ -164,7 +155,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         field = mock.MagicMock(file_info=FILE_TYPES.SAMPLE_LOG)
 
-        self.p.last_file_info = FileInformation([], (0, 0, 0), False)
+        self.p.sample_fg = mock.create_autospec(FilenameGroup)
         self.p.do_update_sample_log(field, file_name)
 
         mock_ensure.assert_called_once_with(field, file_name, [])
