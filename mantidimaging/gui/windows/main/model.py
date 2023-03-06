@@ -123,7 +123,7 @@ class MainWindowModel(object):
         if not isinstance(dataset, StrictDataset):
             raise RuntimeError(f"Wrong dataset type passed to add 180 method: {dataset_id}")
 
-        _180_deg = loader.load(file_names=[_180_deg_file])
+        _180_deg = loader.load_stack_from_group(FilenameGroup.from_file(_180_deg_file))
         dataset.proj180deg = _180_deg
         return _180_deg
 

@@ -12,8 +12,7 @@ import astropy.io.fits as fits
 from tifffile import tifffile
 
 from mantidimaging.core.io.loader import img_loader
-from mantidimaging.core.io.utility import (DEFAULT_IO_FILE_FORMAT, get_file_names,
-                                           find_first_file_that_is_possibly_a_sample)
+from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.io.filenames import FilenameGroup
@@ -99,31 +98,23 @@ def load_log(log_file: Path) -> IMATLogFile:
 
 
 def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
-    file_names = [str(p) for p in group.all_files()]
-    return load(file_names=file_names, progress=progress)
+    return load(filename_group=group, progress=progress)
 
 
 def load_stack_from_image_params(image_params: ImageParameters,
                                  progress: Optional[Progress] = None,
                                  dtype: npt.DTypeLike = np.float32):
-    file_names = [str(p) for p in image_params.file_group.all_files()]
-    return load(file_names=file_names, progress=progress, dtype=dtype, indices=image_params.indices)
+    return load(filename_group=image_params.file_group, progress=progress, dtype=dtype, indices=image_params.indices)
 
 
-def load(input_path: Optional[str] = None,
-         in_prefix: str = '',
-         in_format: str = DEFAULT_IO_FILE_FORMAT,
+def load(filename_group: FilenameGroup,
          dtype: 'npt.DTypeLike' = np.float32,
-         file_names: Optional[List[str]] = None,
          indices: Optional[Union[List[int], Indices]] = None,
          progress: Optional[Progress] = None) -> ImageStack:
     """
 
     Loads a stack, including sample, white and dark images.
 
-    :param input_path: Path for the input data folder
-    :param in_prefix: Optional: Prefix for loaded files
-    :param in_format: Default:'tiff', format for the input images
     :param dtype: Default:np.float32, data type for the input images
     :param file_names: Use provided file names for loading
     :param indices: Specify which indices are loaded from the found files.
@@ -136,18 +127,14 @@ def load(input_path: Optional[str] = None,
     if indices and len(indices) < 3:
         raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
-    if not file_names:
-        input_file_names = get_file_names(input_path, in_format, in_prefix)
-    else:
-        input_file_names = file_names
-
+    file_names = [str(p) for p in filename_group.all_files()]
+    in_format = filename_group.first_file().suffix.lstrip('.')
     load_func = get_loader(in_format)
 
-    image_stack = img_loader.execute(load_func, input_file_names, in_format, dtype, indices, progress)
+    image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
 
     # Search for and load metadata file
-    metadata_found_filenames = get_file_names(input_path, 'json', in_prefix, essential=False)
-    metadata_filename = metadata_found_filenames[0] if metadata_found_filenames else None
+    metadata_filename = filename_group.metadata_path
     if metadata_filename:
         with open(metadata_filename) as f:
             image_stack.load_metadata(f)
