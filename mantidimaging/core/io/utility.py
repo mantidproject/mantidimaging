@@ -121,10 +121,6 @@ def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-def get_prefix(path: str, separator: str = "_") -> str:
-    return path[:path.rfind(separator)]
-
-
 def find_images(sample_dirname: Path,
                 image_type: str,
                 suffix: str,
