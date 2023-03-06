@@ -87,13 +87,6 @@ def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
     return load_func
 
 
-@dataclass
-class FileInformation:
-    filenames: List[str]
-    shape: Tuple[int, int, int]
-    sinograms: bool
-
-
 def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
     load_func = get_loader(file_path.suffix.replace(".", ""))
     img = load_func(file_path)
