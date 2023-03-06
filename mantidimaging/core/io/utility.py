@@ -158,15 +158,6 @@ def find_log_for_image(image_file_name: Path) -> Optional[Path]:
     return filename_group.log_path
 
 
-def find_180deg_proj(sample_dirname: Path, image_format: str) -> str:
-    expected_path = sample_dirname / '..' / '180deg'
-    try:
-        return get_file_names(expected_path.absolute(), image_format)[0]
-    except RuntimeError:
-        log.info(f"Could not find 180 degree projection in {expected_path}")
-    return ""
-
-
 def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
     # Grab all .tif or .tiff files
     possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
