@@ -24,20 +24,6 @@ SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
 THRESHOLD_180 = np.radians(1)
 
 
-def get_file_extension(file: str) -> str:
-    """
-    >>> get_file_extension("/home/user/file_path.test")
-    'test'
-    >>> get_file_extension("/home/user/file.path.test")
-    'test'
-    >>> get_file_extension("/home/")
-    ''
-
-    """
-    # [1] gets the extension, [1:] returns it without the dot
-    return os.path.splitext(file)[1][1:]
-
-
 def get_candidate_file_extensions(ext: str) -> List[str]:
     """
     Gets a list of file extensions which can be used to load files.
