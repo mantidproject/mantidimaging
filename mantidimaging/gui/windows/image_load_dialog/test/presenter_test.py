@@ -11,7 +11,7 @@ from mantidimaging.core.io.loader.loader import FileInformation
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter
-from mantidimaging.core.utility.data_containers import FILE_TYPES
+from mantidimaging.core.utility.data_containers import FILE_TYPES, Indices
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
@@ -205,12 +205,12 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
     def test_get_parameters(self, _):
         sample_path = Path("/sample/tomo/tomo_0001.tiff")
         sample_log_path = Path("/sample/tomo.log")
+        sample_indices = Indices(0, 10, 1)
 
         type(self.fields["Sample"]).path = mock.PropertyMock(return_value=sample_path)
         self.fields["Sample"].use.isChecked.return_value = True
+        type(self.fields["Sample"]).indices = mock.PropertyMock(return_value=sample_indices)
         type(self.fields["Sample Log"]).path = mock.PropertyMock(return_value=sample_log_path)
-
-        # sample_indices = [1, 1] #TODO
 
         flat_before_path = Path("/sample/flat_before/flat_before_0001.tiff")
         flat_before_log = Path("/sample/flat_before.log")
@@ -247,6 +247,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         self._files_equal(next(lp_sample.file_group.all_files()), sample_path)
         self._files_equal(lp_sample.log_file, sample_log_path)
+        self.assertEqual(lp_sample.indices, sample_indices)
 
         self._files_equal(next(lp_flat_before.file_group.all_files()), flat_before_path)
         self._files_equal(next(lp_flat_after.file_group.all_files()), flat_after_path)
