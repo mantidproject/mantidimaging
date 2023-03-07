@@ -8,10 +8,7 @@ import os
 import re
 import numpy as np
 from logging import getLogger
-from typing import List, Optional, Union, Tuple, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from pathlib import Path
+from typing import List, Optional, Union, Tuple
 
 log = getLogger(__name__)
 
@@ -41,49 +38,6 @@ def get_candidate_file_extensions(ext: str) -> List[str]:
 
     # Return candidates, provided extension is always first to give it priority
     return [ext] + candidates
-
-
-def get_file_names(path: Optional[Union[Path, str]],
-                   img_format: str,
-                   prefix: str = '',
-                   essential: bool = True) -> List[str]:
-    """
-    Get all file names in a directory with a specific format.
-    :param path: The path to be checked.
-
-    :param img_format: The image format used as a postfix after the .
-
-    :param prefix: A specific prefix for the images
-
-    :param essential: Flag indicating if failure to find file should raise and
-                      exception
-
-    :return: All the file names, sorted by ascending
-    """
-
-    # Return no found files on None path
-    if path is None:
-        return []
-
-    path = os.path.abspath(os.path.expanduser(path))
-    extensions = get_candidate_file_extensions(img_format)
-    files_match = []
-    for ext in extensions:
-        files_match = glob.glob(os.path.join(path, "{0}*{1}".format(prefix, ext)))
-
-        if len(files_match) > 0:
-            break
-
-    if len(files_match) == 0 and essential:
-        raise RuntimeError(f"Could not find any image files in '{path}' with extensions: {extensions}")
-
-    # This is a necessary step, otherwise the file order is not guaranteed to
-    # be sequential and we get randomly ordered stack of names
-    files_match.sort(key=_alphanum_key_split)
-
-    log.debug(f'Found {len(files_match)} files with common prefix: {os.path.commonprefix(files_match)}')
-
-    return files_match
 
 
 def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
