@@ -119,34 +119,6 @@ def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
     return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
-def find_images(sample_dirname: Path,
-                image_type: str,
-                suffix: str,
-                image_format: str,
-                look_without_suffix: bool = False) -> List[str]:
-    # same folder
-    file_names = find_images_in_same_directory(sample_dirname, image_type, suffix, image_format)
-    if file_names is not None:
-        return file_names
-
-    # look into different directories 1 level above
-    dirs = [
-        f"{image_type} {suffix}", f"{image_type.lower()} {suffix}", f"{image_type}_{suffix}",
-        f"{image_type.lower()}_{suffix}"
-    ]
-    if look_without_suffix:
-        dirs.extend([f"{image_type.lower()}", image_type])
-
-    for d in dirs:
-        expected_folder_path = sample_dirname / ".." / d
-        try:
-            return get_file_names(expected_folder_path.absolute(), image_format)
-        except RuntimeError:
-            log.info(f"Could not find {image_format} files in {expected_folder_path.absolute()}")
-
-    return []
-
-
 def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
     # Grab all .tif or .tiff files
     possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
