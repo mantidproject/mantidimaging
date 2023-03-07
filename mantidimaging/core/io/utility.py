@@ -5,10 +5,9 @@ from __future__ import annotations
 import glob
 import itertools
 import os
-import re
 import numpy as np
 from logging import getLogger
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Tuple
 
 log = getLogger(__name__)
 
@@ -38,25 +37,6 @@ def get_candidate_file_extensions(ext: str) -> List[str]:
 
     # Return candidates, provided extension is always first to give it priority
     return [ext] + candidates
-
-
-def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
-    """
-    From a string to a list of alphabetic and numeric elements. Intended to
-    be used for sequence number/natural sorting. In list.sort() the
-    key can be a list, so here we split the alpha/numeric fields into
-    a list. For example (in the final order after sort() would be applied):
-
-    "angle4" -> ["angle", 4]
-    "angle31" -> ["angle", 31]
-    "angle42" -> ["angle", 42]
-    "angle101" -> ["angle", 101]
-
-    Several variants compared here:
-    https://dave.st.germa.in/blog/2007/12/11/exception-handling-slow/
-    """
-    alpha_num_split_re = re.compile('([0-9]+)')
-    return [int(c) if c.isdigit() else c for c in alpha_num_split_re.split(path_str)]
 
 
 def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
