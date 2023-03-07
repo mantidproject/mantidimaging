@@ -40,6 +40,7 @@ Fixes
 - #1659 : PyInstaller missing cupy files
 - #1657 : PyInstaller: order of operations in menu is not sorted
 - #1712 : Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer
+- #1219 : Fix image_180deg.tiff being included in sample stack
 
 Developer Changes
 -----------------
@@ -58,3 +59,4 @@ Developer Changes
 - #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
 - #1641 : More robust logging and error handling in automated testing
 - #1643 : Deprecations in GitHub actions
+-  #1726, #1728 : Use FilenameGroup for Load Dataset
