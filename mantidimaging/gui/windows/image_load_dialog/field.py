@@ -21,16 +21,20 @@ class Field:
     _increment_spinbox: Optional[QSpinBox] = None
     _shape_widget: Optional[QTreeWidgetItem] = None
     _tree: QTreeWidget
-    _path: Optional[QTreeWidgetItem]
+    _path: QTreeWidgetItem
 
     def __init__(self, tree: QTreeWidget, widget: QTreeWidgetItem, use: QCheckBox, select_button: QPushButton,
                  file_info: FILE_TYPES):
         self._tree = tree
         self._widget = widget
         self._use = use
-        self._path = None
+        self._path = QTreeWidgetItem(self._widget)
+        self._path.setText(0, "Path")
         self.select_button = select_button
         self.file_info = file_info
+
+        if file_info == FILE_TYPES.SAMPLE:
+            self._init_indices()
 
     def set_images(self, image_files: List[Path]) -> None:
         if len(image_files) > 0:
@@ -56,9 +60,6 @@ class Field:
 
     @property
     def path_widget(self) -> QTreeWidgetItem:
-        if self._path is None:
-            self._path = QTreeWidgetItem(self._widget)
-            self._path.setText(0, "Path")
         return self._path
 
     @property
