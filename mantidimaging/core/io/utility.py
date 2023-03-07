@@ -3,40 +3,16 @@
 from __future__ import annotations
 
 import glob
-import itertools
 import os
 import numpy as np
 from logging import getLogger
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 log = getLogger(__name__)
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
 
-SIMILAR_FILE_EXTENSIONS = (('tif', 'tiff'), ('fit', 'fits'))
-
 THRESHOLD_180 = np.radians(1)
-
-
-def get_candidate_file_extensions(ext: str) -> List[str]:
-    """
-    Gets a list of file extensions which can be used to load files.
-    :param ext: User provided file extension
-    :returns: List of extensions in the order they should be tested
-    """
-    # Get all tuples of similar extensions that the provided extension appears
-    # in
-    similar_extensions = [e for e in SIMILAR_FILE_EXTENSIONS if ext in e]
-
-    # Concatenate them all into a single list
-    candidates = list(itertools.chain(*similar_extensions))
-
-    # Remove the provided extension from the list
-    if ext in candidates:
-        candidates.remove(ext)
-
-    # Return candidates, provided extension is always first to give it priority
-    return [ext] + candidates
 
 
 def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
