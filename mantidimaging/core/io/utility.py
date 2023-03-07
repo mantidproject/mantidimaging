@@ -86,20 +86,6 @@ def get_file_names(path: Optional[Union[Path, str]],
     return files_match
 
 
-def find_images_in_same_directory(sample_dirname: Path, type: str, suffix: str,
-                                  image_format: str) -> Optional[List[str]]:
-    prefix_list = [f"*{type}", f"*{type.lower()}", f"*{type}_{suffix}", f"*{type.lower()}_{suffix}"]
-
-    for prefix in prefix_list:
-        try:
-            if suffix != "After":
-                return get_file_names(sample_dirname.absolute(), image_format, prefix=prefix)
-        except RuntimeError:
-            getLogger(__name__).info(f"Could not find {prefix} files in {sample_dirname.absolute()}")
-
-    return None
-
-
 def _alphanum_key_split(path_str: str) -> List[Union[int, str]]:
     """
     From a string to a list of alphabetic and numeric elements. Intended to
