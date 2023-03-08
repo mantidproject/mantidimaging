@@ -18,7 +18,7 @@ class FilenamePattern:
 
     Handles patterns like "aaaa_####.bbb" where # are digits
     """
-    PATTERN_p = r'^([a-zA-Z0-9_]+?)'
+    PATTERN_p = r'^(.+?)'
     PATTERN_d = r'([0-9]+)'
     PATTERN_s = r'(\.[a-zA-Z_]+)$'
     PATTERN = re.compile(PATTERN_p + PATTERN_d + PATTERN_s)
