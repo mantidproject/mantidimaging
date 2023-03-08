@@ -37,7 +37,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_do_update_flat_or_dark.assert_called_once_with(field, selected_file)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark")
-    def test_do_update_field_no_selected(self, mock_do_update_flat_or_dark):
+    def test_do_update_field_when_no_file_selected(self, mock_do_update_flat_or_dark):
         self.v.select_file.return_value = None
         ft = FILE_TYPES.FLAT_BEFORE
         field = mock.MagicMock(file_info=ft)
