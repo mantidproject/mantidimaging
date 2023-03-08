@@ -227,8 +227,7 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument/detector fields
             self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]["detector"]), "NXdetector")
-            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]),
-                                   sd.sample.data.astype("uint16"))
+            npt.assert_array_equal(np.array(nexus_file["processed-data"]["data"]), sd.sample.data.astype("float32"))
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
@@ -239,7 +238,6 @@ class IOTest(FileOutputtingTestCase):
                                    sd.sample.projection_angles().value)
 
             # test links
-            self.assertEqual(tomo_entry["data"]["data"], tomo_entry["instrument"]["detector"]["data"])
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
