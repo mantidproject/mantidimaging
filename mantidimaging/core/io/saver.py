@@ -224,9 +224,9 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     # instrument/detector field
     detector = instrument_group.create_group("detector")
     _set_nx_class(detector, "NXdetector")
-
-    # instrument data
     detector.create_dataset("image_key", data=dataset.image_keys)
+
+    _save_processed_data_to_nexus(nexus_file, dataset)
 
     # sample field
     sample_group = tomo_entry.create_group("sample")
@@ -251,7 +251,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset):
     data = nexus_file.create_group("processed-data")
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
-    data.create_dataset("data", shape=combined_data_shape, dtype="uint16")
+    data.create_dataset("data", shape=combined_data_shape, dtype="float32")
     index = 0
     for arr in dataset.nexus_arrays:
         data["data"][index:index + arr.shape[0]] = arr
