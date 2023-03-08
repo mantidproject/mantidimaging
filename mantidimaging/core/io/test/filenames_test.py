@@ -26,6 +26,7 @@ class FilenamePatternTest(unittest.TestCase):
          "IMAT00024129_double_capillary_working_image_60C_wet gas_current holding_new_", 3, ".tif"),
         ("τομογραφία_01.tiff", "τομογραφία_", 2, ".tiff"),
         ("𓊨𓏏𓆇𓁐_0001.txt", "𓊨𓏏𓆇𓁐_", 4, ".txt"),
+        ("📷_000.tif", "📷_", 3, ".tif"),
     ])
     def test_pattern_from_name(self, filename, prefix, count, suffix):
         p1 = FilenamePattern.from_name(filename)
