@@ -83,7 +83,7 @@ class ImageLoadDialog(BaseDialogView):
         """
         :param caption: Title of the file browser window that will be opened
         :param image_file: Whether or not the file being looked for is an image
-        :return: True: If a file has been selected, False otherwise
+        :return: Selected file name or None if canceled
         """
         if image_file:
             file_filter = "Images (*.png *.jpg *.tif *.tiff *.fit *.fits)"

@@ -30,11 +30,15 @@ class LoadPresenter:
         self.dtype = '32'
 
     def do_update_field(self, field: Field) -> None:
+        """
+        Called when user clicks select button.
+
+        Does nothing if the select file dialog is canceled.
+        """
         name = field.file_info.fname
         is_image_file = field.file_info.mode != "log"
         selected_file = self.view.select_file(name, is_image_file)
-        if selected_file is None:
-            # When select file is canceled
+        if selected_file is None:  # When select file is canceled
             return
 
         if field.file_info.mode == "sample":
@@ -129,10 +133,12 @@ class LoadPresenter:
         self._update_field_action(field, file_name)
 
     def do_update_sample_log(self, field: Field, file_name: str) -> None:
+        """
+        Update the sample log if a sample is set. Also check log is consistent with sample
+        """
         if self.sample_fg is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
-        # this is set when the user selects sample data
         sample_names = [p.name for p in self.sample_fg.all_files()]
         self.ensure_sample_log_consistency(field, file_name, sample_names)
 
