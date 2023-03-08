@@ -23,6 +23,11 @@ if TYPE_CHECKING:
     from ..data.imagestack import ImageStack
     from ..utility.data_containers import Indices
 
+try:
+    from mantidimaging.versions import package_version  # type: ignore
+except ImportError:
+    package_version = '0.0.0.dev1'
+
 LOG = getLogger(__name__)
 
 DEFAULT_ZFILL_LENGTH = 6
@@ -221,12 +226,6 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     _set_nx_class(detector, "NXdetector")
 
     # instrument data
-    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
-    detector.create_dataset("data", shape=combined_data_shape, dtype="uint16")
-    index = 0
-    for arr in dataset.nexus_arrays:
-        detector["data"][index:index + arr.shape[0]] = arr
-        index += arr.shape[0]
     detector.create_dataset("image_key", data=dataset.image_keys)
 
     # sample field
@@ -241,13 +240,27 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     # data field
     data = tomo_entry.create_group("data")
     _set_nx_class(data, "NXdata")
-    data["data"] = detector["data"]
     data["rotation_angle"] = rotation_angle
     data["image_key"] = detector["image_key"]
 
     for recon in dataset.recons:
         assert dataset.sample.filenames is not None
         _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
+
+
+def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset):
+    data = nexus_file.create_group("processed-data")
+    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
+    data.create_dataset("data", shape=combined_data_shape, dtype="uint16")
+    index = 0
+    for arr in dataset.nexus_arrays:
+        data["data"][index:index + arr.shape[0]] = arr
+        index += arr.shape[0]
+
+    process = data.create_group("process")
+    process.create_dataset("program", data=np.string_("Mantid Imaging"))
+    process.create_dataset("date", data=np.string_(datetime.datetime.now().isoformat()))
+    process.create_dataset("version", data=np.string_(package_version))
 
 
 def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):
