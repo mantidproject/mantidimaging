@@ -43,6 +43,7 @@ Fixes
 - #1712 : Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer
 - #1219 : Fix image_180deg.tiff being included in sample stack
 - #1730 : Allow any characters in filenames
+- #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
 
 Developer Changes
 -----------------
