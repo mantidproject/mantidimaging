@@ -3,9 +3,8 @@
 from __future__ import annotations
 from pathlib import Path
 
-from mantidimaging.core.io import loader
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_DEPTH, \
-    DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, create_loading_parameters_for_file_path
+    DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, create_loading_parameters_for_file_path, get_loader
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
@@ -13,7 +12,7 @@ from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 class LoaderTest(FakeFSTestCase):
     def test_raise_on_invalid_format(self):
-        self.assertRaises(NotImplementedError, loader.load, "/some/path", file_names=["/somefile"], in_format='txt')
+        self.assertRaises(NotImplementedError, get_loader, in_format='txt')
 
     def test_create_loading_parameters_for_file_path(self):
         output_directory = Path("/b")
