@@ -54,6 +54,14 @@ Mantid Imaging offers several reconstruction algorithms
 * CIL: PDHG-TV - Core Imaging Library
 * gridrec
 
+Spectrum Viewer
+^^^^^^^^^^^^^^
+
+Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI. 
+The spectrum viewer can be used to export the spectrum of each ROI and ROI coordinates to respective csv files.
+
+The spectrum viewer can be accessed from the main menu bar under the "View" tab.
+
 Glossary
 --------
 
@@ -80,4 +88,7 @@ Sinogram
 
 Tomography
    The process of creating a 3D model if an object from a series 2D images taken at a range angles through it.
+
+TOF
+   Time of Flight. The time taken for a neutron to travel from the source to the detector.
 
