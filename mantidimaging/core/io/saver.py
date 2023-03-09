@@ -23,17 +23,14 @@ if TYPE_CHECKING:
     from ..data.imagestack import ImageStack
     from ..utility.data_containers import Indices
 
-try:
-    from mantidimaging.versions import package_version  # type: ignore
-except ImportError:
-    package_version = '0.0.0.dev1'
-
 LOG = getLogger(__name__)
 
 DEFAULT_ZFILL_LENGTH = 6
 DEFAULT_NAME_PREFIX = 'image'
 DEFAULT_NAME_POSTFIX = ''
 INT16_SIZE = 65536
+
+package_version = CheckVersion().get_version()
 
 
 def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
@@ -293,7 +290,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     _set_nx_class(reconstruction, "NXprocess")
 
     reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
-    reconstruction.create_dataset("version", data=np.string_(CheckVersion().get_version()))
+    reconstruction.create_dataset("version", data=np.string_(package_version))
     recon_timestamp = recon.metadata.get(TIMESTAMP)
     if recon_timestamp is None:
         recon_timestamp = datetime.datetime.now().isoformat()
