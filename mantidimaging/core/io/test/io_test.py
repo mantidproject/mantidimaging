@@ -280,10 +280,10 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument field
             npt.assert_array_equal(
-                np.array(tomo_entry["instrument"]["detector"]["data"]),
+                np.array(nexus_file["processed-data"]["data"]),
                 np.concatenate(
                     [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
-                     sd.dark_after.data]).astype("uint16"))
+                     sd.dark_after.data]).astype("float32"))
             npt.assert_array_equal(
                 np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                 [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
