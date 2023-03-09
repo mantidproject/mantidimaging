@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePath
 from unittest import mock
 import io
 
@@ -192,6 +192,17 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertIn("0.0,0.0,0.0", mock_stream.getvalue())
         self.assertIn("1.0,2.0,2.0", mock_stream.getvalue())
         self.assertTrue(mock_stream.is_closed)
+
+    def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
+        path = Path("test_file.csv")
+        with mock.patch('builtins.open', mock.mock_open()) as mock_open:
+            self.model.save_roi_coords(path)
+        mock_open.assert_called_once_with(path, encoding='utf-8', mode='w')
+
+    def test_WHEN_get_roi_coords_filename_called_THEN_correct_filename_returned(self):
+        path = PurePath("test_file.csv")
+        expected_path = PurePath("test_file_roi_coords.csv")
+        self.assertEqual(expected_path, self.model.get_roi_coords_filename(path))
 
     def test_save_csv_norm_missing_stack(self):
         stack = ImageStack(np.ones([10, 11, 12]))
