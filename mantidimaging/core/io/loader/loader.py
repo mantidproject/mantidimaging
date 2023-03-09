@@ -116,7 +116,7 @@ def load(filename_group: FilenameGroup,
     Loads a stack, including sample, white and dark images.
 
     :param dtype: Default:np.float32, data type for the input images
-    :param file_names: Use provided file names for loading
+    :param filename_group: FilenameGroup to provided file names for loading
     :param indices: Specify which indices are loaded from the found files.
                     This **DOES NOT** check for the number in the image
                     filename, but removes all indices from the filenames list
