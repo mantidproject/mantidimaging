@@ -255,6 +255,7 @@ def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset)
         index += arr.shape[0]
 
     process = data.create_group("process")
+    _set_nx_class(process, "NXprocess")
     process.create_dataset("program", data=np.string_("Mantid Imaging"))
     process.create_dataset("date", data=np.string_(datetime.datetime.now().isoformat()))
     process.create_dataset("version", data=np.string_(package_version))
