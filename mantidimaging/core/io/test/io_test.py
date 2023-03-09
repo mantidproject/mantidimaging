@@ -148,7 +148,7 @@ class IOTest(FileOutputtingTestCase):
         self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
                                 data_as_stack, expected_images.data.shape[0], saver_indices)
 
-        filename = saver.DEFAULT_NAME_PREFIX + "_000000." + img_format
+        filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.{img_format}"
         group = FilenameGroup.from_file(Path(self.output_directory) / filename)
         group.find_all_files()
 
