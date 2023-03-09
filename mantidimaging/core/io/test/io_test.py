@@ -19,7 +19,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus
+from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -331,6 +331,16 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, "sample-name")
 
         self.assertEqual(recon_save_mock.call_count, len(sd.recons))
+
+    def test_save_process(self):
+        ds = StrictDataset(th.generate_images())
+        process_path = "processed-data/process"
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            _save_processed_data_to_nexus(nexus_file, ds)
+            assert "process" in nexus_file["processed-data"]
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["program"]), "Mantid Imaging")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["version"]), CheckVersion.get_version())
+            self.assertIn(str(datetime.date.today()), _nexus_dataset_to_string(nexus_file[process_path]["date"]))
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
