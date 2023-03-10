@@ -247,6 +247,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset):
     data = nexus_file.create_group("processed-data")
+    _set_nx_class(data, "NXdata")
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
     data.create_dataset("data", shape=combined_data_shape, dtype="float32")
     index = 0
