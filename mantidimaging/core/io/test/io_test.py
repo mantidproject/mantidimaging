@@ -340,7 +340,8 @@ class IOTest(FileOutputtingTestCase):
             assert "process" in nexus_file["processed-data"]
             self.assertEqual(_decode_nexus_class(nexus_file[process_path]), "NXprocess")
             self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["program"]), "Mantid Imaging")
-            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["version"]), CheckVersion.get_version())
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["version"]),
+                             CheckVersion().get_version())
             self.assertIn(str(datetime.date.today()), _nexus_dataset_to_string(nexus_file[process_path]["date"]))
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
