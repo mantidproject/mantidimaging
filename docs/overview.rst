@@ -58,9 +58,9 @@ Spectrum Viewer
 ^^^^^^^^^^^^^^
 
 Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI. 
-The spectrum viewer can be used to export the spectrum of each ROI and ROI coordinates to respective csv files.
+The spectrum viewer can be used to export the spectrum of each ROI and its respective coordinates to a separate csv file.
 
-The spectrum viewer can be accessed from the main menu bar under the "View" tab.
+The spectrum viewer can be accessed from the main menu under "Workflow" > "Spectrum Viewer".
 
 Glossary
 --------

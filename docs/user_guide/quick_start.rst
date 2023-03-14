@@ -118,7 +118,7 @@ For more details on the reconstruction GUI see :ref:`reconstruction window`
 Post-reconstruction
 ###################
 
-Once the reconstruction is finished, the data will be automatically divided by the pixel size, so the resulting images will contain the attenuation values. At this point you can apply some post-processing operations (such as circular mask), or just save out the stack with File > Save (or CTRL+S), in order to visualise it as a 3D volume in another software.
+Once the reconstruction is finished, the data will be automatically divided by the pixel size, so the resulting images will contain the attenuation values. At this point you can apply some post-processing operations (such as circular mask).
 
 
 Spectrum Viewer
@@ -126,11 +126,9 @@ Spectrum Viewer
 
 The spectrum viewer is a tool that allows you to view the spectrum of a single pixel in the image stack. To open the spectrum viewer go to Workflow > Spectrum Viewer.
 
-1. Resize the orange ROI to just cover the size of the sample. This will allow you to see the spectrum of the sample.
+1. Resize the orange ROI to just cover the size of the sample. This will allow you to see the spectrum of the sample which you will be able to see in the spectrum line plot at the bottom of the window.
 2. Click the "Add" button on the left to add another ROI which you can position over a particular detail of your choosing on the sample.
-3. Double click on within the ROI Table on "roi_1" to rename to something more descriptive of what the ROI is covering.
-4. To remove an ROI, you can select the ROI you would like ot remove within the ROI Table and click the "Remove" button on the left.
-5. To ROI data, you can click the "Export spectrum" button and select a location and filename. Two files will be saved to this location <filename>.csv and <filename>_roi_coords.csv. 
-<filename>.csv contains the spectrum data for each ROI. <filename>_roi_coords.csv contains the coordinates of the ROIs in the image stack.
-6. If you have a TOF dataset loaded where you would like to normalise to the open beam, you can do so by toggling the "Normalise to open beam" checkbox. 
-This will normalise the spectrum to the open beam spectrum. The greyed out drop down menu will become available and you can select which dataset you would like to use as the open beam.
+3. Within the ROI Table, double click "roi_1" to rename to something more descriptive of what the ROI is covering.
+4. To remove an ROI, you can select the ROI you would like to remove within the ROI Table and click the "Remove" button on the left.
+5. To export spectrum data, you can click the "Export spectrum" button and select a location and filename. Two files will be saved to this location <filename>.csv and <filename>_roi_coords.csv. <filename>.csv contains the spectrum data for each ROI. <filename>_roi_coords.csv contains the coordinates of the ROIs in the image stack.
+6. If you have a TOF dataset loaded where you would like to normalise to the open beam, you can do so by toggling the "Normalise to open beam" checkbox. This will normalise the spectrum to the open beam spectrum. The greyed out drop down menu will become available and you can select which dataset you would like to use as the open beam.

@@ -11,6 +11,9 @@ notebooks/demoimages/
 # PyCharm project ignore
 .idea
 
+# VSCode project ignore
+.vscode
+
 # Tags created from the VSCode python extension
 tags
 
