@@ -221,3 +221,16 @@ class GoldenFilenameGroupTest(FakeFSTestCase):
 
         self.assertTrue(isinstance(group.pattern, FilenamePatternGolden))
         self.assertEqual([1], group.all_indexes)
+
+    def test_all_files(self):
+        angles = [0.0, 111.2461, 42.4922, 153.7384, 16.2306]
+        basename = "IMAT00021870_CMOS_LegoScan_GR_PH40_GRtomo_{}_{:03d}.tif"
+        filenames = [basename.format(a, n) for n, a in enumerate(angles)]
+
+        for filename in filenames:
+            self.fs.create_file(filename)
+
+        group = FilenameGroup.from_file(filenames[0])
+        group.find_all_files()
+
+        self._file_list_count_equal(filenames, group.all_files())

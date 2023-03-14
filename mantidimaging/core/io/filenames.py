@@ -85,13 +85,12 @@ class FilenamePatternGolden(FilenamePattern):
         self.prefix = prefix
         self.digit_count = digit_count
         self.suffix = suffix
-        print(f"FilenamePatternGolden {prefix=} {digit_count=} {suffix=}")
+        self.name_store: dict[int, str] = {}
 
         self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "([1-9]*[0-9]{" + str(digit_count) +
                                      "})" + re.escape(suffix) + "$")
 
         self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
-        self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
     def from_name(cls, filename: str) -> FilenamePattern:
@@ -108,7 +107,12 @@ class FilenamePatternGolden(FilenamePattern):
         result = self.re_pattern.match(filename)
         if result is None:
             raise ValueError(f"Filename ({filename}) does not match pattern: {self.re_pattern}")
-        return int(result.group(2))
+        index = int(result.group(2))
+        self.name_store[index] = filename
+        return index
+
+    def generate(self, index: int) -> str:
+        return self.name_store[index]
 
 
 class FilenameGroup:
