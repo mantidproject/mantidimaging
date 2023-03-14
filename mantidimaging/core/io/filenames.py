@@ -75,7 +75,40 @@ class FilenamePattern:
 
 
 class FilenamePatternGolden(FilenamePattern):
-    pass
+    PATTERN_p = r'^(.+?)'
+    PATTERN_a = r'_([0-9\.]+)_'
+    PATTERN_d = r'([0-9]+)'
+    PATTERN_s = r'(\.[a-zA-Z]+)$'
+    PATTERN = re.compile(PATTERN_p + PATTERN_a + PATTERN_d + PATTERN_s)
+
+    def __init__(self, prefix: str, digit_count: int, suffix: str):
+        self.prefix = prefix
+        self.digit_count = digit_count
+        self.suffix = suffix
+        print(f"FilenamePatternGolden {prefix=} {digit_count=} {suffix=}")
+
+        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "([1-9]*[0-9]{" + str(digit_count) +
+                                     "})" + re.escape(suffix) + "$")
+
+        self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
+        self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
+
+    @classmethod
+    def from_name(cls, filename: str) -> FilenamePattern:
+        result = cls.PATTERN.search(filename)
+        if result is None:
+            raise ValueError(f"Could not match FilenamePatternGolden from: '{filename}'")
+
+        prefix = result.group(1)
+        digits = result.group(3)
+        ext = result.group(4)
+        return cls(prefix, len(digits), ext)
+
+    def get_index(self, filename: str) -> int:
+        result = self.re_pattern.match(filename)
+        if result is None:
+            raise ValueError(f"Filename ({filename}) does not match pattern: {self.re_pattern}")
+        return int(result.group(2))
 
 
 class FilenameGroup:

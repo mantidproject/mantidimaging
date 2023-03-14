@@ -220,3 +220,4 @@ class GoldenFilenameGroupTest(FakeFSTestCase):
         group = FilenameGroup.from_file(filename)
 
         self.assertTrue(isinstance(group.pattern, FilenamePatternGolden))
+        self.assertEqual([1], group.all_indexes)
