@@ -15,7 +15,7 @@ To try out the spectrum viewer, you find a basic example workflow to follow with
 Above you can see that the spectrum viewer consists of a left hand side panel and a right hand side panel.
 The left hand side panel contains the ROI selection tools and the right hand side panel contains the spectrum plot.
 
-Similar to the image view `image_view <https://mantidproject.github.io/mantidimaging/user_guide/gui/image_view.html>`_, the spectrum viewer has a histogram view to the right of the sample image to control the number of pixels for each intensity value.
+Similar to the image view `image_view <https://mantidproject.github.io/mantidimaging/user_guide/gui/image_view.html>`_, the spectrum viewer has a histogram view to the right of the sample image to control the brightness and contrast of the displayed image.
 To read more about the histogram view see `image_view <https://mantidproject.github.io/mantidimaging/user_guide/gui/image_view.html>`_ .
 
 Below the sample image is the spectrum line plot, which shows the intensity of each ROI as a function of the TOF value. 
