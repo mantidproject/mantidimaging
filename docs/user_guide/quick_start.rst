@@ -118,13 +118,14 @@ For more details on the reconstruction GUI see :ref:`reconstruction window`
 Post-reconstruction
 ###################
 
-Once the reconstruction is finished, the data will be automatically divided by the pixel size, so the resulting images will contain the attenuation values. At this point you can apply some post-processing operations (such as circular mask).
+Once the reconstruction is finished, the data will be automatically divided by the pixel size, so the resulting images will contain the attenuation values. At this point
+you can apply some post-processing operations (such as circular mask), or just save out the stack with File > Save (or CTRL+S), in order to visualise it as a 3D volume in another software.
 
 
 Spectrum Viewer
 ###############
 
-The spectrum viewer is a tool that allows you to view the spectrum of a single pixel in the image stack. To open the spectrum viewer go to Workflow > Spectrum Viewer.
+The spectrum viewer is a tool that allows you to view spectrum data within an image stack. To open the spectrum viewer go to Workflow > Spectrum Viewer.
 
 1. Resize the orange ROI to just cover the size of the sample. This will allow you to see the spectrum of the sample which you will be able to see in the spectrum line plot at the bottom of the window.
 2. Click the "Add" button on the left to add another ROI which you can position over a particular detail of your choosing on the sample.
