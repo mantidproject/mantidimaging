@@ -39,20 +39,20 @@ class FilenamePattern:
         self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
-    def from_name(cls, filename: str) -> "FilenamePattern":
-        result = FilenamePattern.PATTERN.search(filename)
+    def from_name(cls, filename: str) -> FilenamePattern:
+        result = cls.PATTERN.search(filename)
 
         if result is None:
             if "." in filename:
                 name, _, ext = filename.rpartition(".")
-                return FilenamePattern(name, 0, "." + ext)
+                return cls(name, 0, "." + ext)
             else:
-                return FilenamePattern(filename, 0, "")
+                return cls(filename, 0, "")
 
         prefix = result.group(1)
         digits = result.group(2)
         ext = result.group(3)
-        return FilenamePattern(prefix, len(digits), ext)
+        return cls(prefix, len(digits), ext)
 
     def generate(self, index: int) -> str:
         if self.digit_count == 0:
@@ -74,6 +74,10 @@ class FilenamePattern:
         return self.re_pattern_metadata.match(filename) is not None
 
 
+class FilenamePatternGolden(FilenamePattern):
+    pass
+
+
 class FilenameGroup:
     def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
         self.directory = directory
@@ -90,13 +94,22 @@ class FilenameGroup:
         if 'WindowsPath' in type(path).__name__:
             # for a windows like path, resolve actual case
             path = path.resolve()
+        pattern_class = cls.get_pattern_class(path)
         directory = path.parent
         name = path.name
-        pattern = FilenamePattern.from_name(name)
+        pattern = pattern_class.from_name(name)
         index = pattern.get_index(name)
         new_filename_group = cls(directory, pattern, [index])
 
         return new_filename_group
+
+    @classmethod
+    def get_pattern_class(cls, path):
+        if 'grtomo' in path.name.lower():
+            pattern_class = FilenamePatternGolden
+        else:
+            pattern_class = FilenamePattern
+        return pattern_class
 
     def all_files(self) -> Iterator[Path]:
         for index in self.all_indexes:
