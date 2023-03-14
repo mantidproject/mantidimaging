@@ -9,3 +9,4 @@ Graphical User Interface (GUI)
    image_view
    operations_window
    recon_window
+   spectrum_viewer
