@@ -134,15 +134,15 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     def viewbox(self) -> ViewBox:
         return self.view
 
-    def setImage(self, *args, **kwargs):
-        dimensions_changed = self.image_data is None or self.image_data.shape != args[0].shape
-        if args[0].ndim == 3:
+    def setImage(self, image: np.ndarray, *args, **kwargs):
+        dimensions_changed = self.image_data is None or self.image_data.shape != image.shape
+        if image.ndim == 3:
             # For a 3 dimensional image, we need to specify which axes we are providing and their indices in the
             # array's shape attribute
             # If we don't do this then it is interpreted incorrectly for very small images by ImageView.setImage
             # Note that, for our purposes, the t axis corresponds to angle data
             kwargs['axes'] = kwargs.get('axes', {'t': 0, 'x': 2, 'y': 1, 'c': None})
-        ImageView.setImage(self, *args, **kwargs)
+        ImageView.setImage(self, image, *args, **kwargs)
         self.check_for_bad_data()
         if dimensions_changed:
             self.set_roi(self.default_roi())
