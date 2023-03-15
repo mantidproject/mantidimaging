@@ -1,6 +1,7 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+import csv
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
@@ -191,6 +192,33 @@ class SpectrumViewerWindowModel:
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
+            self.save_roi_coords(self.get_roi_coords_filename(path))
+
+    def get_roi_coords_filename(self, path: Path) -> Path:
+        """
+        Get the path to save the ROI coordinates to.
+        @param path: The path to save the CSV file to.
+        @return: The path to save the ROI coordinates to.
+        """
+        return path.with_stem(f"{path.stem}_roi_coords")
+
+    def save_roi_coords(self, path: Path) -> None:
+        """
+        Save the coordinates of the ROIs to a csv file (ROI name, x_min, x_max, y_min, y_max)
+        following Pascal VOC format.
+        @param path: The path to save the CSV file to.
+        """
+        with open(path, encoding='utf-8', mode='w') as f:
+            csv_writer = csv.DictWriter(f, fieldnames=["ROI", "X Min", "X Max", "Y Min", "Y Max"])
+            csv_writer.writeheader()
+            for roi_name, coords in self._roi_ranges.items():
+                csv_writer.writerow({
+                    "ROI": roi_name,
+                    "X Min": coords.left,
+                    "X Max": coords.right,
+                    "Y Min": coords.top,
+                    "Y Max": coords.bottom
+                })
 
     def remove_roi(self, roi_name) -> None:
         """

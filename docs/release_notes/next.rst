@@ -29,6 +29,7 @@ New Features and improvements
 - #1714 : Improve ROI hover behavior within Spectrum Viewer to be more intuitive.
 - #1664 : PyInstaller version at build time
 - #1632 : Add Stochastic PDHG
+- #1696 : Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
 
 Fixes
 -----
