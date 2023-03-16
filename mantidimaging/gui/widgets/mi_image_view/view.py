@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from math import degrees
 from time import sleep
 from typing import Callable, Optional, Tuple, TYPE_CHECKING
 
@@ -20,6 +21,7 @@ from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataO
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
     import numpy as np
+    from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 
 class UnrotateablePlotROI(ROI):
@@ -44,6 +46,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     details: QLabel
     roiString = None
     imageItem: ImageItem
+    _angles: Optional[ProjectionAngles] = None
 
     roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
 
@@ -134,6 +137,15 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     def viewbox(self) -> ViewBox:
         return self.view
 
+    @property
+    def angles(self) -> Optional[ProjectionAngles]:
+        return self._angles
+
+    @angles.setter
+    def angles(self, angles: Optional[ProjectionAngles]):
+        self._angles = angles
+        self._update_message(self._last_mouse_hover_location)
+
     def setImage(self, image: np.ndarray, *args, **kwargs):
         dimensions_changed = self.image_data is None or self.image_data.shape != image.shape
         if image.ndim == 3:
@@ -146,6 +158,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.check_for_bad_data()
         if dimensions_changed:
             self.set_roi(self.default_roi())
+        self.angles = None
 
     def toggle_jumping_frame(self, images_to_jump_by=None):
         if not self.shifting_through_images and images_to_jump_by is not None:
@@ -233,6 +246,9 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             y = clip(pt.y, 0, self.image.shape[1] - 1)
             value = self.image[self.currentIndex, y, x]
             msg = f"x={y}, y={x}, z={self.currentIndex}, value={value :.6f}"
+            if self.angles:
+                angle = degrees(self.angles.value[self.currentIndex])
+                msg += f" | angle = {angle:.2f}"
         else:
             x = clip(pt.x, 0, self.image.shape[1] - 1)
             y = clip(pt.y, 0, self.image.shape[0] - 1)
