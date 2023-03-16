@@ -21,6 +21,7 @@ from ...utility.qt_helpers import populate_menu
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
+    import numpy as np
 
 
 class StackVisualiserView(QDockWidget):
@@ -73,7 +74,7 @@ class StackVisualiserView(QDockWidget):
                           ("NaN Removal", lambda: self._main_window.presenter.show_operation("NaN Removal"))]
         self.image_view.enable_nan_check(actions=nan_check_menu)
         self.addAction(self.actionCloseStack)
-        self.image_view.setImage(self.presenter.images.data)
+        self.set_image(self.presenter.images)
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
@@ -97,8 +98,12 @@ class StackVisualiserView(QDockWidget):
         return self.image_view.imageItem
 
     @image.setter
-    def image(self, to_display):
+    def image(self, to_display: np.ndarray):
         self.image_view.setImage(to_display)
+
+    def set_image(self, image_stack: ImageStack):
+        self.image = image_stack.data
+        self.image_view.angles = image_stack.real_projection_angles()
 
     @property
     def main_window(self) -> 'MainWindowView':
