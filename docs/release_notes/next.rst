@@ -18,7 +18,7 @@ New Features and improvements
 - #1468 : NeXus Recon: Load recons
 - #1467 : NeXus Recon: Add other entry/data information
 - #1661 : Use `tifffile` for writing and reading tiff files
-- #1512 : Speedups for CIL setup
+- #1512, #1725 : Speedups for CIL setup
 - #1465 : NeXus Recon: Add entry/reconstruction/parameters information
 - #1666 : PyInstaller single file
 - #1665 : PyInstaller exe icon

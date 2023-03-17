@@ -39,19 +39,11 @@ class CILRecon(BaseRecon):
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
-        assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
-
-        if not recon_params.stochastic:
-            # This is slow to calculate, this approximation is good to with in 5%
-            # When running in debug mode, check the approximation and raise an error if it is bad
-            approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.geometry.num_projections)
-            if LOG.isEnabledFor(DEBUG):
-                num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
-                diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
-                LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
-                if diff > 0.05:
-                    raise RuntimeError(f"Bad ProjectionOperator norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}\n")
-            A2d.set_norm(approx_a2d_norm)
+        if recon_params.stochastic:
+            for partition_geometry, partition_operator in zip(acquisition_data.geometry, A2d):
+                CILRecon.set_approx_norm(partition_operator, partition_geometry, image_geometry)
+        else:
+            CILRecon.set_approx_norm(A2d, acquisition_data.geometry, image_geometry)
 
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
@@ -87,6 +79,24 @@ class CILRecon(BaseRecon):
             G = ZeroFunction()
 
         return (K, F, G)
+
+    @staticmethod
+    def set_approx_norm(A2d: BlockOperator, acquisition_data: AcquisitionGeometry,
+                        image_geometry: ImageGeometry) -> None:
+        """
+        Use an analytic approximation of the norm of the operator
+        Otherwise this is slow to calculate, this approximation is good to with in 5%
+        When running in debug mode, check the approximation and raise an error if it is bad
+        """
+        assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
+        approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.num_projections)
+        if LOG.isEnabledFor(DEBUG):
+            num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
+            diff = abs(approx_a2d_norm - num_a2d_norm) / max(approx_a2d_norm, num_a2d_norm)
+            LOG.debug(f"ProjectionOperator approx norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}")
+            if diff > 0.05:
+                raise RuntimeError(f"Bad ProjectionOperator norm: {diff=} {approx_a2d_norm=} {num_a2d_norm=}\n")
+        A2d.set_norm(approx_a2d_norm)
 
     @staticmethod
     def get_data(sino, ag, recon_params: ReconstructionParameters):
