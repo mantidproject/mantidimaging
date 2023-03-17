@@ -57,11 +57,6 @@ class CILRecon(BaseRecon):
         alpha = recon_params.alpha
         Grad = GradientOperator(image_geometry)
 
-        if image_geometry.voxel_num_z == 0:
-            Grad.set_norm(sqrt(8))
-        else:
-            Grad.set_norm(sqrt(12))
-
         if recon_params.stochastic:
             # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
             fs = []
