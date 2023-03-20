@@ -245,7 +245,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
         _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
 
 
-def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Group,
+def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Dataset,
                                   image_key: h5py.Dataset):
     data = nexus_file.create_group("processed-data")
     data["rotation_angle"] = rotation_angle

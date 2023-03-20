@@ -338,7 +338,9 @@ class IOTest(FileOutputtingTestCase):
         ds = StrictDataset(th.generate_images())
         process_path = "processed-data/process"
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            _save_processed_data_to_nexus(nexus_file, ds)
+            rotation_angle = nexus_file.create_dataset("rotation_angle", dtype="float")
+            image_key = nexus_file.create_dataset("image_key", dtype="int")
+            _save_processed_data_to_nexus(nexus_file, ds, rotation_angle, image_key)
             assert "process" in nexus_file["processed-data"]
             self.assertEqual(_decode_nexus_class(nexus_file["processed-data"]), "NXdata")
             self.assertEqual(_decode_nexus_class(nexus_file[process_path]), "NXprocess")
