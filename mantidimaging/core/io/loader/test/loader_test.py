@@ -2,11 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
+from unittest import mock
 
-from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_DEPTH, \
-    DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, create_loading_parameters_for_file_path, get_loader
+import numpy as np
 
-from mantidimaging.core.utility.data_containers import FILE_TYPES
+from mantidimaging.core.io.filenames import FilenameGroup
+from mantidimaging.core.io.loader.loader import (DEFAULT_PIXEL_DEPTH, DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM,
+                                                 create_loading_parameters_for_file_path, get_loader, load)
+
+from mantidimaging.core.utility.data_containers import FILE_TYPES, ProjectionAngles
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -58,3 +63,28 @@ class LoaderTest(FakeFSTestCase):
         sample = lp.image_stacks[FILE_TYPES.PROJ_180]
         self._file_in_sequence(Path("/b/180deg/180deg_0000.tif"), sample.file_group.all_files())
         self.assertEqual(1, len(list(sample.file_group.all_files())))
+
+    @mock.patch('mantidimaging.core.io.loader.loader.load_log')
+    @mock.patch('mantidimaging.core.io.loader.loader.img_loader.execute')
+    def test_load_with_golden_angles(self, mock_execute: mock.Mock, mock_load_log: mock.Mock):
+        filenames = [Path(f"foo_{n}.tif") for n in range(20)]
+        angles = np.array([(n * 137.507764) % 360 for n in range(20)])
+
+        mock_filename_group = mock.create_autospec(FilenameGroup, metadata_path=None)
+        mock_filename_group.all_files.return_value = filenames
+        mock_filename_group.first_file.return_value = filenames[0]
+
+        mock_log_data = mock.create_autospec(IMATLogFile)
+        mock_log_data.projection_angles.return_value = ProjectionAngles(np.deg2rad(angles))
+
+        mock_load_log.return_value = mock_log_data
+
+        load(mock_filename_group, log_file=Path())
+
+        mock_execute.assert_called_once()
+        call_args = mock_execute.call_args
+        reordered_filenames = call_args[0][1]
+
+        self._file_list_count_equal(filenames, reordered_filenames)
+        self.assertListEqual(['foo_0.tif', 'foo_8.tif', 'foo_16.tif', 'foo_3.tif', 'foo_11.tif'],
+                             reordered_filenames[:5])
