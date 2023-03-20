@@ -223,8 +223,6 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     _set_nx_class(detector, "NXdetector")
     detector.create_dataset("image_key", data=dataset.image_keys)
 
-    _save_processed_data_to_nexus(nexus_file, dataset)
-
     # sample field
     sample_group = tomo_entry.create_group("sample")
     _set_nx_class(sample_group, "NXsample")
@@ -233,6 +231,8 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     # rotation angle
     rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
+
+    _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"])
 
     # data field
     data = tomo_entry.create_group("data")
@@ -245,8 +245,11 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
         _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
 
 
-def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset):
+def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Group,
+                                  image_key: h5py.Dataset):
     data = nexus_file.create_group("processed-data")
+    data["rotation_angle"] = rotation_angle
+    data["image_key"] = image_key
     _set_nx_class(data, "NXdata")
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
     data.create_dataset("data", shape=combined_data_shape, dtype="float32")
