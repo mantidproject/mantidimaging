@@ -297,10 +297,10 @@ class ImageStack:
         Return only the projection angles that are from a log file or have been manually loaded.
         :return: Real projection angles if they were found, None otherwise.
         """
-        if self._log_file is not None:
-            return self._log_file.projection_angles()
         if self._projection_angles is not None:
             return self._projection_angles
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
         return None
 
     def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
