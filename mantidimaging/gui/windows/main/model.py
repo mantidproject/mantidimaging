@@ -44,9 +44,6 @@ class MainWindowModel(object):
         sample._is_sinograms = parameters.sinograms
         sample.pixel_size = parameters.pixel_size
 
-        if log_file := parameters.image_stacks[FILE_TYPES.SAMPLE].log_file:
-            ds.sample.log_file = loader.load_log(log_file)
-
         for file_type in [
                 FILE_TYPES.FLAT_BEFORE,
                 FILE_TYPES.FLAT_AFTER,
@@ -56,9 +53,6 @@ class MainWindowModel(object):
         ]:
             if im_param := parameters.image_stacks.get(file_type):
                 image_stack = load(im_param)
-                if log_file := im_param.log_file:
-                    image_stack.log_file = loader.load_log(log_file)
-
                 ds.set_stack(file_type, image_stack)
 
         self.datasets[ds.id] = ds
