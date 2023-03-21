@@ -39,6 +39,7 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self._selected_row = 0
+        self.default_roi_list = ["all", "roi"]
 
     @property
     def selected_row(self):
@@ -80,12 +81,16 @@ class SpectrumViewerWindowModel:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         height, width = self.get_image_shape()
-        self.set_roi("all", SensibleROI.from_list([0, 0, width, height]))
+        self.set_roi(self.default_roi_list[0], SensibleROI.from_list([0, 0, width, height]))
         # Remove additional ROIs if they exist on sample change and reset
-        if len(self._roi_ranges) > 2:
+        if len(self._roi_ranges) > 1:
             self.presenter.do_remove_roi()
+            self.set_roi(self.default_roi_list[1], SensibleROI.from_list([0, 0, width, height]))
         else:
-            self.set_roi("roi", SensibleROI.from_list([0, 0, width, height]))
+            self.set_roi(self.default_roi_list[1], SensibleROI.from_list([0, 0, width, height]))
+        if self.default_roi_list[1] not in self._roi_ranges.keys():
+            self.set_new_roi(self.default_roi_list[1])
+        self.default_roi_list[1] = list(self._roi_ranges.keys())[1]
 
     def set_new_roi(self, name: str) -> None:
         """
@@ -110,15 +115,18 @@ class SpectrumViewerWindowModel:
         @return: The ROI with the given name
         """
         if roi_name not in self._roi_ranges.keys():
-            raise KeyError(f"ROI {roi_name} does not exist")
+            raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
         return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> Optional['np.ndarray']:
+        """
+        Get the averaged image from the stack in the model returning as a numpy array
+        or None if it does not
+        """
         if self._stack is not None:
             tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
             return self._stack.data[tof_slice].mean(axis=0)
-        else:
-            return None
+        return None
 
     @staticmethod
     def get_stack_spectrum(stack: ImageStack, roi: SensibleROI):
@@ -198,9 +206,8 @@ class SpectrumViewerWindowModel:
 
         @param roi_name: The name of the ROI to remove
         """
-
         if roi_name in self._roi_ranges.keys():
-            if roi_name in ["all", "roi"]:
+            if roi_name in self.default_roi_list:
                 raise RuntimeError("Cannot remove the 'all' or 'roi' ROIs")
             del self._roi_ranges[roi_name]
         else:
@@ -216,16 +223,18 @@ class SpectrumViewerWindowModel:
         @raises KeyError: If the ROI does not exist
         @raises RuntimeError: If the ROI is 'all' or 'roi'
         """
-        if old_name in self._roi_ranges.keys():
-            if old_name in ["all", "roi"]:
-                raise RuntimeError("Cannot rename the 'all' or 'roi' ROIs")
+        if old_name in self._roi_ranges.keys() and new_name not in self._roi_ranges.keys():
+            if old_name == self.default_roi_list[0]:
+                raise RuntimeError("Cannot rename the 'all' ROI")
             self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
+            if old_name == self.default_roi_list[1]:
+                self.default_roi_list[1] = new_name
         else:
-            raise KeyError(f"Cannot rename ROI {old_name} Available ROIs:{self._roi_ranges.keys()}")
+            raise KeyError(f"Cannot rename {old_name} to {new_name} Available:{self._roi_ranges.keys()}")
 
     def remove_all_roi(self) -> None:
         """
         Remove all ROIs from the model excluding default ROIs 'all' and 'roi'
         """
-        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in ["all", "roi"]}
+        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in self.default_roi_list}
         self._roi_id_counter = 0  # Reset the counter to 0
