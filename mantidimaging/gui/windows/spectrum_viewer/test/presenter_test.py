@@ -191,10 +191,21 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.rename_roi("roi_1", "imaging_is_the_best")
         self.assertEqual(["all", "roi", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
 
+    def test_WHEN_default_ROI_renamed_THEN_default_roi_renamed(self):
+        self.presenter.model.set_stack(generate_images())
+        with mock.patch(
+                "mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"
+        ):
+            self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
+        self.presenter.rename_roi("roi", "imaging_is_the_best")
+        self.assertEqual(["all", "roi_1", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
+
     @parameterized.expand(["all", "roi"])
     def test_WHEN_ROI_renamed_to_existing_name_THEN_runtimeerror(self, name):
         self.presenter.model.set_stack(generate_images())
-        with self.assertRaises(RuntimeError):
+        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+        with self.assertRaises(KeyError):
             self.presenter.rename_roi("roi", name)
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
 
