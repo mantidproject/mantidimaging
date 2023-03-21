@@ -153,12 +153,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_stack(generate_images())
         self.presenter.do_remove_roi.assert_called_once()
 
-    def test_if_set_stack_called_with_no_additional_rois_present_THEN_do_remove_roi_not_called(self):
+    def test_if_set_stack_called_with_no_additional_rois_present_THEN_do_remove_roi_called_but_not_ROIs_removed(self):
         self.model.set_stack(generate_images())
 
         self.assertListEqual(self.model.get_list_of_roi_names(), ['all', 'roi'])
         self.model.set_stack(generate_images())
-        self.presenter.do_remove_roi.assert_not_called()
+        self.presenter.do_remove_roi.assert_called_once()
+        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
 
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
@@ -294,16 +295,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.rename_roi("new_roi", "imaging_is_the_coolest")
         self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi", "imaging_is_the_coolest"])
 
+    def test_WHEN_default_roi_renamed_THEN_default_roi_renamed(self):
+        self.model.set_stack(generate_images())
+        self.model.rename_roi("roi", "imaging_is_the_coolest")
+        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "imaging_is_the_coolest"])
+
     def test_WHEN_invalid_roi_renamed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
         with self.assertRaises(KeyError):
             self.model.rename_roi("non_existent_roi", "imaging_is_the_coolest")
 
-    @parameterized.expand([
-        ("all"),
-        ("roi"),
-    ])
-    def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self, roi_name):
+    def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self):
         self.model.set_stack(generate_images())
+        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
         with self.assertRaises(RuntimeError):
-            self.model.rename_roi(roi_name, "imaging_is_the_coolest")
+            self.model.rename_roi("all", "imaging_is_the_coolest")
