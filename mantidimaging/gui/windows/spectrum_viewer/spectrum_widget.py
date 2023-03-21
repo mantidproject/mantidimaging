@@ -170,8 +170,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         @param roi_name: The name of the ROI to remove.
         """
-
-        if roi_name in self.roi_dict.keys() and roi_name not in ["roi", "all"]:
+        if roi_name in self.roi_dict.keys() and roi_name != "all":
             self.image.vb.removeItem(self.roi_dict[roi_name])
             del self.roi_dict[roi_name]
 
@@ -194,9 +193,11 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         @param image_shape: The shape of the image.
         """
+        roi_name = list(self.roi_dict.keys())[0]
         height, width = image_shape
-        self.roi_dict["roi"].setSize([width, height])
-        self.roi_dict["roi"].setPos([0, 0])
-        self.roi_dict["roi"].maxBounds = self.roi_dict["roi"].parentBounds()
-        self.image.vb.addItem(self.roi_dict["roi"])
-        self.roi_dict["roi"].sigRegionChanged.connect(self.roi_changed.emit)
+
+        self.roi_dict[roi_name].setSize([width, height])
+        self.roi_dict[roi_name].setPos([0, 0])
+        self.roi_dict[roi_name].maxBounds = self.roi_dict[roi_name].parentBounds()
+        self.image.vb.addItem(self.roi_dict[roi_name])
+        self.roi_dict[roi_name].sigRegionChanged.connect(self.roi_changed.emit)
