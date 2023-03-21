@@ -90,10 +90,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.removeBtn.setEnabled(False)
             self.selected_row_data = self.roi_table_model.row_data(item.row())
 
-            if self.selected_row_data[0] != 'roi':
+            if self.selected_row_data[0] != self.presenter.roi_name:
                 self.removeBtn.setEnabled(True)
-                self.selected_row = item.row()
-                self.current_roi = self.selected_row_data[0]
+            self.selected_row = item.row()
+            self.current_roi = self.selected_row_data[0]
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
@@ -104,8 +104,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name is empty or already exists in the table that is not the selected row,
             a warning popup will be displayed and the ROI name will be reverted to the previous name
             """
-
-            if self.selected_row_data[0].lower() not in ["", "all", "roi"]:
+            if self.selected_row_data[0].lower() not in ["", "all"]:
                 for roi_item in range(self.roi_table_model.rowCount()):
                     existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
                     if existing_roi_name == self.selected_row_data[0].lower() and roi_item != self.selected_row:
@@ -113,6 +112,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                         self.selected_row_data[0] = self.current_roi
                         return
                 self.presenter.rename_roi(self.current_roi, str(self.selected_row_data[0]))
+                self.current_roi = str(self.selected_row_data[0])
                 return
             self.show_warning_dialog("ROI Name Warning\n"
                                      "ROI name cannot be empty or equal to default names: 'all', 'roi'")
