@@ -90,10 +90,9 @@ class NexusLoadPresenter:
                 if self.tomo_entry is None:
                     return
 
-                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 2)
+                self.data = self._look_for_image_data_and_update_view()
                 if self.data is None:
                     return
-                    self.data = self._look_for_image_data_and_update_view(DATA_PATH, 2)
 
                 self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
                 if self.image_key_dataset is None:
@@ -188,6 +187,10 @@ class NexusLoadPresenter:
                 dataset = self.nexus_file["processed-data"]["data"]
                 self.view.set_data_found(position, True, "processed-data", dataset.shape)
                 return dataset
+
+        self._missing_data_error(DATA_PATH)
+        self.view.set_data_found(position, False, "", ())
+        self.view.disable_ok_button()
 
     def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
         """
