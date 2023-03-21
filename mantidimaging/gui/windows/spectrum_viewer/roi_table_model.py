@@ -128,8 +128,6 @@ class TableModel(QAbstractTableModel):
         if row > 0 and row < len(self._data):
             self._data.pop(row)
             self.layoutChanged.emit()
-        else:
-            print(f"Cannot remove row: {row}")
 
     def rename_row(self, row: int, new_name: str) -> None:
         """
