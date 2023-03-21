@@ -183,6 +183,7 @@ class NexusLoadPresenter:
             self.view.set_data_found(position, True, self.tomo_path + "/" + DATA_PATH, dataset.shape)
             return dataset
         else:
+            assert self.nexus_file is not None
             if "processed-data" in self.nexus_file:
                 dataset = self.nexus_file["processed-data"]["data"]
                 self.view.set_data_found(position, True, "processed-data", dataset.shape)
@@ -191,6 +192,7 @@ class NexusLoadPresenter:
         self._missing_data_error(DATA_PATH)
         self.view.set_data_found(position, False, "", ())
         self.view.disable_ok_button()
+        return None
 
     def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
         """
