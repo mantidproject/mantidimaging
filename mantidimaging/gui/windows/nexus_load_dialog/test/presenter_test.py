@@ -7,6 +7,8 @@ from unittest import mock
 
 import h5py
 import numpy as np
+
+from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.core.data.dataset import StrictDataset
@@ -372,3 +374,20 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         ds, _ = self.nexus_loader.get_dataset()
         self.assertEqual(len(ds.recons), 2)
+
+    def test_look_for_image_data_and_update_view_with_nonprocessed_file(self):
+        self.nexus_loader.tomo_entry = self.tomo_entry
+        self.assertIsNotNone(self.nexus_loader._look_for_image_data_and_update_view())
+        self.view.set_data_found.assert_called_once_with(2, True, self.tomo_path + "/" + DATA_PATH,
+                                                         self.tomo_entry[DATA_PATH].shape)
+
+    def test_look_for_image_data_and_update_view_with_processed_file(self):
+        del self.tomo_entry[DATA_PATH]
+        self.nexus_loader.nexus_file = self.nexus
+        self.nexus_loader.tomo_entry = self.tomo_entry
+        processed_data = self.nexus.create_group(NEXUS_PROCESSED_DATA_PATH)
+        data_shape = (20, 20, 20)
+        processed_data.create_dataset(name="data", shape=data_shape)
+
+        self.assertIsNotNone(self.nexus_loader._look_for_image_data_and_update_view())
+        self.view.set_data_found.assert_called_once_with(2, True, NEXUS_PROCESSED_DATA_PATH, data_shape)

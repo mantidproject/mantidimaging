@@ -13,6 +13,7 @@ from mantidimaging.core.data.reconlist import ReconList
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.io.utility import NEXUS_PROCESSED_DATA_PATH
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -184,9 +185,9 @@ class NexusLoadPresenter:
             return dataset
         else:
             assert self.nexus_file is not None
-            if "processed-data" in self.nexus_file:
-                dataset = self.nexus_file["processed-data"]["data"]
-                self.view.set_data_found(position, True, "processed-data", dataset.shape)
+            if NEXUS_PROCESSED_DATA_PATH in self.nexus_file:
+                dataset = self.nexus_file[NEXUS_PROCESSED_DATA_PATH]["data"]
+                self.view.set_data_found(position, True, NEXUS_PROCESSED_DATA_PATH, dataset.shape)
                 return dataset
 
         self._missing_data_error(DATA_PATH)
