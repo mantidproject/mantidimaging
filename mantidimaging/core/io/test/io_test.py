@@ -19,7 +19,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus
+from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -227,8 +227,7 @@ class IOTest(FileOutputtingTestCase):
 
             # test instrument/detector fields
             self.assertEqual(_decode_nexus_class(tomo_entry["instrument"]["detector"]), "NXdetector")
-            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["data"]),
-                                   sd.sample.data.astype("uint16"))
+            npt.assert_array_equal(np.array(nexus_file["processed-data"]["data"]), sd.sample.data.astype("float32"))
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                                    [0 for _ in range(sd.sample.data.shape[0])])
 
@@ -239,7 +238,6 @@ class IOTest(FileOutputtingTestCase):
                                    sd.sample.projection_angles().value)
 
             # test links
-            self.assertEqual(tomo_entry["data"]["data"], tomo_entry["instrument"]["detector"]["data"])
             self.assertEqual(tomo_entry["data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
@@ -265,8 +263,7 @@ class IOTest(FileOutputtingTestCase):
             # test rotation angle links
             self.assertEqual(tomo_entry["data"]["rotation_angle"], rotation_angle_entry)
 
-    @staticmethod
-    def test_nexus_complex_dataset_save():
+    def test_nexus_complex_dataset_save(self):
         image_stacks = []
         for _ in range(5):
             image_stack = th.generate_images()
@@ -280,12 +277,12 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, "sample-name")
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
-            # test instrument field
             npt.assert_array_equal(
-                np.array(tomo_entry["instrument"]["detector"]["data"]),
+                np.array(nexus_file["processed-data"]["data"]),
                 np.concatenate(
                     [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
-                     sd.dark_after.data]).astype("uint16"))
+                     sd.dark_after.data]).astype("float32"))
+            # test instrument field
             npt.assert_array_equal(
                 np.array(tomo_entry["instrument"]["detector"]["image_key"]),
                 [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
@@ -295,6 +292,9 @@ class IOTest(FileOutputtingTestCase):
             # test instrument/sample fields
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
                                    np.concatenate([images.projection_angles().value for images in image_stacks]))
+            self.assertEqual(nexus_file["processed-data"]["rotation_angle"], tomo_entry["sample"]["rotation_angle"])
+            self.assertEqual(nexus_file["processed-data"]["image_key"],
+                             tomo_entry["instrument"]["detector"]["image_key"])
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
@@ -333,6 +333,21 @@ class IOTest(FileOutputtingTestCase):
             saver._nexus_save(nexus_file, sd, "sample-name")
 
         self.assertEqual(recon_save_mock.call_count, len(sd.recons))
+
+    def test_save_process(self):
+        ds = StrictDataset(th.generate_images())
+        process_path = "processed-data/process"
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            rotation_angle = nexus_file.create_dataset("rotation_angle", dtype="float")
+            image_key = nexus_file.create_dataset("image_key", dtype="int")
+            _save_processed_data_to_nexus(nexus_file, ds, rotation_angle, image_key)
+            assert "process" in nexus_file["processed-data"]
+            self.assertEqual(_decode_nexus_class(nexus_file["processed-data"]), "NXdata")
+            self.assertEqual(_decode_nexus_class(nexus_file[process_path]), "NXprocess")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["program"]), "Mantid Imaging")
+            self.assertEqual(_nexus_dataset_to_string(nexus_file[process_path]["version"]),
+                             CheckVersion().get_version())
+            self.assertIn(str(datetime.date.today()), _nexus_dataset_to_string(nexus_file[process_path]["date"]))
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
