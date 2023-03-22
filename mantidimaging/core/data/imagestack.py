@@ -141,9 +141,7 @@ class ImageStack:
         """
         :return: True if any of the data has been processed, False otherwise.
         """
-        if const.OPERATION_HISTORY not in self.metadata:
-            return 0
-        return len(self.metadata[const.OPERATION_HISTORY]) > 0
+        return const.OPERATION_HISTORY in self.metadata
 
     def copy(self, flip_axes=False) -> 'ImageStack':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
