@@ -208,6 +208,8 @@ class IOTest(FileOutputtingTestCase):
         sample._projection_angles = sample.projection_angles()
 
         sd = StrictDataset(sample)
+        sd.sample.record_operation("", "")
+
         path = "nexus/file/path"
         sample_name = "sample-name"
 
@@ -274,6 +276,7 @@ class IOTest(FileOutputtingTestCase):
             image_stack._projection_angles = image_stack.projection_angles()
 
         sd = StrictDataset(*image_stacks)
+        sd.sample.record_operation("", "")
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, "sample-name")
