@@ -207,6 +207,16 @@ class StrictDataset(BaseDataset):
         else:
             raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
 
+    @property
+    def processed(self) -> bool:
+        """
+        :return: True if the any of the data has been processed, False otherwise.
+        """
+        for image in self.all:
+            if image.processed:
+                return True
+        return False
+
 
 def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
     """
