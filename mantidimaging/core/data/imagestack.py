@@ -137,7 +137,7 @@ class ImageStack:
         })
 
     @property
-    def processed(self) -> bool:
+    def is_processed(self) -> bool:
         """
         :return: True if any of the data has been processed, False otherwise.
         """

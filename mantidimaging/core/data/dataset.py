@@ -208,12 +208,12 @@ class StrictDataset(BaseDataset):
             raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
 
     @property
-    def processed(self) -> bool:
+    def is_processed(self) -> bool:
         """
-        :return: True if the any of the data has been processed, False otherwise.
+        :return: True if any of the data has been processed, False otherwise.
         """
         for image in self.all:
-            if image.processed:
+            if image.is_processed:
                 return True
         return False
 
