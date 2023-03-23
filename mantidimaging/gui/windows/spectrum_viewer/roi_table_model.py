@@ -128,8 +128,6 @@ class TableModel(QAbstractTableModel):
         if row > 0 and row < len(self._data):
             self._data.pop(row)
             self.layoutChanged.emit()
-        else:
-            print(f"Cannot remove row: {row}")
 
     def rename_row(self, row: int, new_name: str) -> None:
         """
@@ -140,13 +138,11 @@ class TableModel(QAbstractTableModel):
         @param new_name: new ROI name
         @raise ValueError: if new name already exists or is default 'roi' ROI
         """
-        if row > 0 and row < len(self._data):
-            if new_name in self.roi_names():
-                raise ValueError("ROI name already exists")
+        if new_name in self.roi_names():
+            raise ValueError("ROI name already exists")
+        else:
             self._data[row][0] = new_name
             self.layoutChanged.emit()
-        else:
-            raise ValueError(f"Cannot rename row: {row}")
 
     def flags(self, index):
         """
@@ -156,7 +152,7 @@ class TableModel(QAbstractTableModel):
         @param index: index of selected row
         @return: Qt.ItemIsEnabled | Qt.ItemIsSelectable
         """
-        if index.column() == 0 and index.row() > 0:
+        if index.column() == 0:
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
         else:
             return Qt.ItemIsEnabled
