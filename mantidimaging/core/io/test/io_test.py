@@ -267,7 +267,7 @@ class IOTest(FileOutputtingTestCase):
             # test rotation angle links
             self.assertEqual(tomo_entry["data"]["rotation_angle"], rotation_angle_entry)
 
-    def test_nexus_complex_dataset_save(self):
+    def test_nexus_complex_processed_dataset_save(self):
         image_stacks = []
         for _ in range(5):
             image_stack = th.generate_images()
@@ -301,6 +301,32 @@ class IOTest(FileOutputtingTestCase):
                              tomo_entry["sample"]["rotation_angle"])
             self.assertEqual(nexus_file[NEXUS_PROCESSED_DATA_PATH]["image_key"],
                              tomo_entry["instrument"]["detector"]["image_key"])
+
+    def test_nexus_unprocessed_dataset_save(self):
+        image_stacks = []
+        for _ in range(5):
+            image_stack = th.generate_images()
+            image_stack.data *= 12
+            image_stacks.append(image_stack)
+            image_stack._projection_angles = image_stack.projection_angles()
+
+        sd = StrictDataset(*image_stacks)
+
+        with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
+            saver._nexus_save(nexus_file, sd, "sample-name")
+            tomo_entry = nexus_file["entry1"]["tomo_entry"]
+
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["data"]),
+                np.concatenate(
+                    [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
+                     sd.dark_after.data]).astype("float32"))
+            # test instrument field
+            npt.assert_array_equal(
+                np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
+                [0 for _ in range(sd.sample.data.shape[0])] + [1 for _ in range(sd.flat_after.data.shape[0])] +
+                [2 for _ in range(sd.dark_after.data.shape[0])])
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
