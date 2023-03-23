@@ -75,6 +75,11 @@ class FilenamePattern:
 
 
 class FilenamePatternGolden(FilenamePattern):
+    """
+    Representation of a filename pattern for IMAT Golden ratio scans
+
+    "aaaa_**.**_####.bbb" where **.** is an angle and #### is the projection number
+    """
     PATTERN_p = r'^(.+?)'
     PATTERN_a = r'_([0-9\.]+)_'
     PATTERN_d = r'([0-9]+)'
@@ -143,10 +148,9 @@ class FilenameGroup:
     @classmethod
     def get_pattern_class(cls, path):
         if 'grtomo' in path.name.lower():
-            pattern_class = FilenamePatternGolden
+            return FilenamePatternGolden
         else:
-            pattern_class = FilenamePattern
-        return pattern_class
+            return FilenamePattern
 
     def all_files(self) -> Iterator[Path]:
         for index in self.all_indexes:
