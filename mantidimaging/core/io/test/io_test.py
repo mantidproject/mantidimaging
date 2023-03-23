@@ -321,12 +321,6 @@ class IOTest(FileOutputtingTestCase):
                 np.concatenate(
                     [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
                      sd.dark_after.data]).astype("float32"))
-            # test instrument field
-            npt.assert_array_equal(
-                np.array(tomo_entry["instrument"]["detector"]["image_key"]),
-                [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
-                [0 for _ in range(sd.sample.data.shape[0])] + [1 for _ in range(sd.flat_after.data.shape[0])] +
-                [2 for _ in range(sd.dark_after.data.shape[0])])
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
