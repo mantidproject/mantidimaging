@@ -232,7 +232,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
 
-    if dataset.processed:
+    if dataset.is_processed:
         _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"])
     else:
         _save_image_stacks_to_nexus(dataset, detector)
