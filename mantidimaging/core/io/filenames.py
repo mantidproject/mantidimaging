@@ -39,20 +39,20 @@ class FilenamePattern:
         self.template = prefix + "{:0" + str(digit_count) + "d}" + suffix
 
     @classmethod
-    def from_name(cls, filename: str) -> "FilenamePattern":
-        result = FilenamePattern.PATTERN.search(filename)
+    def from_name(cls, filename: str) -> FilenamePattern:
+        result = cls.PATTERN.search(filename)
 
         if result is None:
             if "." in filename:
                 name, _, ext = filename.rpartition(".")
-                return FilenamePattern(name, 0, "." + ext)
+                return cls(name, 0, "." + ext)
             else:
-                return FilenamePattern(filename, 0, "")
+                return cls(filename, 0, "")
 
         prefix = result.group(1)
         digits = result.group(2)
         ext = result.group(3)
-        return FilenamePattern(prefix, len(digits), ext)
+        return cls(prefix, len(digits), ext)
 
     def generate(self, index: int) -> str:
         if self.digit_count == 0:
@@ -74,6 +74,52 @@ class FilenamePattern:
         return self.re_pattern_metadata.match(filename) is not None
 
 
+class FilenamePatternGolden(FilenamePattern):
+    """
+    Representation of a filename pattern for IMAT Golden ratio scans
+
+    "aaaa_**.**_####.bbb" where **.** is an angle and #### is the projection number
+    """
+    PATTERN_p = r'^(.+?)'
+    PATTERN_a = r'_([0-9\.]+)_'
+    PATTERN_d = r'([0-9]+)'
+    PATTERN_s = r'(\.[a-zA-Z]+)$'
+    PATTERN = re.compile(PATTERN_p + PATTERN_a + PATTERN_d + PATTERN_s)
+
+    def __init__(self, prefix: str, digit_count: int, suffix: str):
+        self.prefix = prefix
+        self.digit_count = digit_count
+        self.suffix = suffix
+        self.name_store: dict[int, str] = {}
+
+        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "([1-9]*[0-9]{" + str(digit_count) +
+                                     "})" + re.escape(suffix) + "$")
+
+        self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
+
+    @classmethod
+    def from_name(cls, filename: str) -> FilenamePattern:
+        result = cls.PATTERN.search(filename)
+        if result is None:
+            raise ValueError(f"Could not match FilenamePatternGolden from: '{filename}'")
+
+        prefix = result.group(1)
+        digits = result.group(3)
+        ext = result.group(4)
+        return cls(prefix, len(digits), ext)
+
+    def get_index(self, filename: str) -> int:
+        result = self.re_pattern.match(filename)
+        if result is None:
+            raise ValueError(f"Filename ({filename}) does not match pattern: {self.re_pattern}")
+        index = int(result.group(2))
+        self.name_store[index] = filename
+        return index
+
+    def generate(self, index: int) -> str:
+        return self.name_store[index]
+
+
 class FilenameGroup:
     def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
         self.directory = directory
@@ -90,13 +136,21 @@ class FilenameGroup:
         if 'WindowsPath' in type(path).__name__:
             # for a windows like path, resolve actual case
             path = path.resolve()
+        pattern_class = cls.get_pattern_class(path)
         directory = path.parent
         name = path.name
-        pattern = FilenamePattern.from_name(name)
+        pattern = pattern_class.from_name(name)
         index = pattern.get_index(name)
         new_filename_group = cls(directory, pattern, [index])
 
         return new_filename_group
+
+    @classmethod
+    def get_pattern_class(cls, path):
+        if 'grtomo' in path.name.lower():
+            return FilenamePatternGolden
+        else:
+            return FilenamePattern
 
     def all_files(self) -> Iterator[Path]:
         for index in self.all_indexes:

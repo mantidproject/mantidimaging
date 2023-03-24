@@ -8,7 +8,7 @@ import unittest
 from parameterized import parameterized
 
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
-from ..filenames import FilenameGroup, FilenamePattern
+from ..filenames import FilenameGroup, FilenamePattern, FilenamePatternGolden
 from ...utility.data_containers import FILE_TYPES
 
 
@@ -212,3 +212,25 @@ class FilenameGroupTest(FakeFSTestCase):
         proj_180_fg.find_all_files()
 
         self._file_list_count_equal(proj_180_list, list(proj_180_fg.all_files()))
+
+
+class GoldenFilenameGroupTest(FakeFSTestCase):
+    def test_golden_pattern(self):
+        filename = "IMAT00021870_CMOS_LegoScan_GR_PH40_GRtomo_0.0_001.tif"
+        group = FilenameGroup.from_file(filename)
+
+        self.assertTrue(isinstance(group.pattern, FilenamePatternGolden))
+        self.assertEqual([1], group.all_indexes)
+
+    def test_all_files(self):
+        angles = [0.0, 111.2461, 42.4922, 153.7384, 16.2306]
+        basename = "IMAT00021870_CMOS_LegoScan_GR_PH40_GRtomo_{}_{:03d}.tif"
+        filenames = [basename.format(a, n) for n, a in enumerate(angles)]
+
+        for filename in filenames:
+            self.fs.create_file(filename)
+
+        group = FilenameGroup.from_file(filenames[0])
+        group.find_all_files()
+
+        self._file_list_count_equal(filenames, group.all_files())

@@ -262,3 +262,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.assertEqual(lp.dtype, dtype)
         self.assertEqual(lp.sinograms, sinograms)
         self.assertEqual(lp.pixel_size, pixel_size)
+
+        self.assertNotIn(FILE_TYPES.SAMPLE_LOG, lp.image_stacks.keys())
+        self.assertNotIn(FILE_TYPES.FLAT_BEFORE_LOG, lp.image_stacks.keys())
+        self.assertNotIn(FILE_TYPES.FLAT_AFTER_LOG, lp.image_stacks.keys())

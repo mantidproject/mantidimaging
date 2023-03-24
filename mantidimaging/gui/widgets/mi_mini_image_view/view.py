@@ -91,10 +91,10 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.clear_overlays()
         self.details.setText("")
 
-    def setImage(self, *args, **kwargs):
-        self.im.setImage(*args, **kwargs)
+    def setImage(self, image: np.ndarray, *args, **kwargs):
+        self.im.setImage(image, *args, **kwargs)
         self.check_for_bad_data()
-        self.set_auto_color_enabled(self.im.image is not None)
+        self.set_auto_color_enabled(image is not None)
 
     @staticmethod
     def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):

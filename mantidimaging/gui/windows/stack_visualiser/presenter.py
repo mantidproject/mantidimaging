@@ -73,8 +73,10 @@ class StackVisualiserPresenter(BasePresenter):
         self.view = None
 
     def refresh_image(self):
-        self.view.image = self.summed_image if self.image_mode is SVImageMode.SUMMED \
-            else self.images.data
+        if self.image_mode is SVImageMode.SUMMED:
+            self.view.image = self.summed_image
+        else:
+            self.view.set_image(self.images)
 
     def get_parameter_value(self, parameter: SVParameters):
         """

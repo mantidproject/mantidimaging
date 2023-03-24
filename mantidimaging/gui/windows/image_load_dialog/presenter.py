@@ -100,6 +100,8 @@ class LoadPresenter:
 
         loading_param = LoadingParameters()
         for file_type in FILE_TYPES:
+            if file_type.mode == "log":
+                continue
             field = self.view.fields[file_type.fname]
             if not field.use.isChecked() or field.path is None:
                 continue
