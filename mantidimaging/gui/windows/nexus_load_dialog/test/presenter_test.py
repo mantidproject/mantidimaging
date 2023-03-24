@@ -377,8 +377,9 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_look_for_image_data_and_update_view_with_nonprocessed_file(self):
         self.nexus_loader.tomo_entry = self.tomo_entry
+        self.nexus_loader.tomo_path = self.full_tomo_path
         self.assertIsNotNone(self.nexus_loader._look_for_image_data_and_update_view())
-        self.view.set_data_found.assert_called_once_with(2, True, self.tomo_path + "/" + DATA_PATH,
+        self.view.set_data_found.assert_called_once_with(2, True, self.full_tomo_path + "/" + DATA_PATH,
                                                          self.tomo_entry[DATA_PATH].shape)
 
     def test_look_for_image_data_and_update_view_with_processed_file(self):
