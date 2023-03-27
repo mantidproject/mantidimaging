@@ -13,7 +13,7 @@ from tifffile import tifffile
 
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
-from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES
+from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES, ProjectionAngles
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.io.filenames import FilenameGroup
 
@@ -104,13 +104,18 @@ def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = N
 def load_stack_from_image_params(image_params: ImageParameters,
                                  progress: Optional[Progress] = None,
                                  dtype: npt.DTypeLike = np.float32):
-    return load(filename_group=image_params.file_group, progress=progress, dtype=dtype, indices=image_params.indices)
+    return load(filename_group=image_params.file_group,
+                progress=progress,
+                dtype=dtype,
+                indices=image_params.indices,
+                log_file=image_params.log_file)
 
 
 def load(filename_group: FilenameGroup,
          dtype: 'npt.DTypeLike' = np.float32,
          indices: Optional[Union[List[int], Indices]] = None,
-         progress: Optional[Progress] = None) -> ImageStack:
+         progress: Optional[Progress] = None,
+         log_file: Optional[Path] = None) -> ImageStack:
     """
 
     Loads a stack, including sample, white and dark images.
@@ -131,7 +136,17 @@ def load(filename_group: FilenameGroup,
     in_format = filename_group.first_file().suffix.lstrip('.')
     load_func = get_loader(in_format)
 
+    if log_file is not None:
+        log_data = load_log(log_file)
+        angles = log_data.projection_angles().value
+        angle_order = np.argsort(angles)
+        file_names = [file_names[i] for i in angle_order]
+
     image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
+
+    if log_file is not None:
+        image_stack.log_file = log_data
+        image_stack.set_projection_angles(ProjectionAngles(angles[angle_order]))
 
     # Search for and load metadata file
     metadata_filename = filename_group.metadata_path
