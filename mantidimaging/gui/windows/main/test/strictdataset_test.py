@@ -275,3 +275,12 @@ class StrictDatasetTest(unittest.TestCase):
         empty_ds = StrictDataset(generate_images())
         with self.assertRaises(RuntimeError):
             _get_stack_data_type("bad-id", empty_ds)
+
+    def test_processed_is_true(self):
+        ds = StrictDataset(generate_images())
+        ds.sample.record_operation("", "")
+        self.assertTrue(ds.is_processed)
+
+    def test_processed_is_false(self):
+        ds = StrictDataset(generate_images())
+        self.assertFalse(ds.is_processed)
