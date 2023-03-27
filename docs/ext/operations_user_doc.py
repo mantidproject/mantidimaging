@@ -77,7 +77,7 @@ class OperationsUserDoc(Directive):
                 rst_lines += get_params(op.filter_func.__doc__)
                 rst_lines.append("")
 
-            rst_lines.append(f":class:`{op.filter_name} API docs<{op.__module__}>`")
+            rst_lines.append(f":class:`{op.filter_name} API docs<mantidimaging.core.operations.{op.__module__}>`")
             rst_lines.append("")
 
         rst = ViewList()
