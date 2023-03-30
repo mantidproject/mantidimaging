@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import fnmatch
 import os
+import platform
 import subprocess
 from distutils.core import Command
 import sys
@@ -174,7 +175,7 @@ class CreateDeveloperEnvironment(Command):
         return leading_spaces // 2
 
     def get_package_depends(self):
-        # Parse the metefile manually, do avoid needing an nonstandard library
+        # Parse the metafile manually, do avoid needing a nonstandard library
         meta_file = Path(__file__).parent / "conda" / "meta.yaml"
         with meta_file.open() as meta_file_fh:
             section = []
@@ -182,6 +183,8 @@ class CreateDeveloperEnvironment(Command):
             for line in meta_file_fh:
                 # ignore templating
                 if line.strip() == "" or "{%" in line:
+                    continue
+                if platform.system() != "Linux" and "[linux]" in line:
                     continue
                 if line.strip().endswith(":"):
                     indent = self.count_indent(line)
