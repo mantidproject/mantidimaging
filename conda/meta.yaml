@@ -36,6 +36,7 @@ requirements:
     - jenkspy=0.2.0
     - pyqt=5.15.*
     - pyqtgraph=0.13.*
+    - qt-gtk-platformtheme # [linux]
 
 build:
   noarch: python
