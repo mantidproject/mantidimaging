@@ -22,8 +22,8 @@ class BaseRecon:
     def prepare_sinogram(data: np.ndarray, recon_params: ReconstructionParameters):
         logged_data = BaseRecon.negative_log(data)
         if recon_params.beam_hardening_coefs is not None:
-            a0, a1, a2, a3 = recon_params.beam_hardening_coefs
-            bhc_poly = Polynomial([0, 1, a0, a1, a2, a3])
+            coefs = np.array([0.0, 1.0] + recon_params.beam_hardening_coefs)
+            bhc_poly = Polynomial(coefs.astype(data.dtype))
             return bhc_poly(logged_data)
         else:
             return logged_data
