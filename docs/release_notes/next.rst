@@ -45,6 +45,7 @@ Fixes
 - #1219 : Fix image_180deg.tiff being included in sample stack
 - #1730 : Allow any characters in filenames
 - #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
+- #1748 : Stop BHC promoting data arrays to float64
 
 Developer Changes
 -----------------
