@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./docker/Ubuntu18_base.Dockerfile
+          file: ./docker/ubuntu18.Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ubuntu18
           labels: ${{ steps.meta.outputs.labels }}
