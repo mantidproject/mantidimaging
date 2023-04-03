@@ -287,3 +287,12 @@ class ImageStackTest(unittest.TestCase):
 
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
         np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), image.sino_as_image_stack(0).data)
+
+    def test_processed_is_true(self):
+        images = generate_images()
+        images.record_operation("", "")
+        self.assertTrue(images.is_processed)
+
+    def test_processed_is_false(self):
+        images = generate_images()
+        self.assertFalse(images.is_processed)

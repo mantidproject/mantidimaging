@@ -31,6 +31,7 @@ New Features and improvements
 - #1632 : Add Stochastic PDHG
 - #1696 : Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
 - #1225 : Loading of Golden Ratio datasets
+- #1739 : Load processed NeXus data
 
 Fixes
 -----
@@ -45,6 +46,8 @@ Fixes
 - #1219 : Fix image_180deg.tiff being included in sample stack
 - #1730 : Allow any characters in filenames
 - #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
+- #1748 : Stop BHC promoting data arrays to float64
+- #1747 : Fix API links in docs
 
 Developer Changes
 -----------------

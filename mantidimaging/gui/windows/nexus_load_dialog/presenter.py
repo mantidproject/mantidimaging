@@ -13,6 +13,7 @@ from mantidimaging.core.data.reconlist import ReconList
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.io.utility import NEXUS_PROCESSED_DATA_PATH
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
@@ -90,7 +91,7 @@ class NexusLoadPresenter:
                 if self.tomo_entry is None:
                     return
 
-                self.data = self._look_for_tomo_data_and_update_view(DATA_PATH, 2)
+                self.data = self._look_for_image_data_and_update_view()
                 if self.data is None:
                     return
 
@@ -175,6 +176,24 @@ class NexusLoadPresenter:
         else:
             self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
         return dataset
+
+    def _look_for_image_data_and_update_view(self) -> Optional[h5py.Dataset]:
+        position = 2
+        dataset = self._look_for_tomo_data(DATA_PATH)
+        if dataset is not None:
+            self.view.set_data_found(position, True, self.tomo_path + "/" + DATA_PATH, dataset.shape)
+            return dataset
+        else:
+            assert self.nexus_file is not None
+            if NEXUS_PROCESSED_DATA_PATH in self.nexus_file:
+                dataset = self.nexus_file[NEXUS_PROCESSED_DATA_PATH]["data"]
+                self.view.set_data_found(position, True, NEXUS_PROCESSED_DATA_PATH, dataset.shape)
+                return dataset
+
+        self._missing_data_error(DATA_PATH)
+        self.view.set_data_found(position, False, "", ())
+        self.view.disable_ok_button()
+        return None
 
     def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
         """

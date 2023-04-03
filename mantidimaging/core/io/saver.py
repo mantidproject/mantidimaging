@@ -13,7 +13,7 @@ from tifffile import tifffile
 from mantidimaging.core.operation_history.const import TIMESTAMP
 import astropy.io.fits as fits
 
-from .utility import DEFAULT_IO_FILE_FORMAT
+from .utility import DEFAULT_IO_FILE_FORMAT, NEXUS_PROCESSED_DATA_PATH
 from ..operations.rescale import RescaleFilter
 from ..utility.progress_reporting import Progress
 from ..utility.version_check import CheckVersion
@@ -232,7 +232,10 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
 
-    _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"])
+    if dataset.is_processed:
+        _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"])
+    else:
+        _save_image_stacks_to_nexus(dataset, detector)
 
     # data field
     data = tomo_entry.create_group("data")
@@ -247,22 +250,26 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Dataset,
                                   image_key: h5py.Dataset):
-    data = nexus_file.create_group("processed-data")
+    data = nexus_file.create_group(NEXUS_PROCESSED_DATA_PATH)
     data["rotation_angle"] = rotation_angle
     data["image_key"] = image_key
     _set_nx_class(data, "NXdata")
-    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
-    data.create_dataset("data", shape=combined_data_shape, dtype="float32")
-    index = 0
-    for arr in dataset.nexus_arrays:
-        data["data"][index:index + arr.shape[0]] = arr
-        index += arr.shape[0]
+    _save_image_stacks_to_nexus(dataset, data)
 
     process = data.create_group("process")
     _set_nx_class(process, "NXprocess")
     process.create_dataset("program", data=np.string_("Mantid Imaging"))
     process.create_dataset("date", data=np.string_(datetime.datetime.now().isoformat()))
     process.create_dataset("version", data=np.string_(package_version))
+
+
+def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group):
+    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
+    data_group.create_dataset("data", shape=combined_data_shape, dtype="float32")
+    index = 0
+    for arr in dataset.nexus_arrays:
+        data_group["data"][index:index + arr.shape[0]] = arr
+        index += arr.shape[0]
 
 
 def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):

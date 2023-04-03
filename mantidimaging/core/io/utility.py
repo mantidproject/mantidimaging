@@ -11,6 +11,7 @@ from typing import Optional, Tuple
 log = getLogger(__name__)
 
 DEFAULT_IO_FILE_FORMAT = 'tif'
+NEXUS_PROCESSED_DATA_PATH = "processed-data"
 
 THRESHOLD_180 = np.radians(1)
 
