@@ -100,11 +100,10 @@ class ImageLoadDialog(BaseDialogView):
             return None
 
     def _set_all_step(self) -> None:
-        self.sample.set_step(1)
+        self.sample.set_preview(False)
 
     def _set_preview_step(self) -> None:
-        # FIXME direct attribute access
-        self.sample.set_step(self.presenter.last_file_info.shape[0] // 10)
+        self.sample.set_preview(True)
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
