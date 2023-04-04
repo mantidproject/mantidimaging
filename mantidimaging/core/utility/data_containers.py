@@ -108,7 +108,7 @@ class ReconstructionParameters:
     max_projection_angle: float = 360.0
     beam_hardening_coefs: Optional[List[float]] = None
     stochastic: bool = False
-    subsets: int = 1
+    projections_per_subset: int = 50
 
     def to_dict(self) -> dict:
         return {
@@ -120,7 +120,7 @@ class ReconstructionParameters:
             'pixel_size': self.pixel_size,
             'alpha': self.alpha,
             'stochastic': self.stochastic,
-            'subsets': self.subsets,
+            'projections_per_subset': self.projections_per_subset,
         }
 
 
