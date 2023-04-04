@@ -410,7 +410,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.stochasticCheckBox.isChecked()
 
     @property
-    def subsets(self) -> int:
+    def projections_per_subset(self) -> int:
         return self.subsetsSpinBox.value()
 
     @property
@@ -435,7 +435,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         alpha=self.alpha,
                                         non_negative=self.non_negative,
                                         stochastic=self.stochastic,
-                                        subsets=self.subsets,
+                                        projections_per_subset=self.projections_per_subset,
                                         max_projection_angle=self.max_proj_angle,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 
