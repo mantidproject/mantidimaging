@@ -219,7 +219,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.assertEqual(self.view.stochastic, False)
 
     def test_subsets_property(self):
-        self.assertEqual(self.view.subsets, 1)
+        self.assertEqual(self.view.projections_per_subset, 50)
 
     def test_num_iter_setter(self):
         iters = 123
@@ -242,7 +242,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.assertEqual(rp.alpha, self.view.alpha)
         self.assertEqual(rp.non_negative, self.view.non_negative)
         self.assertEqual(rp.stochastic, self.view.stochastic)
-        self.assertEqual(rp.subsets, self.view.subsets)
+        self.assertEqual(rp.projections_per_subset, self.view.projections_per_subset)
 
     def test_set_table_point(self):
         idx = 12
