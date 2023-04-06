@@ -1,3 +1,5 @@
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 # This Dockerfile creates a developer image. It requires that the following things are mounted:
 # - Mantid Imaging source at /opt/mantidimaging.
 
