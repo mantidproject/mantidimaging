@@ -71,3 +71,4 @@ Developer Changes
 - #1643 : Deprecations in GitHub actions
 - #1726, #1728 : Use FilenameGroup for Load Dataset
 - #1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
+- #1757 : CLI log level only on to mantidimaging

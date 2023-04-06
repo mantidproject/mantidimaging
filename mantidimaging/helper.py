@@ -35,11 +35,8 @@ def initialise_logging(default_level=logging.DEBUG):
     console_handler.setFormatter(_log_formatter)
     root_logger.addHandler(console_handler)
 
-    # Default log level
-    root_logger.setLevel(default_level)
-
-    # Don't ever print all the debug logging from Qt
-    logging.getLogger('PyQt5').setLevel(logging.INFO)
+    # Default log level for mantidimaging only
+    logging.getLogger('mantidimaging').setLevel(default_level)
 
 
 def check_data_stack(data, expected_dims=3, expected_class=ImageStack):
