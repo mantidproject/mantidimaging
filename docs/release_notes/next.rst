@@ -48,6 +48,7 @@ Fixes
 - #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
 - #1748 : Stop BHC promoting data arrays to float64
 - #1747 : Fix API links in docs
+- #1721 : For SPDHG show projections per subset
 
 Developer Changes
 -----------------
