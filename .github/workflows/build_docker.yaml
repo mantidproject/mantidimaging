@@ -16,7 +16,7 @@ on:
     branches:
       - 'main'
     paths:
-      - ['docker/**', 'Dockerfile', 'conda/**', 'Makefile', 'setup.py', 'environment.yml', 'environment-dev.yml']
+      - ['docker/**', 'Dockerfile', 'conda/**', 'Makefile', 'setup.py', 'environment.yml', 'environment-dev.yml', 'build_docker.yaml']
 
 env:
   REGISTRY: ghcr.io
