@@ -66,4 +66,5 @@ Developer Changes
 - #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
 - #1641 : More robust logging and error handling in automated testing
 - #1643 : Deprecations in GitHub actions
--  #1726, #1728 : Use FilenameGroup for Load Dataset
+- #1726, #1728 : Use FilenameGroup for Load Dataset
+- #1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
