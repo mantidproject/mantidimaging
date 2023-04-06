@@ -6,17 +6,15 @@
 # Packages when a release is create or a pull request is merged to main.
 
 
-name: Create and publish a Docker image
+name: Create and publish a Docker images for Ubuntu 18 and Centos 7
 
 on:
   push:
     branches:
     - 'main'
-    - 'release-*'
   pull_request:
     branches:
       - 'main'
-      - 'release-*'
     paths:
       - ['docker/**', 'Dockerfile', 'conda/**', 'Makefile', 'setup.py', 'environment.yml', 'environment-dev.yml']
 
@@ -49,11 +47,20 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image
+      - name: Build and push Ubuntu Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./docker/ubuntu18.Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ubuntu18
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Centos Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/centos7.Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:centos7
           labels: ${{ steps.meta.outputs.labels }}
