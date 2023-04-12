@@ -79,7 +79,7 @@ class ImageLoadDialog(BaseDialogView):
         return field
 
     @staticmethod
-    def select_file(caption: str, image_file=True) -> Optional[str]:
+    def select_file(caption: str, image_file: bool = True) -> Optional[str]:
         """
         :param caption: Title of the file browser window that will be opened
         :param image_file: Whether or not the file being looked for is an image
@@ -99,19 +99,15 @@ class ImageLoadDialog(BaseDialogView):
         else:
             return None
 
-    def _set_all_step(self):
-        self.sample.set_step(1)
+    def _set_all_step(self) -> None:
+        self.sample.set_preview(False)
 
-    def _set_preview_step(self):
-        # FIXME direct attribute access
-        self.sample.set_step(self.presenter.last_file_info.shape[0] // 10)
+    def _set_preview_step(self) -> None:
+        self.sample.set_preview(True)
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
 
-    def show_error(self, msg, traceback):
-        self.parent_view.presenter.show_error(msg, traceback)
-
-    def enable_preview_all_buttons(self):
+    def enable_preview_all_buttons(self) -> None:
         self.step_preview.setEnabled(True)
         self.step_all.setEnabled(True)
