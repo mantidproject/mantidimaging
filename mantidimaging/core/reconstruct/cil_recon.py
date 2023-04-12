@@ -13,7 +13,7 @@ import numpy as np
 from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
-from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox
+from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
 from cil.plugins.astra.operators import ProjectionOperator
 
 from mantidimaging.core.data import ImageStack
@@ -33,8 +33,9 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
-                                 recon_params: ReconstructionParameters):
+    def set_up_TV_regularisation(
+            image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
+            recon_params: ReconstructionParameters) -> tuple[BlockOperator, BlockFunction, Function]:
 
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
@@ -99,7 +100,8 @@ class CILRecon(BaseRecon):
         A2d.set_norm(approx_a2d_norm)
 
     @staticmethod
-    def get_data(sino, ag, recon_params: ReconstructionParameters, num_subsets: int):
+    def get_data(sino: np.ndarray, ag: AcquisitionGeometry, recon_params: ReconstructionParameters,
+                 num_subsets: int) -> AcquisitionData:
         data = AcquisitionData(sino, deep_copy=False, geometry=ag, suppress_warning=True)
 
         if recon_params.stochastic:
@@ -130,7 +132,7 @@ class CILRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None):
+                    progress: Optional[Progress] = None) -> np.ndarray:
         """
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
@@ -213,7 +215,7 @@ class CILRecon(BaseRecon):
     def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None):
+             progress: Optional[Progress] = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -327,5 +329,5 @@ class CILRecon(BaseRecon):
             return ImageStack(volume)
 
 
-def allowed_recon_kwargs() -> dict:
+def allowed_recon_kwargs() -> dict[str, list[str]]:
     return {'CIL: PDHG-TV': ['alpha', 'num_iter', 'non_negative', 'stochastic', 'projections_per_subset']}
