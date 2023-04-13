@@ -262,12 +262,11 @@ class CILRecon(BaseRecon):
 
         with cil_mutex:
             t0 = time.perf_counter()
-            LOG.info(
-                f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
-                f"output shape {recon_volume_shape}\n"
-                f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
-                f"Non-negative {recon_params.non_negative},",
-                f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
+            LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
+                     f"output shape {recon_volume_shape}\n"
+                     f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
+                     f"Non-negative {recon_params.non_negative},"
+                     f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
             angles = images.projection_angles(recon_params.max_projection_angle).value
 
