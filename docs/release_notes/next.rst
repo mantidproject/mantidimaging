@@ -49,6 +49,7 @@ Fixes
 - #1748 : Stop BHC promoting data arrays to float64
 - #1747 : Fix API links in docs
 - #1721 : For SPDHG show projections per subset
+- #1720 : Update memory requirements for SPDHG
 
 Developer Changes
 -----------------
