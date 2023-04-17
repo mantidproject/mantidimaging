@@ -19,14 +19,19 @@ InstallDir "$PROGRAMFILES64"
 !insertmacro MUI_UNPAGE_INSTFILES
 
 Section
+	SetShellVarContext all
 	SetOutPath $INSTDIR
 	File /r dist\MantidImaging
+	CreateDirectory "$SMPROGRAMS\${PRODUCT}"
+	CreateShortCut "$SMPROGRAMS\${PRODUCT}\${PRODUCT}.lnk" "$INSTDIR\MantidImaging\MantidImaging.exe" \
+	   "" "$INSTDIR\MantidImaging\MantidImaging.exe" 0
 
 	WriteUninstaller "$INSTDIR\MantidImaging\uninstall.exe"
 SectionEnd
 
 Section "Uninstall"
+	SetShellVarContext all
+	Delete "$SMPROGRAMS\${PRODUCT}\${PRODUCT}.lnk"
 	Delete $INSTDIR\uninstall.exe
 	RMDir /r "$INSTDIR"
-
 SectionEnd
