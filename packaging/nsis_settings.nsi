@@ -29,6 +29,11 @@ Section
 	   "" "$INSTDIR\MantidImaging\MantidImaging.exe" 0
 
 	WriteUninstaller "$INSTDIR\MantidImaging\uninstall.exe"
+
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "DisplayName" "${PRODUCT}"
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "UninstallString" '"$INSTDIR\MantidImaging\uninstall.exe"'
+	WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "NoModify" 1
+	WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "NoRepair" 1
 SectionEnd
 
 Section "Uninstall"
@@ -36,4 +41,7 @@ Section "Uninstall"
 	Delete "$SMPROGRAMS\${PRODUCT}\${PRODUCT}.lnk"
 	Delete $INSTDIR\uninstall.exe
 	RMDir /r "$INSTDIR"
+
+	DeleteRegKey SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}"
+	DeleteRegKey SHCTX "Software\${PRODUCT}"
 SectionEnd
