@@ -15,7 +15,7 @@ import PyInstaller.__main__
 
 def create_run_options():
     run_options = [
-        '../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onefile',
+        '../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onedir',
         '--icon=../images/mantid_imaging_unstable_64px.ico'
     ]
 
