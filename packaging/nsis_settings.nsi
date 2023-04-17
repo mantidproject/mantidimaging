@@ -1,4 +1,6 @@
 !include "MUI2.nsh"
+SetCompressor lzma
+SetCompressorDictSize 128
 
 RequestExecutionLevel admin
 Unicode true
