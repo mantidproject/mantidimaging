@@ -174,7 +174,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
+def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_float: bool):
     """
     Uses information from a StrictDataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
@@ -187,7 +187,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
         raise RuntimeError("Unable to save NeXus file. " + str(e))
 
     try:
-        _nexus_save(nexus_file, dataset, sample_name)
+        _nexus_save(nexus_file, dataset, sample_name, save_as_float)
     except OSError as e:
         nexus_file.close()
         os.remove(path)
@@ -196,7 +196,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     nexus_file.close()
 
 
-def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
+def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str, save_as_float: bool):
     """
     Takes a NeXus file and writes the StrictDataset information to it.
     :param nexus_file: The NeXus file.
