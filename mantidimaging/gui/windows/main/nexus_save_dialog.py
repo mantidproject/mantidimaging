@@ -5,7 +5,7 @@ import os
 import uuid
 from typing import Optional, List
 
-from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog
+from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -16,6 +16,8 @@ NXS_EXT = ".nxs"
 class NexusSaveDialog(BaseDialogView):
 
     selected_dataset = Optional[uuid.UUID]
+    floatRadioButton: QRadioButton
+    intRadioButton: QRadioButton
 
     def __init__(self, parent, dataset_list: List[StrictDataset]):
         super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
@@ -63,3 +65,7 @@ class NexusSaveDialog(BaseDialogView):
         path = self.save_path()
         if os.path.splitext(path)[1] != NXS_EXT:
             self.savePath.setText(path + NXS_EXT)
+
+    @property
+    def save_as_float(self) -> bool:
+        return self.floatRadioButton.isChecked()
