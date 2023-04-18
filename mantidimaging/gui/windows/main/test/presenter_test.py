@@ -754,6 +754,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         nexus_save_dialog_mock.save_path.return_value = save_path = "nexus/save/path"
         nexus_save_dialog_mock.sample_name.return_value = sample_name = "sample-name"
         nexus_save_dialog_mock.selected_dataset = dataset_id = "dataset-id"
+        nexus_save_dialog_mock.save_as_float = save_as_float = False
 
         self.presenter.notify(Notification.NEXUS_SAVE)
         start_async_mock.assert_called_once_with(self.presenter.view,
@@ -761,7 +762,8 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                  self.presenter._on_save_done, {
                                                      'dataset_id': dataset_id,
                                                      'path': save_path,
-                                                     'sample_name': sample_name
+                                                     'sample_name': sample_name,
+                                                     'save_as_float': save_as_float
                                                  },
                                                  busy=True)
 
