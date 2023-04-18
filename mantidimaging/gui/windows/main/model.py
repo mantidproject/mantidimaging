@@ -80,9 +80,10 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str) -> Optional[bool]:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str,
+                        save_as_float: bool) -> Optional[bool]:
         if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
-            saver.nexus_save(self.datasets[dataset_id], path, sample_name)  # type: ignore
+            saver.nexus_save(self.datasets[dataset_id], path, sample_name, save_as_float)  # type: ignore
             return True
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
