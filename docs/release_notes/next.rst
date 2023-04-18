@@ -32,6 +32,7 @@ New Features and improvements
 - #1696 : Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
 - #1225 : Loading of Golden Ratio datasets
 - #1739 : Load processed NeXus data
+- #1762 : NSIS installer for Windows
 
 Fixes
 -----
