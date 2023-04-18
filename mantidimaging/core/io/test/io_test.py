@@ -214,7 +214,7 @@ class IOTest(FileOutputtingTestCase):
         sample_name = "sample-name"
 
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, sample_name)
+            saver._nexus_save(nexus_file, sd, sample_name, True)
 
             # test entry field
             self.assertEqual(_decode_nexus_class(nexus_file["entry1"]), "NXentry")
@@ -256,7 +256,7 @@ class IOTest(FileOutputtingTestCase):
         sample_name = "sample-name"
 
         with h5py.File(path, "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, sample_name)
+            saver._nexus_save(nexus_file, sd, sample_name, True)
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
             rotation_angle_entry = tomo_entry["sample"]["rotation_angle"]
 
@@ -279,7 +279,7 @@ class IOTest(FileOutputtingTestCase):
         sd.sample.record_operation("", "")
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
             npt.assert_array_equal(
@@ -313,7 +313,7 @@ class IOTest(FileOutputtingTestCase):
         sd = StrictDataset(*image_stacks)
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
             tomo_entry = nexus_file["entry1"]["tomo_entry"]
 
             npt.assert_array_equal(
@@ -327,7 +327,7 @@ class IOTest(FileOutputtingTestCase):
     def test_h5py_os_error_returns(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
         file_mock.side_effect = OSError
         with self.assertRaises(RuntimeError):
-            saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
+            saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name", True)
         nexus_save_mock.assert_not_called()
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
@@ -337,14 +337,14 @@ class IOTest(FileOutputtingTestCase):
         nexus_save_mock.side_effect = OSError
         save_path = "failed/save/path"
         with self.assertRaises(RuntimeError):
-            saver.nexus_save(StrictDataset(th.generate_images()), save_path, "sample-name")
+            saver.nexus_save(StrictDataset(th.generate_images()), save_path, "sample-name", True)
         file_mock.return_value.close.assert_called_once()
         os_mock.remove.assert_called_once_with(save_path)
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
     def test_successful_nexus_save_closes_file(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
-        saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name")
+        saver.nexus_save(StrictDataset(th.generate_images()), "path", "sample-name", True)
         file_mock.return_value.close.assert_called_once()
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
@@ -356,7 +356,7 @@ class IOTest(FileOutputtingTestCase):
         sd.recons.data = [th.generate_images(), th.generate_images()]
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
 
         self.assertEqual(recon_save_mock.call_count, len(sd.recons))
 
@@ -366,7 +366,7 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             rotation_angle = nexus_file.create_dataset("rotation_angle", dtype="float")
             image_key = nexus_file.create_dataset("image_key", dtype="int")
-            _save_processed_data_to_nexus(nexus_file, ds, rotation_angle, image_key)
+            _save_processed_data_to_nexus(nexus_file, ds, rotation_angle, image_key, True)
             assert "process" in nexus_file[NEXUS_PROCESSED_DATA_PATH]
             self.assertEqual(_decode_nexus_class(nexus_file[NEXUS_PROCESSED_DATA_PATH]), "NXdata")
             self.assertEqual(_decode_nexus_class(nexus_file[process_path]), "NXprocess")
@@ -384,7 +384,7 @@ class IOTest(FileOutputtingTestCase):
         sd = StrictDataset(sample)
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
 
         recon_save_mock.assert_not_called()
 
@@ -401,7 +401,7 @@ class IOTest(FileOutputtingTestCase):
         sd.recons.append(recon)
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
 
             self.assertEqual(_decode_nexus_class(nexus_file[recon_name]), "NXentry")
             self.assertEqual(_nexus_dataset_to_string(nexus_file[recon_name]["title"]), recon_name)
@@ -441,7 +441,7 @@ class IOTest(FileOutputtingTestCase):
         sd.recons.append(recon)
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
-            saver._nexus_save(nexus_file, sd, "sample-name")
+            saver._nexus_save(nexus_file, sd, "sample-name", True)
             self.assertIn(str(datetime.date.fromisoformat(gemini)),
                           _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["date"]))
 
