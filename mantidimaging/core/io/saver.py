@@ -265,25 +265,30 @@ def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset,
 
 def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool):
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
-    data_group.create_dataset("data", shape=combined_data_shape, dtype="float32")
+
     index = 0
     if save_as_float:
         data = dataset.nexus_arrays
+        dtype = "float32"
     else:
-        data = _convert_float_to_int(dataset.nexus_arrays)
+        data, _ = _convert_float_to_int(dataset.nexus_arrays)
+        dtype = "int32"
+
+    data_group.create_dataset("data", shape=combined_data_shape, dtype=dtype)
 
     for arr in data:
         data_group["data"][index:index + arr.shape[0]] = arr
         index += arr.shape[0]
 
 
-def _convert_float_to_int(arrays: List[np.ndarray]) -> List[np.ndarray]:
+def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], List[int]]:
     """
     Scales a float array to convert it to ints.
     :param arrays: The dataset arrays.
     :return: A list of int arrays.
     """
     converted = []
+    factors = []
 
     def scale_row(row):
         return np.round(row * scaling_factor).astype(int)
@@ -293,9 +298,9 @@ def _convert_float_to_int(arrays: List[np.ndarray]) -> List[np.ndarray]:
         scaling_factor = 10**max_decimal_places
         scaled_arr = np.apply_along_axis(scale_row, axis=1, arr=arr)
         converted.append(scaled_arr)
-        print(scaled_arr)
+        factors.append(scaling_factor)
 
-    return converted
+    return converted, factors
 
 
 def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):
