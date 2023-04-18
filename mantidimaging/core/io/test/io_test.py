@@ -20,7 +20,8 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus
+from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus, \
+    _save_image_stacks_to_nexus
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -468,6 +469,15 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(
                 _nexus_dataset_to_string(nexus_file[recon_name]["reconstruction"]["parameters"]["raw_file"]),
                 self.sample_path)
+
+    def test_save_image_stacks_to_nexus_as_int(self):
+
+        ds = StrictDataset(th.generate_images())
+
+        with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
+            data = nexus_file.create_group("data")
+            _save_image_stacks_to_nexus(ds, data, False)
+            self.assertEqual(data["data"].dtype, "int32")
 
 
 if __name__ == '__main__':
