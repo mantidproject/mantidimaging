@@ -33,6 +33,7 @@ New Features and improvements
 - #1225 : Loading of Golden Ratio datasets
 - #1739 : Load processed NeXus data
 - #1762 : NSIS installer for Windows
+- #1765 : NeXus float/int save option
 
 Fixes
 -----
