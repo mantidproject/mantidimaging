@@ -21,7 +21,7 @@ from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus, \
-    _save_image_stacks_to_nexus
+    _save_image_stacks_to_nexus, _convert_float_to_int
 from mantidimaging.core.utility.version_check import CheckVersion
 from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
@@ -44,12 +44,20 @@ def _create_sample_with_filename() -> ImageStack:
 
 
 def test_rescale_negative_recon_data():
-
     recon = th.generate_images()
     recon.data -= np.min(recon.data) * 1.2
 
     assert np.min(_rescale_recon_data(recon.data)) >= 0
     assert int(np.max(_rescale_recon_data(recon.data))) == np.iinfo("uint16").max
+
+
+def test_convert_float_to_int():
+    n_arrs = 3
+    float_arr = [th.gen_img_numpy_rand() for _ in range(3)]
+    conv, factors = _convert_float_to_int(float_arr)
+
+    for i in range(n_arrs):
+        npt.assert_allclose(conv[i] / factors[i], float_arr[i])
 
 
 class IOTest(FileOutputtingTestCase):
@@ -471,7 +479,6 @@ class IOTest(FileOutputtingTestCase):
                 self.sample_path)
 
     def test_save_image_stacks_to_nexus_as_int(self):
-
         ds = StrictDataset(th.generate_images())
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:

@@ -294,7 +294,7 @@ def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], L
         return np.round(row * scaling_factor).astype(int)
 
     for arr in arrays:
-        max_decimal_places = max_decimal_places = np.max([len(str(f).split('.')[1]) for f in arr.flatten()])
+        max_decimal_places = np.max([len(str(f).split('.')[1]) for f in arr.flatten()])
         scaling_factor = 10**max_decimal_places
         scaled_arr = np.apply_along_axis(scale_row, axis=1, arr=arr)
         converted.append(scaled_arr)
