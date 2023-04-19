@@ -39,8 +39,8 @@ class RebinFilter(BaseFilter):
                             int - Percentage of current size.
                             float - Fraction of current size.
                             tuple - Size of the output image (x, y).
-        :param mode: Interpolation to use for re-sizing
-                     ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
+        :param mode: The mode with which to handle the edges. One of
+                     ('constant', 'edge', 'symmetric', 'reflect', 'wrap').
 
         :return: The processed 3D numpy.ndarray
         """
