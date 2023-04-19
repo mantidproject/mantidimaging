@@ -9,7 +9,7 @@ Unicode true
 Name "${PRODUCT}"
 OutFile "dist\${PRODUCT} Setup.exe"
 
-InstallDir "$PROGRAMFILES64"
+InstallDir "$PROGRAMFILES64\${PRODUCT}"
 
 !define MUI_ICON "../images/mantid_imaging_unstable_64px.ico"
 
@@ -23,15 +23,15 @@ InstallDir "$PROGRAMFILES64"
 Section
 	SetShellVarContext all
 	SetOutPath $INSTDIR
-	File /r dist\MantidImaging
+	File /r dist\MantidImaging\*
 	CreateDirectory "$SMPROGRAMS\${PRODUCT}"
-	CreateShortCut "$SMPROGRAMS\${PRODUCT}\${PRODUCT}.lnk" "$INSTDIR\MantidImaging\MantidImaging.exe" \
-	   "" "$INSTDIR\MantidImaging\MantidImaging.exe" 0
+	CreateShortCut "$SMPROGRAMS\${PRODUCT}\${PRODUCT}.lnk" "$INSTDIR\MantidImaging.exe" \
+	   "" "$INSTDIR\MantidImaging.exe" 0
 
-	WriteUninstaller "$INSTDIR\MantidImaging\uninstall.exe"
+	WriteUninstaller "$INSTDIR\uninstall.exe"
 
 	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "DisplayName" "${PRODUCT}"
-	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "UninstallString" '"$INSTDIR\MantidImaging\uninstall.exe"'
+	WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "UninstallString" '"$INSTDIR\uninstall.exe"'
 	WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "NoModify" 1
 	WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}" "NoRepair" 1
 SectionEnd
