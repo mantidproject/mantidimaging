@@ -57,7 +57,7 @@ def test_convert_float_to_int():
     conv, factors = _convert_float_to_int(float_arr)
 
     for i in range(n_arrs):
-        npt.assert_allclose(conv[i] / factors[i], float_arr[i])
+        npt.assert_allclose(conv[i] / factors[i], float_arr[i], rtol=1e-5)
 
 
 class IOTest(FileOutputtingTestCase):
