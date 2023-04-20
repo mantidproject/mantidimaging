@@ -51,6 +51,7 @@ Fixes
 - #1721 : For SPDHG show projections per subset
 - #1720 : Update memory requirements for SPDHG
 - #1742 : Restore native dialogs on Linux
+- #1761 : Hide float64 loading
 
 Developer Changes
 -----------------
