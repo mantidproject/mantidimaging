@@ -59,6 +59,9 @@ class ImageLoadDialog(BaseDialogView):
         self.pixelSize.setValue(DEFAULT_PIXEL_SIZE)
         self.pixel_bit_depth.setCurrentText(DEFAULT_PIXEL_DEPTH)
 
+        self.pixel_bit_depth.hide()
+        self.label_pixel_bit_depth.hide()
+
     def create_file_input(self, position: int, file_info: FILE_TYPES) -> Field:
         section: QTreeWidgetItem = self.tree.topLevelItem(position)
 
