@@ -79,6 +79,9 @@ class NexusLoadDialog(BaseDialogView):
         self.allPushButton.clicked.connect(self._set_all_step)
         self.n_proj = 0
 
+        self.pixelBitDepthLabel.hide()
+        self.pixelDepthComboBox.hide()
+
     def choose_nexus_file(self):
         """
         Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the
