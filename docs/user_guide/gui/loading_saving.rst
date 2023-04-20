@@ -125,7 +125,9 @@ Save as a NeXus File
 
 When *Save as NeXus File* is selected the save NeXus dialog appears. Only Datasets
 with sample images data can be saved as NeXus files. A sample name and an output
-directory are required before a save can be attempted.
+directory are required before a save can be attempted. The image data (excluding
+recons) can be saved as either float 32 or int 16. Users should be aware that
+there will be data loss when saving as int.
 
 .. note::
     Recon data is currently saved as float16.
