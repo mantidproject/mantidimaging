@@ -484,7 +484,7 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             data = nexus_file.create_group("data")
             _save_image_stacks_to_nexus(ds, data, False)
-            self.assertEqual(data["data"].dtype, "int32")
+            self.assertEqual(data["data"].dtype, "int16")
 
 
 if __name__ == '__main__':
