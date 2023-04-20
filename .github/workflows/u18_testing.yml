@@ -25,25 +25,30 @@ jobs:
       uses: ./.github/actions/test
       with:
         command: python --version; conda list ; pip list
+        label: ubuntu18
 
     - name: yapf
       uses: ./.github/actions/test
       with:
         command: yapf --parallel --diff --recursive .
+        label: ubuntu18
 
     - name: flake8
       uses: ./.github/actions/test
       with:
         command: flake8
+        label: ubuntu18
 
     - name: mypy
       uses: ./.github/actions/test
       with:
         # COMPAT: applitools has some bad signatures, so use --no-site-packages
         command: mypy --ignore-missing-imports --no-site-packages mantidimaging
+        label: ubuntu18
 
     - name: pytest
       timeout-minutes: 5
       uses: ./.github/actions/test
       with:
         command: xvfb-run pytest -n auto -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+        label: ubuntu18
