@@ -483,7 +483,7 @@ class IOTest(FileOutputtingTestCase):
         conv, factors = _convert_float_to_int(float_arr)
 
         for i in range(n_arrs):
-            close_arr = np.isclose(conv[i] / factors[i], float_arr[i], rtol=1e-4)
+            close_arr = np.isclose(conv[i] / factors[i], float_arr[i], rtol=1e-5)
             self.assertTrue(np.count_nonzero(close_arr) >= len(close_arr) * 0.75)
 
 
