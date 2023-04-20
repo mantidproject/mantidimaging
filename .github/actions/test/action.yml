@@ -7,10 +7,9 @@ inputs:
   label:
     description: 'Label for the docker image'
     required: true
-    default: 'latest'
 
 runs:
   using: "composite"
   steps:
     - shell: bash
-      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging mantidproject/mantidimaging:${{ inputs.label }} '${{ inputs.command }}'
+      run: docker run -v $GITHUB_WORKSPACE:/opt/mantidimaging ghcr.io/mantidproject/mantidimaging:${{ inputs.label }} '${{ inputs.command }}'
