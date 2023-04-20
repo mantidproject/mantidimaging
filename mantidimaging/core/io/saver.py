@@ -285,7 +285,7 @@ def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], L
     """
     Scales a float array to convert it to ints.
     :param arrays: The dataset arrays.
-    :return: A list of int arrays.
+    :return: A list of int arrays and a list of scaling factors.
     """
     converted = []
     factors = []
