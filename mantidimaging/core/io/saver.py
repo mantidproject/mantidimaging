@@ -272,7 +272,7 @@ def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, 
         dtype = "float32"
     else:
         data, _ = _convert_float_to_int(dataset.nexus_arrays)
-        dtype = "int32"
+        dtype = "int16"
 
     data_group.create_dataset("data", shape=combined_data_shape, dtype=dtype)
 
