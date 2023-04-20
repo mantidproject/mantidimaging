@@ -50,7 +50,7 @@
      <item row="2" column="1">
       <widget class="QRadioButton" name="floatRadioButton">
        <property name="text">
-        <string>float</string>
+        <string>float 32</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -70,7 +70,7 @@
      <item row="3" column="1">
       <widget class="QRadioButton" name="intRadioButton">
        <property name="text">
-        <string>int</string>
+        <string>int 16</string>
        </property>
       </widget>
      </item>
