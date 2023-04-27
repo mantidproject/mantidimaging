@@ -2,13 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Tuple, Union, List
+from typing import Tuple, List
 
 # Contains ROI table model class which will be used to store ROI information
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt
+from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt5.QtGui import QColor, QBrush
 
 
@@ -21,9 +21,9 @@ class TableModel(QAbstractTableModel):  # type: ignore
 
     @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
     """
-    def __init__(self, data: List[List[Union[str, Tuple[int, int, int]]]]) -> None:
+    def __init__(self, data: List[List[str | Tuple[int, int, int]]]) -> None:
         super(TableModel, self).__init__()
-        self._data = data
+        self._data: List[List[str | Tuple[int, int, int]]] = data
 
     def rowCount(self, *args, **kwargs) -> int:  # type: ignore
         """
@@ -41,7 +41,7 @@ class TableModel(QAbstractTableModel):  # type: ignore
         """
         return len(self._data[0])
 
-    def data(self, index, role: int):
+    def data(self, index: QModelIndex, role: int) -> QBrush:
         """
         Set data in table roi name and colour - str and Tuple(int,int,int)
         and set background colour of colour column
@@ -58,7 +58,7 @@ class TableModel(QAbstractTableModel):  # type: ignore
                 return QBrush(QColor(*self._data[index.row()][index.column()]))
 
     # edit roi name on double click
-    def setData(self, index, value, role):
+    def setData(self, index: QModelIndex, value: str, role: int) -> bool:
         """
         Set data in table
 
@@ -71,8 +71,9 @@ class TableModel(QAbstractTableModel):  # type: ignore
             self._data[index.row()][index.column()] = value
             self.dataChanged.emit(index, index)
             return True
+        return False
 
-    def row_data(self, row: int) -> tuple:
+    def row_data(self, row: int) -> List[str | Tuple[int, int, int]]:
         """
         Return data from selected row
 
@@ -81,7 +82,7 @@ class TableModel(QAbstractTableModel):  # type: ignore
         """
         return self._data[row]
 
-    def appendNewRow(self, roi_name: str, roi_colour: tuple):
+    def appendNewRow(self, roi_name: str, roi_colour: tuple[int, int, int]) -> None:
         """
         Append new row to table
 
@@ -89,16 +90,16 @@ class TableModel(QAbstractTableModel):  # type: ignore
         @param roi_colour: ROI colour
         """
         item_list = [roi_name, roi_colour]
-        self._data.append(item_list)
+        self._data.append(item_list)  # type: ignore
         self.layoutChanged.emit()
 
-    def sort_points(self):
+    def sort_points(self) -> None:
         """
         Sort table by ROI name
         """
         self._data.sort(key=lambda x: x[0])
 
-    def headerData(self, section, orientation, role):
+    def headerData(self, section: int, orientation: int, role: int) -> str:
         """
         Set horizontal colum header names to ROI and Colour
 
@@ -113,6 +114,7 @@ class TableModel(QAbstractTableModel):  # type: ignore
                     return "ROI"
                 if section == 1:
                     return "Colour"
+        return ""
 
     def clear_table(self) -> None:
         """
@@ -146,7 +148,7 @@ class TableModel(QAbstractTableModel):  # type: ignore
             self._data[row][0] = new_name
             self.layoutChanged.emit()
 
-    def flags(self, index):
+    def flags(self, index: QModelIndex) -> int:
         """
         Handle selection of table rows to disable selection of ROI colour column
         if index is equal to roi, item not editable
@@ -155,14 +157,14 @@ class TableModel(QAbstractTableModel):  # type: ignore
         @return: Qt.ItemIsEnabled | Qt.ItemIsSelectable
         """
         if index.column() == 0:
-            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable  # type: ignore
         else:
-            return Qt.ItemIsEnabled
+            return Qt.ItemIsEnabled  # type: ignore
 
-    def roi_names(self) -> list:
+    def roi_names(self) -> list[str]:
         """
         Return list of ROI names
 
         @return: list of ROI names
         """
-        return [x[0] for x in self._data]
+        return [x[0] for x in self._data]  # type: ignore
