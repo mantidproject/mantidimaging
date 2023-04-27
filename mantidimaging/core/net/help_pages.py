@@ -11,13 +11,13 @@ DOCS_BASE = "https://mantidproject.github.io/mantidimaging"
 SECTION_USER_GUIDE = f"{DOCS_BASE}/user_guide/"
 
 
-def open_user_operation_docs(operation_name: str):
+def open_user_operation_docs(operation_name: str) -> None:
     page_url = "operations/index"
     section = operation_name.lower().replace(" ", "-")
     open_help_webpage(SECTION_USER_GUIDE, page_url, section)
 
 
-def open_help_webpage(section_url: str, page_url: str, section: Optional[str] = None):
+def open_help_webpage(section_url: str, page_url: str, section: Optional[str] = None) -> None:
     if section is not None:
         url = f"{section_url}{page_url}.html#{section}"
     else:

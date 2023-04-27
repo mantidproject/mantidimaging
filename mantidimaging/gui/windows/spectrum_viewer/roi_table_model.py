@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from typing import Tuple, Union, List
+
 # Contains ROI table model class which will be used to store ROI information
 # and display it in the spectrum viewer.
 
@@ -10,7 +12,7 @@ from PyQt5.QtCore import QAbstractTableModel, Qt
 from PyQt5.QtGui import QColor, QBrush
 
 
-class TableModel(QAbstractTableModel):
+class TableModel(QAbstractTableModel):  # type: ignore
     """
     A subclass of QAbstractTableModel.
     Model for table view of ROI names and colours in Spectrum Viewer window to allow
@@ -19,11 +21,11 @@ class TableModel(QAbstractTableModel):
 
     @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
     """
-    def __init__(self, data):
+    def __init__(self, data: List[List[Union[str, Tuple[int, int, int]]]]) -> None:
         super(TableModel, self).__init__()
         self._data = data
 
-    def rowCount(self, *args, **kwargs):
+    def rowCount(self, *args, **kwargs) -> int:  # type: ignore
         """
         Return number of rows in table
 
@@ -31,7 +33,7 @@ class TableModel(QAbstractTableModel):
         """
         return len(self._data)
 
-    def columnCount(self, *args, **kwargs):
+    def columnCount(self, *args, **kwargs) -> int:  # type: ignore
         """
         Return number of columns in table
 
@@ -39,7 +41,7 @@ class TableModel(QAbstractTableModel):
         """
         return len(self._data[0])
 
-    def data(self, index, role):
+    def data(self, index, role: int):
         """
         Set data in table roi name and colour - str and Tuple(int,int,int)
         and set background colour of colour column
