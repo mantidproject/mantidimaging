@@ -10,3 +10,4 @@ channels:
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
   - mantidimaging
+  - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
