@@ -10,9 +10,9 @@ class SVModel:
         pass
 
     @staticmethod
-    def sum_images(images) -> np.ndarray:
+    def sum_images(images: np.ndarray) -> np.ndarray:
         return np.sum(images, axis=0)
 
     @staticmethod
-    def swap_axes(images) -> np.ndarray:
+    def swap_axes(images: np.ndarray) -> np.ndarray:
         return np.swapaxes(images, 0, 1)
