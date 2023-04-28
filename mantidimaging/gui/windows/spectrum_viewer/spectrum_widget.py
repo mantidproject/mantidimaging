@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -27,7 +27,7 @@ class SpectrumROI(ROI):
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = name
-        self._colour = (0, 0, 0)
+        self._colour = (0, 0, 0, 255)
         self.setPos((sensible_roi.left, sensible_roi.top))
         self.setSize((sensible_roi.width, sensible_roi.height))
         self.maxBounds = self.parentBounds()
@@ -35,6 +35,7 @@ class SpectrumROI(ROI):
         self.addScaleHandle([1, 0], [0, 1])
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
+        self._selected_row = None
 
     @property
     def name(self) -> str:
@@ -53,9 +54,13 @@ class SpectrumROI(ROI):
         return self._colour
 
     @colour.setter
-    def colour(self, colour: tuple[int, int, int]) -> None:
+    def colour(self, colour: tuple[int, int, int, int]) -> None:
         self._colour = colour
         self.setPen(self._colour)
+
+    @property
+    def selected_row(self) -> Optional[int]:
+        return self._selected_row
 
 
 class SpectrumWidget(GraphicsLayoutWidget):
@@ -104,21 +109,57 @@ class SpectrumWidget(GraphicsLayoutWidget):
         r_min, r_max = self.range_control.getRegion()
         return int(r_min), int(r_max)
 
-    def random_colour_generator(self) -> tuple[int, int, int]:
+    def random_colour_generator(self) -> tuple[int, int, int, int]:
         """
         A random colour generator to colour ROIs boarders.
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
         By default colour_blind_friendly is set to False
 
-        @return: A random colour in RGB format. (0-255, 0-255, 0-255)
+        @return: A random colour in RGB format. (0-255, 0-255, 0-255, 0-255)
         """
-        accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (64, 176, 166), (230, 97, 0), (93, 58, 155),
-                              (26, 255, 26), (254, 254, 98), (211, 95, 183), (220, 50, 43)]
+        accessible_colours = [(255, 194, 10, 255), (12, 123, 220, 255), (153, 79, 0, 255), (64, 176, 166, 255),
+                              (230, 97, 0, 255), (93, 58, 155, 255), (26, 255, 26, 255), (254, 254, 98, 255),
+                              (211, 95, 183, 255), (220, 50, 43, 255)]
         if self.colour_index == len(accessible_colours):
             self.colour_index = 0
         colour = accessible_colours[self.colour_index]
         self.colour_index += 1
         return colour
+
+    def change_roi_colour(self, name: str, colour: tuple[int, int, int, int]) -> None:
+        """
+        Change the colour of an existing ROI
+
+        @param name: The name of the ROI.
+        @param colour: The new colour of the ROI.
+        """
+        self.roi_dict[name].colour = colour
+        self.roi_dict[name].setPen(self.roi_dict[name].colour)
+
+    def set_roi_alpha(self, name: str, alpha: float) -> None:
+        """
+        Change the alpha value of an existing ROI
+
+        @param name: The name of the ROI.
+        @param alpha: The new alpha value of the ROI.
+        """
+        self.roi_dict[name].colour = (self.roi_dict[name].colour[0], self.roi_dict[name].colour[1],
+                                      self.roi_dict[name].colour[2], alpha)
+        self.roi_dict[name].setPen(self.roi_dict[name].colour)
+        self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+        handles = self.roi_dict[name].getHandles()
+        if alpha == 0:
+            for handle in handles:
+                handle.setVisible(False)
+            self.roi_dict[name].setVisible(False)
+            self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
+            self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+        else:
+            for handle in handles:
+                handle.setVisible(True)
+            self.roi_dict[name].setVisible(True)
+            self.roi_dict[name].setAcceptedMouseButtons(Qt.LeftButton)
+            self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
