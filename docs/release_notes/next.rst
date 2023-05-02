@@ -55,6 +55,7 @@ Fixes
 - #1742 : Restore native dialogs on Linux
 - #1761 : Hide float64 loading
 - #1774 : Force numexpr from conda-forge channel
+- #1779 : Saving images with log file loaded
 
 Developer Changes
 -----------------
