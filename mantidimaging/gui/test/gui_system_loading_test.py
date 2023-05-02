@@ -119,7 +119,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.main_window.actionSampleLoadLog.trigger()
 
         self.assertIn("log_file", sample.metadata)
-        self.assertEqual(sample.metadata['log_file'], log_path)
+        self.assertEqual(sample.metadata['log_file'], str(log_path))
 
         # After loading angles should match file
         log_angle = math.radians(self._get_log_angle(log_path))
