@@ -287,7 +287,7 @@ class ImageStack:
     @log_file.setter
     def log_file(self, value: IMATLogFile):
         if value is not None:
-            self.metadata[const.LOG_FILE] = value.source_file
+            self.metadata[const.LOG_FILE] = str(value.source_file)
         elif value is None:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
