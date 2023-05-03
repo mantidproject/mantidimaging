@@ -1,7 +1,39 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.5
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some significant new features:
+
+Stochastic PDHG Reconstruction
+   New reconstruction option from CIL. This gives faster convergence and lower memory usage by splitting the input data into subsets.
+
+Golden Ratio datasets
+   Datasets recorded using the golden ration method can now be opened correctly, using angle information in the log file.
+
+Performance improvements
+   - Arithmetic filter
+   - CIL reconstruction
+   - TIFF loading
+
+Spectrum Viewer
+   Complete the base feature set of the Spectrum viewer.
+
+   - Multiple ROIs and spectrum plots
+   - Output ROI coordinates
+
+User interface improvements
+   - Better stack selection in main window
+   - Modifying image stack in a dataset
+   - Operations ROI defaults to a sensible size
+
+Improved Nexus Support
+   - Loading reconstructions
+   - Better nexus spec conformance
+   - Saving data as float32 (for NXtomoproc this is not yet in the official spec)
+
+Windows Installer
+   See :ref:`Installing with Windows installer`
+
+There have also been many smaller changes and fixes which are listed below.
 
 New Features and improvements
 -----------------------------
