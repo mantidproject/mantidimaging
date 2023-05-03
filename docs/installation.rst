@@ -3,15 +3,22 @@
 Installation
 ============
 
+There are several options for installing:
+
+- :ref:`Installing with Windows installer` - Simplest method on Windows
+
+- :ref:`Installing with Mamba/Conda` - Linux or Windows. Most flexible. Does not need admin access.
+
+- :ref:`Using Mantid Imaging on IDAaaS` - For ISIS users
+
+- For installation from source see the :ref:`Developer Guide`
+
 Requirements
 ------------
 
 Operating system
- - Linux. Tested on Ubuntu 18.04, 20.04 and CentOS 7
+ - Linux. Tested on Ubuntu 18.04, 20.04, 22.04 and CentOS 7
  - Windows. Tested on Windows 10
-
-Python 3.9
-   This can be installed below using Conda if needed.
 
 GPU
    A CUDA capable GPU is required for some operations. CPU alternatives are provided, so it is possible to perform a tomographic reconstruction on a system without a GPU.
@@ -19,15 +26,37 @@ GPU
 RAM
    A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increased resolution, projection counts and bit depth.
 
-Installing
-----------
+Installing with Windows installer
+---------------------------------
 
-The simplest way to install the toolkit is via the packages_ published to Anaconda Cloud, this
+The installer can be downloaded from the releases_ page. For example :code:`MantidImagingSetup_2.5.0.exe`.
+
+Once downloaded, double click the setup file to run the installer. The installer is not currently signed so you may need to click to allow it to run.
+
+Select a directory to install to e.g. :code:`c:\Program Files\Mantid Imaging` and click Install.
+
+.. image:: _static/nsis_installer.png
+    :alt: Installer destination selection screen
+    :width: 60%
+    :align: center
+
+Once Mantid Imaging is installed it will show in the start menu.
+
+.. _releases: https://github.com/mantidproject/mantidimaging/releases
+
+Uninstalling
+~~~~~~~~~~~~
+
+If Mantid Imaging has been installed using the Windows Installer, then it can be removed by right clicking the entry in the start menu and selecting :code:`Uninstall`.
+
+Installing with Mamba/Conda
+---------------------------
+
+Mantid Imaging can be installed using the packages_ published to Anaconda Cloud, this
 can be done with an existing Conda or Mamba distribution if you already
 have one on your machine.
 
 .. _packages: https://anaconda.org/mantid/mantidimaging/
-
 
 1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
 2. Download and install `Mambaforge <https://github.com/conda-forge/miniforge>`_ or `Miniconda 3 <https://conda.io/miniconda.html>`_
@@ -55,29 +84,20 @@ have one on your machine.
     - Save your changes and exit the text editor.
     - In a terminal, run this command (with sudo if needed): :code:`mount /dev/shm`
 
-7. [Optional] If you wish to run :code:`mantidimaging-ipython`, you will need to have :code:`ipython` installed. This can be done with the command :code:`conda install ipython`.
+7. [Optional] If you wish to run :code:`mantidimaging-ipython`, you will need to have :code:`ipython` installed. This can be done with the command :code:`mamba install ipython`.
 
 Running the package
--------------------
+~~~~~~~~~~~~~~~~~~~
 
-1. Activate the environment created in the installation step: :code:`conda activate mantidimaging`
+1. Activate the environment created in the installation step: :code:`mamba activate mantidimaging`
 2. Run using one of the following commands:
 
   - GUI: :code:`mantidimaging`
   - IPython: :code:`mantidimaging-ipython`
 
-Running the source
-------------------
-
-To run from a downloaded source code, e.g. a git checkout:
-
-1. Activate the environment created in the installation step: :code:`conda activate mantidimaging`
-2. Run using one of the following commands:
-
-  - From the root of the repository run with :code:`python -m mantidimaging`
 
 Nightly version
----------------
+~~~~~~~~~~~~~~~
 
 The latest nightly version can be installed with
 
@@ -87,7 +107,7 @@ This will make a `mantidimaging-nightly` environment.
 
 
 Updating
---------
+~~~~~~~~
 To update to the latest version of Mantid Imaging run:
 
 :code:`conda activate mantidimaging && mamba update mantidimaging`
@@ -95,10 +115,10 @@ To update to the latest version of Mantid Imaging run:
 If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.
 
 Reinstalling the environment
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To completely delete the Mantid Imaging environment follow these steps:
 
-- :code:`conda deactivate`
+- :code:`mamba deactivate`
 
   - to exit out of the conda Mantid Imaging environment
 
@@ -111,3 +131,20 @@ To completely delete the Mantid Imaging environment follow these steps:
   - and press :code:`y` to confirm. Replace `mantidimaging` with any other environment you wish to remove
 
 - Follow steps 4 and 5 from Installing_.
+
+
+Using Mantid Imaging on IDAaaS
+------------------------------
+
+If you are an ISIS user then you may have access to the ISIS Data Analysis as a Service (IDAaaS) system.
+
+Mantid Imaging is preinstalled in the IMAT Tomography workspaces.
+
+It can be launched from the menu :code:`Applications > Software > Manntid Imaging`.
+
+
+.. image:: _static/launch_on_idaaas.png
+    :alt: Launching Mantid Imaging on IDAaaS
+    :width: 40%
+    :align: center
+
