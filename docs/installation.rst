@@ -52,7 +52,7 @@ If Mantid Imaging has been installed using the Windows Installer, then it can be
 Installing with Mamba/Conda
 ---------------------------
 
-Mantid imaging can be installed using the packages_ published to Anaconda Cloud, this
+Mantid Imaging can be installed using the packages_ published to Anaconda Cloud, this
 can be done with an existing Conda or Mamba distribution if you already
 have one on your machine.
 
