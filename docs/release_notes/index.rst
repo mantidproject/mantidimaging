@@ -5,7 +5,7 @@ Release Notes
    :maxdepth: 1
    :caption: Contents:
 
-   next
+   2.5
    2.4
    2.3
    2.2
