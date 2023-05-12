@@ -172,7 +172,7 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 html_use_smartypants = False
 
 # sphinx-multiversion
-smv_tag_whitelist = r'^\d+\.\d+\.\d+$'  # tags that look like versions
+smv_tag_whitelist = r'^2+\.\d+\.\d+$'  # tags that look like versions
 smv_branch_whitelist = None  # No branches
 smv_released_pattern = r''
 smv_prebuild_command = "python setup.py docs_api || python setup.py internal_docs_api"
