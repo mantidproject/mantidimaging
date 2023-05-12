@@ -39,7 +39,6 @@ requirements:
     - qt-gtk-platformtheme # [linux]
 
 build:
-  noarch: python
   number: 1
   entry_points:
     - mantidimaging = mantidimaging.main:main
