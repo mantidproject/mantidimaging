@@ -78,8 +78,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.selected_row_data: Optional[list] = None
 
         self.roi_table_model  # Initialise model
-        self.roi_visibility = {}
-        self.transparency_key = {}
 
         def on_row_change(item, _) -> None:
             """
@@ -104,7 +102,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             """
             for roi_item in range(self.roi_table_model.rowCount()):
                 if self.roi_table_model.row_data(roi_item)[2] is False:
-                    self.roi_visibility[roi_item] = False
+                    # self.roi_visibility[roi_item] = False
                     self.set_roi_alpha(0, roi_item)
                 else:
                     self.set_roi_alpha(255, roi_item)
@@ -189,11 +187,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 
     def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
+        """
+        Try to set the spectrum data for a given ROI assuming the
+        roi may not exist in the spectrum widget yet depending on when method is called
+        """
         self.spectrum.spectrum_data_dict[name] = spectrum_data
         self.spectrum.spectrum.clearPlots()
 
         for key, value in self.spectrum.spectrum_data_dict.items():
-            # roi_dict may not be populated with yet on method call
             if key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
@@ -277,6 +278,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.spectrum.spectrum_data_dict.pop(selected_row[0])
             self.spectrum.spectrum.removeItem(selected_row[0])
             self.presenter.handle_roi_moved()
+            self.selected_row = 0
+            self.tableView.selectRow(0)
 
     def clear_all_rois(self) -> None:
         """
