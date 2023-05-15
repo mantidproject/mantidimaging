@@ -15,10 +15,11 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
+import numpy as np
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
-    import numpy as np
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -107,6 +108,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                     self.set_roi_alpha(0, roi_item)
                 else:
                     self.set_roi_alpha(255, roi_item)
+                    self.presenter.redraw_spectrum(self.roi_table_model.row_data(roi_item)[0])
             return
 
         def on_data_in_table_change() -> None:
@@ -231,11 +233,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def set_roi_alpha(self, alpha: float, roi) -> None:
         """
-        Set the alpha value for the selected ROI
+        Set the alpha value for the selected ROI and update the spectrum to reflect the change.
+        A check is made on the spectrum to see if it exists as it may not have been created yet.
 
         @param alpha: The alpha value
         """
         self.presenter.do_set_roi_alpha(self.roi_table_model.row_data(roi)[0], alpha)
+        if alpha == 0:
+            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = np.zeros(
+                self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]].shape)
+        else:
+            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = self.spectrum.spectrum_data_dict[
+                self.roi_table_model.row_data(roi)[0]]
+
+        self.spectrum.spectrum.clearPlots()
+        self.spectrum.spectrum.update()
+        for key, value in self.spectrum.spectrum_data_dict.items():
+            if key in self.spectrum.roi_dict:
+                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
     def add_roi_table_row(self, row: int, name: str, colour: str):
         """
