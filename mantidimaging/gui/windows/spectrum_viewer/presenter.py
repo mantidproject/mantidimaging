@@ -129,6 +129,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
+    def redraw_spectrum(self, name: str) -> None:
+        """
+        Redraw the spectrum with the given name
+        """
+        self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+
     def redraw_all_rois(self) -> None:
         """
         Redraw all ROIs and spectrum plots
@@ -145,6 +151,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         :param alpha: The new alpha value (0-255)
         """
         self.view.spectrum.set_roi_alpha(name, alpha)
+        # set spectrum line to invisible if alpha is 0
 
     def handle_export_button_enabled(self) -> None:
         """
