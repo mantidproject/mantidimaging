@@ -151,7 +151,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         :param alpha: The new alpha value (0-255)
         """
         self.view.spectrum.set_roi_alpha(name, alpha)
-        # set spectrum line to invisible if alpha is 0
 
     def handle_export_button_enabled(self) -> None:
         """
