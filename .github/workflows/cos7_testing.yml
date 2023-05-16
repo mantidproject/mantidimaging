@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@v3.3.0
 
     - name: Pre-load docker image
-      run: docker pull mantidproject/mantidimaging:centos7
+      run: docker pull ghcr.io/mantidproject/mantidimaging:centos7
 
     - name: List versions
       uses: ./.github/actions/test

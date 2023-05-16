@@ -1,7 +1,40 @@
-Mantid Imaging next release
-===========================
+Mantid Imaging 2.5
+==================
 
-This contains changes for the next not yet released Mantid Imaging versions.
+This release brings some significant new features:
+
+Stochastic PDHG Reconstruction
+   New reconstruction option from CIL. This gives faster convergence and lower memory usage by splitting the input data into subsets.
+
+Golden Ratio datasets
+   Datasets recorded using the golden ration method can now be opened correctly, using angle information in the log file.
+
+Performance improvements
+   - Startup time
+   - Arithmetic filter
+   - CIL reconstruction
+   - TIFF loading
+
+Spectrum Viewer
+   Complete the base feature set of the Spectrum viewer.
+
+   - Multiple ROIs and spectrum plots
+   - Output ROI coordinates
+
+User interface improvements
+   - Better stack selection in main window
+   - Modifying image stack in a dataset
+   - Operations ROI defaults to a sensible size
+
+Improved Nexus Support
+   - Loading reconstructions
+   - Better nexus spec conformance
+   - Saving data as float32 (for NXtomoproc this is not yet in the official spec)
+
+Windows Installer
+   See :ref:`Installing with Windows installer`
+
+There have also been many smaller changes and fixes which are listed below.
 
 New Features and improvements
 -----------------------------
@@ -30,6 +63,11 @@ New Features and improvements
 - #1664 : PyInstaller version at build time
 - #1632 : Add Stochastic PDHG
 - #1696 : Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
+- #1225 : Loading of Golden Ratio datasets
+- #1739 : Load processed NeXus data
+- #1762 : NSIS installer for Windows
+- #1765 : NeXus float/int save option
+- #1588 : Improve application startup time
 
 Fixes
 -----
@@ -44,6 +82,14 @@ Fixes
 - #1219 : Fix image_180deg.tiff being included in sample stack
 - #1730 : Allow any characters in filenames
 - #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
+- #1748 : Stop BHC promoting data arrays to float64
+- #1747 : Fix API links in docs
+- #1721 : For SPDHG show projections per subset
+- #1720 : Update memory requirements for SPDHG
+- #1742 : Restore native dialogs on Linux
+- #1761 : Hide float64 loading
+- #1774 : Force numexpr from conda-forge channel
+- #1779 : Saving images with log file loaded
 
 Developer Changes
 -----------------
@@ -62,4 +108,7 @@ Developer Changes
 - #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
 - #1641 : More robust logging and error handling in automated testing
 - #1643 : Deprecations in GitHub actions
--  #1726, #1728 : Use FilenameGroup for Load Dataset
+- #1726, #1728 : Use FilenameGroup for Load Dataset
+- #1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
+- #1757 : CLI log level only on to mantidimaging
+- #1788 : Switch to separate Windows and Linux conda packages

@@ -53,12 +53,12 @@ class MainWindowModelTest(unittest.TestCase):
         load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
         load_log_mock.assert_not_called()
 
-    @mock.patch('mantidimaging.core.io.loader.load_log')
-    @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
-    def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
+    @mock.patch('mantidimaging.core.io.loader.loader.load')
+    def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock):
         lp = LoadingParameters()
         log_file_mock = mock.Mock()
-        sample_mock = ImageParameters(mock.Mock(), log_file_mock)
+        mock_filename_group = mock.Mock()
+        sample_mock = ImageParameters(mock_filename_group, log_file_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
@@ -67,12 +67,14 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_load_dataset(lp, progress_mock)
 
-        load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
-        load_log_mock.assert_called_once_with(log_file_mock)
+        load_mock.assert_called_once_with(filename_group=mock_filename_group,
+                                          progress=progress_mock,
+                                          dtype=lp.dtype,
+                                          indices=None,
+                                          log_file=log_file_mock)
 
-    @mock.patch('mantidimaging.core.io.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.loader.load')
-    def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock, load_log_mock: mock.Mock):
+    def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock):
         lp = LoadingParameters()
         mock_filename_group = mock.Mock()
         sample_mock = ImageParameters(mock_filename_group)
@@ -89,14 +91,12 @@ class MainWindowModelTest(unittest.TestCase):
         load_mock.assert_called_once_with(filename_group=mock_filename_group,
                                           progress=progress_mock,
                                           dtype=lp.dtype,
-                                          indices=indices)
-        load_log_mock.assert_not_called()
+                                          indices=indices,
+                                          log_file=None)
 
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
-    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
-                                           load_log_mock: mock.Mock):
+    def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock):
         lp = LoadingParameters()
         log_file_mock = mock.Mock()
         sample_mock = ImageParameters(mock.Mock(), log_file_mock)
@@ -127,10 +127,6 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_before_mock, progress_mock, dtype=lp.dtype),
             mock.call(flat_after_mock, progress_mock, dtype=lp.dtype)
         ])
-        load_log_mock.assert_has_calls(
-            [mock.call(log_file_mock),
-             mock.call(flat_before_log_mock),
-             mock.call(flat_after_log_mock)])
 
         dataset_mock.assert_called_with(sample_images_mock)
 
@@ -139,11 +135,9 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(FILE_TYPES.FLAT_AFTER, flata_images_mock),
         ])
 
-    @mock.patch('mantidimaging.gui.windows.main.model.loader.load_log')
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
-    def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock,
-                                                      load_log_mock: mock.Mock):
+    def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock):
         lp = LoadingParameters()
         log_file_mock = mock.Mock()
         sample_mock = ImageParameters(mock.Mock(), log_file_mock)
@@ -177,10 +171,6 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(dark_before_mock, progress_mock, dtype=lp.dtype),
             mock.call(dark_after_mock, progress_mock, dtype=lp.dtype),
             mock.call(proj_180deg_mock, progress_mock, dtype=lp.dtype),
-        ])
-
-        load_log_mock.assert_has_calls([
-            mock.call(log_file_mock),
         ])
 
         dataset_mock.assert_called_with(sample_images_mock)
@@ -517,14 +507,14 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_do_nexus_saving_fails_from_no_dataset(self):
         with self.assertRaises(RuntimeError):
-            self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name")
+            self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name", True)
 
     def test_do_nexus_saving_fails_from_wrong_dataset(self):
         md = MixedDataset()
         self.model.add_dataset_to_model(md)
 
         with self.assertRaises(RuntimeError):
-            self.model.do_nexus_saving(md.id, "path", "sample-name")
+            self.model.do_nexus_saving(md.id, "path", "sample-name", True)
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
     def test_do_nexus_save_success(self, nexus_save):
@@ -532,9 +522,10 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(sd)
         path = "path"
         sample_name = "sample-name"
+        save_as_float = True
 
-        self.model.do_nexus_saving(sd.id, path, sample_name)
-        nexus_save.assert_called_once_with(sd, path, sample_name)
+        self.model.do_nexus_saving(sd.id, path, sample_name, save_as_float)
+        nexus_save.assert_called_once_with(sd, path, sample_name, save_as_float)
 
     def test_is_dataset_strict_returns_true(self):
         strict_ds = StrictDataset(generate_images())

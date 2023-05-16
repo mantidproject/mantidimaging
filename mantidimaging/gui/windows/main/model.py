@@ -44,9 +44,6 @@ class MainWindowModel(object):
         sample._is_sinograms = parameters.sinograms
         sample.pixel_size = parameters.pixel_size
 
-        if log_file := parameters.image_stacks[FILE_TYPES.SAMPLE].log_file:
-            ds.sample.log_file = loader.load_log(log_file)
-
         for file_type in [
                 FILE_TYPES.FLAT_BEFORE,
                 FILE_TYPES.FLAT_AFTER,
@@ -56,9 +53,6 @@ class MainWindowModel(object):
         ]:
             if im_param := parameters.image_stacks.get(file_type):
                 image_stack = load(im_param)
-                if log_file := im_param.log_file:
-                    image_stack.log_file = loader.load_log(log_file)
-
                 ds.set_stack(file_type, image_stack)
 
         self.datasets[ds.id] = ds
@@ -86,9 +80,10 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str) -> Optional[bool]:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str,
+                        save_as_float: bool) -> Optional[bool]:
         if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
-            saver.nexus_save(self.datasets[dataset_id], path, sample_name)  # type: ignore
+            saver.nexus_save(self.datasets[dataset_id], path, sample_name, save_as_float)  # type: ignore
             return True
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")

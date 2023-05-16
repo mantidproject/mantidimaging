@@ -9,6 +9,7 @@ channels:
   - intel
 dependencies:
   - mantidimaging
+  - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
       - coveralls==3.3.*

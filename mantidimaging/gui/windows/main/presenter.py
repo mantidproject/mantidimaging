@@ -149,7 +149,8 @@ class MainWindowPresenter(BasePresenter):
                               self._on_save_done, {
                                   'dataset_id': dataset_id,
                                   'path': self.view.nexus_save_dialog.save_path(),
-                                  'sample_name': self.view.nexus_save_dialog.sample_name()
+                                  'sample_name': self.view.nexus_save_dialog.sample_name(),
+                                  'save_as_float': self.view.nexus_save_dialog.save_as_float
                               },
                               busy=True)
 

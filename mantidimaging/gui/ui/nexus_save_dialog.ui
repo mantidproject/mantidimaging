@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>432</width>
-    <height>148</height>
+    <width>444</width>
+    <height>221</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,10 +26,34 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="sampleNameLabel">
+       <property name="text">
+        <string>Sample Name:</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Output Directory:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="formatLabel">
+       <property name="text">
+        <string>Format:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QRadioButton" name="floatRadioButton">
+       <property name="text">
+        <string>float 32</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -40,15 +64,15 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="sampleNameLabel">
-       <property name="text">
-        <string>Sample Name:</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="sampleNameLineEdit"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QRadioButton" name="intRadioButton">
+       <property name="text">
+        <string>int 16</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

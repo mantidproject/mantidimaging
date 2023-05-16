@@ -136,6 +136,13 @@ class ImageStack:
             const.OPERATION_DISPLAY_NAME: display_name
         })
 
+    @property
+    def is_processed(self) -> bool:
+        """
+        :return: True if any of the data has been processed, False otherwise.
+        """
+        return const.OPERATION_HISTORY in self.metadata
+
     def copy(self, flip_axes=False) -> 'ImageStack':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
@@ -280,7 +287,7 @@ class ImageStack:
     @log_file.setter
     def log_file(self, value: IMATLogFile):
         if value is not None:
-            self.metadata[const.LOG_FILE] = value.source_file
+            self.metadata[const.LOG_FILE] = str(value.source_file)
         elif value is None:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
@@ -297,10 +304,10 @@ class ImageStack:
         Return only the projection angles that are from a log file or have been manually loaded.
         :return: Real projection angles if they were found, None otherwise.
         """
-        if self._log_file is not None:
-            return self._log_file.projection_angles()
         if self._projection_angles is not None:
             return self._projection_angles
+        if self._log_file is not None:
+            return self._log_file.projection_angles()
         return None
 
     def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:

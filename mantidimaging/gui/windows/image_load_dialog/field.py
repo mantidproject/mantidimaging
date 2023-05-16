@@ -169,9 +169,12 @@ class Field:
         # Enforce the maximum step (ensure a minimum of 1)
         self._increment.setMaximum(max(number_of_images, 1))
 
-    def set_step(self, value: int) -> None:
+    def set_preview(self, preview_mode: bool) -> None:
         if self._increment_spinbox is not None:
-            self._increment_spinbox.setValue(value)
+            if preview_mode:
+                self._increment_spinbox.setValue(self._stop.maximum() // 10)
+            else:
+                self._increment_spinbox.setValue(1)
 
     def _update_expected_mem_usage(self, shape: Tuple[int, int]) -> Tuple[int, float]:
         num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),

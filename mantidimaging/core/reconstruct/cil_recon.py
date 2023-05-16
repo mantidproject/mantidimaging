@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from logging import getLogger, DEBUG
-from math import sqrt
+from math import sqrt, ceil
 from threading import Lock
 from typing import List, Optional, TYPE_CHECKING
 
@@ -13,7 +13,7 @@ import numpy as np
 from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
-from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox
+from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
 from cil.plugins.astra.operators import ProjectionOperator
 
 from mantidimaging.core.data import ImageStack
@@ -33,8 +33,9 @@ cil_mutex = Lock()
 
 class CILRecon(BaseRecon):
     @staticmethod
-    def set_up_TV_regularisation(image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
-                                 recon_params: ReconstructionParameters):
+    def set_up_TV_regularisation(
+            image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
+            recon_params: ReconstructionParameters) -> tuple[BlockOperator, BlockFunction, Function]:
 
         # Forward operator
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
@@ -99,13 +100,14 @@ class CILRecon(BaseRecon):
         A2d.set_norm(approx_a2d_norm)
 
     @staticmethod
-    def get_data(sino, ag, recon_params: ReconstructionParameters):
+    def get_data(sino: np.ndarray, ag: AcquisitionGeometry, recon_params: ReconstructionParameters,
+                 num_subsets: int) -> AcquisitionData:
         data = AcquisitionData(sino, deep_copy=False, geometry=ag, suppress_warning=True)
 
         if recon_params.stochastic:
             # split the data and put it in a BlockDataContainer
             # unfortunately now the data will be duplicated in memory
-            data = data.partition(recon_params.subsets, 'staggered')
+            data = data.partition(num_subsets, 'staggered')
             geo = []
             for i in range(len(data)):
                 data.get_item(i).reorder('astra')
@@ -130,16 +132,17 @@ class CILRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None):
+                    progress: Optional[Progress] = None) -> np.ndarray:
         """
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
         """
 
         num_iter = recon_params.num_iter
+        num_subsets = ceil(sino.shape[0] / recon_params.projections_per_subset)
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
-            num_iter *= recon_params.subsets
+            num_iter *= num_subsets
 
         if progress:
             progress.add_estimated_steps(num_iter + 1)
@@ -161,7 +164,7 @@ class CILRecon(BaseRecon):
             ag.set_angles(angles=proj_angles.value, angle_unit='radian')
 
             # let's create a CIL AcquisitionData or BlockDataContainer
-            data = CILRecon.get_data(sino, ag, recon_params)
+            data = CILRecon.get_data(sino, ag, recon_params, num_subsets)
 
             ig = ag.get_ImageGeometry()
 
@@ -171,9 +174,8 @@ class CILRecon(BaseRecon):
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
-                num_batches = recon_params.subsets
                 # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2 / 3) * 1 / num_batches] * num_batches + [1 / 3]
+                probs = [(2 / 3) * 1 / num_subsets] * num_subsets + [1 / 3]
                 algo = SPDHG(f=F,
                              g=G,
                              operator=K,
@@ -213,7 +215,7 @@ class CILRecon(BaseRecon):
     def full(images: ImageStack,
              cors: List[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None):
+             progress: Optional[Progress] = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -226,9 +228,10 @@ class CILRecon(BaseRecon):
         """
 
         num_iter = recon_params.num_iter
+        num_subsets = ceil(images.num_projections / recon_params.projections_per_subset)
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
-            num_iter *= recon_params.subsets
+            num_iter *= num_subsets
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
         shape = images.data.shape
@@ -242,7 +245,10 @@ class CILRecon(BaseRecon):
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
         recon_volume_size = full_size_KB(recon_volume_shape, images.dtype)
-        estimated_mem_required = 5 * projection_size + 13 * recon_volume_size
+        if recon_params.stochastic:
+            estimated_mem_required = 3 * projection_size + 14 * recon_volume_size
+        else:
+            estimated_mem_required = 5 * projection_size + 13 * recon_volume_size
         free_mem = system_free_memory().kb()
 
         if (estimated_mem_required > free_mem):
@@ -259,7 +265,8 @@ class CILRecon(BaseRecon):
             LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
                      f"output shape {recon_volume_shape}\n"
                      f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
-                     f"Non-negative {recon_params.non_negative}")
+                     f"Non-negative {recon_params.non_negative},"
+                     f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
             angles = images.projection_angles(recon_params.max_projection_angle).value
 
@@ -276,7 +283,8 @@ class CILRecon(BaseRecon):
             ag.set_angles(angles=angles, angle_unit='radian')
             ag.set_labels(data_order)
 
-            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params)
+            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params,
+                                     num_subsets)
 
             ig = ag.get_ImageGeometry()
             K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
@@ -285,9 +293,8 @@ class CILRecon(BaseRecon):
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
-                num_batches = recon_params.subsets
                 # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2 / 3) * 1 / num_batches] * num_batches + [1 / 3]
+                probs = [(2 / 3) * 1 / num_subsets] * num_subsets + [1 / 3]
                 algo = SPDHG(f=F,
                              g=G,
                              operator=K,
@@ -324,5 +331,5 @@ class CILRecon(BaseRecon):
             return ImageStack(volume)
 
 
-def allowed_recon_kwargs() -> dict:
-    return {'CIL: PDHG-TV': ['alpha', 'num_iter', 'non_negative', 'stochastic', 'subsets']}
+def allowed_recon_kwargs() -> dict[str, list[str]]:
+    return {'CIL: PDHG-TV': ['alpha', 'num_iter', 'non_negative', 'stochastic', 'projections_per_subset']}

@@ -1,0 +1,67 @@
+# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+
+# This workflow uses actions that are not certified by GitHub.
+# This workflow  creates and publishes Docker images to GitHub Container Registry (GHCR) for Ubuntu 18 and Centos 7
+# This Workflow is triggered when a main branch is pushed to or a pull request is merged to main if the pull request has the label 'rebuild_docker'.
+
+name: Build & Publish Docker Ubuntu18 & CentOS7
+
+on:
+  push:
+    branches:
+    - 'main'
+    paths: ['docker/**', 'Dockerfile', 'conda/**', 'Makefile', 'setup.py', 'environment.yml', 'environment-dev.yml']
+  pull_request:
+    branches:
+      - 'main'
+    types: [ labeled ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-image:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'rebuild_docker 🐋') || github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+      packages: write
+      deployments: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Ubuntu Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/ubuntu18.Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ubuntu18
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Centos Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/centos7.Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:centos7
+          labels: ${{ steps.meta.outputs.labels }}

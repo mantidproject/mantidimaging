@@ -13,7 +13,7 @@ from tifffile import tifffile
 from mantidimaging.core.operation_history.const import TIMESTAMP
 import astropy.io.fits as fits
 
-from .utility import DEFAULT_IO_FILE_FORMAT
+from .utility import DEFAULT_IO_FILE_FORMAT, NEXUS_PROCESSED_DATA_PATH
 from ..operations.rescale import RescaleFilter
 from ..utility.progress_reporting import Progress
 from ..utility.version_check import CheckVersion
@@ -174,7 +174,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
+def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_float: bool):
     """
     Uses information from a StrictDataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
@@ -187,7 +187,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
         raise RuntimeError("Unable to save NeXus file. " + str(e))
 
     try:
-        _nexus_save(nexus_file, dataset, sample_name)
+        _nexus_save(nexus_file, dataset, sample_name, save_as_float)
     except OSError as e:
         nexus_file.close()
         os.remove(path)
@@ -196,7 +196,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str):
     nexus_file.close()
 
 
-def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str):
+def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str, save_as_float: bool):
     """
     Takes a NeXus file and writes the StrictDataset information to it.
     :param nexus_file: The NeXus file.
@@ -232,7 +232,10 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
     rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
     rotation_angle.attrs["units"] = "rad"
 
-    _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"])
+    if dataset.is_processed:
+        _save_processed_data_to_nexus(nexus_file, dataset, rotation_angle, detector["image_key"], save_as_float)
+    else:
+        _save_image_stacks_to_nexus(dataset, detector, save_as_float)
 
     # data field
     data = tomo_entry.create_group("data")
@@ -246,23 +249,57 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str)
 
 
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Dataset,
-                                  image_key: h5py.Dataset):
-    data = nexus_file.create_group("processed-data")
+                                  image_key: h5py.Dataset, save_as_float: bool):
+    data = nexus_file.create_group(NEXUS_PROCESSED_DATA_PATH)
     data["rotation_angle"] = rotation_angle
     data["image_key"] = image_key
     _set_nx_class(data, "NXdata")
-    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
-    data.create_dataset("data", shape=combined_data_shape, dtype="float32")
-    index = 0
-    for arr in dataset.nexus_arrays:
-        data["data"][index:index + arr.shape[0]] = arr
-        index += arr.shape[0]
+    _save_image_stacks_to_nexus(dataset, data, save_as_float)
 
     process = data.create_group("process")
     _set_nx_class(process, "NXprocess")
     process.create_dataset("program", data=np.string_("Mantid Imaging"))
     process.create_dataset("date", data=np.string_(datetime.datetime.now().isoformat()))
     process.create_dataset("version", data=np.string_(package_version))
+
+
+def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool):
+    combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
+
+    index = 0
+    if save_as_float:
+        data = dataset.nexus_arrays
+        dtype = "float32"
+    else:
+        data, _ = _convert_float_to_int(dataset.nexus_arrays)
+        dtype = "int16"
+
+    data_group.create_dataset("data", shape=combined_data_shape, dtype=dtype)
+
+    for arr in data:
+        data_group["data"][index:index + arr.shape[0]] = arr
+        index += arr.shape[0]
+
+
+def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], List[int]]:
+    """
+    Scales a float array to convert it to ints.
+    :param arrays: The dataset arrays.
+    :return: A list of int arrays and a list of scaling factors.
+    """
+    converted = []
+    factors = []
+
+    def scale_row(row):
+        return np.round(row * scaling_factor).astype("int16")
+
+    for arr in arrays:
+        scaling_factor = np.iinfo("int16").max / max(abs(arr.min()), abs(arr.max()))
+        scaled_arr = np.apply_along_axis(scale_row, axis=1, arr=arr)
+        converted.append(scaled_arr)
+        factors.append(scaling_factor)
+
+    return converted, factors
 
 
 def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):
