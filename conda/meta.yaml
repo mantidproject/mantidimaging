@@ -29,7 +29,6 @@ requirements:
     - astra-toolbox=2.0.*
     - requests=2.27.*
     - h5py=3.6.*
-    - sarepy=2020.07
     - psutil=5.9.*
     - cil=22.2.0
     - ccpi-regulariser

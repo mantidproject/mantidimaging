@@ -33,3 +33,4 @@ dependencies:
   - coverage==6.4.*
   - pyfakefs==5.0.*
   - pyinstaller==5.7.*
+  - sarepy=2020.07 # For building old docs

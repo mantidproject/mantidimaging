@@ -10,7 +10,7 @@ install-conda-env:
 install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
 
-CHANNELS:=$(shell cat environment-dev.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | sed 's/ - / --append channels /g' | tr -d '\n')
+CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '$  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 install-build-requirements:
 	# intended for local use
