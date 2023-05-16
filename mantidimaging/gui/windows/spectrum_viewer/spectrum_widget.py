@@ -136,6 +136,21 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict[name].colour = colour
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
 
+    def set_roi_visibility_flags(self, name: str, visible: bool) -> None:
+        """
+        Change the visibility of an existing ROI including handles and update
+        the ROI dictionary, sending a signal to the main window.
+
+        @param name: The name of the ROI.
+        @param visible: The new visibility of the ROI.
+        """
+        handles = self.roi_dict[name].getHandles()
+        for handle in handles:
+            handle.setVisible(visible)
+        self.roi_dict[name].setVisible(visible)
+        self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
+        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """
         Change the alpha value of an existing ROI
@@ -147,19 +162,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
                                       self.roi_dict[name].colour[2], alpha)
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
-        handles = self.roi_dict[name].getHandles()
-        if alpha == 0:
-            for handle in handles:
-                handle.setVisible(False)
-            self.roi_dict[name].setVisible(False)
-            self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
-            self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
-        else:
-            for handle in handles:
-                handle.setVisible(True)
-            self.roi_dict[name].setVisible(True)
-            self.roi_dict[name].setAcceptedMouseButtons(Qt.LeftButton)
-            self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+        self.set_roi_visibility_flags(name, bool(alpha))
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
