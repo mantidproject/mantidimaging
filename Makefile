@@ -2,7 +2,6 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 
 #Needed because each command is run in a new shell
 SHELL=/bin/bash
-CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
 
 install-conda-env:
 	conda env create -f environment.yml
@@ -15,22 +14,21 @@ CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!
 install-build-requirements:
 	# intended for local use
 	@echo "Installing packages required for starting the build process"
-	conda create -n build-env
-	$(CONDA_ACTIVATE) build-env ; conda install --yes anaconda-client conda-verify boa
-	$(CONDA_ACTIVATE) build-env ; conda config --env $(CHANNELS)
+	conda create -n build-env anaconda-client conda-verify boa
+	conda run -n build-env conda config --env $(CHANNELS)
 
 install-dev-requirements:
 	conda env create -f environment-dev.yml
 
 build-conda-package: .remind-current install-build-requirements
 	# intended for local usage, does not install build requirements
-	$(CONDA_ACTIVATE) build-env ; conda mambabuild ./conda --label unstable
+	conda run -n build-env conda mambabuild conda --label unstable
 
 build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	$(CONDA_ACTIVATE) build-env ; conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
+	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS) --label nightly
 
 build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
-	$(CONDA_ACTIVATE) build-env ; conda-build ./conda $(AUTHENTICATION_PARAMS)
+	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS)
 
 .remind-current:
 	@echo "Make sure the correct channels are added in \`conda config --get channels\`"
