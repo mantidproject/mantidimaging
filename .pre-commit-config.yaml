@@ -21,3 +21,12 @@ repos:
         entry: python -m CheckLicensesInFiles
         language: python
         types: [python]
+-   repo: local
+    hooks:
+    -   id: MyPy Checks
+        name: MyPy Checks
+        description: Checks that all files have correct type annotations
+        entry: p  mypy --ignore-missing-imports --no-site-packages mantidimaging
+        language: python
+        types: [python]
+
