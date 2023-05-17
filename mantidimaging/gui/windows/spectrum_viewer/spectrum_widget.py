@@ -115,16 +115,15 @@ class SpectrumWidget(GraphicsLayoutWidget):
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
         By default colour_blind_friendly is set to False
 
-        @return: A random colour in RGB format. (0-255, 0-255, 0-255, 0-255)
+        @return: A random colour in RGBA format. (0-255, 0-255, 0-255, 0-255)
         """
-        accessible_colours = [(255, 194, 10, 255), (12, 123, 220, 255), (153, 79, 0, 255), (64, 176, 166, 255),
-                              (230, 97, 0, 255), (93, 58, 155, 255), (26, 255, 26, 255), (254, 254, 98, 255),
-                              (211, 95, 183, 255), (220, 50, 43, 255)]
+        accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (64, 176, 166), (230, 97, 0), (93, 58, 155),
+                              (26, 255, 26), (254, 254, 98), (211, 95, 183), (220, 50, 43)]
         if self.colour_index == len(accessible_colours):
             self.colour_index = 0
         colour = accessible_colours[self.colour_index]
         self.colour_index += 1
-        return colour
+        return colour + (255, )
 
     def change_roi_colour(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """
@@ -178,7 +177,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.max_roi_size = roi_object.size()
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
-        # On hover, the ROI border line width increases
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
     def get_roi(self, roi_name: str) -> SensibleROI:

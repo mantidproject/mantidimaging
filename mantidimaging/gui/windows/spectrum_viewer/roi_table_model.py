@@ -145,7 +145,7 @@ class TableModel(QAbstractTableModel):
                 if section == 1:
                     return "Colour"
                 if section == 2:
-                    return "Visible"
+                    return ""
 
     def clear_table(self) -> None:
         """
