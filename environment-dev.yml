@@ -8,7 +8,7 @@ channels:
   - algotom
   - intel
 dependencies:
-  - mantidimaging>=2.5.0,<2.6.0
+  - mantidimaging # remove version to allow package builds
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:

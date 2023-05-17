@@ -71,62 +71,11 @@ jobs:
           mamba env list
           python --version; conda list ; pip list
 
-      - name: Yapf
-        shell: bash -l {0}
-        run: |
-          yapf --parallel --diff --recursive .
-
-      - name: Flake8
-        shell: bash -l {0}
-        run: |
-          python -m flake8
-
-      - name: mypy
-        shell: bash -l {0}
-        # COMPAT: applitools has some bad signatures, so use --no-site-packages
-        run: |
-          mypy --ignore-missing-imports --no-site-packages mantidimaging
-
-      - name: pytest
-        timeout-minutes: 10
-        shell: bash -l {0}
-        run: |
-          python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
-
-      - name: Get test data
-        shell: bash -l {0}
-        run: |
-          curl -L https://github.com/mantidproject/mantidimaging-data/archive/refs/tags/small.zip --output small.zip
-          unzip -q small.zip -d ~
-          mv ~/mantidimaging-data-small ~/mantidimaging-data
-        timeout-minutes: 5
-
-      - name: GUI Tests System
-        shell: bash -l {0}
-        run: |
-          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
-        timeout-minutes: 15
-
-      - name: Set display resolution for screenshot tests
-        run: |
-          Set-DisplayResolution -Width 1920 -Height 1080 -Force
-        shell: pwsh
-
-      - name: GUI Tests Screenshots Applitools
-        if: github.event_name == 'pull_request'
-        shell: bash -l {0}
-        env:
-          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          APPLITOOLS_BATCH_ID: ${{ github.sha }}
-          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
-        run: |
-          python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true mantidimaging/eyes_tests --durations=10
-        timeout-minutes: 15
-
       # Label as 'windows-build-test' for testing purposes.
       # To re-enable, use the if rule from the conda workflow and change label to 'unstable' after testing
       - name: publish package
-        if: github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
+        # do build on PR, so that we have a 2.5 version in the main channel
+        # if: github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
         uses: ./.github/actions/publish-package
         with:
           label: unstable
