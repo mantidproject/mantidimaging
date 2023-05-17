@@ -50,7 +50,7 @@ class SpectrumROI(ROI):
         return self
 
     @property
-    def colour(self) -> tuple[int, int, int]:
+    def colour(self) -> tuple[int, int, int, int]:
         return self._colour
 
     @colour.setter
