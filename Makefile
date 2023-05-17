@@ -10,13 +10,13 @@ install-conda-env:
 install-run-requirements:
 	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
 
-CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '$  -' | sed 's/ - / --append channels /g' | tr -d '\n')
+CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 install-build-requirements:
 	# intended for local use
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env
-	$(CONDA_ACTIVATE) build-env ; conda install --yes conda-build anaconda-client conda-verify
+	$(CONDA_ACTIVATE) build-env ; conda install --yes anaconda-client conda-verify boa
 	$(CONDA_ACTIVATE) build-env ; conda config --env $(CHANNELS)
 
 install-dev-requirements:
@@ -24,7 +24,7 @@ install-dev-requirements:
 
 build-conda-package: .remind-current install-build-requirements
 	# intended for local usage, does not install build requirements
-	$(CONDA_ACTIVATE) build-env ; conda-build ./conda --label unstable
+	$(CONDA_ACTIVATE) build-env ; conda mambabuild ./conda --label unstable
 
 build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
 	$(CONDA_ACTIVATE) build-env ; conda-build ./conda $(AUTHENTICATION_PARAMS) --label nightly
