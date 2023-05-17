@@ -157,8 +157,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param name: The name of the ROI.
         @param alpha: The new alpha value of the ROI.
         """
-        self.roi_dict[name].colour = (self.roi_dict[name].colour[0], self.roi_dict[name].colour[1],
-                                      self.roi_dict[name].colour[2], alpha)
+        self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
         self.set_roi_visibility_flags(name, bool(alpha))
