@@ -110,9 +110,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def get_default_table_state(self) -> list:
         """
-        Get the default state of the table
+        Get the default state of the table for the view:
+        [ROI name:str, colour:float, visibility: bool]
         """
-        return [self.roi_name, self.view.spectrum.roi_dict[self.roi_name].colour]
+        return [self.roi_name, self.view.spectrum.roi_dict[self.roi_name].colour, True]
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
@@ -128,6 +129,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
+    def redraw_spectrum(self, name: str) -> None:
+        """
+        Redraw the spectrum with the given name
+        """
+        self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+
     def redraw_all_rois(self) -> None:
         """
         Redraw all ROIs and spectrum plots
@@ -135,6 +142,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         for name in self.model.get_list_of_roi_names():
             self.model.set_roi(name, self.view.spectrum.get_roi(name))
             self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+
+    def do_set_roi_alpha(self, name: str, alpha: float) -> None:
+        """
+        Set the alpha value of the ROI with the given name
+
+        :param name: The name of the ROI
+        :param alpha: The new alpha value (0-255)
+        """
+        self.view.spectrum.set_roi_alpha(name, alpha)
 
     def handle_export_button_enabled(self) -> None:
         """
