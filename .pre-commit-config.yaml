@@ -26,11 +26,11 @@ repos:
     -   id: mypy
         name: mypy
         description: Run mypy on all files
-        entry: mypy --ignore-missing-imports --follow-imports=skip --no-site-packages .
+        entry: mypy --ignore-missing-imports --no-site-packages ./mantidimaging
         language: python
         types: [python]
         pass_filenames: false
         always_run: true
-        exclude: ^tests/
+        exclude: ^tests/, .git/, .venv/, .tox/, .eggs/, ^build/, ^dist/, ^docs/, ^scripts/
         additional_dependencies: [mypy==0.910]
 
