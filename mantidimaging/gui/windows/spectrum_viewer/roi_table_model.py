@@ -6,7 +6,7 @@ from __future__ import annotations
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt
+from PyQt5.QtCore import QAbstractTableModel, Qt, QItemSelectionModel
 from PyQt5.QtGui import QColor, QBrush
 
 
@@ -22,6 +22,16 @@ class TableModel(QAbstractTableModel):
     def __init__(self, data):
         super(TableModel, self).__init__()
         self._data = data
+
+    def selectRow(self, index: int):
+        """
+        Selects the row at the given index.
+
+        :param index: The index of the row to select.
+        """
+        selectionModel = self.tableView.selectionModel()
+        selectionModel.clearSelection()
+        selectionModel.select(self.createIndex(index + 1, 0), QItemSelectionModel.Select | QItemSelectionModel.Rows)
 
     def rowCount(self, *args, **kwargs):
         """
@@ -49,13 +59,20 @@ class TableModel(QAbstractTableModel):
         @return: ROI name or colour values and background colour of colour column
         """
         if role == Qt.DisplayRole:
+            if index.column() == 2:
+                return None
             return self._data[index.row()][index.column()]
 
         if role == Qt.BackgroundRole:
             if index.column() == 1:
                 return QBrush(QColor(*self._data[index.row()][index.column()]))
 
-    # edit roi name on double click
+        if role == Qt.CheckStateRole:
+            if index.column() == 2:
+                if self._data[index.row()][index.column()]:
+                    return Qt.Checked
+                return Qt.Unchecked
+
     def setData(self, index, value, role):
         """
         Set data in table
@@ -69,6 +86,13 @@ class TableModel(QAbstractTableModel):
             self._data[index.row()][index.column()] = value
             self.dataChanged.emit(index, index)
             return True
+        if role == Qt.CheckStateRole:
+            if index.column() == 2:
+                self._data[index.row()][index.column()] = value == Qt.Checked
+                self.dataChanged.emit(index, index)
+                return True
+            self.dataChanged.emit(index, index)
+            return False
 
     def row_data(self, row: int) -> tuple:
         """
@@ -79,14 +103,23 @@ class TableModel(QAbstractTableModel):
         """
         return self._data[row]
 
-    def appendNewRow(self, roi_name: str, roi_colour: tuple):
+    def column_data(self, column: int) -> list:
+        """
+        Return data from selected column
+
+        @param column: column number
+        @return: data from selected column
+        """
+        return [row[column] for row in self._data]
+
+    def appendNewRow(self, roi_name: str, roi_colour: tuple, visible: bool):
         """
         Append new row to table
 
         @param roi_name: ROI name
         @param roi_colour: ROI colour
         """
-        item_list = [roi_name, roi_colour]
+        item_list = [roi_name, roi_colour, visible]
         self._data.append(item_list)
         self.layoutChanged.emit()
 
@@ -111,6 +144,8 @@ class TableModel(QAbstractTableModel):
                     return "ROI"
                 if section == 1:
                     return "Colour"
+                if section == 2:
+                    return ""
 
     def clear_table(self) -> None:
         """
@@ -154,6 +189,8 @@ class TableModel(QAbstractTableModel):
         """
         if index.column() == 0:
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+        elif index.column() == 2:
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable
         else:
             return Qt.ItemIsEnabled
 
