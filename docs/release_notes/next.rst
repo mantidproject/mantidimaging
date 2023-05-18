@@ -12,3 +12,4 @@ Fixes
 
 Developer Changes
 -----------------
+- #1796 : Add MyPy to pre-commit checks.
