@@ -8,5 +8,5 @@ channels:
   - intel
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
-  - mantidimaging
+  - mantidimaging>=2.5.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
