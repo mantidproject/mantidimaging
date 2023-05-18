@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -15,10 +15,11 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
+import numpy as np
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
-    import numpy as np
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -68,15 +69,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportButton.clicked.connect(self.presenter.handle_export_csv)
 
         # Point table
-        self.tableView.horizontalHeader().setStretchLastSection(True)
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
-
         self.tableView.setAlternatingRowColors(True)
 
-        self.selected_row_data: list = []
         self.selected_row: int = 0
         self.current_roi: str = ""
+        self.selected_row_data: Optional[list] = None
 
         self.roi_table_model  # Initialise model
 
@@ -88,37 +87,56 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             @param item: item in table
             """
             self.removeBtn.setEnabled(False)
-            self.selected_row_data = self.roi_table_model.row_data(item.row())
+            selected_row_data = self.roi_table_model.row_data(item.row())
 
-            if self.selected_row_data[0] != self.presenter.roi_name:
+            if selected_row_data[0] != self.presenter.roi_name:
                 self.removeBtn.setEnabled(True)
             self.selected_row = item.row()
-            self.current_roi = self.selected_row_data[0]
+            self.current_roi = selected_row_data[0]
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
-        def on_data_change() -> None:
+        def on_visibility_change() -> None:
             """
-            Handle ROI name change for a selected ROI and update the ROI name in the spectrum widget
-
-            If the ROI name is empty or already exists in the table that is not the selected row,
-            a warning popup will be displayed and the ROI name will be reverted to the previous name
+            When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
             """
-            if self.selected_row_data[0].lower() not in ["", "all"]:
-                for roi_item in range(self.roi_table_model.rowCount()):
-                    existing_roi_name = self.roi_table_model.row_data(roi_item)[0].lower()
-                    if existing_roi_name == self.selected_row_data[0].lower() and roi_item != self.selected_row:
-                        self.show_warning_dialog("Duplication Warning\nROI name already exists")
-                        self.selected_row_data[0] = self.current_roi
-                        return
-                self.presenter.rename_roi(self.current_roi, str(self.selected_row_data[0]))
-                self.current_roi = str(self.selected_row_data[0])
-                return
-            self.show_warning_dialog("ROI Name Warning\n"
-                                     "ROI name cannot be empty or equal to default names: 'all', 'roi'")
-            self.selected_row_data[0] = self.current_roi
+            for roi_item in range(self.roi_table_model.rowCount()):
+                if self.roi_table_model.row_data(roi_item)[2] is False:
+                    self.set_roi_alpha(0, roi_item)
+                else:
+                    self.set_roi_alpha(255, roi_item)
+                    self.presenter.redraw_spectrum(self.roi_table_model.row_data(roi_item)[0])
+            return
 
-        self.roi_table_model.dataChanged.connect(on_data_change)
+        def on_data_in_table_change() -> None:
+            """
+            Check if an ROI name has changed in the table or if the visibility of an ROI has changed.
+            If the ROI name has changed, update the ROI name in the spectrum widget.
+            If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
+            """
+            selected_row_data = self.roi_table_model.row_data(self.selected_row)
+            if self.current_roi in ["", " "]:
+                self.current_roi = selected_row_data[0]
+            if selected_row_data[0].lower() not in ["", " ", "all"] and selected_row_data[0] != self.current_roi:
+                if selected_row_data[0] in self.presenter.get_roi_names():
+                    selected_row_data[0] = self.current_roi
+                    return
+                else:
+                    self.presenter.rename_roi(self.current_roi, selected_row_data[0])
+                    self.current_roi = selected_row_data[0]
+                    return
+            else:
+                selected_row_data[0] = self.current_roi
+
+            selected_row_data[0] = self.current_roi
+            on_visibility_change()
+            return
+
+        self.roi_table_model.dataChanged.connect(on_data_in_table_change)
+        header = self.tableView.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
@@ -168,11 +186,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 
     def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
+        """
+        Try to set the spectrum data for a given ROI assuming the
+        roi may not exist in the spectrum widget yet depending on when method is called
+        """
         self.spectrum.spectrum_data_dict[name] = spectrum_data
         self.spectrum.spectrum.clearPlots()
 
         for key, value in self.spectrum.spectrum_data_dict.items():
-            # roi_dict may not be populated with yet on method call
             if key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
@@ -210,6 +231,27 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.exportButton.setEnabled(enabled)
 
+    def set_roi_alpha(self, alpha: float, roi) -> None:
+        """
+        Set the alpha value for the selected ROI and update the spectrum to reflect the change.
+        A check is made on the spectrum to see if it exists as it may not have been created yet.
+
+        @param alpha: The alpha value
+        """
+        self.presenter.do_set_roi_alpha(self.roi_table_model.row_data(roi)[0], alpha)
+        if alpha == 0:
+            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = np.zeros(
+                self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]].shape)
+        else:
+            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = self.spectrum.spectrum_data_dict[
+                self.roi_table_model.row_data(roi)[0]]
+
+        self.spectrum.spectrum.clearPlots()
+        self.spectrum.spectrum.update()
+        for key, value in self.spectrum.spectrum_data_dict.items():
+            if key in self.spectrum.roi_dict:
+                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
+
     def add_roi_table_row(self, row: int, name: str, colour: str):
         """
         Add a new row to the ROI table
@@ -220,20 +262,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
-        self.roi_table_model.appendNewRow(name, colour)
+        self.roi_table_model.appendNewRow(name, colour, True)
         self.tableView.selectRow(row)
 
     def remove_roi(self) -> None:
         """
         Clear the selected ROI in the table view
         """
-        if self.selected_row_data:
+        selected_row = self.roi_table_model.row_data(self.selected_row)
+        if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
-            self.presenter.do_remove_roi(self.selected_row_data[0])
+            self.presenter.do_remove_roi(selected_row[0])
             self.removeBtn.setEnabled(False)
-            self.spectrum.spectrum_data_dict.pop(self.selected_row_data[0])
-            self.spectrum.spectrum.removeItem(self.selected_row_data[0])
-            self.presenter.handle_roi_moved()  # Update plot View
+            self.spectrum.spectrum_data_dict.pop(selected_row[0])
+            self.spectrum.spectrum.removeItem(selected_row[0])
+            self.presenter.handle_roi_moved()
+            self.selected_row = 0
+            self.tableView.selectRow(0)
 
     def clear_all_rois(self) -> None:
         """
