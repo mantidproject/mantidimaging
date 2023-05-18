@@ -9,6 +9,7 @@ New Features
 
 Fixes
 -----
+- #1777 : More consistent menu and window naming for comparing image stack data.
 
 Developer Changes
 -----------------
