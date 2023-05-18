@@ -17,7 +17,7 @@ class StackComparePresenter(StackChoicePresenterMixin):
 
         # forces the view's closeEvent to not prompt any dialogs, but only free the image views
         self.view.choice_made = True
-        self.view.setWindowTitle("Comparing data")
+        self.view.setWindowTitle("Compare Image Stacks")
 
         self.view.originalStackLabel.setText(stack_one.name)
         self.view.newStackLabel.setText(stack_two.name)
