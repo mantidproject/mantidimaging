@@ -21,16 +21,9 @@ repos:
         entry: python -m CheckLicensesInFiles
         language: python
         types: [python]
--   repo: local
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.910'
     hooks:
     -   id: mypy
-        name: mypy
-        description: Run mypy on all files
-        entry: mypy --ignore-missing-imports --no-site-packages ./mantidimaging
-        language: python
-        types: [python]
-        pass_filenames: false
-        always_run: true
-        exclude: ^tests/, .git/, .venv/, .tox/, .eggs/, ^build/, ^dist/, ^docs/, ^scripts/
-        additional_dependencies: [mypy==0.910]
-
+        files: ^mantidimaging/
+        args: [--ignore-missing-imports, --no-site-packages]
