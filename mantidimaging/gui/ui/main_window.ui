@@ -169,12 +169,12 @@
   </action>
   <action name="actionCompare_Images">
    <property name="text">
-    <string>Compare Images</string>
+    <string>Compare Image Stacks</string>
    </property>
   </action>
   <action name="actionCompareImages">
    <property name="text">
-    <string>Compare Images</string>
+    <string>Compare Image Stacks</string>
    </property>
   </action>
   <action name="actionSampleLoadLog">
