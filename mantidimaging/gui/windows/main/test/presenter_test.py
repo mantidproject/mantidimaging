@@ -16,7 +16,7 @@ from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
-from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter
+from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter, MainWindowModel
 from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -41,7 +41,8 @@ class MainWindowPresenterTest(unittest.TestCase):
                                      flat_after=self.images[2],
                                      dark_before=self.images[3],
                                      dark_after=self.images[4])
-        self.presenter.model = self.model = mock.Mock()
+        self.model_datasets_mock = mock.create_autospec(dict)
+        self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets=self.model_datasets_mock)
         self.model.get_recons_id = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
@@ -273,7 +274,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_log_to_sample(self):
         self.presenter.add_log_to_sample("doesn't exist", "log file")
-        self.presenter.model.add_log_to_sample.assrt_called_with("doesn't exist", "log file")
+        self.presenter.model.add_log_to_sample.assert_called_with("doesn't exist", "log file")
 
     def test_do_rename_stack(self):
         self.presenter.stack_visualisers["stack-id"] = mock_stack = mock.Mock()
@@ -802,7 +803,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_show_add_stack_to_dataset_dialog_called_with_stack_id(self):
         dataset_id = "dataset-id"
-        self.model.datasets.keys.return_value = []
+        self.model_datasets_mock.keys.return_value = []
         self.model.get_parent_dataset.return_value = dataset_id
         self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id="stack-id")
         self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
