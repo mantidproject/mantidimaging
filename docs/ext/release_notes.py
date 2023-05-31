@@ -27,6 +27,11 @@ class ReleaseNotes(Directive):
         note_paths = (Path() / 'docs' / 'release_notes' / 'next').glob(note_type + '*')
 
         rst = ViewList()
+        try:
+            note_paths = sorted(list(note_paths), key=lambda p: int(p.name.split('-')[1]))
+        except ValueError:
+            raise cls.severe('Could not sort release notes, check filenames.')
+
         for n, note_path in enumerate(note_paths):
             note_content = note_path.read_text().strip().split('\n')
             if len(note_content) != 1:
