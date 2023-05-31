@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import fnmatch
+import importlib
 import os
 import platform
 import subprocess
@@ -118,6 +119,32 @@ class GenerateSphinxVersioned(Command):
         command_sphinx_multiversion = [self.sphinx_multiversion_executable]
         command_sphinx_multiversion.extend(self.sphinx_multiversion_options)
         subprocess.check_call(command_sphinx_multiversion)
+
+
+class GenerateReleaseNotes(Command):
+    description = "Generate release notes"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        spec = importlib.util.spec_from_file_location('release_notes', 'docs/ext/release_notes.py')
+        release_notes = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(release_notes)
+
+        print("\nNew Features\n------------")
+        for line in release_notes.ReleaseNotes.make_rst("feature"):
+            print(line)
+        print("\nFixes\n-----")
+        for line in release_notes.ReleaseNotes.make_rst("fix"):
+            print(line)
+        print("\nDeveloper Changes\n-----------------")
+        for line in release_notes.ReleaseNotes.make_rst("dev"):
+            print(line)
 
 
 class CompilePyQtUiFiles(Command):
@@ -253,5 +280,6 @@ setup(
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
         "create_dev_env": CreateDeveloperEnvironment,
+        "release_notes": GenerateReleaseNotes,
     },
 )
