@@ -16,3 +16,4 @@ Developer Changes
 - #1796 : Add MyPy to pre-commit checks.
 - #1799 : Speed up packaged builds with boa
 - #1792 : Update python to 3.10
+- #962 : Type annotation improvements

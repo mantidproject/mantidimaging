@@ -17,7 +17,7 @@ warnings.formatwarning = lambda message, category, filename, lineno, line=None: 
     message, category, filename, lineno, line="")
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Mantid Imaging GUI")
 
     parser.add_argument(
@@ -40,7 +40,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     # Print version number and exit
     if args.version:
