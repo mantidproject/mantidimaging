@@ -10,6 +10,7 @@ New Features
 Fixes
 -----
 - #1777 : More consistent menu and window naming for comparing image stack data.
+- #1776 : Fix Redrawing of ROIs within Compare Image Stack Window
 
 Developer Changes
 -----------------
