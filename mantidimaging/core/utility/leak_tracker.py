@@ -39,7 +39,7 @@ def obj_to_string(obj, relative=None) -> str:
     return f"{type(obj)} pyid={id(obj)} {extra_info}"
 
 
-def find_owners(obj, depth: int, path: List[str] = None, ignore: Set[int] = None) -> List[List[str]]:
+def find_owners(obj, depth: int, path: List[str] | None = None, ignore: Set[int] | None = None) -> List[List[str]]:
     """Recursively track though references to objects and return a list of routes"""
     all_routes = []
     if path is None:

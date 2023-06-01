@@ -5,7 +5,7 @@ from __future__ import annotations
 import traceback
 from enum import Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Tuple, Union, Optional
+from typing import TYPE_CHECKING, List, Tuple, Optional
 from uuid import UUID
 
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -27,7 +27,7 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
     def __init__(self,
                  view: 'DatasetSelectorWidgetView',
                  show_stacks: bool = False,
-                 relevant_dataset_types: Union[type, Tuple[type]] = None):
+                 relevant_dataset_types: type | Tuple[type] | None = None):
         super().__init__(view)
 
         self.current_dataset: Optional['UUID'] = None

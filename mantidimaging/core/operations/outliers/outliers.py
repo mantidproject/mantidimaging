@@ -52,7 +52,7 @@ class OutliersFilter(BaseFilter):
                     diff=None,
                     radius=_default_radius,
                     mode=_default_mode,
-                    progress: Progress = None):
+                    progress: Progress | None = None):
         """
         :param images: Input data
         :param diff: Pixel value difference above which to crop bright pixels

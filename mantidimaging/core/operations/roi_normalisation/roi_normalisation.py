@@ -46,7 +46,7 @@ class RoiNormalisationFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack,
-                    region_of_interest: SensibleROI = None,
+                    region_of_interest: SensibleROI | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
                     flat_field: Optional[ImageStack] = None,
                     progress=None):

@@ -28,7 +28,10 @@ class DatasetSelectorWidgetView(QComboBox):
 
     main_window: 'MainWindowView'
 
-    def __init__(self, parent, show_stacks: bool = False, relevant_dataset_types: Union[type, Tuple[type]] = None):
+    def __init__(self,
+                 parent,
+                 show_stacks: bool = False,
+                 relevant_dataset_types: Union[type, Tuple[type]] | None = None):
         super().__init__(parent)
 
         self.presenter = DatasetSelectorWidgetPresenter(self,

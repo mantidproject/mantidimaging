@@ -67,11 +67,11 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack,
-                    flat_before: ImageStack = None,
-                    flat_after: ImageStack = None,
-                    dark_before: ImageStack = None,
-                    dark_after: ImageStack = None,
-                    selected_flat_fielding: str = None,
+                    flat_before: ImageStack | None = None,
+                    flat_after: ImageStack | None = None,
+                    dark_before: ImageStack | None = None,
+                    dark_after: ImageStack | None = None,
+                    selected_flat_fielding: str | None = None,
                     use_dark: bool = True,
                     progress=None) -> ImageStack:
         """Do background correction with flat and dark images.
