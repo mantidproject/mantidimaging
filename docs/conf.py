@@ -52,6 +52,7 @@ extensions = [
 # Add custom extensions
 sys.path.append(os.path.abspath("./ext"))
 extensions.append("operations_user_doc")
+extensions.append("release_notes")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

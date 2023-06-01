@@ -66,6 +66,14 @@ Release Notes
 
 Release notes should be continuously updated during developement. Almost all pull requests should have an update to the relevant file and section in :file:`docs/release_notes`
 
-If the next release name is not yet chosen this will be :file:`next.rts`, and renamed closer to release.
+For the current development work, new release notes go in an individual file for each pull request. This prevents merge conflicts that would occur if two PRs directly edited the same release note file. For example the PR fixing issue #1792 by updating Python would have its change note placed in :file:`docs/release_notes/next/dev-1792-python-310`. The content would be a line::
+
+    #1792 : Update python to 3.10
+
+These will be included into the relent section in :file:`docs/release_notes/next.rst`. At release time the notes can be collected up using::
+
+	python setup.py release_notes
+
+and added to the release notes. The individual files can then be deleted.
 
 When fixes are backported to a release branch, they can be added to the notes for that release, in an updates section.
