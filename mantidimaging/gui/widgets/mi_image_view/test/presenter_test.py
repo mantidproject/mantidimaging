@@ -32,6 +32,7 @@ def test_get_roi(init_pos: List[int], init_size: List[int], exp_pos: List[int], 
 
 
 class Fake_x_axis:
+
     def __init__(self, x, width):
         self._x = x
         self._width = width

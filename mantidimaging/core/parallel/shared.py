@@ -81,6 +81,7 @@ ComputeFuncType = Union[Callable[[int, List['ndarray'], Dict[str, Any]], None],
 
 
 class _Worker:
+
     def __init__(self, func: ComputeFuncType, arrays: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]],
                  params: Dict[str, Any]):
         self.func = func

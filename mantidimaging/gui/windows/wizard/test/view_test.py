@@ -15,6 +15,7 @@ STEP_DATA = {'name': 'Loading files', 'description': 'desc'}
 @mock_versions
 @start_qapplication
 class WizardViewTest(unittest.TestCase):
+
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
@@ -33,6 +34,7 @@ class WizardViewTest(unittest.TestCase):
 
 @start_qapplication
 class WizardStepTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.step = WizardStep(STEP_DATA, mock.Mock())
 
@@ -56,6 +58,7 @@ class WizardStepTest(unittest.TestCase):
 
 @start_qapplication
 class WizardStageTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.stage = WizardStage("loading")
 

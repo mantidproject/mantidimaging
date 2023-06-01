@@ -58,6 +58,7 @@ class BadDataOverlay:
     """
     Mixin class to be used with MIImageView and MIMiniImageView
     """
+
     def __init__(self):
         super().__init__()
 

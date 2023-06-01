@@ -11,6 +11,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class MainWindowTest(BaseEyesTest):
+
     def setUp(self):
         super().setUp()
 

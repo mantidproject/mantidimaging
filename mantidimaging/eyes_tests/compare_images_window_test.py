@@ -11,6 +11,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class CompareImagesWindowTest(BaseEyesTest):
+
     @mock.patch("mantidimaging.gui.windows.main.view.MultipleStackSelect")
     def test_compare_images_window_opens(self, multi_stack_select):
         multi_stack_select.return_value.exec.return_value = QDialog.DialogCode.Accepted

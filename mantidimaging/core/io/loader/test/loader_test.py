@@ -16,6 +16,7 @@ from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
 class LoaderTest(FakeFSTestCase):
+
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, get_loader, in_format='txt')
 

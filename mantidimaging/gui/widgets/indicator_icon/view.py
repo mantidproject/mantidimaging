@@ -12,6 +12,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor
 
 
 class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
+
     def __init__(self,
                  parent: ViewBox,
                  icon_path: str,

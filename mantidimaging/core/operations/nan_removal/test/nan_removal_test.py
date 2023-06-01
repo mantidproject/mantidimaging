@@ -12,6 +12,7 @@ from mantidimaging.core.operations.nan_removal import NaNRemovalFilter
 
 
 class NaNRemovalFilterTest(unittest.TestCase):
+
     def test_replace_nans(self):
         images = th.generate_images()
         images.data[::, 0] = np.nan

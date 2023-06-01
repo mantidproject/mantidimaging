@@ -9,6 +9,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemWindows(GuiSystemBase):
+
     def tearDown(self) -> None:
         self._close_image_stacks()
         super().tearDown()

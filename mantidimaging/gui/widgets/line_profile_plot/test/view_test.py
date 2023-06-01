@@ -29,6 +29,7 @@ def check_state_and_bounds(roi_line: ImageViewLineROI, initial_pos=INITIAL_POS, 
 
 @start_qapplication
 class ImageViewLineROITest(unittest.TestCase):
+
     def setUp(self):
         self.image_view = MIMiniImageView()
         self.roi_line = ImageViewLineROI(self.image_view)
@@ -114,6 +115,7 @@ class ImageViewLineROITest(unittest.TestCase):
 
 @start_qapplication
 class LineProfilePlotTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.image_view = MIMiniImageView()
         self.line_profile = LineProfilePlot(self.image_view)

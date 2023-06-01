@@ -10,6 +10,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class NexusSaveDialogTest(BaseEyesTest):
+
     def test_save_dialog_opens_with_dataset(self):
         TestTuple = NamedTuple('TestTuple', [('id', UUID), ('name', str)])
         dataset_list = [TestTuple(uuid4(), 'Test Dataset')]

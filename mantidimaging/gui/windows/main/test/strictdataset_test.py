@@ -31,6 +31,7 @@ def _set_fake_projection_angles(image_stack: ImageStack):
 
 
 class StrictDatasetTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.images = [generate_images() for _ in range(5)]
         self.strict_dataset = StrictDataset(sample=self.images[0],

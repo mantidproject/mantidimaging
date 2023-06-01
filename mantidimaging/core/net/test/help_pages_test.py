@@ -10,6 +10,7 @@ from mantidimaging.core.net.help_pages import open_user_operation_docs, open_hel
 
 
 class HelpPagesTest(unittest.TestCase):
+
     @mock.patch("mantidimaging.core.net.help_pages.open_help_webpage")
     def test_open_user_operation_docs(self, open_func: mock.Mock):
         open_user_operation_docs("Crop Coordinates")

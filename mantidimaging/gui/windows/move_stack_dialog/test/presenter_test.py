@@ -10,6 +10,7 @@ from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 
 
 class MoveStackPresenterTest(unittest.TestCase):
+
     def setUp(self):
         self.view = mock.Mock(spec=MoveStackDialog)
         self.view.parent_view = mock.Mock()

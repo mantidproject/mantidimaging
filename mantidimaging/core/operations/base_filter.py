@@ -37,6 +37,7 @@ class BaseFilter:
     All of this classes methods must be overridden, except sv_params and the do_before and do_after wrappers
     which are optional.
     """
+
     @staticmethod
     def filter_func(data: ImageStack) -> ImageStack:
         """

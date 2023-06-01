@@ -118,6 +118,7 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
 
 
 class IgnoreOutputStreams(object):
+
     def __init__(self):
         self.stdout = None
         self.stderr = None
@@ -160,6 +161,7 @@ def assert_called_once_with(mock: mock.Mock, *args):
 
 
 class FakeFSTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
+
     def setUp(self) -> None:
         super().setUp()
         self.setUpPyfakefs()

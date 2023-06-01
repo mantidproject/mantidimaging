@@ -26,6 +26,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
     This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides
     methods for calculating rotation and gradient from the stored values.
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
 

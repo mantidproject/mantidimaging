@@ -16,6 +16,7 @@ from mantidimaging.core.data.imagestack import ImageStack
 
 
 class StackChoicePresenterTest(unittest.TestCase):
+
     @mock.patch("mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView")
     def setUp(self, _):
         self.original_stack = th.generate_images()

@@ -19,6 +19,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class MainWindowModelTest(unittest.TestCase):
+
     def setUp(self):
         self.model = MainWindowModel()
         self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"

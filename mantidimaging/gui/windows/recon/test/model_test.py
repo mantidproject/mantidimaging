@@ -19,6 +19,7 @@ from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with,
 
 
 class ReconWindowModelTest(unittest.TestCase):
+
     def setUp(self):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 

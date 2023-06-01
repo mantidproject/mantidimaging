@@ -444,7 +444,8 @@ class MainWindowPresenter(BasePresenter):
         for _, sv in self.stack_visualisers.items():
             if images is sv.presenter.images:
                 return sv
-        raise RuntimeError(f"Did not find stack {images} in stacks! " f"Stacks: {self.stack_visualisers.items()}")
+        raise RuntimeError(f"Did not find stack {images} in stacks! "
+                           f"Stacks: {self.stack_visualisers.items()}")
 
     def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
         """

@@ -24,6 +24,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
+
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = name

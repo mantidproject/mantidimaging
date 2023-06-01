@@ -55,6 +55,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
 
 class ImageLoader(object):
+
     def __init__(self,
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
@@ -91,7 +92,8 @@ class ImageLoader(object):
                                      "dimensions. Expected dimensions: {0} Error "
                                      "message: {1}".format(self.img_shape, exc))
                 except IOError as exc:
-                    raise RuntimeError("Could not load file {0}. Error details: " "{1}".format(in_file, exc))
+                    raise RuntimeError("Could not load file {0}. Error details: "
+                                       "{1}".format(in_file, exc))
 
         return data
 

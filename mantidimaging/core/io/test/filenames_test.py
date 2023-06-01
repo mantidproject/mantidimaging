@@ -13,6 +13,7 @@ from ...utility.data_containers import FILE_TYPES
 
 
 class FilenamePatternTest(unittest.TestCase):
+
     @parameterized.expand([
         ("foo", "foo", 0, ""),
         ("foo.txt", "foo", 0, ".txt"),
@@ -91,6 +92,7 @@ class FilenamePatternTest(unittest.TestCase):
 
 
 class FilenameGroupTest(FakeFSTestCase):
+
     def test_filenamepattern_from_file_unindexed(self):
         p1 = Path("foo", "bar", "baz.tiff")
         f1 = FilenameGroup.from_file(p1)
@@ -215,6 +217,7 @@ class FilenameGroupTest(FakeFSTestCase):
 
 
 class GoldenFilenameGroupTest(FakeFSTestCase):
+
     def test_golden_pattern(self):
         filename = "IMAT00021870_CMOS_LegoScan_GR_PH40_GRtomo_0.0_001.tif"
         group = FilenameGroup.from_file(filename)

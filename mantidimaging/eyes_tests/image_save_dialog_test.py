@@ -9,6 +9,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
 class ImageSaveDialogTest(BaseEyesTest):
+
     def test_save_dialog_opens_with_no_dataset(self):
         self.imaging.actionSaveImages.trigger()
 

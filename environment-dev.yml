@@ -13,7 +13,7 @@ dependencies:
   - pip
   - pip:
       - coveralls==3.3.*
-      - yapf==0.31.*
+      - yapf==0.33.*
       - mypy==0.910
       - flake8==3.9.*
       - testfixtures==6.18.*

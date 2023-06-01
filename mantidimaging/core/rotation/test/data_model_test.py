@@ -11,6 +11,7 @@ from mantidimaging.gui.windows.recon import Column, COLUMN_NAMES
 
 
 class CorTiltDataModelTest(TestCase):
+
     def test_field_defs_sanity(self):
         self.assertEqual(len(Column), len(COLUMN_NAMES))
 

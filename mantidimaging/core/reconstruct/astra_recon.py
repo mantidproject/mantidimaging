@@ -73,6 +73,7 @@ def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[Tupl
 
 
 class AstraRecon(BaseRecon):
+
     @staticmethod
     def _count_gpus() -> int:
         num_gpus = 0

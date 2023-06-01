@@ -16,6 +16,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 
 class MockMainWindow(QWidget):
+
     def __init__(self):
         super().__init__()
         self.stack_changed = mock.Mock()
@@ -26,6 +27,7 @@ class MockMainWindow(QWidget):
 
 @start_qapplication
 class ReconstructWindowViewTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.main_window = MockMainWindow()
         self.view = ReconstructWindowView(self.main_window)
@@ -365,6 +367,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         refine_iterations_button_mock.setEnabled.assert_called_once_with(False)
 
     def test_set_recon_buttons_enabled(self):
+
         def assert_button_state_is_correct(is_enabled):
             self.assertEqual(self.view.reconstructSlice.isEnabled(), is_enabled)
             self.assertEqual(self.view.reconstructVolume.isEnabled(), is_enabled)

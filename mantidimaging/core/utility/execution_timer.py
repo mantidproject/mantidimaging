@@ -9,6 +9,7 @@ class ExecutionTimer(object):
     """
     Context handler used to time the execution of code in it's context.
     """
+
     def __init__(self, msg='Elapsed time'):
         self.msg = msg
 

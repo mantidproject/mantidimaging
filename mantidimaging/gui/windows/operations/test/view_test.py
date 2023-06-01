@@ -14,6 +14,7 @@ from mantidimaging.gui.windows.operations.presenter import FLAT_FIELDING
 @mock_versions
 @start_qapplication
 class OperationsWindowsViewTest(unittest.TestCase):
+
     def setUp(self):
         # mock the view so it has the same methods
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):

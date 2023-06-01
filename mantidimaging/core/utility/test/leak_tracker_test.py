@@ -13,11 +13,13 @@ class TestObject:
 
 
 class TestContainer:
+
     def __init__(self, obj):
         self.held_reference = obj
 
 
 class CommandLineArgumentsTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.leak_tracker = LeakTracker()
 

@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class StackChoicePresenter(StackChoicePresenterMixin):
+
     def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
                  operations_presenter: 'FiltersWindowPresenter'):
 

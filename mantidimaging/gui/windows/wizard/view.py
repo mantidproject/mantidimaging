@@ -13,6 +13,7 @@ from .model import EnablePredicateFactory
 
 
 class WizardStage(QWidget):
+
     def __init__(self, name, parent=None):
         super().__init__(parent)
 
@@ -31,6 +32,7 @@ class WizardStage(QWidget):
 
 
 class WizardStep(QWidget):
+
     def __init__(self, step: dict, wizard: WizardView, parent=None):
         super().__init__(parent)
 

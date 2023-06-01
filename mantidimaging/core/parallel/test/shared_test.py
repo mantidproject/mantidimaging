@@ -9,6 +9,7 @@ from mantidimaging.core.parallel.utility import SharedArrayProxy
 
 
 class SharedTest(unittest.TestCase):
+
     def test_check_shared_mem_and_get_data_all_shared(self):
         arrays = self._create_array_list(5, True)
         all_in_shared_memory, data = ps._check_shared_mem_and_get_data(arrays)

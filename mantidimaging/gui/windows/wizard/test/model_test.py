@@ -14,6 +14,7 @@ HISTORY_3 = {'operation_history': [{'name': 'FlatFieldFilter'}, {'name': 'RoiNor
 
 
 class WizardModelTest(unittest.TestCase):
+
     def setUp(self) -> None:
         pass
 

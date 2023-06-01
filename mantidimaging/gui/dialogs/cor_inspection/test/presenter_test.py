@@ -14,6 +14,7 @@ from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
 
 
 class CORInspectionDialogPresenterTest(unittest.TestCase):
+
     @mock.patch("mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogModel")
     def setUp(self, model) -> None:
         self.view = mock.MagicMock()

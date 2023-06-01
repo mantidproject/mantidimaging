@@ -21,6 +21,7 @@ class RebinTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     @parameterized.expand([("Zero", 0), ("Negative", -1), ("0,1", (0, 1)), ("1,0", (1, 0)), ("-1,1", (-1, 1)),
                            ("1,-1", (1, -1))])
     def test_exception_raised_for_invalid_rebin_param(self, _, val):

@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 
 class DatasetSelectorDialog(BaseDialogView):
+
     def __init__(self,
                  main_window: Optional['MainWindowView'],
                  title: Optional[str] = None,

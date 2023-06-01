@@ -14,6 +14,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class MedianKernelTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.size_kernel = KernelSpinBox(on_change=mock.Mock())
 

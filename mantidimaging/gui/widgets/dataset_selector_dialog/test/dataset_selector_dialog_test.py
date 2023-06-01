@@ -12,6 +12,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 
 class FakeMainWindowView(QWidget):
+
     def __init__(self):
         super().__init__()
         self.model_changed = mock.MagicMock()
@@ -19,6 +20,7 @@ class FakeMainWindowView(QWidget):
 
 @start_qapplication
 class DatasetSelectorDialogTest(unittest.TestCase):
+
     def test_title_set_when_not_none_given(self):
         given_message = "given_message"
         diag = DatasetSelectorDialog(main_window=FakeMainWindowView(), title=given_message)

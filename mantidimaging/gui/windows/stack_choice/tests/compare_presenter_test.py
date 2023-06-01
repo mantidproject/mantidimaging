@@ -11,6 +11,7 @@ from mantidimaging.gui.windows.stack_choice.view import Notification
 
 
 class StackChoicePresenterTest(unittest.TestCase):
+
     def setUp(self):
         self.stack_one = th.generate_images()
         self.stack_two = th.generate_images()

@@ -9,6 +9,7 @@ from mantidimaging.core.operation_history.operations import ops_to_partials, Ima
 
 
 class OpHistoryCopyDialogModel:
+
     def __init__(self, images):
         self.images: ImageStack = images
 

@@ -16,6 +16,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 @start_qapplication
 class ROISelectorViewTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.parent = QMainWindow()
         self.image_stack = generate_images()

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 
 class MultipleStackSelect(BaseDialogView):
+
     def __init__(self, main_window: 'MainWindowView') -> None:
         super().__init__(main_window)
 

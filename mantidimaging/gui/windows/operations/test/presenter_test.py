@@ -23,6 +23,7 @@ from mantidimaging.core.data import ImageStack
 
 
 class FiltersWindowPresenterTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView)
         self.view = mock.MagicMock()

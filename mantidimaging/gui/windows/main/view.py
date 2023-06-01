@@ -52,6 +52,7 @@ LOG = getLogger(__file__)
 
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
+
     def __init__(self, parent: QTreeWidget, dataset_id: UUID):
         self._id = dataset_id
         super().__init__(parent)

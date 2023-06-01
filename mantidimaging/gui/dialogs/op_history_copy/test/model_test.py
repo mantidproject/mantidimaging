@@ -12,6 +12,7 @@ from mantidimaging.gui.dialogs.op_history_copy import OpHistoryCopyDialogModel
 
 
 class OpHistoryCopyDialogModelTest(unittest.TestCase):
+
     def setUp(self):
         self.images = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.images.data[:] = 100

@@ -11,6 +11,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class WelcomeScreenViewTest(unittest.TestCase):
+
     def setUp(self):
         self.p = mock.MagicMock()
         self.v = WelcomeScreenView(None, self.p)

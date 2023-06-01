@@ -11,6 +11,7 @@ from mantidimaging.core.utility.progress_reporting.progress import ProgressHisto
 
 
 class ProgressTest(unittest.TestCase):
+
     def test_basic_single_step(self):
         p = Progress(num_steps=2)
 

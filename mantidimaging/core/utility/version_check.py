@@ -106,8 +106,8 @@ class CheckVersion:
         try:
             response = requests.get("https://api.anaconda.org/package/mantid/mantidimaging")
             remote_main_version = json.loads(response.content)["latest_version"]
-            remote_unstable_version = json.loads(
-                response.content)["versions"][-1] if len(json.loads(response.content)["versions"]) > 0 else ''
+            remote_unstable_version = json.loads(response.content)["versions"][-1] if len(
+                json.loads(response.content)["versions"]) > 0 else ''
         except Exception:
             # if anything goes wrong, in the end we don't have the version
             LOG.info("Could not connect to Anaconda remote to retrieve the latest version")

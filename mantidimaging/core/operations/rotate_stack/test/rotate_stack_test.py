@@ -19,6 +19,7 @@ class RotateStackTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def test_raise_exception_for_none_angle(self):
         images = th.generate_images()
 

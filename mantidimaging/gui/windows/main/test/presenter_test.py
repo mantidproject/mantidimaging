@@ -31,6 +31,7 @@ def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
 
 
 class MainWindowPresenterTest(unittest.TestCase):
+
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
         self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog)

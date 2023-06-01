@@ -16,6 +16,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class AddImagesToDatasetDialogTest(unittest.TestCase):
+
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()

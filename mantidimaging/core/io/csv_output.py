@@ -7,6 +7,7 @@ import numpy as np
 
 
 class CSVOutput:
+
     def __init__(self) -> None:
         self.columns: dict[str, np.ndarray] = {}
         self.num_rows: Optional[int] = None

@@ -75,6 +75,7 @@ class LeakTracker:
     All objects of interest should be added in their constructor. The pretty_print() method can be called later, so see
     some information about which of the objects are alive.
     """
+
     def __init__(self):
         self.tracked_objects = []
 

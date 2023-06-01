@@ -17,6 +17,7 @@ class ClipValuesFilterTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     def test_exception_raised_for_no_min_or_max(self):
         images = th.generate_images()
 

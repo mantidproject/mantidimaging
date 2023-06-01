@@ -19,6 +19,7 @@ class TableModel(QAbstractTableModel):
 
     @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
     """
+
     def __init__(self, data):
         super(TableModel, self).__init__()
         self._data = data

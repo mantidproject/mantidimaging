@@ -12,6 +12,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class AsyncTaskDialogViewTest(unittest.TestCase):
+
     @mock.patch('mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogPresenter')
     def setUp(self, mock_atd) -> None:
         self.view = AsyncTaskDialogView(None)

@@ -14,6 +14,7 @@ from ...utility.progress_reporting import Progress
 
 @start_multiprocessing_pool
 class PolyfitCorrelationTest(unittest.TestCase):
+
     def test_do_search(self):
         test_p0 = np.identity(10)
         test_p180 = np.fliplr(test_p0)

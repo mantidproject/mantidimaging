@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class BaseRecon:
+
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         raise NotImplementedError("Base class call")

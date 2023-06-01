@@ -32,6 +32,7 @@ def pairwise(iterable):
 
 
 class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
+
     def __init__(self, name: str = "MIMiniImageView", parent: 'Optional[QWidget]' = None, recon_mode: bool = False):
         super().__init__()
 

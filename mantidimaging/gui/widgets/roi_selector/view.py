@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 
 class ROISelectorView(QMainWindow):
+
     def __init__(self,
                  parent,
                  image_stack: 'ImageStack',

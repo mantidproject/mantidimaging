@@ -24,6 +24,7 @@ class GaussianTest(unittest.TestCase):
     This does not scale and parallel execution is always faster on any
     reasonably sized data (e.g. 143,512,512)
     """
+
     @parameterized.expand([("None", None), ("1", 1)])
     def test_exception_raised_for_invalid_size(self, _, size):
         images = th.generate_images()

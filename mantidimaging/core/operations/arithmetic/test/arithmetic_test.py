@@ -13,6 +13,7 @@ class ArithmeticTest(unittest.TestCase):
     """
     Test arithmetic filter.
     """
+
     def test_div_only(self):
         images = th.generate_images()
 

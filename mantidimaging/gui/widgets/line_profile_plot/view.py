@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class LineProfilePlot(GraphicsLayout):
+
     def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView']):
         super().__init__()
 
@@ -52,6 +53,7 @@ class LineProfilePlot(GraphicsLayout):
 
 
 class ImageViewLineROI(LineSegmentROI):
+
     def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView'], reset_menu_name: Optional[str] = None):
         super().__init__(positions=[(0, 0), (0, 0)], pen='r')
 

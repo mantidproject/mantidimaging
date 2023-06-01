@@ -18,6 +18,7 @@ class CropCoordsTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     def test_executed_only_volume(self):
         # Check that the filter is  executed when:
         #   - valid Region of Interest is provided

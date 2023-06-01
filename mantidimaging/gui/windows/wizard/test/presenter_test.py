@@ -25,6 +25,7 @@ WIZARD_DATA = {
 
 
 class WizardPresenterTest(unittest.TestCase):
+
     @mock.patch("mantidimaging.gui.windows.wizard.presenter.WizardView")
     def setUp(self, view: mock.Mock) -> None:
         with mock.patch("mantidimaging.gui.windows.wizard.presenter.WizardPresenter.populate") as _:

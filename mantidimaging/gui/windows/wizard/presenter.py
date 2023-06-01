@@ -19,6 +19,7 @@ logger = getLogger(__name__)
 
 
 class WizardPresenter(BasePresenter):
+
     def __init__(self, parent: 'MainWindowView'):
         self.view: WizardView = WizardView(parent, self)
         super().__init__(self.view)

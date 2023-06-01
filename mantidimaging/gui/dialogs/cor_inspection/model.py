@@ -17,6 +17,7 @@ INIT_ITERS_STEP = 50
 
 
 class CORInspectionDialogModel(object):
+
     def __init__(self, images: ImageStack, slice_idx: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
         self.image_width = images.width

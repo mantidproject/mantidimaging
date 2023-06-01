@@ -8,6 +8,7 @@ from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import Add
 
 
 class AddImagesToDatasetPresenterTest(unittest.TestCase):
+
     def setUp(self):
         self.view = mock.MagicMock()
         self.presenter = AddImagesToDatasetPresenter(self.view)

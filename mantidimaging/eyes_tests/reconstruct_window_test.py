@@ -13,6 +13,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class ReconstructionWindowTest(BaseEyesTest):
+
     def setUp(self):
         super().setUp()
 

@@ -17,6 +17,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class StackChoiceViewTest(unittest.TestCase):
+
     def setUp(self):
         self.original_stack = th.generate_images()
         self.new_stack = th.generate_images()

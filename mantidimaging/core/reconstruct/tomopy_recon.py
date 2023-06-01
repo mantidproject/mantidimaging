@@ -20,6 +20,7 @@ tomopy = safe_import('tomopy')
 
 
 class TomopyRecon(BaseRecon):
+
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         sino = np.maximum(images.sinograms[slice_idx:slice_idx + 1], 1e-6)

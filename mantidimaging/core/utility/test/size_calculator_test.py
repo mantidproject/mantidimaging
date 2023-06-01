@@ -10,6 +10,7 @@ from mantidimaging.core.utility import size_calculator
 
 
 class SizeCalculatorTest(unittest.TestCase):
+
     def test_full_size_mb(self):
         shape = (40234079, 1, 13)
         dtype = np.int32

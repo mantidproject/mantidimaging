@@ -13,6 +13,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class DatasetSelectorWidgetViewTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.view = DatasetSelectorWidgetView(None)
         self.view.presenter = self.presenter = mock.Mock()
