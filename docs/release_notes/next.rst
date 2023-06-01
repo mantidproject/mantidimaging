@@ -11,6 +11,7 @@ Fixes
 -----
 - #1777 : More consistent menu and window naming for comparing image stack data.
 - #1776 : Fix Redrawing of ROIs within Compare Image Stack Window
+- #1815 : Improve handling of NaN data within Spectrum Viewer, resolving exception error dialog pop-up within Spectrum Viewer if only dataset loaded into Mantid Imaging is removed.
 
 Developer Changes
 -----------------
