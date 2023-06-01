@@ -20,9 +20,10 @@ RUN wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/
 
 SHELL ["/bin/bash", "-c"]
 
-RUN eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
-    mamba env create -n mantidimaging_test -f https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment-dev.yml &&\
-    conda activate mantidimaging_test &&\
+RUN --mount=type=bind,target=/src \
+    cd /src &&\
+    eval "$(/opt/miniconda/bin/conda shell.bash hook)" &&\
+    python3 ./setup.py create_dev_env &&\
     mamba clean --all
 
 RUN mkdir /opt/mantidimaging
