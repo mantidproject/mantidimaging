@@ -15,7 +15,7 @@ NXS_EXT = ".nxs"
 
 class NexusSaveDialog(BaseDialogView):
 
-    selected_dataset = Optional[uuid.UUID]
+    selected_dataset: Optional[uuid.UUID]
     floatRadioButton: QRadioButton
     intRadioButton: QRadioButton
 
