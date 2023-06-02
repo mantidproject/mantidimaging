@@ -49,6 +49,7 @@ OP_LIST = [
 
 @start_multiprocessing_pool
 class TestGuiSystemOperations(GuiSystemBase):
+
     def setUp(self) -> None:
         super().setUp()
         self._close_welcome()

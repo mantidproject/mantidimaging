@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 
 class CompareSlicesView(GraphicsLayoutWidget):
+
     def __init__(self, parent: 'CORInspectionDialogView'):
         super().__init__(parent)
         self.parent = parent

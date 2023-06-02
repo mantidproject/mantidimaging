@@ -9,6 +9,7 @@ import numpy as np
 
 
 class MIImagePresenter:
+
     @staticmethod
     def get_roi(image, roi_pos, roi_size):
         """

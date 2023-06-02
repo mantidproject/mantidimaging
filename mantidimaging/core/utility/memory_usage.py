@@ -12,7 +12,9 @@ MEMORY_CAP_PERCENTAGE = 0.125
 
 
 def system_free_memory():
+
     class Value:
+
         def __init__(self, bytes):
             self._bytes = bytes
 

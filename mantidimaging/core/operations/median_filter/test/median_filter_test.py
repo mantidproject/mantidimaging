@@ -28,6 +28,7 @@ class MedianTest(unittest.TestCase):
 
     Tests return value and in-place modified data.
     """
+
     @parameterized.expand([("None", None), ("1", 1)])
     def test_exception_raised_for_invalid_size(self, _, size):
         images = th.generate_images()

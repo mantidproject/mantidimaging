@@ -22,6 +22,7 @@ class OutliersTest(unittest.TestCase):
 
     Tests return value only.
     """
+
     @parameterized.expand([("None", None), ("0", 0)])
     def test_raises_exception_for_invalid_diff(self, _, diff):
         images = th.generate_images()

@@ -15,6 +15,7 @@ from mantidimaging.test_helpers import start_qapplication, mock_versions
 @mock_versions
 @start_qapplication
 class WelcomeScreenPresenterTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         QCoreApplication.setApplicationName("test1")

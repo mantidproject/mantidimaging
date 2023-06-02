@@ -111,6 +111,7 @@ class CSVLogParser:
 
 
 class IMATLogFile:
+
     def __init__(self, data: List[str], source_file: Path):
         self._source_file = source_file
 

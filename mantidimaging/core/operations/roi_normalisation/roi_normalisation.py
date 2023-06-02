@@ -197,7 +197,7 @@ def _execute(images: ImageStack,
         max_avg = np.max(air_means.array) / avg
         min_avg = np.min(air_means.array) / avg
 
-        log.info(f"Normalization by air region. " f"Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
+        log.info(f"Normalization by air region. Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
 
 def enable_correct_fields_only(text, flat_file_widget):

@@ -26,6 +26,7 @@ class CloseCheckStream(io.StringIO):
 
 
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)

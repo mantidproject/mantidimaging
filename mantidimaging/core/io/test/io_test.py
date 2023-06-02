@@ -52,6 +52,7 @@ def test_rescale_negative_recon_data():
 
 
 class IOTest(FileOutputtingTestCase):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

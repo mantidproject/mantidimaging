@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class DivideTest(unittest.TestCase):
+
     @parameterized.expand([("None", None), ("0", 0.00)])
     def test_divide_with_invalid_value_raises_exception(self, _, value):
         images = th.generate_images()

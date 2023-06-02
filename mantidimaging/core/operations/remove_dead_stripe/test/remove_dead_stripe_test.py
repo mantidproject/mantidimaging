@@ -17,6 +17,7 @@ class RemoveDeadStripesTest(unittest.TestCase):
 
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
+
     def test_executed(self):
         images = th.generate_images((10, 400, 500))
         control = images.copy()

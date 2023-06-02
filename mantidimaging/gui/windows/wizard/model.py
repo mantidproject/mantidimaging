@@ -7,17 +7,20 @@ from typing import Iterable, List, Optional, Any
 
 
 class EnablePredicate(ABC):
+
     @abstractmethod
     def __call__(self, history: Optional[dict[str, Any]]) -> bool:
         pass
 
 
 class LoadedPredicate(EnablePredicate):
+
     def __call__(self, history: Optional[dict[str, Any]]) -> bool:
         return history is not None
 
 
 class HistoryPredicate(EnablePredicate):
+
     def __init__(self, rule: str):
         if ":" not in rule:
             raise ValueError
@@ -32,6 +35,7 @@ class HistoryPredicate(EnablePredicate):
 
 
 class AndPredicate(EnablePredicate):
+
     def __init__(self, predicates: Iterable[EnablePredicate]):
         self.predicates = predicates
 

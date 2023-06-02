@@ -22,6 +22,7 @@ VIEWPORT_HEIGHT = 1080
 
 
 class EyesManager:
+
     def __init__(self, application_name="Mantid Imaging", test_name=None):
         self.application_name = application_name
         self.eyes = Eyes()

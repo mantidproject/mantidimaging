@@ -48,6 +48,7 @@ class FiltersWindowModel(object):
         self.filter_widget_kwargs = {}
 
     def _format_filters(self):
+
         def value_from_enum(enum):
             if enum == FilterGroup.Basic:
                 return 0

@@ -24,6 +24,7 @@ def test_missing_field_message():
 
 
 class NexusLoaderTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.nexus = h5py.File("data", "w", driver="core", backing_store=False)
         self.full_tomo_path = f"entry1/{TOMO_ENTRY}"

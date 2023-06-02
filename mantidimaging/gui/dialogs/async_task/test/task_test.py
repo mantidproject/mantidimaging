@@ -8,7 +8,9 @@ from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
 
 class TaskWorkerThreadTest(unittest.TestCase):
+
     def test_basic_happy_case(self):
+
         def f(a, b):
             return a + b
 
@@ -25,6 +27,7 @@ class TaskWorkerThreadTest(unittest.TestCase):
         self.assertEqual(t.result, 9)
 
     def test_failure(self):
+
         def f(a, b):
             raise RuntimeError('nope')
 

@@ -63,6 +63,7 @@ def start_qapplication(cls):
     if it is not already started
     @param cls: Class being decorated
     """
+
     def setUp(self):
         global uncaught_exception
         uncaught_exception = None
@@ -82,6 +83,7 @@ def start_qapplication(cls):
 
 
 def start_multiprocessing_pool(cls):
+
     def setUpClass():
         create_and_start_pool()
 
@@ -92,6 +94,7 @@ def start_multiprocessing_pool(cls):
 
 
 def mock_versions(cls):
+
     def setUpClass():
         cls.mock_get_version_patch = mock.patch(
             'mantidimaging.gui.windows.welcome_screen.presenter.versions.get_version')
@@ -120,6 +123,7 @@ def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None,
     @param setup_class: the setUpClass function to be added
     @param teardown_class: the tearDownClass function to be added
     """
+
     def do_nothing(_):
         pass
 

@@ -18,6 +18,7 @@ TEST_PIXEL_SIZE = 1443
 
 
 class ReconWindowPresenterTest(unittest.TestCase):
+
     def setUp(self):
         self.make_view()
 

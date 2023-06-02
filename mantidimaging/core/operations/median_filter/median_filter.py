@@ -27,6 +27,7 @@ KERNEL_SIZE_TOOLTIP = "Size of the median filter kernel"
 
 
 class KernelSpinBox(QSpinBox):
+
     def __init__(self, on_change: Callable):
         """
         Spin box for entering kernel sizes that only accepts odd numbers.
@@ -151,8 +152,7 @@ def _execute(images: ImageStack, size, mode, progress=None):
     f = ps.create_partial(_median_filter, ps.return_to_self, size=size, mode=mode)
 
     with progress:
-        log.info("PARALLEL median filter, with pixel data type: {0}, filter "
-                 "size/width: {1}.".format(images.dtype, size))
+        log.info(f"PARALLEL median filter, with pixel data type: {images.dtype}, filter size/width: {size}.")
 
         ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Median filter")
 
@@ -163,6 +163,6 @@ def _execute_gpu(data, size, mode, progress=None):
     cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
-        log.info("GPU median filter, with pixel data type: {0}, filter " "size/width: {1}.".format(data.dtype, size))
+        log.info(f"GPU median filter, with pixel data type: {data.dtype}, filter size/width: {size}.")
 
         cuda.median_filter(data, size, mode, progress)

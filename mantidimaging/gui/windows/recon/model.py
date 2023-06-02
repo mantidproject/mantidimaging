@@ -26,6 +26,7 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowModel(object):
+
     def __init__(self, data_model: CorTiltPointQtModel):
         self._images: Optional[ImageStack] = None
         self._preview_projection_idx = 0

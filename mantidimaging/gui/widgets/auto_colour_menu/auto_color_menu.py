@@ -19,6 +19,7 @@ class AutoColorMenu:
     """
     Mixin class to be used with MIImageView and MIMiniImageView
     """
+
     def __init__(self) -> None:
         self.auto_color_action: Optional[QAction] = None
 

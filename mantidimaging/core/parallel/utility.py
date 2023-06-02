@@ -144,6 +144,7 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
 
 
 class SharedArray:
+
     def __init__(self, array: np.ndarray, shared_memory: Optional[SharedMemory], free_mem_on_del: bool = True):
         self.array = array
         self._shared_memory = shared_memory
@@ -170,6 +171,7 @@ class SharedArray:
 
 
 class SharedArrayProxy:
+
     def __init__(self, mem_name: Optional[str], shape: Tuple[int, ...], dtype: 'npt.DTypeLike'):
         self._mem_name = mem_name
         self._shape = shape

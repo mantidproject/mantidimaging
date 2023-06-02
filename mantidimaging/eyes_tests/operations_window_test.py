@@ -9,6 +9,7 @@ from mantidimaging.gui.widgets.roi_selector.view import ROISelectorView
 
 
 class OperationsWindowTest(BaseEyesTest):
+
     def setUp(self):
         super().setUp()
 

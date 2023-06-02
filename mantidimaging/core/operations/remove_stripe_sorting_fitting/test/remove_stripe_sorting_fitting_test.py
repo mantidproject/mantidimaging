@@ -15,6 +15,7 @@ class RemoveStripeSortingFittingTest(unittest.TestCase):
 
     Tests that it executes and returns a valid object, but does not verify the numerical results.
     """
+
     def test_executed(self):
         images = th.generate_images()
         control = images.copy()

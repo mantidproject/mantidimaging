@@ -21,6 +21,7 @@ def _normalise_break_values(break_vals, min_value, max_value):
 
 
 class PaletteChangerPresenterTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.view = mock.MagicMock()
         self.histograms = [mock.Mock() for _ in range(2)]

@@ -32,6 +32,7 @@ cil_mutex = Lock()
 
 
 class CILRecon(BaseRecon):
+
     @staticmethod
     def set_up_TV_regularisation(
             image_geometry: ImageGeometry, acquisition_data: AcquisitionData,

@@ -12,6 +12,7 @@ class StackChoicePresenterMixin(BasePresenter):
     not do enough on it's own for a successful view initialisation - it needs
     to be mixed into another presenter that extends it
     """
+
     def notify(self, signal: Notification):
         if signal == Notification.TOGGLE_LOCK_HISTOGRAMS:
             self.do_toggle_lock_histograms()

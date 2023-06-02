@@ -18,6 +18,7 @@ from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumRO
 @mock_versions
 @start_qapplication
 class SpectrumWidgetTest(unittest.TestCase):
+
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()

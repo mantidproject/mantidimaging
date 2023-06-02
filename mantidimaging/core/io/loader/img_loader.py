@@ -55,6 +55,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
 
 class ImageLoader(object):
+
     def __init__(self,
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
@@ -75,7 +76,7 @@ class ImageLoader(object):
             # the loaded file was a single image
             return self.load_files(input_file_names)
         else:
-            raise ValueError("Data loaded has invalid shape: {0}", self.img_shape)
+            raise ValueError(f"Data loaded has invalid shape: {self.img_shape}")
 
     def _do_files_load_seq(self, data: pu.SharedArray, files: List[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
@@ -88,10 +89,10 @@ class ImageLoader(object):
                 except ValueError as exc:
                     raise ValueError("An image has different width and/or height "
                                      "dimensions! All images must have the same "
-                                     "dimensions. Expected dimensions: {0} Error "
-                                     "message: {1}".format(self.img_shape, exc))
+                                     f"dimensions. Expected dimensions: {self.img_shape} Error "
+                                     f"message: {exc}")
                 except IOError as exc:
-                    raise RuntimeError("Could not load file {0}. Error details: " "{1}".format(in_file, exc))
+                    raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}")
 
         return data
 

@@ -17,6 +17,7 @@ class MetadataDialog(BaseDialogView):
     """
     Dialog used to show a pretty formatted version of the image metadata.
     """
+
     def __init__(self, parent: QWidget, images: ImageStack):
         super().__init__(parent)
 

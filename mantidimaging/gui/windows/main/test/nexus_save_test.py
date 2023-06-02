@@ -11,6 +11,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class NexusSaveDialogTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.nexus_save_dialog = NexusSaveDialog(None, [])
 

@@ -21,6 +21,7 @@ def _print_ascii_progress_bar(progress, bar_len, prefix='', suffix=''):
 
 # Note: this is not currently used in Mantid Imaging application, but could be used from a script
 class ConsoleProgressBar(ProgressHandler):
+
     def __init__(self, width=70):
         super().__init__()
         self.width = width

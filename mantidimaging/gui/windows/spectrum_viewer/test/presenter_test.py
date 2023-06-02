@@ -19,6 +19,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 @mock_versions
 @start_qapplication
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
+
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()

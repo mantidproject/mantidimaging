@@ -9,6 +9,7 @@ from mantidimaging.core.utility import cuda_check
 
 
 class TestCudaChecker(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         cuda_check.CudaChecker.clear_instance()
@@ -30,6 +31,7 @@ class TestCudaChecker(unittest.TestCase):
 
 
 class TestCudaCheckHelpers(unittest.TestCase):
+
     @patch("mantidimaging.core.utility.cuda_check._import_cupy")
     def test_cuda_is_present_returns_true(self, _import_cupy_mock):
         _import_cupy_mock.return_value = None

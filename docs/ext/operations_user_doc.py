@@ -50,6 +50,7 @@ def get_params(s: str) -> List[str]:
 
 
 class OperationsUserDoc(Directive):
+
     def run(self) -> List[Node]:
 
         try:

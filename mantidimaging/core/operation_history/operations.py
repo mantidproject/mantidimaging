@@ -18,6 +18,7 @@ class ImageOperation:
     """
     A deserialized representation of an item in a stack's operation_history
     """
+
     def __init__(self, filter_name: str, filter_kwargs: Dict[str, Any], display_name: str):
         self.filter_name = filter_name
         self.filter_kwargs = filter_kwargs

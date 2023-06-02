@@ -13,6 +13,7 @@ ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int),
 
 
 class ProgressHandler(object):
+
     def __init__(self):
         self.progress = None
 
@@ -27,6 +28,7 @@ class Progress(object):
     """
     Class used to perform basic progress monitoring and reporting.
     """
+
     @staticmethod
     def ensure_instance(p: Optional['Progress'] = None, *args, num_steps: Optional[int] = None, **kwargs) -> 'Progress':
         """

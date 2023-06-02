@@ -14,6 +14,7 @@ from mantidimaging.core.utility.data_containers import FILE_TYPES, Indices
 
 
 class ImageLoadDialogPresenterTest(unittest.TestCase):
+
     def _files_equal(self, file1, file2):
         self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
 

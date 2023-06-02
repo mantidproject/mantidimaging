@@ -10,6 +10,7 @@ from mantidimaging.core.io.csv_output import CSVOutput
 
 
 class CSVOutputTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.stream = io.StringIO()
         self.csv_output = CSVOutput()

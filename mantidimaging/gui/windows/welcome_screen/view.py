@@ -9,6 +9,7 @@ from mantidimaging.gui.mvp_base import BaseDialogView
 
 
 class WelcomeScreenView(BaseDialogView):
+
     def __init__(self, parent, presenter):
         super().__init__(parent, "gui/ui/welcome_screen_dialog.ui")
 

@@ -15,6 +15,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class CORInspectionDialogModelTest(unittest.TestCase):
+
     def test_construct(self):
         images = generate_images()
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)

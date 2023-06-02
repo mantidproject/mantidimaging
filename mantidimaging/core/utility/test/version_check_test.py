@@ -12,6 +12,7 @@ from mantidimaging.test_helpers import mock_versions
 
 @mock_versions
 class TestCheckVersion(unittest.TestCase):
+
     def setUp(self):
         with mock.patch("mantidimaging.core.utility.version_check.CheckVersion._retrieve_versions"):
             with mock.patch("shutil.which"):

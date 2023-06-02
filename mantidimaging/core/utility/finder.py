@@ -4,6 +4,5 @@ from __future__ import annotations
 
 import os
 import mantidimaging
-
 "Path to the MantidImaging module"
 ROOT_PATH = os.path.dirname(mantidimaging.__file__)

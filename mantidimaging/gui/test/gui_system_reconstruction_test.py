@@ -15,6 +15,7 @@ from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_
 
 @start_multiprocessing_pool
 class TestGuiSystemReconstruction(GuiSystemBase):
+
     def setUp(self) -> None:
         patcher_show_error_dialog = mock.patch(
             "mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_error_dialog")

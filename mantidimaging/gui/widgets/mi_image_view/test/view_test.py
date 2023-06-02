@@ -12,6 +12,7 @@ from mantidimaging.test_helpers import start_qapplication
 
 @start_qapplication
 class MIImageViewTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.view = MIImageView()
 

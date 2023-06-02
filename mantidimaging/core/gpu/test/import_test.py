@@ -12,6 +12,7 @@ GPU_NOT_AVAIL = not gpu.gpu_available()
 
 
 class GPUImportTest(unittest.TestCase):
+
     @unittest.skip("I don't know how to mock a failed import.")
     def test_gpu_available_returns_false_when_cupy_cant_be_loaded(self):
         """

@@ -11,6 +11,7 @@ from mantidimaging.test_helpers.start_qapplication import start_qapplication
 
 
 class ImageSaveDialogTest(unittest.TestCase):
+
     def test_sort_stack_names_order(self):
         stack_list = [
             StackId(uuid.uuid4(), "Stack 1"),
@@ -27,6 +28,7 @@ class ImageSaveDialogTest(unittest.TestCase):
 
 @start_qapplication
 class SaveDialogQtTest(unittest.TestCase):
+
     def test_init_sorts_stack_list_correctly(self):
         stack_list = [
             StackId(uuid.uuid4(), "Stack 1"),

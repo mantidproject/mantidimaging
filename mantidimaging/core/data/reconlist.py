@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 class ReconList(UserList):
+
     def __init__(self, data: Optional[List[ImageStack]] = None):
         data = [] if data is None else data
         super().__init__(data)

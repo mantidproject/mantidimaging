@@ -191,6 +191,7 @@ def _get_padding_value(filter_size):
 
 
 class CudaExecuter:
+
     def __init__(self, dtype):
 
         # Load the CUDA kernel through cupy

@@ -24,6 +24,7 @@ def _matching_dataset_attribute(dataset_attribute: Optional[ImageStack], images_
 
 
 class MainWindowModel(object):
+
     def __init__(self):
         super().__init__()
         self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
@@ -36,6 +37,7 @@ class MainWindowModel(object):
         return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
+
         def load(im_param):
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 

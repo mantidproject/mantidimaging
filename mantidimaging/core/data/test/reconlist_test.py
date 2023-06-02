@@ -9,6 +9,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
 class ReconListTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.recon_list = ReconList([generate_images() for _ in range(3)])
 

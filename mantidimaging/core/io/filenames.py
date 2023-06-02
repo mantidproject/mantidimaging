@@ -121,6 +121,7 @@ class FilenamePatternGolden(FilenamePattern):
 
 
 class FilenameGroup:
+
     def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
         self.directory = directory
         self.pattern = pattern

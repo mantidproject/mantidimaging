@@ -18,6 +18,7 @@ WELCOME_LINKS = [["Homepage", "https://github.com/mantidproject/mantidimaging"],
 
 
 class WelcomeScreenPresenter(BasePresenter):
+
     def __init__(self, parent=None, view=None):
         if view is None:
             view = WelcomeScreenView(parent, self)

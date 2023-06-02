@@ -6,6 +6,7 @@ import numpy as np
 
 
 class SVModel:
+
     def __init__(self) -> None:
         pass
 

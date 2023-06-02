@@ -21,6 +21,7 @@ def _image_key_list(key: int, n_images: int):
 
 
 class BaseDataset:
+
     def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
         self.recons = ReconList()
@@ -69,6 +70,7 @@ class BaseDataset:
 
 
 class MixedDataset(BaseDataset):
+
     def __init__(self, stacks: Optional[List[ImageStack]] = None, name: str = ""):
         super().__init__(name=name)
         stacks = [] if stacks is None else stacks

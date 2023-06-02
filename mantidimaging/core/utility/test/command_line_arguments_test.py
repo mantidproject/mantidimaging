@@ -10,6 +10,7 @@ from mantidimaging.core.utility.command_line_arguments import CommandLineArgumen
 
 
 class CommandLineArgumentsTest(unittest.TestCase):
+
     def setUp(self) -> None:
         self.reset_singleton()
         self.logger = logging.getLogger("mantidimaging.core.utility.command_line_arguments")

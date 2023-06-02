@@ -13,6 +13,7 @@ from mantidimaging.core.utility.data_containers import ReconstructionParameters
 
 
 class BaseReconTest(unittest.TestCase):
+
     @parameterized.expand([
         (np.float32, None, 1, 0),
         (np.float32, [1, 1, 1, 1], 2, -0.474886),
