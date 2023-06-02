@@ -5,7 +5,7 @@ from __future__ import annotations
 import threading
 import time
 from logging import getLogger
-from typing import List, NamedTuple, Optional
+from typing import NamedTuple, Optional, SupportsInt
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
@@ -43,7 +43,7 @@ class Progress(object):
 
         return p
 
-    def __init__(self, num_steps=1, task_name='Task'):
+    def __init__(self, num_steps: int = 1, task_name: str = 'Task') -> None:
         self.task_name = task_name
 
         # Current step being executed (0 denoting not started)
@@ -57,13 +57,13 @@ class Progress(object):
 
         # List of tuples defining progress history
         # (timestamp, step, message)
-        self.progress_history: List[ProgressHistory] = []
+        self.progress_history: list[ProgressHistory] = []
 
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
 
         # Handlers that receive notifications when progress updates occur
-        self.progress_handlers = []
+        self.progress_handlers: list[ProgressHandler] = []
 
         # Levels of nesting when used as a context manager
         self.context_nesting_level = 0
@@ -151,7 +151,7 @@ class Progress(object):
         """
         self.end_step += num_steps
 
-    def add_progress_handler(self, handler):
+    def add_progress_handler(self, handler: ProgressHandler):
         """
         Adds a handler to receiver progress updates.
         :param handler: Instance of a progress handler
@@ -163,7 +163,7 @@ class Progress(object):
         handler.progress = self
 
     @staticmethod
-    def _format_time(t: int) -> str:
+    def _format_time(t: SupportsInt) -> str:
         t = int(t)
         return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
 
@@ -200,7 +200,7 @@ class Progress(object):
             raise RuntimeError('Task has been cancelled')
 
     @staticmethod
-    def calculate_mean_time(progress_history: List[ProgressHistory]) -> float:
+    def calculate_mean_time(progress_history: list[ProgressHistory]) -> float:
         if len(progress_history) > 1:
             average_over_steps = min(STEPS_TO_AVERAGE, len(progress_history))
             time_diff = progress_history[-1].time - progress_history[-average_over_steps].time
