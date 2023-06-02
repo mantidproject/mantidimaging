@@ -90,15 +90,21 @@ class StackChoiceView(BaseMainWindowView):
         new_range = self.new_stack.ui.histogram.getLevels()
         original_range = self.original_stack.ui.histogram.getLevels()
 
+        # Set Histograms to the same range
         new_max_y = max(new_range[0], new_range[1])
         new_min_y = min(new_range[0], new_range[1])
         original_max_y = max(original_range[0], original_range[1])
         original_min_y = min(original_range[0], original_range[1])
         y_range_min = min(new_min_y, original_min_y)
         y_range_max = max(new_max_y, original_max_y)
-
         self.new_stack.ui.histogram.vb.setRange(yRange=(y_range_min, y_range_max))
         self.original_stack.ui.histogram.vb.setRange(yRange=(y_range_min, y_range_max))
+
+        # Set ROI to the same range
+        self.original_stack.roi.setSize((self.original_stack.image.shape[1], self.original_stack.image.shape[2]))
+        self.new_stack.roi.setSize((self.new_stack.image.shape[1], self.new_stack.image.shape[2]))
+        self.original_stack.roi.maxBounds = self.original_stack.roi.parentBounds()
+        self.new_stack.roi.maxBounds = self.new_stack.roi.parentBounds()
 
     def _toggle_roi(self):
         if self.roi_shown:
