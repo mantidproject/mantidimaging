@@ -6,7 +6,7 @@
 # function correctly and that the root user is not used within the container.
 
 eval "$(/opt/miniconda/bin/conda shell.bash hook)"
-conda activate mantidimaging_test
+conda activate mantidimaging-dev
 
 set -x
 CMD=${1:-"bash"}
