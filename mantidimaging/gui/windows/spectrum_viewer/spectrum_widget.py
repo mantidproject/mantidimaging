@@ -78,7 +78,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.image = MIMiniImageView(name="Projection")
@@ -100,7 +100,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
 
-    def add_range(self, range_min: int, range_max: int):
+    def add_range(self, range_min: int, range_max: int) -> None:
         self.range_control.setBounds((range_min, range_max))
         self.range_control.setRegion((range_min, range_max))
         self.spectrum.addItem(self.range_control)
