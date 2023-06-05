@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List, Union
+from typing import Union
 
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
@@ -82,9 +82,9 @@ class CORInspectionDialogView(BaseDialogView):
     def optimal_iterations(self) -> int:
         return self.presenter.optimal_iterations
 
-    def mark_best_recon(self, diffs):
+    def mark_best_recon(self, diffs) -> None:
         best = diffs.index(max(diffs))
-        buttons: List[QPushButton] = [self.lessButton, self.currentButton, self.moreButton]
+        buttons: list[QPushButton] = [self.lessButton, self.currentButton, self.moreButton]
 
         for b in buttons:
             b.setStyleSheet('')
