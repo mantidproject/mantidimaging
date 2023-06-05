@@ -25,7 +25,7 @@ def _matching_dataset_attribute(dataset_attribute: Optional[ImageStack], images_
 
 class MainWindowModel(object):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
 
