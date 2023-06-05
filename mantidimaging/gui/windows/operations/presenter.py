@@ -325,7 +325,7 @@ class FiltersWindowPresenter(BasePresenter):
     def _do_apply_filter_sync(self, apply_to):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
-    def do_update_previews(self):
+    def do_update_previews(self) -> None:
         if self.stack is None:
             self.view.clear_previews()
             return
@@ -343,7 +343,7 @@ class FiltersWindowPresenter(BasePresenter):
                 self.view.previews.after_region = FLAT_FIELD_REGION
 
         if not self.model.selected_filter.operate_on_sinograms:
-            subset: ImageStack = self.stack.slice_as_image_stack(self.model.preview_image_idx)
+            subset = self.stack.slice_as_image_stack(self.model.preview_image_idx)
             squeeze_axis = 0
         else:
             if self.stack.num_projections < 2:
