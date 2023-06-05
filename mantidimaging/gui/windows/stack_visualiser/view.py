@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageB
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.dialogs.op_history_copy.view import OpHistoryCopyDialogView
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 
@@ -192,10 +191,6 @@ class StackVisualiserView(QDockWidget):
 
     def show_image_metadata(self):
         dialog = MetadataDialog(self, self.presenter.images)
-        dialog.show()
-
-    def show_op_history_copy_dialog(self):
-        dialog = OpHistoryCopyDialogView(self, self.presenter.images, self.main_window)
         dialog.show()
 
     def mark_as_sinograms(self):
