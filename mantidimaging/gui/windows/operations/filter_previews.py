@@ -28,7 +28,7 @@ OVERLAY_THRESHOLD = 1e-3
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 
 
-def _data_valid_for_histogram(data):
+def _data_valid_for_histogram(data) -> bool:
     return data is not None and any(d is not None for d in data)
 
 
@@ -72,7 +72,7 @@ class FilterPreviews(GraphicsLayoutWidget):
     histogram: PlotItem
     z_slider: ZSlider
 
-    def __init__(self, parent=None, **kwargs):
+    def __init__(self, parent=None, **kwargs) -> None:
         super().__init__(parent, **kwargs)
 
         widget_location = self.mapToGlobal(QPoint(self.width() // 2, 0))
