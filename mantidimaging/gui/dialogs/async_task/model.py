@@ -15,7 +15,7 @@ class AsyncTaskDialogModel(QObject):
     # Signal emitted when task processing has terminated
     task_done = pyqtSignal(bool)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.task = TaskWorkerThread()
@@ -28,7 +28,7 @@ class AsyncTaskDialogModel(QObject):
         self.tracker = tracker
         self.tracker.add(self)
 
-    def do_execute_async(self):
+    def do_execute_async(self) -> None:
         """
         Start asynchronous execution.
         """
@@ -38,13 +38,13 @@ class AsyncTaskDialogModel(QObject):
     def task_is_running(self) -> bool:
         return self.task.isRunning()
 
-    def _cleanup(self):
+    def _cleanup(self) -> None:
         if self.tracker is not None:
             self.tracker.remove(self)
         self.on_complete_function = None
         self.task.task_function = None
 
-    def _on_task_exit(self):
+    def _on_task_exit(self) -> None:
         """
         Handler for task thread completion.
 
