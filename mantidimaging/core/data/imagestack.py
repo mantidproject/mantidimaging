@@ -173,7 +173,7 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def slice_as_image_stack(self, index) -> 'ImageStack':
+    def slice_as_image_stack(self, index: int) -> 'ImageStack':
         "A slice, either projection or sinogram depending on current ordering"
         return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 

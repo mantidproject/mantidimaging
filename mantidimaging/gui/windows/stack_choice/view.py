@@ -174,14 +174,14 @@ class StackChoiceView(BaseMainWindowView):
         self.new_stack.close()
         self.presenter = None
 
-    def _set_from_old_to_new(self):
+    def _set_from_old_to_new(self) -> None:
         """
         Signal triggered when the histograms are locked and the contrast values changed.
         """
         levels: Tuple[float, float] = self.original_stack.ui.histogram.getLevels()
         self.new_stack.ui.histogram.setLevels(*levels)
 
-    def _set_from_new_to_old(self):
+    def _set_from_new_to_old(self) -> None:
         """
         Signal triggered when the histograms are locked and the contrast values changed.
         """

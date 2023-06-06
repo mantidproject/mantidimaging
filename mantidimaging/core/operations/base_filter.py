@@ -51,7 +51,7 @@ class BaseFilter:
         return ImageStack(np.asarray([]))
 
     @staticmethod
-    def execute_wrapper(args) -> partial:  # type: ignore
+    def execute_wrapper(args) -> partial:
         """
         Should construct a partial call to _filter_func using values taken from the widgets passed to this function
         as kwargs.

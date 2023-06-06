@@ -16,10 +16,6 @@ if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
 
 
-def ensure_tuple(val):
-    return val if isinstance(val, tuple) else (val, )
-
-
 class FiltersWindowModel(object):
     filters: List[BaseFilter]
     selected_filter: BaseFilter
@@ -119,7 +115,7 @@ class FiltersWindowModel(object):
         for stack in stacks:
             self.apply_to_images(stack, progress=progress)
 
-    def apply_to_images(self, images, progress=None):
+    def apply_to_images(self, images: ImageStack, progress=None) -> None:
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
 
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
@@ -127,7 +123,7 @@ class FiltersWindowModel(object):
             raise ValueError("Not all required parameters specified")
 
         # Run filter
-        exec_func: partial = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
+        exec_func = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
         exec_func(images)
         # store the executed filter in history if it executed successfully

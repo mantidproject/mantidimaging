@@ -34,8 +34,9 @@ class NexusLoadDialog(BaseDialogView):
     previewPushButton: QStackedWidget
     allPushButton: QStackedWidget
     presenter: NexusLoadPresenter
+    checkboxes: dict[str, QCheckBox]
 
-    def __init__(self, parent):
+    def __init__(self, parent: QWidget) -> None:
         super().__init__(parent, "gui/ui/nexus_load_dialog.ui")
 
         self.parent_view = parent
@@ -82,7 +83,7 @@ class NexusLoadDialog(BaseDialogView):
         self.pixelBitDepthLabel.hide()
         self.pixelDepthComboBox.hide()
 
-    def choose_nexus_file(self):
+    def choose_nexus_file(self) -> None:
         """
         Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the
         QTreeWidget and enable the OK button.
@@ -101,7 +102,7 @@ class NexusLoadDialog(BaseDialogView):
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
             self.stackedWidget.setCurrentIndex(0)
 
-    def clear_widgets(self):
+    def clear_widgets(self) -> None:
         """
         Remove text and checkbox widgets from the QTreeWidget when a new file has been selected.
         """
@@ -117,7 +118,7 @@ class NexusLoadDialog(BaseDialogView):
                 child.setText(column, "")
             self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
-    def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]):
+    def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]) -> None:
         """
         Indicate on the QTreeWidget if the image key and data fields have been found or not.
         :param position: The row position for the data.
@@ -136,7 +137,7 @@ class NexusLoadDialog(BaseDialogView):
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))
 
-    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]):
+    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]) -> None:
         """
         Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.
         :param position: The row position for the image type.
@@ -160,7 +161,7 @@ class NexusLoadDialog(BaseDialogView):
         self.tree.setItemWidget(child, CHECKBOX_COLUMN, checkbox)
         self.checkboxes[child.text(0)] = checkbox
 
-    def set_projections_increment(self, n_proj: int):
+    def set_projections_increment(self, n_proj: int) -> None:
         """
         Set the properties of the indices spin boxes.
         :param n_proj: The number of projections that have been found in the NeXus file.
@@ -174,7 +175,7 @@ class NexusLoadDialog(BaseDialogView):
 
         self.increment_widget.setEnabled(True)
 
-    def show_exception(self, msg: str, traceback):
+    def show_exception(self, msg: str, traceback) -> None:
         """
         Show an error about an exception.
         :param msg: The error message.
@@ -182,21 +183,21 @@ class NexusLoadDialog(BaseDialogView):
         """
         self.parent_view.presenter.show_error(msg, traceback)
 
-    def show_data_error(self, msg: str):
+    def show_data_error(self, msg: str) -> None:
         """
         Show an error about missing required data or an unreadable file.
         :param msg: The error message.
         """
         self.parent_view.show_error_dialog(msg)
 
-    def disable_ok_button(self):
+    def disable_ok_button(self) -> None:
         """
         Disable the OK button when the NeXus file isn't usable.
         """
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     @staticmethod
-    def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool):
+    def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool) -> None:
         """
         Adds a tick or cross to the found column in the QTreeWidget to indicate if certain data could be found in the
         NeXus file.
@@ -206,7 +207,7 @@ class NexusLoadDialog(BaseDialogView):
         tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
         tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
 
-    def _set_preview_step(self):
+    def _set_preview_step(self) -> None:
         """
         Set the spin boxes to load a preview of the projections.
         """
@@ -214,7 +215,7 @@ class NexusLoadDialog(BaseDialogView):
         self.stop_widget.setValue(self.n_proj)
         self.step_widget.setValue(self.n_proj // 10)
 
-    def _set_all_step(self):
+    def _set_all_step(self) -> None:
         """
         Set the spin boxes to load all the projections.
         """

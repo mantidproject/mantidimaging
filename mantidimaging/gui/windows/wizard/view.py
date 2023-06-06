@@ -14,7 +14,7 @@ from .model import EnablePredicateFactory
 
 class WizardStage(QWidget):
 
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent: QWidget = None) -> None:
         super().__init__(parent)
 
         self.layout = QVBoxLayout(self)
@@ -22,18 +22,18 @@ class WizardStage(QWidget):
         self.layout.addWidget(self.title_label)
         self.steps: List[WizardStep] = []
 
-    def add_step(self, wizard_step: WizardStep):
+    def add_step(self, wizard_step: WizardStep) -> None:
         self.steps.append(wizard_step)
         self.layout.addWidget(wizard_step)
 
-    def handle_stack_change(self, stack_history: Optional[dict]):
+    def handle_stack_change(self, stack_history: Optional[dict]) -> None:
         for step in self.steps:
             step.handle_stack_change(stack_history)
 
 
 class WizardStep(QWidget):
 
-    def __init__(self, step: dict, wizard: WizardView, parent=None):
+    def __init__(self, step: dict, wizard: WizardView, parent: QWidget = None) -> None:
         super().__init__(parent)
 
         self.wizard_view = wizard
@@ -65,14 +65,14 @@ class WizardStep(QWidget):
         self.enable_predicate = EnablePredicateFactory(step.get("enable_if", ""))
         self.done_predicate = EnablePredicateFactory(step.get("done_if", ""))
 
-    def show_step(self):
+    def show_step(self) -> None:
         self.wizard_view.close_steps.emit()
         self.step_box.setVisible(True)
 
-    def hide_step(self):
+    def hide_step(self) -> None:
         self.step_box.setVisible(False)
 
-    def handle_stack_change(self, stack_history: Optional[dict]):
+    def handle_stack_change(self, stack_history: Optional[dict]) -> None:
         enabled = self.enable_predicate(stack_history)
 
         if not enabled:
@@ -88,16 +88,16 @@ class WizardStep(QWidget):
 class WizardView(BaseDialogView):
     close_steps = pyqtSignal()
 
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter) -> None:
         super().__init__(parent, "gui/ui/wizard.ui")
         self.stages: Dict[str, WizardStage] = {}
         self.presenter = presenter
 
-    def add_stage(self, stage_name: str):
+    def add_stage(self, stage_name: str) -> None:
         new_stage = WizardStage(stage_name)
         self.stages[stage_name] = new_stage
         self.wizard_top_layout.addWidget(new_stage)
 
-    def add_step(self, stage_name: str, step: dict):
+    def add_step(self, stage_name: str, step: dict[str, WizardStage]) -> None:
         new_step = WizardStep(step, self)
         self.stages[stage_name].add_step(new_step)
