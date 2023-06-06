@@ -27,8 +27,8 @@ class TaskWorkerThread(QThread):
         t.error
     """
 
-    task_function = Optional[Callable]
-    error = Optional[Exception]
+    task_function: Optional[Callable]
+    error: Optional[Exception]
 
     def __init__(self, parent=None):
         super().__init__(parent)

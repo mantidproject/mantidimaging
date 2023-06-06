@@ -8,7 +8,7 @@ import sys
 from logging import getLogger
 import requests
 from typing import Optional
-from packaging import version
+from packaging.version import Version, parse
 import shutil
 
 try:
@@ -61,7 +61,7 @@ class CheckVersion:
         return self._version
 
     def is_prerelease(self) -> bool:
-        return version.Version(self.get_version()).is_prerelease
+        return Version(self.get_version()).is_prerelease
 
     def get_conda_available_version(self) -> str:
         """Get latest version number from conda"""
@@ -123,9 +123,9 @@ class CheckVersion:
 versions = CheckVersion()
 
 
-def _parse_version(package_version_string: str) -> version.Version:
+def _parse_version(package_version_string: str) -> Version:
     normalised_version_string = package_version_string.replace("_", ".post")
-    return version.parse(normalised_version_string)
+    return parse(normalised_version_string)
 
 
 def _version_is_uptodate(local: str, remote: str):

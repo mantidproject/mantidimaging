@@ -131,7 +131,7 @@ class ReconstructWindowModel(object):
                           slice_idx: int,
                           cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
-                          progress: Progress = None) -> Optional[ImageStack]:
+                          progress: Progress | None = None) -> Optional[ImageStack]:
         # Ensure we have some sample data
         images = self.images
         if images is None:

@@ -40,7 +40,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         super().sort_points()
         self.layoutChanged.emit()
 
-    def set_point(self, idx, slice_idx: int = None, cor: float = None, reset_results=True):
+    def set_point(self, idx, slice_idx: int | None = None, cor: float | None = None, reset_results=True):
         super().set_point(idx, slice_idx, cor, reset_results)
         self.dataChanged.emit(self.index(idx, 0), self.index(idx, 1))
 
@@ -108,7 +108,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
 
         return True
 
-    def insertRows(self, row, count, parent=None, slice_idx: int = None, cor: float = None):
+    def insertRows(self, row, count, parent=None, slice_idx: int | None = None, cor: float | None = None):
         self.beginInsertRows(parent if parent is not None else QModelIndex(), row, row + count - 1)
 
         for _ in range(count):

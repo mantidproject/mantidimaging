@@ -46,7 +46,7 @@ class CorTiltDataModel:
         else:
             self._points.insert(idx, Point(slice_idx, cor))
 
-    def set_point(self, idx, slice_idx: int = None, cor: float = None, reset_results=True):
+    def set_point(self, idx, slice_idx: int | None = None, cor: float | None = None, reset_results=True):
         if reset_results:
             self.clear_results()
 

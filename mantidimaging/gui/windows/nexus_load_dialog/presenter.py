@@ -124,7 +124,7 @@ class NexusLoadPresenter:
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-    def _read_rotation_angles(self, image_key: int, before: bool = None) -> Optional[np.ndarray]:
+    def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> Optional[np.ndarray]:
         """
         Reads the rotation angles array and coverts them to radians if needed.
         :param image_key: The image key for the angles to read.
