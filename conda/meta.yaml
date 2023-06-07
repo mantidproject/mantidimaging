@@ -30,7 +30,7 @@ requirements:
     - requests=2.27.*
     - h5py=3.6.*
     - psutil=5.9.*
-    - cil=22.2.0
+    - cil=23.0.*
     - ccpi-regulariser
     - jenkspy=0.2.0
     - pyqt=5.15.*
