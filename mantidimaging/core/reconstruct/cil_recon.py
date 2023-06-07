@@ -175,8 +175,8 @@ class CILRecon(BaseRecon):
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
-                # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2 / 3) * 1 / num_subsets] * num_subsets + [1 / 3]
+                reg_percent = recon_params.regularisation_percent
+                probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
                 algo = SPDHG(f=F,
                              g=G,
                              operator=K,
@@ -294,8 +294,8 @@ class CILRecon(BaseRecon):
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
-                # this sets the evaluation of the TV term with 1/3 probability at each iteration
-                probs = [(2 / 3) * 1 / num_subsets] * num_subsets + [1 / 3]
+                reg_percent = recon_params.regularisation_percent
+                probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
                 algo = SPDHG(f=F,
                              g=G,
                              operator=K,
