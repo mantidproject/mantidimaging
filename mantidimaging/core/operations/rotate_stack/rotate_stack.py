@@ -72,7 +72,7 @@ class RotateFilter(BaseFilter):
                                         form=form,
                                         on_change=on_change,
                                         tooltip="How much degrees to rotate counter-clockwise")
-        angle.setDecimals(7)
+        angle.setDecimals(3)
         angle.setEnabled(False)
         dropdown.currentTextChanged.connect(lambda text: RotateFilter._update_angle(angle, dropdown))
         return {"angle": angle}
@@ -89,11 +89,10 @@ class RotateFilter(BaseFilter):
         :param angle: angle widget
         :param dropdown: dropdown widget
         """
-        dropdown_angle = dropdown.currentText()
-        if dropdown_angle == 'Custom':
+        if dropdown.currentText() == 'Custom':
             angle.setEnabled(True)
         else:
-            angle.setValue(float(dropdown_angle))
+            angle.setValue(float(dropdown.currentText()))
             angle.setEnabled(False)
 
 
