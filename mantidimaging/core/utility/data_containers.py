@@ -109,6 +109,7 @@ class ReconstructionParameters:
     beam_hardening_coefs: Optional[List[float]] = None
     stochastic: bool = False
     projections_per_subset: int = 50
+    regularisation_percent: int = 30
 
     def to_dict(self) -> dict:
         return {
@@ -121,6 +122,7 @@ class ReconstructionParameters:
             'alpha': self.alpha,
             'stochastic': self.stochastic,
             'projections_per_subset': self.projections_per_subset,
+            'regularisation_percent': self.regularisation_percent,
         }
 
 

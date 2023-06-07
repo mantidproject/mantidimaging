@@ -333,4 +333,7 @@ class CILRecon(BaseRecon):
 
 
 def allowed_recon_kwargs() -> dict[str, list[str]]:
-    return {'CIL: PDHG-TV': ['alpha', 'num_iter', 'non_negative', 'stochastic', 'projections_per_subset']}
+    return {
+        'CIL: PDHG-TV':
+        ['alpha', 'num_iter', 'non_negative', 'stochastic', 'projections_per_subset', 'regularisation_percent']
+    }
