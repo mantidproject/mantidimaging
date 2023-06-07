@@ -6,6 +6,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from skimage.transform import rotate
+from PyQt5.QtWidgets import QComboBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -56,19 +57,44 @@ class RotateFilter(BaseFilter):
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, angle = add_property_to_form('Angle of rotation\ncounter clockwise (degrees)',
+        dropdown = QComboBox()
+        dropdown.addItems(['90', '180', '270', 'Custom'])
+        _, dropdown = add_property_to_form('Angle presets (degrees)',
+                                           Type.CHOICE,
+                                           0, ('0', '90', '180', '270', "Custom"),
+                                           form=form,
+                                           on_change=on_change,
+                                           tooltip="How much degrees to rotate counter-clockwise")
+
+        _, angle = add_property_to_form('Custom Angle of rotation\ncounter clockwise (degrees)',
                                         Type.FLOAT,
                                         0, (-359, 359),
                                         form=form,
                                         on_change=on_change,
                                         tooltip="How much degrees to rotate counter-clockwise")
         angle.setDecimals(7)
-
+        angle.setEnabled(False)
+        dropdown.currentTextChanged.connect(lambda text: RotateFilter._update_angle(angle, dropdown))
         return {"angle": angle}
 
     @staticmethod
     def execute_wrapper(angle=None):
         return partial(RotateFilter.filter_func, angle=angle.value())
+
+    @staticmethod
+    def _update_angle(angle, dropdown):
+        """
+        Handle Dropdown change event to set value is angle is not custom
+
+        :param angle: angle widget
+        :param dropdown: dropdown widget
+        """
+        dropdown_angle = dropdown.currentText()
+        if dropdown_angle == 'Custom':
+            angle.setEnabled(True)
+        else:
+            angle.setValue(float(dropdown_angle))
+            angle.setEnabled(False)
 
 
 def _rotate_image_inplace(data, angle=None):
