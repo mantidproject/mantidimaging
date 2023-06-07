@@ -193,6 +193,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.stochasticCheckBox.stateChanged.connect(self.subsetsSpinBox.setEnabled)
         self.stochasticCheckBox.stateChanged.connect(self.subsetsLabel.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.regPercentSpinBox.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.regPercentLabel.setEnabled)
 
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
