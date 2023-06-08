@@ -187,11 +187,14 @@ class ReconstructWindowView(BaseMainWindowView):
         self.nonNegativeCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.stochasticCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.subsetsSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.regPercentSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
         self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
 
         self.stochasticCheckBox.stateChanged.connect(self.subsetsSpinBox.setEnabled)
         self.stochasticCheckBox.stateChanged.connect(self.subsetsLabel.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.regPercentSpinBox.setEnabled)
+        self.stochasticCheckBox.stateChanged.connect(self.regPercentLabel.setEnabled)
 
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
@@ -414,6 +417,10 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.subsetsSpinBox.value()
 
     @property
+    def regularisation_percent(self) -> int:
+        return self.regPercentSpinBox.value()
+
+    @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
         if not self.lbhc_enabled.isChecked():
             return None
@@ -437,6 +444,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         stochastic=self.stochastic,
                                         projections_per_subset=self.projections_per_subset,
                                         max_projection_angle=self.max_proj_angle,
+                                        regularisation_percent=self.regularisation_percent,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 
     def set_table_point(self, idx, slice_idx, cor):

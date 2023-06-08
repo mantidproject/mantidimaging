@@ -47,6 +47,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.stochasticLabel = mock.Mock()
         self.view.subsetsLabel = mock.Mock()
         self.view.subsetsSpinBox = mock.Mock()
+        self.view.regPercentSpinBox = mock.Mock()
+        self.view.regPercentLabel = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid(self, mock_start_async: mock.Mock):

@@ -66,6 +66,7 @@ class ReconstructWindowPresenter(BasePresenter):
             'non_negative': [self.view.nonNegativeCheckBox, self.view.nonNegativeLabel],
             'stochastic': [self.view.stochasticCheckBox, self.view.stochasticLabel],
             'projections_per_subset': [self.view.subsetsSpinBox, self.view.subsetsLabel],
+            'regularisation_percent': [self.view.regPercentLabel, self.view.regPercentSpinBox],
         }
         self.main_window = main_window
 
