@@ -35,7 +35,7 @@ FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS = []
 GIT_TOKEN = subprocess.check_output(["git", "describe"], encoding="utf_8").strip()
 COMMIT_DATE = subprocess.check_output(["git", "log", "--pretty=format:%ai", "-n1"], encoding="utf_8").strip()
-with open("test_cases.json", "r", encoding="UTF-8") as f:
+with open(Path(__file__).parent / "test_cases.json", encoding="UTF-8") as f:
     TEST_CASES = json.load(f)
 
 
