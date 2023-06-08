@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import subprocess
+import sys
 import time
 from collections import defaultdict
 from dataclasses import dataclass
@@ -22,9 +23,10 @@ except ModuleNotFoundError:
     print("Try: mamba install plotly")
     exit(1)
 
-from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader import loader
-from mantidimaging.core.operations.loader import load_filter_packages
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
+from mantidimaging.core.io.loader import loader  # noqa: E402
+from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 
 LOAD_SAMPLE = Path.home() / ""  # sample location
 SAVE_DIR = Path.home() / ""  # baseline output location
