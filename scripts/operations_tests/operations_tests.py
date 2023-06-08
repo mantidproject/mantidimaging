@@ -64,6 +64,8 @@ def compare_mode():
         for test_number, case in enumerate(cases):
             sub_test_name = case["test_name"]
             test_name = f"{operation.lower()}_{sub_test_name}"
+            if args.match and args.match not in test_name:
+                continue
             params = case["params"] | test_case_info["params"]
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
@@ -257,6 +259,7 @@ def main():
     parser.add_argument("-r", "--runs", type=int, default=5, help="number of times to run each test case")
     parser.add_argument("-v", "--verbose", action="store_true", help="print verbose output")
     parser.add_argument("-g", "--graphs", action="store_true", help="print verbose output")
+    parser.add_argument("-k", dest="match", type=str, help="only run tests which match the given substring expression")
 
     global args
     args = parser.parse_args()
