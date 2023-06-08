@@ -14,8 +14,13 @@ from statistics import stdev
 
 import numpy as np
 import pandas as pd
-from plotly import graph_objs as go
-from plotly.subplots import make_subplots
+try:
+    from plotly import graph_objs as go
+    from plotly.subplots import make_subplots
+except ModuleNotFoundError:
+    print("Approval tests require plotly")
+    print("Try: mamba install plotly")
+    exit(1)
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import loader
