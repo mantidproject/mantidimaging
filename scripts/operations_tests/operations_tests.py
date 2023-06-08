@@ -189,8 +189,7 @@ def load_post_operation_image_stack(filepath):
 def load_image_stack():
     filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
     filename_group.find_all_files()
-    filenames = [str(p) for p in filename_group.all_files()]
-    image_stack = loader.load(file_names=filenames)
+    image_stack = loader.load(filename_group=filename_group)
     return image_stack
 
 
