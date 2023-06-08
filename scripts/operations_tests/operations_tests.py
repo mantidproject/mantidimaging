@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 import time
@@ -28,9 +29,10 @@ from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 
-LOAD_SAMPLE = Path.home() / ""  # sample location
-SAVE_DIR = Path.home() / ""  # baseline output location
-SAVE_DIR.mkdir(exist_ok=True)
+LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
+               "IMAT_Flower_Tomo_000000.tif")
+SAVE_DIR = Path(os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"))
+
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS = []
 GIT_TOKEN = subprocess.check_output(["git", "describe"], encoding="utf_8").strip()
