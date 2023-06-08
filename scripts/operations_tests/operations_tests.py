@@ -249,14 +249,14 @@ def create_plots():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-M",
+    parser.add_argument("-m",
                         "--mode",
                         type=str,
                         choices=["compare", "time"],
                         help="what mode to run in (compare or time)")
-    parser.add_argument("-R", "--runs", type=int, default=5, help="number of times to run each test case")
-    parser.add_argument("-V", "--verbose", action="store_true", help="print verbose output")
-    parser.add_argument("-G", "--graphs", action="store_true", help="print verbose output")
+    parser.add_argument("-r", "--runs", type=int, default=5, help="number of times to run each test case")
+    parser.add_argument("-v", "--verbose", action="store_true", help="print verbose output")
+    parser.add_argument("-g", "--graphs", action="store_true", help="print verbose output")
 
     global args
     args = parser.parse_args()
