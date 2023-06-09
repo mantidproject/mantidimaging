@@ -16,6 +16,7 @@ from statistics import stdev
 
 import numpy as np
 import pandas as pd
+
 try:
     from plotly import graph_objs as go
     from plotly.subplots import make_subplots
@@ -31,7 +32,15 @@ from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E
 
 LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
                "IMAT_Flower_Tomo_000000.tif")
-SAVE_DIR = Path(os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"))
+
+if path := os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"):
+    SAVE_DIR = Path(path)
+else:
+    print("Set MANTIDIMAGING_APPROVAL_TESTS_DIR for output path")
+    exit(1)
+if not SAVE_DIR.exists():
+    print(f"Creating directory: {SAVE_DIR}")
+    SAVE_DIR.mkdir()
 
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS = []
