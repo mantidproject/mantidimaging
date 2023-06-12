@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import subprocess
+import sys
 import time
 from collections import defaultdict
 from dataclasses import dataclass
@@ -14,21 +16,37 @@ from statistics import stdev
 
 import numpy as np
 import pandas as pd
-from plotly import graph_objs as go
-from plotly.subplots import make_subplots
 
-from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader import loader
-from mantidimaging.core.operations.loader import load_filter_packages
+try:
+    from plotly import graph_objs as go
+    from plotly.subplots import make_subplots
+except ModuleNotFoundError:
+    print("Approval tests require plotly")
+    print("Try: mamba install plotly")
+    exit(1)
 
-LOAD_SAMPLE = Path.home() / ""  # sample location
-SAVE_DIR = Path.home() / ""  # baseline output location
-SAVE_DIR.mkdir(exist_ok=True)
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
+from mantidimaging.core.io.loader import loader  # noqa: E402
+from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
+
+LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
+               "IMAT_Flower_Tomo_000000.tif")
+
+if path := os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"):
+    SAVE_DIR = Path(path)
+else:
+    print("Set MANTIDIMAGING_APPROVAL_TESTS_DIR for output path")
+    exit(1)
+if not SAVE_DIR.exists():
+    print(f"Creating directory: {SAVE_DIR}")
+    SAVE_DIR.mkdir()
+
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS = []
 GIT_TOKEN = subprocess.check_output(["git", "describe"], encoding="utf_8").strip()
 COMMIT_DATE = subprocess.check_output(["git", "log", "--pretty=format:%ai", "-n1"], encoding="utf_8").strip()
-with open("test_cases.json", "r", encoding="UTF-8") as f:
+with open(Path(__file__).parent / "test_cases.json", encoding="UTF-8") as f:
     TEST_CASES = json.load(f)
 
 
@@ -55,6 +73,8 @@ def compare_mode():
         for test_number, case in enumerate(cases):
             sub_test_name = case["test_name"]
             test_name = f"{operation.lower()}_{sub_test_name}"
+            if args.match and args.match not in test_name:
+                continue
             params = case["params"] | test_case_info["params"]
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
@@ -180,8 +200,7 @@ def load_post_operation_image_stack(filepath):
 def load_image_stack():
     filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
     filename_group.find_all_files()
-    filenames = [str(p) for p in filename_group.all_files()]
-    image_stack = loader.load(file_names=filenames)
+    image_stack = loader.load(filename_group=filename_group)
     return image_stack
 
 
@@ -241,14 +260,15 @@ def create_plots():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-M",
+    parser.add_argument("-m",
                         "--mode",
                         type=str,
                         choices=["compare", "time"],
                         help="what mode to run in (compare or time)")
-    parser.add_argument("-R", "--runs", type=int, default=5, help="number of times to run each test case")
-    parser.add_argument("-V", "--verbose", action="store_true", help="print verbose output")
-    parser.add_argument("-G", "--graphs", action="store_true", help="print verbose output")
+    parser.add_argument("-r", "--runs", type=int, default=5, help="number of times to run each test case")
+    parser.add_argument("-v", "--verbose", action="store_true", help="print verbose output")
+    parser.add_argument("-g", "--graphs", action="store_true", help="print verbose output")
+    parser.add_argument("-k", dest="match", type=str, help="only run tests which match the given substring expression")
 
     global args
     args = parser.parse_args()
