@@ -62,4 +62,7 @@ yapf_apply:
 flake8:
 	python -m flake8
 
-check: yapf flake8 mypy test
+ruff:
+	ruff .
+
+check: ruff yapf flake8 mypy test

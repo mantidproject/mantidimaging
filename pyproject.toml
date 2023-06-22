@@ -1,0 +1,5 @@
+[tool.ruff]
+select = ["E", "F"]
+fixable = []
+
+line-length = 120
