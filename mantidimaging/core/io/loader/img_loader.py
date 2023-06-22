@@ -1,9 +1,9 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
+from __future__ import annotations
 from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
