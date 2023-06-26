@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from unittest.mock import DEFAULT, Mock
 from uuid import uuid4
 
@@ -545,3 +546,22 @@ class MainWindowViewTest(unittest.TestCase):
         ds_id = "ds-id"
         self.view.is_dataset_strict(ds_id)
         self.presenter.is_dataset_strict.assert_called_once_with(ds_id)
+
+    @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")
+    def test_live_viewer_asks_for_data_dir(self, mock_show_live_viewer, mock_get_existing_dir):
+        mock_path = Path("/test/path")
+        mock_get_existing_dir.return_value = str(mock_path)
+
+        self.view.live_view_choose_directory()
+
+        mock_show_live_viewer.assert_called_once_with(mock_path)
+
+    @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")
+    def test_live_viewer_asks_for_data_dir_no_path(self, mock_show_live_viewer, mock_get_existing_dir):
+        mock_get_existing_dir.return_value = ""
+
+        self.view.live_view_choose_directory()
+
+        mock_show_live_viewer.assert_not_called()
