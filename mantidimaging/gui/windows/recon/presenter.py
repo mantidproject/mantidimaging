@@ -423,7 +423,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.view.show_error_dialog(f"Finding the COR failed.\n\n Error: {str(task.error)}")
             else:
                 cors = task.result
-                for slice_idx, cor in zip(slice_indices, cors):
+                for slice_idx, cor in zip(slice_indices, cors, strict=True):
                     self.view.add_cor_table_row(selected_row, slice_idx, cor)
                 self.do_cor_fit()
             self.view.set_correlate_buttons_enabled(True)

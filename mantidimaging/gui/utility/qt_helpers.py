@@ -41,7 +41,7 @@ class BlockQtSignals(object):
             [obj.blockSignals(True) for obj in self.q_objects]
 
     def __exit__(self, *args):
-        for obj, prev in zip(self.q_objects, self.previous_values):
+        for obj, prev in zip(self.q_objects, self.previous_values, strict=True):
             obj.blockSignals(prev)
 
 
