@@ -109,7 +109,7 @@ def test_rescale_ignores_nans(value):
 
     npt.assert_equal(images.data[3:5], value / 2)
     npt.assert_equal(images.data[7:10], value)
-    assert all([math.isnan(x) for x in images.data[6][0:10].flatten()])
+    assert all(math.isnan(x) for x in images.data[6][0:10].flatten())
 
 
 if __name__ == "__main__":

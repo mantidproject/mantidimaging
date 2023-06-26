@@ -59,7 +59,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.expected_pixel_size = int(pixel_size)
 
         self.image_types = ["Projections", "Flat Before", "Flat After", "Dark Before", "Dark After"]
-        self.view.checkboxes = dict()
+        self.view.checkboxes = {}
 
         for image_type in self.image_types:
             checkbox_mock = mock.Mock()
@@ -310,7 +310,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_rotation_angles_stored_in_projection_angles_object(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH]
-        rotation_angles_array = np.array([i for i in range(10)])
+        rotation_angles_array = np.arange(10)
         angle_dataset = self.tomo_entry.create_dataset(ROTATION_ANGLE_PATH, data=rotation_angles_array)
         angle_dataset.attrs.create("units", "radians")
 

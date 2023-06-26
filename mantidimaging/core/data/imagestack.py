@@ -120,7 +120,7 @@ class ImageStack:
             self.metadata[const.OPERATION_HISTORY] = []
 
         def accepted_type(o):
-            return any([isinstance(o, expected) for expected in [str, int, float, bool, tuple, list, SensibleROI]])
+            return any(isinstance(o, expected) for expected in [str, int, float, bool, tuple, list, SensibleROI])
 
         def prepare(o):
             if isinstance(o, SensibleROI):

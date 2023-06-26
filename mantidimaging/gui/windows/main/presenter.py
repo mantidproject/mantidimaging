@@ -203,7 +203,7 @@ class MainWindowPresenter(BasePresenter):
         self._tabify_stack_window(stack_visualiser, sample_dock)
 
     def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
-        return [stack for stack in self.active_stacks.values()]
+        return list(self.active_stacks.values())
 
     def get_all_stacks(self) -> List[ImageStack]:
         return self.model.images

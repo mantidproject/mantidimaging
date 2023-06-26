@@ -195,7 +195,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.applying_to_all = False
         mock_stack = mock.MagicMock()
         mock_stack.has_proj180deg.return_value = True
-        mock_stack.data = np.array([i for i in range(3)])
+        mock_stack.data = np.arange(3)
         mock_stacks: List[ImageStack] = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
@@ -576,7 +576,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))
 
     def test_group_consecutive_values(self):
-        slices = [i for i in range(8)] + [i for i in range(10, 15)]
+        slices = list(range(8)) + list(range(10, 15))
         ranges = _group_consecutive_values(slices)
         self.assertListEqual(ranges, ["0-7", "10-14"])
 

@@ -45,7 +45,7 @@ def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
 
     operation_modules = []
     for name in MODULES_OPERATIONS.keys():
-        if not ignored_packages or not any([ignore in name for ignore in ignored_packages]):
+        if not ignored_packages or not any(ignore in name for ignore in ignored_packages):
             module = MODULES_OPERATIONS[name].load_module(name)
             if hasattr(module, 'FILTER_CLASS'):
                 operation_module = cast("OperationModule", module)
