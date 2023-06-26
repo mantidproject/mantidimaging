@@ -39,7 +39,7 @@ For options such as running a subset of tests, see `PyTest Docs <https://docs.py
 Static analysis
 ---------------
 
-Mantid Imaging uses `mypy <http://mypy-lang.org/>`_, `flake8 <https://flake8.pycqa.org/>`_ and `yapf <https://github.com/google/yapf>`_ for static analysis and formatting. They are run by :code:`make check`, or can be run individually, e.g. :code:`make mypy`.
+Mantid Imaging uses `mypy <http://mypy-lang.org/>`_, `ruff <https://beta.ruff.rs/docs/>`_ and `yapf <https://github.com/google/yapf>`_ for static analysis and formatting. They are run by :code:`make check`, or can be run individually, e.g. :code:`make mypy`.
 
 
 GUI screenshot testing
