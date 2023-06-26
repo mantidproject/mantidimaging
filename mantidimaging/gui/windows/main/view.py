@@ -81,6 +81,7 @@ class MainWindowView(BaseMainWindowView):
     actionFilters: QAction
     actionCompareImages: QAction
     actionSpectrumViewer: QAction
+    actionLiveViewer: QAction
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
