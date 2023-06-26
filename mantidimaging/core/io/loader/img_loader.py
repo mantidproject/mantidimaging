@@ -90,9 +90,9 @@ class ImageLoader(object):
                     raise ValueError("An image has different width and/or height "
                                      "dimensions! All images must have the same "
                                      f"dimensions. Expected dimensions: {self.img_shape} Error "
-                                     f"message: {exc}")
+                                     f"message: {exc}") from exc
                 except IOError as exc:
-                    raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}")
+                    raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
         return data
 

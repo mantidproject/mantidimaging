@@ -100,9 +100,9 @@ class BaseFilter:
             raise ValueError(f"No stack for {msg}")
         try:
             stack = widget.main_window.get_stack(stack_uuid)
-        except KeyError:
+        except KeyError as exc:
             # Can happen if stack is closed while selected in the form
-            raise ValueError(f"Selected stack for {msg} does not exist")
+            raise ValueError(f"Selected stack for {msg} does not exist") from exc
         return stack
 
 
