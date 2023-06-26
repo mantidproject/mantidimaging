@@ -208,7 +208,7 @@ class StrictDatasetTest(unittest.TestCase):
     def test_no_sample_image_keys(self):
         self.strict_dataset.sample = None
         with self.assertRaises(RuntimeError):
-            self.strict_dataset.image_keys
+            _ = self.strict_dataset.image_keys
 
     def test_rotation_angles(self):
         for stack in self.strict_dataset._nexus_stack_order:
