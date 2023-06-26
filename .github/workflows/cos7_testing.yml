@@ -34,10 +34,10 @@ jobs:
         command: yapf --parallel --diff --recursive .
         label: centos7
 
-    - name: flake8
+    - name: ruff
       uses: ./.github/actions/test
       with:
-        command: flake8
+        command: ruff .
         label: centos7
 
     - name: mypy
