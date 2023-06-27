@@ -217,9 +217,40 @@ def compare_image_stacks(baseline_image_stack, new_image_stack, test_case):
     elif not np.array_equal(baseline_image_stack, new_image_stack):
         test_case.status = "fail"
         test_case.message = "arrays are not equal"
+        if args.gui:
+            gui_compare_image_stacks(baseline_image_stack, new_image_stack)
     else:
         test_case.status = "pass"
         test_case.message = "arrays are equal"
+
+
+def gui_compare_image_stacks(baseline_image_stack, new_image_stack):
+    from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout
+    from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+    app = QApplication([])
+    win = QWidget()
+    win.resize(600, 900)
+    layout = QHBoxLayout()
+    win.setLayout(layout)
+
+    imvs = []
+    for name, data in (
+        ("Baseline", baseline_image_stack),
+        ("New", new_image_stack),
+        ("Diff", new_image_stack - baseline_image_stack),
+    ):
+        imv = MIImageView()
+        imv.name = name
+        imv.enable_nan_check(True)
+        imv.setImage(data)
+        layout.addWidget(imv)
+        imvs.append(imv)
+
+    imvs[0].sigTimeChanged.connect(imvs[1].setCurrentIndex)
+    imvs[0].sigTimeChanged.connect(imvs[2].setCurrentIndex)
+
+    win.show()
+    app.exec()
 
 
 def create_plots():
@@ -269,6 +300,7 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true", help="print verbose output")
     parser.add_argument("-g", "--graphs", action="store_true", help="print verbose output")
     parser.add_argument("-k", dest="match", type=str, help="only run tests which match the given substring expression")
+    parser.add_argument("--gui", dest="gui", action="store_true", help="Show GUI comparison for differences")
 
     global args
     args = parser.parse_args()
