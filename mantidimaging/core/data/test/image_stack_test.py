@@ -3,6 +3,11 @@
 from __future__ import annotations
 
 import io
+from pathlib import Path
+from unittest import mock
+
+import pytest
+
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
@@ -12,6 +17,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, generate_txt_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
+from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -54,6 +60,34 @@ class ImageStackTest(unittest.TestCase):
 
         imgs.metadata[const.OPERATION_HISTORY][0].pop(const.TIMESTAMP)
         self.assertEqual(imgs.metadata, expected)
+
+    @pytest.mark.xfail
+    def test_loading_metadata_preserves_existing(self):
+        json_file = io.StringIO('{"a": 30.0, "b": 2}')
+
+        imgs = ImageStack(np.asarray([1]), metadata={'b': 1, 'c': 5})
+        self.assertEqual({'b': 1, 'c': 5}, imgs.metadata)
+
+        imgs.load_metadata(json_file)
+        self.assertEqual(30.0, imgs.metadata['a'])
+        self.assertEqual(1, imgs.metadata['b'])
+        self.assertEqual(5, imgs.metadata['c'])
+
+    @pytest.mark.xfail
+    def test_loading_metadata_preserves_existing_log(self):
+        json_file = io.StringIO('{"pixel_size": 30.0, "log_file": "/old/logfile"}')
+        mock_log_path = Path("/aaa/bbb")
+        mock_log_file = mock.create_autospec(IMATLogFile, source_file=mock_log_path)
+
+        imgs = ImageStack(np.asarray([1]))
+        self.assertEqual({}, imgs.metadata)
+
+        imgs.log_file = mock_log_file
+        self.assertEqual(str(mock_log_path), imgs.metadata['log_file'])
+
+        imgs.load_metadata(json_file)
+        self.assertEqual(30.0, imgs.metadata['pixel_size'])
+        self.assertEqual(str(mock_log_path), imgs.metadata['log_file'])
 
     def test_copy(self):
         images = generate_images()
