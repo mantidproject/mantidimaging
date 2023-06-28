@@ -6,8 +6,6 @@ import io
 from pathlib import Path
 from unittest import mock
 
-import pytest
-
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
@@ -61,7 +59,6 @@ class ImageStackTest(unittest.TestCase):
         imgs.metadata[const.OPERATION_HISTORY][0].pop(const.TIMESTAMP)
         self.assertEqual(imgs.metadata, expected)
 
-    @pytest.mark.xfail
     def test_loading_metadata_preserves_existing(self):
         json_file = io.StringIO('{"a": 30.0, "b": 2}')
 
@@ -73,7 +70,6 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(1, imgs.metadata['b'])
         self.assertEqual(5, imgs.metadata['c'])
 
-    @pytest.mark.xfail
     def test_loading_metadata_preserves_existing_log(self):
         json_file = io.StringIO('{"pixel_size": 30.0, "log_file": "/old/logfile"}')
         mock_log_path = Path("/aaa/bbb")
