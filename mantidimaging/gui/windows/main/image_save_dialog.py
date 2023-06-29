@@ -47,7 +47,7 @@ class ImageSaveDialog(BaseDialogView):
             # the stacklist is created in the main windows presenter and has
             # format [(uuid, title)...], doing zip(*stack_list) unzips the
             # tuples into separate lists
-            self.stack_uuids, user_friendly_names = zip(*user_friendly_stack_list)
+            self.stack_uuids, user_friendly_names = zip(*user_friendly_stack_list, strict=True)
 
             self.stackNames.addItems(user_friendly_names)
 

@@ -1,10 +1,10 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
 """
 A place for availability checking and import logic for optional dependencies to
 live.
 """
+from __future__ import annotations
 
 import importlib
 import traceback
@@ -24,7 +24,7 @@ def safe_import(name):
         module = importlib.import_module(name)
 
     except ImportError:
-        warnings.warn('Failed to import optional module "{}"'.format(name))
+        warnings.warn('Failed to import optional module "{}"'.format(name), stacklevel=1)
 
         o = StringIO()
         traceback.print_stack(file=o)

@@ -1,8 +1,5 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
-
-from enum import Enum
 """
 Containers for data. They don't do much apart from storing the data,
 and optionally provide helpful operations.
@@ -11,6 +8,9 @@ The biggest benefit is explicitly marking what the value represents (e.g. Degree
 and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),
 while they're both Float underneath and the value can be used, it just will produce nonsense.
 """
+from __future__ import annotations
+
+from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional, NamedTuple, TYPE_CHECKING
 

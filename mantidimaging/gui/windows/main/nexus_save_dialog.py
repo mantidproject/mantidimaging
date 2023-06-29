@@ -35,7 +35,7 @@ class NexusSaveDialog(BaseDialogView):
 
     def _create_dataset_lists(self, dataset_list):
         if dataset_list:
-            self.dataset_uuids, dataset_names = zip(*dataset_list)
+            self.dataset_uuids, dataset_names = zip(*dataset_list, strict=True)
             self.datasetNames.addItems(dataset_names)
 
     def accept(self) -> None:

@@ -59,7 +59,7 @@ yapf:
 yapf_apply:
 	python -m yapf -i --parallel --recursive .
 
-flake8:
-	python -m flake8
+ruff:
+	ruff .
 
-check: yapf flake8 mypy test
+check: ruff yapf mypy test

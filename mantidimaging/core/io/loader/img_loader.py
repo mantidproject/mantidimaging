@@ -1,9 +1,9 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
 """
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
+from __future__ import annotations
 from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
@@ -90,9 +90,9 @@ class ImageLoader(object):
                     raise ValueError("An image has different width and/or height "
                                      "dimensions! All images must have the same "
                                      f"dimensions. Expected dimensions: {self.img_shape} Error "
-                                     f"message: {exc}")
+                                     f"message: {exc}") from exc
                 except IOError as exc:
-                    raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}")
+                    raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
         return data
 

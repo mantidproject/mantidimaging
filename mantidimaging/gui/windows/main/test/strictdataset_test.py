@@ -56,22 +56,22 @@ class StrictDatasetTest(unittest.TestCase):
     def test_set_flat_before(self):
         flat_before = generate_images()
         self.strict_dataset.flat_before = flat_before
-        assert flat_before is self.strict_dataset.flat_before
+        self.assertIs(flat_before, self.strict_dataset.flat_before)
 
     def test_set_flat_after(self):
         flat_after = generate_images()
         self.strict_dataset.flat_after = flat_after
-        assert flat_after is self.strict_dataset.flat_after
+        self.assertIs(flat_after, self.strict_dataset.flat_after)
 
     def test_set_dark_before(self):
         dark_before = generate_images()
         self.strict_dataset.dark_before = dark_before
-        assert dark_before is self.strict_dataset.dark_before
+        self.assertIs(dark_before, self.strict_dataset.dark_before)
 
     def test_set_dark_after(self):
         dark_after = generate_images()
         self.strict_dataset.dark_after = dark_after
-        assert dark_after is self.strict_dataset.dark_after
+        self.assertIs(dark_after, self.strict_dataset.dark_after)
 
     def test_all(self):
         self.assertListEqual(self.strict_dataset.all, self.images)
@@ -80,10 +80,10 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertListEqual(self.strict_dataset.all_image_ids, [images.id for images in self.images])
 
     def test_contains_returns_true(self):
-        assert self.images[2].id in self.strict_dataset
+        self.assertIn(self.images[2].id, self.strict_dataset)
 
     def test_contains_returns_false(self):
-        assert not generate_images().id in self.strict_dataset
+        self.assertNotIn(generate_images().id, self.strict_dataset)
 
     def test_delete_sample(self):
         self.strict_dataset.delete_stack(self.images[0].id)
@@ -119,13 +119,13 @@ class StrictDatasetTest(unittest.TestCase):
 
     def test_name(self):
         self.strict_dataset.name = dataset_name = "name"
-        assert self.strict_dataset.name == dataset_name
+        self.assertEqual(self.strict_dataset.name, dataset_name)
 
     def test_set_180(self):
         _180 = generate_images((1, 200, 200))
         self.strict_dataset.proj180deg = _180
-        assert self.strict_dataset.proj180deg is _180
-        assert self.strict_dataset.sample.proj180deg is _180
+        self.assertIs(self.strict_dataset.proj180deg, _180)
+        self.assertIs(self.strict_dataset.sample.proj180deg, _180)
 
     def test_remove_180(self):
         _180 = generate_images((1, 200, 200))
@@ -208,7 +208,7 @@ class StrictDatasetTest(unittest.TestCase):
     def test_no_sample_image_keys(self):
         self.strict_dataset.sample = None
         with self.assertRaises(RuntimeError):
-            self.strict_dataset.image_keys
+            _ = self.strict_dataset.image_keys
 
     def test_rotation_angles(self):
         for stack in self.strict_dataset._nexus_stack_order:

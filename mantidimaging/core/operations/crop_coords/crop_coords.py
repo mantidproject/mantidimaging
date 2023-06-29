@@ -91,8 +91,8 @@ class CropCoordinatesFilter(BaseFilter):
         try:
             roi = SensibleROI.from_list([int(number) for number in roi_field.text().strip("[").strip("]").split(",")])
             return partial(CropCoordinatesFilter.filter_func, region_of_interest=roi)
-        except Exception as e:
-            raise ValueError(f"The provided ROI string is invalid! Error: {e}")
+        except Exception as exc:
+            raise ValueError(f"The provided ROI string is invalid! Error: {exc}") from exc
 
     @staticmethod
     def group_name() -> FilterGroup:

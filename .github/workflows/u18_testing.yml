@@ -33,10 +33,10 @@ jobs:
         command: yapf --parallel --diff --recursive .
         label: ubuntu18
 
-    - name: flake8
+    - name: ruff
       uses: ./.github/actions/test
       with:
-        command: flake8
+        command: ruff .
         label: ubuntu18
 
     - name: mypy

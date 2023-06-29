@@ -146,7 +146,7 @@ def assert_called_once_with(mock: mock.Mock, *args):
     assert 1 == mock.call_count
     assert len(args) == len(mock.call_args[0])
 
-    for actual, expected in zip(mock.call_args[0], args):
+    for actual, expected in zip(mock.call_args[0], args, strict=True):
         if isinstance(actual, np.ndarray):
             np.testing.assert_equal(actual, expected)
         elif isinstance(actual, ProjectionAngles):

@@ -55,8 +55,8 @@ class OperationsUserDoc(Directive):
 
         try:
             from mantidimaging.core.operations.loader import load_filter_packages
-        except ImportError:
-            raise ValueError("operations_user_doc could not import load_filter_packages")
+        except ImportError as exc:
+            raise ValueError("operations_user_doc could not import load_filter_packages") from exc
 
         env = self.state.document.settings.env
         env.note_dependency(__file__)

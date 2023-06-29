@@ -42,7 +42,7 @@ class CILRecon(BaseRecon):
         A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
 
         if recon_params.stochastic:
-            for partition_geometry, partition_operator in zip(acquisition_data.geometry, A2d):
+            for partition_geometry, partition_operator in zip(acquisition_data.geometry, A2d, strict=True):
                 CILRecon.set_approx_norm(partition_operator, partition_geometry, image_geometry)
         else:
             CILRecon.set_approx_norm(A2d, acquisition_data.geometry, image_geometry)

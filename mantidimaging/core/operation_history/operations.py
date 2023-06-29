@@ -28,10 +28,10 @@ class ImageOperation:
         try:
             fn = filter_funcs[self.filter_name]
             return partial(fn, **self.filter_kwargs)
-        except KeyError:
+        except KeyError as exc:
             msg = MODULE_NOT_FOUND.format(self.filter_name)
             getLogger(__name__).error(msg)
-            raise KeyError(msg)
+            raise KeyError(msg) from exc
 
     @staticmethod
     def from_serialized(metadata_entry: Dict[str, Any]) -> 'ImageOperation':

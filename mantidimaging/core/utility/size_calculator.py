@@ -10,8 +10,8 @@ from typing import Iterable
 def _determine_dtype_size(dtype: numpy.dtype) -> int:
     try:
         return numpy.dtype(dtype).itemsize
-    except TypeError:
-        raise ValueError(f"Can't get size of {dtype}, ({type(dtype)=})")
+    except TypeError as exc:
+        raise ValueError(f"Can't get size of {dtype}, ({type(dtype)=})") from exc
 
 
 def full_size(shape: Iterable[int]) -> int:

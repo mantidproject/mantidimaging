@@ -64,8 +64,8 @@ def assert_raises(exc_type, callable, *args, **kwargs):
         raise AssertionError("Did not raise")
     except exc_type:
         return
-    except Exception:
-        raise AssertionError("Did not raise expected exception.")
+    except Exception as exc:
+        raise AssertionError("Did not raise expected exception.") from exc
 
 
 @pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])

@@ -1,9 +1,9 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
 """
 Module containing helper functions relating to PyQt.
 """
+from __future__ import annotations
 
 import os
 from enum import IntEnum, auto
@@ -41,7 +41,7 @@ class BlockQtSignals(object):
             [obj.blockSignals(True) for obj in self.q_objects]
 
     def __exit__(self, *args):
-        for obj, prev in zip(self.q_objects, self.previous_values):
+        for obj, prev in zip(self.q_objects, self.previous_values, strict=True):
             obj.blockSignals(prev)
 
 

@@ -128,8 +128,8 @@ class RoiNormalisationFilter(BaseFilter):
     def execute_wrapper(roi_field, norm_mode, flat_field):
         try:
             roi = SensibleROI.from_list([int(number) for number in roi_field.text().strip("[").strip("]").split(",")])
-        except Exception as e:
-            raise ValueError(f"The provided ROI string is invalid! Error: {e}")
+        except Exception as exc:
+            raise ValueError(f"The provided ROI string is invalid! Error: {exc}") from exc
 
         mode = norm_mode.currentText()
         flat_images = BaseFilter.get_images_from_stack(flat_field, "flat field")

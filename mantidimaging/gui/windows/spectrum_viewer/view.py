@@ -77,7 +77,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.current_roi: str = ""
         self.selected_row_data: Optional[list] = None
 
-        self.roi_table_model  # Initialise model
+        _ = self.roi_table_model  # Initialise model
 
         def on_row_change(item, _) -> None:
             """
