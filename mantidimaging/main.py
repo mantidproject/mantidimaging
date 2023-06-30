@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import logging
 import sys
 import warnings
 import mantidimaging.core.parallel.manager as pm
@@ -25,7 +24,7 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default="INFO",
         help="Log verbosity level. "
-        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+        "Available options are: DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
@@ -54,7 +53,7 @@ def main() -> None:
 
     CommandLineArguments(path=path, operation=operation, show_recon=args.recon)
 
-    h.initialise_logging(logging.getLevelName(args.log_level))
+    h.initialise_logging(args.log_level)
 
     from mantidimaging import gui
     try:

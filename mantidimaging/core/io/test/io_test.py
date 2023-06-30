@@ -23,7 +23,6 @@ from mantidimaging.core.io import saver
 from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus, \
     _save_image_stacks_to_nexus, _convert_float_to_int
 from mantidimaging.core.utility.version_check import CheckVersion
-from mantidimaging.helper import initialise_logging
 from mantidimaging.test_helpers import FileOutputtingTestCase
 
 NX_CLASS = "NX_class"
@@ -55,9 +54,6 @@ class IOTest(FileOutputtingTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # force silent outputs
-        initialise_logging()
 
         self.sample_path = "sample/file/path.tiff"
 

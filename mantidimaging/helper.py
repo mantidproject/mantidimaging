@@ -10,18 +10,11 @@ import sys
 
 from mantidimaging.core.data import ImageStack
 
-_log_file_handler = None
-_log_formatter = None
 
-_time_start = None
+def initialise_logging(arg_level: str) -> None:
+    log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
-
-def initialise_logging(default_level=logging.DEBUG):
-    global _log_formatter
-    _log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
-
-    # Add a very verbose logging level
-    logging.addLevelName(5, 'TRACE')
+    log_level = logging.getLevelName(arg_level)
 
     # Capture all warnings
     logging.captureWarnings(True)
@@ -32,11 +25,11 @@ def initialise_logging(default_level=logging.DEBUG):
 
     # Stdout handler
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(_log_formatter)
+    console_handler.setFormatter(log_formatter)
     root_logger.addHandler(console_handler)
 
     # Default log level for mantidimaging only
-    logging.getLogger('mantidimaging').setLevel(default_level)
+    logging.getLogger('mantidimaging').setLevel(log_level)
 
 
 def check_data_stack(data, expected_dims=3, expected_class=ImageStack):
