@@ -6,6 +6,9 @@ from __future__ import annotations
 import argparse
 import sys
 import warnings
+
+from PyQt5.QtWidgets import QApplication
+
 import mantidimaging.core.parallel.manager as pm
 
 from mantidimaging import helper as h
@@ -39,6 +42,15 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def setup_application() -> QApplication:
+    q_application = QApplication(sys.argv)
+    q_application.setStyle('Fusion')
+    q_application.setApplicationName("Mantid Imaging")
+    q_application.setOrganizationName("mantidproject")
+    q_application.setOrganizationDomain("mantidproject.org")
+    return q_application
+
+
 def main() -> None:
     args = parse_args()
     # Print version number and exit
@@ -47,6 +59,8 @@ def main() -> None:
 
         print(version_no)
         return
+
+    q_application = setup_application()
 
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
@@ -59,12 +73,15 @@ def main() -> None:
     try:
         pm.create_and_start_pool()
         gui.execute()
+        result = q_application.exec_()
     except BaseException as e:
         if sys.platform == 'linux':
             pm.clear_memory_from_current_process_linux()
         raise e
     finally:
         pm.end_pool()
+
+    return result
 
 
 if __name__ == "__main__":
