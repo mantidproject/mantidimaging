@@ -8,13 +8,21 @@ from __future__ import annotations
 import logging
 import sys
 
+from PyQt5.QtCore import QSettings
+
 from mantidimaging.core.data import ImageStack
 
 
 def initialise_logging(arg_level: str) -> None:
     log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
-    log_level = logging.getLevelName(arg_level)
+    settings = QSettings()
+    setting_level = settings.value("logging/log_level", defaultValue="INFO")
+
+    if arg_level:
+        log_level = logging.getLevelName(arg_level)
+    else:
+        log_level = logging.getLevelName(setting_level)
 
     # Capture all warnings
     logging.captureWarnings(True)
