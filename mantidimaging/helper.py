@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import logging
 import sys
+from datetime import datetime
+from pathlib import Path
 
 from PyQt5.QtCore import QSettings
 
@@ -35,6 +37,15 @@ def initialise_logging(arg_level: str) -> None:
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(log_formatter)
     root_logger.addHandler(console_handler)
+
+    # File handler
+    if log_directory := settings.value("logging/log_dir", defaultValue=""):
+        filename = f"mantid_imaging_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+        if not Path(log_directory).exists():
+            Path(log_directory).mkdir()
+        file_log = logging.FileHandler(Path(log_directory) / filename)
+        file_log.setFormatter(log_formatter)
+        root_logger.addHandler(file_log)
 
     # Default log level for mantidimaging only
     logging.getLogger('mantidimaging').setLevel(log_level)
