@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QComboBox
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.utility.qt_helpers import Type
 
