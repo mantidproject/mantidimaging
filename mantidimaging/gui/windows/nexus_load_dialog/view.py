@@ -42,7 +42,7 @@ class NexusLoadDialog(BaseDialogView):
         self.parent_view = parent
         self.presenter = NexusLoadPresenter(self)
         self.tree.expandItem(self.tree.topLevelItem(1))
-        self.checkboxes = dict()
+        self.checkboxes = {}
 
         self.tree.header().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tree.header().setSectionResizeMode(2, QHeaderView.Stretch)

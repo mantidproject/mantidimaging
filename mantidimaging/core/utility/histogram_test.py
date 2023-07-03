@@ -10,7 +10,7 @@ from mantidimaging.core.utility.histogram import set_histogram_log_scale
 
 
 def test_set_histogram_log_scale():
-    x_data = np.array([i for i in range(10)])
+    x_data = np.arange(10)
     y_data = x_data.copy()
     histogram = mock.Mock()
     histogram.plot.getData.return_value = (x_data, y_data)

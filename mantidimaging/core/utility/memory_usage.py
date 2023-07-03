@@ -38,7 +38,7 @@ def get_memory_usage_linux(kb=False, mb=False):
     import psutil
 
     meminfo = psutil.virtual_memory()
-    tuple_to_return = tuple()  # start with empty tuple
+    tuple_to_return = ()  # start with empty tuple
     # meminfo.used gives the size in bytes
     if kb:
         tuple_to_return += (meminfo.used / 1024, )

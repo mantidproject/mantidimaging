@@ -22,7 +22,7 @@ class MockMainWindow(QWidget):
         self.stack_changed = mock.Mock()
         self.model_changed = mock.Mock()
         self.model_changed = mock.Mock()
-        self.presenter = mock.Mock(datasets=dict())
+        self.presenter = mock.Mock(datasets={})
 
 
 @start_qapplication

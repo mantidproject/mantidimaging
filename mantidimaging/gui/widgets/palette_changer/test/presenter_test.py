@@ -15,9 +15,7 @@ def _normalise_break_value(break_value, min_value, max_value):
 
 
 def _normalise_break_values(break_vals, min_value, max_value):
-    return list(
-        map(lambda break_value: _normalise_break_value(break_value, min_value=min_value, max_value=max_value),
-            break_vals))
+    return [_normalise_break_value(break_value, min_value=min_value, max_value=max_value) for break_value in break_vals]
 
 
 class PaletteChangerPresenterTest(unittest.TestCase):

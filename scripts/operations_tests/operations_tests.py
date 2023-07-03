@@ -267,7 +267,11 @@ def create_plots():
                 y=group["avg"],
                 text=group["version"],
                 name=f"{test_name} Average",
-                error_y=dict(type="data", array=group["stdev"], visible=True),
+                error_y={
+                    'type': 'data',
+                    'array': group['stdev'],
+                    'visible': True
+                },
             ),
         ))
         traces.append((

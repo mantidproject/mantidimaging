@@ -28,7 +28,7 @@ class ReleaseNotes(Directive):
 
         rst = ViewList()
         try:
-            note_paths = sorted(list(note_paths), key=lambda p: int(p.name.split('-')[1]))
+            note_paths = sorted(note_paths, key=lambda p: int(p.name.split('-')[1]))
         except ValueError as exc:
             raise cls.severe('Could not sort release notes, check filenames.') from exc
 

@@ -34,11 +34,11 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     def test_WHEN_colour_generator_called_THEN_valid_rgb_tuple_returned(self):
         colour = self.spectrum_widget.random_colour_generator()
-        self.assertTrue(all([0 <= c <= 255 for c in colour]))
+        self.assertTrue(all(0 <= c <= 255 for c in colour))
 
     def test_WHEN_colour_generator_called_THEN_different_colours_returned(self):
         colour_list = [self.spectrum_widget.random_colour_generator() for _ in range(10)]
-        self.assertEqual(len(colour_list), len(set(tuple(c) for c in colour_list)))
+        self.assertEqual(len(colour_list), len({tuple(c) for c in colour_list}))
 
     def test_WHEN_change_roi_colour_called_THEN_roi_colour_changed(self):
         spectrum_roi = SpectrumROI("roi",

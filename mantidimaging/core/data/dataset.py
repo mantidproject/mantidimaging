@@ -56,7 +56,7 @@ class BaseDataset:
         raise NotImplementedError()
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
-        return any([image.id == images_id for image in self.all])
+        return any(image.id == images_id for image in self.all)
 
     @property
     def all_image_ids(self) -> List[uuid.UUID]:
