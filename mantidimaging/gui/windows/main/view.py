@@ -81,6 +81,7 @@ class MainWindowView(BaseMainWindowView):
     actionFilters: QAction
     actionCompareImages: QAction
     actionSpectrumViewer: QAction
+    actionLiveViewer: QAction
     actionSampleLoadLog: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
@@ -183,6 +184,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
         self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
+        self.actionLiveViewer.triggered.connect(self.live_view_choose_directory)
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
@@ -388,6 +390,18 @@ class MainWindowView(BaseMainWindowView):
             self.spectrum_viewer.activateWindow()
             self.spectrum_viewer.raise_()
             self.spectrum_viewer.show()
+
+    def live_view_choose_directory(self) -> None:
+        caption = "Choose live data directory"
+        live_data_directory: str = QFileDialog.getExistingDirectory(self,
+                                                                    caption=caption,
+                                                                    options=QFileDialog.ShowDirsOnly)
+        if live_data_directory == "":
+            return
+        self.show_live_viewer(Path(live_data_directory))
+
+    def show_live_viewer(self, live_data_path: Path) -> None:
+        raise NotImplementedError(f"show_live_viewer({live_data_path!r})")
 
     @property
     def stack_list(self):

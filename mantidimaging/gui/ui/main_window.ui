@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -43,6 +43,8 @@
     <addaction name="separator"/>
     <addaction name="actionSaveImages"/>
     <addaction name="actionSaveNeXusFile"/>
+    <addaction name="separator"/>
+    <addaction name="actionLiveViewer"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -227,6 +229,14 @@
   <action name="actionSpectrumViewer">
    <property name="text">
     <string>Spectrum Viewer</string>
+   </property>
+  </action>
+  <action name="actionLiveViewer">
+   <property name="text">
+    <string>Live Viewer</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Live Viewer</string>
    </property>
   </action>
  </widget>
