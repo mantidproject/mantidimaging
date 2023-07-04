@@ -39,16 +39,26 @@ def initialise_logging(arg_level: str) -> None:
     root_logger.addHandler(console_handler)
 
     # File handler
-    if log_directory := settings.value("logging/log_dir", defaultValue=""):
+    log_directory = Path(settings.value("logging/log_dir", defaultValue=""))
+    if log_directory != Path(""):
         filename = f"mantid_imaging_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
-        if not Path(log_directory).exists():
-            Path(log_directory).mkdir()
-        file_log = logging.FileHandler(Path(log_directory) / filename)
+        if not log_directory.exists():
+            log_directory.mkdir()
+        file_log = logging.FileHandler(log_directory / filename)
         file_log.setFormatter(log_formatter)
         root_logger.addHandler(file_log)
 
     # Default log level for mantidimaging only
     logging.getLogger('mantidimaging').setLevel(log_level)
+
+    perf_logger = logging.getLogger('perf')
+    perf_logger.setLevel(100)
+    perf_logger.propagate = False
+    if settings.value("logging/performance_log", defaultValue=False):
+        perf_logger.setLevel(1)
+        perf_logger.addHandler(console_handler)
+        if log_directory != Path(""):
+            perf_logger.addHandler(file_log)
 
 
 def check_data_stack(data, expected_dims=3, expected_class=ImageStack):
