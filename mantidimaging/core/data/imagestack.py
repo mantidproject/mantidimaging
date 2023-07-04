@@ -104,7 +104,10 @@ class ImageStack:
         return self._id
 
     def load_metadata(self, f: TextIO):
-        self.metadata = json.load(f)
+        """
+        Load metadata json without overwriting existing values
+        """
+        self.metadata = json.load(f) | self.metadata
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
     def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None):
