@@ -2,20 +2,25 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import time
 from logging import getLogger
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
 
 from mantidimaging.gui.utility import compile_ui
 
 LOG = getLogger(__name__)
+perf_logger = getLogger("perf." + __name__)
 
 
 class BaseMainWindowView(QMainWindow):
 
     def __init__(self, parent, ui_file=None):
+        self._t0 = time.monotonic()
         super().__init__(parent)
+
+        self._has_shown = False
 
         if ui_file is not None:
             compile_ui(ui_file, self)
@@ -42,6 +47,16 @@ class BaseMainWindowView(QMainWindow):
     def show_warning_dialog(self, msg: str):
         LOG.warning(f"show_warning_dialog(): {msg}")
         QMessageBox.warning(self, "Warning", str(msg))
+
+    def showEvent(self, ev) -> None:
+        super().showEvent(ev)
+        if not self._has_shown:
+            self._has_shown = True
+            QTimer.singleShot(0, self._window_ready)
+
+    def _window_ready(self) -> None:
+        if perf_logger.isEnabledFor(1):
+            perf_logger.info(f"{type(self).__name__} shown in {time.monotonic() - self._t0}")
 
 
 class BaseDialogView(QDialog):
