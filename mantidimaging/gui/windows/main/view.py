@@ -37,6 +37,7 @@ from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
+from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
@@ -95,6 +96,7 @@ class MainWindowView(BaseMainWindowView):
     filters: Optional[FiltersWindowView] = None
     recon: Optional[ReconstructWindowView] = None
     spectrum_viewer: Optional[SpectrumViewerWindowView] = None
+    live_viewer: Optional[LiveViewerWindowView] = None
 
     image_load_dialog: Optional[ImageLoadDialog] = None
     image_save_dialog: Optional[ImageSaveDialog] = None
@@ -396,12 +398,17 @@ class MainWindowView(BaseMainWindowView):
         live_data_directory: str = QFileDialog.getExistingDirectory(self,
                                                                     caption=caption,
                                                                     options=QFileDialog.ShowDirsOnly)
-        if live_data_directory == "":
-            return
-        self.show_live_viewer(Path(live_data_directory))
+        if live_data_directory != "":
+            self.show_live_viewer(Path(live_data_directory))
 
     def show_live_viewer(self, live_data_path: Path) -> None:
-        raise NotImplementedError(f"show_live_viewer({live_data_path!r})")
+        if not self.live_viewer:
+            self.live_viewer = LiveViewerWindowView(self, live_data_path)
+            self.live_viewer.show()
+        else:
+            self.live_viewer.activateWindow()
+            self.live_viewer.raise_()
+            self.live_viewer.show()
 
     @property
     def stack_list(self):
