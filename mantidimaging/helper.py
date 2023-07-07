@@ -7,21 +7,24 @@ from __future__ import annotations
 
 import logging
 import sys
+from datetime import datetime
+from pathlib import Path
+
+from PyQt5.QtCore import QSettings
 
 from mantidimaging.core.data import ImageStack
 
-_log_file_handler = None
-_log_formatter = None
 
-_time_start = None
+def initialise_logging(arg_level: str) -> None:
+    log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
+    settings = QSettings()
+    setting_level = settings.value("logging/log_level", defaultValue="INFO")
 
-def initialise_logging(default_level=logging.DEBUG):
-    global _log_formatter
-    _log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
-
-    # Add a very verbose logging level
-    logging.addLevelName(5, 'TRACE')
+    if arg_level:
+        log_level = logging.getLevelName(arg_level)
+    else:
+        log_level = logging.getLevelName(setting_level)
 
     # Capture all warnings
     logging.captureWarnings(True)
@@ -32,11 +35,30 @@ def initialise_logging(default_level=logging.DEBUG):
 
     # Stdout handler
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(_log_formatter)
+    console_handler.setFormatter(log_formatter)
     root_logger.addHandler(console_handler)
 
+    # File handler
+    log_directory = Path(settings.value("logging/log_dir", defaultValue=""))
+    if log_directory != Path(""):
+        filename = f"mantid_imaging_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+        if not log_directory.exists():
+            log_directory.mkdir()
+        file_log = logging.FileHandler(log_directory / filename)
+        file_log.setFormatter(log_formatter)
+        root_logger.addHandler(file_log)
+
     # Default log level for mantidimaging only
-    logging.getLogger('mantidimaging').setLevel(default_level)
+    logging.getLogger('mantidimaging').setLevel(log_level)
+
+    perf_logger = logging.getLogger('perf')
+    perf_logger.setLevel(100)
+    perf_logger.propagate = False
+    if settings.value("logging/performance_log", defaultValue=False):
+        perf_logger.setLevel(1)
+        perf_logger.addHandler(console_handler)
+        if log_directory != Path(""):
+            perf_logger.addHandler(file_log)
 
 
 def check_data_stack(data, expected_dims=3, expected_class=ImageStack):

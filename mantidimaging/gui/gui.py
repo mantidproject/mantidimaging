@@ -7,20 +7,11 @@ import os
 import sys
 import traceback
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 import pyqtgraph
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.core.parallel import manager as pm
-
-
-def setup_application():
-    q_application = QApplication(sys.argv)
-    q_application.setStyle('Fusion')
-    q_application.setApplicationName("Mantid Imaging")
-    q_application.setOrganizationName("mantidproject")
-    q_application.setOrganizationDomain("mantidproject.org")
-    return q_application, MainWindowView()
 
 
 def execute():
@@ -28,7 +19,7 @@ def execute():
     pyqtgraph.setConfigOptions(imageAxisOrder="row-major")
 
     # create the GUI event loop
-    q_application, application_window = setup_application()
+    application_window = MainWindowView()
 
     sys.excepthook = lambda exc_type, exc_value, exc_traceback: application_window.uncaught_exception(
         "".join(traceback.format_exception_only(exc_type, exc_value)), "".join(
@@ -67,5 +58,3 @@ def execute():
                     done.exec()
 
     clean_up_old_memory()
-
-    return sys.exit(q_application.exec_())

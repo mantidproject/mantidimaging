@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
-import logging
 import sys
 import warnings
+
+from PyQt5.QtWidgets import QApplication
+
 import mantidimaging.core.parallel.manager as pm
 
 from mantidimaging import helper as h
@@ -25,7 +27,7 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default="INFO",
         help="Log verbosity level. "
-        "Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL",
+        "Available options are: DEBUG, INFO, WARN, CRITICAL",
     )
 
     parser.add_argument("--version", action="store_true", help="Print version number and exit.")
@@ -40,6 +42,15 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def setup_application() -> QApplication:
+    q_application = QApplication(sys.argv)
+    q_application.setStyle('Fusion')
+    q_application.setApplicationName("Mantid Imaging")
+    q_application.setOrganizationName("mantidproject")
+    q_application.setOrganizationDomain("mantidproject.org")
+    return q_application
+
+
 def main() -> None:
     args = parse_args()
     # Print version number and exit
@@ -49,23 +60,28 @@ def main() -> None:
         print(version_no)
         return
 
+    q_application = setup_application()
+
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
     CommandLineArguments(path=path, operation=operation, show_recon=args.recon)
 
-    h.initialise_logging(logging.getLevelName(args.log_level))
+    h.initialise_logging(args.log_level)
 
     from mantidimaging import gui
     try:
         pm.create_and_start_pool()
         gui.execute()
+        result = q_application.exec_()
     except BaseException as e:
         if sys.platform == 'linux':
             pm.clear_memory_from_current_process_linux()
         raise e
     finally:
         pm.end_pool()
+
+    return result
 
 
 if __name__ == "__main__":

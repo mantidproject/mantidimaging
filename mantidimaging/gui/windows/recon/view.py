@@ -205,6 +205,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.lbhc_enabled.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
     def showEvent(self, e):
+        super().showEvent(e)
         if self.presenter.stack_selection_change_pending:
             self.presenter.set_stack_uuid(self.stackSelector.current())
             self.presenter.stack_selection_change_pending = False

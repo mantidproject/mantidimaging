@@ -77,3 +77,13 @@ These will be included into the relent section in :file:`docs/release_notes/next
 and added to the release notes. The individual files can then be deleted.
 
 When fixes are backported to a release branch, they can be added to the notes for that release, in an updates section.
+
+Logging
+-------
+
+Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_). For example::
+
+    [logging]
+    log_level=DEBUG
+    log_dir=/tmp/mantid_imaging_logs
+    performance_log=true
