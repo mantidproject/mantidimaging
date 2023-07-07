@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>LiveViewerWindow</class>
+    <widget class="QMainWindow" name="LiveViewerWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>921</width>
+                <height>739</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Live Viewer</string>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                    <widget class="QSplitter" name="splitter">
+                        <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                        </property>
+                        <widget class="QWidget" name="optionsLayout" native="true">
+                            <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_2">
+                                <property name="leftMargin">
+                                    <number>20</number>
+                                </property>
+                                <property name="topMargin">
+                                    <number>20</number>
+                                </property>
+                                <property name="rightMargin">
+                                    <number>20</number>
+                                </property>
+                                <property name="bottomMargin">
+                                    <number>20</number>
+                                </property>
+                                <item>
+                                    <widget class="QLabel" name="sampleLabel">
+                                        <property name="sizePolicy">
+                                            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                            <string>Sample:</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="DatasetSelectorWidgetView" name="sampleStackSelector">
+                                        <property name="sizePolicy">
+                                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>200</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <spacer name="dropdownSpacer">
+                                        <property name="orientation">
+                                            <enum>Qt::Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>QSizePolicy::Fixed</enum>
+                                        </property>
+                                        <property name="sizeHint" stdset="0">
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </item>
+                                <item>
+                                    <layout class="QHBoxLayout" name="horizontalLayout">
+                                        <item>
+                                            <widget class="QCheckBox" name="normaliseCheckBox">
+                                                <property name="layoutDirection">
+                                                    <enum>Qt::LeftToRight</enum>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Normalise to open beam</string>
+                                                </property>
+                                                <property name="checked">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <widget class="QLabel" name="normaliseErrorIcon">
+                                                <property name="sizePolicy">
+                                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                                        <horstretch>0</horstretch>
+                                                        <verstretch>0</verstretch>
+                                                    </sizepolicy>
+                                                </property>
+                                                <property name="minimumSize">
+                                                    <size>
+                                                        <width>32</width>
+                                                        <height>32</height>
+                                                    </size>
+                                                </property>
+                                                <property name="text">
+                                                    <string />
+                                                </property>
+                                            </widget>
+                                        </item>
+                                    </layout>
+                                </item>
+                                <item>
+                                    <widget class="DatasetSelectorWidgetView" name="normaliseStackSelector">
+                                        <property name="enabled">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>200</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="frame">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <spacer name="buttonSpacer">
+                                        <property name="orientation">
+                                            <enum>Qt::Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>QSizePolicy::Fixed</enum>
+                                        </property>
+                                        <property name="sizeHint" stdset="0">
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </item>
+                                <item>
+                                    <widget class="QGroupBox" name="manualGroup">
+                                        <property name="title">
+                                            <string>ROI Table</string>
+                                        </property>
+                                        <property name="flat">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="checkable">
+                                            <bool>false</bool>
+                                        </property>
+                                        <layout class="QVBoxLayout" name="verticalLayout_5">
+                                            <item>
+                                                <widget class="RemovableRowTableView" name="tableView">
+                                                    <attribute name="horizontalHeaderHighlightSections">
+                                                        <bool>true</bool>
+                                                    </attribute>
+                                                    <attribute name="verticalHeaderVisible">
+                                                        <bool>false</bool>
+                                                    </attribute>
+                                                </widget>
+                                            </item>
+                                            <item>
+                                                <layout class="QGridLayout" name="gridLayout">
+                                                    <item row="0" column="1">
+                                                        <widget class="QPushButton" name="addBtn">
+                                                            <property name="toolTip">
+                                                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                                            </property>
+                                                            <property name="text">
+                                                                <string>Add</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item row="0" column="0">
+                                                        <widget class="QPushButton" name="removeBtn">
+                                                            <property name="enabled">
+                                                                <bool>false</bool>
+                                                            </property>
+                                                            <property name="toolTip">
+                                                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes the selected row from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                                            </property>
+                                                            <property name="text">
+                                                                <string>Remove</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
+                                        </layout>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <widget class="QPushButton" name="exportButton">
+                                        <property name="sizePolicy">
+                                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="minimumSize">
+                                            <size>
+                                                <width>0</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                        <property name="text">
+                                            <string>Export spectrum</string>
+                                        </property>
+                                    </widget>
+                                </item>
+                                <item>
+                                    <spacer name="verticalSpacer">
+                                        <property name="orientation">
+                                            <enum>Qt::Vertical</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>QSizePolicy::MinimumExpanding</enum>
+                                        </property>
+                                        <property name="sizeHint" stdset="0">
+                                            <size>
+                                                <width>20</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </item>
+                            </layout>
+                        </widget>
+                        <widget class="QWidget" name="rightWidget" native="true">
+                            <property name="sizePolicy">
+                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_3">
+                                <item>
+                                    <layout class="QVBoxLayout" name="imageLayout" />
+                                </item>
+                            </layout>
+                        </widget>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+    </widget>
+    <customwidgets>
+        <customwidget>
+            <class>DatasetSelectorWidgetView</class>
+            <extends>QComboBox</extends>
+            <header>mantidimaging.gui.widgets.dataset_selector</header>
+        </customwidget>
+        <customwidget>
+         <class>RemovableRowTableView</class>
+         <extends>QTableView</extends>
+         <header>mantidimaging.gui.widgets</header>
+        </customwidget>
+    </customwidgets>
+    <resources />
+    <connections />
+</ui>
