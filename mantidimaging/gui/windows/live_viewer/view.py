@@ -2,10 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QVBoxLayout
-from tifffile import tifffile
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from .live_view_widget import LiveViewWidget
@@ -33,15 +32,19 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
-        self.show_first_image()
+        self.watch_directory()
 
-    def show_first_image(self):
-        """Show the first image in the selected directory."""
-        for file in self.path.iterdir():
-            if file.suffix == ".tif" or file.suffix == ".tiff":
-                self.image = tifffile.imread(file)
-                break
-        self.live_viewer.show_image(self.image)
+    def show_image(self, image: np.ndarray) -> None:
+        """
+        Show the image in the image view.
+        @param image: The image to show
+        """
+        self.live_viewer.show_image(image)
 
-    def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
-        self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
+    def watch_directory(self):
+        """Show the most recent image arrived in the selected directory"""
+        self.presenter.set_dataset_path(self.path)
+
+    def remove_image(self):
+        """Remove the image from the view."""
+        self.live_viewer.handle_deleted()

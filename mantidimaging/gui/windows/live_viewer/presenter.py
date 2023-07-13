@@ -3,6 +3,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
+from tifffile import tifffile
+from pathlib import Path
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel
@@ -30,3 +32,19 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
+
+    def set_dataset_path(self, path):
+        """Set the path to the dataset."""
+        self.model.path = path
+
+    def update_image(self, image_path: str):
+        """Update the image in the view."""
+        if not Path(image_path).exists():
+            return
+        try:
+            with tifffile.TiffFile(image_path) as tif:
+                image_data = tif.asarray()
+                self.view.show_image(image_data)
+        except IOError as error:
+            logger.error("Error reading image: %s", error)
+            return
