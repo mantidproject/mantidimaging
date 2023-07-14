@@ -101,7 +101,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if self.roi_name not in self.view.spectrum.roi_dict.keys():
             self.view.spectrum.add_roi(self.model.get_roi(self.roi_name), self.roi_name)
-            self.view.set_spectrum(self.roi_name, self.model.get_spectrum(self.roi_name, self.spectrum_mode))
         self.view.set_image(self.model.get_averaged_image())
         self.view.set_spectrum(self.roi_name, self.model.get_spectrum(self.roi_name, self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
