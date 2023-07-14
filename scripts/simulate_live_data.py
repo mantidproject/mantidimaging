@@ -8,7 +8,7 @@ from tqdm import tqdm
 import time
 
 
-def copy_dataset(source_dir, dest_dir, rate):
+def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode):
     """
     Copy data from a source directory to a destination directory.
     Files are copied one image at a time at a specified rate in seconds.
@@ -16,6 +16,7 @@ def copy_dataset(source_dir, dest_dir, rate):
     param source_dir: Source directory containing dataset to copy
     param dest_dir: Destination directory to copy dataset to
     param rate: Rate in seconds at which to copy files from dataset i.e. 1, 1.5, 2...
+    param slow_copy_mode: copy the file slowly in chunks
     """
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
@@ -24,11 +25,31 @@ def copy_dataset(source_dir, dest_dir, rate):
         source_item = os.path.join(source_dir, item)
         dest_item = os.path.join(dest_dir, item)
         if os.path.isfile(source_item):
-            shutil.copy(source_item, dest_item)
+            if not slow_copy_mode:
+                shutil.copy(source_item, dest_item)
+            else:
+                slow_copy(source_item, dest_item)
 
             time.sleep(float(rate))
         if os.path.isdir(source_item):
             copy_dataset(source_item, dest_item, rate)
+
+
+def slow_copy(source, dest):
+    with open(source, "rb") as source_file:
+        data = source_file.read()
+    data_size = len(data)
+
+    if os.path.exists(dest):
+        os.remove(dest)
+
+    with open(dest, "wb") as dest_file:
+        writen = 0
+        while writen < data_size:
+            time.sleep(0.1)
+            start = writen
+            stop = start + data_size // 10
+            writen += dest_file.write(data[start:stop])
 
 
 def main():
@@ -49,8 +70,9 @@ def main():
                         type=float,
                         required=False,
                         help="Rate in seconds at which to copy files from dataset i.e. 1, 1.5, 2...")
+    parser.add_argument("--slow", action="store_true", help="Use slow copy method")
     args = parser.parse_args()
-    copy_dataset(args.source_dir, args.dest_dir, args.rate)
+    copy_dataset(args.source_dir, args.dest_dir, args.rate, args.slow)
     print("Copy complete")
     os._exit(0)
 
