@@ -226,6 +226,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param enabled: True to enable the button, False to disable it
         """
         self.exportButton.setEnabled(enabled)
+        self.addBtn.setEnabled(enabled)
 
     def set_roi_alpha(self, alpha: float, roi) -> None:
         """

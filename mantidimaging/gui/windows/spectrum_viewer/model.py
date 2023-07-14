@@ -163,7 +163,7 @@ class SpectrumViewerWindowModel:
         else:
             return 0, 0
 
-    def can_export(self) -> bool:
+    def has_stack(self) -> bool:
         """
         Check if data is available to export
         @return: True if data is available to export and False otherwise

@@ -255,7 +255,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     ])
     def test_WHEN_stack_value_set_THEN_can_export_returns_(self, _, image_stack, expected):
         self.model.set_stack(image_stack)
-        self.assertEqual(self.model.can_export(), expected)
+        self.assertEqual(self.model.has_stack(), expected)
 
     def test_WHEN_roi_removed_THEN_roi_name_removed_from_list_of_roi_names(self):
         self.model.set_stack(generate_images())
