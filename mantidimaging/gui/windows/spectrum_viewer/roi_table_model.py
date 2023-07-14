@@ -15,14 +15,11 @@ class TableModel(QAbstractTableModel):
     A subclass of QAbstractTableModel.
     Model for table view of ROI names and colours in Spectrum Viewer window to allow
     user to select which ROIs to plot.
-
-
-    @param data: list of lists of ROI names and colours [str, tuple(int,int,int)]
     """
 
-    def __init__(self, data):
+    def __init__(self):
         super(TableModel, self).__init__()
-        self._data = data
+        self._data = []
 
     def selectRow(self, index: int):
         """
@@ -48,7 +45,7 @@ class TableModel(QAbstractTableModel):
 
         @return: number of columns in table
         """
-        return len(self._data[0])
+        return 3
 
     def data(self, index, role):
         """
@@ -95,7 +92,7 @@ class TableModel(QAbstractTableModel):
             self.dataChanged.emit(index, index)
             return False
 
-    def row_data(self, row: int) -> tuple:
+    def row_data(self, row: int) -> list:
         """
         Return data from selected row
 
@@ -152,7 +149,7 @@ class TableModel(QAbstractTableModel):
         """
         Clear all data in table except 'roi' (first element in _data list)
         """
-        self._data = self._data[:1]
+        self._data = []
         self.layoutChanged.emit()
 
     def remove_row(self, row: int) -> None:
@@ -161,7 +158,7 @@ class TableModel(QAbstractTableModel):
 
         @param row: row number
         """
-        if row > 0 and row < len(self._data):
+        if row >= 0 and row < len(self._data):
             self._data.pop(row)
             self.layoutChanged.emit()
 

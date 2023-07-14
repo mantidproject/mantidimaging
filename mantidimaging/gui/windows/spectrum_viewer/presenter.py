@@ -33,7 +33,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
-        self.roi_name = self.model.default_roi_list[1]
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -96,35 +95,26 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def show_new_sample(self) -> None:
         """
         Show the new sample in the view and update the spectrum and
-        image view accordingly. If swapping between samples, any
-        additional ROIs will be removed leaving only the default ROI.
+        image view accordingly. Resets the ROIs.
         """
-        if self.roi_name not in self.view.spectrum.roi_dict.keys():
-            self.view.spectrum.add_roi(self.model.get_roi(self.roi_name), self.roi_name)
+
         self.view.set_image(self.model.get_averaged_image())
-        self.view.set_spectrum(self.roi_name, self.model.get_spectrum(self.roi_name, self.spectrum_mode))
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.auto_range_image()
         self.view.spectrum.reset_roi_size(self.model.get_image_shape())
-
-    def get_default_table_state(self) -> list:
-        """
-        Get the default state of the table for the view:
-        [ROI name:str, colour:float, visibility: bool]
-        """
-        return [self.roi_name, self.view.spectrum.roi_dict[self.roi_name].colour, True]
+        self.handle_roi_moved(True)
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
         self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
 
-    def handle_roi_moved(self) -> None:
+    def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
         """
         Handle changes to any ROI position and size.
         """
         for name in self.model.get_list_of_roi_names():
             roi = self.view.spectrum.get_roi(name)
-            if roi != self.model.get_roi(name):
+            if force_new_spectrums or roi != self.model.get_roi(name):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
@@ -213,8 +203,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         self.view.spectrum.rename_roi(old_name, new_name)
         self.model.rename_roi(old_name, new_name)
-        if self.roi_name == old_name:
-            self.roi_name = new_name
 
     def do_remove_roi(self, roi_name=None) -> None:
         """
@@ -226,8 +214,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name is None:
             self.view.clear_all_rois()
             for roi in self.get_roi_names():
-                if roi != self.roi_name:
-                    self.view.spectrum.remove_roi(roi)
+                self.view.spectrum.remove_roi(roi)
             self.model.remove_all_roi()
         else:
             self.view.spectrum.remove_roi(roi_name)
