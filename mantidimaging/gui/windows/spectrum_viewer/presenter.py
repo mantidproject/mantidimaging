@@ -46,6 +46,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.view.current_dataset_id = None
 
+        self.do_remove_roi()
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
@@ -61,6 +62,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
 
+        self.do_add_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
         self.handle_export_button_enabled()

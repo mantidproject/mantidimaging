@@ -78,14 +78,13 @@ class SpectrumViewerWindowModel:
 
         @param stack: The new stack to be used by the model
         """
+
         self._stack = stack
         if stack is None:
             return
         self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
-        self.presenter.do_remove_roi()
         self.set_new_roi(self.default_roi_list[0])
-        self.presenter.do_add_roi()
 
     def set_new_roi(self, name: str) -> None:
         """

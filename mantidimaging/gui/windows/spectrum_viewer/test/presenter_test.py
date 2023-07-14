@@ -148,12 +148,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi()
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
 
     def test_WHEN_do_add_roi_to_table_called_THEN_roi_added_to_table(self):
         self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi()
         self.view.add_roi_table_row.assert_called_once_with(0, "roi", mock.ANY)
         self.view.add_roi_table_row.reset_mock()
 
@@ -165,12 +167,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
         self.presenter.model.set_stack(generate_images())
         self.presenter.do_add_roi()
+        self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi("roi_1")
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
 
     def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
         self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi()
         self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
         self.presenter.rename_roi("roi_1", "imaging_is_the_best")
@@ -179,6 +183,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_default_ROI_renamed_THEN_default_roi_renamed(self):
         self.presenter.model.set_stack(generate_images())
         self.presenter.do_add_roi()
+        self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
         self.presenter.rename_roi("roi", "imaging_is_the_best")
         self.assertEqual(["all", "roi_1", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
@@ -186,6 +191,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     @parameterized.expand(["all", "roi"])
     def test_WHEN_ROI_renamed_to_existing_name_THEN_runtimeerror(self, name):
         self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi()
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
         with self.assertRaises(KeyError):
             self.presenter.rename_roi("roi", name)
@@ -193,8 +199,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
         self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.presenter.do_add_roi()
+        for _ in range(3):
+            self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi()
         self.assertEqual(["all"], self.presenter.model.get_list_of_roi_names())

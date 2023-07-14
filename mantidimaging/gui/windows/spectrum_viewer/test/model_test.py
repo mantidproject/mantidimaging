@@ -149,9 +149,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.model.get_roi("all").right, 12)
         self.assertEqual(self.model.get_roi("all").bottom, 11)
 
-    def test_if_set_stack_called_THEN_do_remove_roi_called(self):
+    def test_if_set_stack_called_THEN_do_remove_roi_not_called(self):
         self.model.set_stack(generate_images())
-        self.presenter.do_remove_roi.assert_called_once()
+        self.presenter.do_remove_roi.assert_not_called()
 
     def test_get_spectrum_roi(self):
         stack = ImageStack(np.ones([10, 11, 12]))
