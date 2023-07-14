@@ -25,7 +25,15 @@ class LiveViewWidget(GraphicsLayoutWidget):
 
     def show_image(self, image: np.ndarray) -> None:
         """
-            Show the image in the image view.
-            @param image: The image to show
-            """
+        Show the image in the image view.
+        @param image: The image to show
+        """
         self.image.setImage(image)
+
+    def handle_deleted(self):
+        """
+        Handle the deletion of the image.
+        """
+        self.image.close()
+        self.image = None
+        self.close()
