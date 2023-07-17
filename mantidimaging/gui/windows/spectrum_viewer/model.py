@@ -40,7 +40,7 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self._selected_row = 0
-        self.default_roi_list = ["all", "roi"]
+        self.default_roi_list = ["all"]
 
     @property
     def selected_row(self):
@@ -59,8 +59,9 @@ class SpectrumViewerWindowModel:
 
         :return: A new unique ID
         """
+        new_name = f"roi_{self._roi_id_counter}" if self._roi_id_counter > 0 else "roi"
         self._roi_id_counter += 1
-        return f"roi_{self._roi_id_counter}"
+        return new_name
 
     def get_list_of_roi_names(self) -> list[str]:
         """
@@ -77,15 +78,13 @@ class SpectrumViewerWindowModel:
 
         @param stack: The new stack to be used by the model
         """
+
         self._stack = stack
         if stack is None:
             return
+        self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.set_new_roi(self.default_roi_list[0])
-        # Remove additional ROIs if they exist on sample change and reset
-        if len(self._roi_ranges) > 1:
-            self.presenter.do_remove_roi()
-        self.set_new_roi(self.default_roi_list[1])
 
     def set_new_roi(self, name: str) -> None:
         """
@@ -164,7 +163,7 @@ class SpectrumViewerWindowModel:
         else:
             return 0, 0
 
-    def can_export(self) -> bool:
+    def has_stack(self) -> bool:
         """
         Check if data is available to export
         @return: True if data is available to export and False otherwise
@@ -243,20 +242,17 @@ class SpectrumViewerWindowModel:
         @param old_name: The current name of the ROI
         @param new_name: The new name of the ROI
         @raises KeyError: If the ROI does not exist
-        @raises RuntimeError: If the ROI is 'all' or 'roi'
+        @raises RuntimeError: If the ROI is 'all'
         """
         if old_name in self._roi_ranges.keys() and new_name not in self._roi_ranges.keys():
             if old_name == self.default_roi_list[0]:
                 raise RuntimeError("Cannot rename the 'all' ROI")
             self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
-            if old_name == self.default_roi_list[1]:
-                self.default_roi_list[1] = new_name
         else:
             raise KeyError(f"Cannot rename {old_name} to {new_name} Available:{self._roi_ranges.keys()}")
 
     def remove_all_roi(self) -> None:
         """
-        Remove all ROIs from the model excluding default ROIs 'all' and 'roi'
+        Remove all ROIs from the model excluding default ROI 'all'
         """
         self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in self.default_roi_list}
-        self._roi_id_counter = 0  # Reset the counter to 0

@@ -86,11 +86,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             @param item: item in table
             """
-            self.removeBtn.setEnabled(False)
             selected_row_data = self.roi_table_model.row_data(item.row())
-
-            if selected_row_data[0] != self.presenter.roi_name:
-                self.removeBtn.setEnabled(True)
             self.selected_row = item.row()
             self.current_roi = selected_row_data[0]
 
@@ -144,10 +140,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.main_window.spectrum_viewer = None
 
     @property
-    def roi_table_model(self):
-        default_state = self.presenter.get_default_table_state()
+    def roi_table_model(self) -> TableModel:
         if self.tableView.model() is None:
-            mdl = TableModel([default_state])
+            mdl = TableModel()
             self.tableView.setModel(mdl)
         return self.tableView.model()
 
@@ -231,6 +226,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param enabled: True to enable the button, False to disable it
         """
         self.exportButton.setEnabled(enabled)
+        self.addBtn.setEnabled(enabled)
 
     def set_roi_alpha(self, alpha: float, roi) -> None:
         """
@@ -253,7 +249,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
-    def add_roi_table_row(self, row: int, name: str, colour: str):
+    def add_roi_table_row(self, row: int, name: str, colour: tuple[int, int, int]):
         """
         Add a new row to the ROI table
 
@@ -265,6 +261,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour, True)
         self.tableView.selectRow(row)
+        self.removeBtn.setEnabled(True)
 
     def remove_roi(self) -> None:
         """
@@ -274,12 +271,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(selected_row[0])
-            self.removeBtn.setEnabled(False)
             self.spectrum.spectrum_data_dict.pop(selected_row[0])
             self.spectrum.spectrum.removeItem(selected_row[0])
             self.presenter.handle_roi_moved()
             self.selected_row = 0
             self.tableView.selectRow(0)
+
+        if self.roi_table_model.rowCount() == 0:
+            self.removeBtn.setEnabled(False)
 
     def clear_all_rois(self) -> None:
         """
@@ -288,3 +287,4 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_table_model.clear_table()
         self.spectrum.spectrum_data_dict = {}
         self.spectrum.spectrum.clearPlots()
+        self.removeBtn.setEnabled(False)
