@@ -37,9 +37,48 @@ CSV_LOG_FILE = [
     "timestamp,Projection,1,angle:0.1,counts before: 45678,counts_after: 84678",
     "timestamp,Projection,2,angle:0.2,counts before: 84678,counts_after: 124333",
 ]
+TXT_LOG_FILE_NO_HEADER = [
+    "timestamp   Projection:  0  angle: 0.0   counts before: 12345   counts_after: 45678",
+    "timestamp   Projection:  1  angle: 0.1   counts before: 45678   counts_after: 84678",
+    "timestamp   Projection:  2  angle: 0.2   counts before: 84678   counts_after: 124333",
+]
+CSV_LOG_FILE_NO_HEADER = [
+    "timestamp,Projection,0,angle:0.0,counts before: 12345,counts_after: 45678",
+    "timestamp,Projection,1,angle:0.1,counts before: 45678,counts_after: 84678",
+    "timestamp,Projection,2,angle:0.2,counts before: 84678,counts_after: 124333",
+]
+TXT_LOG_FILE_NO_HEADER_EMPTY_SPACE = [
+    "timestamp   Projection:  0  angle: 0.0   counts before: 12345   counts_after: 45678",
+    "",
+    "timestamp   Projection:  1  angle: 0.1   counts before: 45678   counts_after: 84678",
+    "",
+    "timestamp   Projection:  2  angle: 0.2   counts before: 84678   counts_after: 124333",
+]
+CSV_LOG_FILE_NO_HEADER_EMPTY_SPACE = [
+    "timestamp,Projection,0,angle:0.0,counts before: 12345,counts_after: 45678",
+    ""
+    "timestamp,Projection,1,angle:0.1,counts before: 45678,counts_after: 84678",
+    ""
+    "timestamp,Projection,2,angle:0.2,counts before: 84678,counts_after: 124333",
+]
+TXT_LOG_FILE_SHORT_INVALID_HEADER_NO_SPACE = [
+    " TIME STAMP  IMAGE TYPE   LAST_HEADER\n"
+    "timestamp   Projection:  0  angle: 0.0   counts before: 12345   counts_after: 45678",
+    "timestamp   Projection:  1  angle: 0.1   counts before: 45678   counts_after: 84678",
+    "timestamp   Projection:  2  angle: 0.2   counts before: 84678   counts_after: 124333",
+]
+CSV_LOG_FILE_SHORT_INVALID_HEADER = [
+    "TIME STAMP,IMAGE TYPE,LAST_HEADER\n"
+    "timestamp,Projection,0,angle:0.0,counts before: 12345,counts_after: 45678",
+    "timestamp,Projection,1,angle:0.1,counts before: 45678,counts_after: 84678",
+    "timestamp,Projection,2,angle:0.2,counts before: 84678,counts_after: 124333",
+]
 
 
-@pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])
+@pytest.mark.parametrize('test_input', [
+    TXT_LOG_FILE, CSV_LOG_FILE, TXT_LOG_FILE_NO_HEADER, CSV_LOG_FILE_NO_HEADER, TXT_LOG_FILE_NO_HEADER_EMPTY_SPACE,
+    CSV_LOG_FILE_NO_HEADER_EMPTY_SPACE
+])
 def test_counts(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.counts().value) == 3
@@ -68,7 +107,10 @@ def assert_raises(exc_type, callable, *args, **kwargs):
         raise AssertionError("Did not raise expected exception.")
 
 
-@pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])
+@pytest.mark.parametrize('test_input', [
+    TXT_LOG_FILE, CSV_LOG_FILE, TXT_LOG_FILE_NO_HEADER, CSV_LOG_FILE_NO_HEADER, TXT_LOG_FILE_NO_HEADER_EMPTY_SPACE,
+    CSV_LOG_FILE_NO_HEADER_EMPTY_SPACE
+])
 def test_find_missing_projection_number(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
     assert len(logfile.projection_numbers()) == 3
@@ -87,7 +129,10 @@ def test_raise_if_angles_missing_returns_none_if_no_filename_list():
     assert logfile.raise_if_angle_missing(None) is None
 
 
-@pytest.mark.parametrize('test_input', [TXT_LOG_FILE, CSV_LOG_FILE])
+@pytest.mark.parametrize('test_input', [
+    TXT_LOG_FILE, CSV_LOG_FILE, TXT_LOG_FILE_NO_HEADER, CSV_LOG_FILE_NO_HEADER, TXT_LOG_FILE_NO_HEADER_EMPTY_SPACE,
+    CSV_LOG_FILE_NO_HEADER_EMPTY_SPACE
+])
 def test_source_file(test_input):
     logfile = IMATLogFile(test_input, "/tmp/fake")
     assert logfile.source_file == "/tmp/fake"
