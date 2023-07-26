@@ -83,7 +83,7 @@ class LoadPresenter:
             if file_group.log_path:
                 log_field = self.view.fields[log_for_file_type[file_info].fname]
                 log_field.path = file_group.log_path
-                log_field.use = False
+                log_field.use = True
 
     def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
         fg = FilenameGroup.from_file(Path(selected_file))
