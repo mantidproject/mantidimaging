@@ -108,11 +108,11 @@ class TestGuiSystemLoading(GuiSystemBase):
 
         self.assertEqual(len(self.main_window.presenter.datasets), 1)
         sample = list(self.main_window.presenter.datasets)[0].sample
-        self.assertNotIn("log_file", sample.metadata)
+        self.assertIn("log_file", sample.metadata)
 
-        # Initial angles are just evenly spaced from 0 to 2*pi
-        stack_len = sample.num_images
-        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
+        # Assert initial angles are the same as log_file angles
+        log_angle = math.radians(self._get_log_angle(log_path))
+        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 12)
 
         # Load sample log
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
@@ -140,11 +140,12 @@ class TestGuiSystemLoading(GuiSystemBase):
 
         self.assertEqual(len(self.main_window.presenter.datasets), 1)
         sample = list(self.main_window.presenter.datasets)[0].sample
-        self.assertNotIn("log_file", sample.metadata)
+        self.assertIn("log_file", sample.metadata)
 
-        # Initial angles are just evenly spaced from 0 to 2*pi
+        # Assert initial angles are the same as log_file angles
         stack_len = sample.num_images
-        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
+        log_angle = math.radians(self._get_log_angle(sample.metadata['log_file']))
+        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 12)
 
         test_angles = numpy.linspace(0, 100, stack_len)
         angle_file = self._make_angles_file(test_angles)
