@@ -88,12 +88,16 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
-        if CudaChecker().cuda_is_present():
-            self.algorithmName.insertItem(0, "FBP_CUDA")
-            self.algorithmName.insertItem(1, "SIRT_CUDA")
-            self.algorithmName.insertItem(2, "CIL: PDHG-TV")
+        self.algorithmName.insertItem(1, "FBP_CUDA")
+        self.algorithmName.insertItem(2, "SIRT_CUDA")
+        self.algorithmName.insertItem(3, "CIL: PDHG-TV")
+        self.algorithmName.setCurrentIndex(1)
+        if not CudaChecker().cuda_is_present():
+            self.algorithmName.model().item(1).setEnabled(False)
+            self.algorithmName.model().item(2).setEnabled(False)
+            self.algorithmName.model().item(3).setEnabled(False)
             self.algorithmName.setCurrentIndex(0)
-            self.algorithmName.setEnabled(True)
+        self.algorithmName.setEnabled(True)
 
         self.update_recon_hist_needed = False
         self.stackSelector.presenter.show_stacks = True
