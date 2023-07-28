@@ -110,11 +110,10 @@ class TestGuiSystemLoading(GuiSystemBase):
         sample = list(self.main_window.presenter.datasets)[0].sample
         self.assertIn("log_file", sample.metadata)
 
-        # Initial angles are just evenly spaced from 0 to 2*pi
-        sample.metadata["log_file"] = None
-        # sample.log_file = None
-        # sample.projection_angles = None
+        sample.log_file = None
+        sample._projection_angles = None
         self.assertNotIn("log_file", sample.metadata)
+
         stack_len = sample.num_images
         self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
 
@@ -146,11 +145,10 @@ class TestGuiSystemLoading(GuiSystemBase):
         sample = list(self.main_window.presenter.datasets)[0].sample
         self.assertIn("log_file", sample.metadata)
 
-        # Initial angles are just evenly spaced from 0 to 2*pi
-        sample.metadata["log_file"] = None
-        # sample.log_file = None
-        # sample.projection_angles = None
+        sample.log_file = None
+        sample._projection_angles = None
         self.assertNotIn("log_file", sample.metadata)
+
         stack_len = sample.num_images
         self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
 
