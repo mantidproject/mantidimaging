@@ -72,10 +72,6 @@ def _imread(filename: Union[Path, str]) -> np.ndarray:
     return tifffile.imread(filename)
 
 
-def supported_formats() -> List[str]:
-    return ['fits', 'fit', 'tif', 'tiff']
-
-
 def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
     if in_format in ['fits', 'fit']:
         load_func = _fitsread
