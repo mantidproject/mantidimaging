@@ -3,4 +3,4 @@
 from __future__ import annotations
 
 from .loader import (  # noqa: F401
-    load, load_log, supported_formats, load_stack_from_group, load_stack_from_image_params)
+    load, load_log, load_stack_from_group, load_stack_from_image_params)

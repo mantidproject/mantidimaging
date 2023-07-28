@@ -6,7 +6,7 @@ from typing import Optional, TYPE_CHECKING
 
 from PyQt5.QtWidgets import QDialogButtonBox
 
-from mantidimaging.core.io.loader import supported_formats
+from mantidimaging.core.io.filenames import IMAGE_FORMAT_EXTENSIONS
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.utility import select_directory
@@ -35,7 +35,7 @@ class ImageSaveDialog(BaseDialogView):
         self.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll).clicked.connect(self.save_all)
 
         # dynamically add all the supported formats
-        formats = supported_formats()
+        formats = IMAGE_FORMAT_EXTENSIONS
         self.formats.addItems(formats)
 
         # set the default to tiff
