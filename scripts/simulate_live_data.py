@@ -32,7 +32,7 @@ def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode):
 
             time.sleep(float(rate))
         if os.path.isdir(source_item):
-            copy_dataset(source_item, dest_item, rate)
+            copy_dataset(source_item, dest_item, rate, slow_copy_mode)
 
 
 def slow_copy(source, dest):
