@@ -49,3 +49,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         except IOError as error:
             logger.error("Error reading image: %s", error)
             return
+        except KeyError as key_error:
+            logger.error("Error reading image: %s", key_error)
+        except ValueError as value_error:
+            logger.error("Error reading image: %s", value_error)
