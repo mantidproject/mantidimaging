@@ -108,6 +108,19 @@ class FilenameGroupTest(FakeFSTestCase):
         all_files = list(f1.all_files())
         self._file_list_count_equal(all_files, [p1])
 
+    def test_pattern_from_dir(self):
+        test_dir = Path("/foo")
+
+        for i in [9, 2, 1, 6, 8, 7, 0, 5, 3, 4]:
+            self.fs.create_file(test_dir / f"bbb_{i:06d}.tif")
+            self.fs.create_file(test_dir / f"ccc_{i:06d}.tif")
+        self.fs.create_file(test_dir / "otherfile")
+        self.fs.create_file(test_dir / "anotherfile")
+
+        f1 = FilenameGroup.from_directory(test_dir)
+
+        self._files_equal(f1.first_file(), "/foo/bbb_000000.tif")
+
     def test_first_files(self):
         filename = "IMAT_Flower_Tomo_000001.tif"
         f1 = FilenameGroup.from_file(filename)
@@ -184,6 +197,8 @@ class FilenameGroupTest(FakeFSTestCase):
         ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat_Before/foo_Flat_Before_%06d.tif"),
         ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat/foo_Flat_%06d.tif"),
         ("/a/tomo/foo_tomo_%06d.tif", "/a/flat_before/foo_flat_before_%06d.tif"),
+        ("/foo/Tomo/IMAT00026734_Tomo_CoinCell_7_Angled_PH40_Tomo_%03d.tif",
+         "/foo/Flat_Before/IMAT00026732_Tomo_CoinCell_7_Angled_PH40_Flat_Before_%03d.tif"),
     ])
     def test_find_related(self, tomo_pattern, flat_pattern):
         tomo_list = [Path(tomo_pattern % i) for i in range(10)]
