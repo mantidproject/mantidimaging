@@ -73,14 +73,25 @@ class ImageWatcher(QObject):
         self.find_images()
         self.find_last_modified_image()
 
+    def _validate_file(self, file_path) -> bool:
+        """
+        Check if a file is valid.
+        """
+        return file_path.is_file() and self._is_image_file(file_path.name)
+
     def _get_image_files(self):
         image_files = []
         for file_path in Path(self.directory).iterdir():
-            if file_path.is_file() and self._is_image_file(file_path.name):
+            file_size = file_path.stat().st_size
+            if file_size > 45 and self._validate_file(file_path):
+                LOG.debug(f'VALID FILE: {file_path} is an image file and is not empty')
                 image_files.append(file_path)
+            else:
+                LOG.debug(f'INVALID FILE: {file_path} is not valid an image file or is empty')
         return image_files
 
     @staticmethod
     def _is_image_file(file_name):
         image_extensions = ['.tif', '.tiff']
-        return any(file_name.lower().endswith(ext) for ext in image_extensions)
+        file_names = any(file_name.lower().endswith(ext) for ext in image_extensions)
+        return file_names
