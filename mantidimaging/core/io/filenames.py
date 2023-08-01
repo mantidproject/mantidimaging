@@ -32,7 +32,7 @@ class FilenamePattern:
             self.re_pattern = re.compile("^" + re.escape(prefix) + re.escape(suffix) + "$")
         else:
             # Note: allow extra leading digits, for data sets that go 001 ... 998, 999, 1000, 1001
-            self.re_pattern = re.compile("^" + re.escape(prefix) + "([1-9]*[0-9]{" + str(digit_count) + "})" +
+            self.re_pattern = re.compile("^" + re.escape(prefix) + "(([1-9][0-9]*)?[0-9]{" + str(digit_count) + "})" +
                                          re.escape(suffix) + "$")
 
         self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
@@ -92,8 +92,8 @@ class FilenamePatternGolden(FilenamePattern):
         self.suffix = suffix
         self.name_store: dict[int, str] = {}
 
-        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "([1-9]*[0-9]{" + str(digit_count) +
-                                     "})" + re.escape(suffix) + "$")
+        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "(([1-9][0-9]*)?[0-9]{" +
+                                     str(digit_count) + "})" + re.escape(suffix) + "$")
 
         self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
 
