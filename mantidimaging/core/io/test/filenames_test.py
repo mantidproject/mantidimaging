@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 import unittest
 
-import pytest
 from parameterized import parameterized
 
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
@@ -64,7 +63,6 @@ class FilenamePatternTest(unittest.TestCase):
         self.assertTrue(p1.match("img_1000.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
 
-    @pytest.mark.xfail
     def test_pattern_match_different_digits_no_zeros(self):
         # Allow cases where index has grown above padding
         p1 = FilenamePattern.from_name("img_1.tif")
