@@ -10,12 +10,7 @@ logger = getLogger(__name__)
 
 
 def _get_filter_names():
-    filter_names = [package.filter_name for package in load_filter_packages()]
-    command_line_names = {}
-
-    for filter_name in filter_names:
-        command_line_names[filter_name.replace(" ", "-").lower()] = filter_name
-    return command_line_names
+    return {package.filter_name.replace(" ", "-").lower(): package.filter_name for package in load_filter_packages()}
 
 
 def _log_and_exit(msg: str):
