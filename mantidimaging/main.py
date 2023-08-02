@@ -38,6 +38,10 @@ def parse_args() -> argparse.Namespace:
                         default=False,
                         action='store_true',
                         help="Opens the reconstruction window at start up.")
+    parser.add_argument("-lv",
+                        "--live_viewer",
+                        type=str,
+                        help="Path of directory to watch for new files in live viewer.")
 
     return parser.parse_args()
 
@@ -65,7 +69,7 @@ def main() -> None:
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
-    CommandLineArguments(path=path, operation=operation, show_recon=args.recon)
+    CommandLineArguments(path=path, operation=operation, show_recon=args.recon, show_live_viewer=args.live_viewer)
 
     h.initialise_logging(args.log_level)
 
