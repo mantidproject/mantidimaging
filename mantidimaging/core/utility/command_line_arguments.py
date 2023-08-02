@@ -8,20 +8,14 @@ from mantidimaging.core.operations.loader import load_filter_packages
 
 logger = getLogger(__name__)
 
-filter_names = [package.filter_name for package in load_filter_packages()]
-command_line_names = {}
 
-for filter_name in filter_names:
-    command_line_names[filter_name.replace(" ", "-").lower()] = filter_name
+def _get_filter_names():
+    filter_names = [package.filter_name for package in load_filter_packages()]
+    command_line_names = {}
 
-
-def _valid_operation(operation: str):
-    """
-    Checks if a given operation exists in Mantid Imaging.
-    :param operation: The name of the operation.
-    :return: True if it is a valid operation, False otherwise.
-    """
-    return operation.lower() in command_line_names.keys()
+    for filter_name in filter_names:
+        command_line_names[filter_name.replace(" ", "-").lower()] = filter_name
+    return command_line_names
 
 
 def _log_and_exit(msg: str):
@@ -55,15 +49,16 @@ class CommandLineArguments:
                         valid_paths.append(filepath)
                 cls._images_path = valid_paths
             if operation:
+                command_line_names = _get_filter_names()
                 if not cls._images_path:
                     _log_and_exit("No path given for initial operation. Exiting.")
-                elif not _valid_operation(operation):
+                elif operation.lower() not in command_line_names:
                     valid_filters = ", ".join(command_line_names.keys())
                     _log_and_exit(
                         f"{operation} is not a known operation. Available filters arguments are {valid_filters}."
                         " Exiting.")
                 else:
-                    cls._init_operation = command_line_names[operation]
+                    cls._init_operation = command_line_names[operation.lower()]
             if show_recon and not path:
                 _log_and_exit("No path given for reconstruction. Exiting.")
             else:
