@@ -4,33 +4,41 @@ from __future__ import annotations
 import os
 import pkgutil
 import sys
-from typing import List, Protocol, cast, Union, TYPE_CHECKING
+from importlib.util import module_from_spec
 from importlib.machinery import FileFinder, ModuleSpec
+from typing import List, TYPE_CHECKING
 from importlib.abc import Loader
 
 if TYPE_CHECKING:
     from PyInstaller.loader.pyimod02_importers import FrozenImporter
     from mantidimaging.core.operations.base_filter import BaseFilter
 
-MODULES_OPERATIONS: dict[str, Union['FrozenImporter', Loader]] = {}
-if not MODULES_OPERATIONS:
-    for finder, module_name, _ in pkgutil.walk_packages([os.path.dirname(__file__)]):
+_OPERATION_MODULES_LIST: List[BaseFilter] = []
+
+
+def _find_operation_modules() -> List[BaseFilter]:
+    module_list: List[BaseFilter] = []
+    for finder, module_name, ispkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
+        if not ispkg:
+            continue
+
         if getattr(sys, 'frozen', False):
-            # If we're running a PyInstaller executable then we will get back a FrozenImporter object instead of a
-            # FileFinder. FrozenImporter implements load_module directly, but needs to use the full import name for
-            # the module to load it from the PYZ archive.
-            assert hasattr(finder, 'load_module')
-            MODULES_OPERATIONS[f'mantidimaging.core.operations.{module_name}'] = finder
-        else:
-            assert isinstance(finder, FileFinder)
-            spec = finder.find_spec(module_name)
-            assert isinstance(spec, ModuleSpec)
-            assert isinstance(spec.loader, Loader)
-            MODULES_OPERATIONS[module_name] = spec.loader
+            # If we're running a PyInstaller executable then we need to use a full module path
+            module_name = f'mantidimaging.core.operations.{module_name}'
 
+        if TYPE_CHECKING:
+            assert isinstance(finder, (FileFinder, FrozenImporter))
+        spec = finder.find_spec(module_name)
 
-class OperationModule(Protocol):
-    FILTER_CLASS: BaseFilter
+        assert isinstance(spec, ModuleSpec)
+        assert isinstance(spec.loader, Loader)
+        module = module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        if hasattr(module, 'FILTER_CLASS'):
+            module_list.append(module.FILTER_CLASS)
+
+    return module_list
 
 
 def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
@@ -42,12 +50,7 @@ def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
 
     :param ignored_packages: List of ignore rules
     """
-
-    operation_modules = []
-    for name in MODULES_OPERATIONS.keys():
-        if not ignored_packages or not any(ignore in name for ignore in ignored_packages):
-            module = MODULES_OPERATIONS[name].load_module(name)
-            if hasattr(module, 'FILTER_CLASS'):
-                operation_module = cast("OperationModule", module)
-                operation_modules.append(operation_module.FILTER_CLASS)
-    return operation_modules
+    global _OPERATION_MODULES_LIST
+    if not _OPERATION_MODULES_LIST:
+        _OPERATION_MODULES_LIST = _find_operation_modules()
+    return _OPERATION_MODULES_LIST
