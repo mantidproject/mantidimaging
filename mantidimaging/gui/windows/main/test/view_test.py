@@ -30,6 +30,8 @@ class MainWindowViewTest(unittest.TestCase):
                 command_line_args.return_value.path.return_value = ""
                 command_line_args.return_value.operation.return_value = ""
                 command_line_args.return_value.recon.return_value = False
+                command_line_args.return_value.live_viewer.return_value = ""
+
                 self.view = MainWindowView()
         self.presenter = mock.MagicMock()
         self.view.presenter = self.presenter
@@ -326,6 +328,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = [test_path]
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.live_viewer.return_value = ""
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
@@ -337,6 +340,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = ""
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.live_viewer.return_value = ""
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
 
@@ -347,6 +351,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = ""
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = command_line_filter = "Median"
+        command_line_args.return_value.live_viewer.return_value = ""
 
         MainWindowView()
         main_window_presenter.return_value.show_operation.assert_called_once_with(command_line_filter)
@@ -358,6 +363,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = ""
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.live_viewer.return_value = ""
         MainWindowView()
         filters_window.assert_not_called()
 
@@ -368,6 +374,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = ""
         command_line_args.return_value.recon.return_value = True
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.live_viewer.return_value = ""
         view = MainWindowView()
         recon_window.assert_called_once_with(view)
 
@@ -378,6 +385,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.path.return_value = ""
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
+        command_line_args.return_value.live_viewer.return_value = ""
         MainWindowView()
         recon_window.assert_not_called()
 

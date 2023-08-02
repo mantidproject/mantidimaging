@@ -25,6 +25,7 @@ class CommandLineArgumentsTest(unittest.TestCase):
         CommandLineArguments._images_path = ""
         CommandLineArguments._init_operation = ""
         CommandLineArguments._show_recon = False
+        CommandLineArguments._show_live_viewer = ""
 
     def test_bad_path_calls_exit(self):
         bad_path = "does/not/exist"
