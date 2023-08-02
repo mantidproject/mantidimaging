@@ -3,10 +3,13 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from pathlib import Path
+from logging import getLogger
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
+
+LOG = getLogger(__name__)
 
 
 class LiveViewerWindowModel:
@@ -45,7 +48,6 @@ class ImageWatcher(QObject):
         self.directory = directory
         self.watcher = QFileSystemWatcher()
         self.watcher.directoryChanged.connect(self._handle_directory_change)
-        self.watcher.fileChanged.connect(self._handle_file_change)
         self.watcher.addPath(str(self.directory))
         self.images = []
 
@@ -55,8 +57,6 @@ class ImageWatcher(QObject):
         image_changed signal for the last modified image.
         """
         self.images = self._get_image_files()
-        for image_file in self.images:
-            self.image_changed.emit(str(image_file))
 
     def find_last_modified_image(self):
         """
@@ -66,26 +66,12 @@ class ImageWatcher(QObject):
         if self.images:
             last_modified_image = max(self.images, key=lambda x: x.stat().st_mtime)
             self.image_changed.emit(str(last_modified_image))
+            LOG.debug('Last modified image: %s', last_modified_image)
 
     def _handle_directory_change(self, directory):
+        LOG.debug('Directory changed: %s', directory)
         self.find_images()
         self.find_last_modified_image()
-
-    def _handle_file_change(self, file):
-        file_path = Path(self.directory) / file
-        if file_path in self.images:
-            if file_path.exists():
-                self.image_changed.emit(str(file_path))
-            else:
-                self.images.remove(file_path)
-                if not self.images:
-                    # If no images are left, emit image_removed signal
-                    self.image_changed.emit(str(file_path))
-                    print('No images left, removing last image')
-                else:
-                    # Find the last modified image after removing the file
-                    last_modified_image = max(self.images, key=lambda x: x.stat().st_mtime)
-                    self.image_changed.emit(str(last_modified_image))
 
     def _get_image_files(self):
         image_files = []
