@@ -57,8 +57,6 @@ class ImageWatcher(QObject):
         image_changed signal for the last modified image.
         """
         self.images = self._get_image_files()
-        for image_file in self.images:
-            self.image_changed.emit(str(image_file))
 
     def find_last_modified_image(self):
         """
@@ -68,6 +66,7 @@ class ImageWatcher(QObject):
         if self.images:
             last_modified_image = max(self.images, key=lambda x: x.stat().st_mtime)
             self.image_changed.emit(str(last_modified_image))
+            LOG.debug('Last modified image: %s', last_modified_image)
 
     def _handle_directory_change(self, directory):
         LOG.debug('Directory changed: %s', directory)

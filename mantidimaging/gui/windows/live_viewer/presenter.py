@@ -42,6 +42,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not Path(image_path).exists():
             return
         try:
+            logger.debug("Showing image in presenter: %s", image_path)
             with tifffile.TiffFile(image_path) as tif:
                 image_data = tif.asarray()
                 self.view.show_image(image_data)
