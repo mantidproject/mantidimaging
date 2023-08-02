@@ -41,7 +41,7 @@ def _find_operation_modules() -> List[BaseFilter]:
     return module_list
 
 
-def load_filter_packages(ignored_packages=None) -> List[BaseFilter]:
+def load_filter_packages() -> List[BaseFilter]:
     """
     Imports all subpackages with a FILTER_CLASS attribute, which should be an extension of BaseFilter.
 

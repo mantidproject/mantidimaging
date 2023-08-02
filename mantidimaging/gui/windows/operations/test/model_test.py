@@ -175,7 +175,7 @@ class FiltersWindowModelTest(unittest.TestCase):
 
     def test_filter_names(self):
 
-        filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
+        filters = load_filter_packages()
         random.shuffle(filters)
 
         with mock.patch("mantidimaging.gui.windows.operations.model.load_filter_packages") as load_filter_packages_mock:
