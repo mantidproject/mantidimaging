@@ -59,6 +59,7 @@ class FilenamePatternTest(unittest.TestCase):
         p1 = FilenamePattern.from_name("img_000.tif")
         self.assertTrue(p1.match("img_000.tif"))
         self.assertTrue(p1.match("img_001.tif"))
+        self.assertTrue(p1.match("img_100.tif"))
         self.assertTrue(p1.match("img_999.tif"))
         self.assertTrue(p1.match("img_1000.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
@@ -67,6 +68,8 @@ class FilenamePatternTest(unittest.TestCase):
         # Allow cases where index has grown above padding
         p1 = FilenamePattern.from_name("img_1.tif")
         self.assertTrue(p1.match("img_10.tif"))
+        self.assertTrue(p1.match("img_100.tif"))
+        self.assertTrue(p1.match("img_101.tif"))
         self.assertTrue(p1.match("img_1234.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
 
