@@ -33,6 +33,8 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
         self.watch_directory()
+        # reposition to the right of the main window to be visible when launched from cli
+        self.move(self.main_window.x() + self.main_window.width(), self.main_window.y())
 
     def show_image(self, image: np.ndarray) -> None:
         """

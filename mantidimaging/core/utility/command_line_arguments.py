@@ -38,8 +38,9 @@ class CommandLineArguments:
     _images_path: list[str] = []
     _init_operation = ""
     _show_recon = False
+    _show_live_viewer = ""
 
-    def __new__(cls, path: str = "", operation: str = "", show_recon: bool = False):
+    def __new__(cls, path: str = "", operation: str = "", show_recon: bool = False, show_live_viewer: str = ""):
         """
         Creates a singleton for storing the command line arguments.
         """
@@ -67,6 +68,11 @@ class CommandLineArguments:
                 _log_and_exit("No path given for reconstruction. Exiting.")
             else:
                 cls._show_recon = show_recon
+            if show_live_viewer and show_live_viewer != cls._show_live_viewer:
+                if not os.path.exists(show_live_viewer):
+                    _log_and_exit("Path given for live view does not exist. Exiting.")
+                else:
+                    cls._show_live_viewer = show_live_viewer
 
         return cls._instance
 
@@ -90,3 +96,10 @@ class CommandLineArguments:
         Returns whether or not the recon window should be started.
         """
         return cls._show_recon
+
+    @classmethod
+    def live_viewer(cls) -> str:
+        """
+        Returns live view path.
+        """
+        return cls._show_live_viewer

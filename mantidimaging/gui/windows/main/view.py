@@ -150,6 +150,9 @@ class MainWindowView(BaseMainWindowView):
         if args.recon():
             self.show_recon_window()
 
+        if args.live_viewer() != "":
+            self.show_live_viewer(live_data_path=Path(args.live_viewer()))
+
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
