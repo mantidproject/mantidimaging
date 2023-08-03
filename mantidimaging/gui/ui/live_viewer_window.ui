@@ -16,7 +16,67 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QVBoxLayout" name="imageLayout"/>
+     <layout class="QVBoxLayout" name="imageLayout">
+      <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
+       <widget class="QLabel" name="label_active_filename">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>300</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>14</pointsize>
+          <kerning>false</kerning>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>Active Filename</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>The most recent file loaded into the live viewer</string>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>5</number>
+        </property>
+        <property name="midLineWidth">
+         <number>5</number>
+        </property>
+        <property name="text">
+         <string>Active Filename</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
