@@ -5,12 +5,9 @@ import os
 import pkgutil
 import sys
 from importlib.util import module_from_spec
-from importlib.machinery import FileFinder, ModuleSpec
 from typing import List, TYPE_CHECKING
-from importlib.abc import Loader
 
 if TYPE_CHECKING:
-    from PyInstaller.loader.pyimod02_importers import FrozenImporter
     from mantidimaging.core.operations.base_filter import BaseFilter
 
 _OPERATION_MODULES_LIST: List[BaseFilter] = []
@@ -26,12 +23,11 @@ def _find_operation_modules() -> List[BaseFilter]:
             # If we're running a PyInstaller executable then we need to use a full module path
             module_name = f'mantidimaging.core.operations.{module_name}'
 
-        if TYPE_CHECKING:
-            assert isinstance(finder, (FileFinder, FrozenImporter))
-        spec = finder.find_spec(module_name)
+        # near impossible to type check as find can be a pyinstaller specific type that we can't normally import
+        spec = finder.find_spec(module_name)  # type: ignore[call-arg]
 
-        assert isinstance(spec, ModuleSpec)
-        assert isinstance(spec.loader, Loader)
+        assert spec is not None
+        assert spec.loader is not None
         module = module_from_spec(spec)
         sys.modules[module_name] = module
         spec.loader.exec_module(module)
