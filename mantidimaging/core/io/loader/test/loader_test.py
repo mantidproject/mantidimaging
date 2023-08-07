@@ -8,7 +8,7 @@ import numpy as np
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import (DEFAULT_PIXEL_DEPTH, DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM,
-                                                 create_loading_parameters_for_file_path, get_loader, load)
+                                                 create_loading_parameters_for_file_path, get_loader, load, _imread)
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES, ProjectionAngles
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
@@ -18,6 +18,12 @@ from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 class LoaderTest(FakeFSTestCase):
     def test_raise_on_invalid_format(self):
         self.assertRaises(NotImplementedError, get_loader, in_format='txt')
+
+    def test_WHEN_tif_file_invalid_THEN_filename_in_exception_message(self):
+        filename = "/foo/bar/a.tif"
+        self.fs.create_file(filename, contents="BADDATA")
+
+        self.assertRaisesRegex(RuntimeError, filename, _imread, filename=filename)
 
     def test_create_loading_parameters_for_file_path(self):
         output_directory = Path("/b")
