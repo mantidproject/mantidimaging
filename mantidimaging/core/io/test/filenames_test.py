@@ -231,6 +231,25 @@ class FilenameGroupTest(FakeFSTestCase):
 
         self._file_list_count_equal(proj_180_list, list(proj_180_fg.all_files()))
 
+    def test_find_related_dotfiles(self):
+        tomo_list = [Path("/Tomo/IMAT00021865_CMOS_LegoScan_EquiDis_PH60_Tomo_%3d.tif" % i) for i in range(10)]
+        flat_before_list = [
+            Path("/Flat_After/IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+        ]
+        flat_bad_list = [
+            Path("/Flat_After/._IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+        ]
+        for file_name in tomo_list + flat_before_list + flat_bad_list:
+            self.fs.create_file(file_name)
+
+        fg = FilenameGroup.from_file(tomo_list[0])
+        flat_before_fg = fg.find_related(FILE_TYPES.FLAT_AFTER)
+
+        self.assertIsNotNone(flat_before_fg)
+        flat_before_fg.find_all_files()
+        self._files_equal(flat_before_list[0], flat_before_fg.first_file())
+        self._file_list_count_equal(flat_before_list, flat_before_fg.all_files())
+
 
 class GoldenFilenameGroupTest(FakeFSTestCase):
     def test_golden_pattern(self):

@@ -156,6 +156,8 @@ class FilenameGroup:
         for file in sorted(path.iterdir()):
             if file.suffix.lstrip(".") not in IMAGE_FORMAT_EXTENSIONS:
                 continue
+            if file.name.startswith("."):
+                continue
             fg = cls.from_file(file)
             return fg
 
