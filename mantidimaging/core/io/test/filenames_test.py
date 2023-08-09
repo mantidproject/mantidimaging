@@ -124,6 +124,12 @@ class FilenameGroupTest(FakeFSTestCase):
 
         self._files_equal(f1.first_file(), "/foo/bbb_000000.tif")
 
+    def test_pattern_from_dir_no_files(self):
+        test_dir = Path("/foo")
+        self.fs.create_dir(test_dir)
+        f1 = FilenameGroup.from_directory(test_dir)
+        self.assertIsNone(f1)
+
     def test_first_files(self):
         filename = "IMAT_Flower_Tomo_000001.tif"
         f1 = FilenameGroup.from_file(filename)
