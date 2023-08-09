@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import time
+from logging import getLogger
+
+perf_logger = getLogger("perf." + __name__)
 
 
 class ExecutionTimer(object):
@@ -10,8 +13,9 @@ class ExecutionTimer(object):
     Context handler used to time the execution of code in it's context.
     """
 
-    def __init__(self, msg='Elapsed time'):
+    def __init__(self, msg='Elapsed time', logger=perf_logger):
         self.msg = msg
+        self.logger = logger
 
         self.time_start = None
         self.time_end = None
@@ -22,11 +26,12 @@ class ExecutionTimer(object):
         return f'{prefix}{sec if sec else "unknown"} seconds'
 
     def __enter__(self):
-        self.time_start = time.time()
+        self.time_start = time.monotonic()
         self.time_end = None
 
     def __exit__(self, *args):
-        self.time_end = time.time()
+        self.time_end = time.monotonic()
+        self.logger.info(str(self))
 
     @property
     def total_seconds(self):
