@@ -153,15 +153,13 @@ class FilenameGroup:
         if not path.is_dir():
             raise ValueError(f"path is a file: {path}")
 
-        for file in sorted(path.iterdir()):
-            if file.suffix.lstrip(".") not in IMAGE_FORMAT_EXTENSIONS:
-                continue
-            if file.name.startswith("."):
-                continue
-            fg = cls.from_file(file)
-            return fg
+        files = (f for f in path.iterdir() if f.name[0] != '.' and f.suffix[1:] in IMAGE_FORMAT_EXTENSIONS)
 
-        return None
+        try:
+            first_file = min(files)
+        except ValueError:
+            return None
+        return cls.from_file(first_file)
 
     @classmethod
     def get_pattern_class(cls, path):
