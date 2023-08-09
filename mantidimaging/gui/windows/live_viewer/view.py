@@ -33,8 +33,6 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
         self.watch_directory()
-        # self.label_active_filename.setText(se
-        # set text in label_active_filename to the name of the file last modified in the directory
         # reposition to the right of the main window to be visible when launched from cli
         self.move(self.main_window.x() + self.main_window.width(), self.main_window.y())
 
