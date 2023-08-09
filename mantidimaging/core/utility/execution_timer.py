@@ -2,8 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import cProfile
 import time
+from io import StringIO
 from logging import getLogger
+from pstats import SortKey, Stats
 
 perf_logger = getLogger("perf." + __name__)
 
@@ -41,3 +44,33 @@ class ExecutionTimer(object):
         """
         return self.time_end - self.time_start if \
             self.time_start and self.time_end else None
+
+
+class ExecutionProfiler(object):
+    """
+    Context handler used to profile the execution of code in it's context.
+    """
+
+    def __init__(self, msg='Elapsed time', logger=perf_logger, max_lines=20):
+        self.msg = msg
+        self.logger = logger
+        self.max_lines = max_lines
+
+        self.pr = cProfile.Profile()
+
+    def __str__(self):
+        out = StringIO()
+        out.write(f'{self.msg}: \n' if self.msg else '')
+
+        ps = Stats(self.pr, stream=out).sort_stats(SortKey.CUMULATIVE)
+        ps.print_stats()
+        return out.getvalue()
+
+    def __enter__(self):
+        self.pr.enable()
+
+    def __exit__(self, *args):
+        self.pr.disable()
+        if perf_logger.isEnabledFor(1):
+            for line in str(self).split("\n")[:self.max_lines]:
+                self.logger.info(line)

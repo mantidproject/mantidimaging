@@ -5,4 +5,4 @@ from __future__ import annotations
 from . import (  # noqa: F401
     progress_reporting, cor_interpolate, finder, histogram, memory_usage, projection_angles, size_calculator)
 
-from .execution_timer import ExecutionTimer  # noqa: F401
+from .execution_timer import ExecutionTimer, ExecutionProfiler  # noqa: F401
