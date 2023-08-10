@@ -84,9 +84,7 @@ class GenerateSphinxApidoc(Command):
         self.sphinx_options.append(self.module_dir)
         self.sphinx_options.append("**/test")
         self.sphinx_options.append("**/test_helpers")
-        self.sphinx_options.append("**/gui")
-        self.sphinx_options.append("**/core/utility")
-        self.sphinx_options.append("**/core/tools")
+        self.sphinx_options.append("**/eyes_tests")
 
         self.out_dir = "docs/api/"
         self.sphinx_options.extend(["-o", self.out_dir])
