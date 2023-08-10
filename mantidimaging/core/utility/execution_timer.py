@@ -18,14 +18,14 @@ import cProfile
 import time
 from io import StringIO
 from logging import getLogger, Logger
-from pstats import SortKey, Stats
+from pstats import Stats
 
 perf_logger = getLogger("perf." + __name__)
 
 
 class ExecutionTimer:
     """
-    Context manager used to time the execution of code in it's context.
+    Context manager used to time the execution of code in its context.
     """
 
     def __init__(self, msg: str = 'Elapsed time', logger: Logger = perf_logger):
@@ -60,13 +60,20 @@ class ExecutionTimer:
 
 class ExecutionProfiler:
     """
-    Context manager used to profile the execution of code in it's context.
+    Context manager used to profile the execution of code in its context.
+
+
     """
 
-    def __init__(self, msg: str = 'Elapsed time', logger: Logger = perf_logger, max_lines: int = 20):
+    def __init__(self,
+                 msg: str = 'Elapsed time',
+                 logger: Logger = perf_logger,
+                 max_lines: int = 20,
+                 sort_by: str = "cumtime"):
         self.msg = msg
         self.logger = logger
         self.max_lines = max_lines
+        self.sort_by = sort_by
 
         self.pr = cProfile.Profile()
 
@@ -74,7 +81,7 @@ class ExecutionProfiler:
         out = StringIO()
         out.write(f'{self.msg}: \n' if self.msg else '')
 
-        ps = Stats(self.pr, stream=out).sort_stats(SortKey.CUMULATIVE)
+        ps = Stats(self.pr, stream=out).sort_stats(self.sort_by)
         ps.print_stats()
         return out.getvalue()
 
