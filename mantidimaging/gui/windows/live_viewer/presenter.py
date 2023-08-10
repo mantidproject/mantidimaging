@@ -46,6 +46,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             with tifffile.TiffFile(image_path) as tif:
                 image_data = tif.asarray()
                 self.view.show_image(image_data)
+                self.view.label_active_filename.setText(image_path.split("/")[-1])
         except IOError as error:
             logger.error("Error reading image: %s", error)
             return
