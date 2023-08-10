@@ -87,3 +87,15 @@ Logging can be controlled using the QSettings configuration file :file:`.config/
     log_level=DEBUG
     log_dir=/tmp/mantid_imaging_logs
     performance_log=true
+
+Benchmarking and profiling
+--------------------------
+
+Mantid imaging has some utilities to help with benchmarking and profiling.
+
+The context managers :py:class:`~mantidimaging.core.utility.execution_timer.ExecutionTimer` and :py:class:`~mantidimaging.core.utility.execution_timer.ExecutionProfiler` can be used to wrap some lines of code to record and log its run time. For example::
+
+    with ExecutionProfiler(msg="a_slow_function()"):
+        a_slow_function()
+
+will record and log a profile of function calls and times within :code:`a_slow_function()`.

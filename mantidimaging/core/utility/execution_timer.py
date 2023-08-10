@@ -1,5 +1,17 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+"""
+Context managers for logging execution time or profile of code.
+
+These are not used in the code, but are here as developer tools. They can be used by wrapping the code of interest::
+
+    with ExecutionProfiler(msg="a_slow_function()"):
+        a_slow_function()
+
+They will display to the performance log if a logger object is not given. See the developer docs to enable performance
+logging.
+"""
+
 from __future__ import annotations
 
 import cProfile
@@ -13,7 +25,7 @@ perf_logger = getLogger("perf." + __name__)
 
 class ExecutionTimer(object):
     """
-    Context handler used to time the execution of code in it's context.
+    Context manager used to time the execution of code in it's context.
     """
 
     def __init__(self, msg='Elapsed time', logger=perf_logger):
@@ -48,7 +60,7 @@ class ExecutionTimer(object):
 
 class ExecutionProfiler(object):
     """
-    Context handler used to profile the execution of code in it's context.
+    Context manager used to profile the execution of code in it's context.
     """
 
     def __init__(self, msg='Elapsed time', logger=perf_logger, max_lines=20):
