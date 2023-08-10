@@ -78,7 +78,7 @@ class GenerateSphinxApidoc(Command):
         self.sphinx_options.append("sphinx-apidoc")
         self.sphinx_options.extend(["-f", "-M", "-e", "-T"])
 
-        self.sphinx_options.extend(["-d", "10"])
+        self.sphinx_options.extend(["-d", "3"])
 
         self.module_dir = "mantidimaging"
         self.sphinx_options.append(self.module_dir)
