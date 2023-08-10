@@ -153,13 +153,20 @@ class FilenameGroup:
         if not path.is_dir():
             raise ValueError(f"path is a file: {path}")
 
-        files = (f for f in path.iterdir() if f.name[0] != '.' and f.suffix[1:] in IMAGE_FORMAT_EXTENSIONS)
+        files = (f for f in path.iterdir() if cls.valid_image_filename(f))
 
         try:
             first_file = min(files)
         except ValueError:
             return None
         return cls.from_file(first_file)
+
+    @staticmethod
+    def valid_image_filename(f: Path) -> bool:
+        """
+        Check that file is not hidden (starts with a dot) and that it has an image extension
+        """
+        return f.name[0] != '.' and f.suffix[1:] in IMAGE_FORMAT_EXTENSIONS
 
     @classmethod
     def get_pattern_class(cls, path):
