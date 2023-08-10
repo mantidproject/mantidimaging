@@ -10,6 +10,8 @@ from typing import List, Optional, TYPE_CHECKING
 import psutil
 from psutil import NoSuchProcess, AccessDenied
 
+from mantidimaging.core.operations.loader import load_filter_packages
+
 if TYPE_CHECKING:
     from multiprocessing.pool import Pool
 
@@ -30,14 +32,13 @@ def create_and_start_pool():
     cores = context.cpu_count()
     global pool
     pool = context.Pool(cores)
-    # We need a function to call to start the processes but the function itself doesn't need to do anything
-    # If we don't do this then the processes start when the pool is first called later in the application
-    # which affects performance.
-    pool.map_async(_do_nothing, range(cores))
+
+    pool.map(worker_setup, range(cores))
 
 
-def _do_nothing(i):
-    pass
+def worker_setup(_):
+    # Required to import modules for running operations
+    load_filter_packages()
 
 
 def end_pool():

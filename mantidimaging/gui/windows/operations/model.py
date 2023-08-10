@@ -26,7 +26,7 @@ class FiltersWindowModel(object):
 
         self.presenter = presenter
         # Update the local filter registry
-        self.filters = load_filter_packages(ignored_packages=['mantidimaging.core.operations.wip'])
+        self.filters = load_filter_packages()
 
         # Sort by name for PyInstaller
         def _name(ops):

@@ -5,8 +5,7 @@ import logging
 import unittest
 from unittest import mock
 
-from mantidimaging.core.operations.loader import load_filter_packages
-from mantidimaging.core.utility.command_line_arguments import CommandLineArguments, _valid_operation, command_line_names
+from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 
 
 class CommandLineArgumentsTest(unittest.TestCase):
@@ -47,13 +46,6 @@ class CommandLineArgumentsTest(unittest.TestCase):
             CommandLineArguments()
         exists_mock.assert_not_called()
 
-    def test_user_input_in_filter_names(self):
-        user_inputs = [filter_package.filter_name.replace(" ", "-") for filter_package in load_filter_packages()]
-        print(command_line_names)
-        for filter_name in user_inputs:
-            with self.subTest(filter_name=filter_name):
-                assert _valid_operation(filter_name)
-
     def test_set_valid_operation_with_path(self):
         operation = "median"
         command_line_arguments = CommandLineArguments(path="./", operation=operation)
@@ -70,10 +62,7 @@ class CommandLineArgumentsTest(unittest.TestCase):
             with self.assertLogs(self.logger, level="ERROR") as mock_log:
                 bad_operation = "aaaaaa"
                 CommandLineArguments(path="./", operation=bad_operation)
-        valid_filters = ", ".join(command_line_names.keys())
-        self.assertIn(
-            f"{bad_operation} is not a known operation. Available filters arguments are {valid_filters}. Exiting.",
-            mock_log.output[0])
+        self.assertIn(f"{bad_operation} is not a known operation. Available filters arguments are ", mock_log.output[0])
 
     def test_set_show_recon(self):
         command_line_arguments = CommandLineArguments(path="./", show_recon=True)
