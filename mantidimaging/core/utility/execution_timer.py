@@ -17,23 +17,23 @@ from __future__ import annotations
 import cProfile
 import time
 from io import StringIO
-from logging import getLogger
+from logging import getLogger, Logger
 from pstats import SortKey, Stats
 
 perf_logger = getLogger("perf." + __name__)
 
 
-class ExecutionTimer(object):
+class ExecutionTimer:
     """
     Context manager used to time the execution of code in it's context.
     """
 
-    def __init__(self, msg='Elapsed time', logger=perf_logger):
+    def __init__(self, msg: str = 'Elapsed time', logger: Logger = perf_logger):
         self.msg = msg
         self.logger = logger
 
-        self.time_start = None
-        self.time_end = None
+        self.time_start: float | None = None
+        self.time_end: float | None = None
 
     def __str__(self):
         prefix = f'{self.msg}: ' if self.msg else ''
@@ -58,12 +58,12 @@ class ExecutionTimer(object):
             self.time_start and self.time_end else None
 
 
-class ExecutionProfiler(object):
+class ExecutionProfiler:
     """
     Context manager used to profile the execution of code in it's context.
     """
 
-    def __init__(self, msg='Elapsed time', logger=perf_logger, max_lines=20):
+    def __init__(self, msg: str = 'Elapsed time', logger: Logger = perf_logger, max_lines: int = 20):
         self.msg = msg
         self.logger = logger
         self.max_lines = max_lines
