@@ -34,6 +34,8 @@ class LiveViewerWindowModel:
         self.image_watcher.find_last_modified_image()
 
     def _handle_image_changed(self, image_file):
+        if image_file == '':
+            self.presenter.handle_deleted()
         self.presenter.update_image(image_file)
 
 
@@ -63,15 +65,21 @@ class ImageWatcher(QObject):
         Find the last modified image in the directory and
         emit the image_changed signal.
         """
+
         if self.images:
-            last_modified_image = max(self.images, key=lambda x: x.stat().st_mtime)
+            try:
+                last_modified_image = max(self.images, key=lambda x: x.stat().st_mtime)
+            except FileNotFoundError:
+                last_modified_image = ''
+
             self.image_changed.emit(str(last_modified_image))
-            LOG.debug('Last modified image: %s', last_modified_image)
 
     def _handle_directory_change(self, directory):
-        LOG.debug('Directory changed: %s', directory)
         self.find_images()
-        self.find_last_modified_image()
+        if self.images and self._validate_images(self.images):
+            self.find_last_modified_image()
+        else:
+            self.image_changed.emit('')
 
     def _validate_file(self, file_path) -> bool:
         """
@@ -79,12 +87,20 @@ class ImageWatcher(QObject):
         """
         return file_path.is_file() and self._is_image_file(file_path.name)
 
+    def _validate_images(self, images: list) -> bool:
+        """
+        Check if a list of images are valid.
+        """
+        return all(self._validate_file(image) for image in images)
+
     def _get_image_files(self):
         image_files = []
         for file_path in Path(self.directory).iterdir():
+            if not self._validate_file(file_path):
+                LOG.debug(f'INVALID FILE: {file_path} is not valid an image file')
+                continue
             file_size = file_path.stat().st_size
             if file_size > 45 and self._validate_file(file_path):
-                LOG.debug(f'VALID FILE: {file_path} is an image file and is not empty')
                 image_files.append(file_path)
             else:
                 LOG.debug(f'INVALID FILE: {file_path} is not valid an image file or is empty')
