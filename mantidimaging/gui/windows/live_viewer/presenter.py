@@ -37,9 +37,22 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Set the path to the dataset."""
         self.model.path = path
 
+    def clear_label(self):
+        """Clear the label."""
+        self.view.label_active_filename.setText("")
+
+    def handle_deleted(self):
+        """Handle the deletion of the image."""
+        self.view.remove_image()
+        self.clear_label()
+
     def update_image(self, image_path: str):
         """Update the image in the view."""
         if not Path(image_path).exists():
+            return
+        if image_path == '':
+            self.view.remove_image()
+
             return
         try:
             logger.debug("Showing image in presenter: %s", image_path)
