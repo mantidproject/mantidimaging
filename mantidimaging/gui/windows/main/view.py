@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
 
-LOG = getLogger(__file__)
+LOG = getLogger(__name__)
 
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
