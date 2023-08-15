@@ -4,12 +4,14 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-from typing import List, Iterator, Optional, Union
+from typing import List, Iterator, Optional, Union, Final
 from logging import getLogger
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
 
 LOG = getLogger(__name__)
+
+IMAGE_FORMAT_EXTENSIONS: Final = ['fits', 'fit', 'tif', 'tiff']
 
 
 class FilenamePattern:
@@ -32,7 +34,7 @@ class FilenamePattern:
             self.re_pattern = re.compile("^" + re.escape(prefix) + re.escape(suffix) + "$")
         else:
             # Note: allow extra leading digits, for data sets that go 001 ... 998, 999, 1000, 1001
-            self.re_pattern = re.compile("^" + re.escape(prefix) + "([1-9]*[0-9]{" + str(digit_count) + "})" +
+            self.re_pattern = re.compile("^" + re.escape(prefix) + "(([1-9][0-9]*)?[0-9]{" + str(digit_count) + "})" +
                                          re.escape(suffix) + "$")
 
         self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
@@ -92,8 +94,8 @@ class FilenamePatternGolden(FilenamePattern):
         self.suffix = suffix
         self.name_store: dict[int, str] = {}
 
-        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "([1-9]*[0-9]{" + str(digit_count) +
-                                     "})" + re.escape(suffix) + "$")
+        self.re_pattern = re.compile("^" + re.escape(prefix) + self.PATTERN_a + "(([1-9][0-9]*)?[0-9]{" +
+                                     str(digit_count) + "})" + re.escape(suffix) + "$")
 
         self.re_pattern_metadata = re.compile("^" + re.escape(prefix.rstrip("_ ")) + ".json$")
 
@@ -146,6 +148,27 @@ class FilenameGroup:
         return new_filename_group
 
     @classmethod
+    def from_directory(cls, path: Union[Path, str]) -> FilenameGroup | None:
+        path = Path(path)
+        if not path.is_dir():
+            raise ValueError(f"path is a file: {path}")
+
+        files = (f for f in path.iterdir() if cls.valid_image_filename(f))
+
+        try:
+            first_file = min(files)
+        except ValueError:
+            return None
+        return cls.from_file(first_file)
+
+    @staticmethod
+    def valid_image_filename(f: Path) -> bool:
+        """
+        Check that file is not hidden (starts with a dot) and that it has an image extension
+        """
+        return f.name[0] != '.' and f.suffix[1:] in IMAGE_FORMAT_EXTENSIONS
+
+    @classmethod
     def get_pattern_class(cls, path):
         if 'grtomo' in path.name.lower():
             return FilenamePatternGolden
@@ -182,22 +205,23 @@ class FilenameGroup:
             self.log_path = self.directory / shortest
 
     def find_related(self, file_type: FILE_TYPES) -> Optional[FilenameGroup]:
+        if self.directory.name not in ["Tomo", "tomo"]:
+            return None
+
         if file_type == FILE_TYPES.PROJ_180:
             return self._find_related_180_proj()
-
-        sample_first_name = self.first_file().name
 
         test_names = [file_type.fname.replace(" ", "_")]
         if file_type.suffix == "Before":
             test_names.append(file_type.tname)
         test_names.extend([s.lower() for s in test_names])
-        if self.directory.name in ["Tomo", "tomo"]:
-            for test_name in test_names:
-                new_dir = self.directory.parent / test_name
-                if new_dir.exists():
-                    new_path = new_dir / sample_first_name.replace("Tomo", test_name).replace("tomo", test_name)
-                    if new_path.exists():
-                        return self.from_file(new_path)
+
+        for test_name in test_names:
+            new_dir = self.directory.parent / test_name
+            if new_dir.exists():
+                fg = self.from_directory(new_dir)
+                if fg is not None:
+                    return fg
 
         return None
 
@@ -205,17 +229,17 @@ class FilenameGroup:
         sample_first_name = self.first_file().name
 
         test_name = "180deg"
-        if self.directory.name in ["Tomo", "tomo"]:
-            new_dir = self.directory.parent / test_name
-            if new_dir.exists():
-                for trim_numbers in [True, False]:
-                    if trim_numbers:
-                        new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
-                    else:
-                        new_name = sample_first_name
-                    new_name = new_name.replace("Tomo", test_name).replace("tomo", test_name)
-                    new_path = new_dir / new_name
-                    if new_path.exists():
-                        return self.from_file(new_path)
+
+        new_dir = self.directory.parent / test_name
+        if new_dir.exists():
+            for trim_numbers in [True, False]:
+                if trim_numbers:
+                    new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
+                else:
+                    new_name = sample_first_name
+                new_name = new_name.replace("Tomo", test_name).replace("tomo", test_name)
+                new_path = new_dir / new_name
+                if new_path.exists():
+                    return self.from_file(new_path)
 
         return None

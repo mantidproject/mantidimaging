@@ -58,6 +58,7 @@ class FilenamePatternTest(unittest.TestCase):
         p1 = FilenamePattern.from_name("img_000.tif")
         self.assertTrue(p1.match("img_000.tif"))
         self.assertTrue(p1.match("img_001.tif"))
+        self.assertTrue(p1.match("img_100.tif"))
         self.assertTrue(p1.match("img_999.tif"))
         self.assertTrue(p1.match("img_1000.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
@@ -66,6 +67,8 @@ class FilenamePatternTest(unittest.TestCase):
         # Allow cases where index has grown above padding
         p1 = FilenamePattern.from_name("img_1.tif")
         self.assertTrue(p1.match("img_10.tif"))
+        self.assertTrue(p1.match("img_100.tif"))
+        self.assertTrue(p1.match("img_101.tif"))
         self.assertTrue(p1.match("img_1234.tif"))
         self.assertFalse(p1.match("img_0000.tif"))
 
@@ -105,6 +108,25 @@ class FilenameGroupTest(FakeFSTestCase):
 
         all_files = list(f1.all_files())
         self._file_list_count_equal(all_files, [p1])
+
+    def test_pattern_from_dir(self):
+        test_dir = Path("/foo")
+
+        for i in [9, 2, 1, 6, 8, 7, 0, 5, 3, 4]:
+            self.fs.create_file(test_dir / f"bbb_{i:06d}.tif")
+            self.fs.create_file(test_dir / f"ccc_{i:06d}.tif")
+        self.fs.create_file(test_dir / "otherfile")
+        self.fs.create_file(test_dir / "anotherfile")
+
+        f1 = FilenameGroup.from_directory(test_dir)
+
+        self._files_equal(f1.first_file(), "/foo/bbb_000000.tif")
+
+    def test_pattern_from_dir_no_files(self):
+        test_dir = Path("/foo")
+        self.fs.create_dir(test_dir)
+        f1 = FilenameGroup.from_directory(test_dir)
+        self.assertIsNone(f1)
 
     def test_first_files(self):
         filename = "IMAT_Flower_Tomo_000001.tif"
@@ -182,6 +204,8 @@ class FilenameGroupTest(FakeFSTestCase):
         ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat_Before/foo_Flat_Before_%06d.tif"),
         ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat/foo_Flat_%06d.tif"),
         ("/a/tomo/foo_tomo_%06d.tif", "/a/flat_before/foo_flat_before_%06d.tif"),
+        ("/foo/Tomo/IMAT00026734_Tomo_CoinCell_7_Angled_PH40_Tomo_%03d.tif",
+         "/foo/Flat_Before/IMAT00026732_Tomo_CoinCell_7_Angled_PH40_Flat_Before_%03d.tif"),
     ])
     def test_find_related(self, tomo_pattern, flat_pattern):
         tomo_list = [Path(tomo_pattern % i) for i in range(10)]
@@ -212,6 +236,25 @@ class FilenameGroupTest(FakeFSTestCase):
         proj_180_fg.find_all_files()
 
         self._file_list_count_equal(proj_180_list, list(proj_180_fg.all_files()))
+
+    def test_find_related_dotfiles(self):
+        tomo_list = [Path("/Tomo/IMAT00021865_CMOS_LegoScan_EquiDis_PH60_Tomo_%3d.tif" % i) for i in range(10)]
+        flat_before_list = [
+            Path("/Flat_After/IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+        ]
+        flat_bad_list = [
+            Path("/Flat_After/._IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+        ]
+        for file_name in tomo_list + flat_before_list + flat_bad_list:
+            self.fs.create_file(file_name)
+
+        fg = FilenameGroup.from_file(tomo_list[0])
+        flat_before_fg = fg.find_related(FILE_TYPES.FLAT_AFTER)
+
+        self.assertIsNotNone(flat_before_fg)
+        flat_before_fg.find_all_files()
+        self._files_equal(flat_before_list[0], flat_before_fg.first_file())
+        self._file_list_count_equal(flat_before_list, flat_before_fg.all_files())
 
 
 class GoldenFilenameGroupTest(FakeFSTestCase):

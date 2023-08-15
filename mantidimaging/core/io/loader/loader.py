@@ -69,11 +69,10 @@ def _fitsread(filename: Union[Path, str]) -> np.ndarray:
 
 
 def _imread(filename: Union[Path, str]) -> np.ndarray:
-    return tifffile.imread(filename)
-
-
-def supported_formats() -> List[str]:
-    return ['fits', 'fit', 'tif', 'tiff']
+    try:
+        return tifffile.imread(filename)
+    except tifffile.TiffFileError as e:
+        raise RuntimeError(f"TiffFileError {e.args[0]}: {filename}") from e
 
 
 def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
