@@ -5,16 +5,17 @@ import os
 import pkgutil
 import sys
 from importlib.util import module_from_spec
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from mantidimaging.core.operations.base_filter import BaseFilter
+    BaseFilterClass = Type[BaseFilter]
 
-_OPERATION_MODULES_LIST: List[BaseFilter] = []
+_OPERATION_MODULES_LIST: List[BaseFilterClass] = []
 
 
-def _find_operation_modules() -> List[BaseFilter]:
-    module_list: List[BaseFilter] = []
+def _find_operation_modules() -> List[BaseFilterClass]:
+    module_list: List[BaseFilterClass] = []
     for finder, module_name, ispkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
         if not ispkg:
             continue
@@ -37,7 +38,7 @@ def _find_operation_modules() -> List[BaseFilter]:
     return module_list
 
 
-def load_filter_packages() -> List[BaseFilter]:
+def load_filter_packages() -> List[BaseFilterClass]:
     """
     Imports all subpackages with a FILTER_CLASS attribute, which should be an extension of BaseFilter.
 

@@ -14,7 +14,7 @@ from mantidimaging.core.utility.data_containers import Counts
 from mantidimaging.core.gpu import utility as gpu
 
 if TYPE_CHECKING:
-    from mantidimaging.core.operations.base_filter import BaseFilter
+    from mantidimaging.core.operations.loader import BaseFilterClass
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
 
@@ -39,7 +39,7 @@ def get_filter_func_args():
 
 
 class OperationsTest(unittest.TestCase):
-    filters: List[BaseFilter]
+    filters: List[BaseFilterClass]
     filter_args: Dict
 
     @classmethod
