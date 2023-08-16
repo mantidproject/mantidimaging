@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Iterable
 
 from docutils import nodes
 from docutils.statemachine import ViewList
@@ -24,7 +25,7 @@ class ReleaseNotes(Directive):
 
     @classmethod
     def make_rst(cls, note_type: str) -> ViewList:
-        note_paths = (Path() / 'docs' / 'release_notes' / 'next').glob(note_type + '*')
+        note_paths: Iterable[Path] = (Path() / 'docs' / 'release_notes' / 'next').glob(note_type + '*')
 
         rst = ViewList()
         try:
