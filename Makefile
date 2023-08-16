@@ -3,6 +3,8 @@ AUTHENTICATION_PARAMS=--user $$UPLOAD_USER --token $$ANACONDA_API_TOKEN
 #Needed because each command is run in a new shell
 SHELL=/bin/bash
 
+SOURCE_DIRS=mantidimaging scripts docs/ext/
+
 install-conda-env:
 	conda env create -f environment.yml
 
@@ -51,15 +53,15 @@ test:
 	python -m pytest
 
 mypy:
-	python -m mypy --ignore-missing-imports --no-site-packages mantidimaging
+	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
 
 yapf:
-	python -m yapf --parallel --diff --recursive .
+	python -m yapf --parallel --diff --recursive ${SOURCE_DIRS}
 
 yapf_apply:
-	python -m yapf -i --parallel --recursive .
+	python -m yapf -i --parallel --recursive ${SOURCE_DIRS}
 
 ruff:
-	ruff .
+	ruff ${SOURCE_DIRS}
 
 check: ruff yapf mypy test
