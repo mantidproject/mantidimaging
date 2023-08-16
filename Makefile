@@ -5,12 +5,6 @@ SHELL=/bin/bash
 
 SOURCE_DIRS=mantidimaging scripts docs/ext/
 
-install-conda-env:
-	conda env create -f environment.yml
-
-install-run-requirements:
-	conda install --yes --only-deps -c $$UPLOAD_USER mantidimaging
-
 CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 install-build-requirements:
@@ -18,9 +12,6 @@ install-build-requirements:
 	@echo "Installing packages required for starting the build process"
 	conda create -n build-env anaconda-client conda-verify boa
 	conda run -n build-env conda config --env $(CHANNELS)
-
-install-dev-requirements:
-	conda env create -f environment-dev.yml
 
 build-conda-package: .remind-current install-build-requirements
 	# intended for local usage, does not install build requirements
@@ -46,8 +37,8 @@ build-conda-package-release: .remind-current .remind-for-user .remind-for-anacon
 	@if [ -z "$$ANACONDA_API_TOKEN" ]; then echo "Environment variable ANACONDA_API_TOKEN not set!"; exit 1; fi;
 
 
-test-env:
-	conda env create -n test-env -f environment-dev.yml
+install-dev-requirements:
+	python ./setup.py create_dev_env
 
 test:
 	python -m pytest
