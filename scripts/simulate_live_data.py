@@ -4,11 +4,13 @@
 import os
 import shutil
 import argparse
+import random
+
 from tqdm import tqdm
 import time
 
 
-def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode):
+def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode, faulty_copy_mode):
     """
     Copy data from a source directory to a destination directory.
     Files are copied one image at a time at a specified rate in seconds.
@@ -25,14 +27,16 @@ def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode):
         source_item = os.path.join(source_dir, item)
         dest_item = os.path.join(dest_dir, item)
         if os.path.isfile(source_item):
-            if not slow_copy_mode:
-                shutil.copy(source_item, dest_item)
-            else:
+            if slow_copy_mode:
                 slow_copy(source_item, dest_item)
+            elif faulty_copy_mode:
+                faulty_copy(source_item, dest_item)
+            else:
+                shutil.copy(source_item, dest_item)
 
             time.sleep(float(rate))
         if os.path.isdir(source_item):
-            copy_dataset(source_item, dest_item, rate, slow_copy_mode)
+            copy_dataset(source_item, dest_item, rate, slow_copy_mode, faulty_copy_mode)
 
 
 def slow_copy(source, dest):
@@ -50,6 +54,21 @@ def slow_copy(source, dest):
             start = writen
             stop = start + data_size // 10
             writen += dest_file.write(data[start:stop])
+
+
+def faulty_copy(source, dest):
+    with open(source, "rb") as source_file:
+        data = source_file.read()
+    data_size = len(data)
+
+    if os.path.exists(dest):
+        os.remove(dest)
+
+    if random.random() < 0.1:
+        data = data[:random.randint(0, data_size)]
+
+    with open(dest, "wb") as dest_file:
+        dest_file.write(data)
 
 
 def main():
@@ -71,8 +90,9 @@ def main():
                         required=False,
                         help="Rate in seconds at which to copy files from dataset i.e. 1, 1.5, 2...")
     parser.add_argument("--slow", action="store_true", help="Use slow copy method")
+    parser.add_argument("--faulty", action="store_true", help="Use faulty copy method")
     args = parser.parse_args()
-    copy_dataset(args.source_dir, args.dest_dir, args.rate, args.slow)
+    copy_dataset(args.source_dir, args.dest_dir, args.rate, args.slow, args.faulty)
     print("Copy complete")
     os._exit(0)
 
