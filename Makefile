@@ -8,27 +8,18 @@ SOURCE_DIRS=mantidimaging scripts docs/ext/
 CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 install-build-requirements:
-	# intended for local use
 	@echo "Installing packages required for starting the build process"
-	conda create -n build-env anaconda-client conda-verify boa
+	conda create -n build-env --yes boa anaconda-client conda-verify
 	conda run -n build-env conda config --env $(CHANNELS)
 
-build-conda-package: .remind-current install-build-requirements
-	# intended for local usage, does not install build requirements
+build-conda-package: install-build-requirements
 	conda run -n build-env conda mambabuild conda --label unstable
 
-build-conda-package-nightly: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
+build-conda-package-nightly: .remind-for-user .remind-for-anaconda-api install-build-requirements
 	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS) --label nightly
 
-build-conda-package-release: .remind-current .remind-for-user .remind-for-anaconda-api install-build-requirements
+build-conda-package-release: .remind-for-user .remind-for-anaconda-api install-build-requirements
 	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS)
-
-.remind-current:
-	@echo "Make sure the correct channels are added in \`conda config --get channels\`"
-	@echo "Currently the required channels are \`conda-forge\` and \`defaults\`"
-	@echo "Current: $$(conda config --get channels)"
-	@echo "If automatic upload is wanted, then \`conda config --set anaconda_upload yes\` should be set."
-	@echo "Current: $$(conda config --get anaconda_upload)"
 
 .remind-for-user:
 	@if [ -z "$$UPLOAD_USER" ]; then echo "Environment variable UPLOAD_USER not set!"; exit 1; fi;
