@@ -34,6 +34,18 @@ install-dev-requirements:
 test:
 	python -m pytest
 
+test-verbose:
+	python -m pytest -vs -o log_cli=true
+
+test-system:
+	xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+
+TEST_RESULT_DIR:=$(shell mktemp -d)
+test-screenshots:
+	mkdir -p ${TEST_RESULT_DIR}
+	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} xvfb-run --auto-servernum pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
+
 mypy:
 	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
 
