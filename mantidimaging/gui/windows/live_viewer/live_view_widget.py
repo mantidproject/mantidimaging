@@ -34,6 +34,4 @@ class LiveViewWidget(GraphicsLayoutWidget):
         """
         Handle the deletion of the image.
         """
-        self.image.close()
-        self.image = None
-        self.close()
+        self.image.clear()
