@@ -20,6 +20,8 @@ requirements:
     - astropy=5.0.*
     - scipy=1.7.*
     - scikit-image=0.19.*
+    - tifffile=2023.8.12
+    - imagecodecs=2023.8.12
     - numpy=1.20.*
     - numexpr=2.8.*
     - algotom=1.0.*
