@@ -199,7 +199,7 @@ class CreateDeveloperEnvironment(Command):
         output_env_file = tempfile.NamedTemporaryFile("wt", delete=False, suffix=".yaml")
         with dev_env_file.open() as dev_env_file_fh:
             for line in dev_env_file_fh:
-                if line.strip() == "- mantidimaging":
+                if line.strip().startswith("- mantidimaging"):
                     for extra_dep in extra_deps:
                         output_env_file.write(f"  - {extra_dep}\n")
                 else:
