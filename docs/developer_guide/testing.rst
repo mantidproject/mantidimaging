@@ -19,9 +19,11 @@ See the :file:`Makefile` for the underlying commands if you need to run them wit
 Pre-commit
 ----------
 
-Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit hooks. This is included in the development
-conda environment and can be installed by using `pip install pre-commit`. After installation, you can then install the
-hook scripts with `pre-commit install`. Once this has been completed, the hooks should execute with every commit.
+Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit hooks. This must be manually enabled by running::
+
+    pre-commit install
+
+Once this has been completed, the hooks should execute with every commit.
 
 Unit testing
 ------------
