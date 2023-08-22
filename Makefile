@@ -5,7 +5,16 @@ SHELL=/bin/bash
 
 SOURCE_DIRS=mantidimaging scripts docs/ext/
 
-CHANNELS:=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
+CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
+
+ifeq ($(OS),Windows_NT)
+    XVFBRUN=
+	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
+else
+	XVFBRUN=xvfb-run --auto-servernum
+	TEST_RESULT_DIR:=$(shell mktemp -d)
+endif
+
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
@@ -38,12 +47,11 @@ test-verbose:
 	python -m pytest -vs -o log_cli=true
 
 test-system:
-	xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
 
-TEST_RESULT_DIR:=$(shell mktemp -d)
 test-screenshots:
-	mkdir -p ${TEST_RESULT_DIR}
-	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} xvfb-run --auto-servernum pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	-mkdir ${TEST_RESULT_DIR}
+	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:
