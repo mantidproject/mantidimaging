@@ -39,43 +39,23 @@ class Image_Data:
         image_path : str
             path to image file
         """
-        self.image_path: Path = image_path
-        self.image_name: str = image_path.name
-        self._image_size: int
-        self._image_modified_time: float
-        self._set_file_info()
+        self.image_path = image_path
+        self.image_name = image_path.name
+        self._stat = image_path.stat()
 
-    def _set_file_info(self):
-        self.image_size = self.image_path
-        self.image_modified_time = self.image_path
+    @property
+    def stat(self):
+        return self._stat
 
     @property
     def image_size(self):
         """Return the image size"""
-        return self._image_size
-
-    @image_size.setter
-    def image_size(self, image_path: str):
-        """
-        assume image may be deleted before objet is fully created
-        """
-        try:
-            self._image_size = Path(image_path).stat().st_size
-        except FileNotFoundError:
-            self._image_size = 0
+        return self._stat.st_size
 
     @property
     def image_modified_time(self):
         """Return the image modified time"""
-        return self._image_modified_time
-
-    @image_modified_time.setter
-    def image_modified_time(self, image_path: str):
-        """ Assume image may be deleted before object is fully created"""
-        try:
-            self._image_modified_time = Path(image_path).stat().st_mtime
-        except FileNotFoundError:
-            self._image_modified_time = 0
+        return self._stat.st_mtime
 
 
 class LiveViewerWindowModel:
@@ -113,21 +93,23 @@ class LiveViewerWindowModel:
     def path(self, path):
         self._dataset_path = path
         self.image_watcher = ImageWatcher(self.path)
-        self.image_watcher.image_changed.connect(self._handle_image_changed)
+        self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.find_images()
-        self.image_watcher.find_last_modified_image()
+        self.image_watcher.get_images()
 
-    def _handle_image_changed(self, image_file) -> None:
+    def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
         which could be a new image, edited image or deleted image.
 
-        :param image_file: path to image file
+        :param image_files: list of image files
         """
-        if image_file == '':
+        if not image_files:
             self.presenter.handle_deleted()
-        self.presenter.update_image(image_file)
+            self.presenter.update_image([])
+        else:
+            self.presenter.update_image(image_files)
 
 
 class ImageWatcher(QObject):
@@ -158,7 +140,7 @@ class ImageWatcher(QObject):
         Find the last modified image in the directory and
         emit the image_changed signal.
     """
-    image_changed = pyqtSignal(str)  # Signal emitted when an image is added or removed
+    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
 
     def __init__(self, directory):
         """
@@ -193,19 +175,9 @@ class ImageWatcher(QObject):
         """
         return sorted(images, key=lambda x: x.image_modified_time)
 
-    def find_last_modified_image(self):
-        """
-        Find the last modified image in the directory and
-        emit the image_changed signal.
-        """
-
-        if self.images:
-            try:
-                last_modified_image = self.images[-1].image_path
-            except FileNotFoundError:
-                last_modified_image = ''
-
-            self.image_changed.emit(str(last_modified_image))
+    def get_images(self):
+        """Return the sorted images"""
+        return self.images
 
     def _handle_directory_change(self, directory) -> None:
         """
@@ -215,42 +187,23 @@ class ImageWatcher(QObject):
 
         :param directory: directory that has changed
         """
-        self.find_images()
         try:
-            last_image = self.images[-1].image_path
-        except IndexError:
-            last_image = ''
-        self.image_changed.emit(str(last_image))
-
-    def _validate_file(self, file_path) -> bool:
-        """
-        Check if a file is valid.
-
-        :param file_path: path to file
-        :return: True if file is valid as int (0 or 1)
-        """
-        return bool(file_path.is_file() and self._is_image_file(file_path.name))
-
-    def _validate_images(self, images: list) -> bool:
-        """
-        Check if a list of images are valid.
-
-        :param images: list of images
-        :return: True if all images are valid
-        """
-        return all(self._validate_file(image) for image in images)
+            self.find_images()
+            self.image_changed.emit(self.images)
+        except FileNotFoundError:
+            self.image_changed.emit([])
 
     def _get_image_files(self):
         image_files = []
         for file_path in Path(self.directory).iterdir():
-            file_size = file_path.stat().st_size
-            if file_size > 45 and self._validate_file(file_path):
-                LOG.debug(f'VALID FILE: {file_path} is an image file and is not empty')
-                image_files.append(Image_Data(file_path))
-            else:
-                LOG.debug(f'INVALID FILE: {file_path} is not valid an image file or is empty')
-        sorted_images = self.sort_images_by_modified_time(image_files)
-        return sorted_images
+            if self._is_image_file(file_path.name):
+                try:
+                    image_obj = Image_Data(file_path)
+                    if image_obj.image_size > 45:
+                        image_files.append(image_obj)
+                except FileNotFoundError:
+                    continue
+        return self.sort_images_by_modified_time(image_files)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:
