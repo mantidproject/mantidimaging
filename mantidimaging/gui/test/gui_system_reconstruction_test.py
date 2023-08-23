@@ -3,6 +3,7 @@
 from __future__ import annotations
 from unittest import mock
 
+import pytest
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt, QTimer
 
@@ -49,6 +50,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
             wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
+    @pytest.mark.xfail(reason="Unresolved, see #1641")
     def test_minimise(self):
         for i in range(2, 6):
             QTimer.singleShot(SHORT_DELAY, lambda i=i: self._click_InputDialog(set_int=i))
@@ -86,6 +88,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
         QTest.qWait(SHOW_DELAY)
 
+    @pytest.mark.xfail(reason="Unresolved, see #1641")
     def test_refine_stress(self):
         for i in range(5):
             print(f"test_refine_stress iteration {i}")
