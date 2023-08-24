@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from statistics import stdev
+from typing import Callable
 
 import numpy as np
 import pandas as pd
@@ -43,7 +44,7 @@ if not SAVE_DIR.exists():
     SAVE_DIR.mkdir()
 
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
-TEST_CASE_RESULTS = []
+TEST_CASE_RESULTS: list[TestCase] = []
 GIT_TOKEN = subprocess.check_output(["git", "describe"], encoding="utf_8").strip()
 COMMIT_DATE = subprocess.check_output(["git", "log", "--pretty=format:%ai", "-n1"], encoding="utf_8").strip()
 with open(Path(__file__).parent / "test_cases.json", encoding="UTF-8") as f:
@@ -57,7 +58,7 @@ class TestCase:
     sub_test_name: str
     test_number: int
     params: dict
-    op_func: callable
+    op_func: Callable
     duration: float = 0.0
     message: str = ""
     status: str = ""

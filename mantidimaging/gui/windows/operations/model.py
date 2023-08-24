@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import partial
 from typing import Callable, TYPE_CHECKING, List, Any, Dict
 
-from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
+from mantidimaging.core.operations.base_filter import FilterGroup
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -14,11 +14,12 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter  # pragma: no cover
     from mantidimaging.core.data import ImageStack
+    from mantidimaging.core.operations.loader import BaseFilterClass
 
 
 class FiltersWindowModel(object):
-    filters: List[BaseFilter]
-    selected_filter: BaseFilter
+    filters: List[BaseFilterClass]
+    selected_filter: BaseFilterClass
     filter_widget_kwargs: Dict[str, Any]
 
     def __init__(self, presenter: 'FiltersWindowPresenter'):

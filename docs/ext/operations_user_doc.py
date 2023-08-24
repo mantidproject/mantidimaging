@@ -70,6 +70,7 @@ class OperationsUserDoc(Directive):
             rst_lines += make_heading(op.filter_name, "-")
 
             # Description from class doc string
+            assert op.__doc__ is not None
             rst_lines += split_lines(inspect.cleandoc(op.__doc__))
             rst_lines.append("")
 
