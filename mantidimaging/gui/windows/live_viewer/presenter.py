@@ -53,12 +53,15 @@ class LiveViewerWindowPresenter(BasePresenter):
         try:
             with tifffile.TiffFile(images_list[-1].image_path) as tif:
                 image_data = tif.asarray()
-                self.view.show_most_recent_image(image_data)
-                self.view.label_active_filename.setText(images_list[-1].image_name)
         except IOError as error:
             logger.error("Error reading image: %s", error)
             return
         except KeyError as key_error:
             logger.error("Error reading image: %s", key_error)
+            return
         except ValueError as value_error:
             logger.error("Error reading image: %s", value_error)
+            return
+
+        self.view.show_most_recent_image(image_data)
+        self.view.label_active_filename.setText(images_list[-1].image_name)
