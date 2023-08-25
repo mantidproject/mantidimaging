@@ -52,12 +52,13 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not images_list:
             self.view.remove_image()
             return
+        latest_image = images_list[-1]
         try:
-            with tifffile.TiffFile(images_list[-1].image_path) as tif:
+            with tifffile.TiffFile(latest_image.image_path) as tif:
                 image_data = tif.asarray()
         except (IOError, KeyError, ValueError, DeflateError) as error:
-            logger.error("Error reading image: %s", error)
+            logger.error("%s reading image: %s: %s", type(error).__name__, latest_image.image_path, error)
             return
 
         self.view.show_most_recent_image(image_data)
-        self.view.label_active_filename.setText(images_list[-1].image_name)
+        self.view.label_active_filename.setText(latest_image.image_name)
