@@ -78,7 +78,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
         self.view.set_normalise_error(self.model.normalise_issue())
-        self.redraw_all_rois()
+        if self.view.normalisation_enabled():
+            self.redraw_all_rois()
 
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
