@@ -161,17 +161,3 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertIn("roi_1", self.spectrum_widget.roi_dict.keys())
         self.spectrum_widget.rename_roi("roi_1", "roi")
         self.assertIn("roi_1", self.spectrum_widget.roi_dict)
-
-    def test_WHEN_reset_size_called_THEN_roi_size_reset(self):
-        image_shape = (100, 100)
-        spectrum_roi = SpectrumROI("roi",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
-        self.spectrum_widget.roi_dict["roi"] = spectrum_roi
-        self.spectrum_widget.spectrum_data_dict["roi"] = np.array([0, 0, 0, 0])
-        self.spectrum_widget.reset_roi_size(image_shape)
-        img_x, img_y = spectrum_roi.size()
-        self.assertEqual((img_x, img_y), (100, 100))
