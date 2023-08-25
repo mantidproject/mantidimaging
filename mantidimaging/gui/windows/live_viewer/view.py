@@ -36,9 +36,9 @@ class LiveViewerWindowView(BaseMainWindowView):
         # reposition to the right of the main window to be visible when launched from cli
         self.move(self.main_window.x() + self.main_window.width(), self.main_window.y())
 
-    def show_image(self, image: np.ndarray) -> None:
+    def show_most_recent_image(self, image: np.ndarray) -> None:
         """
-        Show the image in the image view.
+        Show the most recently modified image in the image view.
         @param image: The image to show
         """
         self.live_viewer.show_image(image)

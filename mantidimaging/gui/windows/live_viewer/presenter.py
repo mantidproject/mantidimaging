@@ -4,7 +4,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 from tifffile import tifffile
-from pathlib import Path
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel
@@ -46,20 +45,16 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.remove_image()
         self.clear_label()
 
-    def update_image(self, image_path: str):
+    def update_image(self, images_list: list):
         """Update the image in the view."""
-        if not Path(image_path).exists():
-            return
-        if image_path == '':
+        if not images_list:
             self.view.remove_image()
-
             return
         try:
-            logger.debug("Showing image in presenter: %s", image_path)
-            with tifffile.TiffFile(image_path) as tif:
+            with tifffile.TiffFile(images_list[-1].image_path) as tif:
                 image_data = tif.asarray()
-                self.view.show_image(image_data)
-                self.view.label_active_filename.setText(image_path.split("/")[-1])
+                self.view.show_most_recent_image(image_data)
+                self.view.label_active_filename.setText(images_list[-1].image_name)
         except IOError as error:
             logger.error("Error reading image: %s", error)
             return
