@@ -10,7 +10,7 @@ from tqdm import tqdm
 import time
 
 
-def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode, faulty_copy_mode):
+def copy_dataset(source_dir: str, dest_dir: str, rate: float, slow_copy_mode: bool, faulty_copy_mode: bool) -> None:
     """
     Copy data from a source directory to a destination directory.
     Files are copied one image at a time at a specified rate in seconds.
@@ -39,7 +39,7 @@ def copy_dataset(source_dir, dest_dir, rate, slow_copy_mode, faulty_copy_mode):
             copy_dataset(source_item, dest_item, rate, slow_copy_mode, faulty_copy_mode)
 
 
-def slow_copy(source, dest):
+def slow_copy(source: str, dest: str) -> None:
     with open(source, "rb") as source_file:
         data = source_file.read()
     data_size = len(data)
@@ -56,7 +56,7 @@ def slow_copy(source, dest):
             writen += dest_file.write(data[start:stop])
 
 
-def faulty_copy(source, dest):
+def faulty_copy(source: str, dest: str) -> None:
     with open(source, "rb") as source_file:
         data = source_file.read()
     data_size = len(data)
@@ -71,7 +71,7 @@ def faulty_copy(source, dest):
         dest_file.write(data)
 
 
-def main():
+def main() -> None:
     """
     Main function to copy dataset from a source directory to a destination directory
     """
@@ -94,7 +94,6 @@ def main():
     args = parser.parse_args()
     copy_dataset(args.source_dir, args.dest_dir, args.rate, args.slow, args.faulty)
     print("Copy complete")
-    os._exit(0)
 
 
 if __name__ == "__main__":
