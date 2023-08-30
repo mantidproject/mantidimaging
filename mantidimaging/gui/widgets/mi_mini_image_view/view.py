@@ -86,7 +86,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     def viewbox(self) -> ViewBox:
         return self.vb
 
-    def clear(self):
+    def clear(self) -> None:
         self.im.clear()
         self.set_auto_color_enabled(False)
         self.clear_overlays()

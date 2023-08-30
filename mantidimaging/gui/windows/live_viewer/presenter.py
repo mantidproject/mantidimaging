@@ -8,7 +8,7 @@ from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView  # pragma: no cover
@@ -34,20 +34,20 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
 
-    def set_dataset_path(self, path):
+    def set_dataset_path(self, path: str) -> None:
         """Set the path to the dataset."""
         self.model.path = path
 
-    def clear_label(self):
+    def clear_label(self) -> None:
         """Clear the label."""
         self.view.label_active_filename.setText("")
 
-    def handle_deleted(self):
+    def handle_deleted(self) -> None:
         """Handle the deletion of the image."""
         self.view.remove_image()
         self.clear_label()
 
-    def update_image(self, images_list: list):
+    def update_image(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
         if not images_list:
             self.view.remove_image()

@@ -30,7 +30,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         """
         self.image.setImage(image)
 
-    def handle_deleted(self):
+    def handle_deleted(self) -> None:
         """
         Handle the deletion of the image.
         """
