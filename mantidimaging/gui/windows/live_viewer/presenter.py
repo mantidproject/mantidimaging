@@ -1,6 +1,8 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+from pathlib import Path
 from typing import TYPE_CHECKING
 from logging import getLogger
 
@@ -34,7 +36,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
 
-    def set_dataset_path(self, path: str) -> None:
+    def set_dataset_path(self, path: Path) -> None:
         """Set the path to the dataset."""
         self.model.path = path
 

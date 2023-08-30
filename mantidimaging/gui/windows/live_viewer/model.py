@@ -22,13 +22,13 @@ class Image_Data:
 
     Attributes
     ----------
-    image_path : str
+    image_path : Path
         path to image file
     image_name : str
         name of image file
     image_size : int
         size of image file
-    image_modified_time : int
+    image_modified_time : float
         last modified time of image file
     """
 
@@ -70,7 +70,7 @@ class LiveViewerWindowModel:
     ----------
     presenter : LiveViewerWindowPresenter
         presenter for the spectrum viewer window
-    path : str
+    path : Path
         path to dataset
     """
 
@@ -85,15 +85,15 @@ class LiveViewerWindowModel:
         """
 
         self.presenter = presenter
-        self._dataset_path: str | None = None
+        self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
 
     @property
-    def path(self) -> str | None:
+    def path(self) -> Path | None:
         return self._dataset_path
 
     @path.setter
-    def path(self, path: str) -> None:
+    def path(self, path: Path) -> None:
         self._dataset_path = path
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
@@ -123,7 +123,7 @@ class ImageWatcher(QObject):
 
     Attributes
     ----------
-    directory : str
+    directory : Path
         path to directory to watch
     watcher : QFileSystemWatcher
         file system watcher to watch directory
@@ -145,13 +145,13 @@ class ImageWatcher(QObject):
     """
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
 
-    def __init__(self, directory: str):
+    def __init__(self, directory: Path):
         """
         Constructor for ImageWatcher class which inherits from QObject.
 
         Parameters
         ----------
-        directory : str
+        directory : Path
             path to directory to watch
         """
 
