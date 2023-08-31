@@ -72,6 +72,8 @@ class LiveViewerWindowModel:
         presenter for the spectrum viewer window
     path : Path
         path to dataset
+    images : list
+        list of images in directory
     """
 
     def __init__(self, presenter: 'LiveViewerWindowPresenter'):
@@ -87,6 +89,7 @@ class LiveViewerWindowModel:
         self.presenter = presenter
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
+        self.images: list[Image_Data] = []
 
     @property
     def path(self) -> Path | None:
@@ -98,7 +101,6 @@ class LiveViewerWindowModel:
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.find_images()
-        self.image_watcher.get_images()
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -108,6 +110,7 @@ class LiveViewerWindowModel:
 
         :param image_files: list of image files
         """
+        self.images = image_files
         if not image_files:
             self.presenter.handle_deleted()
             self.presenter.update_image([])
@@ -127,21 +130,15 @@ class ImageWatcher(QObject):
         path to directory to watch
     watcher : QFileSystemWatcher
         file system watcher to watch directory
-    images : list
-        list of images in directory
     image_changed : pyqtSignal
         signal emitted when an image is added or removed
 
     Methods
     -------
     find_images()
-        Find all the images in the directory and emit the
-        image_changed signal for the last modified image.
+        Find all the images in the directory
     sort_images_by_modified_time(images)
         Sort the images by modified time.
-    find_last_modified_image()
-        Find the last modified image in the directory and
-        emit the image_changed signal.
     """
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
 
@@ -160,43 +157,11 @@ class ImageWatcher(QObject):
         self.watcher = QFileSystemWatcher()
         self.watcher.directoryChanged.connect(self._handle_directory_change)
         self.watcher.addPath(str(self.directory))
-        self.images: list[Image_Data] = []
 
-    def find_images(self) -> None:
+    def find_images(self) -> list[Image_Data]:
         """
-        Find all the images in the directory and emit the
-        image_changed signal for the last modified image.
+        Find all the images in the directory.
         """
-        self.images = self._get_image_files()
-
-    def sort_images_by_modified_time(self, images: list[Image_Data]) -> list[Image_Data]:
-        """
-        Sort the images by modified time.
-
-        :param images: list of image objects to sort by modified time
-        :return: sorted list of images
-        """
-        return sorted(images, key=lambda x: x.image_modified_time)
-
-    def get_images(self) -> list[Image_Data]:
-        """Return the sorted images"""
-        return self.images
-
-    def _handle_directory_change(self, directory: str) -> None:
-        """
-        Handle a directory change event. Update the list of images
-        to reflect directory changes and emit the image_changed signal
-        for the last modified image.
-
-        :param directory: directory that has changed
-        """
-        try:
-            self.find_images()
-            self.image_changed.emit(self.images)
-        except FileNotFoundError:
-            self.image_changed.emit([])
-
-    def _get_image_files(self) -> list[Image_Data]:
         image_files = []
         for file_path in Path(self.directory).iterdir():
             if self._is_image_file(file_path.name):
@@ -206,7 +171,31 @@ class ImageWatcher(QObject):
                         image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
-        return self.sort_images_by_modified_time(image_files)
+
+        return image_files
+
+    @staticmethod
+    def sort_images_by_modified_time(images: list[Image_Data]) -> list[Image_Data]:
+        """
+        Sort the images by modified time.
+
+        :param images: list of image objects to sort by modified time
+        :return: sorted list of images
+        """
+        return sorted(images, key=lambda x: x.image_modified_time)
+
+    def _handle_directory_change(self, directory: str) -> None:
+        """
+        Handle a directory change event. Update the list of images
+        to reflect directory changes and emit the image_changed signal
+        with the sorted image list.
+
+        :param directory: directory that has changed
+        """
+
+        images = self.find_images()
+        images = self.sort_images_by_modified_time(images)
+        self.image_changed.emit(images)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:
