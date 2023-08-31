@@ -53,6 +53,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Update the image in the view."""
         if not images_list:
             self.view.remove_image()
+            self.view.live_viewer.z_slider.set_range(0, 1)
             return
         latest_image = images_list[-1]
         try:
@@ -64,3 +65,5 @@ class LiveViewerWindowPresenter(BasePresenter):
 
         self.view.show_most_recent_image(image_data)
         self.view.label_active_filename.setText(latest_image.image_name)
+
+        self.view.live_viewer.z_slider.set_range(0, len(images_list))
