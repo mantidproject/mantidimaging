@@ -111,11 +111,7 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        if not image_files:
-            self.presenter.handle_deleted()
-            self.presenter.update_image([])
-        else:
-            self.presenter.update_image(image_files)
+        self.presenter.update_image_list(image_files)
 
 
 class ImageWatcher(QObject):

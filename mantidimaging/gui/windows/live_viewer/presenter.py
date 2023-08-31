@@ -48,13 +48,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Handle the deletion of the image."""
         self.view.remove_image()
         self.clear_label()
+        self.view.live_viewer.z_slider.set_range(0, 1)
 
-    def update_image(self, images_list: list[Image_Data]) -> None:
+    def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
         if not images_list:
-            self.view.remove_image()
-            self.view.live_viewer.z_slider.set_range(0, 1)
+            self.handle_deleted()
             return
+
         latest_image = images_list[-1]
         try:
             with tifffile.TiffFile(latest_image.image_path) as tif:
