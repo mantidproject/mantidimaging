@@ -36,6 +36,8 @@ class LiveViewerWindowView(BaseMainWindowView):
         # reposition to the right of the main window to be visible when launched from cli
         self.move(self.main_window.x() + self.main_window.width(), self.main_window.y())
 
+        self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+
     def show_most_recent_image(self, image: np.ndarray) -> None:
         """
         Show the most recently modified image in the image view.
@@ -50,3 +52,6 @@ class LiveViewerWindowView(BaseMainWindowView):
     def remove_image(self) -> None:
         """Remove the image from the view."""
         self.live_viewer.handle_deleted()
+
+    def set_image_index(self, index: int) -> None:
+        self.live_viewer.z_slider.set_value(index)
