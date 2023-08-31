@@ -11,8 +11,8 @@ class ZSlider(PlotItem):
     z_line: InfiniteLine
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self) -> None:
+        super().__init__()
         self.setFixedHeight(40)
         self.hideAxis("left")
         self.setXRange(0, 1)
@@ -25,18 +25,18 @@ class ZSlider(PlotItem):
 
         self.z_line.sigPositionChanged.connect(self.value_changed)
 
-    def set_range(self, min: int, max: int):
+    def set_range(self, min: int, max: int) -> None:
         self.z_line.setValue(min)
         self.setXRange(min, max)
         self.z_line.setBounds([min, max])
 
-    def set_value(self, value: int):
+    def set_value(self, value: int) -> None:
         self.z_line.setValue(value)
 
-    def value_changed(self):
+    def value_changed(self) -> None:
         self.valueChanged.emit(int(self.z_line.value()))
 
-    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent'):
+    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent') -> None:
         if ev.button() == Qt.MouseButton.LeftButton:
             x = round(self.vb.mapSceneToView(ev.scenePos()).x())
             self.set_value(x)
