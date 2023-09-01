@@ -31,12 +31,10 @@ def create_and_start_pool():
     global cores
     cores = context.cpu_count()
     global pool
-    pool = context.Pool(cores)
-
-    pool.map(worker_setup, range(cores))
+    pool = context.Pool(cores, initializer=worker_setup)
 
 
-def worker_setup(_):
+def worker_setup():
     # Required to import modules for running operations
     load_filter_packages()
 
