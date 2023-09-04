@@ -8,6 +8,17 @@ from pyqtgraph import PlotItem, InfiniteLine
 
 
 class ZSlider(PlotItem):
+    """
+    A plot item to draw a z-axis slider mimicking the slider in PyQtGraph's ImageView
+
+    This gives us flexibility to choose what happens when the user move through the z-axis. It can be combined with
+    the one or more :py:class:`~mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView`'s in a
+    GraphicsLayoutWidget. It is used in the Operations window to choose the slice to preview a filter with,
+    and in the Live Viewer scroll through images.
+
+    Emits a :code:`valueChanged` signal when the user moves the slider
+    """
+
     z_line: InfiniteLine
     valueChanged = pyqtSignal(int)
 
@@ -37,6 +48,9 @@ class ZSlider(PlotItem):
         self.valueChanged.emit(int(self.z_line.value()))
 
     def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent') -> None:
+        """
+        Adjusts built in behaviour to allow user to click anywhere on the line to jump there.
+        """
         if ev.button() == Qt.MouseButton.LeftButton:
             x = round(self.vb.mapSceneToView(ev.scenePos()).x())
             self.set_value(x)
