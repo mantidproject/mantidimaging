@@ -3,6 +3,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
+
+from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
 
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -50,15 +52,13 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not images_list:
             self.view.remove_image()
             return
+        latest_image = images_list[-1]
         try:
-            with tifffile.TiffFile(images_list[-1].image_path) as tif:
+            with tifffile.TiffFile(latest_image.image_path) as tif:
                 image_data = tif.asarray()
-                self.view.show_most_recent_image(image_data)
-                self.view.label_active_filename.setText(images_list[-1].image_name)
-        except IOError as error:
-            logger.error("Error reading image: %s", error)
+        except (IOError, KeyError, ValueError, DeflateError) as error:
+            logger.error("%s reading image: %s: %s", type(error).__name__, latest_image.image_path, error)
             return
-        except KeyError as key_error:
-            logger.error("Error reading image: %s", key_error)
-        except ValueError as value_error:
-            logger.error("Error reading image: %s", value_error)
+
+        self.view.show_most_recent_image(image_data)
+        self.view.label_active_filename.setText(latest_image.image_name)
