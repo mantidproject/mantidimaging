@@ -1,12 +1,14 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal
 
 if TYPE_CHECKING:
+    from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
 
 LOG = getLogger(__name__)
@@ -20,13 +22,13 @@ class Image_Data:
 
     Attributes
     ----------
-    image_path : str
+    image_path : Path
         path to image file
     image_name : str
         name of image file
     image_size : int
         size of image file
-    image_modified_time : int
+    image_modified_time : float
         last modified time of image file
     """
 
@@ -44,16 +46,16 @@ class Image_Data:
         self._stat = image_path.stat()
 
     @property
-    def stat(self):
+    def stat(self) -> stat_result:
         return self._stat
 
     @property
-    def image_size(self):
+    def image_size(self) -> int:
         """Return the image size"""
         return self._stat.st_size
 
     @property
-    def image_modified_time(self):
+    def image_modified_time(self) -> float:
         """Return the image modified time"""
         return self._stat.st_mtime
 
@@ -68,7 +70,7 @@ class LiveViewerWindowModel:
     ----------
     presenter : LiveViewerWindowPresenter
         presenter for the spectrum viewer window
-    path : str
+    path : Path
         path to dataset
     """
 
@@ -83,16 +85,17 @@ class LiveViewerWindowModel:
         """
 
         self.presenter = presenter
-        self._dataset_path = None
+        self._dataset_path: Path | None = None
+        self.image_watcher: ImageWatcher | None = None
 
     @property
-    def path(self):
+    def path(self) -> Path | None:
         return self._dataset_path
 
     @path.setter
-    def path(self, path):
+    def path(self, path: Path) -> None:
         self._dataset_path = path
-        self.image_watcher = ImageWatcher(self.path)
+        self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.find_images()
         self.image_watcher.get_images()
@@ -120,7 +123,7 @@ class ImageWatcher(QObject):
 
     Attributes
     ----------
-    directory : str
+    directory : Path
         path to directory to watch
     watcher : QFileSystemWatcher
         file system watcher to watch directory
@@ -142,13 +145,13 @@ class ImageWatcher(QObject):
     """
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
 
-    def __init__(self, directory):
+    def __init__(self, directory: Path):
         """
         Constructor for ImageWatcher class which inherits from QObject.
 
         Parameters
         ----------
-        directory : str
+        directory : Path
             path to directory to watch
         """
 
@@ -157,7 +160,7 @@ class ImageWatcher(QObject):
         self.watcher = QFileSystemWatcher()
         self.watcher.directoryChanged.connect(self._handle_directory_change)
         self.watcher.addPath(str(self.directory))
-        self.images = []
+        self.images: list[Image_Data] = []
 
     def find_images(self) -> None:
         """
@@ -175,11 +178,11 @@ class ImageWatcher(QObject):
         """
         return sorted(images, key=lambda x: x.image_modified_time)
 
-    def get_images(self):
+    def get_images(self) -> list[Image_Data]:
         """Return the sorted images"""
         return self.images
 
-    def _handle_directory_change(self, directory) -> None:
+    def _handle_directory_change(self, directory: str) -> None:
         """
         Handle a directory change event. Update the list of images
         to reflect directory changes and emit the image_changed signal
@@ -193,7 +196,7 @@ class ImageWatcher(QObject):
         except FileNotFoundError:
             self.image_changed.emit([])
 
-    def _get_image_files(self):
+    def _get_image_files(self) -> list[Image_Data]:
         image_files = []
         for file_path in Path(self.directory).iterdir():
             if self._is_image_file(file_path.name):

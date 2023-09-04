@@ -43,10 +43,10 @@ class LiveViewerWindowView(BaseMainWindowView):
         """
         self.live_viewer.show_image(image)
 
-    def watch_directory(self):
+    def watch_directory(self) -> None:
         """Show the most recent image arrived in the selected directory"""
         self.presenter.set_dataset_path(self.path)
 
-    def remove_image(self):
+    def remove_image(self) -> None:
         """Remove the image from the view."""
         self.live_viewer.handle_deleted()
