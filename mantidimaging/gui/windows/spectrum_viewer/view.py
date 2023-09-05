@@ -53,7 +53,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
-        self.normaliseCheckBox.stateChanged.connect(self.set_normalise_dropdown_state)
+        self.normaliseCheckBox.stateChanged.connect(self.normaliseStackSelector.setEnabled)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
 
         # ROI action buttons
@@ -158,12 +158,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         selector.presenter.show_stacks = True
         selector.subscribe_to_main_window(self.main_window)
 
-    def set_normalise_dropdown_state(self) -> None:
-        if self.normaliseCheckBox.isChecked():
-            self.normaliseStackSelector.setEnabled(True)
-        else:
-            self.normaliseStackSelector.setEnabled(False)
-
     def try_to_select_relevant_normalise_stack(self, name: str) -> None:
         self.normaliseStackSelector.try_to_select_relevant_stack(name)
 
@@ -206,12 +200,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.display_normalise_error()
 
     def display_normalise_error(self):
-        if self.normalise_error_issue and self.normaliseCheckBox.isChecked():
+        if self.normalise_error_issue and self.normalisation_enabled():
             self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
             self.normaliseErrorIcon.setToolTip(self.normalise_error_issue)
         else:
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
+
+    def normalisation_enabled(self):
+        return self.normaliseCheckBox.isChecked()
 
     def set_new_roi(self) -> None:
         """

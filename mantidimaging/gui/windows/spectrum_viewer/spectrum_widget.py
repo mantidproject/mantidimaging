@@ -228,18 +228,3 @@ class SpectrumWidget(GraphicsLayoutWidget):
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
             self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
-
-    def reset_roi_size(self, image_shape) -> None:
-        """
-        Reset the size of the ROI to the maximum size of the image.
-
-        @param image_shape: The shape of the image.
-        """
-        roi_name = list(self.roi_dict.keys())[0]
-        height, width = image_shape
-
-        self.roi_dict[roi_name].setSize([width, height])
-        self.roi_dict[roi_name].setPos([0, 0])
-        self.roi_dict[roi_name].maxBounds = self.roi_dict[roi_name].parentBounds()
-        self.image.vb.addItem(self.roi_dict[roi_name])
-        self.roi_dict[roi_name].sigRegionChanged.connect(self.roi_changed.emit)

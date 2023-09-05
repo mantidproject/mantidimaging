@@ -78,7 +78,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
         self.view.set_normalise_error(self.model.normalise_issue())
-        self.redraw_all_rois()
+        if self.view.normalisation_enabled():
+            self.redraw_all_rois()
 
     def auto_find_flat_stack(self, new_dataset_id):
         if self.view.current_dataset_id != new_dataset_id:
@@ -103,8 +104,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image())
         self.view.spectrum.add_range(*self.model.tof_range)
         self.view.auto_range_image()
-        self.view.spectrum.reset_roi_size(self.model.get_image_shape())
-        self.handle_roi_moved(True)
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
@@ -181,8 +180,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         roi_name = self.model.roi_name_generator()
         self.model.set_new_roi(roi_name)
-        self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
 
