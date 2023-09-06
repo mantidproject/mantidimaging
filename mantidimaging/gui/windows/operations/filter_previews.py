@@ -3,19 +3,16 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtCore import Qt, QPoint, QRect, pyqtSignal
+from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem, InfiniteLine
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
-
-if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
+from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 
 LOG = getLogger(__name__)
 
@@ -30,42 +27,6 @@ OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 
 def _data_valid_for_histogram(data) -> bool:
     return data is not None and any(d is not None for d in data)
-
-
-class ZSlider(PlotItem):
-    z_line: InfiniteLine
-    valueChanged = pyqtSignal(int)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setFixedHeight(40)
-        self.hideAxis("left")
-        self.setXRange(0, 1)
-        self.setMouseEnabled(x=False, y=False)
-        self.hideButtons()
-
-        self.z_line = InfiniteLine(0, movable=True)
-        self.z_line.setPen((255, 255, 0, 200))
-        self.addItem(self.z_line)
-
-        self.z_line.sigPositionChanged.connect(self.value_changed)
-
-    def set_range(self, min: int, max: int):
-        self.z_line.setValue(min)
-        self.setXRange(min, max)
-        self.z_line.setBounds([min, max])
-
-    def set_value(self, value: int):
-        self.z_line.setValue(value)
-
-    def value_changed(self):
-        self.valueChanged.emit(int(self.z_line.value()))
-
-    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent'):
-        if ev.button() == Qt.MouseButton.LeftButton:
-            x = round(self.vb.mapSceneToView(ev.scenePos()).x())
-            self.set_value(x)
-        super().mousePressEvent(ev)
 
 
 class FilterPreviews(GraphicsLayoutWidget):

@@ -48,19 +48,29 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Handle the deletion of the image."""
         self.view.remove_image()
         self.clear_label()
+        self.view.live_viewer.z_slider.set_range(0, 1)
 
-    def update_image(self, images_list: list[Image_Data]) -> None:
+    def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
         if not images_list:
-            self.view.remove_image()
+            self.handle_deleted()
             return
-        latest_image = images_list[-1]
+
+        self.view.live_viewer.z_slider.set_range(0, len(images_list) - 1)
+        self.view.set_image_index(len(images_list) - 1)
+
+    def select_image(self, index: int) -> None:
+        if not self.model.images:
+            return
+        selected_image = self.model.images[index]
+        self.view.label_active_filename.setText(selected_image.image_name)
+
         try:
-            with tifffile.TiffFile(latest_image.image_path) as tif:
+            with tifffile.TiffFile(selected_image.image_path) as tif:
                 image_data = tif.asarray()
         except (IOError, KeyError, ValueError, DeflateError) as error:
-            logger.error("%s reading image: %s: %s", type(error).__name__, latest_image.image_path, error)
+            logger.error("%s reading image: %s: %s", type(error).__name__, selected_image.image_path, error)
+            self.view.remove_image()
             return
 
         self.view.show_most_recent_image(image_data)
-        self.view.label_active_filename.setText(latest_image.image_name)

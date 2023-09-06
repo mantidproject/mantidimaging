@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from pyqtgraph import GraphicsLayoutWidget
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
+from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 
 if TYPE_CHECKING:
     import numpy as np
@@ -22,6 +23,10 @@ class LiveViewWidget(GraphicsLayoutWidget):
 
         self.image = MIMiniImageView(name="Projection")
         self.addItem(self.image, 0, 0)
+        self.nextRow()
+
+        self.z_slider = ZSlider()
+        self.addItem(self.z_slider)
 
     def show_image(self, image: np.ndarray) -> None:
         """
