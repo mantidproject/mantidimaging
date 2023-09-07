@@ -217,6 +217,7 @@ class ReconstructWindowView(BaseMainWindowView):
         elif self.presenter.stack_changed_pending:
             self.presenter.handle_stack_changed()
             self.presenter.stack_changed_pending = False
+        self.activateWindow()
 
     def closeEvent(self, e):
         if self.presenter.recon_is_running:

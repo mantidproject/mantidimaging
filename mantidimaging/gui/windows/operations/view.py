@@ -133,6 +133,7 @@ class FiltersWindowView(BaseMainWindowView):
     def show(self):
         super().show()
         self.auto_update_triggered.emit()
+        self.activateWindow()
 
     def handle_filter_selection(self, filter_name: str):
         """
