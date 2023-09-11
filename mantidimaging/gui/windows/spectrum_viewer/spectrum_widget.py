@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -101,8 +101,9 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.colour_index = 0
 
     def add_range(self, range_min: int, range_max: int) -> None:
-        self.range_control.setBounds((range_min, range_max))
-        self.range_control.setRegion((range_min, range_max))
+        with QSignalBlocker(self.range_control):
+            self.range_control.setBounds((range_min, range_max))
+            self.range_control.setRegion((range_min, range_max))
         self.spectrum.addItem(self.range_control)
         self._set_tof_range_label(range_min, range_max)
 
