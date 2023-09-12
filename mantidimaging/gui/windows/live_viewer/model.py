@@ -100,7 +100,6 @@ class LiveViewerWindowModel:
         self._dataset_path = path
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
-        self.image_watcher.find_images()
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -112,6 +111,15 @@ class LiveViewerWindowModel:
         """
         self.images = image_files
         self.presenter.update_image_list(image_files)
+
+    def get_images(self) -> None:
+        """
+        Trigger the image watcher to find images in the directory
+        in case images are already present.
+        """
+        if self.image_watcher:
+            image_files = self.image_watcher.find_images()
+            self._handle_image_changed_in_list(image_files)
 
 
 class ImageWatcher(QObject):

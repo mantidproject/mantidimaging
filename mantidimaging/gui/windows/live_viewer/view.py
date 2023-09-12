@@ -40,6 +40,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.watch_directory()
 
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+        self.presenter.model.get_images()
 
     def show_most_recent_image(self, image: np.ndarray) -> None:
         """
