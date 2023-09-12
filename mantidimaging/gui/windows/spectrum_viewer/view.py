@@ -134,6 +134,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
+    def show(self):
+        super().show()
+        self.activateWindow()
+
     def cleanup(self):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
