@@ -148,9 +148,6 @@ class MainWindowView(BaseMainWindowView):
         if self.args.live_viewer() != "":
             self.show_live_viewer(live_data_path=Path(self.args.live_viewer()))
 
-        if args.spectrum_viewer():
-            self.show_spectrum_viewer_window()
-
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)

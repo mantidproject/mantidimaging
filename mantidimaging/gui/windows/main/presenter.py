@@ -179,6 +179,9 @@ class MainWindowPresenter(BasePresenter):
         if self.view.args.recon() and self.view.recon is None:
             self.view.show_recon_window()
             self.view.args.clear_window_args()
+        if self.view.args.spectrum_viewer() and self.view.spectrum_viewer is None:
+            self.view.show_spectrum_viewer_window()
+            self.view.args.clear_window_args()
 
     def _on_dataset_load_done(self, task: 'TaskWorkerThread') -> None:
 

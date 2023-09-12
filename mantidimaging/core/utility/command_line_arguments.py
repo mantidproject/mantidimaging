@@ -118,4 +118,5 @@ class CommandLineArguments:
         """
         cls._init_operation = ""
         cls._show_recon = False
+        cls._show_spectrum_viewer = False
         cls._show_live_viewer = ""
