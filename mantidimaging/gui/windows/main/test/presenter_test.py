@@ -522,13 +522,16 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_mixed_dataset_stack_windows.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 
-    def test_on_dataset_load_done_success(self):
+    @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
+    def test_on_dataset_load_done_success(self, command_line_args):
         task = mock.Mock()
         task.result = result_mock = mock.Mock()
         task.was_successful.return_value = True
         self.presenter._add_strict_dataset_to_view = mock.Mock()
 
-        self.presenter._on_dataset_load_done(task)
+        with mock.patch.object(self.presenter, "_open_window_if_not_open") as _:
+            self.presenter._on_dataset_load_done(task)
+
         self.presenter._add_strict_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 

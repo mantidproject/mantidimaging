@@ -168,12 +168,25 @@ class MainWindowPresenter(BasePresenter):
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
+    def _open_window_if_not_open(self) -> None:
+        """
+        Launches windows that requires loaded data if the CLI flags are set.
+        Resets args after window has opened.
+        """
+        if self.view.args.operation() != "" and self.view.filters is None:
+            self.show_operation(self.view.args.operation())
+            self.view.args.clear_window_args()
+        if self.view.args.recon() and self.view.recon is None:
+            self.view.show_recon_window()
+            self.view.args.clear_window_args()
+
     def _on_dataset_load_done(self, task: 'TaskWorkerThread') -> None:
 
         if task.was_successful():
             self._add_strict_dataset_to_view(task.result)
             self.view.model_changed.emit()
             task.result = None
+            self._open_window_if_not_open()
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, task)
 

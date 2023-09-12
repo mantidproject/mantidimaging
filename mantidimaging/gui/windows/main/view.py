@@ -139,19 +139,14 @@ class MainWindowView(BaseMainWindowView):
 
         self.wizard = None
 
-        args = CommandLineArguments()
-        if args.path():
-            for filepath in list(args.path()):
+        # Recon and operation windows are launched from view using self.args
+        # if passed as flags through cli once data is loaded
+        self.args = CommandLineArguments()
+        if self.args.path():
+            for filepath in list(self.args.path()):
                 self.presenter.load_stacks_from_folder(filepath)
-
-        if args.operation():
-            self.presenter.show_operation(args.operation())
-
-        if args.recon():
-            self.show_recon_window()
-
-        if args.live_viewer() != "":
-            self.show_live_viewer(live_data_path=Path(args.live_viewer()))
+        if self.args.live_viewer() != "":
+            self.show_live_viewer(live_data_path=Path(self.args.live_viewer()))
 
         self.dataset_tree_widget = QTreeWidget()
         self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)

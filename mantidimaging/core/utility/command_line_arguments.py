@@ -93,3 +93,12 @@ class CommandLineArguments:
         Returns live view path.
         """
         return cls._show_live_viewer
+
+    @classmethod
+    def clear_window_args(cls) -> None:
+        """
+        Clears the command line arguments.
+        """
+        cls._init_operation = ""
+        cls._show_recon = False
+        cls._show_live_viewer = ""

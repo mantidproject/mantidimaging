@@ -32,9 +32,12 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
+
+    def show(self) -> None:
+        """Show the window"""
+        super().show()
+        self.activateWindow()
         self.watch_directory()
-        # reposition to the right of the main window to be visible when launched from cli
-        self.move(self.main_window.x() + self.main_window.width(), self.main_window.y())
 
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
