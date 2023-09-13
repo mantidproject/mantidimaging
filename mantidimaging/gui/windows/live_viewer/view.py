@@ -32,14 +32,13 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
+        self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
     def show(self) -> None:
         """Show the window"""
         super().show()
         self.activateWindow()
         self.watch_directory()
-
-        self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
     def show_most_recent_image(self, image: np.ndarray) -> None:
         """
