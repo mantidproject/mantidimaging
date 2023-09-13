@@ -100,6 +100,7 @@ class LiveViewerWindowModel:
         self._dataset_path = path
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
+        self.image_watcher._handle_directory_change("")
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -119,6 +120,7 @@ class LiveViewerWindowModel:
         """
         if self.image_watcher:
             image_files = self.image_watcher.find_images()
+            image_files = self.image_watcher.sort_images_by_modified_time(image_files)
             self._handle_image_changed_in_list(image_files)
 
 
