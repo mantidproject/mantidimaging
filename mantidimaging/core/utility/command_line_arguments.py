@@ -28,8 +28,14 @@ class CommandLineArguments:
     _init_operation = ""
     _show_recon = False
     _show_live_viewer = ""
+    _show_spectrum_viewer = False
 
-    def __new__(cls, path: str = "", operation: str = "", show_recon: bool = False, show_live_viewer: str = ""):
+    def __new__(cls,
+                path: str = "",
+                operation: str = "",
+                show_recon: bool = False,
+                show_live_viewer: str = "",
+                show_spectrum_viewer: bool = False):
         """
         Creates a singleton for storing the command line arguments.
         """
@@ -58,6 +64,10 @@ class CommandLineArguments:
                 _log_and_exit("No path given for reconstruction. Exiting.")
             else:
                 cls._show_recon = show_recon
+            if show_spectrum_viewer and not path:
+                _log_and_exit("No path given for reconstruction. Exiting.")
+            else:
+                cls._show_spectrum_viewer = show_spectrum_viewer
             if show_live_viewer and show_live_viewer != cls._show_live_viewer:
                 if not os.path.exists(show_live_viewer):
                     _log_and_exit("Path given for live view does not exist. Exiting.")
@@ -88,6 +98,13 @@ class CommandLineArguments:
         return cls._show_recon
 
     @classmethod
+    def spectrum_viewer(cls) -> bool:
+        """
+        Returns whether or not the recon window should be started.
+        """
+        return cls._show_spectrum_viewer
+
+    @classmethod
     def live_viewer(cls) -> str:
         """
         Returns live view path.
@@ -101,4 +118,5 @@ class CommandLineArguments:
         """
         cls._init_operation = ""
         cls._show_recon = False
+        cls._show_spectrum_viewer = False
         cls._show_live_viewer = ""

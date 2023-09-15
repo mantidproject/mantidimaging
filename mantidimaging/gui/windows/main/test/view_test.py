@@ -31,6 +31,7 @@ class MainWindowViewTest(unittest.TestCase):
                 command_line_args.return_value.operation.return_value = ""
                 command_line_args.return_value.recon.return_value = False
                 command_line_args.return_value.live_viewer.return_value = ""
+                command_line_args.return_value.spectrum_viewer.return_value = False
 
                 self.view = MainWindowView()
         self.presenter = mock.MagicMock()
@@ -329,6 +330,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
         command_line_args.return_value.live_viewer.return_value = ""
+        command_line_args.return_value.spectrum_viewer.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_called_once_with(test_path)
 
@@ -341,6 +343,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
         command_line_args.return_value.live_viewer.return_value = ""
+        command_line_args.return_value.spectrum_viewer.return_value = False
         MainWindowView()
         main_window_presenter.return_value.load_stacks_from_folder.assert_not_called()
 
@@ -352,6 +355,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
         command_line_args.return_value.live_viewer.return_value = ""
+        command_line_args.return_value.spectrum_viewer.return_value = False
         MainWindowView()
         filters_window.assert_not_called()
 
@@ -363,6 +367,7 @@ class MainWindowViewTest(unittest.TestCase):
         command_line_args.return_value.recon.return_value = False
         command_line_args.return_value.operation.return_value = ""
         command_line_args.return_value.live_viewer.return_value = ""
+        command_line_args.return_value.spectrum_viewer.return_value = False
         MainWindowView()
         recon_window.assert_not_called()
 

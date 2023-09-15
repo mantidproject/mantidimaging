@@ -38,6 +38,11 @@ def parse_args() -> argparse.Namespace:
                         default=False,
                         action='store_true',
                         help="Opens the reconstruction window at start up.")
+    parser.add_argument("-sv",
+                        "--spectrum_viewer",
+                        default=False,
+                        action='store_true',
+                        help="Opens the spectrum viewer window at start up.")
     parser.add_argument("-lv",
                         "--live_viewer",
                         type=str,
@@ -69,7 +74,11 @@ def main() -> None:
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
-    CommandLineArguments(path=path, operation=operation, show_recon=args.recon, show_live_viewer=args.live_viewer)
+    CommandLineArguments(path=path,
+                         operation=operation,
+                         show_recon=args.recon,
+                         show_live_viewer=args.live_viewer,
+                         show_spectrum_viewer=args.spectrum_viewer)
 
     h.initialise_logging(args.log_level)
 
