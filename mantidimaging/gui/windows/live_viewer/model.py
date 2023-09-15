@@ -113,6 +113,13 @@ class LiveViewerWindowModel:
         self.images = image_files
         self.presenter.update_image_list(image_files)
 
+    def close(self) -> None:
+        """Close the model."""
+        if self.image_watcher:
+            self.image_watcher.remove_path()
+            self.image_watcher = None
+        self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
+
 
 class ImageWatcher(QObject):
     """
@@ -204,3 +211,9 @@ class ImageWatcher(QObject):
         image_extensions = ['.tif', '.tiff']
         file_names = any(file_name.lower().endswith(ext) for ext in image_extensions)
         return file_names
+
+    def remove_path(self):
+        """
+        Remove the currently set path
+        """
+        self.watcher.removePath(str(self.directory))

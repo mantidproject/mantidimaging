@@ -36,6 +36,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
 
+    def close(self) -> None:
+        """Close the window."""
+        self.model.close()
+        self.model = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
+        self.view = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
+
     def set_dataset_path(self, path: Path) -> None:
         """Set the path to the dataset."""
         self.model.path = path
