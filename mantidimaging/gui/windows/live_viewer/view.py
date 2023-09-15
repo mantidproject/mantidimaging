@@ -57,3 +57,8 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def set_image_index(self, index: int) -> None:
         self.live_viewer.z_slider.set_value(index)
+
+    def closeEvent(self, e) -> None:
+        """Close the window and remove it from the main window list"""
+        self.main_window.live_viewer = None
+        super().closeEvent(e)
