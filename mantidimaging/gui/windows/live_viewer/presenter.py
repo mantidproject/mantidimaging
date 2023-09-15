@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile
+from tifffile import tifffile, TiffFileError
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
@@ -35,6 +35,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
+
+    def close(self) -> None:
+        """Close the window."""
+        self.model.close()
+        self.model = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
+        self.view = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
 
     def set_dataset_path(self, path: Path) -> None:
         """Set the path to the dataset."""
@@ -68,9 +74,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         try:
             with tifffile.TiffFile(selected_image.image_path) as tif:
                 image_data = tif.asarray()
-        except (IOError, KeyError, ValueError, DeflateError) as error:
+        except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             logger.error("%s reading image: %s: %s", type(error).__name__, selected_image.image_path, error)
             self.view.remove_image()
+            return
+        if image_data.size == 0:
+            logger.error("reading image: %s: Image has zero size", selected_image.image_path)
             return
 
         self.view.show_most_recent_image(image_data)

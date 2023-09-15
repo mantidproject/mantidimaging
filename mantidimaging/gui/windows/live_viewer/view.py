@@ -57,3 +57,11 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def set_image_index(self, index: int) -> None:
         self.live_viewer.z_slider.set_value(index)
+
+    def closeEvent(self, e) -> None:
+        """Close the window and remove it from the main window list"""
+        self.main_window.live_viewer = None
+        self.presenter.close()
+        self.live_viewer.handle_deleted()
+        super().closeEvent(e)
+        self.presenter = None  # type: ignore # View instance to be destroyed -type can be inconsistent
