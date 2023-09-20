@@ -62,7 +62,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             return
 
-        self.view.live_viewer.z_slider.set_range(0, len(images_list) - 1)
+        self.view.set_image_range((0, len(images_list) - 1))
         self.view.set_image_index(len(images_list) - 1)
 
     def select_image(self, index: int) -> None:

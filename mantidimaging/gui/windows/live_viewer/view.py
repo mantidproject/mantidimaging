@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -55,8 +56,14 @@ class LiveViewerWindowView(BaseMainWindowView):
         """Remove the image from the view."""
         self.live_viewer.handle_deleted()
 
+    def set_image_range(self, index_range: tuple[int, int]) -> None:
+        with QSignalBlocker(self.live_viewer.z_slider):
+            self.live_viewer.z_slider.set_range(*index_range)
+
     def set_image_index(self, index: int) -> None:
-        self.live_viewer.z_slider.set_value(index)
+        with QSignalBlocker(self.live_viewer.z_slider):
+            self.live_viewer.z_slider.set_value(index)
+        self.live_viewer.z_slider.valueChanged.emit(index)
 
     def closeEvent(self, e) -> None:
         """Close the window and remove it from the main window list"""
