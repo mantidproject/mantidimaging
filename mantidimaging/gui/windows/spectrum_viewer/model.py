@@ -10,6 +10,7 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
+from mantidimaging.core.io import saver
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
@@ -195,6 +196,26 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
+    def save_rits(self, path: Path, normalized: bool) -> None:
+        """
+        Saves the spectrum for one ROI to a RITS file.
+
+        @param path: The path to save the CSV file to.
+        @param normalized: Whether to save the normalized spectrum.
+        """
+        if self._stack is None:
+            raise ValueError("No stack selected")
+
+        # Default_roi will likely need updating once UI is implemented
+        default_roi = self.default_roi_list[0]
+        tof = np.arange(self._stack.data.shape[0])
+        transmission_error = np.zeros_like(tof)
+        if normalized:
+            if self._normalise_stack is None:
+                raise RuntimeError("No normalisation stack selected")
+            transmission = self.get_spectrum(default_roi, SpecType.SAMPLE_NORMED)
+            self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
+
     def get_roi_coords_filename(self, path: Path) -> Path:
         """
         Get the path to save the ROI coordinates to.
@@ -220,6 +241,13 @@ class SpectrumViewerWindowModel:
                     "Y Min": coords.top,
                     "Y Max": coords.bottom
                 })
+
+    def export_spectrum_to_rits(self, path: Path, tof, transmission, absorption) -> None:
+        """
+        Export spectrum to RITS format
+        """
+        rits_data = saver.create_rits_format(tof, transmission, absorption)
+        saver.export_to_dat_rits_format(rits_data, path)
 
     def remove_roi(self, roi_name) -> None:
         """
