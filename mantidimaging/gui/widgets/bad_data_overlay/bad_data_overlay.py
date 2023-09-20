@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from collections import OrderedDict
 from typing import Callable, List, Optional, Tuple
 
 import numpy as np
@@ -13,6 +12,7 @@ from mantidimaging.core.utility import finder
 
 OVERLAY_COLOUR_NAN = [255, 0, 0, 255]
 OVERLAY_COLOUR_NONPOSITVE = [255, 192, 0, 255]
+OVERLAY_COLOUR_MESSAGE = [255, 0, 0, 255]
 
 
 class BadDataCheck:
@@ -59,10 +59,11 @@ class BadDataOverlay:
     Mixin class to be used with MIImageView and MIMiniImageView
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-        self.enabled_checks = OrderedDict()
+        self.enabled_checks: dict[str, BadDataCheck] = {}
+        self.message_indicator: IndicatorIconView | None = None
 
         if hasattr(self, "sigTimeChanged"):
             self.sigTimeChanged.connect(self.check_for_bad_data)
@@ -123,3 +124,20 @@ class BadDataOverlay:
     def clear_overlays(self):
         for check in self.enabled_checks.values():
             check.clear()
+
+    def enable_message(self, enable: bool = True):
+        if enable:
+            icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            self.message_indicator = IndicatorIconView(self.viewbox, icon_path, 0, OVERLAY_COLOUR_MESSAGE, "")
+            self.message_indicator.setVisible(False)
+        else:
+            self.message_indicator = None
+
+    def show_message(self, message: str | None) -> None:
+        if self.message_indicator is None:
+            return
+        if message:
+            self.message_indicator.set_message(message)
+            self.message_indicator.setVisible(True)
+        else:
+            self.message_indicator.setVisible(False)
