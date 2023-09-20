@@ -50,11 +50,6 @@ class Image_Data:
         return self._stat
 
     @property
-    def image_size(self) -> int:
-        """Return the image size"""
-        return self._stat.st_size
-
-    @property
     def image_modified_time(self) -> float:
         """Return the image modified time"""
         return self._stat.st_mtime
@@ -170,8 +165,7 @@ class ImageWatcher(QObject):
             if self._is_image_file(file_path.name):
                 try:
                     image_obj = Image_Data(file_path)
-                    if image_obj.image_size > 45:
-                        image_files.append(image_obj)
+                    image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
 
