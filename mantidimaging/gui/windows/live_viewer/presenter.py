@@ -56,6 +56,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.remove_image()
         self.clear_label()
         self.view.live_viewer.z_slider.set_range(0, 1)
+        self.view.live_viewer.show_error(None)
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
@@ -79,14 +80,20 @@ class LiveViewerWindowPresenter(BasePresenter):
             with tifffile.TiffFile(image_path) as tif:
                 image_data = tif.asarray()
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
-            logger.error("%s reading image: %s: %s", type(error).__name__, image_path, error)
+            message = f"{type(error).__name__} reading image: {image_path}: {error}"
+            logger.error(message)
             self.view.remove_image()
+            self.view.live_viewer.show_error(message)
             return
         if image_data.size == 0:
+            message = "reading image: {image_path}: Image has zero size"
             logger.error("reading image: %s: Image has zero size", image_path)
+            self.view.remove_image()
+            self.view.live_viewer.show_error(message)
             return
 
         self.view.show_most_recent_image(image_data)
+        self.view.live_viewer.show_error(None)
 
     def update_image_modified(self, image_path: Path):
         """

@@ -28,6 +28,8 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.z_slider = ZSlider()
         self.addItem(self.z_slider)
 
+        self.image.enable_message()
+
     def show_image(self, image: np.ndarray) -> None:
         """
         Show the image in the image view.
@@ -40,3 +42,6 @@ class LiveViewWidget(GraphicsLayoutWidget):
         Handle the deletion of the image.
         """
         self.image.clear()
+
+    def show_error(self, message: str | None):
+        self.image.show_message(message)
