@@ -3,6 +3,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
+from logging import getLogger
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType
@@ -12,6 +13,8 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
+
+LOG = getLogger(__name__)
 
 
 class SpectrumViewerWindowPresenter(BasePresenter):
@@ -157,6 +160,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             path = path.with_suffix(".csv")
 
         self.model.save_csv(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
+
+    def handle_rits_export(self) -> None:
+        """
+        Handle the export of the current spectrum to a RITS file format
+        """
+        path = self.view.get_rits_export_filename()
+        if path is None:
+            LOG.debug("No path selected, aborting export")
+            return
+        if path.suffix != ".dat":
+            path = path.with_suffix(".dat")
+        self.model.save_rits(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
