@@ -57,10 +57,12 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer.handle_deleted()
 
     def set_image_range(self, index_range: tuple[int, int]) -> None:
+        """Set the range on the z-slider, without triggering valueChanged signal"""
         with QSignalBlocker(self.live_viewer.z_slider):
             self.live_viewer.z_slider.set_range(*index_range)
 
     def set_image_index(self, index: int) -> None:
+        """Set the position on the z-slider, triggering valueChanged signal once"""
         with QSignalBlocker(self.live_viewer.z_slider):
             self.live_viewer.z_slider.set_value(index)
         self.live_viewer.z_slider.valueChanged.emit(index)
