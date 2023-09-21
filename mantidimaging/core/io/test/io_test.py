@@ -483,6 +483,14 @@ class IOTest(FileOutputtingTestCase):
             close_arr = np.isclose(conv[i] / factors[i], float_arr[i], rtol=1e-5)
             self.assertTrue(np.count_nonzero(close_arr) >= len(close_arr) * 0.75)
 
+    def test_create_rits_format(self):
+        tof = np.array([1, 2, 3])
+        transmission = np.array([4, 5, 6])
+        absorption = np.array([7, 8, 9])
+        rits_formatted_data = saver.create_rits_format(tof, transmission, absorption)
+        expected = '1\t4\t7\n2\t5\t8\n3\t6\t9'
+        self.assertEqual(rits_formatted_data, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
