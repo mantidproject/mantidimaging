@@ -220,6 +220,11 @@ class ImageWatcher(QObject):
         Remove the currently set path
         """
         self.watcher.removePath(str(self.directory))
+        self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
+        assert len(self.watcher.files()) == 0
+        assert len(self.watcher.directories()) == 0
+        assert len(self.recent_file_watcher.files()) == 0
+        assert len(self.recent_file_watcher.directories()) == 0
 
     def update_recent_watcher(self, images: list[Image_Data]) -> None:
         self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
