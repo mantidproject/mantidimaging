@@ -50,11 +50,6 @@ class Image_Data:
         return self._stat
 
     @property
-    def image_size(self) -> int:
-        """Return the image size"""
-        return self._stat.st_size
-
-    @property
     def image_modified_time(self) -> float:
         """Return the image modified time"""
         return self._stat.st_mtime
@@ -100,6 +95,7 @@ class LiveViewerWindowModel:
         self._dataset_path = path
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
+        self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_directory_change("")
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
@@ -112,6 +108,9 @@ class LiveViewerWindowModel:
         """
         self.images = image_files
         self.presenter.update_image_list(image_files)
+
+    def handle_image_modified(self, image_path: Path):
+        self.presenter.update_image_modified(image_path)
 
     def close(self) -> None:
         """Close the model."""
@@ -144,6 +143,7 @@ class ImageWatcher(QObject):
         Sort the images by modified time.
     """
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
+    recent_image_changed = pyqtSignal(Path)
 
     def __init__(self, directory: Path):
         """
@@ -161,6 +161,9 @@ class ImageWatcher(QObject):
         self.watcher.directoryChanged.connect(self._handle_directory_change)
         self.watcher.addPath(str(self.directory))
 
+        self.recent_file_watcher = QFileSystemWatcher()
+        self.recent_file_watcher.fileChanged.connect(self.handle_image_modified)
+
     def find_images(self) -> list[Image_Data]:
         """
         Find all the images in the directory.
@@ -170,8 +173,7 @@ class ImageWatcher(QObject):
             if self._is_image_file(file_path.name):
                 try:
                     image_obj = Image_Data(file_path)
-                    if image_obj.image_size > 45:
-                        image_files.append(image_obj)
+                    image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
 
@@ -198,6 +200,7 @@ class ImageWatcher(QObject):
 
         images = self.find_images()
         images = self.sort_images_by_modified_time(images)
+        self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images)
 
     @staticmethod
@@ -217,3 +220,15 @@ class ImageWatcher(QObject):
         Remove the currently set path
         """
         self.watcher.removePath(str(self.directory))
+        self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
+        assert len(self.watcher.files()) == 0
+        assert len(self.watcher.directories()) == 0
+        assert len(self.recent_file_watcher.files()) == 0
+        assert len(self.recent_file_watcher.directories()) == 0
+
+    def update_recent_watcher(self, images: list[Image_Data]) -> None:
+        self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
+        self.recent_file_watcher.addPaths([str(image.image_path) for image in images])
+
+    def handle_image_modified(self, file_path):
+        self.recent_image_changed.emit(Path(file_path))

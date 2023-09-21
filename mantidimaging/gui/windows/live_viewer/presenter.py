@@ -35,6 +35,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
+        self.selected_image: Image_Data | None = None
 
     def close(self) -> None:
         """Close the window."""
@@ -55,6 +56,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.remove_image()
         self.clear_label()
         self.view.live_viewer.z_slider.set_range(0, 1)
+        self.view.live_viewer.show_error(None)
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
@@ -62,24 +64,40 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             return
 
-        self.view.live_viewer.z_slider.set_range(0, len(images_list) - 1)
+        self.view.set_image_range((0, len(images_list) - 1))
         self.view.set_image_index(len(images_list) - 1)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
             return
-        selected_image = self.model.images[index]
-        self.view.label_active_filename.setText(selected_image.image_name)
+        self.selected_image = self.model.images[index]
+        self.view.label_active_filename.setText(self.selected_image.image_name)
 
+        self.load_and_display_image(self.selected_image.image_path)
+
+    def load_and_display_image(self, image_path: Path):
         try:
-            with tifffile.TiffFile(selected_image.image_path) as tif:
+            with tifffile.TiffFile(image_path) as tif:
                 image_data = tif.asarray()
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
-            logger.error("%s reading image: %s: %s", type(error).__name__, selected_image.image_path, error)
+            message = f"{type(error).__name__} reading image: {image_path}: {error}"
+            logger.error(message)
             self.view.remove_image()
+            self.view.live_viewer.show_error(message)
             return
         if image_data.size == 0:
-            logger.error("reading image: %s: Image has zero size", selected_image.image_path)
+            message = "reading image: {image_path}: Image has zero size"
+            logger.error("reading image: %s: Image has zero size", image_path)
+            self.view.remove_image()
+            self.view.live_viewer.show_error(message)
             return
 
         self.view.show_most_recent_image(image_data)
+        self.view.live_viewer.show_error(None)
+
+    def update_image_modified(self, image_path: Path):
+        """
+        Update the displayed image when the file is modified
+        """
+        if self.selected_image and image_path == self.selected_image.image_path:
+            self.load_and_display_image(image_path)

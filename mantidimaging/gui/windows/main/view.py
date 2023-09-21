@@ -501,8 +501,8 @@ class MainWindowView(BaseMainWindowView):
             stack.shared_array = None
 
     def uncaught_exception(self, user_error_msg: str, log_error_msg: str) -> None:
-        self.show_error_dialog(f"Uncaught exception {user_error_msg}")
         getLogger(__name__).error(log_error_msg)
+        self.show_error_dialog(f"Uncaught exception {user_error_msg}")
 
     def show_stack_select_dialog(self):
         dialog = MultipleStackSelect(self)
