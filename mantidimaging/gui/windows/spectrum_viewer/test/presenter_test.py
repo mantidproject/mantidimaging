@@ -156,13 +156,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_do_add_roi_to_table_called_THEN_roi_added_to_table(self):
         self.presenter.model.set_stack(generate_images())
         self.presenter.do_add_roi()
-        self.view.add_roi_table_row.assert_called_once_with(0, "roi", mock.ANY)
+        self.view.add_roi_table_row.assert_called_once_with("roi", mock.ANY)
         self.view.add_roi_table_row.reset_mock()
 
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
         self.presenter.view.spectrum.roi_dict = {"roi_1": mock.Mock()}
         self.presenter.do_add_roi_to_table("roi_1")
-        self.view.add_roi_table_row.assert_called_once_with(0, "roi_1", mock.ANY)
+        self.view.add_roi_table_row.assert_called_once_with("roi_1", mock.ANY)
 
     def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
         self.presenter.model.set_stack(generate_images())

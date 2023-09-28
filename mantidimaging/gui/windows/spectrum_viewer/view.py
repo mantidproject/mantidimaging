@@ -250,18 +250,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
-    def add_roi_table_row(self, row: int, name: str, colour: tuple[int, int, int]):
+    def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
         Add a new row to the ROI table
 
-        @param row: The row number
         @param name: The name of the ROI
         @param colour: The colour of the ROI
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour, True)
-        self.tableView.selectRow(row)
+        self.tableView.selectRow(0)
         self.removeBtn.setEnabled(True)
 
     def remove_roi(self) -> None:
