@@ -42,6 +42,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
+        self.selected_row: int = 0
+        self.current_roi: str = ""
+        self.selected_row_data: Optional[list] = None
+
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
         self.spectrum = SpectrumWidget()
@@ -72,10 +76,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableView.setAlternatingRowColors(True)
-
-        self.selected_row: int = 0
-        self.current_roi: str = ""
-        self.selected_row_data: Optional[list] = None
 
         _ = self.roi_table_model  # Initialise model
 
@@ -111,8 +111,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
             """
             selected_row_data = self.roi_table_model.row_data(self.selected_row)
-            if self.current_roi in ["", " "]:
-                self.current_roi = selected_row_data[0]
+
             if selected_row_data[0].lower() not in ["", " ", "all"] and selected_row_data[0] != self.current_roi:
                 if selected_row_data[0] in self.presenter.get_roi_names():
                     selected_row_data[0] = self.current_roi
@@ -250,18 +249,19 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
-    def add_roi_table_row(self, row: int, name: str, colour: tuple[int, int, int]):
+    def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
         Add a new row to the ROI table
 
-        @param row: The row number
         @param name: The name of the ROI
         @param colour: The colour of the ROI
         """
         circle_label = QLabel()
         circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour, True)
-        self.tableView.selectRow(row)
+        self.selected_row = self.roi_table_model.rowCount() - 1
+        self.tableView.selectRow(self.selected_row)
+        self.current_roi = name
         self.removeBtn.setEnabled(True)
 
     def remove_roi(self) -> None:

@@ -6,7 +6,7 @@ from __future__ import annotations
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt, QItemSelectionModel
+from PyQt5.QtCore import QAbstractTableModel, Qt
 from PyQt5.QtGui import QColor, QBrush
 
 
@@ -18,18 +18,8 @@ class TableModel(QAbstractTableModel):
     """
 
     def __init__(self):
-        super(TableModel, self).__init__()
+        super().__init__()
         self._data = []
-
-    def selectRow(self, index: int):
-        """
-        Selects the row at the given index.
-
-        :param index: The index of the row to select.
-        """
-        selectionModel = self.tableView.selectionModel()
-        selectionModel.clearSelection()
-        selectionModel.select(self.createIndex(index + 1, 0), QItemSelectionModel.Select | QItemSelectionModel.Rows)
 
     def rowCount(self, *args, **kwargs):
         """
@@ -120,12 +110,6 @@ class TableModel(QAbstractTableModel):
         item_list = [roi_name, roi_colour, visible]
         self._data.append(item_list)
         self.layoutChanged.emit()
-
-    def sort_points(self):
-        """
-        Sort table by ROI name
-        """
-        self._data.sort(key=lambda x: x[0])
 
     def headerData(self, section, orientation, role):
         """

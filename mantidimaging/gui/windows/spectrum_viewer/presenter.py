@@ -191,9 +191,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         @param roi_name: Name of the ROI to add
         """
-        row = self.model.selected_row
         roi_colour = self.view.spectrum.roi_dict[roi_name].colour
-        self.view.add_roi_table_row(row, roi_name, roi_colour)
+        self.view.add_roi_table_row(roi_name, roi_colour)
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
