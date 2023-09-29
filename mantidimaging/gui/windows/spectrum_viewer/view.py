@@ -174,6 +174,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
+    def get_rits_export_filename(self) -> Optional[Path]:
+        """
+        Get the path to save the RITS file too
+        """
+        path = QFileDialog.getSaveFileName(self, "Save DAT file", "", "DAT file (*.dat)")[0]
+        if path:
+            return Path(path)
+        else:
+            return None
+
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
         self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
 

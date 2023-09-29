@@ -7,6 +7,7 @@ from logging import getLogger
 from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
 
 import h5py
+from pathlib import Path
 import numpy as np
 from tifffile import tifffile
 
@@ -411,7 +412,7 @@ def generate_names(name_prefix: str,
     return names
 
 
-def make_dirs_if_needed(dirname: Optional[str] = None, overwrite_all: bool = False):
+def make_dirs_if_needed(dirname: Optional[str] = None, overwrite_all: bool = False) -> None:
     """
     Makes sure that the directory needed (for example to save a file)
     exists, otherwise creates it.
@@ -428,3 +429,31 @@ def make_dirs_if_needed(dirname: Optional[str] = None, overwrite_all: bool = Fal
     elif os.listdir(path) and not overwrite_all:
         raise RuntimeError("The output directory is NOT empty:{0}\nThis can be "
                            "overridden by specifying 'Overwrite on name conflict'.".format(path))
+
+
+def create_rits_format(tof: np.ndarray, transmission: np.ndarray, transmission_error: np.ndarray) -> str:
+    """
+    create a RITS format ready for exporting to a .dat file
+
+    :param tof: time of flight
+    :param transmission: transmission value
+    :param transmission_error: transmission_error value
+    :return: RITS format ascii
+
+    """
+    return '\n'.join(
+        ['\t'.join([str(x) for x in row]) for row in zip(tof, transmission, transmission_error, strict=True)])
+
+
+def export_to_dat_rits_format(rits_formatted_data: str, path: Path) -> None:
+    """
+    export a RITS formatted data to a .dat file
+
+    :param rits_formatted_data: RITS formatted data
+    :param path: path to save the .dat file
+    :return: None
+
+    """
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(rits_formatted_data)
+    LOG.info('RITS formatted data saved to: {}'.format(path))

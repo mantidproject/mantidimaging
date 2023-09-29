@@ -146,6 +146,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.get_csv_filename.assert_called_once()
         mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
 
+    @parameterized.expand(["/fake/path", "/fake/path.dat"])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits")
+    def test_handle_rits_export(self, path_name: str, mock_save_rits: mock.Mock):
+        self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
+
+        self.presenter.model.set_stack(generate_images())
+
+        self.presenter.handle_rits_export()
+
+        self.view.get_rits_export_filename.assert_called_once()
+        mock_save_rits.assert_called_once_with(Path("/fake/path.dat"), False)
+
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())
         self.presenter.do_add_roi()
