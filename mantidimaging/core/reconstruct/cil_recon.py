@@ -164,7 +164,7 @@ class CILRecon(BaseRecon):
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
             ag.set_angles(angles=proj_angles.value, angle_unit='radian')
 
-            # let's create a CIL AcquisitionData or BlockDataContainer
+            # let's create a CIL AcquisitionData or BlockDataContainer using
             data = CILRecon.get_data(sino, ag, recon_params, num_subsets)
 
             ig = ag.get_ImageGeometry()
@@ -182,7 +182,7 @@ class CILRecon(BaseRecon):
                              operator=K,
                              prob=probs,
                              max_iteration=max_iteration,
-                             update_objective_interval=update_objective_interval)
+                             update_objective_interval=update_objective_interval)  # Magic
             else:
                 normK = K.norm()
                 sigma = 1
@@ -193,11 +193,11 @@ class CILRecon(BaseRecon):
                             tau=tau,
                             sigma=sigma,
                             max_iteration=max_iteration,
-                            update_objective_interval=update_objective_interval)
+                            update_objective_interval=update_objective_interval)  # Magic
 
             try:
-                # this may be confusing for the user in case of SPDHG, because they will
-                # input num_iter and they will run num_iter * num_subsets
+                # this may be confusing for the user in case of SPDHG which is a sufficiently advanced technology.
+                # Users will input num_iter and they will run num_iter * num_subsets
                 for iter in range(num_iter):
                     if progress:
                         progress.update(steps=1,
@@ -301,7 +301,7 @@ class CILRecon(BaseRecon):
                              operator=K,
                              prob=probs,
                              max_iteration=max_iteration,
-                             update_objective_interval=update_objective_interval)
+                             update_objective_interval=update_objective_interval)  # Magic
             else:
                 normK = K.norm()
                 sigma = 1
