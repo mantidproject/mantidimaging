@@ -73,7 +73,7 @@ class ImageViewLineROI(LineSegmentROI):
             return True
 
         new_point = self.getViewBox().mapSceneToView(pos)
-        return self._checkpoint_bounds.contains(new_point.x(), new_point.y())
+        return self._checkpoint_bounds.contains(new_point.toPoint())
 
     def get_image_region(self) -> tuple[np.ndarray, np.ndarray] | None:
         if not self._image_data_exists():
