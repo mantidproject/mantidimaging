@@ -1,9 +1,9 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union, Optional, Any
+from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QRect
+from PyQt5.QtCore import QRect, QPoint
 from pyqtgraph import GraphicsLayout, LineSegmentROI
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class LineProfilePlot(GraphicsLayout):
 
-    def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView']):
+    def __init__(self, image_view: MIMiniImageView | MIImageView) -> None:
         super().__init__()
 
         self._plot = self.addPlot()
@@ -26,12 +26,13 @@ class LineProfilePlot(GraphicsLayout):
         self._roi_line = ImageViewLineROI(image_view, reset_menu_name="Reset Profile Line")
         self._roi_line.sigRegionChanged.connect(self.update)
 
-    def update(self):
-        image_region, coords = self._roi_line.get_image_region()
+    def update(self) -> None:
+        region = self._roi_line.get_image_region()
 
-        if image_region is None:
+        if region is None:
             self.clear_plot()
         else:
+            image_region, coords = region
             self._line_profile.setData(image_region)
             start = CloseEnoughPoint([coords[0][0], coords[1][0]])
             end = CloseEnoughPoint([coords[0][-1], coords[1][-1]])
@@ -45,7 +46,7 @@ class LineProfilePlot(GraphicsLayout):
             # Even if we don't need to move the ROI line, we may have new image data to plot
             self.update()
 
-    def clear_plot(self):
+    def clear_plot(self) -> None:
         # Calling self._line_profile.clear() seems to be very slow, so we use this approach instead
         self._plot.clear()
         self._line_profile = self._plot.plot()
@@ -54,29 +55,29 @@ class LineProfilePlot(GraphicsLayout):
 
 class ImageViewLineROI(LineSegmentROI):
 
-    def __init__(self, image_view: Union['MIMiniImageView', 'MIImageView'], reset_menu_name: Optional[str] = None):
+    def __init__(self, image_view: MIMiniImageView | MIImageView, reset_menu_name: str | None = None):
         super().__init__(positions=[(0, 0), (0, 0)], pen='r')
 
         self._image_view = image_view
         self._add_reset_menu_option(reset_menu_name)
         self._initial_state = self.saveState()
         self._roi_line_is_visible = False
-        self._checkpoint_bounds = None
+        self._checkpoint_bounds: QRect | None = None
 
         # We can't add the ROI line until we have some image data dimensions to position it
         if self._image_data_exists():
             self._add_roi_to_image()
 
-    def checkPointMove(self, handle, pos, modifiers) -> bool:
+    def checkPointMove(self, _handle, pos: QPoint, _modifiers) -> bool:
         if self._checkpoint_bounds is None:
             return True
 
         new_point = self.getViewBox().mapSceneToView(pos)
         return self._checkpoint_bounds.contains(new_point.x(), new_point.y())
 
-    def get_image_region(self) -> Union[tuple[None, None], tuple['np.ndarray', Any]]:
+    def get_image_region(self) -> tuple[np.ndarray, np.ndarray] | None:
         if not self._image_data_exists():
-            return None, None
+            return None
 
         if not self._roi_line_is_visible:
             self._add_roi_to_image()
@@ -129,7 +130,7 @@ class ImageViewLineROI(LineSegmentROI):
         self._image_view.viewbox.autoRange()
         self._roi_line_is_visible = True
 
-    def _add_reset_menu_option(self, reset_menu_name: Optional[str] = None) -> None:
+    def _add_reset_menu_option(self, reset_menu_name: str | None = None) -> None:
         menu_name = reset_menu_name if reset_menu_name is not None else "Reset ROI line"
         self._reset_option = self._image_view.viewbox.menu.addAction(menu_name)
         self._image_view.viewbox.menu.insertSeparator(self._reset_option)
