@@ -90,9 +90,8 @@ class ImageViewLineROITest(unittest.TestCase):
         self.roi_line._image_view.viewbox.autoRange.assert_called_once()
 
     def test_get_image_region_no_image_data(self):
-        image_region, coords = self.roi_line.get_image_region()
-        self.assertIsNone(image_region)
-        self.assertIsNone(coords)
+        region = self.roi_line.get_image_region()
+        self.assertIsNone(region)
 
     def test_get_image_region_no_visible_roi(self):
         self._set_image()
