@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 
+from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
@@ -15,6 +16,8 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+
+LOG = getLogger(__name__)
 
 
 class SpecType(Enum):
@@ -203,6 +206,8 @@ class SpectrumViewerWindowModel:
                 raise RuntimeError("No normalisation stack selected")
             transmission = self.get_spectrum(default_roi, SpecType.SAMPLE_NORMED)
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
+        else:
+            LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
 
     def get_roi_coords_filename(self, path: Path) -> Path:
         """

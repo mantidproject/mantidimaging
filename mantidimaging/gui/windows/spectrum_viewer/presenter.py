@@ -53,7 +53,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
-            self.handle_button_enabled()
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
@@ -68,7 +67,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.do_add_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
-        self.handle_button_enabled()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -147,9 +145,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_button_enabled(self) -> None:
         """
-        Enable the export button if the current stack is not None
+        Enable the export button if the current stack is not None and normalisation is valid
         """
-        self.view.set_export_button_enabled(self.model.has_stack())
+        has_stack = self.model.has_stack()
+        normalisation_on = self.view.normalisation_enabled()
+        normalisation_no_error = (normalisation_on and self.model.normalise_issue() == "") or not normalisation_on
+
+        self.view.exportButton.setEnabled(has_stack and normalisation_no_error)
+        self.view.exportButtonRITS.setEnabled(has_stack and normalisation_on and normalisation_no_error)
+        self.view.addBtn.setEnabled(has_stack)
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()

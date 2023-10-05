@@ -56,9 +56,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
+        self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
+        self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseCheckBox.stateChanged.connect(self.normaliseStackSelector.setEnabled)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
+        self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
         # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
@@ -71,6 +74,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.try_to_select_relevant_normalise_stack("Flat")
 
         self.exportButton.clicked.connect(self.presenter.handle_export_csv)
+        self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
         # Point table
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -228,15 +232,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-
-    def set_export_button_enabled(self, enabled: bool):
-        """
-        Toggle enabled state of the export button
-
-        @param enabled: True to enable the button, False to disable it
-        """
-        self.exportButton.setEnabled(enabled)
-        self.addBtn.setEnabled(enabled)
 
     def set_roi_alpha(self, alpha: float, roi) -> None:
         """
