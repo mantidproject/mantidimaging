@@ -139,13 +139,15 @@ def load(filename_group: FilenameGroup,
         log_data = load_log(log_file)
         angles = log_data.projection_angles().value
         angle_order = np.argsort(angles)
+        angles = angles[angle_order]
         file_names = [file_names[i] for i in angle_order]
 
     image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
 
     if log_file is not None:
         image_stack.log_file = log_data
-        image_stack.set_projection_angles(ProjectionAngles(angles[angle_order]))
+        angles = angles[indices[0]:indices[1]:indices[2]] if indices else angles
+        image_stack.set_projection_angles(ProjectionAngles(angles))
 
     # Search for and load metadata file
     metadata_filename = filename_group.metadata_path

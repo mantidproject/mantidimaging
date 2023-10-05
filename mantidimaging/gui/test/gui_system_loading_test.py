@@ -12,7 +12,6 @@ import numpy
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QDialogButtonBox
-from pytest import mark
 from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE, SHOW_DELAY
@@ -193,7 +192,6 @@ class TestGuiSystemLoading(GuiSystemBase):
     ])
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file")
     @mock.patch("mantidimaging.core.io.loader.loader._imread")
-    @mark.xfail(reason="Issue #1940")
     def test_load_with_start_stop_inc(self, start_stop_inc, expected_count, mocked_imread, mocked_select_file):
         mocked_imread.return_value = numpy.zeros([128, 128])  # Don't need to actually load the files
         mocked_select_file.return_value = LOAD_SAMPLE
