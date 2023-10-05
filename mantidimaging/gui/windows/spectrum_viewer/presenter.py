@@ -1,6 +1,8 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from logging import getLogger
@@ -17,6 +19,12 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
+class ExportMode(Enum):
+    # Needs to match GUI tab order
+    ROI_MODE = 0
+    IMAGE_MODE = 1
+
+
 class SpectrumViewerWindowPresenter(BasePresenter):
     """
     The presenter for the spectrum viewer window.
@@ -29,6 +37,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     spectrum_mode: SpecType = SpecType.SAMPLE
     current_stack_uuid: Optional['UUID'] = None
     current_norm_stack_uuid: Optional['UUID'] = None
+    export_mode: ExportMode
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
@@ -36,6 +45,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
+        self.export_mode = ExportMode.ROI_MODE
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -239,3 +249,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.spectrum.remove_roi(roi_name)
             self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
             self.model.remove_roi(roi_name)
+
+    def handle_export_tab_change(self, index: int) -> None:
+        self.export_mode = ExportMode(index)
+        self.view.on_visibility_change()
