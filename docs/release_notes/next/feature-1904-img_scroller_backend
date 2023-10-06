@@ -1,1 +1,0 @@
-#1904 : Backend architecture for image scroller front-end. All relevant image metadata is now stored in a list accessible to the presenter view.
