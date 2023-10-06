@@ -12,8 +12,9 @@ import numpy
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QDialogButtonBox
+from parameterized import parameterized
 
-from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE
+from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE, SHOW_DELAY
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
@@ -182,3 +183,44 @@ class TestGuiSystemLoading(GuiSystemBase):
             wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
+
+    @parameterized.expand([
+        (None, 100),
+        ((0, 10, 1), 10),
+        ((0, 100, 4), 25),
+        ((20, 30, 1), 10),
+    ])
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file")
+    @mock.patch("mantidimaging.core.io.loader.loader._imread")
+    def test_load_with_start_stop_inc(self, start_stop_inc, expected_count, mocked_imread, mocked_select_file):
+        mocked_imread.return_value = numpy.zeros([128, 128])  # Don't need to actually load the files
+        mocked_select_file.return_value = LOAD_SAMPLE
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
+
+        self.main_window.actionLoadDataset.trigger()
+        QTest.qWait(SHOW_DELAY)
+        self.main_window.image_load_dialog.presenter.do_update_field(self.main_window.image_load_dialog.sample)
+        QTest.qWait(SHOW_DELAY)
+
+        if start_stop_inc is not None:
+            start, stop, inc = start_stop_inc
+            self.main_window.image_load_dialog.sample._start_spinbox.setValue(start)
+            self.main_window.image_load_dialog.sample._stop_spinbox.setValue(stop)
+            self.main_window.image_load_dialog.sample._increment_spinbox.setValue(inc)
+            QTest.qWait(SHOW_DELAY)
+
+        self.main_window.image_load_dialog.accept()
+
+        def test_func() -> bool:
+            current_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
+            return current_stacks >= 5
+
+        wait_until(test_func, max_retry=600)
+
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+
+        sample = list(self.main_window.presenter.datasets)[0].sample
+        image_count, *image_shape = sample.data.shape
+        self.assertEqual(image_shape, [128, 128])
+        self.assertEqual(image_count, expected_count)
+        self.assertEqual(len(sample.real_projection_angles().value), expected_count)
