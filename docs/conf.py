@@ -69,8 +69,8 @@ root_doc = 'index'
 # General information about the project.
 project = 'MantidImaging'
 copyright = '2017-2023, Mantid Project'
-author = 'Dimitar Tasev, Dolica Akello-Egwel, Rachel Baust, Martyn Gigg, Samuel Jones, Dan Nixon, Samuel Stock, ' \
-         'Will Taylor, Sam Tygier'
+author = 'Dimitar Tasev, Jack Allen, Dolica Akello-Egwel, Rachel Baust, Martyn Gigg, Samuel Jones, Dan Nixon, ' \
+         'Samuel Stock, Will Taylor, Sam Tygier'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
