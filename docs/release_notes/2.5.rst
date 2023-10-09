@@ -112,3 +112,14 @@ Developer Changes
 - #1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
 - #1757 : CLI log level only on to mantidimaging
 - #1788 : Switch to separate Windows and Linux conda packages
+
+Mantid Imaging 2.5.1
+====================
+
+This release contains backported fixes for the following issues
+
+- #1864 : Add log file normalisation to support older log file formats
+- #1865 : Be less strict when finding flat and dark
+- #1870 : Load all file in the extra digits case
+- #1887 : Better error message for corrupt TIFF file
+- #1888 : Don't return files beginning with a dot when finding related

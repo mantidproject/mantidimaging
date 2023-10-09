@@ -1,1 +1,0 @@
-#1815 : Improve handling of NaN data within Spectrum Viewer, resolving exception error dialog pop-up within Spectrum Viewer if only dataset loaded into Mantid Imaging is removed.
