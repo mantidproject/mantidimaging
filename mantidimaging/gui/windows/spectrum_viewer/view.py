@@ -5,12 +5,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView
+from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
+    QTabWidget
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .presenter import SpectrumViewerWindowPresenter
+from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
@@ -30,6 +31,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseCheckBox: QCheckBox
     imageLayout: QVBoxLayout
     exportButton: QPushButton
+    exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
     _current_dataset_id: Optional['UUID']
     normalise_error_issue: str = ""
@@ -56,9 +58,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
+        self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
+        self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseCheckBox.stateChanged.connect(self.normaliseStackSelector.setEnabled)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
+        self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
+
+        self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
 
         # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
@@ -71,6 +78,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.try_to_select_relevant_normalise_stack("Flat")
 
         self.exportButton.clicked.connect(self.presenter.handle_export_csv)
+        self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
         # Point table
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -92,18 +100,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
-        def on_visibility_change() -> None:
-            """
-            When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
-            """
-            for roi_item in range(self.roi_table_model.rowCount()):
-                if self.roi_table_model.row_data(roi_item)[2] is False:
-                    self.set_roi_alpha(0, roi_item)
-                else:
-                    self.set_roi_alpha(255, roi_item)
-                    self.presenter.redraw_spectrum(self.roi_table_model.row_data(roi_item)[0])
-            return
-
         def on_data_in_table_change() -> None:
             """
             Check if an ROI name has changed in the table or if the visibility of an ROI has changed.
@@ -124,7 +120,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 selected_row_data[0] = self.current_roi
 
             selected_row_data[0] = self.current_roi
-            on_visibility_change()
+            self.on_visibility_change()
             return
 
         self.roi_table_model.dataChanged.connect(on_data_in_table_change)
@@ -141,6 +137,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
         self.main_window.spectrum_viewer = None
+
+    def on_visibility_change(self) -> None:
+        """
+        When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
+        """
+        for roi_item in range(self.roi_table_model.rowCount()):
+            if self.presenter.export_mode == ExportMode.ROI_MODE:
+                roi_name, _, roi_visible = self.roi_table_model.row_data(roi_item)
+                if roi_visible is False:
+                    self.set_roi_alpha(0, roi_item)
+                else:
+                    self.set_roi_alpha(255, roi_item)
+                    self.presenter.redraw_spectrum(roi_name)
+            else:
+                self.set_roi_alpha(0, roi_item)
+
+        return
 
     @property
     def roi_table_model(self) -> TableModel:
@@ -228,15 +241,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-
-    def set_export_button_enabled(self, enabled: bool):
-        """
-        Toggle enabled state of the export button
-
-        @param enabled: True to enable the button, False to disable it
-        """
-        self.exportButton.setEnabled(enabled)
-        self.addBtn.setEnabled(enabled)
 
     def set_roi_alpha(self, alpha: float, roi) -> None:
         """

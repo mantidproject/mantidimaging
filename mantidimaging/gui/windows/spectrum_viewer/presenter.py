@@ -1,6 +1,8 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from logging import getLogger
@@ -17,6 +19,12 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
+class ExportMode(Enum):
+    # Needs to match GUI tab order
+    ROI_MODE = 0
+    IMAGE_MODE = 1
+
+
 class SpectrumViewerWindowPresenter(BasePresenter):
     """
     The presenter for the spectrum viewer window.
@@ -29,6 +37,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     spectrum_mode: SpecType = SpecType.SAMPLE
     current_stack_uuid: Optional['UUID'] = None
     current_norm_stack_uuid: Optional['UUID'] = None
+    export_mode: ExportMode
 
     def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
         super().__init__(view)
@@ -36,6 +45,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
+        self.export_mode = ExportMode.ROI_MODE
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -53,7 +63,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
-            self.handle_button_enabled()
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
@@ -68,7 +77,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.do_add_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
-        self.handle_button_enabled()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -147,9 +155,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_button_enabled(self) -> None:
         """
-        Enable the export button if the current stack is not None
+        Enable the export button if the current stack is not None and normalisation is valid
         """
-        self.view.set_export_button_enabled(self.model.has_stack())
+        has_stack = self.model.has_stack()
+        normalisation_on = self.view.normalisation_enabled()
+        normalisation_no_error = (normalisation_on and self.model.normalise_issue() == "") or not normalisation_on
+
+        self.view.exportButton.setEnabled(has_stack and normalisation_no_error)
+        self.view.exportButtonRITS.setEnabled(has_stack and normalisation_on and normalisation_no_error)
+        self.view.addBtn.setEnabled(has_stack)
 
     def handle_export_csv(self) -> None:
         path = self.view.get_csv_filename()
@@ -235,3 +249,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.spectrum.remove_roi(roi_name)
             self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
             self.model.remove_roi(roi_name)
+
+    def handle_export_tab_change(self, index: int) -> None:
+        self.export_mode = ExportMode(index)
+        self.view.on_visibility_change()
