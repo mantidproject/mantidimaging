@@ -144,11 +144,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         for roi_item in range(self.roi_table_model.rowCount()):
             if self.presenter.export_mode == ExportMode.ROI_MODE:
-                if self.roi_table_model.row_data(roi_item)[2] is False:
+                roi_name, _, roi_visible = self.roi_table_model.row_data(roi_item)
+                if roi_visible is False:
                     self.set_roi_alpha(0, roi_item)
                 else:
                     self.set_roi_alpha(255, roi_item)
-                    self.presenter.redraw_spectrum(self.roi_table_model.row_data(roi_item)[0])
+                    self.presenter.redraw_spectrum(roi_name)
             else:
                 self.set_roi_alpha(0, roi_item)
 
