@@ -1,6 +1,6 @@
 name: mantidimaging-dev
 channels:
-  - mantid/label/unstable
+  - mantid/label/main
   - dtasev
   - astra-toolbox
   - conda-forge
@@ -8,7 +8,7 @@ channels:
   - algotom
   - intel
 dependencies:
-  - mantidimaging>=2.5.0
+  - mantidimaging>=2.6.0,<2.7.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
