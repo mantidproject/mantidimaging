@@ -6,6 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
+from PyQt5.QtWidgets import QPushButton
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -27,6 +28,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.current_dataset_id = uuid.uuid4()
         mock_spectrum_roi_dict = mock.create_autospec(dict)
         self.view.spectrum = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        self.view.exportButton = mock.create_autospec(QPushButton)
+        self.view.exportButtonRITS = mock.create_autospec(QPushButton)
+        self.view.addBtn = mock.create_autospec(QPushButton)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -74,7 +78,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.try_to_select_relevant_normalise_stack.assert_not_called()
         self.assertIsNone(self.view.current_dataset_id)
         self.presenter.show_new_sample.assert_not_called()
-        self.view.set_export_button_enabled.assert_called_once_with(False)
 
     def test_handle_sample_change_dataset_unchanged(self):
         initial_dataset_id = self.view.current_dataset_id
@@ -86,7 +89,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_sample_change(uuid.uuid4())
         self.presenter.main_window.get_dataset.assert_not_called()
         self.assertEqual(self.view.current_dataset_id, initial_dataset_id)
-        self.view.set_export_button_enabled.assert_called_once_with(True)
 
     def test_handle_sample_change_to_MixedDataset(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
@@ -111,6 +113,45 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_sample_change(uuid.uuid4())
         self.presenter.main_window.get_dataset.assert_called_once()
         self.view.try_to_select_relevant_normalise_stack.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
+    def test_WHEN_no_stack_THEN_buttons_disabled(self, has_stack):
+        has_stack.return_value = False
+        self.presenter.handle_button_enabled()
+        self.view.exportButton.setEnabled.assert_called_once_with(False)
+        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
+        self.view.addBtn.setEnabled.assert_called_once_with(False)
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
+    def test_WHEN_has_stack_no_norm_THEN_buttons_set(self, has_stack):
+        has_stack.return_value = True
+        self.view.normalisation_enabled.return_value = False
+        self.presenter.handle_button_enabled()
+        self.view.exportButton.setEnabled.assert_called_once_with(True)
+        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)  # RITS export needs norm
+        self.view.addBtn.setEnabled.assert_called_once_with(True)
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.normalise_issue")
+    def test_WHEN_has_stack_has_good_norm_THEN_buttons_set(self, normalise_issue, has_stack):
+        has_stack.return_value = True
+        normalise_issue.return_value = ""
+        self.view.normalisation_enabled.return_value = True
+        self.presenter.handle_button_enabled()
+        self.view.exportButton.setEnabled.assert_called_once_with(True)
+        self.view.exportButtonRITS.setEnabled.assert_called_once_with(True)
+        self.view.addBtn.setEnabled.assert_called_once_with(True)
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.normalise_issue")
+    def test_WHEN_has_stack_has_bad_norm_THEN_buttons_set(self, normalise_issue, has_stack):
+        has_stack.return_value = True
+        normalise_issue.return_value = "Something wrong"
+        self.view.normalisation_enabled.return_value = True
+        self.presenter.handle_button_enabled()
+        self.view.exportButton.setEnabled.assert_called_once_with(False)
+        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
+        self.view.addBtn.setEnabled.assert_called_once_with(True)
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
         self.presenter.model.tof_range = (0, 9)
@@ -145,6 +186,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         self.view.get_csv_filename.assert_called_once()
         mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
+
+    @parameterized.expand(["/fake/path", "/fake/path.dat"])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits")
+    def test_handle_rits_export(self, path_name: str, mock_save_rits: mock.Mock):
+        self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
+
+        self.presenter.model.set_stack(generate_images())
+
+        self.presenter.handle_rits_export()
+
+        self.view.get_rits_export_filename.assert_called_once()
+        mock_save_rits.assert_called_once_with(Path("/fake/path.dat"), False)
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())
