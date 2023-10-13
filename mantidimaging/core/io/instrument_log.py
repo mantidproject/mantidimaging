@@ -7,6 +7,10 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import ClassVar, Type
 
+import numpy as np
+
+from mantidimaging.core.utility.data_containers import ProjectionAngles, Counts
+
 
 class LogColumn(Enum):
     TIMESTAMP = auto()
@@ -23,6 +27,10 @@ LogDataType = dict[LogColumn, list[float | int]]
 
 
 class NoParserFound(RuntimeError):
+    pass
+
+
+class InvalidLog(RuntimeError):
     pass
 
 
@@ -62,6 +70,7 @@ class InstrumentLog:
 
     parser: Type[InstrumentLogParser]
     data: LogDataType
+    length: int
 
     def __init__(self, lines: list[str], source_file: Path):
         self.lines = lines
@@ -80,9 +89,43 @@ class InstrumentLog:
     def parse(self) -> None:
         self.data = self.parser(self.lines).parse()
 
+        lengths = [len(val) for val in self.data.values()]
+        if len(set(lengths)) != 1:
+            raise InvalidLog(f"Mismatch in column lengths: {lengths}")
+        self.length = lengths[0]
+
     @classmethod
     def register_parser(cls, parser: Type[InstrumentLogParser]) -> None:
         cls.parsers.append(parser)
 
     def get_column(self, key: LogColumn) -> list[float]:
         return self.data[key]
+
+    def projection_numbers(self) -> np.array:
+        return np.array(self.get_column(LogColumn.PROJECTION_NUMBER), dtype=np.uint32)
+
+    def projection_angles(self) -> ProjectionAngles:
+        angles = np.array(self.get_column(LogColumn.PROJECTION_ANGLE), dtype=np.float64)
+        return ProjectionAngles(np.deg2rad(angles))
+
+    def raise_if_angle_missing(self, image_filenames: list[str]) -> None:
+        image_numbers = [ifile[ifile.rfind("_") + 1:] for ifile in image_filenames]
+
+        if self.length != len(image_numbers):
+            RuntimeError(f"Log size mismatch. Found {self.length} log entries,"
+                         f"but {len(image_numbers)} images")
+
+        if LogColumn.PROJECTION_NUMBER in self.data:
+            for projection_num, image_num in zip(self.projection_numbers(), image_numbers, strict=True):
+                if str(projection_num) not in image_num:
+                    raise RuntimeError(f"Mismatching angle for projection {projection_num} "
+                                       f"was going to be used for image file {image_num}")
+
+    def counts(self) -> Counts:
+        if not (LogColumn.COUNTS_BEFORE in self.data and LogColumn.COUNTS_AFTER in self.data):
+            raise ValueError("Log does not have counts")
+
+        counts_before = np.array(self.get_column(LogColumn.COUNTS_BEFORE))
+        counts_after = np.array(self.get_column(LogColumn.COUNTS_AFTER))
+
+        return Counts(counts_after - counts_before)
