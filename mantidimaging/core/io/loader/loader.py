@@ -11,10 +11,10 @@ import numpy as np
 import astropy.io.fits as fits
 from tifffile import tifffile
 
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES, ProjectionAngles
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.io.filenames import FilenameGroup
 
 if TYPE_CHECKING:
@@ -91,9 +91,9 @@ def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
     return img.shape
 
 
-def load_log(log_file: Path) -> IMATLogFile:
+def load_log(log_file: Path) -> InstrumentLog:
     with open(log_file, 'r') as f:
-        return IMATLogFile(f.readlines(), log_file)
+        return InstrumentLog(f.readlines(), log_file)
 
 
 def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:

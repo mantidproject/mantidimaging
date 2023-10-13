@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter
 from mantidimaging.core.utility.data_containers import FILE_TYPES, Indices
@@ -165,7 +165,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         """
         Test behaviour when the number of projection angles and files matches
         """
-        mock_log = mock.create_autospec(IMATLogFile)
+        mock_log = mock.create_autospec(InstrumentLog)
         mock_load_log.return_value = mock_log
         file_name = "file_name"
         field = mock.MagicMock()
@@ -182,7 +182,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
     def test_ensure_sample_log_consistency_exits_when_none_or_empty_str(self, mock_load_log):
-        mock_log = mock.create_autospec(IMATLogFile)
+        mock_log = mock.create_autospec(InstrumentLog)
         mock_load_log.return_value = mock_log
         file_name = None
         field = mock.MagicMock()

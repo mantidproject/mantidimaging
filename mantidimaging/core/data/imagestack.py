@@ -19,7 +19,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 if TYPE_CHECKING:
-    from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
+    from mantidimaging.core.io.instrument_log import InstrumentLog
 
 
 class ImageStack:
@@ -55,7 +55,7 @@ class ImageStack:
         self._is_sinograms = sinograms
 
         self._proj180deg: Optional[ImageStack] = None
-        self._log_file: Optional[IMATLogFile] = None
+        self._log_file: InstrumentLog | None = None
         self._projection_angles: Optional[ProjectionAngles] = None
 
         if name is None:
@@ -286,11 +286,11 @@ class ImageStack:
         return self._is_sinograms
 
     @property
-    def log_file(self):
+    def log_file(self) -> InstrumentLog | None:
         return self._log_file
 
     @log_file.setter
-    def log_file(self, value: IMATLogFile):
+    def log_file(self, value: InstrumentLog | None) -> None:
         if value is not None:
             self.metadata[const.LOG_FILE] = str(value.source_file)
         elif value is None:

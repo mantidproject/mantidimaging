@@ -6,6 +6,7 @@ import io
 from pathlib import Path
 from unittest import mock
 
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
@@ -15,7 +16,6 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, generate_txt_logfile
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -73,7 +73,7 @@ class ImageStackTest(unittest.TestCase):
     def test_loading_metadata_preserves_existing_log(self):
         json_file = io.StringIO('{"pixel_size": 30.0, "log_file": "/old/logfile"}')
         mock_log_path = Path("/aaa/bbb")
-        mock_log_file = mock.create_autospec(IMATLogFile, source_file=mock_log_path)
+        mock_log_file = mock.create_autospec(InstrumentLog, source_file=mock_log_path)
 
         imgs = ImageStack(np.asarray([1]))
         self.assertEqual({}, imgs.metadata)
