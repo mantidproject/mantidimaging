@@ -88,7 +88,7 @@ class LegacyIMATLogFile(InstrumentLogParser):
         except ValueError:
             return False
 
-        if not ("Projection:" in line or "Radiography:" in line):
+        if not ("Projection" in line or "Radiography" in line):
             return False
 
         return True
