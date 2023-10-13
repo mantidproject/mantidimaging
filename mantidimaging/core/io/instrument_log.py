@@ -104,6 +104,9 @@ class InstrumentLog:
     def projection_numbers(self) -> np.array:
         return np.array(self.get_column(LogColumn.PROJECTION_NUMBER), dtype=np.uint32)
 
+    def has_projection_angles(self) -> bool:
+        return LogColumn.PROJECTION_ANGLE in self.data
+
     def projection_angles(self) -> ProjectionAngles:
         angles = np.array(self.get_column(LogColumn.PROJECTION_ANGLE), dtype=np.float64)
         return ProjectionAngles(np.deg2rad(angles))

@@ -311,7 +311,7 @@ class ImageStack:
         """
         if self._projection_angles is not None:
             return self._projection_angles
-        if self._log_file is not None:
+        if self._log_file is not None and self._log_file.has_projection_angles():
             return self._log_file.projection_angles()
         return None
 

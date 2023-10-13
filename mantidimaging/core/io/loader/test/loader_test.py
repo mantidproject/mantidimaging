@@ -82,6 +82,7 @@ class LoaderTest(FakeFSTestCase):
         mock_filename_group.first_file.return_value = filenames[0]
 
         mock_log_data = mock.create_autospec(InstrumentLog)
+        mock_log_data.has_projection_angles.return_value = True
         mock_log_data.projection_angles.return_value = ProjectionAngles(np.deg2rad(angles))
 
         mock_load_log.return_value = mock_log_data
