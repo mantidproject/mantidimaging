@@ -49,6 +49,9 @@ class InstrumentLogParser(ABC):
         """Parse the log file"""
         ...
 
+    def cleaned_lines(self) -> list[str]:
+        return [line for line in self.lines if line.strip() != ""]
+
 
 class InstrumentLog:
     """Multiformat instrument log reader
@@ -64,14 +67,8 @@ class InstrumentLog:
         self.lines = lines
         self.source_file = source_file
 
-        self._clean_lines()
-
         self._find_parser()
         self.parse()
-
-    def _clean_lines(self) -> None:
-        """Remove blank lines"""
-        self.lines = [line for line in self.lines if line.strip() != ""]
 
     def _find_parser(self) -> None:
         for parser in self.parsers:

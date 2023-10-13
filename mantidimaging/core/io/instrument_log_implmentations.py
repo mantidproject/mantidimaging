@@ -27,7 +27,7 @@ class LegacySpectraLogParser(InstrumentLogParser):
 
     def parse(self) -> LogDataType:
         data: LogDataType = {LogColumn.TIME_OF_FLIGHT: [], LogColumn.SPECTRUM_COUNTS: []}
-        for row in csv.reader(self.lines, delimiter=self.delimiter):
+        for row in csv.reader(self.cleaned_lines(), delimiter=self.delimiter):
             data[LogColumn.TIME_OF_FLIGHT].append(float(row[0]))
             data[LogColumn.SPECTRUM_COUNTS].append(int(row[1]))
         return data
