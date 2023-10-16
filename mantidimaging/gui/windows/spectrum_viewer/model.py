@@ -200,9 +200,13 @@ class SpectrumViewerWindowModel:
 
         # Default_roi will likely need updating once UI is implemented
         default_roi = self.default_roi_list[0]
+
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
+
+        # RITS expects ToF in μs
+        tof *= 1e6
 
         transmission_error = np.zeros_like(tof)
         if normalized:

@@ -15,7 +15,7 @@ class LegacySpectraLogParser(InstrumentLogParser):
     """
     Parser for spectra files without a header
 
-    Tab separated columns of Time of flight, Counts
+    Tab separated columns of Time of flight [s], Counts
 
     """
     delimiter = '\t'

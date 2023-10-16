@@ -19,7 +19,7 @@ class LogColumn(Enum):
     PROJECTION_ANGLE = auto()
     COUNTS_BEFORE = auto()
     COUNTS_AFTER = auto()
-    TIME_OF_FLIGHT = auto()
+    TIME_OF_FLIGHT = auto()  # in seconds
     SPECTRUM_COUNTS = auto()
 
 
