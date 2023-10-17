@@ -10,6 +10,7 @@ import numpy as np
 import numpy.testing as npt
 from parameterized import parameterized
 
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter, SpectrumViewerWindowModel
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -301,3 +302,31 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
         with self.assertRaises(RuntimeError):
             self.model.rename_roi("all", "imaging_is_the_coolest")
+
+    def test_WHEN_no_stack_tof_THEN_time_of_flight_none(self):
+        # No Stack
+        self.model.set_stack(None)
+        self.assertIsNone(self.model.get_stack_time_of_flight())
+
+        # No Log
+        stack = generate_images([10, 11, 12])
+        self.model.set_stack(stack)
+        self.assertIsNone(self.model.get_stack_time_of_flight())
+
+        # Log but not tof
+        mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt")
+        mock_log.get_column.side_effect = KeyError()
+        stack.log_file = mock_log
+        self.assertIsNone(self.model.get_stack_time_of_flight())
+
+    def test_WHEN_stack_tof_THEN_tof_correct(self):
+        tof_values = [x * 1e-5 for x in range(10)]
+        stack = generate_images([10, 11, 12])
+        self.model.set_stack(stack)
+        mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt")
+        mock_log.get_column.return_value = tof_values
+        stack.log_file = mock_log
+
+        tof_result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(tof_result, np.ndarray)
+        npt.assert_array_equal(tof_result, tof_values)
