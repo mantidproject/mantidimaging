@@ -139,12 +139,13 @@ class MainWindowModel(object):
     def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to find strict dataset containing ImageStack with ID {images_id}")
 
-    def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path):
+    def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
         images = self.get_images_by_uuid(images_id)
         if images is None:
             raise RuntimeError
         log = loader.load_log(log_file)
-        log.raise_if_angle_missing(images.filenames)
+        if images.filenames is not None:
+            log.raise_if_angle_missing(images.filenames)
         images.log_file = log
 
     def _remove_dataset(self, dataset_id: uuid.UUID):

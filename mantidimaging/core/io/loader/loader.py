@@ -11,10 +11,10 @@ import numpy as np
 import astropy.io.fits as fits
 from tifffile import tifffile
 
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES, ProjectionAngles
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.core.io.filenames import FilenameGroup
 
 if TYPE_CHECKING:
@@ -91,9 +91,9 @@ def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
     return img.shape
 
 
-def load_log(log_file: Path) -> IMATLogFile:
+def load_log(log_file: Path) -> InstrumentLog:
     with open(log_file, 'r') as f:
-        return IMATLogFile(f.readlines(), log_file)
+        return InstrumentLog(f.readlines(), log_file)
 
 
 def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
@@ -137,17 +137,19 @@ def load(filename_group: FilenameGroup,
 
     if log_file is not None:
         log_data = load_log(log_file)
-        angles = log_data.projection_angles().value
-        angle_order = np.argsort(angles)
-        angles = angles[angle_order]
-        file_names = [file_names[i] for i in angle_order]
+        if log_data.has_projection_angles():
+            angles = log_data.projection_angles().value
+            angle_order = np.argsort(angles)
+            angles = angles[angle_order]
+            file_names = [file_names[i] for i in angle_order]
 
     image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
 
     if log_file is not None:
         image_stack.log_file = log_data
-        angles = angles[indices[0]:indices[1]:indices[2]] if indices else angles
-        image_stack.set_projection_angles(ProjectionAngles(angles))
+        if log_data.has_projection_angles():
+            angles = angles[indices[0]:indices[1]:indices[2]] if indices else angles
+            image_stack.set_projection_angles(ProjectionAngles(angles))
 
     # Search for and load metadata file
     metadata_filename = filename_group.metadata_path

@@ -3,4 +3,4 @@
 from __future__ import annotations
 
 from . import (  # noqa: F401
-    saver, loader, utility)
+    saver, loader, utility, instrument_log, instrument_log_implmentations)

@@ -3,10 +3,11 @@
 from __future__ import annotations
 from pathlib import Path
 
-from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, IMATLogFile, TextLogParser
+from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.utility.imat_log_file_parser import CSVLogParser, TextLogParser
 
 
-def generate_txt_logfile() -> IMATLogFile:
+def generate_txt_logfile() -> InstrumentLog:
     data = [
         TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE,  # checked if exists, but skipped
         "",  # skipped when parsing
@@ -22,10 +23,10 @@ def generate_txt_logfile() -> IMATLogFile:
         "Sun Feb 10 00:26:29 2019   Projection:  8  angle: 2.5216   Monitor 3 before:  5786535   Monitor 3 after:  5929002",  # noqa: E501
         "Sun Feb 10 00:27:02 2019   Projection:  9  angle: 2.8368   Monitor 3 before:  5938142   Monitor 3 after:  6078866",  # noqa: E501
     ]
-    return IMATLogFile(data, Path("/tmp/fake"))
+    return InstrumentLog(data, Path("/tmp/fake.txt"))
 
 
-def generate_csv_logfile() -> IMATLogFile:
+def generate_csv_logfile() -> InstrumentLog:
     data = [
         CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE,
         "Sun Feb 10 00:22:04 2019,Projection,0,angle: 0.0,Monitor 3 before: 4577907,Monitor 3 after:  4720271",
@@ -39,4 +40,4 @@ def generate_csv_logfile() -> IMATLogFile:
         "Sun Feb 10 00:26:29 2019,Projection,8,angle: 2.5216,Monitor 3 before: 5786535,Monitor 3 after:  5929002",
         "Sun Feb 10 00:27:02 2019,Projection,9,angle: 2.8368,Monitor 3 before: 5938142,Monitor 3 after:  6078866",
     ]
-    return IMATLogFile(data, Path("/tmp/fake"))
+    return InstrumentLog(data, Path("/tmp/fake.csv"))

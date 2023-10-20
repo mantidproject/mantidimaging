@@ -7,11 +7,11 @@ from unittest import mock
 import numpy as np
 
 from mantidimaging.core.io.filenames import FilenameGroup
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.io.loader.loader import (DEFAULT_PIXEL_DEPTH, DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM,
                                                  create_loading_parameters_for_file_path, get_loader, load, _imread)
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES, ProjectionAngles
-from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -81,7 +81,8 @@ class LoaderTest(FakeFSTestCase):
         mock_filename_group.all_files.return_value = filenames
         mock_filename_group.first_file.return_value = filenames[0]
 
-        mock_log_data = mock.create_autospec(IMATLogFile)
+        mock_log_data = mock.create_autospec(InstrumentLog)
+        mock_log_data.has_projection_angles.return_value = True
         mock_log_data.projection_angles.return_value = ProjectionAngles(np.deg2rad(angles))
 
         mock_load_log.return_value = mock_log_data

@@ -96,10 +96,9 @@ class TextLogParser:
         @param file_contents: The file contents to be reformatted
         @return: The reformatted file contents
         """
-        for row in file_contents[2:]:
-            if len(row.rstrip().split("   ")) < 4:
-                file_contents.remove(row)
-        return file_contents
+        cleaned = file_contents[:2]  # parser expect second like to be blank
+        cleaned += [row for row in file_contents[2:] if len(row.rstrip().split("   ")) >= 4]
+        return cleaned
 
 
 class CSVLogParser:
@@ -161,10 +160,8 @@ class CSVLogParser:
         @param file_contents: The file contents to be reformatted
         @return: The reformatted file contents
         """
-        for row in file_contents:
-            if len(row.split(",")) < 5:
-                file_contents.remove(row)
-        return file_contents
+        cleaned = [row for row in file_contents if len(row.split(",")) >= 5]
+        return cleaned
 
 
 class IMATLogFile:
