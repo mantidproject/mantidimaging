@@ -12,6 +12,7 @@ from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
+from mantidimaging.core.io.instrument_log import LogColumn
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
@@ -199,7 +200,14 @@ class SpectrumViewerWindowModel:
 
         # Default_roi will likely need updating once UI is implemented
         default_roi = self.default_roi_list[0]
-        tof = np.arange(self._stack.data.shape[0])
+
+        tof = self.get_stack_time_of_flight()
+        if tof is None:
+            raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
+
+        # RITS expects ToF in μs
+        tof *= 1e6
+
         transmission_error = np.zeros_like(tof)
         if normalized:
             if self._normalise_stack is None:
@@ -208,6 +216,15 @@ class SpectrumViewerWindowModel:
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
         else:
             LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
+
+    def get_stack_time_of_flight(self) -> np.array | None:
+        if self._stack is None or self._stack.log_file is None:
+            return None
+        try:
+            time_of_flights = self._stack.log_file.get_column(LogColumn.TIME_OF_FLIGHT)
+        except KeyError:
+            return None
+        return np.array(time_of_flights)
 
     def get_roi_coords_filename(self, path: Path) -> Path:
         """
