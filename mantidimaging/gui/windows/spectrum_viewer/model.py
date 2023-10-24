@@ -290,6 +290,6 @@ class SpectrumViewerWindowModel:
 
     def remove_all_roi(self) -> None:
         """
-        Remove all ROIs from the model excluding default ROI 'all'
+        Remove all ROIs from the model
         """
-        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in self.special_roi_list}
+        self._roi_ranges = {}

@@ -224,7 +224,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum.rename_roi(old_name, new_name)
         self.model.rename_roi(old_name, new_name)
 
-    def do_remove_roi(self, roi_name=None) -> None:
+    def do_remove_roi(self, roi_name: str | None = None) -> None:
         """
         Remove a given ROI from the table by ROI name or all ROIs from
         the table if no name is passed as an argument

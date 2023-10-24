@@ -256,4 +256,4 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi()
-        self.assertEqual(["all"], self.presenter.model.get_list_of_roi_names())
+        self.assertEqual([], self.presenter.model.get_list_of_roi_names())
