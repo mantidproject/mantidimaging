@@ -142,9 +142,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
-        for roi_item in range(self.roi_table_model.rowCount()):
+        for roi_name, _, roi_visible in self.roi_table_model:
             if self.presenter.export_mode == ExportMode.ROI_MODE:
-                roi_name, _, roi_visible = self.roi_table_model.row_data(roi_item)
                 if roi_visible is False:
                     self.set_roi_alpha(0, roi_name)
                 else:
@@ -153,8 +152,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             else:
                 roi_name, _, _ = self.roi_table_model.row_data(roi_item)
                 self.set_roi_alpha(0, roi_name)
-
-        return
 
     @property
     def roi_table_model(self) -> TableModel:
