@@ -212,7 +212,7 @@ class SpectrumViewerWindowModel:
         if normalized:
             if self._normalise_stack is None:
                 raise RuntimeError("No normalisation stack selected")
-            transmission = self.get_spectrum(ROI_ALL, SpecType.SAMPLE_NORMED)
+            transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
         else:
             LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
