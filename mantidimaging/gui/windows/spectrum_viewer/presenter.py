@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Optional
 from logging import getLogger
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -75,6 +75,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.set_normalise_stack(norm_stack)
 
         self.do_add_roi()
+        self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
 
@@ -204,6 +205,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
+
+    def add_rits_roi(self) -> None:
+        roi_name = ROI_RITS
+        self.model.set_new_roi(roi_name)
+        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
+        self.view.set_roi_alpha(0, ROI_RITS)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
         """

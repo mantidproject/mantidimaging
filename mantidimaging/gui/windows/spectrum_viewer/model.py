@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 ROI_ALL = "all"
+ROI_RITS = "rits_roi"
 
 
 class SpecType(Enum):

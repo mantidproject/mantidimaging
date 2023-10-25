@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QL
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from .model import ROI_RITS
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -142,16 +143,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
-        for roi_name, _, roi_visible in self.roi_table_model:
-            if self.presenter.export_mode == ExportMode.ROI_MODE:
+        if self.presenter.export_mode == ExportMode.ROI_MODE:
+            for roi_name, _, roi_visible in self.roi_table_model:
                 if roi_visible is False:
                     self.set_roi_alpha(0, roi_name)
                 else:
                     self.set_roi_alpha(255, roi_name)
                     self.presenter.redraw_spectrum(roi_name)
-            else:
-                roi_name, _, _ = self.roi_table_model.row_data(roi_item)
+        else:
+            for roi_name, _, _ in self.roi_table_model:
                 self.set_roi_alpha(0, roi_name)
+
+        if self.presenter.export_mode == ExportMode.IMAGE_MODE:
+            self.set_roi_alpha(255, ROI_RITS)
+            self.presenter.redraw_spectrum(ROI_RITS)
+        else:
+            self.set_roi_alpha(0, ROI_RITS)
 
     @property
     def roi_table_model(self) -> TableModel:
