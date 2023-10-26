@@ -144,15 +144,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.set_roi(name, self.view.spectrum.get_roi(name))
             self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
-    def do_set_roi_alpha(self, name: str, alpha: float) -> None:
-        """
-        Set the alpha value of the ROI with the given name
-
-        :param name: The name of the ROI
-        :param alpha: The new alpha value (0-255)
-        """
-        self.view.spectrum.set_roi_alpha(name, alpha)
-
     def handle_button_enabled(self) -> None:
         """
         Enable the export button if the current stack is not None and normalisation is valid

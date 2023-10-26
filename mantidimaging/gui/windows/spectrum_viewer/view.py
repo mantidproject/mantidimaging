@@ -250,7 +250,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         @param alpha: The alpha value
         """
-        self.presenter.do_set_roi_alpha(roi_name, alpha)
+        self.spectrum.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
             self.spectrum.spectrum_data_dict[roi_name] = np.zeros(self.spectrum.spectrum_data_dict[roi_name].shape)
         else:
