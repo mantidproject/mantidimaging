@@ -146,12 +146,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if self.presenter.export_mode == ExportMode.ROI_MODE:
                 roi_name, _, roi_visible = self.roi_table_model.row_data(roi_item)
                 if roi_visible is False:
-                    self.set_roi_alpha(0, roi_item)
+                    self.set_roi_alpha(0, roi_name)
                 else:
-                    self.set_roi_alpha(255, roi_item)
+                    self.set_roi_alpha(255, roi_name)
                     self.presenter.redraw_spectrum(roi_name)
             else:
-                self.set_roi_alpha(0, roi_item)
+                roi_name, _, _ = self.roi_table_model.row_data(roi_item)
+                self.set_roi_alpha(0, roi_name)
 
         return
 
@@ -242,20 +243,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.presenter.do_add_roi()
 
-    def set_roi_alpha(self, alpha: float, roi) -> None:
+    def set_roi_alpha(self, alpha: float, roi_name: str) -> None:
         """
         Set the alpha value for the selected ROI and update the spectrum to reflect the change.
         A check is made on the spectrum to see if it exists as it may not have been created yet.
 
         @param alpha: The alpha value
         """
-        self.presenter.do_set_roi_alpha(self.roi_table_model.row_data(roi)[0], alpha)
+        self.spectrum.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
-            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = np.zeros(
-                self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]].shape)
+            self.spectrum.spectrum_data_dict[roi_name] = np.zeros(self.spectrum.spectrum_data_dict[roi_name].shape)
         else:
-            self.spectrum.spectrum_data_dict[self.roi_table_model.row_data(roi)[0]] = self.spectrum.spectrum_data_dict[
-                self.roi_table_model.row_data(roi)[0]]
+            self.spectrum.spectrum_data_dict[roi_name] = self.spectrum.spectrum_data_dict[roi_name]
 
         self.spectrum.spectrum.clearPlots()
         self.spectrum.spectrum.update()
