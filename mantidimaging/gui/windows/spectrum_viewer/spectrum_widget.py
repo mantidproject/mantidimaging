@@ -87,7 +87,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.nextRow()
         self.spectrum = self.addPlot()
 
-        self.spectrum_data_dict: dict[str, np.ndarray] = {}
+        self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
         self.nextRow()
         self._tof_range_label = self.addLabel()
 

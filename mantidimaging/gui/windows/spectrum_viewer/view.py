@@ -213,9 +213,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum_data_dict[name] = spectrum_data
         self.spectrum.spectrum.clearPlots()
 
-        for key, value in self.spectrum.spectrum_data_dict.items():
-            if key in self.spectrum.roi_dict:
-                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
+        self.show_visible_spectrums()
 
     def clear(self) -> None:
         self.spectrum.spectrum_data_dict = {}
@@ -256,14 +254,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.spectrum.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
-            self.spectrum.spectrum_data_dict[roi_name] = np.zeros(self.spectrum.spectrum_data_dict[roi_name].shape)
-        else:
-            self.spectrum.spectrum_data_dict[roi_name] = self.spectrum.spectrum_data_dict[roi_name]
+            self.spectrum.spectrum_data_dict[roi_name] = None
 
         self.spectrum.spectrum.clearPlots()
         self.spectrum.spectrum.update()
+        self.show_visible_spectrums()
+
+    def show_visible_spectrums(self):
         for key, value in self.spectrum.spectrum_data_dict.items():
-            if key in self.spectrum.roi_dict:
+            if value is not None and key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
