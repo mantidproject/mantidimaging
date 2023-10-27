@@ -12,7 +12,6 @@ dependencies:
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
-      - testfixtures==6.18.*
       - gitpython==3.1.*
       - pylint==2.11.*
       - sphinx==4.2.*
@@ -27,6 +26,7 @@ dependencies:
   - pytest-cov==3.0.*
   - pytest-randomly==3.12.*
   - pytest-xdist==2.5.*
+  - testfixtures==7.2.*
   - coverage==6.5.*
   - coveralls==3.3.*
   - pyfakefs==5.0.*
