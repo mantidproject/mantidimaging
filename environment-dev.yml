@@ -15,7 +15,6 @@ dependencies:
       - sphinx==4.2.*
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
       - eyes-images==5.20.*
-      - pre-commit==2.15.*
   - yapf==0.33.*
   - mypy==1.3
   - pytest==7.1.*
@@ -31,3 +30,4 @@ dependencies:
   - pyinstaller==5.7.*
   - sarepy=2020.07 # For building old docs
   - ruff=0.0.275
+  - pre-commit==3.5.*
