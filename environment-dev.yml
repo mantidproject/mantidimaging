@@ -15,7 +15,7 @@ dependencies:
       - sphinx==4.2.*
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
       - eyes-images==5.20.*
-  - yapf==0.33.*
+  - yapf==0.40.*
   - mypy==1.3
   - pytest==7.1.*
   - pytest-cov==3.0.*
