@@ -3,3 +3,4 @@ select = ["E", "W", "F", "B", "FA", "C4"]
 fixable = []
 
 line-length = 120
+target-version = "py310"
