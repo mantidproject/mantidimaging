@@ -103,6 +103,7 @@ The latest nightly version can be installed with
 
   - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml`
 
+
 This will make a `mantidimaging-nightly` environment.
 
 
@@ -110,7 +111,7 @@ Updating
 ~~~~~~~~
 To update to the latest version of Mantid Imaging run:
 
-:code:`conda activate mantidimaging && mamba update mantidimaging`
+:code:`mamba env update -n mantidimaging -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
 
 If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.
 
