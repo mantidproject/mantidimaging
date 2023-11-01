@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
-def mark_cropped(images: ImageStack, roi: SensibleROI):
+def mark_cropped(images: ImageStack, roi: SensibleROI) -> None:
     # avoids circular import error
     from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
     # not ideal.. but it will allow to replicate the result accurately
