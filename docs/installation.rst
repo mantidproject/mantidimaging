@@ -52,14 +52,14 @@ If Mantid Imaging has been installed using the Windows Installer, then it can be
 Installing with Mamba/Conda
 ---------------------------
 
-Mantid Imaging can be installed using the packages_ published to Anaconda Cloud, this
-can be done with an existing Conda or Mamba distribution if you already
-have one on your machine.
+Mantid Imaging can be installed using the packages_ published to Anaconda Cloud, this can be done with an existing Conda
+or Mamba distribution if you already have one on your machine. However if you have issues you may find it worth installing
+a fresh Miniforge3.
 
 .. _packages: https://anaconda.org/mantid/mantidimaging/
 
 1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
-2. Download and install `Mambaforge <https://github.com/conda-forge/miniforge>`_ or `Miniconda 3 <https://conda.io/miniconda.html>`_
+2. Download and install `Miniforge3 <https://github.com/conda-forge/miniforge#download>`_ (this is the conda distribution that we recommend).
 3. Make sure :code:`mamba` or :code:`conda` is available on your PATH. The steps below assume you are using mamba.
 4. Create a mantidimaging conda environment:
 
@@ -67,7 +67,7 @@ have one on your machine.
 
 (Specific versions can be installed by using the release url, e.g. `https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml`)
 
-5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`conda activate mantidimaging`
+5. This creates an environment called :code:`mantidimaging` that you can activate via :code:`mamba activate mantidimaging`
 6. **This step is required for Linux users only.** To ensure that MantidImaging can make full use of the memory available on your Linux machine, we need to set the shared memory size to an appropriate value. Please follow the steps below to do this:
 
   - Open the etc/fstab file on your computer. You can do this by opening a terminal and running this command (with sudo if needed to allow you to edit the file): :code:`gedit /etc/fstab`
