@@ -12,25 +12,25 @@ dependencies:
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
-      - coveralls==3.3.*
-      - testfixtures==6.18.*
-      - gitpython==3.1.*
-      - pylint==2.11.*
       - sphinx==4.2.*
       - git+https://github.com/samtygier-stfc/sphinx-multiversion.git@prebuild_command
-      - isort==5.9.*
-      - eyes-images==4.25.*
-      - parameterized==0.8.*
-      - pre-commit==2.15.*
-  - yapf==0.33.*
+      - eyes-images==5.20.*
+  - yapf==0.40.*
   - mypy==1.3
-  - pytest==7.1.*
-  - pytest-cov==3.0.*
-  - pytest-randomly==3.12.*
-  - pytest-xdist==2.5.*
-  - coverage==6.4.*
-  - pyfakefs==5.0.*
-  - pyinstaller==5.7.*
+  - pytest==7.4.*
+  - pytest-cov==4.1.*
+  - pytest-randomly==3.15.*
+  - pytest-xdist==3.3.*
+  - testfixtures==7.2.*
+  - gitpython==3.1.*
+  - coverage==6.5.*
+  - coveralls==3.3.*
+  - pyfakefs==5.3.*
+  - parameterized==0.9.*
+  - pyinstaller==6.1.*
   - sarepy=2020.07 # For building old docs
   - ruff=0.0.275
   - make==4.3
+  - ruff=0.1.3
+  - pre-commit==3.5.*
+

@@ -24,7 +24,7 @@ This will create a conda environment containing all the packages needed to run a
 
 Afterwards the environment can be activated by running:
 
-:code:`conda activate mantidimaging-dev`
+:code:`mamba activate mantidimaging-dev`
 
 To check that the set up was successful, try running the tests from the source directory:
 
