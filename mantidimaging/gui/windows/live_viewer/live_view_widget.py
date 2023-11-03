@@ -35,7 +35,8 @@ class LiveViewWidget(GraphicsLayoutWidget):
         Show the image in the image view.
         @param image: The image to show
         """
-        self.image.setImage(image)
+        self.image.use_brightness_percentiles(image, 5, 95)
+        self.image.setImage(image, levels=self.image.brightLevels)
 
     def handle_deleted(self) -> None:
         """

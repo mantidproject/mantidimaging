@@ -15,8 +15,9 @@ from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
 from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
 
+import numpy as np
+
 if TYPE_CHECKING:
-    import numpy as np
     from PyQt5.QtWidgets import QWidget
 
 graveyard = []
@@ -32,6 +33,9 @@ def pairwise(iterable):
 
 
 class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
+    brightLevels: None | list = None
+    lowerLevel: float
+    higherLevel: float
 
     def __init__(self, name: str = "MIMiniImageView", parent: 'Optional[QWidget]' = None, recon_mode: bool = False):
         super().__init__()
@@ -166,3 +170,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         for img_view in self.histogram_siblings:
             with BlockQtSignals(img_view.hist):
                 img_view.hist.setLevels(*hist_range)
+
+    def use_brightness_percentiles(self, image: np.ndarray, percent_low: int, percent_high: int, *args, **kwargs):
+        self.lowerLevel = np.percentile(image, percent_low)
+        self.higherLevel = np.percentile(image, percent_high)
+        self.brightLevels = [self.lowerLevel, self.higherLevel]
