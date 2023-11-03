@@ -25,7 +25,7 @@ jobs:
           echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Cache Mambaforge and Pip packages
+      - name: Cache Miniforge and Pip packages
         uses: actions/cache@v3.2.5
         env:
           CACHE_NUMBER: 0
@@ -36,9 +36,9 @@ jobs:
           key:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
-      - name: Cache Mambaforge environment
+      - name: Cache Miniforge environment
         uses: actions/cache@v3.2.5
-        id: cache-mambaforge-environment
+        id: cache-miniforge-environment
         env:
           CACHE_NUMBER: 0
         with:
@@ -46,17 +46,16 @@ jobs:
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml', 'setup.py')}}
 
-      - name: Setup Mambaforge
+      - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v2.2.0
         with:
           miniforge-version: latest
-          miniforge-variant: Mambaforge
           activate-environment: mantidimaging-dev
           auto-activate-base: false
           use-mamba: true
 
       - name: Mantid Imaging developer dependencies
-        if: steps.cache-mambaforge-environment.outputs.cache-hit != 'true'
+        if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: |
           conda deactivate
@@ -64,7 +63,7 @@ jobs:
           cp -Ta /usr/share/miniconda3/envs/mantidimaging-dev /usr/share/miniconda3/envs/mantidimaging-dev.cache
 
       - name: Mantid Imaging developer dependencies - from cache
-        if: steps.cache-mambaforge-environment.outputs.cache-hit == 'true'
+        if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
         shell: bash -l {0}
         run: |
           cp -Ta /usr/share/miniconda3/envs/mantidimaging-dev.cache /usr/share/miniconda3/envs/mantidimaging-dev
@@ -79,7 +78,7 @@ jobs:
         shell: bash -l {0}
         run: |
           mamba env list
-          python --version; conda list ; pip list
+          python --version; mamba list ; pip list
 
       - name: Yapf
         shell: bash -l {0}
