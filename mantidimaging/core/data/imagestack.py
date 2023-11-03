@@ -7,7 +7,7 @@ import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING
+from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
@@ -24,11 +24,12 @@ if TYPE_CHECKING:
 
 class ImageStack:
     name: str
+    _shared_array: np.ndarray | pu.SharedArray
 
     def __init__(self,
-                 data: Union[np.ndarray, pu.SharedArray],
+                 data: np.ndarray | pu.SharedArray,
                  filenames: Optional[List[str]] = None,
-                 indices: Union[List[int], Indices, None] = None,
+                 indices: List[int] | Indices | None = None,
                  metadata: Optional[Dict[str, Any]] = None,
                  sinograms: bool = False,
                  name: Optional[str] = None):
@@ -66,11 +67,11 @@ class ImageStack:
         else:
             self.name = name
 
-        tracker_msg = f"ImageStack {self.name}"
+        tracker_msg: str = f"ImageStack {self.name}"
         leak_tracker.add(self._shared_array.array, msg=tracker_msg)
         leak_tracker.add(self._shared_array, msg=tracker_msg)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, ImageStack):
             return np.array_equal(self.data, other.data) \
                    and self.is_sinograms == other.is_sinograms \
@@ -81,10 +82,10 @@ class ImageStack:
         else:
             raise ValueError(f"Cannot compare against {other}")
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
         return not self == other
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Image Stack: data={self.data.shape} | properties|={len(self.metadata)}'
 
     def count(self) -> int:
@@ -95,7 +96,7 @@ class ImageStack:
         return self._filenames
 
     @filenames.setter
-    def filenames(self, new_ones: List[str]):
+    def filenames(self, new_ones: List[str]) -> None:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
@@ -103,14 +104,14 @@ class ImageStack:
     def id(self) -> uuid.UUID:
         return self._id
 
-    def load_metadata(self, f: TextIO):
+    def load_metadata(self, f: TextIO) -> None:
         """
         Load metadata json without overwriting existing values
         """
         self.metadata = json.load(f) | self.metadata
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None):
+    def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None) -> None:
         self.metadata[const.SINOGRAMS] = self.is_sinograms
 
         if rescale_params is not None:
@@ -118,14 +119,14 @@ class ImageStack:
 
         json.dump(self.metadata, f, indent=4)
 
-    def record_operation(self, func_name: str, display_name, *args, **kwargs):
+    def record_operation(self, func_name: str, display_name: str, *args, **kwargs) -> None:
         if const.OPERATION_HISTORY not in self.metadata:
             self.metadata[const.OPERATION_HISTORY] = []
 
-        def accepted_type(o):
+        def accepted_type(o) -> bool:
             return any(isinstance(o, expected) for expected in [str, int, float, bool, tuple, list, SensibleROI])
 
-        def prepare(o):
+        def prepare(o) -> Any:
             if isinstance(o, SensibleROI):
                 return list(o)
             else:
@@ -148,7 +149,7 @@ class ImageStack:
         """
         return const.OPERATION_HISTORY in self.metadata
 
-    def copy(self, flip_axes=False) -> 'ImageStack':
+    def copy(self, flip_axes: bool = False) -> 'ImageStack':
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
@@ -162,7 +163,7 @@ class ImageStack:
                             sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
-    def copy_roi(self, roi: SensibleROI):
+    def copy_roi(self, roi: SensibleROI) -> 'ImageStack':
         shape = (self.data.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
@@ -180,22 +181,22 @@ class ImageStack:
         "A slice, either projection or sinogram depending on current ordering"
         return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
-    def sino_as_image_stack(self, index) -> 'ImageStack':
+    def sino_as_image_stack(self, index: int) -> 'ImageStack':
         "A single sinogram slice as an ImageStack in projection ordering"
         return ImageStack(np.asarray([self.sino(index)]).swapaxes(0, 1), metadata=deepcopy(self.metadata))
 
-    def slice_as_array(self, index) -> np.ndarray:
+    def slice_as_array(self, index: int) -> np.ndarray:
         return np.asarray([self.data[index]])
 
     @property
-    def height(self):
+    def height(self) -> int:
         if not self._is_sinograms:
             return self.data.shape[1]
         else:
             return self.data.shape[0]
 
     @property
-    def width(self):
+    def width(self) -> int:
         return self.data.shape[2]
 
     @property
@@ -220,19 +221,19 @@ class ImageStack:
     def num_sinograms(self) -> int:
         return self.height
 
-    def sino(self, slice_idx) -> np.ndarray:
+    def sino(self, slice_idx: int) -> np.ndarray:
         if not self._is_sinograms:
             return np.swapaxes(self.data, 0, 1)[slice_idx]
         else:
             return self.data[slice_idx]
 
-    def projection(self, projection_idx) -> np.ndarray:
+    def projection(self, projection_idx: int) -> np.ndarray:
         if self._is_sinograms:
             return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
             return self.data[projection_idx]
 
-    def has_proj180deg(self):
+    def has_proj180deg(self) -> bool:
         return self._proj180deg is not None
 
     @property
@@ -240,16 +241,16 @@ class ImageStack:
         return self._proj180deg
 
     @proj180deg.setter
-    def proj180deg(self, value: 'ImageStack'):
+    def proj180deg(self, value: 'ImageStack') -> None:
         assert isinstance(value, ImageStack)
         self._proj180deg = value
 
     @property
-    def projections(self):
+    def projections(self) -> np.ndarray:
         return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
-    def sinograms(self):
+    def sinograms(self) -> np.ndarray:
         return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
@@ -257,7 +258,7 @@ class ImageStack:
         return self._shared_array.array
 
     @data.setter
-    def data(self, other: np.ndarray):
+    def data(self, other: np.ndarray) -> None:
         self._shared_array.array = other
 
     @property
@@ -265,7 +266,7 @@ class ImageStack:
         return self._shared_array
 
     @shared_array.setter
-    def shared_array(self, shared_array: pu.SharedArray):
+    def shared_array(self, shared_array: pu.SharedArray) -> None:
         self._shared_array = shared_array
 
     @property
@@ -273,11 +274,11 @@ class ImageStack:
         return self._shared_array.has_shared_memory
 
     @property
-    def dtype(self):
+    def dtype(self) -> np.typing.DTypeLike:
         return self.data.dtype
 
     @staticmethod
-    def create_empty_image_stack(shape, dtype, metadata) -> 'ImageStack':
+    def create_empty_image_stack(shape: tuple[int, ...], dtype: np.dtype, metadata: dict[str, Any]) -> 'ImageStack':
         arr = pu.create_array(shape, dtype)
         return ImageStack(arr, metadata=metadata)
 
@@ -297,7 +298,7 @@ class ImageStack:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
 
-    def set_projection_angles(self, angles: ProjectionAngles):
+    def set_projection_angles(self, angles: ProjectionAngles) -> None:
         if len(angles.value) != self.num_images:
             raise RuntimeError("The number of angles does not match the number of images. "
                                f"Num angles {len(angles.value)} and num images {self.num_images}")
@@ -339,17 +340,18 @@ class ImageStack:
             return None
 
     @property
-    def pixel_size(self):
-        return self.metadata.get(const.PIXEL_SIZE, 0)
+    def pixel_size(self) -> float:
+        pixel_size = cast(float, self.metadata.get(const.PIXEL_SIZE, 0))
+        return pixel_size
 
     @pixel_size.setter
-    def pixel_size(self, value: int):
+    def pixel_size(self, value: float) -> None:
         self.metadata[const.PIXEL_SIZE] = value
 
-    def clear_proj180deg(self):
+    def clear_proj180deg(self) -> None:
         self._proj180deg = None
 
-    def make_name_unique(self, existing_names: List[str]):
+    def make_name_unique(self, existing_names: List[str]) -> None:
         name = self.name
         num = 1
         while self.name in existing_names:
