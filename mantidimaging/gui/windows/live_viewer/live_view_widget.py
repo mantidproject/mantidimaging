@@ -3,6 +3,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from pyqtgraph import GraphicsLayoutWidget
+
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 
@@ -30,13 +31,14 @@ class LiveViewWidget(GraphicsLayoutWidget):
 
         self.image.enable_message()
 
+        self.image.set_brightness_percentiles(5, 95)
+
     def show_image(self, image: np.ndarray) -> None:
         """
         Show the image in the image view.
         @param image: The image to show
         """
-        self.image.use_brightness_percentiles(image, 5, 95)
-        self.image.setImage(image, levels=self.image.brightLevels)
+        self.image.setImage(image)
 
     def handle_deleted(self) -> None:
         """

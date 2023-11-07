@@ -33,9 +33,8 @@ def pairwise(iterable):
 
 
 class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
-    brightLevels: None | list = None
-    lowerLevel: float
-    higherLevel: float
+    bright_levels: None | list[int] = None
+    levels: list[float]
 
     def __init__(self, name: str = "MIMiniImageView", parent: 'Optional[QWidget]' = None, recon_mode: bool = False):
         super().__init__()
@@ -97,7 +96,11 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.details.setText("")
 
     def setImage(self, image: np.ndarray, *args, **kwargs):
-        self.im.setImage(image, *args, **kwargs)
+        if self.bright_levels is not None:
+            self.levels = [np.percentile(image, x) for x in self.bright_levels]
+            self.im.setImage(image, *args, **kwargs, levels=self.levels)
+        else:
+            self.im.setImage(image, *args, **kwargs)
         self.check_for_bad_data()
         self.set_auto_color_enabled(image is not None)
 
@@ -171,7 +174,5 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
             with BlockQtSignals(img_view.hist):
                 img_view.hist.setLevels(*hist_range)
 
-    def use_brightness_percentiles(self, image: np.ndarray, percent_low: int, percent_high: int, *args, **kwargs):
-        self.lowerLevel = np.percentile(image, percent_low)
-        self.higherLevel = np.percentile(image, percent_high)
-        self.brightLevels = [self.lowerLevel, self.higherLevel]
+    def set_brightness_percentiles(self, percent_low: int, percent_high: int):
+        self.bright_levels = [percent_low, percent_high]
