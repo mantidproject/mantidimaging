@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -55,6 +56,18 @@ class Image_Data:
         return self._stat.st_mtime
 
 
+class SubDirectory:
+
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self._stat = path.stat()
+        self.mtime = self._stat.st_mtime
+
+    @property
+    def modification_time(self) -> float:
+        return self.mtime
+
+
 class LiveViewerWindowModel:
     """
     The model for the spectrum viewer window.
@@ -96,7 +109,7 @@ class LiveViewerWindowModel:
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
-        self.image_watcher._handle_directory_change("")
+        self.image_watcher._handle_directory_change(str(path))
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -164,12 +177,14 @@ class ImageWatcher(QObject):
         self.recent_file_watcher = QFileSystemWatcher()
         self.recent_file_watcher.fileChanged.connect(self.handle_image_modified)
 
-    def find_images(self) -> list[Image_Data]:
+        self.sub_directories: dict[Path, SubDirectory] = {}
+
+    def find_images(self, directory: Path) -> list[Image_Data]:
         """
         Find all the images in the directory.
         """
         image_files = []
-        for file_path in Path(self.directory).iterdir():
+        for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
                 try:
                     image_obj = Image_Data(file_path)
@@ -178,6 +193,16 @@ class ImageWatcher(QObject):
                     continue
 
         return image_files
+
+    def find_sub_directories(self, directory: Path) -> None:
+        # COMPAT python < 3.12 - Can replace with Path.walk()
+        for filename in directory.glob("**/*"):
+            if filename.is_dir():
+                self.add_sub_directory(SubDirectory(filename))
+
+    def sort_sub_directory_by_modified_time(self) -> None:
+        self.sub_directories = dict(
+            sorted(self.sub_directories.items(), key=lambda p: p[1].modification_time, reverse=True))
 
     @staticmethod
     def sort_images_by_modified_time(images: list[Image_Data]) -> list[Image_Data]:
@@ -197,8 +222,29 @@ class ImageWatcher(QObject):
 
         :param directory: directory that has changed
         """
+        directory_path = Path(directory)
 
-        images = self.find_images()
+        # Force the modification time of signal directory, because file changes may not update
+        # parent dir mtime
+        if directory_path.exists():
+            this_dir = SubDirectory(directory_path)
+            this_dir.mtime = time.time()
+            self.add_sub_directory(this_dir)
+        else:
+            self.remove_sub_directory(directory_path)
+
+        self.find_sub_directories(directory_path)
+        self.sort_sub_directory_by_modified_time()
+
+        for newest_directory in self.sub_directories.values():
+            try:
+                images = self.find_images(newest_directory.path)
+            except FileNotFoundError:
+                images = []
+
+            if len(images) > 0:
+                break
+
         images = self.sort_images_by_modified_time(images)
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images)
@@ -220,6 +266,7 @@ class ImageWatcher(QObject):
         Remove the currently set path
         """
         self.watcher.removePath(str(self.directory))
+        self.watcher.removePaths([str(path) for path in self.sub_directories.keys()])
         self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
         assert len(self.watcher.files()) == 0
         assert len(self.watcher.directories()) == 0
@@ -232,3 +279,15 @@ class ImageWatcher(QObject):
 
     def handle_image_modified(self, file_path):
         self.recent_image_changed.emit(Path(file_path))
+
+    def add_sub_directory(self, sub_dir: SubDirectory):
+        if sub_dir.path not in self.sub_directories:
+            self.watcher.addPath(str(sub_dir.path))
+
+        self.sub_directories[sub_dir.path] = sub_dir
+
+    def remove_sub_directory(self, sub_dir: Path):
+        if sub_dir in self.sub_directories:
+            self.watcher.removePath(str(sub_dir))
+
+        del self.sub_directories[sub_dir]
