@@ -172,12 +172,12 @@ class ImageWatcher(QObject):
         self.directory = directory
         self.watcher = QFileSystemWatcher()
         self.watcher.directoryChanged.connect(self._handle_directory_change)
-        self.watcher.addPath(str(self.directory))
 
         self.recent_file_watcher = QFileSystemWatcher()
         self.recent_file_watcher.fileChanged.connect(self.handle_image_modified)
 
         self.sub_directories: dict[Path, SubDirectory] = {}
+        self.add_sub_directory(SubDirectory(self.directory))
 
     def find_images(self, directory: Path) -> list[Image_Data]:
         """
@@ -265,7 +265,6 @@ class ImageWatcher(QObject):
         """
         Remove the currently set path
         """
-        self.watcher.removePath(str(self.directory))
         self.watcher.removePaths([str(path) for path in self.sub_directories.keys()])
         self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
         assert len(self.watcher.files()) == 0
