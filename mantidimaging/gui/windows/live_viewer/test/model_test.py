@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 from unittest import mock
@@ -13,13 +14,12 @@ from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
 class ImageWatcherTest(FakeFSTestCase):
-    # Note these tests rely on modified times of files created with pyfakefs
-    # There are some asserts on mtimes to ensure that assumptions are valid
 
     def setUp(self) -> None:
         super().setUp()
         self.top_path = Path("/live")
         self.fs.create_dir(self.top_path)
+        os.utime(self.top_path, (10, 10))
         with mock.patch("mantidimaging.gui.windows.live_viewer.model.QFileSystemWatcher") as mocker:
             mock_dir_watcher = mock.create_autospec(QFileSystemWatcher, directoryChanged=mock.Mock())
             mock_file_watcher = mock.create_autospec(QFileSystemWatcher, fileChanged=mock.Mock())
@@ -29,18 +29,30 @@ class ImageWatcherTest(FakeFSTestCase):
             self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock())
             self.watcher.image_changed = self.mock_signal_image
 
-    def _make_simple_dir(self, directory: Path):
+    def _make_simple_dir(self, directory: Path, t0: float = 1000):
         file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
+        if not directory.exists():
+            self.fs.create_dir(directory)
+        os.utime(directory, (10, t0))
+        n = 1
         for file in file_list:
             self.fs.create_file(file)
+            os.utime(file, (10, t0 + n))
+            n += 1
 
         return file_list
 
-    def _make_sub_directories(self, directory: Path, sub_dirs: list[str]):
+    def _make_sub_directories(self, directory: Path, sub_dirs: list[str], t0: float = 1000):
+        n = 0
         for sub_dir in sub_dirs:
+            self.fs.create_dir(directory / sub_dir)
+            os.utime(directory / sub_dir, (10, t0 + n))
+            n += 1
             file_list = [directory / sub_dir / f"abc_{i:06d}.tiff" for i in range(5)]
             for file in file_list:
                 self.fs.create_file(file)
+                os.utime(file, (10, t0 + n))
+                n += 1
 
         return file_list
 
@@ -90,10 +102,12 @@ class ImageWatcherTest(FakeFSTestCase):
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
 
-    def test_WHEN_directory_change_empty_subdir_THEN_images_emitted(self):
+    @mock.patch("time.time", return_value=4000.0)
+    def test_WHEN_directory_change_empty_subdir_THEN_images_emitted(self, _mock_time):
         # empty sub dir created, but contains no images so should emit images from top dir
         file_list = self._make_simple_dir(self.top_path)
         self.fs.create_dir(self.top_path / "empty")
+        os.utime(self.top_path / "empty", [10, 2000])
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'empty').stat().st_mtime)
 
         self.watcher._handle_directory_change(self.top_path / "empty")
@@ -101,10 +115,11 @@ class ImageWatcherTest(FakeFSTestCase):
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
 
-    def test_WHEN_directory_change_with_subdir_THEN_images_emitted(self):
+    @mock.patch("time.time", return_value=4000.0)
+    def test_WHEN_directory_change_with_subdir_THEN_images_emitted(self, _mock_time):
         # If change notification is on top dir, then emit top files even if subdir newer
         file_list = self._make_simple_dir(self.top_path)
-        _ = self._make_simple_dir(self.top_path / "more")
+        _ = self._make_simple_dir(self.top_path / "more", t0=2000)
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'more').stat().st_mtime)
         self.assertLess((self.top_path / 'more').stat().st_mtime, time.time())
 
@@ -113,10 +128,11 @@ class ImageWatcherTest(FakeFSTestCase):
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
 
-    def test_WHEN_sub_directory_change_THEN_images_emitted(self):
+    @mock.patch("time.time", return_value=4000.0)
+    def test_WHEN_sub_directory_change_THEN_images_emitted(self, _mock_time):
         # If change notification is on sub dir, then emit sub dir files
         _ = self._make_simple_dir(self.top_path)
-        file_list2 = self._make_simple_dir(self.top_path / "more")
+        file_list2 = self._make_simple_dir(self.top_path / "more", t0=2000)
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'more').stat().st_mtime)
 
         self.watcher._handle_directory_change(self.top_path / "more")
