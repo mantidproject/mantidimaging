@@ -13,6 +13,8 @@ import numpy as np
 from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
+from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
+
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
 from cil.plugins.astra.operators import ProjectionOperator
 
@@ -73,6 +75,64 @@ class CILRecon(BaseRecon):
 
             # define the BlockOperator
             K = BlockOperator(alpha * Grad, A2d)
+
+        if recon_params.non_negative:
+            G = IndicatorBox(lower=0)
+        else:
+            # Define Function G simply as zero
+            G = ZeroFunction()
+
+        return (K, F, G)
+
+
+    @staticmethod
+    def set_up_TGV_regularisation(
+            image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
+            recon_params: ReconstructionParameters) -> tuple[BlockOperator, BlockFunction, Function]:
+
+        # Forward operator
+        A2d = ProjectionOperator(image_geometry, acquisition_data.geometry, 'gpu')
+
+        if recon_params.stochastic:
+            for partition_geometry, partition_operator in zip(acquisition_data.geometry, A2d, strict=True):
+                CILRecon.set_approx_norm(partition_operator, partition_geometry, image_geometry)
+        else:
+            CILRecon.set_approx_norm(A2d, acquisition_data.geometry, image_geometry)
+
+        # Define Gradient Operator and BlockOperator
+        alpha = recon_params.alpha
+        gamma = recon_params.gamma
+        beta = alpha / gamma
+
+        f2 = alpha * MixedL21Norm()
+        f3 = beta * MixedL21Norm() 
+
+        if recon_params.stochastic:
+            
+            # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
+            fs = []
+            for i, _ in enumerate(acquisition_data.geometry):
+                fs.append(L2NormSquared(b=acquisition_data.get_item(i)))
+            
+            F = BlockFunction(*fs, f2, f3)
+
+
+        else:
+            # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
+            f1 = 0.5 * L2NormSquared(b=acquisition_data)
+    
+            F = BlockFunction(f1, f2, f3)         
+
+        # Define BlockOperator K
+
+        #%%                                                                         
+        K11 = A2d
+        K21 = GradientOperator(image_geometry)
+        K32 = SymmetrisedGradientOperator(K21.range)
+        K12 = ZeroOperator(K32.domain, image_geometry)
+        K22 = IdentityOperator(K21.range)
+        K31 = ZeroOperator(image_geometry, K32.range)
+        K = BlockOperator(K11, K12, K21, -K22, K31, K32, shape=(3,2) )
 
         if recon_params.non_negative:
             G = IndicatorBox(lower=0)
