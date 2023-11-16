@@ -41,7 +41,7 @@ install-dev-requirements:
 	python ./setup.py create_dev_env
 
 test:
-	python -m pytest
+	python -m pytest -n auto
 
 test-verbose:
 	python -m pytest -vs -o log_cli=true
