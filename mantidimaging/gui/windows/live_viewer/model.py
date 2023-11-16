@@ -196,9 +196,12 @@ class ImageWatcher(QObject):
 
     def find_sub_directories(self, directory: Path) -> None:
         # COMPAT python < 3.12 - Can replace with Path.walk()
-        for filename in directory.glob("**/*"):
-            if filename.is_dir():
-                self.add_sub_directory(SubDirectory(filename))
+        try:
+            for filename in directory.glob("**/*"):
+                if filename.is_dir():
+                    self.add_sub_directory(SubDirectory(filename))
+        except FileNotFoundError:
+            pass
 
     def sort_sub_directory_by_modified_time(self) -> None:
         self.sub_directories = dict(
