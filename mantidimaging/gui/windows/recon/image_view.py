@@ -52,6 +52,14 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.enable_nonpositive_check()
         self.imageview_sinogram.enable_nonpositive_check()
 
+    def cleanup(self):
+        self.imageview_projection.cleanup()
+        self.imageview_sinogram.cleanup()
+        self.imageview_recon.cleanup()
+        del self.imageview_projection
+        del self.imageview_sinogram
+        del self.imageview_recon
+
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
 

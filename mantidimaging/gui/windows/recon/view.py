@@ -246,6 +246,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
+        self.image_view.cleanup()
         self.main_window.recon = None
 
     @property
