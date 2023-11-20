@@ -95,6 +95,11 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.clear_overlays()
         self.details.setText("")
 
+    def cleanup(self) -> None:
+        """Prepare for deletion when no longer needed"""
+        self.clear()
+        self.im.hoverEvent = None
+
     def setImage(self, image: np.ndarray, *args, **kwargs):
         if self.bright_levels is not None:
             self.levels = [np.percentile(image, x) for x in self.bright_levels]
