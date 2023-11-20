@@ -6,8 +6,11 @@ from __future__ import annotations
 import argparse
 import sys
 import warnings
+import os
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtCore
+from PyQt5.QtGui import QFont
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -52,11 +55,17 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
+    os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    os.environ["QT_SCALE_FACTOR"] = "1"
     q_application = QApplication(sys.argv)
     q_application.setStyle('Fusion')
+    font = QFont("MS Shell Dlg 2", 10)
+    q_application.setFont(font)
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
+    q_application.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     return q_application
 
 
