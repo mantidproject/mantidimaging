@@ -5,6 +5,7 @@ import gc
 import sys
 import traceback
 import weakref
+from types import FunctionType
 from typing import NamedTuple, List, Set, Iterable
 
 from numpy import ndarray
@@ -36,6 +37,9 @@ def obj_to_string(obj, relative=None) -> str:
     if isinstance(obj, ndarray):
         extra_info += f" ndarray: {obj.shape} {obj.dtype}"
 
+    if isinstance(obj, FunctionType):
+        extra_info += f" function: {obj}"
+
     return f"{type(obj)} pyid={id(obj)} {extra_info}"
 
 
@@ -55,7 +59,7 @@ def find_owners(obj, depth: int, path: List[str] | None = None, ignore: Set[int]
     if len(new_refs) == 0:
         all_routes.append(path)
     for owner in new_refs:
-        if type(owner).__name__ in ['frame', 'function', 'list_iterator']:
+        if type(owner).__name__ in ['frame', 'list_iterator']:
             continue
         route = [obj_to_string(owner, obj)] + path
         ignore.add(id(route))
