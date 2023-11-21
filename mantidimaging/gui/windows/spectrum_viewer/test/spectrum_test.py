@@ -28,6 +28,10 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.spectrum_widget = SpectrumWidget()
         self.sensible_roi = SensibleROI.from_list([0, 0, 0, 0])
 
+    def tearDown(self):
+        self.spectrum_widget.cleanup()
+        del self.spectrum_widget
+
     def test_WHEN_colour_generator_called_THEN_return_value_of_length_3(self):
         colour = self.spectrum_widget.random_colour_generator()
         self.assertEqual(len(colour), 4)
