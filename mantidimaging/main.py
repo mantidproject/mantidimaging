@@ -10,7 +10,7 @@ import os
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QGuiApplication
 
 import mantidimaging.core.parallel.manager as pm
 
