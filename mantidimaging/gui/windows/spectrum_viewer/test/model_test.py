@@ -283,7 +283,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.model.set_new_roi("new_roi_2")
         self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi", "new_roi_2"])
         self.model.remove_all_roi()
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(self.model.get_list_of_roi_names(), [])
 
     def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
         self.model.set_stack(generate_images())

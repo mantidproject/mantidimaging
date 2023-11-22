@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QL
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from .model import ROI_RITS
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -142,19 +143,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
-        for roi_item in range(self.roi_table_model.rowCount()):
-            if self.presenter.export_mode == ExportMode.ROI_MODE:
-                roi_name, _, roi_visible = self.roi_table_model.row_data(roi_item)
+        if self.presenter.export_mode == ExportMode.ROI_MODE:
+            for roi_name, _, roi_visible in self.roi_table_model:
                 if roi_visible is False:
                     self.set_roi_alpha(0, roi_name)
                 else:
                     self.set_roi_alpha(255, roi_name)
                     self.presenter.redraw_spectrum(roi_name)
-            else:
-                roi_name, _, _ = self.roi_table_model.row_data(roi_item)
+        else:
+            for roi_name, _, _ in self.roi_table_model:
                 self.set_roi_alpha(0, roi_name)
 
-        return
+        if self.presenter.export_mode == ExportMode.IMAGE_MODE:
+            self.set_roi_alpha(255, ROI_RITS)
+            self.presenter.redraw_spectrum(ROI_RITS)
+        else:
+            self.set_roi_alpha(0, ROI_RITS)
 
     @property
     def roi_table_model(self) -> TableModel:
@@ -209,9 +213,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum_data_dict[name] = spectrum_data
         self.spectrum.spectrum.clearPlots()
 
-        for key, value in self.spectrum.spectrum_data_dict.items():
-            if key in self.spectrum.roi_dict:
-                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
+        self.show_visible_spectrums()
 
     def clear(self) -> None:
         self.spectrum.spectrum_data_dict = {}
@@ -252,14 +254,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.spectrum.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
-            self.spectrum.spectrum_data_dict[roi_name] = np.zeros(self.spectrum.spectrum_data_dict[roi_name].shape)
-        else:
-            self.spectrum.spectrum_data_dict[roi_name] = self.spectrum.spectrum_data_dict[roi_name]
+            self.spectrum.spectrum_data_dict[roi_name] = None
 
         self.spectrum.spectrum.clearPlots()
         self.spectrum.spectrum.update()
+        self.show_visible_spectrums()
+
+    def show_visible_spectrums(self):
         for key, value in self.spectrum.spectrum_data_dict.items():
-            if key in self.spectrum.roi_dict:
+            if value is not None and key in self.spectrum.roi_dict:
                 self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):

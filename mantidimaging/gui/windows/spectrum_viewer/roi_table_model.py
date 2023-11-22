@@ -91,6 +91,9 @@ class TableModel(QAbstractTableModel):
         """
         return self._data[row]
 
+    def __getitem__(self, item: int) -> list:
+        return self.row_data(item)
+
     def column_data(self, column: int) -> list:
         """
         Return data from selected column

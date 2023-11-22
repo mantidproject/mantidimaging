@@ -20,6 +20,9 @@ if TYPE_CHECKING:
 
 LOG = getLogger(__name__)
 
+ROI_ALL = "all"
+ROI_RITS = "rits_roi"
+
 
 class SpecType(Enum):
     SAMPLE = 1
@@ -44,7 +47,7 @@ class SpectrumViewerWindowModel:
         self.presenter = presenter
         self._roi_id_counter = 0
         self._roi_ranges = {}
-        self.default_roi_list = ["all"]
+        self.special_roi_list = [ROI_ALL]
 
     def roi_name_generator(self) -> str:
         """
@@ -77,7 +80,7 @@ class SpectrumViewerWindowModel:
             return
         self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
-        self.set_new_roi(self.default_roi_list[0])
+        self.set_new_roi(ROI_ALL)
 
     def set_new_roi(self, name: str) -> None:
         """
@@ -198,9 +201,6 @@ class SpectrumViewerWindowModel:
         if self._stack is None:
             raise ValueError("No stack selected")
 
-        # Default_roi will likely need updating once UI is implemented
-        default_roi = self.default_roi_list[0]
-
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
@@ -208,11 +208,11 @@ class SpectrumViewerWindowModel:
         # RITS expects ToF in μs
         tof *= 1e6
 
-        transmission_error = np.zeros_like(tof)
+        transmission_error = np.full_like(tof, 0.1)
         if normalized:
             if self._normalise_stack is None:
                 raise RuntimeError("No normalisation stack selected")
-            transmission = self.get_spectrum(default_roi, SpecType.SAMPLE_NORMED)
+            transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
         else:
             LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
@@ -266,8 +266,8 @@ class SpectrumViewerWindowModel:
         @param roi_name: The name of the ROI to remove
         """
         if roi_name in self._roi_ranges.keys():
-            if roi_name in self.default_roi_list:
-                raise RuntimeError("Cannot remove the 'all' or 'roi' ROIs")
+            if roi_name in self.special_roi_list:
+                raise RuntimeError(f"Cannot remove ROI: {roi_name}")
             del self._roi_ranges[roi_name]
         else:
             raise KeyError(
@@ -283,14 +283,14 @@ class SpectrumViewerWindowModel:
         @raises RuntimeError: If the ROI is 'all'
         """
         if old_name in self._roi_ranges.keys() and new_name not in self._roi_ranges.keys():
-            if old_name == self.default_roi_list[0]:
-                raise RuntimeError("Cannot rename the 'all' ROI")
+            if old_name in self.special_roi_list:
+                raise RuntimeError(f"Cannot remove ROI: {old_name}")
             self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
         else:
             raise KeyError(f"Cannot rename {old_name} to {new_name} Available:{self._roi_ranges.keys()}")
 
     def remove_all_roi(self) -> None:
         """
-        Remove all ROIs from the model excluding default ROI 'all'
+        Remove all ROIs from the model
         """
-        self._roi_ranges = {key: value for key, value in self._roi_ranges.items() if key in self.default_roi_list}
+        self._roi_ranges = {}
