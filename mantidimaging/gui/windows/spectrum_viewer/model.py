@@ -208,7 +208,7 @@ class SpectrumViewerWindowModel:
         # RITS expects ToF in μs
         tof *= 1e6
 
-        transmission_error = np.zeros_like(tof)
+        transmission_error = np.full_like(tof, 0.1)
         if normalized:
             if self._normalise_stack is None:
                 raise RuntimeError("No normalisation stack selected")
