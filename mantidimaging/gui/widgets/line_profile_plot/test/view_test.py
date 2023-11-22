@@ -34,6 +34,12 @@ class ImageViewLineROITest(unittest.TestCase):
         self.image_view = MIMiniImageView()
         self.roi_line = ImageViewLineROI(self.image_view)
 
+    def tearDown(self):
+        self.roi_line.cleanup()
+        self.image_view.cleanup()
+        del self.roi_line
+        del self.image_view
+
     def test_reset_is_needed_no_image_data(self):
         self.assertFalse(self.roi_line.reset_is_needed())
 
@@ -118,6 +124,12 @@ class LineProfilePlotTest(unittest.TestCase):
     def setUp(self) -> None:
         self.image_view = MIMiniImageView()
         self.line_profile = LineProfilePlot(self.image_view)
+
+    def tearDown(self):
+        self.line_profile.cleanup()
+        self.image_view.cleanup()
+        del self.line_profile
+        del self.image_view
 
     def test_update_no_image_data(self):
         self.line_profile._line_profile.setData = mock.Mock()

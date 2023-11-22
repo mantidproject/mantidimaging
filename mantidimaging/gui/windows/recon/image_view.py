@@ -56,6 +56,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.cleanup()
         self.imageview_sinogram.cleanup()
         self.imageview_recon.cleanup()
+        self.recon_line_profile.cleanup()
         del self.imageview_projection
         del self.imageview_sinogram
         del self.imageview_recon
