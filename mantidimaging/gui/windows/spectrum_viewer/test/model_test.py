@@ -20,13 +20,16 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 class CloseCheckStream(io.StringIO):
     is_closed: bool = False
+    captured: list[str] = []
 
     def close(self) -> None:
-        # don't call real close as it clears buffer
+        # On close capture value
         self.is_closed = True
+        self.captured = self.getvalue().splitlines()
+        super().close()
 
 
-class SpectrumViewerWindowPresenterTest(unittest.TestCase):
+class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
@@ -180,12 +183,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         mock_stream = CloseCheckStream()
         mock_path = mock.create_autospec(Path)
         mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.model.save_csv(mock_path, False)
 
-        self.model.save_csv(mock_path, False)
         mock_path.open.assert_called_once_with("w")
-        self.assertIn("# tof_index,all,roi", mock_stream.getvalue())
-        self.assertIn("0.0,0.0,0.0", mock_stream.getvalue())
-        self.assertIn("1.0,2.0,2.0", mock_stream.getvalue())
+        self.assertIn("# tof_index,all,roi", mock_stream.captured[0])
+        self.assertIn("0.0,0.0,0.0", mock_stream.captured[1])
+        self.assertIn("1.0,2.0,2.0", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
     def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
@@ -221,12 +225,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         mock_stream = CloseCheckStream()
         mock_path = mock.create_autospec(Path)
         mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.model.save_csv(mock_path, True)
 
-        self.model.save_csv(mock_path, True)
         mock_path.open.assert_called_once_with("w")
-        self.assertIn("# tof_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.getvalue())
-        self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.getvalue())
-        self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.getvalue())
+        self.assertIn("# tof_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.captured[0])
+        self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.captured[1])
+        self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
     def test_WHEN_roi_name_generator_called_THEN_correct_names_returned_visible_to_model(self):
