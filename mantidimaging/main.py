@@ -61,11 +61,15 @@ def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
     q_application.setStyle('Fusion')
-    font = QFont("MS Shell Dlg 2", 10)
-    q_application.setFont(font)
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
+    screens = q_application.screens()
+    if sys.platform == 'win32':
+        base_font_size = int(q_application.font().pointSize() * 0.8)
+        font_scale_factor = screens[0].physicalDotsPerInch() / 90
+        font = QFont(q_application.font().family(), int(font_scale_factor * base_font_size))
+        q_application.setFont(font)
     return q_application
 
 
