@@ -233,9 +233,8 @@ class ImageWatcher(QObject):
             this_dir = SubDirectory(directory_path)
             this_dir.mtime = time.time()
             self.add_sub_directory(this_dir)
-        else:
-            self.remove_sub_directory(directory_path)
 
+        self.clear_deleted_sub_directories(directory_path)
         self.find_sub_directories(directory_path)
         self.sort_sub_directory_by_modified_time()
 
@@ -293,3 +292,8 @@ class ImageWatcher(QObject):
             self.watcher.removePath(str(sub_dir))
 
         del self.sub_directories[sub_dir]
+
+    def clear_deleted_sub_directories(self, directory: Path):
+        for sub_dir in list(self.sub_directories):
+            if sub_dir.is_relative_to(directory) and not sub_dir.exists():
+                self.remove_sub_directory(sub_dir)
