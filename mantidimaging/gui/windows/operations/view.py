@@ -129,6 +129,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.main_window.filters = None
         self.presenter.view = None
         self.presenter = None
+        self.previews.cleanup()
+        self.previews = None
 
     def show(self):
         super().show()

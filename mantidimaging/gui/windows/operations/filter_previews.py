@@ -96,6 +96,16 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.imageview_difference.clear()
         self.image_diff_overlay.clear()
 
+    def cleanup(self) -> None:
+        self.imageview_before.cleanup()
+        self.imageview_after.cleanup()
+        self.imageview_difference.cleanup()
+        del self.imageview_before
+        del self.imageview_after
+        del self.imageview_difference
+        del self.all_imageviews
+        self.image_layout.clear()
+
     def init_histogram(self) -> PlotItem:
         histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
 

@@ -21,6 +21,10 @@ class OperationsWindowsViewTest(unittest.TestCase):
             self.main_window = MainWindowView()
         self.window = FiltersWindowView(self.main_window)
 
+    def tearDown(self):
+        self.window.cleanup()
+        del self.window
+
     def test_collapse(self):
         self.assertEqual("<<", self.window.collapseToggleButton.text())
         # check that left column is not 0

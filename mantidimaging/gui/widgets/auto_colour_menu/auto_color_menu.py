@@ -40,13 +40,15 @@ class AutoColorMenu:
                                    recon_mode: bool = False,
                                    index: int = DEFAULT_MENU_POSITION,
                                    set_enabled: bool = True) -> QAction:
+        self.auto_color_parent = parent
+        self.auto_color_recon_mode = recon_mode
         self.auto_color_action = QAction("Auto")
         place = self.histogram.gradient.menu.actions()[index]
 
         self.histogram.gradient.menu.insertAction(place, self.auto_color_action)
         self.histogram.gradient.menu.insertSeparator(self.auto_color_action)
         self.set_auto_color_enabled(set_enabled)
-        self.auto_color_action.triggered.connect(lambda: self._on_colour_change_palette(parent, recon_mode))
+        self.auto_color_action.triggered.connect(self._on_colour_change_palette)
 
         return self.auto_color_action
 
@@ -54,13 +56,13 @@ class AutoColorMenu:
         if self.auto_color_action is not None:
             self.auto_color_action.setEnabled(enabled)
 
-    def _on_colour_change_palette(self, parent: 'Optional[QWidget]', recon_mode: bool) -> None:
+    def _on_colour_change_palette(self) -> None:
         """
         Opens the Palette Changer window
         """
-        change_colour_palette = PaletteChangerView(parent=parent,
+        change_colour_palette = PaletteChangerView(parent=self.auto_color_parent,
                                                    main_hist=self.histogram,
                                                    image=self.image_data,
                                                    other_hists=self.other_histograms,
-                                                   recon_mode=recon_mode)
+                                                   recon_mode=self.auto_color_recon_mode)
         change_colour_palette.show()

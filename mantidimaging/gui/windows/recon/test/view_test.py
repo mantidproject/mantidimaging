@@ -11,6 +11,7 @@ from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 from mantidimaging.gui.windows.recon import ReconstructWindowView
+from mantidimaging.gui.windows.recon.image_view import ReconImagesView
 from mantidimaging.gui.windows.recon.presenter import AutoCorMethod, Notifications
 from mantidimaging.test_helpers import start_qapplication
 
@@ -28,12 +29,15 @@ class MockMainWindow(QWidget):
 @start_qapplication
 class ReconstructWindowViewTest(unittest.TestCase):
 
-    def setUp(self) -> None:
+    @mock.patch("mantidimaging.gui.windows.recon.view.QVBoxLayout.addWidget")
+    def setUp(self, _) -> None:
         self.main_window = MockMainWindow()
-        self.view = ReconstructWindowView(self.main_window)
+        with mock.patch("mantidimaging.gui.windows.recon.view.ReconImagesView") as mock_riv:
+            self.image_view = mock.create_autospec(ReconImagesView, sigSliceIndexChanged=mock.Mock())
+            mock_riv.side_effect = [self.image_view]
+            self.view = ReconstructWindowView(self.main_window)
 
         self.view.presenter = self.presenter = mock.Mock()
-        self.view.image_view = self.image_view = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
         self.view.autoFindMethod = self.autoFindMethod = mock.Mock()
 
@@ -169,8 +173,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_reset_recon_and_sino_previews(self):
         self.view.reset_recon_and_sino_previews()
-        self.image_view.clear_recon.assert_called_once()
-        self.image_view.clear_sinogram.assert_called_once()
+        self.image_view.clear_recon.assert_called()
+        self.image_view.clear_sinogram.assert_called()
 
     def test_reset_slice_and_tilt(self):
         slice_index = 5

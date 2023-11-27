@@ -16,6 +16,10 @@ class MIMiniImageViewTest(unittest.TestCase):
     def setUp(self) -> None:
         self.view = MIMiniImageView()
 
+    def tearDown(self):
+        self.view.cleanup()
+        del self.view
+
     def test_set_image_uses_brightness_percentile(self):
         image = generate_images(seed=2023, shape=(20, 10, 10))
         self.view.set_brightness_percentiles(1, 99)

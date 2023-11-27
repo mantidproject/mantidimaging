@@ -100,6 +100,9 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
 
+    def cleanup(self):
+        self.image.cleanup()
+
     def add_range(self, range_min: int, range_max: int) -> None:
         with QSignalBlocker(self.range_control):
             self.range_control.setBounds((range_min, range_max))

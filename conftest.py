@@ -2,7 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from collections import Counter
+
 import pytest
+
+from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 
 def _test_gui_system_filename_match(basename: str) -> bool:
@@ -31,3 +35,22 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "system" in item.keywords:
                 item.add_marker(skip_system)
+
+
+# Leak track for tests
+# To use, set autouse to True
+# Add:
+#  leak_tracker.add(self, msg=name)
+# to the constructor of class of interest.
+@pytest.fixture(autouse=False)
+def leak_test_stats():
+    yield
+    live_objects = leak_tracker.live_objects()
+    c = Counter(type(item.ref()) for item in live_objects)
+    if c.total():
+        print("Leaked item stats:")
+        for item_type, count in c.items():
+            print(f"{item_type}: {count}")
+
+    # leak_tracker.clear() # Uncomment to clear after each test
+    # print(leak_tracker.pretty_print(debug_owners=True)) # uncomment to track leaks

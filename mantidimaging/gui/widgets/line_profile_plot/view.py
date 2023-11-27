@@ -26,6 +26,9 @@ class LineProfilePlot(GraphicsLayout):
         self._roi_line = ImageViewLineROI(image_view, reset_menu_name="Reset Profile Line")
         self._roi_line.sigRegionChanged.connect(self.update)
 
+    def cleanup(self):
+        self._roi_line.cleanup()
+
     def update(self) -> None:
         region = self._roi_line.get_image_region()
 
@@ -67,6 +70,9 @@ class ImageViewLineROI(LineSegmentROI):
         # We can't add the ROI line until we have some image data dimensions to position it
         if self._image_data_exists():
             self._add_roi_to_image()
+
+    def cleanup(self):
+        del self._image_view
 
     def checkPointMove(self, _handle, pos: QPoint, _modifiers) -> bool:
         if self._checkpoint_bounds is None:
