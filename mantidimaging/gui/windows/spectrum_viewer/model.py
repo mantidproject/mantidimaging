@@ -124,6 +124,12 @@ class SpectrumViewerWindowModel:
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.mean(axis=(1, 2))
 
+    @staticmethod
+    def get_stack_spectrum_summed(stack: ImageStack, roi: SensibleROI):
+        left, top, right, bottom = roi
+        roi_data = stack.data[:, top:bottom, left:right]
+        return roi_data.sum(axis=(1, 2))
+
     def normalise_issue(self) -> str:
         if self._stack is None or self._normalise_stack is None:
             return "Need 2 selected stacks"

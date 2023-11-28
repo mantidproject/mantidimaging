@@ -172,6 +172,20 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
         npt.assert_array_equal(model_spec, spectrum * 2)
 
+    def test_get_stack_spectrum(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        calculated_spectrum = self.model.get_stack_spectrum(stack, SensibleROI.from_list([0, 0, 12, 11]))
+        np.testing.assert_array_equal(spectrum, calculated_spectrum)
+
+    def test_get_stack_spectrum_summed(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10, dtype=np.float32)
+        stack.data[:, :, :] = spectrum.reshape((10, 1, 1))
+        calculated_spectrum = self.model.get_stack_spectrum_summed(stack, SensibleROI.from_list([0, 0, 12, 11]))
+        np.testing.assert_array_equal(spectrum * 12 * 11, calculated_spectrum)
+
     def test_save_csv(self):
         stack = ImageStack(np.ones([10, 11, 12]))
         spectrum = np.arange(0, 10) * 2
