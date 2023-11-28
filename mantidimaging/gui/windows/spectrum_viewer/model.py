@@ -201,21 +201,17 @@ class SpectrumViewerWindowModel:
         if self._stack is None:
             raise ValueError("No stack selected")
 
+        if not normalized or self._normalise_stack is None:
+            raise ValueError("Normalisation must be enabled, and a normalise stack must be selected")
+
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
 
-        # RITS expects ToF in μs
-        tof *= 1e6
-
+        tof *= 1e6  # RITS expects ToF in μs
         transmission_error = np.full_like(tof, 0.1)
-        if normalized:
-            if self._normalise_stack is None:
-                raise RuntimeError("No normalisation stack selected")
-            transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
-            self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
-        else:
-            LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
+        transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
+        self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
 
     def get_stack_time_of_flight(self) -> np.array | None:
         if self._stack is None or self._stack.log_file is None:

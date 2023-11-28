@@ -192,6 +192,61 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIn("1.0,2.0,2.0", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
+    def test_save_rits_dat(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        norm = ImageStack(np.ones([10, 11, 12]))
+        spectrum = np.arange(0, 10) * 2
+        tof = np.arange(0, 10) * 0.1
+        stack.data[:, :, 6:] = spectrum.reshape((10, 1, 1))
+        stack.data[:, :, :6] = spectrum.reshape((10, 1, 1)) * 2
+        self.model.set_stack(stack)
+        self.model.set_new_roi("rits_roi")
+        self.model.set_normalise_stack(norm)
+        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+        mock_inst_log.get_column.return_value = tof
+        stack.log_file = mock_inst_log
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.model.save_rits(mock_path, True)
+
+        mock_path.open.assert_called_once_with("w")
+        self.assertIn("0.0\t0.0\t0.1", mock_stream.captured[0])
+        self.assertIn("100000.0\t3.0\t0.1", mock_stream.captured[1])
+        self.assertTrue(mock_stream.is_closed)
+
+    def test_save_rits_no_norm_err(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        self.model.set_stack(stack)
+        self.model.set_new_roi("rits_roi")
+        self.model.set_normalise_stack(None)
+        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+        stack.log_file = mock_inst_log
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.assertRaises(ValueError, self.model.save_rits, mock_path, False)
+        mock_path.open.assert_not_called()
+
+    def test_save_rits_no_tof_err(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        norm = ImageStack(np.ones([10, 11, 12]))
+
+        self.model.set_stack(stack)
+        self.model.set_new_roi("rits_roi")
+        self.model.set_normalise_stack(norm)
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.assertRaises(ValueError, self.model.save_rits, mock_path, True)
+        mock_path.open.assert_not_called()
+
     def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
         path = Path("test_file.csv")
         with mock.patch('builtins.open', mock.mock_open()) as mock_open:
