@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry
+from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry, BlockDataContainer
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
@@ -270,6 +270,11 @@ class CILRecon(BaseRecon):
                     progress.mark_complete()
             t1 = time.perf_counter()
             LOG.info(f"single_sino time: {t1-t0}s for shape {sino.shape}")
+
+            if isinstance(algo.solution, BlockDataContainer):
+                # TGV case
+                return algo.solution[0].as_array()
+
             return algo.solution.as_array()
 
     @staticmethod
@@ -385,7 +390,11 @@ class CILRecon(BaseRecon):
                                         force_continue=False)
                     algo.next()
 
-                volume = algo.solution.as_array()
+                if isinstance(algo.solution, BlockDataContainer):
+                    # TGV case
+                    volume = algo.solution[0].as_array()
+                else:
+                    volume = algo.solution.as_array()
                 LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
             t1 = time.perf_counter()
             LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
