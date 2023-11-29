@@ -164,6 +164,20 @@ class SpectrumViewerWindowModel:
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
         return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
 
+    def get_transmission_error_standard_dev(self, roi_name: str) -> np.ndarray:
+        """
+        Get the transmission error standard deviation for a given roi
+        @param: roi_name The roi name
+        @return: a numpy array representing the standard deviation of the transmission
+        """
+        if self._stack is None or self._normalise_stack is None:
+            raise RuntimeError("Sample and open beam must be selected")
+        left, top, right, bottom = self.get_roi(roi_name)
+        sample = self._stack.data[:, top:bottom, left:right]
+        normed = self._normalise_stack.data[:, top:bottom, left:right]
+        safe_divide = np.divide(sample, normed, out=np.zeros_like(sample), where=normed != 0)
+        return np.std(safe_divide, axis=(1, 2))
+
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
             return self._stack.data.shape[1:]
@@ -215,21 +229,20 @@ class SpectrumViewerWindowModel:
 
         if not normalized or self._normalise_stack is None:
             raise ValueError("Normalisation must be enabled, and a normalise stack must be selected")
-
-        if error_mode == ErrorMode.STANDARD_DEVIATION:
-            pass
-        elif error_mode == ErrorMode.PROPAGATED:
-            pass
-        else:
-            raise ValueError("Invalid error_mode given")
-
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
 
         tof *= 1e6  # RITS expects ToF in μs
-        transmission_error = np.full_like(tof, 0.1)
         transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
+
+        if error_mode == ErrorMode.STANDARD_DEVIATION:
+            transmission_error = self.get_transmission_error_standard_dev(ROI_RITS)
+        elif error_mode == ErrorMode.PROPAGATED:
+            transmission_error = np.full_like(tof, 0.1)
+        else:
+            raise ValueError("Invalid error_mode given")
+
         self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
 
     def get_stack_time_of_flight(self) -> np.array | None:

@@ -208,8 +208,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_save_rits_dat(self):
         stack = ImageStack(np.ones([10, 11, 12]))
-        norm = ImageStack(np.ones([10, 11, 12]))
-        spectrum = np.arange(0, 10) * 2
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        spectrum = np.arange(0, 10)
         tof = np.arange(0, 10) * 0.1
         stack.data[:, :, 6:] = spectrum.reshape((10, 1, 1))
         stack.data[:, :, :6] = spectrum.reshape((10, 1, 1)) * 2
@@ -227,8 +227,36 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
             self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
 
         mock_path.open.assert_called_once_with("w")
-        self.assertIn("0.0\t0.0\t0.1", mock_stream.captured[0])
-        self.assertIn("100000.0\t3.0\t0.1", mock_stream.captured[1])
+        self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
+        self.assertIn("100000.0\t0.75\t0.25", mock_stream.captured[1])
+        self.assertIn("200000.0\t1.5\t0.5", mock_stream.captured[2])
+        self.assertTrue(mock_stream.is_closed)
+
+    def test_save_rits_roi_dat(self):
+        stack = ImageStack(np.ones([10, 11, 12]))
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        spectrum = np.arange(0, 10)
+        tof = np.arange(0, 10) * 0.1
+        stack.data[:, :, 5:] = spectrum.reshape((10, 1, 1))
+        stack.data[:, :, :5] = spectrum.reshape((10, 1, 1)) * 2
+        self.model.set_stack(stack)
+        self.model.set_new_roi("rits_roi")
+        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
+        self.model.set_normalise_stack(norm)
+        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+        mock_inst_log.get_column.return_value = tof
+        stack.log_file = mock_inst_log
+
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
+            self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
+
+        mock_path.open.assert_called_once_with("w")
+        self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
+        self.assertIn("100000.0\t0.75\t0.25", mock_stream.captured[1])
+        self.assertIn("200000.0\t1.5\t0.5", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
     @parameterized.expand([("standard_deviation", ErrorMode.STANDARD_DEVIATION), ("propagated", ErrorMode.PROPAGATED)])
