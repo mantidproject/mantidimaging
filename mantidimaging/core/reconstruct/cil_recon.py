@@ -229,7 +229,10 @@ class CILRecon(BaseRecon):
 
             ig = ag.get_ImageGeometry()
 
-            K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
+            if recon_params.regulariser == 'TV':
+                K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
+            elif recon_params.regulariser == 'TGV':
+                K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
@@ -353,7 +356,11 @@ class CILRecon(BaseRecon):
                                      num_subsets)
 
             ig = ag.get_ImageGeometry()
-            K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
+
+            if recon_params.regulariser == 'TV':
+                K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
+            elif recon_params.regulariser == 'TGV':
+                K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
