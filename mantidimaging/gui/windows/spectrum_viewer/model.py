@@ -30,6 +30,11 @@ class SpecType(Enum):
     SAMPLE_NORMED = 3
 
 
+class ErrorMode(Enum):
+    STANDARD_DEVIATION = 1
+    PROPAGATED = 2
+
+
 class SpectrumViewerWindowModel:
     """
     The model for the spectrum viewer window.
@@ -197,18 +202,26 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_rits(self, path: Path, normalized: bool) -> None:
+    def save_rits(self, path: Path, normalized: bool, error_mode: ErrorMode) -> None:
         """
         Saves the spectrum for one ROI to a RITS file.
 
         @param path: The path to save the CSV file to.
         @param normalized: Whether to save the normalized spectrum.
+        @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
         """
         if self._stack is None:
             raise ValueError("No stack selected")
 
         if not normalized or self._normalise_stack is None:
             raise ValueError("Normalisation must be enabled, and a normalise stack must be selected")
+
+        if error_mode == ErrorMode.STANDARD_DEVIATION:
+            pass
+        elif error_mode == ErrorMode.PROPAGATED:
+            pass
+        else:
+            raise ValueError("Invalid error_mode given")
 
         tof = self.get_stack_time_of_flight()
         if tof is None:

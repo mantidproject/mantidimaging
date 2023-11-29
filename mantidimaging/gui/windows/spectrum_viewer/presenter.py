@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Optional
 from logging import getLogger
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -177,7 +177,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         if path.suffix != ".dat":
             path = path.with_suffix(".dat")
-        self.model.save_rits(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
+        self.model.save_rits(path, self.spectrum_mode == SpecType.SAMPLE_NORMED, ErrorMode.STANDARD_DEVIATION)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
