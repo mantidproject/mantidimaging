@@ -104,8 +104,8 @@ class CILRecon(BaseRecon):
         gamma = recon_params.gamma
         beta = alpha / gamma
 
-        f2 = alpha * MixedL21Norm()
-        f3 = beta * MixedL21Norm() 
+        f2 = MixedL21Norm()
+        f3 = MixedL21Norm() 
 
         if recon_params.stochastic:
             
@@ -119,20 +119,25 @@ class CILRecon(BaseRecon):
 
         else:
             # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
-            f1 = 0.5 * L2NormSquared(b=acquisition_data)
+            # mathematicians like to multiply 1/2 in front of L2NormSquared. This is not necessary
+            # it will mean that the regularisation parameter alpha is doubled
+            f1 = L2NormSquared(b=acquisition_data)
     
             F = BlockFunction(f1, f2, f3)         
 
         # Define BlockOperator K
 
-        #%%                                                                         
+        # Set up the 3 operator A, Grad and Epsilon                           
         K11 = A2d
-        K21 = GradientOperator(image_geometry)
-        K32 = SymmetrisedGradientOperator(K21.range)
-        K12 = ZeroOperator(K32.domain, image_geometry)
-        K22 = IdentityOperator(K21.range)
-        K31 = ZeroOperator(image_geometry, K32.range)
-        K = BlockOperator(K11, K12, K21, -K22, K31, K32, shape=(3,2) )
+        K21 = alpha * GradientOperator(K11.domain)
+        # https://tomographicimaging.github.io/CIL/nightly/optimisation.html#cil.optimisation.operators.SymmetrisedGradientOperator
+        K32 = beta * SymmetrisedGradientOperator(K21.range)
+        # these define the domain and range of the other operators
+        K12 = ZeroOperator(K32.domain, K11.range)
+        K22 = -alpha * IdentityOperator(domain_geometry=K21.range, range_geometry=K32.range)
+        K31 = ZeroOperator(K11.domain, K32.range)
+
+        K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3,2) )
 
         if recon_params.non_negative:
             G = IndicatorBox(lower=0)
