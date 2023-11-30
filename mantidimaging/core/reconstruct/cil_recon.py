@@ -130,7 +130,6 @@ class CILRecon(BaseRecon):
         # Set up the 3 operator A, Grad and Epsilon                           
         K11 = A2d
         K21 = alpha * GradientOperator(K11.domain)
-        # https://tomographicimaging.github.io/CIL/nightly/optimisation.html#cil.optimisation.operators.SymmetrisedGradientOperator
         K32 = beta * SymmetrisedGradientOperator(K21.range)
         # these define the domain and range of the other operators
         K12 = ZeroOperator(K32.domain, K11.range)
