@@ -71,7 +71,7 @@ jobs:
       - name: docs
         shell: bash -l {0}
         run: |
-          python setup.py docs
+          make build-docs
 
       - name: publish docs
         if: github.ref == 'refs/heads/main'
