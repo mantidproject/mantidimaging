@@ -42,6 +42,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_new_roi("roi")
         return stack, spectrum
 
+    def _make_mock_path_stream(self):
+        mock_stream = CloseCheckStream()
+        mock_path = mock.create_autospec(Path)
+        mock_path.open.return_value = mock_stream
+        return mock_stream, mock_path
+
     def test_set_stack(self):
         stack, _ = self._set_sample_stack()
 
@@ -166,9 +172,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack.data *= 2
         self.model.set_normalise_stack(None)
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_csv(mock_path, False)
 
@@ -189,9 +193,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log.get_column.return_value = tof
         stack.log_file = mock_inst_log
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
 
@@ -213,9 +215,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log.get_column.return_value = tof
         stack.log_file = mock_inst_log
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
 
@@ -238,9 +238,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log.get_column.return_value = tof
         stack.log_file = mock_inst_log
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_rits(mock_path, True, error_mode)
 
@@ -254,9 +252,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log.get_column.return_value = tof
         stack.log_file = mock_inst_log
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.assertRaises(ValueError, self.model.save_rits, mock_path, True, None)
         mock_path.open.assert_not_called()
@@ -268,9 +264,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
         stack.log_file = mock_inst_log
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.assertRaises(ValueError, self.model.save_rits, mock_path, False, ErrorMode.STANDARD_DEVIATION)
         mock_path.open.assert_not_called()
@@ -282,9 +276,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.assertRaises(ValueError, self.model.save_rits, mock_path, True, ErrorMode.STANDARD_DEVIATION)
         mock_path.open.assert_not_called()
@@ -313,9 +305,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         open_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         self.model.set_normalise_stack(open_stack)
 
-        mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
-        mock_path.open.return_value = mock_stream
+        mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_csv(mock_path, True)
 
