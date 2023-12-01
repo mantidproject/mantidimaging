@@ -35,11 +35,15 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
 
-    def _set_sample_stack(self):
+    def _set_sample_stack(self, with_tof=False):
         spectrum = np.arange(0, 10)
         stack = ImageStack(np.ones([10, 11, 12]) * spectrum.reshape((10, 1, 1)))
         self.model.set_stack(stack)
         self.model.set_new_roi("roi")
+        if with_tof:
+            mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+            mock_inst_log.get_column.return_value = np.arange(0, 10) * 0.1
+            stack.log_file = mock_inst_log
         return stack, spectrum
 
     def _make_mock_path_stream(self):
@@ -183,15 +187,11 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertTrue(mock_stream.is_closed)
 
     def test_save_rits_dat(self):
-        stack, spectrum = self._set_sample_stack()
+        stack, spectrum = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
-        tof = np.arange(0, 10) * 0.1
         stack.data[:, :, :6] *= 2
         self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
-        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
-        mock_inst_log.get_column.return_value = tof
-        stack.log_file = mock_inst_log
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
@@ -204,16 +204,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertTrue(mock_stream.is_closed)
 
     def test_save_rits_roi_dat(self):
-        stack, _ = self._set_sample_stack()
+        stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
-        tof = np.arange(0, 10) * 0.1
         stack.data[:, :, :5] *= 2
         self.model.set_new_roi("rits_roi")
         self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
         self.model.set_normalise_stack(norm)
-        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
-        mock_inst_log.get_column.return_value = tof
-        stack.log_file = mock_inst_log
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
@@ -227,30 +223,22 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     @parameterized.expand([("standard_deviation", ErrorMode.STANDARD_DEVIATION), ("propagated", ErrorMode.PROPAGATED)])
     def test_error_mode_rits(self, _, error_mode):
-        stack, _ = self._set_sample_stack()
+        stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.ones([10, 11, 12]))
-        tof = np.arange(0, 10) * 0.1
         stack.data[:, :, :6] *= 2
         stack.data[:, :, 6:] *= 4
         self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
-        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
-        mock_inst_log.get_column.return_value = tof
-        stack.log_file = mock_inst_log
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
             self.model.save_rits(mock_path, True, error_mode)
 
     def test_invalid_error_mode_rits(self):
-        stack, _ = self._set_sample_stack()
+        stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.ones([10, 11, 12]))
-        tof = np.arange(0, 10) * 0.1
         self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
-        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
-        mock_inst_log.get_column.return_value = tof
-        stack.log_file = mock_inst_log
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
@@ -405,12 +393,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIsNone(self.model.get_stack_time_of_flight())
 
     def test_WHEN_stack_tof_THEN_tof_correct(self):
-        tof_values = [x * 1e-5 for x in range(10)]
-        stack, _ = self._set_sample_stack()
-        mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt")
-        mock_log.get_column.return_value = tof_values
-        stack.log_file = mock_log
+        stack, _ = self._set_sample_stack(with_tof=True)
 
         tof_result = self.model.get_stack_time_of_flight()
         self.assertIsInstance(tof_result, np.ndarray)
-        npt.assert_array_equal(tof_result, tof_values)
+        npt.assert_array_equal(tof_result, np.arange(0, 10) * 0.1)
