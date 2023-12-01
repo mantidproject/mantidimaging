@@ -102,7 +102,7 @@ class CILRecon(BaseRecon):
         # Define Gradient Operator and BlockOperator
         alpha = recon_params.alpha
         gamma = recon_params.gamma
-        beta = alpha / gamma
+        beta = alpha * gamma
 
         f2 = MixedL21Norm()
         f3 = MixedL21Norm() 
