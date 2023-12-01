@@ -4,10 +4,6 @@ Documentation
 The documents are written in RST and generated with Sphinx, the build is
 performed via the Sphinx integration with setuptools.
 
-The most recent release of Sphinx can be installed from PyPI via :code:`pip
-install sphinx` (the version available via the Ubuntu repositories does not
-include all extensions that are required to build the documentation).
-
 The documentation is version controlled along with the code, therefore it is
 beneficial to make relevant changes to the documentation as the code is
 modified.
@@ -25,12 +21,6 @@ Run the commands:
    python setup.py docs
 
 This will create the documentation in the docs/build/html directory.
-
-If you also want to publish the docs (note this is normally done as an automated process):
-
-.. code::
-
-   python setup.py docs_publish
 
 
 API Documentation
@@ -52,14 +42,6 @@ This can be done via the command :code:`python setup.py docs_publish`.  This
 assumes you are using SSH as your Git push protocol, if you are not you may
 specify an alternative remote URL using the :code:`-r` argument.
 
-QtHelp
-------
-
-It is also possible to use Sphinx to build the documentation as a Qt Help
-project.
-
-This can be done  with the command: :code:`python setup.py docs -b qthelp`.
-
 
 Release Notes
 -------------
@@ -78,24 +60,3 @@ and added to the release notes. The individual files can then be deleted.
 
 When fixes are backported to a release branch, they can be added to the notes for that release, in an updates section.
 
-Logging
--------
-
-Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_). For example::
-
-    [logging]
-    log_level=DEBUG
-    log_dir=/tmp/mantid_imaging_logs
-    performance_log=true
-
-Benchmarking and profiling
---------------------------
-
-Mantid imaging has some utilities to help with benchmarking and profiling.
-
-The context managers :py:class:`~mantidimaging.core.utility.execution_timer.ExecutionTimer` and :py:class:`~mantidimaging.core.utility.execution_timer.ExecutionProfiler` can be used to wrap some lines of code to record and log its run time. For example::
-
-    with ExecutionProfiler(msg="a_slow_function()"):
-        a_slow_function()
-
-will record and log a profile of function calls and times within :code:`a_slow_function()`.
