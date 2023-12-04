@@ -178,6 +178,15 @@ class SpectrumViewerWindowModel:
         safe_divide = np.divide(sample, normed, out=np.zeros_like(sample), where=normed != 0)
         return np.std(safe_divide, axis=(1, 2))
 
+    def get_transmission_error_propogated(self, roi_name: str) -> np.ndarray:
+        if self._stack is None or self._normalise_stack is None:
+            raise RuntimeError("Sample and open beam must be selected")
+        roi = self.get_roi(roi_name)
+        sample = self.get_stack_spectrum_summed(self._stack, roi)
+        normed = self.get_stack_spectrum_summed(self._normalise_stack, roi)
+        error = np.sqrt(sample / normed**2 + sample**2 / normed**3)
+        return error
+
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
             return self._stack.data.shape[1:]
@@ -239,7 +248,7 @@ class SpectrumViewerWindowModel:
         if error_mode == ErrorMode.STANDARD_DEVIATION:
             transmission_error = self.get_transmission_error_standard_dev(ROI_RITS)
         elif error_mode == ErrorMode.PROPAGATED:
-            transmission_error = np.full_like(tof, 0.1)
+            transmission_error = self.get_transmission_error_propogated(ROI_RITS)
         else:
             raise ValueError("Invalid error_mode given")
 

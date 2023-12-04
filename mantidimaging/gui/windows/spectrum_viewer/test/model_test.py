@@ -221,6 +221,27 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIn("200000.0\t1.5\t0.5", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
+    @parameterized.expand([
+        ("std_dev", ErrorMode.STANDARD_DEVIATION, [0., 0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.25]),
+        ("std_dev", ErrorMode.PROPAGATED,
+         [0.0000, 0.0772, 0.1306, 0.1823, 0.2335, 0.2845, 0.3354, 0.3862, 0.4369, 0.4876]),
+    ])
+    def test_save_rits_data_errors(self, _, error_mode, expected_error):
+        stack, _ = self._set_sample_stack(with_tof=True)
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        stack.data[:, :, :5] *= 2
+        self.model.set_new_roi("rits_roi")
+        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
+        self.model.set_normalise_stack(norm)
+
+        mock_stream, mock_path = self._make_mock_path_stream()
+        with mock.patch.object(self.model, "save_roi_coords"):
+            with mock.patch.object(self.model, "export_spectrum_to_rits") as mock_export:
+                self.model.save_rits(mock_path, True, error_mode)
+
+        calculated_errors = mock_export.call_args[0][3]
+        np.testing.assert_allclose(expected_error, calculated_errors, atol=1e-4)
+
     @parameterized.expand([("standard_deviation", ErrorMode.STANDARD_DEVIATION), ("propagated", ErrorMode.PROPAGATED)])
     def test_error_mode_rits(self, _, error_mode):
         stack, _ = self._set_sample_stack(with_tof=True)
