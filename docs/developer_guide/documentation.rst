@@ -4,6 +4,9 @@ Documentation
 The documents are written in RST and generated with Sphinx, the build is
 performed via the Sphinx integration with setuptools.
 
+Some of the workflow uses the :code:`setup.py` file however it is the aim of 
+the developers to move away from this in the future.
+
 The documentation is version controlled along with the code, therefore it is
 beneficial to make relevant changes to the documentation as the code is
 modified.
@@ -18,7 +21,7 @@ Run the commands:
 
 .. code::
 
-   python setup.py docs
+   `make build-docs`
 
 This will create the documentation in the docs/build/html directory.
 
@@ -27,12 +30,12 @@ API Documentation
 -----------------
 
 The API documentation must be generated prior to building the documentation.
-This is done with the command: :code:`python setup.py docs_api`.
+This is done with using :code:`sphinx-apidoc`, which is done automatically in the makefile.
 
 HTML
 ----
 
-The HTML pages can be built using :code:`python setup.py docs`, which will build
+The HTML pages can be built using :code:make build-docs, which will build
 the documentation in :code:`docs/build.html`.
 
 There is a setuptools command configured to deploy the documentation to GitHub

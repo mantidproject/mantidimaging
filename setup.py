@@ -9,7 +9,6 @@ import os
 import platform
 import subprocess
 from distutils.core import Command
-import sys
 from collections import defaultdict
 from pathlib import Path
 import tempfile
@@ -17,11 +16,6 @@ import shutil
 from importlib.machinery import SourceFileLoader
 
 from setuptools import find_packages, setup
-try:
-    from sphinx.setup_command import BuildDoc
-except ModuleNotFoundError:
-    print("Warning: sphinx needed for building documentation")
-    BuildDoc = False
 
 THIS_PATH = os.path.dirname(__file__)
 
@@ -63,60 +57,6 @@ class PublishDocsToGitHubPages(Command):
         g.add(".")
         g.commit("-m {}".format(self.commit_msg))
         g.push("--force", self.repo, "main:gh-pages")
-
-
-class GenerateSphinxApidoc(Command):
-    description = "Generate API documentation with sphinx-apidoc"
-    user_options = []
-
-    def initialize_options(self):
-        self.sphinx_options = []
-        self.module_dir = None
-        self.out_dir = None
-
-    def finalize_options(self):
-        self.sphinx_options.append("sphinx-apidoc")
-        self.sphinx_options.extend(["-f", "-M", "-e", "-T"])
-
-        self.sphinx_options.extend(["-d", "3"])
-
-        self.module_dir = "mantidimaging"
-        self.sphinx_options.append(self.module_dir)
-        self.sphinx_options.append("**/test")
-        self.sphinx_options.append("**/test_helpers")
-        self.sphinx_options.append("**/eyes_tests")
-
-        self.out_dir = "docs/api/"
-        self.sphinx_options.extend(["-o", self.out_dir])
-
-    def run(self):
-        print("Running: {}".format(" ".join(self.sphinx_options)))
-        subprocess.call(self.sphinx_options)
-
-
-class GenerateSphinxVersioned(Command):
-    description = "Generate API documentation with versions in directories"
-    user_options = []
-
-    def initialize_options(self):
-        self.sphinx_multiversion_executable = None
-        self.sphinx_multiversion_options = None
-
-    def finalize_options(self):
-        self.sphinx_multiversion_executable = "sphinx-multiversion"
-        self.sphinx_multiversion_options = ["docs", "docs/build/html"]
-
-    def run(self):
-        print("Running setup.py internal_docs_api")
-        command_docs_api = [sys.executable, "setup.py", "internal_docs_api"]
-        subprocess.check_call(command_docs_api)
-        print("Running setup.py internal_docs")
-        command_docs = [sys.executable, "setup.py", "internal_docs"]
-        subprocess.check_call(command_docs)
-        print("Running sphinx-multiversion")
-        command_sphinx_multiversion = [self.sphinx_multiversion_executable]
-        command_sphinx_multiversion.extend(self.sphinx_multiversion_options)
-        subprocess.check_call(command_sphinx_multiversion)
 
 
 class GenerateReleaseNotes(Command):
@@ -270,11 +210,6 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     cmdclass={
-        "internal_docs_api": GenerateSphinxApidoc,
-        **({
-            "internal_docs": BuildDoc
-        } if BuildDoc else {}),
-        "docs": GenerateSphinxVersioned,
         "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
         "create_dev_env": CreateDeveloperEnvironment,

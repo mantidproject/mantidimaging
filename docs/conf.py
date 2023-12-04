@@ -51,6 +51,7 @@ extensions = [
 
 # Add custom extensions
 sys.path.append(os.path.abspath("./ext"))
+sys.path.append(os.path.abspath("../"))
 extensions.append("operations_user_doc")
 extensions.append("release_notes")
 
