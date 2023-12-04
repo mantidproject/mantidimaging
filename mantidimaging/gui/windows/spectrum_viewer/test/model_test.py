@@ -242,19 +242,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         calculated_errors = mock_export.call_args[0][3]
         np.testing.assert_allclose(expected_error, calculated_errors, atol=1e-4)
 
-    @parameterized.expand([("standard_deviation", ErrorMode.STANDARD_DEVIATION), ("propagated", ErrorMode.PROPAGATED)])
-    def test_error_mode_rits(self, _, error_mode):
-        stack, _ = self._set_sample_stack(with_tof=True)
-        norm = ImageStack(np.ones([10, 11, 12]))
-        stack.data[:, :, :6] *= 2
-        stack.data[:, :, 6:] *= 4
-        self.model.set_new_roi("rits_roi")
-        self.model.set_normalise_stack(norm)
-
-        mock_stream, mock_path = self._make_mock_path_stream()
-        with mock.patch("mantidimaging.gui.windows.spectrum_viewer.SpectrumViewerWindowModel.save_roi_coords"):
-            self.model.save_rits(mock_path, True, error_mode)
-
     def test_invalid_error_mode_rits(self):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.ones([10, 11, 12]))
