@@ -10,7 +10,7 @@ from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry, 
+from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry,
                            BlockDataContainer)
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
@@ -85,7 +85,6 @@ class CILRecon(BaseRecon):
 
         return (K, F, G)
 
-
     @staticmethod
     def set_up_TGV_regularisation(
             image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
@@ -122,7 +121,7 @@ class CILRecon(BaseRecon):
             # mathematicians like to multiply 1/2 in front of L2NormSquared. This is not necessary
             # it will mean that the regularisation parameter alpha is doubled
             f1 = L2NormSquared(b=acquisition_data)
-    
+
             F = BlockFunction(f1, f2, f3)
 
         # Define BlockOperator K
