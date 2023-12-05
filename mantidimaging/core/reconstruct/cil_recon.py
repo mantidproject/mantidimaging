@@ -10,7 +10,8 @@ from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry, BlockDataContainer
+from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry,
+                           BlockDataContainer)
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
@@ -84,7 +85,6 @@ class CILRecon(BaseRecon):
 
         return (K, F, G)
 
-
     @staticmethod
     def set_up_TGV_regularisation(
             image_geometry: ImageGeometry, acquisition_data: AcquisitionData,
@@ -105,29 +105,28 @@ class CILRecon(BaseRecon):
         beta = alpha * gamma
 
         f2 = MixedL21Norm()
-        f3 = MixedL21Norm() 
+        f3 = MixedL21Norm()
 
         if recon_params.stochastic:
-            
+
             # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
             fs = []
             for i, _ in enumerate(acquisition_data.geometry):
                 fs.append(L2NormSquared(b=acquisition_data.get_item(i)))
-            
-            F = BlockFunction(*fs, f2, f3)
 
+            F = BlockFunction(*fs, f2, f3)
 
         else:
             # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
             # mathematicians like to multiply 1/2 in front of L2NormSquared. This is not necessary
             # it will mean that the regularisation parameter alpha is doubled
             f1 = L2NormSquared(b=acquisition_data)
-    
-            F = BlockFunction(f1, f2, f3)         
+
+            F = BlockFunction(f1, f2, f3)
 
         # Define BlockOperator K
 
-        # Set up the 3 operator A, Grad and Epsilon                           
+        # Set up the 3 operator A, Grad and Epsilon
         K11 = A2d
         K21 = alpha * GradientOperator(K11.domain)
         K32 = beta * SymmetrisedGradientOperator(K21.range)
@@ -136,7 +135,7 @@ class CILRecon(BaseRecon):
         K22 = -alpha * IdentityOperator(domain_geometry=K21.range, range_geometry=K32.range)
         K31 = ZeroOperator(K11.domain, K32.range)
 
-        K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3,2) )
+        K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3, 2))
 
         if recon_params.non_negative:
             G = IndicatorBox(lower=0)
