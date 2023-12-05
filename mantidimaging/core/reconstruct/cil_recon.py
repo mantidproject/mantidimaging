@@ -236,6 +236,8 @@ class CILRecon(BaseRecon):
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
             elif recon_params.regulariser == 'TGV':
                 K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
+            else:
+                raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
@@ -364,6 +366,8 @@ class CILRecon(BaseRecon):
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
             elif recon_params.regulariser == 'TGV':
                 K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
+            else:
+                raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly

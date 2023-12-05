@@ -411,6 +411,10 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.alphaSpinBox.value()
 
     @property
+    def gamma(self) -> float:
+        return 1
+
+    @property
     def non_negative(self) -> bool:
         return self.nonNegativeCheckBox.isChecked()
 
@@ -425,6 +429,10 @@ class ReconstructWindowView(BaseMainWindowView):
     @property
     def regularisation_percent(self) -> int:
         return self.regPercentSpinBox.value()
+
+    @property
+    def regulariser(self) -> str:
+        return "TV"
 
     @property
     def beam_hardening_coefs(self) -> Optional[List[float]]:
@@ -446,11 +454,13 @@ class ReconstructWindowView(BaseMainWindowView):
                                         tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
+                                        gamma=self.gamma,
                                         non_negative=self.non_negative,
                                         stochastic=self.stochastic,
                                         projections_per_subset=self.projections_per_subset,
                                         max_projection_angle=self.max_proj_angle,
                                         regularisation_percent=self.regularisation_percent,
+                                        regulariser=self.regulariser,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 
     def set_table_point(self, idx, slice_idx, cor):
