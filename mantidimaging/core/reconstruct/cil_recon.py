@@ -10,7 +10,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry, BlockDataContainer
+from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry, 
+                           BlockDataContainer)
 from cil.optimisation.algorithms import PDHG, SPDHG
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
@@ -105,17 +106,16 @@ class CILRecon(BaseRecon):
         beta = alpha * gamma
 
         f2 = MixedL21Norm()
-        f3 = MixedL21Norm() 
+        f3 = MixedL21Norm()
 
         if recon_params.stochastic:
-            
+
             # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
             fs = []
             for i, _ in enumerate(acquisition_data.geometry):
                 fs.append(L2NormSquared(b=acquisition_data.get_item(i)))
-            
-            F = BlockFunction(*fs, f2, f3)
 
+            F = BlockFunction(*fs, f2, f3)
 
         else:
             # Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()
@@ -123,11 +123,11 @@ class CILRecon(BaseRecon):
             # it will mean that the regularisation parameter alpha is doubled
             f1 = L2NormSquared(b=acquisition_data)
     
-            F = BlockFunction(f1, f2, f3)         
+            F = BlockFunction(f1, f2, f3)
 
         # Define BlockOperator K
 
-        # Set up the 3 operator A, Grad and Epsilon                           
+        # Set up the 3 operator A, Grad and Symmetrised Gradient
         K11 = A2d
         K21 = alpha * GradientOperator(K11.domain)
         K32 = beta * SymmetrisedGradientOperator(K21.range)
@@ -136,7 +136,7 @@ class CILRecon(BaseRecon):
         K22 = -alpha * IdentityOperator(domain_geometry=K21.range, range_geometry=K32.range)
         K31 = ZeroOperator(K11.domain, K32.range)
 
-        K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3,2) )
+        K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3, 2))
 
         if recon_params.non_negative:
             G = IndicatorBox(lower=0)
@@ -237,6 +237,8 @@ class CILRecon(BaseRecon):
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
             elif recon_params.regulariser == 'TGV':
                 K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
+            else:
+                raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
@@ -365,6 +367,8 @@ class CILRecon(BaseRecon):
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
             elif recon_params.regulariser == 'TGV':
                 K, F, G = CILRecon.set_up_TGV_regularisation(ig, data, recon_params)
+            else:
+                raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
             max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
