@@ -139,7 +139,8 @@ class CILRecon(BaseRecon):
         K = BlockOperator(K11, K12, K21, K22, K31, K32, shape=(3, 2))
 
         if recon_params.non_negative:
-            G = IndicatorBox(lower=0)
+            G = BlockFunction(IndicatorBox(lower=0, upper=None), ZeroFunction())
+
         else:
             # Define Function G simply as zero
             G = ZeroFunction()
