@@ -26,7 +26,7 @@ class LiveViewerWindowView(BaseMainWindowView):
     imageLayout: QVBoxLayout
 
     def __init__(self, main_window: 'MainWindowView', live_dir_path: Path) -> None:
-        super().__init__(main_window, 'gui/ui/live_viewer_window.ui')
+        super().__init__(None, 'gui/ui/live_viewer_window.ui')
         self.setWindowTitle("Mantid Imaging - Live Viewer")
         self.main_window = main_window
         self.path = live_dir_path

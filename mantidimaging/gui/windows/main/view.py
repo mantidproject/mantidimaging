@@ -490,6 +490,15 @@ class MainWindowView(BaseMainWindowView):
         if should_close:
             # Pass close event to parent
             super().closeEvent(event)
+            # Close additional windows which do not have the MainWindow as parent
+            if self.recon:
+                self.recon.close()
+            if self.live_viewer:
+                self.live_viewer.close()
+            if self.spectrum_viewer:
+                self.spectrum_viewer.close()
+            if self.filters:
+                self.filters.close()
 
         else:
             # Ignore the close event, keeping window open
