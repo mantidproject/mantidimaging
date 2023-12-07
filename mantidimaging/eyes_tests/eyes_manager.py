@@ -17,8 +17,8 @@ from applitools.images import Eyes
 from mantidimaging.gui.windows.main import MainWindowView
 
 # Used to disabiguate tests on the Applitools platform. set explicitly to avoid depending on the window size
-VIEWPORT_WIDTH = 1920
-VIEWPORT_HEIGHT = 1080
+VIEWPORT_WIDTH = 3840
+VIEWPORT_HEIGHT = 2160
 
 
 class EyesManager:

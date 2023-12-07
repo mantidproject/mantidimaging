@@ -105,7 +105,7 @@ jobs:
 
       - name: Set display resolution for screenshot tests
         run: |
-          Set-DisplayResolution -Width 1920 -Height 1080 -Force
+          Set-DisplayResolution -Width 3840 -Height 2160 -Force
         shell: pwsh
 
       - name: GUI Tests Screenshots Applitools

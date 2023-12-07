@@ -55,7 +55,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
-    QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
     q_application = QApplication(sys.argv)
     q_application.setStyle('Fusion')
     q_application.setApplicationName("Mantid Imaging")
@@ -65,7 +65,7 @@ def setup_application() -> QApplication:
     if sys.platform == 'win32':
         os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
         os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-        os.environ["QT_SCALE_FACTOR"] = "1"
+        #os.environ["QT_SCALE_FACTOR"] = "1"
         base_font_size = int(q_application.font().pointSize() * 0.8)
         font_scale_factor = screens[0].physicalDotsPerInch() / 90
         font = QFont(q_application.font().family(), int(font_scale_factor * base_font_size))
