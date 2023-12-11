@@ -259,7 +259,7 @@ class ImageWatcher(QObject):
         :param file_name: name of file
         :return: True if file is an image file
         """
-        image_extensions = ['.tif', '.tiff']
+        image_extensions = ['.tif', '.tiff', '.fits']
         file_names = any(file_name.lower().endswith(ext) for ext in image_extensions)
         return file_names
 
