@@ -114,7 +114,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         r_min, r_max = self.range_control.getRegion()
         return int(r_min), int(r_max)
 
-    def random_colour_generator(self) -> tuple[int, int, int, int]:
+    def colour_generator(self) -> tuple[int, int, int, int]:
         """
         A random colour generator to colour ROIs boarders.
         Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.
@@ -122,8 +122,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         @return: A random colour in RGBA format. (0-255, 0-255, 0-255, 0-255)
         """
-        accessible_colours = [(255, 194, 10), (12, 123, 220), (153, 79, 0), (64, 176, 166), (230, 97, 0), (93, 58, 155),
-                              (26, 255, 26), (254, 254, 98), (211, 95, 183), (220, 50, 43)]
+        accessible_colours = [(255, 194, 10), (153, 79, 0), (64, 176, 166), (230, 97, 0), (93, 58, 155), (26, 255, 26),
+                              (12, 123, 220), (254, 254, 98), (211, 95, 183), (220, 50, 43)]
         if self.colour_index == len(accessible_colours):
             self.colour_index = 0
         colour = accessible_colours[self.colour_index]
@@ -175,7 +175,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param name: The name of the ROI.
         """
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
-        roi_object.colour = self.random_colour_generator()
+        roi_object.colour = self.colour_generator()
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()
