@@ -174,17 +174,22 @@ class SpectrumViewerWindowModel:
             raise RuntimeError("Sample and open beam must be selected")
         left, top, right, bottom = self.get_roi(roi_name)
         sample = self._stack.data[:, top:bottom, left:right]
-        normed = self._normalise_stack.data[:, top:bottom, left:right]
-        safe_divide = np.divide(sample, normed, out=np.zeros_like(sample), where=normed != 0)
+        open_beam = self._normalise_stack.data[:, top:bottom, left:right]
+        safe_divide = np.divide(sample, open_beam, out=np.zeros_like(sample), where=open_beam != 0)
         return np.std(safe_divide, axis=(1, 2))
 
-    def get_transmission_error_propogated(self, roi_name: str) -> np.ndarray:
+    def get_transmission_error_propagated(self, roi_name: str) -> np.ndarray:
+        """
+        Get the transmission error using propagation of sqrt(n) error for a given roi
+        @param: roi_name The roi name
+        @return: a numpy array representing the error of the transmission
+        """
         if self._stack is None or self._normalise_stack is None:
             raise RuntimeError("Sample and open beam must be selected")
         roi = self.get_roi(roi_name)
         sample = self.get_stack_spectrum_summed(self._stack, roi)
-        normed = self.get_stack_spectrum_summed(self._normalise_stack, roi)
-        error = np.sqrt(sample / normed**2 + sample**2 / normed**3)
+        open_beam = self.get_stack_spectrum_summed(self._normalise_stack, roi)
+        error = np.sqrt(sample / open_beam**2 + sample**2 / open_beam**3)
         return error
 
     def get_image_shape(self) -> tuple[int, int]:
@@ -248,7 +253,7 @@ class SpectrumViewerWindowModel:
         if error_mode == ErrorMode.STANDARD_DEVIATION:
             transmission_error = self.get_transmission_error_standard_dev(ROI_RITS)
         elif error_mode == ErrorMode.PROPAGATED:
-            transmission_error = self.get_transmission_error_propogated(ROI_RITS)
+            transmission_error = self.get_transmission_error_propagated(ROI_RITS)
         else:
             raise ValueError("Invalid error_mode given")
 
