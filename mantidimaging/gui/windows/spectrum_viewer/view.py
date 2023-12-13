@@ -38,7 +38,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normalise_error_issue: str = ""
 
     def __init__(self, main_window: 'MainWindowView'):
-        super().__init__(main_window, 'gui/ui/spectrum_viewer.ui')
+        super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
         self.main_window = main_window
 
