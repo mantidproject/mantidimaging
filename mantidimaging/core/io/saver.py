@@ -454,6 +454,6 @@ def export_to_dat_rits_format(rits_formatted_data: str, path: Path) -> None:
     :return: None
 
     """
-    with open(path, 'w', encoding='utf-8') as f:
+    with path.open('w') as f:
         f.write(rits_formatted_data)
     LOG.info('RITS formatted data saved to: {}'.format(path))
