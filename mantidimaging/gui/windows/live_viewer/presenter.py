@@ -78,10 +78,10 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def load_and_display_image(self, image_path: Path):
         try:
-            if image_path.__str__().lower().endswith('.tif') or image_path.__str__().lower().endswith('.tiff'):
+            if image_path.suffix.lower() in [".tif", ".tiff"]:
                 with tifffile.TiffFile(image_path) as tif:
                     image_data = tif.asarray()
-            elif image_path.__str__().lower().endswith('.fits'):
+            elif image_path.suffix.lower() == ".fits":
                 with fits.open(image_path.__str__()) as fit:
                     image_data = fit[0].data
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:

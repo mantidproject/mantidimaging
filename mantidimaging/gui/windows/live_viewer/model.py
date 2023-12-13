@@ -259,9 +259,8 @@ class ImageWatcher(QObject):
         :param file_name: name of file
         :return: True if file is an image file
         """
-        image_extensions = ['.tif', '.tiff', '.fits']
-        file_names = any(file_name.lower().endswith(ext) for ext in image_extensions)
-        return file_names
+        image_extensions = ('tif', 'tiff', 'fits')
+        return file_name.rpartition(".")[2].lower() in image_extensions
 
     def remove_path(self):
         """
