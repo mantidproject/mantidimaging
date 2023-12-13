@@ -2,20 +2,23 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
+
+# from typing import TYPE_CHECKING, Optional
+import numpy as np
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, GridItem, GraphicsObject
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
-if TYPE_CHECKING:
-    import numpy as np
+# if TYPE_CHECKING:
+#     import numpy as np
 
 
-class SpectrumROI(ROI):
+class SpectrumROI(ROI, GraphicsObject):
     """
     Spectrum ROI object subclassed from pyqtgraph ROI containing ROI and associated data.
 
@@ -25,7 +28,7 @@ class SpectrumROI(ROI):
     @param kwargs: Keyword arguments to pass to the ROI object
     """
 
-    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
+    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._name = name
         self._colour = (0, 0, 0, 255)
@@ -37,6 +40,7 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
+        self.grid = GridItem()
 
     @property
     def name(self) -> str:

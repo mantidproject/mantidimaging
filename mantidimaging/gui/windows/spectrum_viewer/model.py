@@ -133,7 +133,61 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
+    def roi_bin(self, roi_name: str, voxel_size: int):
+        """
+        @param roi_name: The name of the ROI to bin4
+        @param voxel_size: The size of the voxel within the ROI to calculate average for.
+
+        """
+        # sub_rois_list = []
+        # sub_spectrum_list = []
+        # voxel_list = []
+        roi = self.get_roi(roi_name)
+        roi_area = roi.width * roi.height
+        print(voxel_size)
+        print(roi_area)
+        # add sub rois to list
+        # voxel_count = int(roi_area / voxel_size)
+        # for sub_roi in range(voxel_count):
+        #     sub_rois_list.append(sub_roi)
+        # # get the spectrum for each sub roi
+        # for sub_roi in sub_rois_list:
+        #     sub_spectrum_list.append(self.get_stack_spectrum(self._stack, sub_roi))
+
+        # roi_spectrum = self.get_stack_spectrum(self._stack, roi)
+        # # divide the roi into voxels of size voxel_size
+        # voxel_list = np.array_split(roi_spectrum, voxel_size)
+        # # print first voxel size in pixels
+        # print(len(voxel_list[0]))
+        # # get the average for first voxel
+        # first_voxel = np.average(voxel_list[0])
+        # print(first_voxel)
+
+    # get the area of the roi and divide by the number of bins.
+    # then get the spectrum for each area
+    def roi_binning_area(self, roi_name: str, bins: int = 9) -> 'np.ndarray':
+        """
+        Bin the ROI data to a given number of bins (default 9)
+        (this is simply just divinding the ROI area by the number of bins)
+
+        @param roi_name: The name of the ROI to bin
+        @param bins: The number of bins to use
+        @return: The binned ROI data as a numpy array
+        """
+        if self._stack is None:
+            return np.array([])
+
+        roi = self.get_roi(roi_name)
+        roi_spectrum = self.get_stack_spectrum(self._stack, roi)
+        binned_spectrum = np.array_split(roi_spectrum, bins)
+        binned_data = np.array([np.sum(binned_spectrum[i]) for i in range(len(binned_spectrum))])
+        print(len(binned_data))
+        return binned_data
+
     def get_spectrum(self, roi_name: str, mode: SpecType) -> 'np.ndarray':
+        """
+        Get the spectrum for the given ROI requested by name in the given mode
+        """
         if self._stack is None:
             return np.array([])
 
@@ -213,6 +267,8 @@ class SpectrumViewerWindowModel:
             if self._normalise_stack is None:
                 raise RuntimeError("No normalisation stack selected")
             transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
+            # binned_transmission = self.roi_binning_area(ROI_RITS)
+            # self.roi_bin(ROI_RITS)
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
         else:
             LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
