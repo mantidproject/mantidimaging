@@ -8,6 +8,7 @@ from logging import getLogger
 
 from imagecodecs._deflate import DeflateError
 from tifffile import tifffile, TiffFileError
+from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
@@ -77,8 +78,12 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def load_and_display_image(self, image_path: Path):
         try:
-            with tifffile.TiffFile(image_path) as tif:
-                image_data = tif.asarray()
+            if image_path.suffix.lower() in [".tif", ".tiff"]:
+                with tifffile.TiffFile(image_path) as tif:
+                    image_data = tif.asarray()
+            elif image_path.suffix.lower() == ".fits":
+                with fits.open(image_path.__str__()) as fit:
+                    image_data = fit[0].data
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
