@@ -12,6 +12,7 @@ from parameterized import parameterized
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
+from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -197,7 +198,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_rits_export()
 
         self.view.get_rits_export_filename.assert_called_once()
-        mock_save_rits.assert_called_once_with(Path("/fake/path.dat"), False)
+        mock_save_rits.assert_called_once_with(Path("/fake/path.dat"), False, ErrorMode.STANDARD_DEVIATION)
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())

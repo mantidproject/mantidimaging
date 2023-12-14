@@ -15,7 +15,7 @@ from .model import EnablePredicateFactory
 class WizardStage(QWidget):
 
     def __init__(self, name, parent: QWidget = None) -> None:
-        super().__init__(parent)
+        super().__init__(None)
 
         self.layout = QVBoxLayout(self)
         self.title_label = QLabel("Stage: " + name)
@@ -34,7 +34,7 @@ class WizardStage(QWidget):
 class WizardStep(QWidget):
 
     def __init__(self, step: dict, wizard: WizardView, parent: QWidget = None) -> None:
-        super().__init__(parent)
+        super().__init__(None)
 
         self.wizard_view = wizard
 

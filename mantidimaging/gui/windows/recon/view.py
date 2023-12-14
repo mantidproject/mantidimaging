@@ -83,7 +83,7 @@ class ReconstructWindowView(BaseMainWindowView):
     stackSelector: DatasetSelectorWidgetView
 
     def __init__(self, main_window: 'MainWindowView'):
-        super().__init__(main_window, 'gui/ui/recon_window.ui')
+        super().__init__(None, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
