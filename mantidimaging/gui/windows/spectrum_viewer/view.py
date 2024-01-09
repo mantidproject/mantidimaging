@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget
+    QTabWidget, QComboBox
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -36,6 +36,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseErrorIcon: QLabel
     _current_dataset_id: Optional['UUID']
     normalise_error_issue: str = ""
+    transmission_error_mode_combobox: QComboBox
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
@@ -305,3 +306,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum_data_dict = {}
         self.spectrum.spectrum.clearPlots()
         self.removeBtn.setEnabled(False)
+
+    @property
+    def transmission_error_mode(self) -> str:
+        return self.transmission_error_mode_combobox.currentText()

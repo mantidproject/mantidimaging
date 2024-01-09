@@ -177,7 +177,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         if path.suffix != ".dat":
             path = path.with_suffix(".dat")
-        self.model.save_rits(path, self.spectrum_mode == SpecType.SAMPLE_NORMED, ErrorMode.STANDARD_DEVIATION)
+        error_mode = ErrorMode.get_by_value(self.view.transmission_error_mode)
+        self.model.save_rits(path, self.spectrum_mode == SpecType.SAMPLE_NORMED, error_mode)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
