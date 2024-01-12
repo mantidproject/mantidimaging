@@ -406,3 +406,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         tof_result = self.model.get_stack_time_of_flight()
         self.assertIsInstance(tof_result, np.ndarray)
         npt.assert_array_equal(tof_result, np.arange(0, 10) * 0.1)
+
+    def test_error_modes(self):
+        self.assertEqual(ErrorMode.get_by_value("Standard Deviation"), ErrorMode.STANDARD_DEVIATION)
+        self.assertEqual(ErrorMode.get_by_value("Propagated"), ErrorMode.PROPAGATED)
+        self.assertRaises(ValueError, ErrorMode.get_by_value, "")

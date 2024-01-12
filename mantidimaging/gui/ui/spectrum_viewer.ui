@@ -264,6 +264,27 @@
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Error mode</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="transmission_error_mode_combobox">
+              <item>
+               <property name="text">
+                <string>Standard Deviation</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Propagated</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
