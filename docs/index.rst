@@ -32,3 +32,5 @@ Please cite as:
 Tasev, Dimitar; Akello-Egwel, Dolica; Allen, Jack; Baust, Rachel; Gigg, Martyn; Jones, Samuel; Nixon, Daniel; Stock, Samuel; Taylor, Will; Tygier, Sam. (2023). Mantid Imaging (2.5.0), Zenodo https://doi.org/10.5281/zenodo.4728059
 
 (See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).
+
+Sign up to our `mailing list <https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?SUBED1=MANTID-IMAGING-ANNOUNCE&A=1>`_ to receive updates on the project
