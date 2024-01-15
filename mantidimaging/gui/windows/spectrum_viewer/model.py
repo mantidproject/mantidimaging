@@ -48,6 +48,8 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
+        self.bin_size: int = 10
+        self.step_size: int = 1
 
     def roi_name_generator(self) -> str:
         """
@@ -118,8 +120,8 @@ class SpectrumViewerWindowModel:
             return self._stack.data[tof_slice].mean(axis=0)
         return None
 
-    @staticmethod
-    def get_stack_spectrum(stack: ImageStack, roi: SensibleROI):
+    @staticmethod  # option imagestack or sensible roi
+    def get_stack_spectrum(stack, roi) -> 'np.ndarray':
         left, top, right, bottom = roi
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.mean(axis=(1, 2))
@@ -133,56 +135,114 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
-    def roi_bin(self, roi_name: str, voxel_size: int):
+    def set_bin_and_step_size(self, bin_size: int, step_size: int) -> None:
         """
-        @param roi_name: The name of the ROI to bin4
-        @param voxel_size: The size of the voxel within the ROI to calculate average for.
+        Set the bin size and step size for the region of interest (ROI).
 
+        The bin size and step size are used when computing spectra for a sub-region of the ROI.
+        The bin size determines the size of the sub-region, and the step size determines the number
+        of pixels the sub-region moves in each step.
+
+        If these paramreters are set to any value larger than zero, the method will compute a binned spectrum on export.
+
+        Parameters:
+        bin_size (int): The size of the sides of the sub-region of the ROI. Determines the size of the sub-region.
+        step_size (int): The number of pixels the sub-region moves in each step.
+
+        Returns:
+        None
         """
-        # sub_rois_list = []
-        # sub_spectrum_list = []
-        # voxel_list = []
-        roi = self.get_roi(roi_name)
-        roi_area = roi.width * roi.height
-        print(voxel_size)
-        print(roi_area)
-        # add sub rois to list
-        # voxel_count = int(roi_area / voxel_size)
-        # for sub_roi in range(voxel_count):
-        #     sub_rois_list.append(sub_roi)
-        # # get the spectrum for each sub roi
-        # for sub_roi in sub_rois_list:
-        #     sub_spectrum_list.append(self.get_stack_spectrum(self._stack, sub_roi))
+        self.bin_size = bin_size
+        self.step_size = step_size
 
-        # roi_spectrum = self.get_stack_spectrum(self._stack, roi)
-        # # divide the roi into voxels of size voxel_size
-        # voxel_list = np.array_split(roi_spectrum, voxel_size)
-        # # print first voxel size in pixels
-        # print(len(voxel_list[0]))
-        # # get the average for first voxel
-        # first_voxel = np.average(voxel_list[0])
-        # print(first_voxel)
-
-    # get the area of the roi and divide by the number of bins.
-    # then get the spectrum for each area
-    def roi_binning_area(self, roi_name: str, bins: int = 9) -> 'np.ndarray':
+    def normalise_spectrum(self, roi: SensibleROI) -> 'np.ndarray':
         """
-        Bin the ROI data to a given number of bins (default 9)
-        (this is simply just divinding the ROI area by the number of bins)
+        Normalise the spectrum for a given region of interest (ROI) by dividing it by the normalisation spectrum for
+        the same ROI. The method first retrieves the spectrum for the given ROI from the stack and the normalisation
+        spectrum from the normalisation stack.
 
-        @param roi_name: The name of the ROI to bin
-        @param bins: The number of bins to use
-        @return: The binned ROI data as a numpy array
+        It then divides the ROI spectrum by the normalisation spectrum, element-wise.
+        If an element in the normalisation spectrum is zero, the corresponding element in the output will be
+        zero to avoid division by zero.
+
+        Parameters:
+        roi (SensibleROI): The region of interest for which the spectrum is to be normalised.
+
+        Returns:
+        np.ndarray: The normalised spectrum for the given ROI. The shape of the returned array matches
+        the input spectrum.
         """
-        if self._stack is None:
-            return np.array([])
-
-        roi = self.get_roi(roi_name)
         roi_spectrum = self.get_stack_spectrum(self._stack, roi)
-        binned_spectrum = np.array_split(roi_spectrum, bins)
-        binned_data = np.array([np.sum(binned_spectrum[i]) for i in range(len(binned_spectrum))])
-        print(len(binned_data))
-        return binned_data
+        roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
+        return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
+
+    def compute_spectra_for_rolling_sub_roi(self,
+                                            roi: SensibleROI,
+                                            sub_roi: SensibleROI,
+                                            step: int = 1) -> 'np.ndarray':
+        """
+        Compute and return a list of spectra for a sub-region of interest (sub_roi) as it moves across a larger region
+        of interest (roi).
+
+        The sub_roi moves across the roi in steps specified by the 'step' parameter. It moves horizontally until it
+        reaches the right edge of the roi,then it moves down by the step size in pixels and repeats the process until
+        it reaches the bottom of the roi.
+
+        If the step size is equal to the size of the sub_roi, then the sub_roi will perform a tile scan.
+        Please note that if the step size is equal too or larger than the size of the roi on a given axis,
+        then no spectra may be computed.
+
+        For each position of the sub_roi, a spectrum is computed and added to a list.
+        The spectrum is normalised using the 'normalise_spectrum' method.
+
+        Parameters:
+        roi (SensibleROI): The larger region of interest.
+        sub_roi (SensibleROI): The sub-region of interest that moves across the roi.
+        step (int, optional): The number of pixels the sub_roi moves in each step. Defaults to 1.
+
+        Returns:
+        list: A list of normalised spectra computed for each position of the sub_roi within the roi.
+        """
+        spectrum_list = []
+        left, _, right, bottom = roi
+        sub_left, sub_top, sub_right, sub_bottom = sub_roi
+
+        while sub_right < right or sub_bottom < bottom:
+            sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
+            spectrum_list.append(self.normalise_spectrum(sub_roi))
+            if sub_right < right:
+                sub_left, sub_right = sub_left + step, sub_right + step
+            else:
+                sub_left, sub_right = left, left + sub_roi.width
+                sub_bottom, sub_top = sub_bottom + step, sub_top + step
+        sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
+        spectrum_list.append(self.normalise_spectrum(sub_roi))
+        return spectrum_list
+
+    def compute_spectra_for_sub_roi(self, roi: SensibleROI, voxel_size: int, step_size: int = 1) -> 'np.ndarray':
+        """
+        Compute spectra for a sub-region of interest (sub_roi) within a larger region of interest (roi).
+
+        The sub_roi is defined as a square with its top left corner at the top left corner of the roi and
+        with sides of length equal to the voxel_size. The sub_roi "rolls" or moves across the roi, and for each
+        position, a spectrum is computed and added to a list. The movement of the sub_roi across the roi is
+        controlled by the step_size parameter.
+        If the step size is equal to the voxel_size, then the sub_roi will perform a tile scan.
+
+        Parameters:
+        roi (SensibleROI): The larger region of interest.
+        voxel_size (int): The size of the sides of the sub_roi. Determines the size of the sub_roi.
+        step_size (int, optional): The number of pixels the sub_roi moves in each step. Defaults to 1.
+
+        Returns:
+        np.ndarray: An array of spectra computed for each position of the sub_roi within the roi.
+        """
+        left, top, _, _ = roi
+        new_right = left + voxel_size
+        new_bottom = top + voxel_size
+        sub_roi = SensibleROI.from_list([left, top, new_right, new_bottom])
+        binned_spectrum = self.compute_spectra_for_rolling_sub_roi(roi, sub_roi, step_size)
+        return binned_spectrum
 
     def get_spectrum(self, roi_name: str, mode: SpecType) -> 'np.ndarray':
         """
@@ -247,10 +307,25 @@ class SpectrumViewerWindowModel:
 
     def save_rits(self, path: Path, normalized: bool) -> None:
         """
-        Saves the spectrum for one ROI to a RITS file.
+        Saves the spectrum for a specified region of interest (ROI) to a RITS file.
 
-        @param path: The path to save the CSV file to.
-        @param normalized: Whether to save the normalized spectrum.
+        The method first checks if a stack is selected and if the Time of Flights (ToF) for the sample is available.
+        If the 'normalized' parameter is True, it checks if a normalisation stack is selected. If all checks pass,
+        it computes the transmission for the ROI and exports the spectrum to a RITS file.
+
+        If a bin and step size are specified, the binned spectrum is computed for the ROI and exports to
+        many RITS files, otherwise, it computes a spectrum for the ROI and exports it to a singular RITS file.
+
+        Parameters:
+        path (Path): The path where the RITS file will be saved.
+        normalized (bool): If True, the method saves the normalized spectrum. If False, it logs an error message.
+
+        Raises:
+        ValueError: If no stack is selected or if no ToF for the sample is available.
+        RuntimeError: If 'normalized' is True but no normalisation stack is selected.
+
+        Returns:
+        None
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -266,9 +341,12 @@ class SpectrumViewerWindowModel:
         if normalized:
             if self._normalise_stack is None:
                 raise RuntimeError("No normalisation stack selected")
-            transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
-            # binned_transmission = self.roi_binning_area(ROI_RITS)
-            # self.roi_bin(ROI_RITS)
+
+            if self.bin_size and self.step_size > 0:
+                transmission = self.compute_spectra_for_sub_roi(self.get_roi(ROI_RITS), self.bin_size, self.step_size)
+            else:
+                transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
+
             self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
         else:
             LOG.error("Data is not normalised to open beam. This will not export to a valid RITS format")
@@ -310,10 +388,32 @@ class SpectrumViewerWindowModel:
 
     def export_spectrum_to_rits(self, path: Path, tof, transmission, absorption) -> None:
         """
-        Export spectrum to RITS format
+        Export spectrum data to one or many files in RITS format.
+
+        The method checks if the transmission data is binned (i.e., if it is a list of lists).
+
+        If transmission is binned, each spectra within the list is saved in the RITS format in a separate file.
+        If not binned, the ToF, transmission and absorption are converted to a RITS formatted data structure and
+        then exported to a singular .dat file in RITS format.
+
+        Parameters:
+        path (Path): The path where the RITS file will be saved.
+        tof: The Time of Flight data for the spectrum.
+        transmission: The transmission data for the spectrum. Can be either a list of values or a list of
+        lists (for binned data).
+        absorption: The absorption data for the spectrum.
+
+        Returns:
+        None
         """
-        rits_data = saver.create_rits_format(tof, transmission, absorption)
-        saver.export_to_dat_rits_format(rits_data, path)
+        if isinstance(transmission[0], list):
+            for i, transmission_spectrum in enumerate(transmission):
+                rits_data = saver.create_rits_format(tof, transmission_spectrum, absorption)
+                filename = path.with_name(f"{path.stem}_{i}{path.suffix}")
+                saver.export_to_dat_rits_format(rits_data, filename)
+        else:
+            rits_data = saver.create_rits_format(tof, transmission, absorption)
+            saver.export_to_dat_rits_format(rits_data, path)
 
     def remove_roi(self, roi_name) -> None:
         """
