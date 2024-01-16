@@ -252,3 +252,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
         self.view.on_visibility_change()
+
+    def do_set_roi_binning(self, size: int, step: int) -> None:
+        """
+        Set the bin size and step size for the region of interest (ROI).
+
+        Parameters:
+        size (int): The size of the sides of the sub-region of the ROI.
+        step (int): The number of pixels the sub-region moves in each step.
+
+        Returns:
+        None
+        """
+        self.model.set_bin_and_step_size(size, step)

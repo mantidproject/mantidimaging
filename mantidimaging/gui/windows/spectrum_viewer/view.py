@@ -305,3 +305,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.spectrum_data_dict = {}
         self.spectrum.spectrum.clearPlots()
         self.removeBtn.setEnabled(False)
+
+    def set_binning(self, size: int, step: int = 1) -> None:
+        """
+        Set the bin size and step size for the region of interest (ROI).
+
+        The bin size determines the size of the sub-regions into which the ROI data is binned (in pixels).
+        The step size determines the number of pixels the sub-region moves in each step when binning the ROI data.
+
+        For example:
+            If the ROI is 10x10 pixels and the sub ROI pixel size is 2x2, the ROI data will be binned into 81 pixels
+            if the step size is 1 pixel. If the step size was 2 pixels, the ROI data would be binned into 25 pixels.
+
+        Parameters:
+        size (int): The size of the sides of the sub-region of the ROI.
+        step (Optional[int]): The number of pixels the sub-region moves in each step. Defaults to 1.
+
+        Returns:
+        None
+        """
+        self.presenter.do_set_roi_binning(size, step)
