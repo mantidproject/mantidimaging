@@ -255,10 +255,15 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="image_output_mode">
+             <widget class="QComboBox" name="image_output_mode_combobox">
               <item>
                <property name="text">
                 <string>Single Spectrum</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2D Binned</string>
                </property>
               </item>
              </widget>
@@ -266,7 +271,7 @@
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Error mode</string>
+               <string>Error Mode</string>
               </property>
              </widget>
             </item>
@@ -282,6 +287,43 @@
                 <string>Propagated</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Bin Size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="bin_size_spinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Bin Step</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="bin_step_spinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>1000</number>
+              </property>
              </widget>
             </item>
             <item>
