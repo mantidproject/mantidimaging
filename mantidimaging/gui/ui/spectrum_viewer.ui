@@ -290,7 +290,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="bin_size_label">
               <property name="text">
                <string>Bin Size</string>
               </property>
@@ -310,7 +310,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="bin_step_label">
               <property name="text">
                <string>Bin Step</string>
               </property>

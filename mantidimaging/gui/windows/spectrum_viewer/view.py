@@ -71,6 +71,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
         self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
+        self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
+        self.set_binning_visibility()
 
         # ROI action buttons
         self.addBtn.clicked.connect(self.set_new_roi)
@@ -325,3 +327,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     @property
     def bin_step(self) -> int:
         return self.bin_step_spinbox.value()
+
+    def set_binning_visibility(self) -> None:
+        hide_binning = self.image_output_mode != "2D Binned"
+        self.bin_size_label.setHidden(hide_binning)
+        self.bin_size_spinBox.setHidden(hide_binning)
+        self.bin_step_label.setHidden(hide_binning)
+        self.bin_step_spinBox.setHidden(hide_binning)
