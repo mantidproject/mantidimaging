@@ -84,7 +84,7 @@ class RemoveAllStripesFilter(BaseFilter):
 
         _, la_size = add_property_to_form('Large stripe kernel',
                                           Type.INT,
-                                          default_value=61,
+                                          default_value=21,
                                           valid_values=(1, 100),
                                           form=form,
                                           on_change=on_change,
@@ -92,7 +92,7 @@ class RemoveAllStripesFilter(BaseFilter):
 
         _, sm_size = add_property_to_form('Small stripe kernel',
                                           Type.INT,
-                                          default_value=21,
+                                          default_value=7,
                                           valid_values=(1, 100),
                                           form=form,
                                           on_change=on_change,
@@ -100,7 +100,7 @@ class RemoveAllStripesFilter(BaseFilter):
 
         _, dim = add_property_to_form('Dimension of the window',
                                       Type.INT,
-                                      default_value=1,
+                                      default_value=2,
                                       valid_values=(1, 2),
                                       form=form,
                                       on_change=on_change,
