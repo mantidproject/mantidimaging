@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 from logging import getLogger
+import numpy as np
 
 from imagecodecs._deflate import DeflateError
 from tifffile import tifffile, TiffFileError
@@ -12,10 +13,13 @@ from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
+from mantidimaging.core.operations.rotate_stack import RotateFilter
+from mantidimaging.core.data import ImageStack
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
+
 
 logger = getLogger(__name__)
 
@@ -84,6 +88,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             elif image_path.suffix.lower() == ".fits":
                 with fits.open(image_path.__str__()) as fit:
                     image_data = fit[0].data
+
+            image_data = self.rotate_image(image_data, 90)
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
@@ -106,3 +112,11 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         if self.selected_image and image_path == self.selected_image.image_path:
             self.load_and_display_image(image_path)
+
+    def rotate_image(self, image_data, ang: int):
+        image_data_shape = image_data.shape
+        image_data_temp = np.zeros(shape=(1, image_data_shape[0], image_data_shape[1]))
+        image_data_temp[0] = image_data
+        image_stack_temp = ImageStack(image_data_temp)
+        rotated_imaged = RotateFilter().filter_func(image_stack_temp, angle=ang)
+        return rotated_imaged.data[0].astype(int)
