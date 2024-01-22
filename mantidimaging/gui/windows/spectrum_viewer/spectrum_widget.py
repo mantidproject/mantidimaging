@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
+from PyQt5 import QtGui, QtWidgets
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -37,6 +38,28 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
+
+        # Set context menu policy and connect signal to event
+        self.setAcceptHoverEvents(True)
+    def contextMenuEvent(self, event) -> None:
+        # Create the color dialog and select color
+        color_dialog = QtWidgets.QColorDialog()
+        selected_color = color_dialog.getColor(QtGui.QColor(*self._colour), title="Select ROI Color")
+
+        # Check color is valid and set the new ROI color
+        if selected_color.isValid():
+            new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+            self.set_roi_color(new_color)
+
+        # Accept the event to show been handled
+        event.accept()
+
+        # Call the method in the parent to change_roi_colour
+    def set_roi_color(self, color: QtGui.QColor) -> None:
+        if isinstance(color, QtGui.QColor):
+            self._colour = color
+            self.parent().change_roi_colour(self._name, color)
+
 
     @property
     def name(self) -> str:
@@ -138,7 +161,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param colour: The new colour of the ROI.
         """
         self.roi_dict[name].colour = colour
-        self.roi_dict[name].setPen(self.roi_dict[name].colour)
+        self.roi_dict[name].setPen(mkPen[name].colour)
 
     def set_roi_visibility_flags(self, name: str, visible: bool) -> None:
         """
