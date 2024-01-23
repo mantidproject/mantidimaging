@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path, PurePath
 from unittest import mock
 import io
+import math
 
 import numpy as np
 import numpy.testing as npt
@@ -426,3 +427,58 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertEqual(ErrorMode.get_by_value("Standard Deviation"), ErrorMode.STANDARD_DEVIATION)
         self.assertEqual(ErrorMode.get_by_value("Propagated"), ErrorMode.PROPAGATED)
         self.assertRaises(ValueError, ErrorMode.get_by_value, "")
+
+    @parameterized.expand([
+        ("larger_than_1", 1, 0, ValueError),  # bin_size and step_size < 1
+        ("bin_less_than_or_equal_to_step", 1, 2, ValueError),  # bin_size <= step_size
+        ("less_than_roi", 10, 10, ValueError),  # bin_size and step_size > min(roi.width, roi.height)
+        ("valid", 2, 1, None),  # valid case
+    ])
+    def test_validate_bin_and_step_size(self, _, bin_size, step_size, expected_exception):
+        roi = SensibleROI.from_list([0, 0, 5, 5])
+        if expected_exception:
+            with self.assertRaises(expected_exception):
+                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
+        else:
+            try:
+                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
+            except ValueError:
+                self.fail("validate_bin_and_step_size() raised ValueError unexpectedly!")
+
+    @parameterized.expand([
+        (["5x5_bin_2_step_1", 5, 2, 1]),
+        (["5x5_bin_2_step_2", 5, 3, 2]),
+        (["7x7_bin_2_step_3", 7, 4, 1]),
+    ])
+    @mock.patch.object(SpectrumViewerWindowModel, "save_rits_roi")
+    def test_save_rits_images_write_correct_number_of_files(self, _, roi_size, bin_size, step, mock_save_rits_roi):
+        stack, _ = self._set_sample_stack(with_tof=True)
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        stack.data[:, :, :5] *= 2
+        self.model.set_new_roi("rits_roi")
+        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, roi_size, roi_size]))
+        self.model.set_normalise_stack(norm)
+        roi = self.model.get_roi("rits_roi")
+        Mx, My = roi.width, roi.height
+        x_iterations = min(math.ceil(Mx / step), math.ceil((Mx - bin_size) / step) + 1)
+        y_iterations = min(math.ceil(My / step), math.ceil((My - bin_size) / step) + 1)
+        expected_number_of_calls = x_iterations * y_iterations
+
+        _, mock_path = self._make_mock_path_stream()
+        with mock.patch.object(self.model, "save_roi_coords"):
+            self.model.save_rits_images(mock_path, True, ErrorMode.STANDARD_DEVIATION, bin_size, step)
+        self.assertEqual(mock_save_rits_roi.call_count, expected_number_of_calls)
+
+    @mock.patch.object(SpectrumViewerWindowModel, "save_rits_roi")
+    def test_save_single_rits_spectrum(self, mock_save_rits_roi):
+        stack, _ = self._set_sample_stack(with_tof=True)
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        stack.data[:, :, :5] *= 2
+        self.model.set_new_roi("rits_roi")
+        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 5, 5]))
+        self.model.set_normalise_stack(norm)
+
+        _, mock_path = self._make_mock_path_stream()
+        with mock.patch.object(self.model, "save_roi_coords"):
+            self.model.save_single_rits_spectrum(mock_path, True, ErrorMode.STANDARD_DEVIATION, _, _)
+        mock_save_rits_roi.assert_called_once()
