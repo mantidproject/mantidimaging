@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
-
 logger = getLogger(__name__)
 
 
@@ -89,7 +88,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 with fits.open(image_path.__str__()) as fit:
                     image_data = fit[0].data
 
-            image_data = self.rotate_image(image_data, 90)
+            image_data = self.rotate_image(image_data)
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
@@ -113,10 +112,15 @@ class LiveViewerWindowPresenter(BasePresenter):
         if self.selected_image and image_path == self.selected_image.image_path:
             self.load_and_display_image(image_path)
 
-    def rotate_image(self, image_data, ang: int):
+    def rotate_image(self, image_data):
+        ang = self.view.image_rotation_angle
         image_data_shape = image_data.shape
         image_data_temp = np.zeros(shape=(1, image_data_shape[0], image_data_shape[1]))
         image_data_temp[0] = image_data
         image_stack_temp = ImageStack(image_data_temp)
         rotated_imaged = RotateFilter().filter_func(image_stack_temp, angle=ang)
         return rotated_imaged.data[0].astype(int)
+
+    def update_image_operation(self):
+        """ Reload the current image if an operation has been performed on the current image"""
+        self.load_and_display_image(self.selected_image.image_path)
