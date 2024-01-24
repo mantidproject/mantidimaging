@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 import numpy as np
+from math import ceil
 
 from logging import getLogger
 from mantidimaging.core.data import ImageStack
@@ -301,9 +302,12 @@ class SpectrumViewerWindowModel:
         as a separate RITS image.
         The sub-regions are created by sliding a windo of size 'bin_size' across the ROI with a step size of 'step'.
 
+        During each iteration on a given axis by the step size, a check is made to see if
+        the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.
+
 
         Parameters:
-        directory ([Path): The directory where the RITS images will be saved. If None, no images will be saved.
+        directory (Path): The directory where the RITS images will be saved. If None, no images will be saved.
         normalised (bool): If True, the images will be normalised.
         error_mode (ErrorMode): The error mode to use when saving the images.
         bin_size (int): The size of the sub-regions.
@@ -312,19 +316,26 @@ class SpectrumViewerWindowModel:
         Returns:
         None
         """
-        left, top, right, bottom = self.get_roi(ROI_RITS)
-        new_right, new_bottom = left + bin_size, top + bin_size
-        x_iterations, y_iterations = (right - left) - bin_size + 1, (bottom - top) - bin_size + 1
-        self.validate_bin_and_step_size(self.get_roi(ROI_RITS), bin_size, step)
+
+        roi = self.get_roi(ROI_RITS)
+        left, top, right, bottom = roi
+        x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
+        y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
+
+        self.validate_bin_and_step_size(roi, bin_size, step)
         for y in range(y_iterations):
+            sub_top = top + y * step
+            sub_bottom = min(sub_top + bin_size, bottom)
             for x in range(x_iterations):
                 sub_left = left + x * step
-                sub_right = new_right + x * step
-                sub_top = top + y * step
-                sub_bottom = new_bottom + y * step
+                sub_right = min(sub_left + bin_size, right)
                 sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
                 path = directory / f"rits_image_{x}_{y}.dat"
                 self.save_rits_roi(path, normalised, error_mode, sub_roi)
+                if sub_right == right:
+                    break
+            if sub_bottom == bottom:
+                break
 
     def get_stack_time_of_flight(self) -> np.array | None:
         if self._stack is None or self._stack.log_file is None:
