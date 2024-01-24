@@ -60,6 +60,8 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
+        self.bin_size: int = 10
+        self.step_size: int = 1
 
     def roi_name_generator(self) -> str:
         """
@@ -131,7 +133,9 @@ class SpectrumViewerWindowModel:
         return None
 
     @staticmethod
-    def get_stack_spectrum(stack: ImageStack, roi: SensibleROI):
+    def get_stack_spectrum(stack: Optional[ImageStack], roi: SensibleROI):
+        if stack is None:
+            return np.array([])
         left, top, right, bottom = roi
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.mean(axis=(1, 2))
@@ -171,7 +175,7 @@ class SpectrumViewerWindowModel:
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
         return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
 
-    def get_transmission_error_standard_dev(self, roi_name: str) -> np.ndarray:
+    def get_transmission_error_standard_dev(self, roi: SensibleROI) -> np.ndarray:
         """
         Get the transmission error standard deviation for a given roi
         @param: roi_name The roi name
@@ -179,13 +183,13 @@ class SpectrumViewerWindowModel:
         """
         if self._stack is None or self._normalise_stack is None:
             raise RuntimeError("Sample and open beam must be selected")
-        left, top, right, bottom = self.get_roi(roi_name)
+        left, top, right, bottom = roi
         sample = self._stack.data[:, top:bottom, left:right]
         open_beam = self._normalise_stack.data[:, top:bottom, left:right]
         safe_divide = np.divide(sample, open_beam, out=np.zeros_like(sample), where=open_beam != 0)
         return np.std(safe_divide, axis=(1, 2))
 
-    def get_transmission_error_propagated(self, roi_name: str) -> np.ndarray:
+    def get_transmission_error_propagated(self, roi: SensibleROI) -> np.ndarray:
         """
         Get the transmission error using propagation of sqrt(n) error for a given roi
         @param: roi_name The roi name
@@ -193,7 +197,6 @@ class SpectrumViewerWindowModel:
         """
         if self._stack is None or self._normalise_stack is None:
             raise RuntimeError("Sample and open beam must be selected")
-        roi = self.get_roi(roi_name)
         sample = self.get_stack_spectrum_summed(self._stack, roi)
         open_beam = self.get_stack_spectrum_summed(self._normalise_stack, roi)
         error = np.sqrt(sample / open_beam**2 + sample**2 / open_beam**3)
@@ -237,7 +240,17 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_rits(self, path: Path, normalized: bool, error_mode: ErrorMode) -> None:
+    def save_single_rits_spectrum(self, path: Path, normalized: bool, error_mode: ErrorMode, _, __) -> None:
+        """
+        Saves the spectrum for the RITS ROI to a RITS file.
+
+        @param path: The path to save the CSV file to.
+        @param normalized: Whether to save the normalized spectrum.
+        @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
+        """
+        self.save_rits_roi(path, normalized, error_mode, self.get_roi(ROI_RITS))
+
+    def save_rits_roi(self, path: Path, normalized: bool, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
         Saves the spectrum for one ROI to a RITS file.
 
@@ -258,13 +271,45 @@ class SpectrumViewerWindowModel:
         transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
 
         if error_mode == ErrorMode.STANDARD_DEVIATION:
-            transmission_error = self.get_transmission_error_standard_dev(ROI_RITS)
+            transmission_error = self.get_transmission_error_standard_dev(roi)
         elif error_mode == ErrorMode.PROPAGATED:
-            transmission_error = self.get_transmission_error_propagated(ROI_RITS)
+            transmission_error = self.get_transmission_error_propagated(roi)
         else:
             raise ValueError("Invalid error_mode given")
 
         self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
+
+    def save_rits_images(self, directory: Path, normalised: bool, error_mode: ErrorMode, bin_size, step) -> None:
+        """
+        Saves multiple Region of Interest (ROI) images to RITS files.
+
+        This method divides the ROI into multiple sub-regions of size 'bin_size' and saves each sub-region
+        as a separate RITS image.
+        The sub-regions are created by sliding a windo of size 'bin_size' across the ROI with a step size of 'step'.
+
+
+        Parameters:
+        directory (Optional[Path]): The directory where the RITS images will be saved. If None, no images will be saved.
+        normalised (bool): If True, the images will be normalised.
+        error_mode (ErrorMode): The error mode to use when saving the images.
+        bin_size (int): The size of the sub-regions.
+        step (int): The step size to use when sliding the window across the ROI.
+
+        Returns:
+        None
+        """
+        left, top, right, bottom = self.get_roi(ROI_RITS)
+        new_right, new_bottom = left + bin_size, top + bin_size
+        x_iterations, y_iterations = (right - left) - bin_size + 1, (bottom - top) - bin_size + 1
+        for y in range(y_iterations):
+            for x in range(x_iterations):
+                sub_left = left + x * step
+                sub_right = new_right + x * step
+                sub_top = top + y * step
+                sub_bottom = new_bottom + y * step
+                sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
+                path = directory / f"rits_image_{x}_{y}.dat"
+                self.save_rits_roi(path, normalised, error_mode, sub_roi)
 
     def get_stack_time_of_flight(self) -> np.array | None:
         if self._stack is None or self._stack.log_file is None:
