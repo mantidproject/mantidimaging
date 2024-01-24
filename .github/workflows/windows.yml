@@ -122,7 +122,6 @@ jobs:
       # Label as 'windows-build-test' for testing purposes.
       # To re-enable, use the if rule from the conda workflow and change label to 'unstable' after testing
       - name: publish package
-        if: github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
         uses: ./.github/actions/publish-package
         with:
           label: upload-test-mike

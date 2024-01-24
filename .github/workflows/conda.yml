@@ -136,7 +136,6 @@ jobs:
 
       # Always label as unstable. Builds of stable releases can be manually labeled to 'main' once tested
       - name: publish 'unstable' package
-        if: github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
         uses: ./.github/actions/publish-package
         with:
           label: upload-test-mike
