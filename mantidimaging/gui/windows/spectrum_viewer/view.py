@@ -198,7 +198,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def get_rits_export_filename(self) -> Optional[Path]:
+    def get_rits_export_directory(self) -> Path | None:
+        """
+        Get the path to save the RITS file too
+        """
+        path = QFileDialog.getExistingDirectory(self, "Select Directory", "", QFileDialog.ShowDirsOnly)
+        if path:
+            return Path(path)
+        else:
+            return None
+
+    def get_rits_export_filename(self) -> Path | None:
         """
         Get the path to save the RITS file too
         """
@@ -334,3 +344,21 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_size_spinBox.setHidden(hide_binning)
         self.bin_step_label.setHidden(hide_binning)
         self.bin_step_spinBox.setHidden(hide_binning)
+        self.set_binning()
+
+    def set_binning(self) -> None:
+        """
+        Sets the binning configuration for image output.
+
+        If the image output mode is set to "2D Binned", the bin size and bin
+        step are set within the presenter.
+        The presenter's 'binned' attribute is set to True.
+        If the image output mode is not "2D Binned", it will
+        simply set the presenter's 'binned' attribute to False.
+        """
+        if self.image_output_mode == "2D Binned":
+            self.presenter.bin_size = self.bin_size_spinBox.value()
+            self.presenter.bin_step = self.bin_step_spinBox.value()
+            self.presenter.binned = True
+        else:
+            self.presenter.binned = False

@@ -46,6 +46,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
+        self.binned: bool = False
+        self.bin_size: int = 0
+        self.bin_step: int = 0
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -167,20 +170,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.save_csv(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
 
-    def handle_rits_export(self, binned=True) -> None:
+    def handle_rits_export(self) -> None:
         """
         Handle the export of the current spectrum to a RITS file format
         """
         error_mode = ErrorMode.get_by_value(self.view.transmission_error_mode)
         is_sample_normed = self.spectrum_mode == SpecType.SAMPLE_NORMED
 
-        if binned:
+        if self.binned and self.bin_size > 0 and self.bin_step > 0:
             path = self.view.get_rits_export_directory()
             save_method = self.model.save_rits_images
-            args = (path, is_sample_normed, error_mode, 10, 1)
+            args = (path, is_sample_normed, error_mode, self.bin_size, self.bin_step)
         else:
             path = self.view.get_rits_export_filename()
-            if path.suffix != ".dat":
+            if path and path.suffix != ".dat":
                 path = path.with_suffix(".dat")
             save_method = self.model.save_single_rits_spectrum  # type: ignore
             args = (path, is_sample_normed, error_mode, None, None)  # type: ignore
@@ -188,7 +191,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             LOG.debug("No path selected, aborting export")
             return
 
-        save_method(*args)
+        save_method(*args)  # type: ignore
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:

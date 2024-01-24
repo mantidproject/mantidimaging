@@ -279,6 +279,20 @@ class SpectrumViewerWindowModel:
 
         self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
 
+    def validate_bin_and_step_size(self, roi, bin_size: int, step_size: int) -> None:
+        """
+        Validates the bin and step size for saving RITS images.
+
+        @param bin_size: The bin size to validate.
+        @param step_size: The step size to validate.
+        """
+        if bin_size and step_size < 1:
+            raise ValueError("Both bin size and step size must be greater than 0")
+        if bin_size <= step_size:
+            raise ValueError("Bin size must be larger than or equal to step size")
+        if bin_size and step_size > min(roi.width, roi.height):
+            raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
+
     def save_rits_images(self, directory: Path, normalised: bool, error_mode: ErrorMode, bin_size, step) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
@@ -289,7 +303,7 @@ class SpectrumViewerWindowModel:
 
 
         Parameters:
-        directory (Optional[Path]): The directory where the RITS images will be saved. If None, no images will be saved.
+        directory ([Path): The directory where the RITS images will be saved. If None, no images will be saved.
         normalised (bool): If True, the images will be normalised.
         error_mode (ErrorMode): The error mode to use when saving the images.
         bin_size (int): The size of the sub-regions.
@@ -301,6 +315,7 @@ class SpectrumViewerWindowModel:
         left, top, right, bottom = self.get_roi(ROI_RITS)
         new_right, new_bottom = left + bin_size, top + bin_size
         x_iterations, y_iterations = (right - left) - bin_size + 1, (bottom - top) - bin_size + 1
+        self.validate_bin_and_step_size(self.get_roi(ROI_RITS), bin_size, step)
         for y in range(y_iterations):
             for x in range(x_iterations):
                 sub_left = left + x * step
