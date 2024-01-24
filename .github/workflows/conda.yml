@@ -139,6 +139,6 @@ jobs:
         if: github.event_name == 'release' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release')))
         uses: ./.github/actions/publish-package
         with:
-          label: unstable
+          label: upload-test-mike
           token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
           token-old: ${{ secrets.ANACONDA_API_TOKEN }}
