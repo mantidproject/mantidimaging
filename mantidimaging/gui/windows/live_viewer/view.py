@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSignalBlocker, QCoreApplication
+from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.Qt import QAction, QActionGroup
 
@@ -16,8 +16,6 @@ import numpy as np
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
-
-translate = QCoreApplication.translate
 
 
 class LiveViewerWindowView(BaseMainWindowView):
@@ -39,21 +37,16 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
         self.image_rotation_angle = 0
         self.right_click_menu = self.live_viewer.image.vb.menu
-        rotate_menu = self.right_click_menu.addMenu(translate("ViewBox", "Rotate Image"))
-        rotate_angles_group = QActionGroup(self)
-        rotate_0 = QAction(translate("ViewBox", "0" + u'\N{DEGREE SIGN}'), rotate_angles_group)
-        rotate_90 = QAction(translate("ViewBox", "90" + u'\N{DEGREE SIGN}'), rotate_angles_group)
-        rotate_180 = QAction(translate("ViewBox", "180" + u'\N{DEGREE SIGN}'), rotate_angles_group)
-        rotate_270 = QAction(translate("ViewBox", "270" + u'\N{DEGREE SIGN}'), rotate_angles_group)
-        rotate_0.setCheckable(True)
-        rotate_90.setCheckable(True)
-        rotate_180.setCheckable(True)
-        rotate_270.setCheckable(True)
-        rotate_menu.addActions(rotate_angles_group.actions())
-        rotate_0.triggered.connect(lambda: self.set_image_rotation_angle(0))
-        rotate_90.triggered.connect(lambda: self.set_image_rotation_angle(90))
-        rotate_180.triggered.connect(lambda: self.set_image_rotation_angle(180))
-        rotate_270.triggered.connect(lambda: self.set_image_rotation_angle(270))
+        rotate_menu = self.right_click_menu.addMenu("Rotate Image")
+        self.rotate_angles_group = QActionGroup(self)
+        allowed_angles = [0, 90, 180, 270]
+        for angle in allowed_angles:
+            action = QAction(str(angle) + "°", self.rotate_angles_group)
+            action.setCheckable(True)
+            rotate_menu.addAction(action)
+            action.triggered.connect(self.set_image_rotation_angle)
+            if angle == 0:
+                action.setChecked(True)
 
     def show(self) -> None:
         """Show the window"""
@@ -95,7 +88,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         super().closeEvent(e)
         self.presenter = None  # type: ignore # View instance to be destroyed -type can be inconsistent
 
-    def set_image_rotation_angle(self, angle: int):
+    def set_image_rotation_angle(self):
         """Set the image rotation angle which will be read in by the presenter"""
-        self.image_rotation_angle = angle
+        self.image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
         self.presenter.update_image_operation()
