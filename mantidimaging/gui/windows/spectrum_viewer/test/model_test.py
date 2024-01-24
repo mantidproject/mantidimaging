@@ -195,7 +195,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
+            self.model.save_rits_roi(mock_path, True, ErrorMode.STANDARD_DEVIATION, self.model.get_roi("rits_roi"))
 
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
@@ -213,7 +213,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits(mock_path, True, ErrorMode.STANDARD_DEVIATION)
+            self.model.save_rits_roi(mock_path, True, ErrorMode.STANDARD_DEVIATION, self.model.get_roi("rits_roi"))
 
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
@@ -237,7 +237,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             with mock.patch.object(self.model, "export_spectrum_to_rits") as mock_export:
-                self.model.save_rits(mock_path, True, error_mode)
+                self.model.save_rits_roi(mock_path, True, error_mode, self.model.get_roi("rits_roi"))
 
         calculated_errors = mock_export.call_args[0][3]
         np.testing.assert_allclose(expected_error, calculated_errors, atol=1e-4)
@@ -250,7 +250,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(ValueError, self.model.save_rits, mock_path, True, None)
+            self.assertRaises(ValueError, self.model.save_rits_roi, mock_path, True, None,
+                              self.model.get_roi("rits_roi"))
         mock_path.open.assert_not_called()
 
     def test_save_rits_no_norm_err(self):
@@ -262,7 +263,14 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(ValueError, self.model.save_rits, mock_path, False, ErrorMode.STANDARD_DEVIATION)
+            self.assertRaises(
+                ValueError,
+                self.model.save_rits_roi,
+                mock_path,
+                False,
+                ErrorMode.STANDARD_DEVIATION,
+                self.model.get_roi("rits_roi"),
+            )
         mock_path.open.assert_not_called()
 
     def test_save_rits_no_tof_err(self):
@@ -274,7 +282,14 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(ValueError, self.model.save_rits, mock_path, True, ErrorMode.STANDARD_DEVIATION)
+            self.assertRaises(
+                ValueError,
+                self.model.save_rits_roi,
+                mock_path,
+                True,
+                ErrorMode.STANDARD_DEVIATION,
+                self.model.get_roi("rits_roi"),
+            )
         mock_path.open.assert_not_called()
 
     def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
