@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
+from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, pyqtSlot
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -24,6 +24,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
+    sigHoverName = pyqtSignal(str)
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,6 +38,8 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
+        self.sigHoverEvent.connect(self.hovering)
+
 
     @property
     def name(self) -> str:
@@ -63,6 +66,12 @@ class SpectrumROI(ROI):
     def selected_row(self) -> Optional[int]:
         return self._selected_row
 
+    @pyqtSlot(object)
+    def hovering(self):
+        self.sigHoverName.emit(self.name)
+
+
+
 
 class SpectrumWidget(GraphicsLayoutWidget):
     """
@@ -77,6 +86,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
+    key_pressed = pyqtSignal(object)
 
     def __init__(self) -> None:
         super().__init__()
@@ -99,6 +109,9 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
         self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
+
+        self.last_hovered_roi = None
+        self.key_pressed.connect(self.on_key)
 
     def cleanup(self):
         self.image.cleanup()
@@ -182,6 +195,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+        self.roi_dict[name].sigHoverName.connect(self.set_last_hovered)
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
@@ -232,3 +246,18 @@ class SpectrumWidget(GraphicsLayoutWidget):
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
             self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
+
+    def keyPressEvent(self, event):
+        self.key_pressed.emit(event.key())
+
+    def on_key(self, key):
+        # test for a specific key
+        if key == Qt.Key_Left:
+            print('left key pressed')
+            print(f"last_hovered_roi = {self.last_hovered_roi}")
+        else:
+            print('key pressed: %i' % key)
+
+    @pyqtSlot(str)
+    def set_last_hovered(self, name):
+        self.last_hovered_roi = name
