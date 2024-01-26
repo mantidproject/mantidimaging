@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set, Dict
 
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
@@ -35,9 +35,24 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+
+        self.activated_operations: Set[str] = set()
+        self.filter_params: Dict[str, Dict] = {}
         self.image_rotation_angle = 0
         self.right_click_menu = self.live_viewer.image.vb.menu
-        rotate_menu = self.right_click_menu.addMenu("Rotate Image")
+        operations_menu = self.right_click_menu.addMenu("Operations")
+        gaussian_menu = operations_menu.addMenu("Gaussian")
+        self.gaussian_group = QActionGroup(self)
+        gaussian_options = ["Off", "size=2 order=0 mode=reflect"]
+        for gaussian_option in gaussian_options:
+            action = QAction(gaussian_option, self.gaussian_group)
+            action.setCheckable(True)
+            gaussian_menu.addAction(action)
+            action.triggered.connect(self.set_gaussian_params)
+            if gaussian_option == "Off":
+                action.setChecked(True)
+
+        rotate_menu = operations_menu.addMenu("Rotate Image")
         self.rotate_angles_group = QActionGroup(self)
         allowed_angles = [0, 90, 180, 270]
         for angle in allowed_angles:
@@ -90,5 +105,22 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def set_image_rotation_angle(self):
         """Set the image rotation angle which will be read in by the presenter"""
-        self.image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
+        if self.rotate_angles_group.checkedAction().text() == "0°":
+            pass
+            if "Rotate Stack" in self.activated_operations:
+                self.activated_operations.remove("Rotate Stack")
+        else:
+            self.image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
+            self.filter_params["Rotate Stack"] = {"params": {"angle": self.image_rotation_angle}}
+            self.activated_operations.add('Rotate Stack')
+        self.presenter.update_image_operation()
+
+    def set_gaussian_params(self):
+        if self.gaussian_group.checkedAction().text() == "Off":
+            pass
+            if "Gaussian" in self.activated_operations:
+                self.activated_operations.remove("Gaussian")
+        else:
+            self.filter_params["Gaussian"] = {"params": {"size": 2, "order": 0, "mode": "reflect"}}
+            self.activated_operations.add('Gaussian')
         self.presenter.update_image_operation()

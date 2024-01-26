@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from logging import getLogger
 import numpy as np
 
@@ -13,7 +13,7 @@ from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
-from mantidimaging.core.operations.rotate_stack import RotateFilter
+from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
 if TYPE_CHECKING:
@@ -32,6 +32,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     """
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
+    op_func: Callable
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -40,6 +41,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
+        self.filters = {f.filter_name: f for f in load_filter_packages()}
 
     def close(self) -> None:
         """Close the window."""
@@ -88,7 +90,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 with fits.open(image_path.__str__()) as fit:
                     image_data = fit[0].data
 
-            image_data = self.rotate_image(image_data)
+            image_data = self.perform_operations(image_data)
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
@@ -112,15 +114,26 @@ class LiveViewerWindowPresenter(BasePresenter):
         if self.selected_image and image_path == self.selected_image.image_path:
             self.load_and_display_image(image_path)
 
-    def rotate_image(self, image_data):
-        ang = self.view.image_rotation_angle
+    def update_image_operation(self):
+        """
+        Reload the current image if an operation has been performed on the current image
+        """
+        self.load_and_display_image(self.selected_image.image_path)
+
+    def convert_image_to_imagestack(self, image_data):
+        """
+        Convert the single image to an imagestack so the Operations framework can be used
+        """
         image_data_shape = image_data.shape
         image_data_temp = np.zeros(shape=(1, image_data_shape[0], image_data_shape[1]))
         image_data_temp[0] = image_data
-        image_stack_temp = ImageStack(image_data_temp)
-        rotated_imaged = RotateFilter().filter_func(image_stack_temp, angle=ang)
-        return rotated_imaged.data[0].astype(int)
+        return ImageStack(image_data_temp)
 
-    def update_image_operation(self):
-        """ Reload the current image if an operation has been performed on the current image"""
-        self.load_and_display_image(self.selected_image.image_path)
+    def perform_operations(self, image_data):
+        image_stack = self.convert_image_to_imagestack(image_data)
+        for operation in self.view.activated_operations:
+            op_class = self.filters[operation]
+            op_func = op_class.filter_func
+            op_params = self.view.filter_params[operation]["params"]
+            op_func(image_stack, **op_params)
+        return image_stack.slice_as_array(0)[0]
