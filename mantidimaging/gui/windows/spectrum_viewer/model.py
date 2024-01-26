@@ -135,6 +135,18 @@ class SpectrumViewerWindowModel:
 
     @staticmethod
     def get_stack_spectrum(stack: Optional[ImageStack], roi: SensibleROI):
+        """
+        Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
+        If the image stack is None, an empty numpy array is returned.
+        Parameters:
+            stack (Optional[ImageStack]): The image stack to compute the spectrum from.
+                It can be None, in which case an empty array is returned.
+            roi (SensibleROI): The region of interest within the image stack.
+                It is a tuple or list of four integers specifying the left, top, right, and bottom coordinates.
+        Returns:
+            numpy.ndarray: The mean spectrum of the image stack within the ROI.
+                It is a 1D array where each element is the mean of the corresponding layer of the stack within the ROI.
+        """
         if stack is None:
             return np.array([])
         left, top, right, bottom = roi
@@ -282,10 +294,18 @@ class SpectrumViewerWindowModel:
 
     def validate_bin_and_step_size(self, roi, bin_size: int, step_size: int) -> None:
         """
-        Validates the bin and step size for saving RITS images.
-
-        @param bin_size: The bin size to validate.
-        @param step_size: The step size to validate.
+        Validates the bin size and step size for saving RITS images.
+        This method checks the following conditions:
+        - Both bin size and step size must be greater than 0.
+        - Bin size must be larger than or equal to step size.
+        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.
+        If any of these conditions are not met, a ValueError is raised.
+        Parameters:
+            roi: The region of interest (ROI) to which the bin size and step size should be compared.
+            bin_size (int): The size of the bins to be validated.
+            step_size (int): The size of the steps to be validated.
+        Raises:
+            ValueError: If any of the validation conditions are not met.
         """
         if bin_size and step_size < 1:
             raise ValueError("Both bin size and step size must be greater than 0")
@@ -300,7 +320,7 @@ class SpectrumViewerWindowModel:
 
         This method divides the ROI into multiple sub-regions of size 'bin_size' and saves each sub-region
         as a separate RITS image.
-        The sub-regions are created by sliding a windo of size 'bin_size' across the ROI with a step size of 'step'.
+        The sub-regions are created by sliding a window of size 'bin_size' across the ROI with a step size of 'step'.
 
         During each iteration on a given axis by the step size, a check is made to see if
         the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.
