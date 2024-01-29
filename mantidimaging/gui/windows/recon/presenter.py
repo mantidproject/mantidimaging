@@ -114,7 +114,7 @@ class ReconstructWindowPresenter(BasePresenter):
         except Exception as err:
             self.show_error(err, traceback.format_exc())
 
-    def do_algorithm_changed(self):
+    def do_algorithm_changed(self) -> None:
         alg_name = self.view.algorithm_name
         allowed_args = self.allowed_recon_kwargs[alg_name]
         for arg, widgets in self.restricted_arg_widgets.items():
@@ -129,7 +129,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
         self.view.change_refine_iterations()
 
-    def set_stack_uuid(self, uuid):
+    def set_stack_uuid(self, uuid) -> None:
         if not self.view.isVisible():
             self.stack_selection_change_pending = True
             return
@@ -153,31 +153,31 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
 
-    def _set_max_preview_indexes(self):
+    def _set_max_preview_indexes(self) -> None:
         images = self.model.images
         if images is not None:
             self.view.set_max_projection_index(images.num_projections - 1)
             self.view.set_max_slice_index(images.height - 1)
 
-    def set_preview_projection_idx(self, idx):
+    def set_preview_projection_idx(self, idx: int) -> None:
         self.model.preview_projection_idx = idx
         self.do_update_projection()
 
-    def set_preview_slice_idx(self, idx):
+    def set_preview_slice_idx(self, idx: int) -> None:
         self.model.preview_slice_idx = idx
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
 
-    def set_row(self, row):
+    def set_row(self, row: int) -> None:
         self.model.selected_row = row
 
-    def get_pixel_size_from_images(self):
+    def get_pixel_size_from_images(self) -> float:
         if self.model.images is not None and self.model.images.pixel_size is not None:
             return self.model.images.pixel_size
         else:
             return 0.
 
-    def do_update_projection(self):
+    def do_update_projection(self) -> None:
         images = self.model.images
         if images is None:
             self.view.reset_projection_preview()
@@ -185,7 +185,7 @@ class ReconstructWindowPresenter(BasePresenter):
         img_data = images.projection(self.model.preview_projection_idx)
         self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
 
-    def handle_stack_changed(self):
+    def handle_stack_changed(self) -> None:
         if self.view.isVisible():
             self.model.reset_cor_model()
             self.do_update_projection()
@@ -209,13 +209,13 @@ class ReconstructWindowPresenter(BasePresenter):
 
         raise RuntimeError("No free slice indexes to add to the COR Table")
 
-    def do_add_cor(self):
+    def do_add_cor(self) -> None:
         row = self.model.selected_row
         cor = self.model.get_me_a_cor()
         slice_index = self._find_next_free_slice_index()
         self.view.add_cor_table_row(row, slice_index, cor.value)
 
-    def do_reconstruct_volume(self):
+    def do_reconstruct_volume(self) -> None:
         if not self.model.has_results:
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
@@ -319,7 +319,7 @@ class ReconstructWindowPresenter(BasePresenter):
             # Update reconstruction preview with new COR
             self.set_preview_slice_idx(slice_idx)
 
-    def _do_refine_iterations(self):
+    def _do_refine_iterations(self) -> None:
         slice_idx = self.model.preview_slice_idx
 
         dialog = CORInspectionDialogView(self.view, self.model.images, slice_idx, self.model.last_cor,
@@ -332,13 +332,13 @@ class ReconstructWindowPresenter(BasePresenter):
             LOG.debug('New optimal iterations: {}'.format(new_iters))
             self.view.num_iter = new_iters
 
-    def do_cor_fit(self):
+    def do_cor_fit(self) -> None:
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
 
-    def _on_volume_recon_done(self, task):
+    def _on_volume_recon_done(self, task) -> None:
         self.recon_is_running = False
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
@@ -376,7 +376,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
 
-    def _auto_find_correlation(self):
+    def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
             self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
                                           "projection set. Please load a 180 projection manually.")
@@ -402,7 +402,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.set_correlate_buttons_enabled(False)
         start_async_task_view(self.view, self.model.auto_find_correlation, completed, tracker=self.async_tracker)
 
-    def _auto_find_minimisation_square_sum(self):
+    def _auto_find_minimisation_square_sum(self) -> None:
         num_cors = self.view.get_number_of_cors()
         if num_cors is None:
             return
@@ -418,7 +418,7 @@ class ReconstructWindowPresenter(BasePresenter):
         else:
             initial_cor = self.view.rotation_centre
 
-        def _completed_finding_cors(task: TaskWorkerThread):
+        def _completed_finding_cors(task: TaskWorkerThread) -> None:
             if task.error is not None:
                 self.view.show_error_dialog(f"Finding the COR failed.\n\n Error: {str(task.error)}")
             else:
@@ -438,10 +438,10 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def proj_180_degree_shape_matches_images(self, images):
+    def proj_180_degree_shape_matches_images(self, images) -> bool:
         return self.model.proj_180_degree_shape_matches_images(images)
 
-    def _do_nan_zero_negative_check(self):
+    def _do_nan_zero_negative_check(self) -> None:
         """
         Checks if the data contains NaNs/zeroes and displays a message if they are found.
         """
@@ -460,7 +460,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_status_message(" ".join(msg_list))
 
     @staticmethod
-    def _replace_inf_nan(images: ImageStack):
+    def _replace_inf_nan(images: ImageStack) -> None:
         """
         Replaces infinity values in a data array with NaNs. Used because pyqtgraph has programs with arrays containing
         inf.

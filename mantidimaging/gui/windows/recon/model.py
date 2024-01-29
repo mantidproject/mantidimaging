@@ -37,7 +37,7 @@ class ReconstructWindowModel(object):
         self._last_cor = ScalarCoR(0.0)
 
     @property
-    def last_result(self):
+    def last_result(self) -> None:
         return self._last_result
 
     @last_result.setter
@@ -45,27 +45,27 @@ class ReconstructWindowModel(object):
         self._last_result = value
 
     @property
-    def selected_row(self):
+    def selected_row(self) -> int:
         return self._selected_row
 
     @selected_row.setter
-    def selected_row(self, value):
+    def selected_row(self, value: int) -> None:
         self._selected_row = value
 
     @property
-    def preview_projection_idx(self):
+    def preview_projection_idx(self) -> int:
         return self._preview_projection_idx
 
     @preview_projection_idx.setter
-    def preview_projection_idx(self, value: int):
+    def preview_projection_idx(self, value: int) -> None:
         self._preview_projection_idx = value
 
     @property
-    def preview_slice_idx(self):
+    def preview_slice_idx(self) -> int:
         return self._preview_slice_idx
 
     @preview_slice_idx.setter
-    def preview_slice_idx(self, value: int):
+    def preview_slice_idx(self, value: int) -> None:
         self._preview_slice_idx = value
 
     @property
@@ -77,7 +77,7 @@ class ReconstructWindowModel(object):
         self._last_cor = value
 
     @property
-    def has_results(self):
+    def has_results(self) -> bool:
         return self.data_model.has_results
 
     def get_results(self) -> Tuple[ScalarCoR, Degrees, Slope]:
@@ -88,14 +88,14 @@ class ReconstructWindowModel(object):
         return self._images
 
     @property
-    def num_points(self):
+    def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'ImageStack'):
+    def initial_select_data(self, images: 'ImageStack') -> None:
         self._images = images
         self.reset_cor_model()
 
-    def reset_cor_model(self):
+    def reset_cor_model(self) -> None:
         self.data_model.clear_results()
 
         slice_idx, cor = self.find_initial_cor()
@@ -111,7 +111,7 @@ class ReconstructWindowModel(object):
         cor = ScalarCoR(self.images.h_middle)
         return first_slice_to_recon, cor
 
-    def do_fit(self):
+    def do_fit(self) -> bool:
         # Ensure we have some sample data
         if self.images is None:
             raise ValueError('No image stack is provided')
@@ -182,15 +182,15 @@ class ReconstructWindowModel(object):
             return None
 
     @property
-    def cors(self):
+    def cors(self) -> np.ndarray:
         return self.data_model.cors
 
     @property
-    def slices(self):
+    def slices(self) -> np.ndarray:
         return self.data_model.slices
 
     @staticmethod
-    def load_allowed_recon_kwargs():
+    def load_allowed_recon_kwargs() -> dict:
         d = tomopy_allowed_kwargs()
         if CudaChecker().cuda_is_present():
             d.update(astra_allowed_kwargs())
@@ -198,7 +198,7 @@ class ReconstructWindowModel(object):
         return d
 
     @staticmethod
-    def get_allowed_filters(alg_name: str):
+    def get_allowed_filters(alg_name: str) -> list:
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
@@ -224,7 +224,7 @@ class ReconstructWindowModel(object):
         self.data_model.set_precalculated(cor, tilt)
         self.last_result = self.data_model.stack_properties
 
-    def is_current_stack(self, uuid: "uuid.UUID"):
+    def is_current_stack(self, uuid: "uuid.UUID") -> bool:
         return self.stack_id == uuid
 
     def get_slice_indices(self, num_cors: int) -> Tuple[int, Union[np.ndarray, Tuple[np.ndarray, Optional[float]]]]:
