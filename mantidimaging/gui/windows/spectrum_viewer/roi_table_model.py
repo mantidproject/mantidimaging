@@ -61,6 +61,14 @@ class TableModel(QAbstractTableModel):
                     return Qt.Checked
                 return Qt.Unchecked
 
+    def recolour_row(self, row, new_color):
+        print(f"recolour_row called for row {row} with new_color {new_color}")
+
+        if 0 <= row < len(self._data) and len(new_color) == 4:
+            for column in range(self.columnCount()):
+                index = self.index(row, column)
+                self.dataChanged.emit(index, index, [Qt.BackgroundRole])
+
     def setData(self, index, value, role):
         """
         Set data in table
@@ -164,6 +172,8 @@ class TableModel(QAbstractTableModel):
             self._data[row][0] = new_name
             self.layoutChanged.emit()
 
+
+
     def flags(self, index):
         """
         Handle selection of table rows to disable selection of ROI colour column
@@ -178,6 +188,8 @@ class TableModel(QAbstractTableModel):
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable
         else:
             return Qt.ItemIsEnabled
+
+
 
     def roi_names(self) -> list:
         """

@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Optional
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5 import QtGui, QtWidgets
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
-from PyQt5.QtGui import QPen
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -25,6 +24,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
+    sig_colour_change = pyqtSignal()
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,7 +49,9 @@ class SpectrumROI(ROI):
             selected_color = color_dialog.getColor(current_color)
 
             if selected_color.isValid():
-                self.colour = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+                new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+                self.colour = new_color  # Update the ROI color
+                self.sig_colour_change.emit()  # Emit the signal
 
 
 
@@ -70,9 +72,9 @@ class SpectrumROI(ROI):
         return self._colour
 
     @colour.setter
-    def colour(self, colour: tuple[int, int, int, int]) -> None:
+    def set_colour(self, colour: tuple[int, int, int, int]) -> None:
         self._colour = colour
-        self.setPen(self._colour)
+        self.setPen(fn.mkPen(colour))
 
     @property
     def selected_row(self) -> Optional[int]:
@@ -151,10 +153,8 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param name: The name of the ROI.
         @param colour: The new colour of the ROI.
         """
-        if name in self.roi_dict:
-            roi = self.roi_dict[name]
-            roi.colour = colour  # Assuming colour setter in SpectrumROI is correctly implemented
-            roi.setPen(QPen(QtGui.QColor(*colour)))
+        self.roi_dict[name].colour = colour
+        self.roi_dict[name].setPen(self.roi_dict[name].colour)
 
     def set_roi_visibility_flags(self, name: str, visible: bool) -> None:
         """
@@ -179,11 +179,11 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param name: The name of the ROI.
         @param alpha: The new alpha value of the ROI.
         """
-        if name in self.roi_dict:
-            roi = self.roi_dict[name]
-            new_color = roi.colour[:3] + (int(alpha * 255),)
-            roi.colour = new_color
-            roi.setPen(QPen(QtGui.QColor(*new_color)))
+
+        self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha,)
+        self.roi_dict[name].setPen(self.roi_dict[name].colour)
+        self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+        self.set_roi_visibility_flags(name, bool(alpha))
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
