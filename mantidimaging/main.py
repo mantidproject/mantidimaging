@@ -10,7 +10,7 @@ import os
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
-from PyQt5.QtGui import QFont, QGuiApplication
+from PyQt5.QtGui import QGuiApplication
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -61,15 +61,10 @@ def setup_application() -> QApplication:
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
-    screens = q_application.screens()
     if sys.platform == 'win32':
         os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
         os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
         os.environ["QT_SCALE_FACTOR"] = "1"
-        base_font_size = int(q_application.font().pointSize() * 0.8)
-        font_scale_factor = screens[0].physicalDotsPerInch() / 90
-        font = QFont(q_application.font().family(), int(font_scale_factor * base_font_size))
-        q_application.setFont(font)
     return q_application
 
 
