@@ -192,6 +192,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits")
     def test_handle_rits_export(self, path_name: str, mock_save_rits: mock.Mock):
         self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
+        self.view.transmission_error_mode = "Standard Deviation"
 
         self.presenter.model.set_stack(generate_images())
 

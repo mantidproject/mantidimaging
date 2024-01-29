@@ -31,8 +31,15 @@ class SpecType(Enum):
 
 
 class ErrorMode(Enum):
-    STANDARD_DEVIATION = 1
-    PROPAGATED = 2
+    STANDARD_DEVIATION = "Standard Deviation"
+    PROPAGATED = "Propagated"
+
+    @classmethod
+    def get_by_value(cls, value: str) -> ErrorMode:
+        for element in cls:
+            if element.value == value:
+                return element
+        raise ValueError(f"Unknown error mode: {value}")
 
 
 class SpectrumViewerWindowModel:
