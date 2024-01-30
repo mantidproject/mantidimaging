@@ -46,9 +46,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
-        self.binned: bool = False
-        self.bin_size: int = 0
-        self.bin_step: int = 0
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
@@ -176,12 +173,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         error_mode = ErrorMode.get_by_value(self.view.transmission_error_mode)
 
-        if self.binned and self.bin_size > 0 and self.bin_step > 0:
+        if self.view.image_output_mode == "2D Binned":
             path = self.view.get_rits_export_directory()
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
-            self.model.save_rits_images(path, error_mode, self.bin_size, self.bin_step)
+            self.model.save_rits_images(path, error_mode, self.view.bin_size, self.view.bin_step)
         else:
             path = self.view.get_rits_export_filename()
             if path is None:

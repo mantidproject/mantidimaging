@@ -1,6 +1,7 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -332,11 +333,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def bin_size(self) -> int:
-        return self.bin_size_spinbox.value()
+        return self.bin_size_spinBox.value()
 
     @property
     def bin_step(self) -> int:
-        return self.bin_step_spinbox.value()
+        return self.bin_step_spinBox.value()
 
     def set_binning_visibility(self) -> None:
         hide_binning = self.image_output_mode != "2D Binned"
@@ -344,21 +345,3 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_size_spinBox.setHidden(hide_binning)
         self.bin_step_label.setHidden(hide_binning)
         self.bin_step_spinBox.setHidden(hide_binning)
-        self.set_binning()
-
-    def set_binning(self) -> None:
-        """
-        Sets the binning configuration for image output.
-
-        If the image output mode is set to "2D Binned", the bin size and bin
-        step are set within the presenter.
-        The presenter's 'binned' attribute is set to True.
-        If the image output mode is not "2D Binned", it will
-        simply set the presenter's 'binned' attribute to False.
-        """
-        if self.image_output_mode == "2D Binned":
-            self.presenter.bin_size = self.bin_size_spinBox.value()
-            self.presenter.bin_step = self.bin_step_spinBox.value()
-            self.presenter.binned = True
-        else:
-            self.presenter.binned = False
