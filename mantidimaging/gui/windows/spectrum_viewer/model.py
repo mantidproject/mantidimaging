@@ -168,11 +168,13 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
-    def get_spectrum(self, roi_name: str, mode: SpecType) -> 'np.ndarray':
+    def get_spectrum(self, roi: str | SensibleROI, mode: SpecType) -> 'np.ndarray':
         if self._stack is None:
             return np.array([])
 
-        roi = self.get_roi(roi_name)
+        if isinstance(roi, str):
+            roi = self.get_roi(roi)
+
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
 
@@ -281,7 +283,7 @@ class SpectrumViewerWindowModel:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
 
         tof *= 1e6  # RITS expects ToF in μs
-        transmission = self.get_spectrum(ROI_RITS, SpecType.SAMPLE_NORMED)
+        transmission = self.get_spectrum(roi, SpecType.SAMPLE_NORMED)
 
         if error_mode == ErrorMode.STANDARD_DEVIATION:
             transmission_error = self.get_transmission_error_standard_dev(roi)

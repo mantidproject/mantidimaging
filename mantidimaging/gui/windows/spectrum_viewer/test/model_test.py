@@ -482,3 +482,23 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_single_rits_spectrum(mock_path, True, ErrorMode.STANDARD_DEVIATION, _, _)
         mock_save_rits_roi.assert_called_once()
+
+    @mock.patch.object(SpectrumViewerWindowModel, "export_spectrum_to_rits")
+    def test_save_rits_correct_transmision(self, mock_save_rits_roi):
+        stack, spectrum = self._set_sample_stack(with_tof=True)
+        norm = ImageStack(np.full([10, 11, 12], 2))
+        for i in range(10):
+            stack.data[:, :, i] *= i
+        self.model.set_new_roi("rits_roi")
+        self.model.set_roi("rits_roi", SensibleROI.from_list([1, 0, 6, 4]))
+        self.model.set_normalise_stack(norm)
+        mock_path = mock.create_autospec(Path)
+
+        self.model.save_rits_images(mock_path, True, ErrorMode.STANDARD_DEVIATION, 3, 1)
+
+        self.assertEqual(6, len(mock_save_rits_roi.call_args_list))
+        expected_means = [1, 1.5, 2, 1, 1.5, 2]  # running average of [1, 2, 3, 4, 5], divided by 2 for normalisation
+        for call, expected_mean in zip(mock_save_rits_roi.call_args_list, expected_means, strict=True):
+            transmission = call[0][2]
+            expected_transmission = spectrum * expected_mean
+            npt.assert_array_equal(expected_transmission, transmission)
