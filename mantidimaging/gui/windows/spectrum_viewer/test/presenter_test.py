@@ -13,7 +13,7 @@ from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -28,7 +28,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(SpectrumViewerWindowView)
         self.view.current_dataset_id = uuid.uuid4()
         mock_spectrum_roi_dict = mock.create_autospec(dict)
-        self.view.spectrum = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        self.view.spectrumWidget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        self.view.spectrumWidget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
+                                                                             roi_dict=mock_spectrum_roi_dict)
+        #self.view.spectrum = mock.create_autospec(SpectrumPlotWidget, roi_dict=mock_spectrum_roi_dict)
         self.view.exportButton = mock.create_autospec(QPushButton)
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
         self.view.addBtn = mock.create_autospec(QPushButton)
@@ -157,7 +160,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
         self.presenter.model.tof_range = (0, 9)
         self.presenter.show_new_sample()
-        self.view.spectrum.add_range.assert_called_once_with(0, 9)
+        self.view.spectrumWidget.spectrum_plot_widget.add_range.assert_called_once_with(0, 9)
 
     def test_gui_changes_tof_range(self):
         image_stack = generate_images([30, 11, 12])
@@ -215,7 +218,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.add_roi_table_row.reset_mock()
 
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.view.spectrum.roi_dict = {"roi_1": mock.Mock()}
+        self.presenter.view.spectrumWidget.roi_dict = {"roi_1": mock.Mock()}
         self.presenter.do_add_roi_to_table("roi_1")
         self.view.add_roi_table_row.assert_called_once_with("roi_1", mock.ANY)
 
