@@ -255,7 +255,7 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_single_rits_spectrum(self, path: Path, normalized: bool, error_mode: ErrorMode) -> None:
+    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 
@@ -263,21 +263,20 @@ class SpectrumViewerWindowModel:
         @param normalized: Whether to save the normalized spectrum.
         @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
         """
-        self.save_rits_roi(path, normalized, error_mode, self.get_roi(ROI_RITS))
+        self.save_rits_roi(path, error_mode, self.get_roi(ROI_RITS))
 
-    def save_rits_roi(self, path: Path, normalized: bool, error_mode: ErrorMode, roi: SensibleROI) -> None:
+    def save_rits_roi(self, path: Path, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
         Saves the spectrum for one ROI to a RITS file.
 
         @param path: The path to save the CSV file to.
-        @param normalized: Whether to save the normalized spectrum.
         @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
         """
         if self._stack is None:
             raise ValueError("No stack selected")
 
-        if not normalized or self._normalise_stack is None:
-            raise ValueError("Normalisation must be enabled, and a normalise stack must be selected")
+        if self._normalise_stack is None:
+            raise ValueError("A normalise stack must be selected")
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
@@ -316,7 +315,7 @@ class SpectrumViewerWindowModel:
         if bin_size and step_size > min(roi.width, roi.height):
             raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
 
-    def save_rits_images(self, directory: Path, normalised: bool, error_mode: ErrorMode, bin_size, step) -> None:
+    def save_rits_images(self, directory: Path, error_mode: ErrorMode, bin_size, step) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
@@ -353,7 +352,7 @@ class SpectrumViewerWindowModel:
                 sub_right = min(sub_left + bin_size, right)
                 sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
                 path = directory / f"rits_image_{x}_{y}.dat"
-                self.save_rits_roi(path, normalised, error_mode, sub_roi)
+                self.save_rits_roi(path, error_mode, sub_roi)
                 if sub_right == right:
                     break
             if sub_bottom == bottom:

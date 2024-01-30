@@ -200,7 +200,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_rits_export()
 
         self.view.get_rits_export_filename.assert_called_once()
-        mock_save_rits_roi.assert_called_once_with(Path("/fake/path.dat"), False, ErrorMode.STANDARD_DEVIATION,
+        mock_save_rits_roi.assert_called_once_with(Path("/fake/path.dat"), ErrorMode.STANDARD_DEVIATION,
                                                    self.presenter.model.get_roi("rits_roi"))
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):

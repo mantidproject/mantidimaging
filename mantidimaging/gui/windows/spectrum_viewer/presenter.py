@@ -175,14 +175,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Handle the export of the current spectrum to a RITS file format
         """
         error_mode = ErrorMode.get_by_value(self.view.transmission_error_mode)
-        is_sample_normed = self.spectrum_mode == SpecType.SAMPLE_NORMED
 
         if self.binned and self.bin_size > 0 and self.bin_step > 0:
             path = self.view.get_rits_export_directory()
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
-            self.model.save_rits_images(path, is_sample_normed, error_mode, self.bin_size, self.bin_step)
+            self.model.save_rits_images(path, error_mode, self.bin_size, self.bin_step)
         else:
             path = self.view.get_rits_export_filename()
             if path is None:
@@ -190,7 +189,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 return
             if path and path.suffix != ".dat":
                 path = path.with_suffix(".dat")
-            self.model.save_single_rits_spectrum(path, is_sample_normed, error_mode)
+            self.model.save_single_rits_spectrum(path, error_mode)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
