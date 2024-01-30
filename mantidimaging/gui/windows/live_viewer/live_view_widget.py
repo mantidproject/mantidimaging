@@ -31,7 +31,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
 
         self.image.enable_message()
 
-        self.image.set_brightness_percentiles(5, 95)
+        self.image.set_brightness_percentiles(0, 99)
 
     def show_image(self, image: np.ndarray) -> None:
         """
