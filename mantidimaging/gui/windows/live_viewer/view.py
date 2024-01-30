@@ -39,16 +39,6 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.filter_params: Dict[str, Dict] = {}
         self.right_click_menu = self.live_viewer.image.vb.menu
         operations_menu = self.right_click_menu.addMenu("Operations")
-        gaussian_menu = operations_menu.addMenu("Gaussian")
-        self.gaussian_group = QActionGroup(self)
-        gaussian_options = ["Off", "size=2 order=0 mode=reflect"]
-        for gaussian_option in gaussian_options:
-            action = QAction(gaussian_option, self.gaussian_group)
-            action.setCheckable(True)
-            gaussian_menu.addAction(action)
-            action.triggered.connect(self.set_gaussian_params)
-            if gaussian_option == "Off":
-                action.setChecked(True)
 
         rotate_menu = operations_menu.addMenu("Rotate Image")
         self.rotate_angles_group = QActionGroup(self)
@@ -109,12 +99,4 @@ class LiveViewerWindowView(BaseMainWindowView):
         else:
             image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
             self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
-        self.presenter.update_image_operation()
-
-    def set_gaussian_params(self):
-        if self.gaussian_group.checkedAction().text() == "Off":
-            if "Gaussian" in self.filter_params:
-                del self.filter_params["Gaussian"]
-        else:
-            self.filter_params["Gaussian"] = {"params": {"size": 2, "order": 0, "mode": "reflect"}}
         self.presenter.update_image_operation()
