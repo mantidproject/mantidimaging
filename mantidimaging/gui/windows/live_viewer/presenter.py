@@ -130,8 +130,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         return ImageStack(image_data_temp)
 
     def perform_operations(self, image_data):
+        if not self.view.filter_params:
+            return image_data
         image_stack = self.convert_image_to_imagestack(image_data)
-        for operation in self.view.activated_operations:
+        for operation in self.view.filter_params:
             op_class = self.filters[operation]
             op_func = op_class.filter_func
             op_params = self.view.filter_params[operation]["params"]

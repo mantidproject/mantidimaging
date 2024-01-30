@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
-from typing import TYPE_CHECKING, Set, Dict
+from typing import TYPE_CHECKING, Dict
 
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
@@ -36,9 +36,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.live_viewer)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
-        self.activated_operations: Set[str] = set()
         self.filter_params: Dict[str, Dict] = {}
-        self.image_rotation_angle = 0
         self.right_click_menu = self.live_viewer.image.vb.menu
         operations_menu = self.right_click_menu.addMenu("Operations")
         gaussian_menu = operations_menu.addMenu("Gaussian")
@@ -106,21 +104,17 @@ class LiveViewerWindowView(BaseMainWindowView):
     def set_image_rotation_angle(self):
         """Set the image rotation angle which will be read in by the presenter"""
         if self.rotate_angles_group.checkedAction().text() == "0°":
-            pass
-            if "Rotate Stack" in self.activated_operations:
-                self.activated_operations.remove("Rotate Stack")
+            if "Rotate Stack" in self.filter_params:
+                del self.filter_params["Rotate Stack"]
         else:
-            self.image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
-            self.filter_params["Rotate Stack"] = {"params": {"angle": self.image_rotation_angle}}
-            self.activated_operations.add('Rotate Stack')
+            image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
+            self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
         self.presenter.update_image_operation()
 
     def set_gaussian_params(self):
         if self.gaussian_group.checkedAction().text() == "Off":
-            pass
-            if "Gaussian" in self.activated_operations:
-                self.activated_operations.remove("Gaussian")
+            if "Gaussian" in self.filter_params:
+                del self.filter_params["Gaussian"]
         else:
             self.filter_params["Gaussian"] = {"params": {"size": 2, "order": 0, "mode": "reflect"}}
-            self.activated_operations.add('Gaussian')
         self.presenter.update_image_operation()
