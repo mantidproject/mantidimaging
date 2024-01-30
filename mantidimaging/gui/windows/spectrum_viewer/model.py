@@ -255,7 +255,7 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_single_rits_spectrum(self, path: Path, normalized: bool, error_mode: ErrorMode, _, __) -> None:
+    def save_single_rits_spectrum(self, path: Path, normalized: bool, error_mode: ErrorMode) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 

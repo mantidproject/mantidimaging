@@ -480,7 +480,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_single_rits_spectrum(mock_path, True, ErrorMode.STANDARD_DEVIATION, _, _)
+            self.model.save_single_rits_spectrum(mock_path, True, ErrorMode.STANDARD_DEVIATION)
         mock_save_rits_roi.assert_called_once()
 
     @mock.patch.object(SpectrumViewerWindowModel, "export_spectrum_to_rits")
