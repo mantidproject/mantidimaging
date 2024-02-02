@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox
+from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -44,6 +45,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     bin_step_spinBox: QSpinBox
 
     roiPropertiesTableWidget: QTableWidget
+    roiPropertiesGroupBox: QGroupBox
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
@@ -97,6 +99,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setAlternatingRowColors(True)
 
         # Roi Prop table
+        self.roiPropertiesGroupBoxTitle: str = "Roi Properties: "
         self.roiPropertiesTableWidget.setColumnCount(2)
         self.roiPropertiesTableWidget.setRowCount(4)
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
@@ -110,7 +113,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spin_box.setMaximum(self.spectrum.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.adjust_roi)
             self.roiPropertiesTableWidget.setCellWidget(row, 1, spin_box)
-            self.roiPropertiesTableWidget.setItem(row, 0, QTableWidgetItem(self.roi_table_properties[row]))
+            table_widget = QTableWidgetItem(self.roi_table_properties[row])
+            table_widget.setFlags(Qt.ItemIsSelectable)
+            self.roiPropertiesTableWidget.setItem(row, 0, table_widget)
             self.roiPropertiesSpinBoxes[self.roi_table_properties[row]] = spin_box
 
         self.roiPropertiesTableWidget.horizontalHeader().hide()
@@ -121,7 +126,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.roi_table_model.roi_names()[0]
-        print(f"{self.current_roi=}")
+        self.set_roi_properties()
+
+        print(f"{self.presenter.export_mode=}")
 
         def on_row_change(item, _) -> None:
             """
@@ -182,6 +189,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
         if self.presenter.export_mode == ExportMode.ROI_MODE:
+            self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            self.set_roi_properties()
             for roi_name, _, roi_visible in self.roi_table_model:
                 if roi_visible is False:
                     self.set_roi_alpha(0, roi_name)
@@ -195,6 +204,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.set_roi_alpha(255, ROI_RITS)
             self.presenter.redraw_spectrum(ROI_RITS)
+            self.current_roi = ROI_RITS
+            self.set_roi_properties()
         else:
             self.set_roi_alpha(0, ROI_RITS)
 
@@ -369,25 +380,32 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def set_roi_properties(self) -> None:
         current_roi = self.presenter.model.get_roi(self.current_roi)
+        self.roiPropertiesGroupBox.setTitle(self.roiPropertiesGroupBoxTitle + self.current_roi)
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         row = 0
         for pos in current_roi.__iter__():
-            self.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
+            with QSignalBlocker(self.roiPropertiesSpinBoxes[roi_iter_order[row]]):
+                self.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
             row = row + 1
+        self.set_roi_spinbox_ranges()
+        self.presenter.redraw_spectrum(self.current_roi)
 
     def adjust_roi(self) -> None:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         new_points = [self.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
-        print(f"{new_points=}")
         new_roi = SensibleROI().from_list(new_points)
-        print(f"{new_roi.__str__()=}")
-        print(f"{self.current_roi=}")
         self.presenter.model.set_roi(self.current_roi, new_roi)
-        print(self.presenter.model.get_roi(self.current_roi).__str__())
-        new_spectrum_roi_origin = (new_points[0], new_points[-1])
-        new_spectrum_roi = SpectrumROI(self.current_roi, new_roi, pos=new_spectrum_roi_origin, rotatable=False,
-                                       scaleSnap=True, translateSnap=True)
+        self.spectrum.adjust_roi(new_roi, self.current_roi)
 
-        # need to make a function like add_roi in spectrum_widget which will change the roi in roi_dict
-        #self.spectrum.roi_dict[self.current_roi] = new_spectrum_roi
+    def set_roi_spinbox_ranges(self):
+        spin_boxes = self.roiPropertiesSpinBoxes
+        for key, value in spin_boxes.items():
+            if key == "Left":
+                value.setMaximum(spin_boxes["Right"].value() - 1)
+            elif key == "Right":
+                value.setMinimum(spin_boxes["Left"].value() + 1)
+            elif key == "Top":
+                value.setMaximum(spin_boxes["Bottom"].value() - 1)
+            elif key == "Bottom":
+                value.setMinimum(spin_boxes["Top"].value() + 1)
 

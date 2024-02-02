@@ -63,6 +63,11 @@ class SpectrumROI(ROI):
     def selected_row(self) -> Optional[int]:
         return self._selected_row
 
+    def adjust_spec_roi(self, roi: SensibleROI) -> None:
+        self.setPos((roi.left, roi.top))
+        self.setSize((roi.width, roi.height))
+
+
 
 class SpectrumWidget(GraphicsLayoutWidget):
     """
@@ -182,6 +187,16 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+
+    def adjust_roi(self, new_roi: SensibleROI, roi_name: str):
+        """
+        Adjust the existing ROI with the given name.
+        @param spec_roi: The new SpectrumROI to replace the existing SpectrumROI
+        @param roi_name: The name of the existing ROI.
+        """
+        self.roi_dict[roi_name].adjust_spec_roi(new_roi)
+
+
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
