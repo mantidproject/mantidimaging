@@ -13,7 +13,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -163,6 +163,27 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
+
+    def keyPressEvent(self, e):
+        # print(e.key(), e.modifiers())
+        if e.modifiers() & Qt.ControlModifier:
+            if e.key() == Qt.Key_F1:
+                #print("move CCW")
+                self.rotate(1)
+            if e.key() == Qt.Key_F2:
+                #print("move CW")
+                self.rotate(-1)
+
+    def rotate(self, steps: int):
+        ws = self.findChildren(QDockWidget)
+        for w in ws:
+            if not w.visibleRegion().isEmpty():
+                image_count = w.presenter.get_num_images()
+                step_size = max(1, image_count // 100)
+                current_image = w.image_view.currentIndex
+                #print(f"{image_count=} {step_size=} {current_image=}")
+                new_image = (current_image + step_size * steps) % image_count
+                w.image_view.set_selected_image(new_image)
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
