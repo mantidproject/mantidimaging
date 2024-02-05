@@ -416,7 +416,7 @@ class ReconstructWindowPresenter(BasePresenter):
             for slc in slice_indices:
                 initial_cor.append(self.model.data_model.get_cor_from_regression(slc))
         else:
-            initial_cor = self.view.rotation_centre
+            initial_cor = [self.view.rotation_centre]
 
         def _completed_finding_cors(task: TaskWorkerThread) -> None:
             if task.error is not None:

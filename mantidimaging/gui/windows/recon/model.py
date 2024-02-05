@@ -91,7 +91,7 @@ class ReconstructWindowModel(object):
     def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'ImageStack') -> None:
+    def initial_select_data(self, images: 'Optional[ImageStack]'):
         self._images = images
         self.reset_cor_model()
 
