@@ -109,7 +109,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesLabels = {}
         row_ind = 0
         for prop in self.roi_table_properties_all:
-            print(f"{row_ind=}")
             table_widget = QTableWidgetItem(prop)
             table_widget.setFlags(Qt.ItemIsSelectable)
             self.roiPropertiesTableWidget.setItem(row_ind, 0, table_widget)
