@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5 import QtGui, QtWidgets
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
+from PyQt5.QtGui import QPen
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -24,7 +25,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
-    sig_colour_change = pyqtSignal()
+    sig_colour_change = pyqtSignal(str, tuple)
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,7 +52,7 @@ class SpectrumROI(ROI):
             if selected_color.isValid():
                 new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
                 self.colour = new_color  # Update the ROI color
-                self.sig_colour_change.emit()  # Emit the signal
+                self.sig_colour_change.emit(self._name, new_color)
 
 
 
@@ -72,13 +73,14 @@ class SpectrumROI(ROI):
         return self._colour
 
     @colour.setter
-    def set_colour(self, colour: tuple[int, int, int, int]) -> None:
+    def colour(self, colour: tuple[int, int, int, int]) -> None:
         self._colour = colour
-        self.setPen(fn.mkPen(colour))
+        self.setPen(self._colour)
 
     @property
     def selected_row(self) -> Optional[int]:
         return self._selected_row
+
 
 class SpectrumWidget(GraphicsLayoutWidget):
     """
@@ -93,6 +95,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
+    roiColorChangeRequested = pyqtSignal(str, tuple)
 
     def __init__(self) -> None:
         super().__init__()
@@ -171,7 +174,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
 
-
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """
         Change the alpha value of an existing ROI
@@ -194,6 +196,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
+        roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()

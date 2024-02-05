@@ -57,6 +57,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
@@ -245,6 +246,30 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
+
+    def update_roi_color_in_table(self, roi_name: str, new_color: tuple):
+        """
+        Finds ROI by name in table and updates colour.
+
+        @param roi_name: Name of the ROI to update.
+        @param new_color: The new color for the ROI in (R, G, B) format.
+        """
+        row = self.find_row_for_roi(roi_name)
+        if row is not None:
+            self.roi_table_model.update_color(row, new_color)
+
+    def find_row_for_roi(self, roi_name: str) -> int:
+        """
+        Returns row index for ROI name, or None if not found.
+
+        @param roi_name: Name ROI find.
+        @return: Row index ROI or None.
+        """
+        for row in range(self.roi_table_model.rowCount()):
+            if self.roi_table_model.index(row, 0).data() == roi_name:
+                return row
+        return None
+
 
     def set_roi_alpha(self, alpha: float, roi_name: str) -> None:
         """
