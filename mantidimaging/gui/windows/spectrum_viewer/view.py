@@ -15,12 +15,11 @@ from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
-from .spectrum_widget import SpectrumWidget, SpectrumROI
+from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 import numpy as np
-from random import randint
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -100,23 +99,34 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         # Roi Prop table
         self.roiPropertiesGroupBoxTitle: str = "Roi Properties: "
-        self.roiPropertiesTableWidget.setColumnCount(2)
-        self.roiPropertiesTableWidget.setRowCount(4)
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
-        self.roiPropertiesSpinBoxes = {}
+        self.roi_table_properties_secondary = ["Width", "Height", "Area"]
+        self.roi_table_properties_all = self.roi_table_properties + self.roi_table_properties_secondary
+        self.roiPropertiesTableWidget.setColumnCount(2)
+        self.roiPropertiesTableWidget.setRowCount(len(self.roi_table_properties_all))
 
-        for row in range(self.roiPropertiesTableWidget.rowCount()):
-            spin_box = QSpinBox()
-            if self.roi_table_properties[row] == "Top" or self.roi_table_properties[row] == "Bottom":
-                spin_box.setMaximum(self.spectrum.image.image_data.shape[0])
-            if self.roi_table_properties[row] == "Left" or self.roi_table_properties[row] == "Right":
-                spin_box.setMaximum(self.spectrum.image.image_data.shape[1])
-            spin_box.valueChanged.connect(self.adjust_roi)
-            self.roiPropertiesTableWidget.setCellWidget(row, 1, spin_box)
-            table_widget = QTableWidgetItem(self.roi_table_properties[row])
+        self.roiPropertiesSpinBoxes = {}
+        self.roiPropertiesLabels = {}
+        row_ind = 0
+        for prop in self.roi_table_properties_all:
+            print(f"{row_ind=}")
+            table_widget = QTableWidgetItem(prop)
             table_widget.setFlags(Qt.ItemIsSelectable)
-            self.roiPropertiesTableWidget.setItem(row, 0, table_widget)
-            self.roiPropertiesSpinBoxes[self.roi_table_properties[row]] = spin_box
+            self.roiPropertiesTableWidget.setItem(row_ind, 0, table_widget)
+            if prop in self.roi_table_properties:
+                spin_box = QSpinBox()
+                if prop == "Top" or prop == "Bottom":
+                    spin_box.setMaximum(self.spectrum.image.image_data.shape[0])
+                if prop == "Left" or prop == "Right":
+                    spin_box.setMaximum(self.spectrum.image.image_data.shape[1])
+                spin_box.valueChanged.connect(self.adjust_roi)
+                self.roiPropertiesTableWidget.setCellWidget(row_ind, 1, spin_box)
+                self.roiPropertiesSpinBoxes[prop] = spin_box
+            if prop in self.roi_table_properties_secondary:
+                label = QLabel()
+                self.roiPropertiesTableWidget.setCellWidget(row_ind, 1, label)
+                self.roiPropertiesLabels[prop] = label
+            row_ind += 1
 
         self.roiPropertiesTableWidget.horizontalHeader().hide()
         self.roiPropertiesTableWidget.verticalHeader().hide()
@@ -141,8 +151,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.selected_row = item.row()
             self.current_roi = selected_row_data[0]
             self.set_roi_properties()
-
-
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
 
@@ -389,6 +397,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             row = row + 1
         self.set_roi_spinbox_ranges()
         self.presenter.redraw_spectrum(self.current_roi)
+        roi_width = abs(self.roiPropertiesSpinBoxes["Right"].value() - self.roiPropertiesSpinBoxes["Left"].value())
+        self.roiPropertiesLabels["Width"].setText(str(roi_width))
+        roi_height = abs(self.roiPropertiesSpinBoxes["Top"].value() - self.roiPropertiesSpinBoxes["Bottom"].value())
+        self.roiPropertiesLabels["Height"].setText(str(roi_height))
+        roi_area = roi_width * roi_height
+        self.roiPropertiesLabels["Area"].setText(str(roi_area))
 
     def adjust_roi(self) -> None:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
@@ -408,4 +422,3 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 value.setMaximum(spin_boxes["Bottom"].value() - 1)
             elif key == "Bottom":
                 value.setMinimum(spin_boxes["Top"].value() + 1)
-

@@ -68,7 +68,6 @@ class SpectrumROI(ROI):
         self.setSize((roi.width, roi.height))
 
 
-
 class SpectrumWidget(GraphicsLayoutWidget):
     """
     The widget containing the spectrum plot and the image projection.
@@ -195,8 +194,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param roi_name: The name of the existing ROI.
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
-
-
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
