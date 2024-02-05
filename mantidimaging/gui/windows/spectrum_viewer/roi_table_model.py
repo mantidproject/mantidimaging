@@ -170,8 +170,6 @@ class TableModel(QAbstractTableModel):
             self._data[row][0] = new_name
             self.layoutChanged.emit()
 
-
-
     def flags(self, index):
         """
         Handle selection of table rows to disable selection of ROI colour column
@@ -186,8 +184,6 @@ class TableModel(QAbstractTableModel):
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable
         else:
             return Qt.ItemIsEnabled
-
-
 
     def roi_names(self) -> list:
         """

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5 import QtGui, QtWidgets
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
-from PyQt5.QtGui import QPen
+
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -53,8 +53,6 @@ class SpectrumROI(ROI):
                 new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
                 self.colour = new_color  # Update the ROI color
                 self.sig_colour_change.emit(self._name, new_color)
-
-
 
     @property
     def name(self) -> str:
@@ -182,7 +180,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param alpha: The new alpha value of the ROI.
         """
 
-        self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha,)
+        self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
         self.set_roi_visibility_flags(name, bool(alpha))

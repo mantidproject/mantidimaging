@@ -258,7 +258,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if row is not None:
             self.roi_table_model.update_color(row, new_color)
 
-    def find_row_for_roi(self, roi_name: str) -> int:
+    def find_row_for_roi(self, roi_name: str) -> Optional[int]:
         """
         Returns row index for ROI name, or None if not found.
 
@@ -269,7 +269,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if self.roi_table_model.index(row, 0).data() == roi_name:
                 return row
         return None
-
 
     def set_roi_alpha(self, alpha: float, roi_name: str) -> None:
         """
@@ -298,8 +297,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param name: The name of the ROI
         @param colour: The colour of the ROI
         """
-        circle_label = QLabel()
-        circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.tableView.selectRow(self.selected_row)
