@@ -198,6 +198,8 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             self.roi_changed_callback(roi)
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
+        if not self.roi.isVisible():
+            return None
         if self.image.ndim != 3:
             return None
         roi_pos, roi_size = self.get_roi()
