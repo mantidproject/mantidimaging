@@ -1,6 +1,7 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -198,7 +199,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def get_rits_export_filename(self) -> Optional[Path]:
+    def get_rits_export_directory(self) -> Path | None:
+        """
+        Get the path to save the RITS file too
+        """
+        path = QFileDialog.getExistingDirectory(self, "Select Directory", "", QFileDialog.ShowDirsOnly)
+        if path:
+            return Path(path)
+        else:
+            return None
+
+    def get_rits_export_filename(self) -> Path | None:
         """
         Get the path to save the RITS file too
         """
@@ -322,11 +333,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def bin_size(self) -> int:
-        return self.bin_size_spinbox.value()
+        return self.bin_size_spinBox.value()
 
     @property
     def bin_step(self) -> int:
-        return self.bin_step_spinbox.value()
+        return self.bin_step_spinBox.value()
 
     def set_binning_visibility(self) -> None:
         hide_binning = self.image_output_mode != "2D Binned"
