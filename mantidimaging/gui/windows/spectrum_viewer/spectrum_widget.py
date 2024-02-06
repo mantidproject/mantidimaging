@@ -5,7 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog, QAction, QMenu
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -40,19 +41,24 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
 
-    def contextMenuEvent(self, event) -> None:
-        menu = QtWidgets.QMenu()
-        change_color_action = menu.addAction("ROI Change Color")
-        selected_action = menu.exec_(event.screenPos())
-        if selected_action == change_color_action:
-            color_dialog = QtWidgets.QColorDialog()
-            current_color = QtGui.QColor(*self._colour)
-            selected_color = color_dialog.getColor(current_color)
+        self.setAcceptedMouseButtons(Qt.RightButton)
+        self.setAcceptHoverEvents(True)
 
-            if selected_color.isValid():
-                new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
-                self.colour = new_color  # Update the ROI color
-                self.sig_colour_change.emit(self._name, new_color)
+    def contextMenuEvent(self, event):
+        menu = QMenu()
+        change_color_action = QAction("Change Color", self)
+        change_color_action.triggered.connect(self.onChangeColor)
+        menu.addAction(change_color_action)
+        menu.exec_(event.screenPos())
+
+    def onChangeColor(self):
+        current_color = QColor(*self._colour)
+        selected_color = QColorDialog.getColor(current_color)
+
+        if selected_color.isValid():
+            new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+            self._colour = new_color
+            self.sig_colour_change.emit(self._name, new_color)
 
     @property
     def name(self) -> str:
