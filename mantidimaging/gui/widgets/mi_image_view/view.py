@@ -171,9 +171,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             sleep(0.02)
             QApplication.processEvents()
 
-    def _refresh_message(self, recalculate_roi_avg: bool = True):
-        if recalculate_roi_avg:
-            self._update_roi_region_avg()
+    def _refresh_message(self):
         try:
             self._update_message(self._last_mouse_hover_location)
         except IndexError:
@@ -196,6 +194,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         roi = self._update_roi_region_avg()
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
+        self._refresh_message()
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
         if self.image.ndim != 3:
@@ -281,7 +280,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         # Keep default update=True for setSize otherwise the scale handle can become detached from the ROI box
         self.roi.setSize([roi.width, roi.height])
         self.roiChanged()
-        self._refresh_message(False)
+        self._refresh_message()
 
     def default_roi(self):
         # Recommend an ROI that covers the top left quadrant
