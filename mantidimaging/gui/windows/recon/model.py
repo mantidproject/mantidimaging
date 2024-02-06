@@ -236,11 +236,11 @@ class ReconstructWindowModel(object):
         if self.images is None:
             return [0.0]
 
-        if isinstance(initial_cor, list):
-            assert len(slices) == len(initial_cor), "A COR for each slice index being reconstructed must be provided"
-        else:
-            # why be efficient when you can be lazy?
+        if not isinstance(initial_cor, list):
             initial_cor = [initial_cor] * len(slices)
+
+        if len(initial_cor) != len(slices):
+            raise ValueError("The number of initial COR values must match number of slices being reconstructed")
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
