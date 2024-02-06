@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import List, Optional, Tuple, Union, TYPE_CHECKING
+from typing import List, Optional, Tuple, Union, TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -33,16 +33,7 @@ class ReconstructWindowModel(object):
         self._preview_slice_idx = 0
         self._selected_row = 0
         self.data_model = data_model
-        self._last_result = None
         self._last_cor = ScalarCoR(0.0)
-
-    @property
-    def last_result(self) -> None:
-        return self._last_result
-
-    @last_result.setter
-    def last_result(self, value):
-        self._last_result = value
 
     @property
     def selected_row(self) -> int:
@@ -69,11 +60,11 @@ class ReconstructWindowModel(object):
         self._preview_slice_idx = value
 
     @property
-    def last_cor(self):
+    def last_cor(self) -> ScalarCoR:
         return self._last_cor
 
     @last_cor.setter
-    def last_cor(self, value):
+    def last_cor(self, value: ScalarCoR) -> None:
         self._last_cor = value
 
     @property
@@ -120,9 +111,6 @@ class ReconstructWindowModel(object):
         self.images.record_operation(const.OPERATION_NAME_COR_TILT_FINDING,
                                      display_name="Calculated COR/Tilt",
                                      **self.data_model.stack_properties)
-
-        # Cache last result
-        self.last_result = self.data_model.stack_properties
 
         # Async task needs a non-None result of some sort
         return True
@@ -190,7 +178,7 @@ class ReconstructWindowModel(object):
         return self.data_model.slices
 
     @staticmethod
-    def load_allowed_recon_kwargs() -> dict:
+    def load_allowed_recon_kwargs() -> dict[str, Any]:
         d = tomopy_allowed_kwargs()
         if CudaChecker().cuda_is_present():
             d.update(astra_allowed_kwargs())
@@ -202,7 +190,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None):
+    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None) -> ScalarCoR:
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -217,12 +205,11 @@ class ReconstructWindowModel(object):
     def get_cor_for_slice_from_regression(self) -> ScalarCoR:
         return ScalarCoR(self.data_model.get_cor_from_regression(self.preview_slice_idx))
 
-    def reset_selected_row(self):
+    def reset_selected_row(self) -> None:
         self.selected_row = 0
 
-    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.data_model.set_precalculated(cor, tilt)
-        self.last_result = self.data_model.stack_properties
 
     def is_current_stack(self, uuid: "uuid.UUID") -> bool:
         return self.stack_id == uuid
