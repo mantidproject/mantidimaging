@@ -61,8 +61,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
-        self.bin_size: int = 10
-        self.step_size: int = 1
 
     def roi_name_generator(self) -> str:
         """
