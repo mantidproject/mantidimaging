@@ -197,6 +197,8 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self._refresh_message()
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
+        if not self.ui.roiBtn.isChecked():
+            return None
         if self.image.ndim != 3:
             return None
         roi_pos, roi_size = self.get_roi()
@@ -213,6 +215,13 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
                          f"region avg={data[int(self.timeLine.value())].mean():.6f}"
         return SensibleROI(left, top, right, bottom)
+
+    def roiClicked(self):
+        # When ROI area is hidden with the button, clear the message
+        if not self.ui.roiBtn.isChecked() and hasattr(self, "_last_mouse_hover_location"):
+            self.roiString = None
+            self._refresh_message()
+        super().roiClicked()
 
     def extend_roi_plot_mouse_press_handler(self):
         original_handler = self.ui.roiPlot.mousePressEvent
