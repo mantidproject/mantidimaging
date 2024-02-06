@@ -116,7 +116,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
 
         self.view.set_image(self.model.get_averaged_image())
-        self.view.spectrum.add_range(*self.model.tof_range)
+        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
         self.view.auto_range_image()
 
     def handle_range_slide_moved(self, tof_range) -> None:
@@ -128,7 +128,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Handle changes to any ROI position and size.
         """
         for name in self.model.get_list_of_roi_names():
-            roi = self.view.spectrum.get_roi(name)
+            roi = self.view.spectrum_widget.get_roi(name)
             if force_new_spectrums or roi != self.model.get_roi(name):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
@@ -144,7 +144,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Redraw all ROIs and spectrum plots
         """
         for name in self.model.get_list_of_roi_names():
-            self.model.set_roi(name, self.view.spectrum.get_roi(name))
+            self.model.set_roi(name, self.view.spectrum_widget.get_roi(name))
             self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_button_enabled(self) -> None:
@@ -220,7 +220,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         roi_name = self.model.roi_name_generator()
         self.model.set_new_roi(roi_name)
-        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        self.view.spectrum_widget.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
@@ -228,7 +228,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def add_rits_roi(self) -> None:
         roi_name = ROI_RITS
         self.model.set_new_roi(roi_name)
-        self.view.spectrum.add_roi(self.model.get_roi(roi_name), roi_name)
+        self.view.spectrum_widget.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
         self.view.set_roi_alpha(0, ROI_RITS)
 
@@ -238,7 +238,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         @param roi_name: Name of the ROI to add
         """
-        roi_colour = self.view.spectrum.roi_dict[roi_name].colour
+        roi_colour = self.view.spectrum_widget.roi_dict[roi_name].colour
         self.view.add_roi_table_row(roi_name, roi_colour)
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
@@ -248,7 +248,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param old_name: Name of the ROI to rename
         @param new_name: New name of the ROI
         """
-        self.view.spectrum.rename_roi(old_name, new_name)
+        self.view.spectrum_widget.rename_roi(old_name, new_name)
         self.model.rename_roi(old_name, new_name)
 
     def do_remove_roi(self, roi_name: str | None = None) -> None:
@@ -261,10 +261,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name is None:
             self.view.clear_all_rois()
             for roi in self.get_roi_names():
-                self.view.spectrum.remove_roi(roi)
+                self.view.spectrum_widget.remove_roi(roi)
             self.model.remove_all_roi()
         else:
-            self.view.spectrum.remove_roi(roi_name)
+            self.view.spectrum_widget.remove_roi(roi_name)
             self.view.set_spectrum(roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode))
             self.model.remove_roi(roi_name)
 

@@ -42,6 +42,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
 
+    spectrum_widget: SpectrumWidget
+
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
@@ -56,11 +58,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
-        self.spectrum = SpectrumWidget()
-        self.imageLayout.addWidget(self.spectrum)
+        self.spectrum_widget = SpectrumWidget()
+        self.spectrum = self.spectrum_widget.spectrum_plot_widget
+
+        self.imageLayout.addWidget(self.spectrum_widget)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
-        self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
@@ -220,25 +224,25 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return None
 
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
-        self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
+        self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
 
     def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
         """
         Try to set the spectrum data for a given ROI assuming the
         roi may not exist in the spectrum widget yet depending on when method is called
         """
-        self.spectrum.spectrum_data_dict[name] = spectrum_data
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict[name] = spectrum_data
+        self.spectrum_widget.spectrum.clearPlots()
 
         self.show_visible_spectrums()
 
     def clear(self) -> None:
-        self.spectrum.spectrum_data_dict = {}
-        self.spectrum.image.setImage(np.zeros((1, 1)))
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict = {}
+        self.spectrum_widget.image.setImage(np.zeros((1, 1)))
+        self.spectrum_widget.spectrum.clearPlots()
 
     def auto_range_image(self):
-        self.spectrum.image.vb.autoRange()
+        self.spectrum_widget.image.vb.autoRange()
 
     def set_normalise_error(self, norm_issue: str):
         self.normalise_error_issue = norm_issue
@@ -269,18 +273,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         @param alpha: The alpha value
         """
-        self.spectrum.set_roi_alpha(roi_name, alpha)
+        self.spectrum_widget.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
-            self.spectrum.spectrum_data_dict[roi_name] = None
+            self.spectrum_widget.spectrum_data_dict[roi_name] = None
 
-        self.spectrum.spectrum.clearPlots()
-        self.spectrum.spectrum.update()
+        self.spectrum_widget.spectrum.clearPlots()
+        self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
 
     def show_visible_spectrums(self):
-        for key, value in self.spectrum.spectrum_data_dict.items():
-            if value is not None and key in self.spectrum.roi_dict:
-                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
+        for key, value in self.spectrum_widget.spectrum_data_dict.items():
+            if value is not None and key in self.spectrum_widget.roi_dict:
+                self.spectrum_widget.spectrum.plot(value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
@@ -305,8 +309,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(selected_row[0])
-            self.spectrum.spectrum_data_dict.pop(selected_row[0])
-            self.spectrum.spectrum.removeItem(selected_row[0])
+            self.spectrum_widget.spectrum_data_dict.pop(selected_row[0])
+            self.spectrum_widget.spectrum.removeItem(selected_row[0])
             self.presenter.handle_roi_moved()
             self.selected_row = 0
             self.tableView.selectRow(0)
@@ -319,8 +323,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear all ROIs from the table view
         """
         self.roi_table_model.clear_table()
-        self.spectrum.spectrum_data_dict = {}
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict = {}
+        self.spectrum_widget.spectrum.clearPlots()
         self.removeBtn.setEnabled(False)
 
     @property
