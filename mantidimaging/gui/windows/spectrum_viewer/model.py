@@ -15,6 +15,7 @@ from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.progress_reporting import Progress
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
@@ -313,7 +314,12 @@ class SpectrumViewerWindowModel:
         if bin_size and step_size > min(roi.width, roi.height):
             raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
 
-    def save_rits_images(self, directory: Path, error_mode: ErrorMode, bin_size, step) -> None:
+    def save_rits_images(self,
+                         directory: Path,
+                         error_mode: ErrorMode,
+                         bin_size: int,
+                         step: int,
+                         progress: Progress | None = None) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
@@ -335,11 +341,11 @@ class SpectrumViewerWindowModel:
         Returns:
         None
         """
-
         roi = self.get_roi(ROI_RITS)
         left, top, right, bottom = roi
         x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
         y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
+        progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 
         self.validate_bin_and_step_size(roi, bin_size, step)
         for y in range(y_iterations):
@@ -351,6 +357,7 @@ class SpectrumViewerWindowModel:
                 sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
                 path = directory / f"rits_image_{x}_{y}.dat"
                 self.save_rits_roi(path, error_mode, sub_roi)
+                progress.update()
                 if sub_right == right:
                     break
             if sub_bottom == bottom:

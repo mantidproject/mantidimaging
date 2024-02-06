@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from enum import Enum
+from functools import partial
 from typing import TYPE_CHECKING, Optional
 
 from logging import getLogger
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode
 
@@ -178,7 +180,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
-            self.model.save_rits_images(path, error_mode, self.view.bin_size, self.view.bin_step)
+            run_function = partial(self.model.save_rits_images, path, error_mode, self.view.bin_size,
+                                   self.view.bin_step)
+
+            start_async_task_view(self.view, run_function, self._async_save_done)
+
         else:
             path = self.view.get_rits_export_filename()
             if path is None:
@@ -187,6 +193,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if path and path.suffix != ".dat":
                 path = path.with_suffix(".dat")
             self.model.save_single_rits_spectrum(path, error_mode)
+
+    def _async_save_done(self, task: TaskWorkerThread) -> None:
+        if task.error is not None:
+            self.view.show_error_dialog(f"Operation failed: {task.error}")
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
