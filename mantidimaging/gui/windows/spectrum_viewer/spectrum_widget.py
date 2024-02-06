@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QColorDialog, QAction, QMenu
+from PyQt5.QtGui import QColor, QCursor
+from PyQt5.QtWidgets import QColorDialog, QAction
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -41,20 +41,15 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
 
-        self.setAcceptedMouseButtons(Qt.RightButton)
-        self.setAcceptHoverEvents(True)
-
-    def contextMenuEvent(self, event):
-        menu = QMenu()
-        change_color_action = QAction("Change Color", self)
+        menu = self.getMenu()
+        change_color_action = QAction("Change ROI Colour", self)
         change_color_action.triggered.connect(self.onChangeColor)
         menu.addAction(change_color_action)
-        menu.exec_(event.screenPos())
+        menu.exec_(QCursor.pos())
 
     def onChangeColor(self):
         current_color = QColor(*self._colour)
         selected_color = QColorDialog.getColor(current_color)
-
         if selected_color.isValid():
             new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
             self._colour = new_color
