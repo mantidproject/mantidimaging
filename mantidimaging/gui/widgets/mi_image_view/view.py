@@ -206,12 +206,12 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
         data = self.image[:, top:bottom, left:right]
-        if data is not None:
-            while data.ndim > 1:
-                data = data.mean(axis=1)
-            if len(self.roiCurves) == 0:
-                self.roiCurves.append(self.ui.roiPlot.plot())
-            self.roiCurves[0].setData(y=data, x=self.tVals)
+
+        data = data.mean(axis=(1, 2))
+
+        if len(self.roiCurves) == 0:
+            self.roiCurves.append(self.ui.roiPlot.plot())
+        self.roiCurves[0].setData(y=data, x=self.tVals)
         self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
                          f"region avg={data[int(self.timeLine.value())].mean():.6f}"
         return SensibleROI(left, top, right, bottom)
