@@ -232,8 +232,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param roi_name: Name of the ROI to change color.
         @param new_colour: The new color for the ROI.
         """
-        if roi_name in self.view.spectrum.roi_dict:
-            self.view.spectrum.roi_dict[roi_name].colour = new_colour
+        if roi_name in self.view.spectrum_widget.roi_dict:
+            self.view.spectrum_widget.roi_dict[roi_name].colour = new_colour
         self.view.update_roi_color_in_table(roi_name, new_colour)
 
     def add_rits_roi(self) -> None:
