@@ -13,7 +13,7 @@ from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -28,7 +28,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(SpectrumViewerWindowView)
         self.view.current_dataset_id = uuid.uuid4()
         mock_spectrum_roi_dict = mock.create_autospec(dict)
-        self.view.spectrum = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
+                                                                              roi_dict=mock_spectrum_roi_dict)
         self.view.exportButton = mock.create_autospec(QPushButton)
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
         self.view.addBtn = mock.create_autospec(QPushButton)
@@ -157,7 +159,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
         self.presenter.model.tof_range = (0, 9)
         self.presenter.show_new_sample()
-        self.view.spectrum.add_range.assert_called_once_with(0, 9)
+        self.view.spectrum_widget.spectrum_plot_widget.add_range.assert_called_once_with(0, 9)
 
     def test_gui_changes_tof_range(self):
         image_stack = generate_images([30, 11, 12])
@@ -189,17 +191,19 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False)
 
     @parameterized.expand(["/fake/path", "/fake/path.dat"])
-    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits")
-    def test_handle_rits_export(self, path_name: str, mock_save_rits: mock.Mock):
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi")
+    def test_handle_rits_export(self, path_name: str, mock_save_rits_roi: mock.Mock):
         self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
         self.view.transmission_error_mode = "Standard Deviation"
+        self.presenter.model.set_new_roi("rits_roi")
 
         self.presenter.model.set_stack(generate_images())
 
         self.presenter.handle_rits_export()
 
         self.view.get_rits_export_filename.assert_called_once()
-        mock_save_rits.assert_called_once_with(Path("/fake/path.dat"), False, ErrorMode.STANDARD_DEVIATION)
+        mock_save_rits_roi.assert_called_once_with(Path("/fake/path.dat"), ErrorMode.STANDARD_DEVIATION,
+                                                   self.presenter.model.get_roi("rits_roi"))
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.presenter.model.set_stack(generate_images())
@@ -215,7 +219,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.add_roi_table_row.reset_mock()
 
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.view.spectrum.roi_dict = {"roi_1": mock.Mock()}
+        self.presenter.view.spectrum_widget.roi_dict = {"roi_1": mock.Mock()}
         self.presenter.do_add_roi_to_table("roi_1")
         self.view.add_roi_table_row.assert_called_once_with("roi_1", mock.ANY)
 

@@ -95,7 +95,7 @@ class GuiSystemBase(unittest.TestCase):
             for widget in cls.app.topLevelWidgets():
                 if isinstance(widget, widget_type) and widget.isVisible():
                     return True
-            QTest.qWait(delay * 1000)
+        QTest.qWait(int(delay * 1000))
         raise RuntimeError("_wait_for_stack_selector reach max retries")
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file")

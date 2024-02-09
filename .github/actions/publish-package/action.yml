@@ -4,6 +4,10 @@ inputs:
   repository:
     description: 'Anaconda repository'
     required: true
+    default: 'mantidimaging'
+  repository-old:
+    description: 'Anaconda repository - old'
+    required: true
     default: 'mantid'
   label:
     description: 'Label'
@@ -11,6 +15,9 @@ inputs:
     default: 'unstable'
   token:
     description: 'Anaconda API Token'
+    required: true
+  token-old:
+    description: 'Anaconda API Token - old'
     required: true
 
 description: Build conda package
@@ -35,8 +42,10 @@ runs:
     shell: bash -l {0}
     run: |
       conda activate build-env
-      conda config --set anaconda_upload yes
+      conda config --set anaconda_upload no
       # if the upload silently fails - check the token expiration. Conda can fail silently!
-      conda mambabuild --user ${{ inputs.repository }} --token ${{ inputs.token }} --label ${{ inputs.label }} $GITHUB_WORKSPACE/conda |& tee upload.log
+      conda mambabuild $GITHUB_WORKSPACE/conda
+      anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
+      anaconda -t ${{ inputs.token-old }} upload --user ${{ inputs.repository-old }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2
       # Check that upload completed
       grep "Upload complete" upload.log

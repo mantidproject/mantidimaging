@@ -140,4 +140,5 @@ jobs:
         uses: ./.github/actions/publish-package
         with:
           label: unstable
-          token: ${{ secrets.ANACONDA_API_TOKEN }}
+          token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
+          token-old: ${{ secrets.ANACONDA_API_TOKEN }}
