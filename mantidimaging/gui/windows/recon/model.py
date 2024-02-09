@@ -221,7 +221,7 @@ class ReconstructWindowModel(object):
         return self.selected_row, slices
 
     def auto_find_minimisation_sqsum(self, slices: List[int], recon_params: ReconstructionParameters,
-                                     initial_cor: Union[float, List[float]], progress: Progress) -> List[float]:
+                                     initial_cor: List[float], progress: Progress) -> List[float]:
         """
 
         :param slices: Slice indices to be reconstructed
@@ -236,9 +236,9 @@ class ReconstructWindowModel(object):
         if self.images is None:
             return [0.0]
 
-        if isinstance(initial_cor, float):
-            initial_cor = [initial_cor for _ in slices]
-        elif isinstance(initial_cor, list) and len(initial_cor) != len(slices):
+        if len(initial_cor) == 1:
+            initial_cor = initial_cor * len(slices)
+        if len(initial_cor) != len(slices):
             raise ValueError("The number of initial COR values must match the number of slices being reconstructed")
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
