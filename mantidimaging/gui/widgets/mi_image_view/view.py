@@ -205,7 +205,8 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
 
         if self.roi.isVisible():
-            mean_val = self.image[self.timeLine.value(), top:bottom, left:right].mean()
+            z_value = int(self.timeLine.value())
+            mean_val = self.image[z_value, top:bottom, left:right].mean()
             self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
                              f"region avg={mean_val:.6f}"
 
