@@ -1,5 +1,5 @@
 [tool.ruff]
-select = ["E", "W", "F", "B", "FA", "C4"]
+select = ["E", "W", "F", "B", "FA", "C4", "NPY"]
 fixable = []
 
 line-length = 120

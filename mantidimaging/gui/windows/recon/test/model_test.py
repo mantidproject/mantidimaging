@@ -5,6 +5,8 @@ from __future__ import annotations
 import unittest
 
 from unittest import mock
+
+import numpy
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
@@ -191,7 +193,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertFalse(self.model.stack_contains_nans())
 
     def test_stack_contains_nans_returns_true(self):
-        self.model.images.data[1][1][1] = np.nan
+        self.model.images.data[1][1][1] = numpy.nan
         self.assertTrue(self.model.stack_contains_nans())
 
     def test_stack_contains_zeroes_returns_false(self):

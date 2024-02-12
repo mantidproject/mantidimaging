@@ -30,6 +30,6 @@ dependencies:
   - pyinstaller==6.1.*
   - sarepy=2020.07 # For building old docs
   - make==4.3
-  - ruff=0.1.3
+  - ruff=0.2.1
   - pre-commit==3.5.*
 

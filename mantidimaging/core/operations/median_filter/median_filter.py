@@ -6,6 +6,7 @@ from functools import partial
 from logging import getLogger
 from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
+import numpy
 import numpy as np
 import scipy.ndimage as scipy_ndimage
 from PyQt5.QtGui import QValidator
@@ -140,7 +141,7 @@ def _median_filter(data: np.ndarray, size: int, mode: str):
     data = np.where(nans, -np.inf, data)
     data = scipy_ndimage.median_filter(data, size=size, mode=mode)
     # Put the original NaNs back
-    data = np.where(nans, np.nan, data)
+    data = np.where(nans, numpy.nan, data)
     return data
 
 

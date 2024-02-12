@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import math
+
+import numpy
 import numpy as np
 import pytest
 from numpy import testing as npt, copy
@@ -95,13 +97,13 @@ def test_rescale_ignores_nans(value):
 
     images.data[0:3] = -100.0
     images.data[3:5] = 0.5
-    images.data[6][0:10] = np.nan
+    images.data[6][0:10] = numpy.nan
     images.data[7:10] = 1.0
 
     expected_min_input = 0.0
     images = RescaleFilter.filter_func(images,
                                        min_input=expected_min_input,
-                                       max_input=np.nanmax(images.data),
+                                       max_input=numpy.nanmax(images.data),
                                        max_output=value)
 
     # below min_input has been clipped to 0

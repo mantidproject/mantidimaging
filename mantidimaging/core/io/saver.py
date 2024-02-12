@@ -8,6 +8,8 @@ from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
 
 import h5py
 from pathlib import Path
+
+import numpy
 import numpy as np
 from tifffile import tifffile
 
@@ -113,8 +115,8 @@ def image_save(images: ImageStack,
     make_dirs_if_needed(output_dir, overwrite_all)
 
     # Define current parameters
-    min_value: float = np.nanmin(images.data)
-    max_value: float = np.nanmax(images.data)
+    min_value: float = numpy.nanmin(images.data)
+    max_value: float = numpy.nanmax(images.data)
     int_16_slope = max_value / INT16_SIZE
 
     # Do rescale if needed.
@@ -213,7 +215,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str,
     _set_nx_class(tomo_entry, "NXsubentry")
 
     # definition field
-    tomo_entry.create_dataset("definition", data=np.string_("NXtomo"))
+    tomo_entry.create_dataset("definition", data=numpy.bytes_("NXtomo"))
 
     # instrument field
     instrument_group = tomo_entry.create_group("instrument")
@@ -227,7 +229,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str,
     # sample field
     sample_group = tomo_entry.create_group("sample")
     _set_nx_class(sample_group, "NXsample")
-    sample_group.create_dataset("name", data=np.string_(sample_name))
+    sample_group.create_dataset("name", data=numpy.bytes_(sample_name))
 
     # rotation angle
     rotation_angle = sample_group.create_dataset("rotation_angle", data=np.concatenate(dataset.nexus_rotation_angles))
@@ -259,9 +261,9 @@ def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset,
 
     process = data.create_group("process")
     _set_nx_class(process, "NXprocess")
-    process.create_dataset("program", data=np.string_("Mantid Imaging"))
-    process.create_dataset("date", data=np.string_(datetime.datetime.now().isoformat()))
-    process.create_dataset("version", data=np.string_(package_version))
+    process.create_dataset("program", data=numpy.bytes_("Mantid Imaging"))
+    process.create_dataset("date", data=numpy.bytes_(datetime.datetime.now().isoformat()))
+    process.create_dataset("version", data=numpy.bytes_(package_version))
 
 
 def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool):
@@ -312,8 +314,8 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     recon_entry = nexus_file.create_group(recon.name)
     _set_nx_class(recon_entry, "NXentry")
 
-    recon_entry.create_dataset("title", data=np.string_(recon.name))
-    recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+    recon_entry.create_dataset("title", data=numpy.bytes_(recon.name))
+    recon_entry.create_dataset("definition", data=numpy.bytes_("NXtomoproc"))
 
     instrument = recon_entry.create_group("INSTRUMENT")
     _set_nx_class(instrument, "NXinstrument")
@@ -321,26 +323,26 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     source = instrument.create_group("SOURCE")
     _set_nx_class(source, "NXsource")
 
-    source.create_dataset("type", data=np.string_("Neutron source"))
-    source.create_dataset("name", data=np.string_("ISIS"))
-    source.create_dataset("probe", data=np.string_("neutron"))
+    source.create_dataset("type", data=numpy.bytes_("Neutron source"))
+    source.create_dataset("name", data=numpy.bytes_("ISIS"))
+    source.create_dataset("probe", data=numpy.bytes_("neutron"))
 
     sample = recon_entry.create_group("SAMPLE")
     _set_nx_class(sample, "NXsample")
-    sample.create_dataset("name", data=np.string_(recon.name))
+    sample.create_dataset("name", data=numpy.bytes_(recon.name))
 
     reconstruction = recon_entry.create_group("reconstruction")
     _set_nx_class(reconstruction, "NXprocess")
 
-    reconstruction.create_dataset("program", data=np.string_("Mantid Imaging"))
-    reconstruction.create_dataset("version", data=np.string_(package_version))
+    reconstruction.create_dataset("program", data=numpy.bytes_("Mantid Imaging"))
+    reconstruction.create_dataset("version", data=numpy.bytes_(package_version))
     recon_timestamp = recon.metadata.get(TIMESTAMP)
     if recon_timestamp is None:
         recon_timestamp = datetime.datetime.now().isoformat()
-    reconstruction.create_dataset("date", data=np.string_(recon_timestamp))
+    reconstruction.create_dataset("date", data=numpy.bytes_(recon_timestamp))
 
     parameters = reconstruction.create_group("parameters")
-    parameters.create_dataset("raw_file", data=np.string_(sample_path))
+    parameters.create_dataset("raw_file", data=numpy.bytes_(sample_path))
 
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")
@@ -373,7 +375,7 @@ def _set_nx_class(group: h5py.Group, class_name: str):
     :param group: The h5py group.
     :param class_name: The class name.
     """
-    group.attrs["NX_class"] = np.string_(class_name)
+    group.attrs["NX_class"] = numpy.bytes_(class_name)
 
 
 def _rescale_recon_data(data: np.ndarray) -> np.ndarray:
