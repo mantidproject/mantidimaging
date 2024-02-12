@@ -150,7 +150,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
     def test_recon_mode_doesnt_call_choice(self, choice_mock):
-        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
+        image_data = np.random.random((20, 20))
+        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, image_data, True)
         choice_mock.assert_not_called()
 
     def test_jenks_break_values(self):

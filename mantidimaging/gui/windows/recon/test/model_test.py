@@ -6,7 +6,6 @@ import unittest
 
 from unittest import mock
 
-import numpy
 import numpy as np
 from numpy.random._examples.cffi.extending import rng
 
@@ -102,7 +101,7 @@ class ReconWindowModelTest(unittest.TestCase):
     def test_run_preview_recon(self, mock_get_reconstructor_for):
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
-        mock_reconstructor.single_sino.return_value = rng.random(256, 256)
+        mock_reconstructor.single_sino.return_value = rng.random((256, 256))
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_idx = 5
@@ -194,7 +193,7 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertFalse(self.model.stack_contains_nans())
 
     def test_stack_contains_nans_returns_true(self):
-        self.model.images.data[1][1][1] = numpy.nan
+        self.model.images.data[1][1][1] = np.nan
         self.assertTrue(self.model.stack_contains_nans())
 
     def test_stack_contains_zeroes_returns_false(self):

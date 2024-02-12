@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import numpy
 from parameterized import parameterized
 import unittest
 from unittest import mock
@@ -101,13 +100,13 @@ class MedianTest(unittest.TestCase):
         shape = (1, 20, 20)
         images = th.generate_images(shape=shape, seed=2021)
 
-        images.data[0, 0, 1] = numpy.nan  # single edge
-        images.data[0, 4, 4] = numpy.nan  # single
-        images.data[0, 4, 7] = numpy.nan  # diagonal neighbours
-        images.data[0, 5, 8] = numpy.nan
-        images.data[0, 7:9, 2:4] = numpy.nan  # 2x2 block
-        images.data[0, 7:9, 6:9] = numpy.nan  # 2x3
-        images.data[0, 12:15, 2:5] = numpy.nan  # 3x3
+        images.data[0, 0, 1] = np.nan  # single edge
+        images.data[0, 4, 4] = np.nan  # single
+        images.data[0, 4, 7] = np.nan  # diagonal neighbours
+        images.data[0, 5, 8] = np.nan
+        images.data[0, 7:9, 2:4] = np.nan  # 2x2 block
+        images.data[0, 7:9, 6:9] = np.nan  # 2x3
+        images.data[0, 12:15, 2:5] = np.nan  # 3x3
         self.assertTrue(np.any(np.isnan(images.data)))
 
         images_copy = images.copy()

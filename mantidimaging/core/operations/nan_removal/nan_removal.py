@@ -6,7 +6,6 @@ from functools import partial
 from logging import getLogger
 from typing import Dict, TYPE_CHECKING
 
-import numpy
 import numpy as np
 import scipy.ndimage as scipy_ndimage
 
@@ -104,7 +103,7 @@ def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
 
         if np.any(data == -np.inf):
             # Convert any left over -infs back to NaNs
-            data = np.where(np.logical_and(nans, data == -np.inf), numpy.nan, data)
+            data = np.where(np.logical_and(nans, data == -np.inf), np.nan, data)
 
     return data
 

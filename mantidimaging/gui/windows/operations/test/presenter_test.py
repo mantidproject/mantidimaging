@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 import unittest
 
-import numpy
 import numpy as np
 import numpy.testing as npt
 from functools import partial
@@ -573,8 +572,8 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.show_error_dialog.assert_not_called()
 
     def test_find_nan_change(self):
-        before_image = np.array([numpy.nan, 1, 2])
-        after_image = np.array([1, 1, numpy.nan])
+        before_image = np.array([np.nan, 1, 2])
+        after_image = np.array([1, 1, np.nan])
         npt.assert_array_equal(np.array([True, False, False]), _find_nan_change(before_image, after_image))
 
     def test_group_consecutive_values(self):

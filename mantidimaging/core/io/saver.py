@@ -115,8 +115,8 @@ def image_save(images: ImageStack,
     make_dirs_if_needed(output_dir, overwrite_all)
 
     # Define current parameters
-    min_value: float = numpy.nanmin(images.data)
-    max_value: float = numpy.nanmax(images.data)
+    min_value: float = np.nanmin(images.data)
+    max_value: float = np.nanmax(images.data)
     int_16_slope = max_value / INT16_SIZE
 
     # Do rescale if needed.

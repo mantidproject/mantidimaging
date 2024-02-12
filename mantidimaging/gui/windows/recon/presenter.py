@@ -8,7 +8,6 @@ from functools import partial
 from logging import getLogger
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
 
-import numpy
 import numpy as np
 from PyQt5.QtWidgets import QWidget
 
@@ -467,4 +466,4 @@ class ReconstructWindowPresenter(BasePresenter):
         inf.
         :param images: The ImageStack object.
         """
-        images.data[np.isinf(images.data)] = numpy.nan
+        images.data[np.isinf(images.data)] = np.nan

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import unittest
 
-import numpy
 import numpy as np
 import numpy.testing as npt
 
@@ -16,7 +15,7 @@ class NaNRemovalFilterTest(unittest.TestCase):
 
     def test_replace_nans(self):
         images = th.generate_images()
-        images.data[::, 0] = numpy.nan
+        images.data[::, 0] = np.nan
         nan_idxs = np.isnan(images.data)
 
         result = NaNRemovalFilter().filter_func(images, 3.0)
@@ -30,7 +29,7 @@ class NaNRemovalFilterTest(unittest.TestCase):
     def test_replace_nans_with_median(self):
         images = th.generate_images()
         images.data[:] = 7
-        images.data[3, 4, 5] = numpy.nan
+        images.data[3, 4, 5] = np.nan
 
         NaNRemovalFilter().filter_func(images, 0, "Median")
 

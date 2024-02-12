@@ -58,7 +58,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
-        mock_reconstructor.single_sino.return_value = rng.random(128, 128)
+        mock_reconstructor.single_sino.return_value = rng.random((128, 128))
 
         # first-time selecting this data after reset
         self.presenter.set_stack_uuid(self.uuid)
@@ -130,7 +130,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def test_set_slice_preview_index(self, _):
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
-        mock_reconstructor.single_sino.return_value = rng.random(128, 128)
+        mock_reconstructor.single_sino.return_value = rng.random((128, 128))
 
         self.presenter.set_preview_slice_idx(5)
         self.assertEqual(self.presenter.model.preview_slice_idx, 5)

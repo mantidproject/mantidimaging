@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import numpy
 import numpy as np
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
@@ -64,7 +63,7 @@ class ReconstructionWindowTest(BaseEyesTest):
 
         images.data[0:, 7:] = 0
         images.data[0:, 3:4] = -1
-        images.data[0:, 0:1] = numpy.nan
+        images.data[0:, 0:1] = np.nan
 
         self._show_recon_window()
 
