@@ -197,23 +197,27 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self._refresh_message()
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
-        if not self.ui.roiBtn.isChecked():
-            return None
         if self.image.ndim != 3:
             return None
         roi_pos, roi_size = self.get_roi()
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
-        data = self.image[:, top:bottom, left:right]
 
-        data = data.mean(axis=(1, 2))
+        if self.roi.isVisible():
+            mean_val = self.image[self.timeLine.value(), top:bottom, left:right].mean()
+            self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
+                             f"region avg={mean_val:.6f}"
+
+        if not self.ui.roiBtn.isChecked():
+            return None
+
+        data = self.image[:, top:bottom, left:right].mean(axis=(1, 2))
 
         if len(self.roiCurves) == 0:
             self.roiCurves.append(self.ui.roiPlot.plot())
         self.roiCurves[0].setData(y=data, x=self.tVals)
-        self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
-                         f"region avg={data[int(self.timeLine.value())].mean():.6f}"
+
         return SensibleROI(left, top, right, bottom)
 
     def roiClicked(self):
