@@ -3,6 +3,8 @@
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
+from numpy.random._examples.cffi.extending import rng
+
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
 from skimage import filters
@@ -29,7 +31,7 @@ class PaletteChangerPresenter(BasePresenter):
         if recon_mode:
             self.flattened_image = self._get_sample_pixels(self.image, min(SAMPLE_SIZE, image.size))
         else:
-            self.flattened_image = np.random.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
+            self.flattened_image = rng.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
 
     def notify(self, signal):
         pass

@@ -6,6 +6,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
+from numpy.random._examples.cffi.extending import rng
 
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, SAMPLE_SIZE
 
@@ -30,7 +31,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
                                                  True)
 
     def get_sorted_random_elements_from_projection_image(self, n_vals: int):
-        return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
+        return sorted([rng.choice(self.presenter.flattened_image) for _ in range(n_vals)])
 
     def test_flattened_image_creation_for_large_image(self):
         assert self.presenter.flattened_image.size == SAMPLE_SIZE
