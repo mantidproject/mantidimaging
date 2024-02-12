@@ -100,44 +100,53 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         # Roi Prop table
         self.roiPropertiesGroupBoxTitle: str = "Roi Properties: "
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
-        self.roi_table_properties_secondary = ["Width", "Height", "Area"]
-        self.roi_table_properties_all = self.roi_table_properties + self.roi_table_properties_secondary
-        self.roiPropertiesTableWidget.setColumnCount(2)
-        self.roiPropertiesTableWidget.setRowCount(len(self.roi_table_properties_all))
+        self.roi_table_properties_secondary = ["Width", "Height"]
+        self.roiPropertiesTableWidget.setColumnCount(3)
+        self.roiPropertiesTableWidget.setRowCount(3)
+        self.roiPropertiesTableWidget.setColumnWidth(0, 60)
+        self.roiPropertiesTableWidget.setColumnWidth(1, 50)
+        self.roiPropertiesTableWidget.setColumnWidth(2, 50)
 
         self.roiPropertiesSpinBoxes = {}
         self.roiPropertiesLabels = {}
-        row_ind = 0
-        for prop in self.roi_table_properties_all:
-            table_widget = QTableWidgetItem(prop)
-            table_widget.setFlags(Qt.ItemIsSelectable)
-            self.roiPropertiesTableWidget.setItem(row_ind, 0, table_widget)
-            if prop in self.roi_table_properties:
-                spin_box = QSpinBox()
-                if prop == "Top" or prop == "Bottom":
-                    spin_box.setMaximum(self.spectrum.image.image_data.shape[0])
-                if prop == "Left" or prop == "Right":
-                    spin_box.setMaximum(self.spectrum.image.image_data.shape[1])
-                spin_box.valueChanged.connect(self.adjust_roi)
-                self.roiPropertiesTableWidget.setCellWidget(row_ind, 1, spin_box)
-                self.roiPropertiesSpinBoxes[prop] = spin_box
-            if prop in self.roi_table_properties_secondary:
-                label = QLabel()
-                self.roiPropertiesTableWidget.setCellWidget(row_ind, 1, label)
-                self.roiPropertiesLabels[prop] = label
-            row_ind += 1
+        for prop in self.roi_table_properties:
+            spin_box = QSpinBox()
+            if prop == "Top" or prop == "Bottom":
+                spin_box.setMaximum(self.spectrum.image.image_data.shape[0])
+            if prop == "Left" or prop == "Right":
+                spin_box.setMaximum(self.spectrum.image.image_data.shape[1])
+            spin_box.valueChanged.connect(self.adjust_roi)
+            self.roiPropertiesSpinBoxes[prop] = spin_box
+        for prop in self.roi_table_properties_secondary:
+            label = QLabel()
+            self.roiPropertiesLabels[prop] = label
 
         self.roiPropertiesTableWidget.horizontalHeader().hide()
         self.roiPropertiesTableWidget.verticalHeader().hide()
         self.roiPropertiesTableWidget.setShowGrid(False)
+
+        roiPropertiesTableText = ["x1,2", "y1,2", "Width, Height"]
+        self.roiPropertiesTableTextDict = {}
+        for text in roiPropertiesTableText:
+            item = QTableWidgetItem(text)
+            item.setFlags(Qt.ItemIsSelectable)
+            self.roiPropertiesTableTextDict[text] = item
+
+        self.roiPropertiesTableWidget.setItem(0, 0, self.roiPropertiesTableTextDict["x1,2"])
+        self.roiPropertiesTableWidget.setCellWidget(0, 1, self.roiPropertiesSpinBoxes["Left"])
+        self.roiPropertiesTableWidget.setCellWidget(0, 2, self.roiPropertiesSpinBoxes["Right"])
+        self.roiPropertiesTableWidget.setItem(1, 0, self.roiPropertiesTableTextDict["y1,2"])
+        self.roiPropertiesTableWidget.setCellWidget(1, 1, self.roiPropertiesSpinBoxes["Top"])
+        self.roiPropertiesTableWidget.setCellWidget(1, 2, self.roiPropertiesSpinBoxes["Bottom"])
+        self.roiPropertiesTableWidget.setItem(2, 0, self.roiPropertiesTableTextDict["Width, Height"])
+        self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
+        self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])
 
         self.spectrum.roi_changed.connect(self.set_roi_properties)
 
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
-
-        print(f"{self.presenter.export_mode=}")
 
         def on_row_change(item, _) -> None:
             """
@@ -396,12 +405,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             row = row + 1
         self.set_roi_spinbox_ranges()
         self.presenter.redraw_spectrum(self.current_roi)
-        roi_width = abs(self.roiPropertiesSpinBoxes["Right"].value() - self.roiPropertiesSpinBoxes["Left"].value())
-        self.roiPropertiesLabels["Width"].setText(str(roi_width))
-        roi_height = abs(self.roiPropertiesSpinBoxes["Top"].value() - self.roiPropertiesSpinBoxes["Bottom"].value())
-        self.roiPropertiesLabels["Height"].setText(str(roi_height))
-        roi_area = roi_width * roi_height
-        self.roiPropertiesLabels["Area"].setText(str(roi_area))
+        self.roiPropertiesLabels["Width"].setText(str(current_roi.width))
+        self.roiPropertiesLabels["Height"].setText(str(current_roi.height))
 
     def adjust_roi(self) -> None:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
@@ -411,13 +416,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.adjust_roi(new_roi, self.current_roi)
 
     def set_roi_spinbox_ranges(self):
-        spin_boxes = self.roiPropertiesSpinBoxes
-        for key, value in spin_boxes.items():
-            if key == "Left":
-                value.setMaximum(spin_boxes["Right"].value() - 1)
-            elif key == "Right":
-                value.setMinimum(spin_boxes["Left"].value() + 1)
-            elif key == "Top":
-                value.setMaximum(spin_boxes["Bottom"].value() - 1)
-            elif key == "Bottom":
-                value.setMinimum(spin_boxes["Top"].value() + 1)
+        self.roiPropertiesSpinBoxes["Left"].setMaximum(self.roiPropertiesSpinBoxes["Right"].value() - 1)
+        self.roiPropertiesSpinBoxes["Right"].setMinimum(self.roiPropertiesSpinBoxes["Left"].value() + 1)
+        self.roiPropertiesSpinBoxes["Top"].setMaximum(self.roiPropertiesSpinBoxes["Bottom"].value() - 1)
+        self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
