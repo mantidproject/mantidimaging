@@ -65,6 +65,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
         self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum.roi_clicked.connect(self.presenter.handle_roi_clicked)
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
