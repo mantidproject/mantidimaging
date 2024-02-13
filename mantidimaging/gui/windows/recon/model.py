@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import List, Optional, Tuple, Union, TYPE_CHECKING
+from typing import List, Optional, Tuple, Union, TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -33,51 +33,42 @@ class ReconstructWindowModel(object):
         self._preview_slice_idx = 0
         self._selected_row = 0
         self.data_model = data_model
-        self._last_result = None
         self._last_cor = ScalarCoR(0.0)
 
     @property
-    def last_result(self):
-        return self._last_result
-
-    @last_result.setter
-    def last_result(self, value):
-        self._last_result = value
-
-    @property
-    def selected_row(self):
+    def selected_row(self) -> int:
         return self._selected_row
 
     @selected_row.setter
-    def selected_row(self, value):
+    def selected_row(self, value: int) -> None:
         self._selected_row = value
 
     @property
-    def preview_projection_idx(self):
+    def preview_projection_idx(self) -> int:
         return self._preview_projection_idx
 
     @preview_projection_idx.setter
-    def preview_projection_idx(self, value: int):
+    def preview_projection_idx(self, value: int) -> None:
         self._preview_projection_idx = value
 
     @property
-    def preview_slice_idx(self):
+    def preview_slice_idx(self) -> int:
         return self._preview_slice_idx
 
     @preview_slice_idx.setter
-    def preview_slice_idx(self, value: int):
+    def preview_slice_idx(self, value: int) -> None:
         self._preview_slice_idx = value
 
     @property
-    def last_cor(self):
+    def last_cor(self) -> ScalarCoR:
         return self._last_cor
 
     @last_cor.setter
-    def last_cor(self, value):
+    def last_cor(self, value: ScalarCoR) -> None:
         self._last_cor = value
 
     @property
-    def has_results(self):
+    def has_results(self) -> bool:
         return self.data_model.has_results
 
     def get_results(self) -> Tuple[ScalarCoR, Degrees, Slope]:
@@ -88,14 +79,14 @@ class ReconstructWindowModel(object):
         return self._images
 
     @property
-    def num_points(self):
+    def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'ImageStack'):
+    def initial_select_data(self, images: 'Optional[ImageStack]'):
         self._images = images
         self.reset_cor_model()
 
-    def reset_cor_model(self):
+    def reset_cor_model(self) -> None:
         self.data_model.clear_results()
 
         slice_idx, cor = self.find_initial_cor()
@@ -111,7 +102,7 @@ class ReconstructWindowModel(object):
         cor = ScalarCoR(self.images.h_middle)
         return first_slice_to_recon, cor
 
-    def do_fit(self):
+    def do_fit(self) -> bool:
         # Ensure we have some sample data
         if self.images is None:
             raise ValueError('No image stack is provided')
@@ -120,9 +111,6 @@ class ReconstructWindowModel(object):
         self.images.record_operation(const.OPERATION_NAME_COR_TILT_FINDING,
                                      display_name="Calculated COR/Tilt",
                                      **self.data_model.stack_properties)
-
-        # Cache last result
-        self.last_result = self.data_model.stack_properties
 
         # Async task needs a non-None result of some sort
         return True
@@ -182,15 +170,15 @@ class ReconstructWindowModel(object):
             return None
 
     @property
-    def cors(self):
+    def cors(self) -> np.ndarray:
         return self.data_model.cors
 
     @property
-    def slices(self):
+    def slices(self) -> np.ndarray:
         return self.data_model.slices
 
     @staticmethod
-    def load_allowed_recon_kwargs():
+    def load_allowed_recon_kwargs() -> dict[str, Any]:
         d = tomopy_allowed_kwargs()
         if CudaChecker().cuda_is_present():
             d.update(astra_allowed_kwargs())
@@ -198,11 +186,11 @@ class ReconstructWindowModel(object):
         return d
 
     @staticmethod
-    def get_allowed_filters(alg_name: str):
+    def get_allowed_filters(alg_name: str) -> list:
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None):
+    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None) -> ScalarCoR:
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -217,14 +205,13 @@ class ReconstructWindowModel(object):
     def get_cor_for_slice_from_regression(self) -> ScalarCoR:
         return ScalarCoR(self.data_model.get_cor_from_regression(self.preview_slice_idx))
 
-    def reset_selected_row(self):
+    def reset_selected_row(self) -> None:
         self.selected_row = 0
 
-    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.data_model.set_precalculated(cor, tilt)
-        self.last_result = self.data_model.stack_properties
 
-    def is_current_stack(self, uuid: "uuid.UUID"):
+    def is_current_stack(self, uuid: "uuid.UUID") -> bool:
         return self.stack_id == uuid
 
     def get_slice_indices(self, num_cors: int) -> Tuple[int, Union[np.ndarray, Tuple[np.ndarray, Optional[float]]]]:
@@ -234,7 +221,7 @@ class ReconstructWindowModel(object):
         return self.selected_row, slices
 
     def auto_find_minimisation_sqsum(self, slices: List[int], recon_params: ReconstructionParameters,
-                                     initial_cor: Union[float, List[float]], progress: Progress) -> List[float]:
+                                     initial_cor: List[float], progress: Progress) -> List[float]:
         """
 
         :param slices: Slice indices to be reconstructed
@@ -249,11 +236,10 @@ class ReconstructWindowModel(object):
         if self.images is None:
             return [0.0]
 
-        if isinstance(initial_cor, list):
-            assert len(slices) == len(initial_cor), "A COR for each slice index being reconstructed must be provided"
-        else:
-            # why be efficient when you can be lazy?
-            initial_cor = [initial_cor] * len(slices)
+        if len(initial_cor) == 1:
+            initial_cor = initial_cor * len(slices)
+        if len(initial_cor) != len(slices):
+            raise ValueError("The number of initial COR values must match the number of slices being reconstructed")
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))

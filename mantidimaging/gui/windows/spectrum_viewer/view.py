@@ -1,6 +1,7 @@
 # Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -48,6 +49,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     last_clicked_roi: str
 
+    spectrum_widget: SpectrumWidget
+
+
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
@@ -62,12 +66,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
-        self.spectrum = SpectrumWidget()
-        self.imageLayout.addWidget(self.spectrum)
+        self.spectrum_widget = SpectrumWidget()
+        self.spectrum = self.spectrum_widget.spectrum_plot_widget
+
+        self.imageLayout.addWidget(self.spectrum_widget)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
-        self.spectrum.roi_changed.connect(self.presenter.handle_roi_moved)
-        self.spectrum.roi_clicked.connect(self.presenter.handle_roi_clicked)
+
+        self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
+        self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
@@ -261,7 +269,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def get_rits_export_filename(self) -> Optional[Path]:
+    def get_rits_export_directory(self) -> Path | None:
+        """
+        Get the path to save the RITS file too
+        """
+        path = QFileDialog.getExistingDirectory(self, "Select Directory", "", QFileDialog.ShowDirsOnly)
+        if path:
+            return Path(path)
+        else:
+            return None
+
+    def get_rits_export_filename(self) -> Path | None:
         """
         Get the path to save the RITS file too
         """
@@ -272,25 +290,25 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return None
 
     def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
-        self.spectrum.image.setImage(image_data, autoLevels=autoLevels)
+        self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
 
     def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
         """
         Try to set the spectrum data for a given ROI assuming the
         roi may not exist in the spectrum widget yet depending on when method is called
         """
-        self.spectrum.spectrum_data_dict[name] = spectrum_data
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict[name] = spectrum_data
+        self.spectrum_widget.spectrum.clearPlots()
 
         self.show_visible_spectrums()
 
     def clear(self) -> None:
-        self.spectrum.spectrum_data_dict = {}
-        self.spectrum.image.setImage(np.zeros((1, 1)))
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict = {}
+        self.spectrum_widget.image.setImage(np.zeros((1, 1)))
+        self.spectrum_widget.spectrum.clearPlots()
 
     def auto_range_image(self):
-        self.spectrum.image.vb.autoRange()
+        self.spectrum_widget.image.vb.autoRange()
 
     def set_normalise_error(self, norm_issue: str):
         self.normalise_error_issue = norm_issue
@@ -314,6 +332,29 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.presenter.do_add_roi()
 
+    def update_roi_color_in_table(self, roi_name: str, new_color: tuple):
+        """
+        Finds ROI by name in table and updates colour.
+
+        @param roi_name: Name of the ROI to update.
+        @param new_color: The new color for the ROI in (R, G, B) format.
+        """
+        row = self.find_row_for_roi(roi_name)
+        if row is not None:
+            self.roi_table_model.update_color(row, new_color)
+
+    def find_row_for_roi(self, roi_name: str) -> Optional[int]:
+        """
+        Returns row index for ROI name, or None if not found.
+
+        @param roi_name: Name ROI find.
+        @return: Row index ROI or None.
+        """
+        for row in range(self.roi_table_model.rowCount()):
+            if self.roi_table_model.index(row, 0).data() == roi_name:
+                return row
+        return None
+
     def set_roi_alpha(self, alpha: float, roi_name: str) -> None:
         """
         Set the alpha value for the selected ROI and update the spectrum to reflect the change.
@@ -321,18 +362,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         @param alpha: The alpha value
         """
-        self.spectrum.set_roi_alpha(roi_name, alpha)
+        self.spectrum_widget.set_roi_alpha(roi_name, alpha)
         if alpha == 0:
-            self.spectrum.spectrum_data_dict[roi_name] = None
+            self.spectrum_widget.spectrum_data_dict[roi_name] = None
 
-        self.spectrum.spectrum.clearPlots()
-        self.spectrum.spectrum.update()
+        self.spectrum_widget.spectrum.clearPlots()
+        self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
 
     def show_visible_spectrums(self):
-        for key, value in self.spectrum.spectrum_data_dict.items():
-            if value is not None and key in self.spectrum.roi_dict:
-                self.spectrum.spectrum.plot(value, name=key, pen=self.spectrum.roi_dict[key].colour)
+        for key, value in self.spectrum_widget.spectrum_data_dict.items():
+            if value is not None and key in self.spectrum_widget.roi_dict:
+                self.spectrum_widget.spectrum.plot(value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
@@ -341,8 +382,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param name: The name of the ROI
         @param colour: The colour of the ROI
         """
-        circle_label = QLabel()
-        circle_label.setStyleSheet(f"background-color: {colour}; border-radius: 5px;")
         self.roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.tableView.selectRow(self.selected_row)
@@ -357,8 +396,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(selected_row[0])
-            self.spectrum.spectrum_data_dict.pop(selected_row[0])
-            self.spectrum.spectrum.removeItem(selected_row[0])
+            self.spectrum_widget.spectrum_data_dict.pop(selected_row[0])
+            self.spectrum_widget.spectrum.removeItem(selected_row[0])
             self.presenter.handle_roi_moved()
             self.selected_row = 0
             self.tableView.selectRow(0)
@@ -371,8 +410,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear all ROIs from the table view
         """
         self.roi_table_model.clear_table()
-        self.spectrum.spectrum_data_dict = {}
-        self.spectrum.spectrum.clearPlots()
+        self.spectrum_widget.spectrum_data_dict = {}
+        self.spectrum_widget.spectrum.clearPlots()
         self.removeBtn.setEnabled(False)
 
     @property
@@ -385,11 +424,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def bin_size(self) -> int:
-        return self.bin_size_spinbox.value()
+        return self.bin_size_spinBox.value()
 
     @property
     def bin_step(self) -> int:
-        return self.bin_step_spinbox.value()
+        return self.bin_step_spinBox.value()
 
     def set_binning_visibility(self) -> None:
         hide_binning = self.image_output_mode != "2D Binned"

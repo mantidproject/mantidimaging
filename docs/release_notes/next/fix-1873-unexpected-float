@@ -1,0 +1,1 @@
+#1873 : fix typeError: qWait(ms: int): argument 1 has unexpected type 'float'

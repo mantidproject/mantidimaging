@@ -40,6 +40,6 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         self.imaging.spectrum_viewer.normaliseCheckBox.setChecked(True)
         self.imaging.spectrum_viewer.normaliseStackSelector.try_to_select_relevant_stack("Open Beam Stack")
         self.imaging.spectrum_viewer.set_new_roi()
-        self.imaging.spectrum_viewer.spectrum.roi_dict["roi_1"].setSize(2, 2)
-        self.imaging.spectrum_viewer.spectrum.roi_dict["roi_1"].setPos(5, 5)
+        self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setSize(2, 2)
+        self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setPos(5, 5)
         self.check_target(widget=self.imaging.spectrum_viewer)

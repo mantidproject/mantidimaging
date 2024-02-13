@@ -2,10 +2,11 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.Qt import QAction, QActionGroup
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from .live_view_widget import LiveViewWidget
@@ -34,6 +35,21 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+
+        self.filter_params: Dict[str, Dict] = {}
+        self.right_click_menu = self.live_viewer.image.vb.menu
+        operations_menu = self.right_click_menu.addMenu("Operations")
+
+        rotate_menu = operations_menu.addMenu("Rotate Image")
+        self.rotate_angles_group = QActionGroup(self)
+        allowed_angles = [0, 90, 180, 270]
+        for angle in allowed_angles:
+            action = QAction(str(angle) + "°", self.rotate_angles_group)
+            action.setCheckable(True)
+            rotate_menu.addAction(action)
+            action.triggered.connect(self.set_image_rotation_angle)
+            if angle == 0:
+                action.setChecked(True)
 
     def show(self) -> None:
         """Show the window"""
@@ -74,3 +90,13 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer.handle_deleted()
         super().closeEvent(e)
         self.presenter = None  # type: ignore # View instance to be destroyed -type can be inconsistent
+
+    def set_image_rotation_angle(self):
+        """Set the image rotation angle which will be read in by the presenter"""
+        if self.rotate_angles_group.checkedAction().text() == "0°":
+            if "Rotate Stack" in self.filter_params:
+                del self.filter_params["Rotate Stack"]
+        else:
+            image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
+            self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
+        self.presenter.update_image_operation()

@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -24,6 +26,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
+    sig_colour_change = pyqtSignal(str, tuple)
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,6 +41,22 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
         self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
+
+        self.menu = QMenu()
+        change_color_action = QAction("Change ROI Colour", self)
+        change_color_action.triggered.connect(self.onChangeColor)
+        self.menu.addAction(change_color_action)
+
+    def onChangeColor(self):
+        current_color = QColor(*self._colour)
+        selected_color = QColorDialog.getColor(current_color)
+        if selected_color.isValid():
+            new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+            self._colour = new_color
+            self.sig_colour_change.emit(self._name, new_color)
+
+    def contextMenuEnabled(self):
+        return True
 
     @property
     def name(self) -> str:
@@ -69,7 +88,7 @@ class SpectrumROI(ROI):
         self.setSize((roi.width, roi.height))
 
 
-class SpectrumWidget(GraphicsLayoutWidget):
+class SpectrumWidget(QWidget):
     """
     The widget containing the spectrum plot and the image projection.
 
@@ -77,49 +96,43 @@ class SpectrumWidget(GraphicsLayoutWidget):
     """
     image: MIMiniImageView
     spectrum: PlotItem
+
     range_control: LinearRegionItem
     roi_dict: dict[Optional[str], ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
-    roi_changed = pyqtSignal()
     roi_clicked = pyqtSignal(object)
+    roi_changed = pyqtSignal()
+    roiColorChangeRequested = pyqtSignal(str, tuple)
+
+    spectrum_plot_widget: SpectrumPlotWidget
+    image_widget: SpectrumProjectionWidget
 
     def __init__(self) -> None:
         super().__init__()
 
-        self.image = MIMiniImageView(name="Projection")
-        self.addItem(self.image, 0, 0)
+        self.vbox = QVBoxLayout(self)
 
-        self.nextRow()
-        self.spectrum = self.addPlot()
+        self.image_widget = SpectrumProjectionWidget()
+        self.image = self.image_widget.image
+        self.spectrum_plot_widget = SpectrumPlotWidget()
+        self.spectrum = self.spectrum_plot_widget.spectrum
+
+        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter.addWidget(self.image_widget)
+        self.splitter.addWidget(self.spectrum_plot_widget)
+        self.vbox.addWidget(self.splitter)
+        widget_height = self.frameGeometry().height()
+        self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
-        self.nextRow()
-        self._tof_range_label = self.addLabel()
-
-        self.ci.layout.setRowStretchFactor(0, 3)
-        self.ci.layout.setRowStretchFactor(1, 1)
-
-        self.range_control = LinearRegionItem()
-        self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
 
         self.roi_dict: dict[Optional[str], ROI] = {}
         self.colour_index = 0
 
     def cleanup(self):
         self.image.cleanup()
-
-    def add_range(self, range_min: int, range_max: int) -> None:
-        with QSignalBlocker(self.range_control):
-            self.range_control.setBounds((range_min, range_max))
-            self.range_control.setRegion((range_min, range_max))
-        self.spectrum.addItem(self.range_control)
-        self._set_tof_range_label(range_min, range_max)
-
-    def get_tof_range(self) -> tuple[int, int]:
-        r_min, r_max = self.range_control.getRegion()
-        return int(r_min), int(r_max)
 
     def colour_generator(self) -> tuple[int, int, int, int]:
         """
@@ -170,6 +183,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         @param name: The name of the ROI.
         @param alpha: The new alpha value of the ROI.
         """
+
         self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
@@ -184,6 +198,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
         """
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
+        roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()
@@ -219,14 +234,6 @@ class SpectrumWidget(GraphicsLayoutWidget):
             raise KeyError("ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'".format(
                 roi_name=roi_name))
 
-    def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
-        self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
-
-    def _handle_tof_range_changed(self) -> None:
-        tof_range = self.get_tof_range()
-        self._set_tof_range_label(tof_range[0], tof_range[1])
-        self.range_changed.emit(tof_range)
-
     def remove_roi(self, roi_name: str) -> None:
         """
         Remove a given ROI by name unless it is 'roi' or 'all'.
@@ -249,3 +256,53 @@ class SpectrumWidget(GraphicsLayoutWidget):
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
             self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
+
+
+class SpectrumPlotWidget(GraphicsLayoutWidget):
+
+    spectrum: PlotItem
+
+    range_control: LinearRegionItem
+    roi_dict: dict[Optional[str], ROI]
+
+    range_changed = pyqtSignal(object)
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.spectrum = self.addPlot()
+        self.nextRow()
+        self._tof_range_label = self.addLabel()
+        self.range_control = LinearRegionItem()
+        self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
+        self.ci.layout.setRowStretchFactor(0, 1)
+
+    def get_tof_range(self) -> tuple[int, int]:
+        r_min, r_max = self.range_control.getRegion()
+        return int(r_min), int(r_max)
+
+    def _handle_tof_range_changed(self) -> None:
+        tof_range = self.get_tof_range()
+        self._set_tof_range_label(tof_range[0], tof_range[1])
+        self.range_changed.emit(tof_range)
+
+    def add_range(self, range_min: int, range_max: int) -> None:
+        with QSignalBlocker(self.range_control):
+            self.range_control.setBounds((range_min, range_max))
+            self.range_control.setRegion((range_min, range_max))
+        self.spectrum.addItem(self.range_control)
+        self._set_tof_range_label(range_min, range_max)
+
+    def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
+        self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
+
+
+class SpectrumProjectionWidget(GraphicsLayoutWidget):
+    image: MIMiniImageView
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.image = MIMiniImageView(name="Projection")
+        self.addItem(self.image, 0, 0)
+        self.ci.layout.setRowStretchFactor(0, 3)

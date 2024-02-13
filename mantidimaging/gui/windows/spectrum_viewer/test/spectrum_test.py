@@ -9,7 +9,7 @@ from parameterized import parameterized
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
@@ -26,6 +26,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.view.current_dataset_id = uuid.uuid4()
         self.view.parent = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.spectrum_widget = SpectrumWidget()
+        self.spectrum_plot_widget = SpectrumPlotWidget()
         self.sensible_roi = SensibleROI.from_list([0, 0, 0, 0])
 
     def tearDown(self):
@@ -101,9 +102,9 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     @parameterized.expand([("range_100", 0, 100), ("range_200", 100, 300), ("range_300", 200, 500)])
     def test_WHEN_add_range_called_THEN_region_and_label_set_correctly(self, _, range_min, range_max):
-        self.spectrum_widget.add_range(range_min, range_max)
-        self.assertEqual(self.spectrum_widget.range_control.getRegion(), (range_min, range_max))
-        self.assertEqual(self.spectrum_widget._tof_range_label.text, f"ToF range: {range_min} - {range_max}")
+        self.spectrum_plot_widget.add_range(range_min, range_max)
+        self.assertEqual(self.spectrum_plot_widget.range_control.getRegion(), (range_min, range_max))
+        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, f"ToF range: {range_min} - {range_max}")
 
     def test_WHEN_get_roi_called_THEN_SensibleROI_returned(self):
         spectrum_roi = SpectrumROI("roi",
@@ -135,8 +136,8 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertNotIn(spectrum_roi, self.spectrum_widget.image.vb.addedItems)
 
     def test_WHEN_set_tof_range_called_THEN_range_control_set_correctly(self):
-        self.spectrum_widget._set_tof_range_label(0, 100)
-        self.assertEqual(self.spectrum_widget._tof_range_label.text, "ToF range: 0 - 100")
+        self.spectrum_plot_widget._set_tof_range_label(0, 100)
+        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, "ToF range: 0 - 100")
 
     def test_WHEN_rename_roi_called_THEN_roi_renamed(self):
         spectrum_roi = SpectrumROI("roi_1",
