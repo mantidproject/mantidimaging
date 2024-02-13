@@ -46,6 +46,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     roiPropertiesTableWidget: QTableWidget
     roiPropertiesGroupBox: QGroupBox
 
+    last_clicked_roi: str
+
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
@@ -206,7 +208,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
         if self.presenter.export_mode == ExportMode.ROI_MODE:
-            self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            self.current_roi = self.last_clicked_roi
             self.set_roi_properties()
             for roi_name, _, roi_visible in self.roi_table_model:
                 if roi_visible is False:
@@ -221,6 +223,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.set_roi_alpha(255, ROI_RITS)
             self.presenter.redraw_spectrum(ROI_RITS)
+            self.last_clicked_roi = self.current_roi
             self.current_roi = ROI_RITS
             self.set_roi_properties()
         else:

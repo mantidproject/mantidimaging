@@ -79,7 +79,7 @@ class SpectrumWidget(GraphicsLayoutWidget):
     spectrum: PlotItem
     range_control: LinearRegionItem
     roi_dict: dict[Optional[str], ROI]
-    last_clicked_roi = str
+    last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
     roi_changed = pyqtSignal()
@@ -159,13 +159,9 @@ class SpectrumWidget(GraphicsLayoutWidget):
         for handle in handles:
             handle.setVisible(visible)
         self.roi_dict[name].setVisible(visible)
-        self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
+        self.roi_dict[name].setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
-        self.roi_dict[name].sigClicked.connect(self._handle_roi_clicked)
-        self.last_clicked_roi = name
-
-    def _handle_roi_clicked(self) -> None:
-        self.roi_clicked.emit(self.last_clicked_roi)
+        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
 
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """

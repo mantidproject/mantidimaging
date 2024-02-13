@@ -132,8 +132,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_roi_clicked(self, roi) -> None:
-        print(f"ROI CLICKED: {roi.name}")
-
+        self.view.current_roi = roi.name
+        self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
         """
