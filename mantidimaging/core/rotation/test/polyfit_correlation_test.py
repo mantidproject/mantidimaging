@@ -7,7 +7,7 @@ import numpy as np
 from numpy.random._examples.cffi.extending import rng
 
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
 from ...data import ImageStack
 from ...utility.progress_reporting import Progress
@@ -52,7 +52,7 @@ class PolyfitCorrelationTest(unittest.TestCase):
         shift = np.zeros(images.height)
         _find_shift(images, search_range, min_correlation_error, shift)
         # check that the shift has been changed
-        assert not np.all(shift == 0)
+        assert_not_equals(np.zeros(shift.shape), shift)
 
     def test_find_shift_multiple_argmin(self):
         images = generate_images((10, 10, 10))

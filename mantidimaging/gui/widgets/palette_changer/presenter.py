@@ -3,8 +3,6 @@
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
-from numpy.random._examples.cffi.extending import rng
-
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
 from skimage import filters
@@ -22,16 +20,15 @@ class PaletteChangerPresenter(BasePresenter):
     def __init__(self, view, other_hists: 'List[HistogramLUTItem]', main_hist: 'HistogramLUTItem', image: np.ndarray,
                  recon_mode: bool):
         super().__init__(view)
-        self.rng = np.random.default_rng()
+        self.rng = None
         self.other_hists = other_hists
         self.image = image
         self.main_hist = main_hist
 
-        # Sample a subset of the histogram image to send to Jenks or Otsu
-        if recon_mode:
-            self.flattened_image = self._get_sample_pixels(self.image, min(SAMPLE_SIZE, image.size))
-        else:
-            self.flattened_image = rng.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
+        if not recon_mode:
+            self.rng = np.random.default_rng()
+
+        self.flattened_image = self._get_sample_pixels(self.image, min(SAMPLE_SIZE, image.size))
 
     def notify(self, signal):
         pass
@@ -129,9 +126,12 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Sample from a circle of the image to avoid recon artefacts at edges
         """
-        rs = self.rng.uniform(low=0, high=0.5 * width, size=count)
-        thetas = self.rng.uniform(low=0, high=2 * pi, size=count)
-        xs = (np.sin(thetas) * rs * image.shape[0] + image.shape[0] * 0.5).astype(int)
-        ys = (np.cos(thetas) * rs * image.shape[1] + image.shape[1] * 0.5).astype(int)
-        sampled = image[xs, ys]
-        return sampled
+        if self.rng is None:
+            return image.flatten()[:count]
+        else:
+            rs = self.rng.uniform(low=0, high=0.5 * width, size=count)
+            thetas = self.rng.uniform(low=0, high=2 * pi, size=count)
+            xs = (np.sin(thetas) * rs * image.shape[0] + image.shape[0] * 0.5).astype(int)
+            ys = (np.cos(thetas) * rs * image.shape[1] + image.shape[1] * 0.5).astype(int)
+            sampled = image[xs, ys]
+            return sampled
