@@ -13,14 +13,17 @@ from pathlib import Path
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
-filters = {f.filter_name: f for f in load_filter_packages()}  # Needed for pyfakefs
-
 
 class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        load_filter_packages()  # Needs to be called before pyfakefs hides the filesystem
+
     def setUp(self) -> None:
         super().setUp()
-        self.fs.add_real_directory(Path(__file__).parent.parent)
+        self.fs.add_real_directory(Path(__file__).parent.parent)  # Allow ui file to be found
         self.live_directory = Path("/live_dir")
         self.fs.create_dir(self.live_directory)
 
