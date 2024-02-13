@@ -21,6 +21,8 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
     def setUp(self) -> None:
         super().setUp()
         self.fs.add_real_directory(Path(__file__).parent.parent)
+        self.live_directory = Path("/live_dir")
+        self.fs.create_dir(self.live_directory)
 
     def _generate_image(self):
         image = np.zeros((10, 10))
@@ -38,28 +40,25 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         return file_list
 
     def test_live_view_opens_without_data(self):
-        self.fs.create_dir("/live_dir")
-        self.imaging.show_live_viewer(Path("/live_dir"))
+        self.imaging.show_live_viewer(self.live_directory)
         self.check_target(widget=self.imaging.live_viewer)
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
     @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
     def test_live_view_opens_with_data(self, _mock_image_watcher, mock_load_image):
-        self.fs.create_dir("/live_dir")
-        file_list = self._make_simple_dir(Path("/live_dir"))
+        file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
         mock_load_image.return_value = self._generate_image()
-        self.imaging.show_live_viewer(Path("/live_dir"))
+        self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer)
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
     @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
     def test_live_view_opens_with_bad_data(self, _mock_image_watcher, mock_load_image):
-        self.fs.create_dir("/live_dir")
-        file_list = self._make_simple_dir(Path("/live_dir"))
+        file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
         mock_load_image.side_effect = ValueError
-        self.imaging.show_live_viewer(Path("/live_dir"))
+        self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer)
