@@ -79,16 +79,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.selected_image = self.model.images[index]
         self.view.label_active_filename.setText(self.selected_image.image_name)
 
-        self.load_and_display_image(self.selected_image.image_path)
+        self.display_image(self.selected_image.image_path)
 
-    def load_and_display_image(self, image_path: Path):
+    def display_image(self, image_path: Path):
+        """
+        Display image in the view after validating contents
+        """
         try:
-            if image_path.suffix.lower() in [".tif", ".tiff"]:
-                with tifffile.TiffFile(image_path) as tif:
-                    image_data = tif.asarray()
-            elif image_path.suffix.lower() == ".fits":
-                with fits.open(image_path.__str__()) as fit:
-                    image_data = fit[0].data
+            image_data = self.load_image(image_path)
 
             image_data = self.perform_operations(image_data)
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
@@ -107,18 +105,32 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.show_most_recent_image(image_data)
         self.view.live_viewer.show_error(None)
 
+    @staticmethod
+    def load_image(image_path: Path) -> np.ndarray:
+        """
+        Load a .Tif, .Tiff or .Fits file only if it exists
+        and returns as an ndarray
+        """
+        if image_path.suffix.lower() in [".tif", ".tiff"]:
+            with tifffile.TiffFile(image_path) as tif:
+                image_data = tif.asarray()
+        elif image_path.suffix.lower() == ".fits":
+            with fits.open(image_path.__str__()) as fit:
+                image_data = fit[0].data
+        return image_data
+
     def update_image_modified(self, image_path: Path):
         """
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.load_and_display_image(image_path)
+            self.display_image(image_path)
 
     def update_image_operation(self):
         """
         Reload the current image if an operation has been performed on the current image
         """
-        self.load_and_display_image(self.selected_image.image_path)
+        self.display_image(self.selected_image.image_path)
 
     def convert_image_to_imagestack(self, image_data):
         """
