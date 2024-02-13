@@ -51,7 +51,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     spectrum_widget: SpectrumWidget
 
-
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
