@@ -42,7 +42,8 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
 
         return file_list
 
-    def test_live_view_opens_without_data(self):
+    @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
+    def test_live_view_opens_without_data(self, _mock_image_watcher):
         self.imaging.show_live_viewer(self.live_directory)
         self.check_target(widget=self.imaging.live_viewer)
 
