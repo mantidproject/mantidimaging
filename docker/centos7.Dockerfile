@@ -13,10 +13,10 @@ RUN yum install -y make wget git which xorg-x11-server-Xvfb libxkbcommon-x11 fon
 # Fixes "D-Bus library appears to be incorrectly set up;" error
 RUN dbus-uuidgen > /var/lib/dbus/machine-id
 
-RUN wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh &&\
-    chmod +x Mambaforge.sh &&\
-    bash Mambaforge.sh -b -p /opt/miniconda &&\
-    rm Mambaforge.sh
+RUN wget -nv -O Miniforge3.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh &&\
+    chmod +x Miniforge3.sh &&\
+    bash Miniforge3.sh -b -p /opt/miniconda &&\
+    rm Miniforge3.sh
 
 SHELL ["/bin/bash", "-c"]
 
