@@ -210,16 +210,17 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
                              f"region avg={mean_val:.6f}"
 
-        if not self.ui.roiBtn.isChecked():
+        if self.ui.roiBtn.isChecked():
+            data = self.image[:, top:bottom, left:right].mean(axis=(1, 2))
+
+            if len(self.roiCurves) == 0:
+                self.roiCurves.append(self.ui.roiPlot.plot())
+            self.roiCurves[0].setData(y=data, x=self.tVals)
+
+        if self.roi.isVisible() or self.ui.roiBtn.isChecked():
+            return SensibleROI(left, top, right, bottom)
+        else:
             return None
-
-        data = self.image[:, top:bottom, left:right].mean(axis=(1, 2))
-
-        if len(self.roiCurves) == 0:
-            self.roiCurves.append(self.ui.roiPlot.plot())
-        self.roiCurves[0].setData(y=data, x=self.tVals)
-
-        return SensibleROI(left, top, right, bottom)
 
     def roiClicked(self):
         # When ROI area is hidden with the button, clear the message
