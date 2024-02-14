@@ -171,9 +171,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             sleep(0.02)
             QApplication.processEvents()
 
-    def _refresh_message(self, recalculate_roi_avg: bool = True):
-        if recalculate_roi_avg:
-            self._update_roi_region_avg()
+    def _refresh_message(self):
         try:
             self._update_message(self._last_mouse_hover_location)
         except IndexError:
@@ -196,6 +194,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         roi = self._update_roi_region_avg()
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
+        self._refresh_message()
 
     def _update_roi_region_avg(self) -> Optional[SensibleROI]:
         if self.image.ndim != 3:
@@ -204,16 +203,31 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         # image indices are in order [Z, X, Y]
         left, right = roi_pos.x, roi_pos.x + roi_size.x
         top, bottom = roi_pos.y, roi_pos.y + roi_size.y
-        data = self.image[:, top:bottom, left:right]
-        if data is not None:
-            while data.ndim > 1:
-                data = data.mean(axis=1)
+
+        if self.roi.isVisible():
+            z_value = int(self.timeLine.value())
+            mean_val = self.image[z_value, top:bottom, left:right].mean()
+            self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
+                             f"region avg={mean_val:.6f}"
+
+        if self.ui.roiBtn.isChecked():
+            data = self.image[:, top:bottom, left:right].mean(axis=(1, 2))
+
             if len(self.roiCurves) == 0:
                 self.roiCurves.append(self.ui.roiPlot.plot())
             self.roiCurves[0].setData(y=data, x=self.tVals)
-        self.roiString = f"({left}, {top}, {right}, {bottom}) | " \
-                         f"region avg={data[int(self.timeLine.value())].mean():.6f}"
-        return SensibleROI(left, top, right, bottom)
+
+        if self.roi.isVisible() or self.ui.roiBtn.isChecked():
+            return SensibleROI(left, top, right, bottom)
+        else:
+            return None
+
+    def roiClicked(self):
+        # When ROI area is hidden with the button, clear the message
+        if not self.ui.roiBtn.isChecked() and hasattr(self, "_last_mouse_hover_location"):
+            self.roiString = None
+            self._refresh_message()
+        super().roiClicked()
 
     def extend_roi_plot_mouse_press_handler(self):
         original_handler = self.ui.roiPlot.mousePressEvent
@@ -281,7 +295,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         # Keep default update=True for setSize otherwise the scale handle can become detached from the ROI box
         self.roi.setSize([roi.width, roi.height])
         self.roiChanged()
-        self._refresh_message(False)
+        self._refresh_message()
 
     def default_roi(self):
         # Recommend an ROI that covers the top left quadrant
