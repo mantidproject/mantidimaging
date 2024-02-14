@@ -74,6 +74,6 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         image_list = [Image_Data(path) for path in file_list]
         mock_load_image.return_value = self._generate_image()
         self.imaging.show_live_viewer(self.live_directory)
-        self.imaging.live_viewer.filter_params = {"Rotate Stack": {"params": {"angle": 90}}}
         self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
+        self.imaging.live_viewer.rotate_angles_group.actions()[1].trigger()
         self.check_target(widget=self.imaging.live_viewer)
