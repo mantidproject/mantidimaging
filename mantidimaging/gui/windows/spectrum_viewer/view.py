@@ -124,7 +124,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if prop == "Top" or prop == "Bottom":
                 spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[0])
             if prop == "Left" or prop == "Right":
-                spin_box.setMaximum(self.spectrum_widget.image_data.shape[1])
+                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.adjust_roi)
             self.roiPropertiesSpinBoxes[prop] = spin_box
         for prop in self.roi_table_properties_secondary:
@@ -152,7 +152,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
         self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])
 
-        self.spectrum.roi_changed.connect(self.set_roi_properties)
+        self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.roi_table_model.roi_names()[0]
