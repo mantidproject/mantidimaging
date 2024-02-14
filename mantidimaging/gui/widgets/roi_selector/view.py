@@ -62,6 +62,8 @@ class ROISelectorView(QMainWindow):
         button.clicked.connect(lambda: self.close())
         self.roi_view.ui.gridLayout.addWidget(button)
 
+        self.roi_view.roiChanged()
+
     def toggle_average_images(self) -> None:
         self.roi_view.setImage(self.main_image if self.roi_view_averaged else self.averaged_image)
         self.roi_view_averaged = not self.roi_view_averaged
