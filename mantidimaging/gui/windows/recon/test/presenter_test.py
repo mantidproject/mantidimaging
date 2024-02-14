@@ -6,7 +6,6 @@ import unittest
 
 from unittest import mock
 import numpy as np
-from numpy.random._examples.cffi.extending import rng
 from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
@@ -54,6 +53,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid(self, mock_start_async: mock.Mock):
         # reset the model data
+        rng = np.random.default_rng()
         self.presenter.model.initial_select_data(None)
 
         mock_reconstructor = mock.Mock()
@@ -128,6 +128,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_slice_preview_index(self, _):
+        rng = np.random.default_rng()
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
         mock_reconstructor.single_sino.return_value = rng.random((128, 128))
