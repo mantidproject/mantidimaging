@@ -108,12 +108,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setAlternatingRowColors(True)
 
         # Roi Prop table
-        self.roiPropertiesGroupBoxTitle: str = "Roi Properties: "
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
         self.roi_table_properties_secondary = ["Width", "Height"]
         self.roiPropertiesTableWidget.setColumnCount(3)
         self.roiPropertiesTableWidget.setRowCount(3)
-        self.roiPropertiesTableWidget.setColumnWidth(0, 60)
+        self.roiPropertiesTableWidget.setColumnWidth(0, 80)
         self.roiPropertiesTableWidget.setColumnWidth(1, 50)
         self.roiPropertiesTableWidget.setColumnWidth(2, 50)
 
@@ -135,17 +134,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesTableWidget.verticalHeader().hide()
         self.roiPropertiesTableWidget.setShowGrid(False)
 
-        roiPropertiesTableText = ["x1,2", "y1,2", "Width, Height"]
+        roiPropertiesTableText = ["x1, x2", "y1, y2", "Width, Height"]
         self.roiPropertiesTableTextDict = {}
         for text in roiPropertiesTableText:
             item = QTableWidgetItem(text)
             item.setFlags(Qt.ItemIsSelectable)
             self.roiPropertiesTableTextDict[text] = item
 
-        self.roiPropertiesTableWidget.setItem(0, 0, self.roiPropertiesTableTextDict["x1,2"])
+        self.roiPropertiesTableWidget.setItem(0, 0, self.roiPropertiesTableTextDict["x1, x2"])
         self.roiPropertiesTableWidget.setCellWidget(0, 1, self.roiPropertiesSpinBoxes["Left"])
         self.roiPropertiesTableWidget.setCellWidget(0, 2, self.roiPropertiesSpinBoxes["Right"])
-        self.roiPropertiesTableWidget.setItem(1, 0, self.roiPropertiesTableTextDict["y1,2"])
+        self.roiPropertiesTableWidget.setItem(1, 0, self.roiPropertiesTableTextDict["y1, y2"])
         self.roiPropertiesTableWidget.setCellWidget(1, 1, self.roiPropertiesSpinBoxes["Top"])
         self.roiPropertiesTableWidget.setCellWidget(1, 2, self.roiPropertiesSpinBoxes["Bottom"])
         self.roiPropertiesTableWidget.setItem(2, 0, self.roiPropertiesTableTextDict["Width, Height"])
@@ -438,13 +437,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def set_roi_properties(self) -> None:
         current_roi = self.presenter.model.get_roi(self.current_roi)
-        self.roiPropertiesGroupBox.setTitle(self.roiPropertiesGroupBoxTitle + self.current_roi)
+        self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
-        row = 0
-        for pos in current_roi.__iter__():
+        for row, pos in enumerate(current_roi):
             with QSignalBlocker(self.roiPropertiesSpinBoxes[roi_iter_order[row]]):
                 self.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
-            row = row + 1
         self.set_roi_spinbox_ranges()
         self.presenter.redraw_spectrum(self.current_roi)
         self.roiPropertiesLabels["Width"].setText(str(current_roi.width))
@@ -455,7 +452,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         new_points = [self.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
         new_roi = SensibleROI().from_list(new_points)
         self.presenter.model.set_roi(self.current_roi, new_roi)
-        self.spectrum.adjust_roi(new_roi, self.current_roi)
+        self.spectrum_widget.adjust_roi(new_roi, self.current_roi)
 
     def set_roi_spinbox_ranges(self):
         self.roiPropertiesSpinBoxes["Left"].setMaximum(self.roiPropertiesSpinBoxes["Right"].value() - 1)

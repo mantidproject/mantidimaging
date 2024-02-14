@@ -210,7 +210,7 @@ class SpectrumWidget(QWidget):
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str):
         """
         Adjust the existing ROI with the given name.
-        @param spec_roi: The new SpectrumROI to replace the existing SpectrumROI
+        @param new_roi: The new SpectrumROI to replace the existing SpectrumROI
         @param roi_name: The name of the existing ROI.
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
