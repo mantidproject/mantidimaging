@@ -66,3 +66,14 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer)
+
+    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
+    @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
+    def test_rotate_operation_rotates_image(self, _mock_image_watcher, mock_load_image):
+        file_list = self._make_simple_dir(self.live_directory)
+        image_list = [Image_Data(path) for path in file_list]
+        mock_load_image.return_value = self._generate_image()
+        self.imaging.show_live_viewer(self.live_directory)
+        self.imaging.live_viewer.filter_params = {"Rotate Stack": {"params": {"angle": 90}}}
+        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
+        self.check_target(widget=self.imaging.live_viewer)
