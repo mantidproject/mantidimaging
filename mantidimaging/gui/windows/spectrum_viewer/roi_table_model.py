@@ -61,6 +61,12 @@ class TableModel(QAbstractTableModel):
                     return Qt.Checked
                 return Qt.Unchecked
 
+    def update_color(self, row, new_color):
+        if 0 <= row < len(self._data):
+            self._data[row][1] = new_color
+            index = self.index(row, 1)
+            self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.BackgroundRole])
+
     def setData(self, index, value, role):
         """
         Set data in table

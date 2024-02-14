@@ -238,13 +238,13 @@ class ReconstructWindowView(BaseMainWindowView):
                 "The shapes of the selected stack and it's 180 degree projections do not match! This is "
                 "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
-    def remove_selected_cor(self):
+    def remove_selected_cor(self) -> None:
         return self.tableView.removeSelectedRows()
 
-    def clear_cor_table(self):
+    def clear_cor_table(self) -> None:
         return self.cor_table_model.removeAllRows()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.stackSelector.unsubscribe_from_main_window()
         self.image_view.cleanup()
         self.main_window.recon = None
@@ -256,7 +256,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.tableView.setModel(mdl)
         return self.tableView.model()  # type: ignore
 
-    def set_results(self, cor: ScalarCoR, tilt: Degrees, slope: Slope):
+    def set_results(self, cor: ScalarCoR, tilt: Degrees, slope: Slope) -> None:
         """
         Sets the numerical COR and tilt angle results.
         """
@@ -265,7 +265,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.slope = slope.value
         self.image_view.set_tilt(tilt)
 
-    def preview_image_on_button_press(self, event):
+    def preview_image_on_button_press(self, event) -> None:
         """
         Handles mouse button presses on the preview projection image.
 
@@ -322,13 +322,13 @@ class ReconstructWindowView(BaseMainWindowView):
         self.image_view.clear_recon()
         self.image_view.clear_sinogram()
 
-    def reset_recon_line_profile(self):
+    def reset_recon_line_profile(self) -> None:
         self.image_view.clear_recon_line_profile()
 
-    def reset_projection_preview(self):
+    def reset_projection_preview(self) -> None:
         self.image_view.clear_projection()
 
-    def reset_slice_and_tilt(self, slice_index):
+    def reset_slice_and_tilt(self, slice_index: int) -> None:
         self.image_view.reset_slice_and_tilt(slice_index)
 
     def on_table_row_count_change(self, _=None, __=None):
@@ -463,7 +463,7 @@ class ReconstructWindowView(BaseMainWindowView):
         # handled as an internal Qt event in the model
         self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
-    def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID):
+    def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
 
     def get_stack(self, uuid) -> Optional['ImageStack']:
@@ -471,10 +471,10 @@ class ReconstructWindowView(BaseMainWindowView):
             return self.main_window.get_stack(uuid)
         return None
 
-    def hide_tilt(self):
+    def hide_tilt(self) -> None:
         self.image_view.hide_tilt()
 
-    def set_filters_for_recon_tool(self, filters: List[str]):
+    def set_filters_for_recon_tool(self, filters: List[str]) -> None:
         self.filterName.clear()
         self.filterName.insertItems(0, filters)
 
@@ -499,20 +499,20 @@ class ReconstructWindowView(BaseMainWindowView):
         else:
             return AutoCorMethod.MINIMISATION_SQUARE_SUM
 
-    def set_correlate_buttons_enabled(self, enabled: bool):
+    def set_correlate_buttons_enabled(self, enabled: bool) -> None:
         self.correlateBtn.setEnabled(enabled)
         self.minimiseBtn.setEnabled(enabled)
 
-    def open_help_webpage(self, page: str):
+    def open_help_webpage(self, page: str) -> None:
         try:
             open_help_webpage(SECTION_USER_GUIDE, page)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
 
-    def change_refine_iterations(self):
+    def change_refine_iterations(self) -> None:
         self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
-    def on_change_colour_palette(self):
+    def on_change_colour_palette(self) -> None:
         """
         Opens the Palette Changer window when the "Auto" button has been clicked.
         """
@@ -522,7 +522,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                                                recon_mode=True)
         self.change_colour_palette_dialog.show()
 
-    def show_status_message(self, msg: str):
+    def show_status_message(self, msg: str) -> None:
         """
         Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is
         empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.
@@ -534,12 +534,12 @@ class ReconstructWindowView(BaseMainWindowView):
         else:
             self.messageIcon.clear()
 
-    def set_recon_buttons_enabled(self, enabled: bool):
+    def set_recon_buttons_enabled(self, enabled: bool) -> None:
         self.reconstructSlice.setEnabled(enabled)
         self.reconstructVolume.setEnabled(enabled)
 
-    def set_max_projection_index(self, max_index: int):
+    def set_max_projection_index(self, max_index: int) -> None:
         self.previewProjectionIndex.setMaximum(max_index)
 
-    def set_max_slice_index(self, max_index: int):
+    def set_max_slice_index(self, max_index: int) -> None:
         self.previewSliceIndex.setMaximum(max_index)

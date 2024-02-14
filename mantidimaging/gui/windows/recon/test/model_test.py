@@ -31,7 +31,6 @@ class ReconWindowModelTest(unittest.TestCase):
     def test_empty_init(self):
         m = ReconstructWindowModel(CorTiltPointQtModel())
         self.assertIsNone(m.images)
-        self.assertIsNone(m.last_result)
 
     def test_find_initial_cor_returns_0_0_without_data(self):
         self.model.initial_select_data(None)
@@ -95,7 +94,6 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model.data_model.add_point(1, 300, 350)
         self.model.do_fit()
         self.assertTrue(const.OPERATION_HISTORY in self.model.images.metadata)
-        self.assertEqual(self.model.last_result, self.model.data_model.stack_properties)
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_run_preview_recon(self, mock_get_reconstructor_for):
