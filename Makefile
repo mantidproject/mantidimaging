@@ -10,6 +10,8 @@ CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p
 ifeq ($(OS),Windows_NT)
     XVFBRUN=
 	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
+	export APPLITOOLS_API_KEY=local
+	export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
@@ -52,6 +54,11 @@ test-system:
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
 	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
+
+test-screenshots-win:
+	-mkdir ${TEST_RESULT_DIR}
+	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:
