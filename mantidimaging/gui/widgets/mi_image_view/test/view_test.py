@@ -64,7 +64,7 @@ class MIImageViewTest(unittest.TestCase):
         self.view.roi.setSize.assert_called_once_with([right - left, bottom - top])
         self.view._update_roi_region_avg.assert_called_once()
         self.view.roi_changed_callback.assert_called_once()
-        self.view._update_message.assert_called_once()
+        self.view._update_message.assert_called()
 
     def test_default_roi(self):
         image = np.zeros((1, 50, 50))

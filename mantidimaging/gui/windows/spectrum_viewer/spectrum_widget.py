@@ -5,7 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5.QtWidgets import QSplitter, QWidget, QVBoxLayout
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -25,6 +26,7 @@ class SpectrumROI(ROI):
     @param args: Arguments to pass to the ROI object
     @param kwargs: Keyword arguments to pass to the ROI object
     """
+    sig_colour_change = pyqtSignal(str, tuple)
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,6 +40,22 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
+
+        self.menu = QMenu()
+        change_color_action = QAction("Change ROI Colour", self)
+        change_color_action.triggered.connect(self.onChangeColor)
+        self.menu.addAction(change_color_action)
+
+    def onChangeColor(self):
+        current_color = QColor(*self._colour)
+        selected_color = QColorDialog.getColor(current_color)
+        if selected_color.isValid():
+            new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
+            self._colour = new_color
+            self.sig_colour_change.emit(self._name, new_color)
+
+    def contextMenuEnabled(self):
+        return True
 
     @property
     def name(self) -> str:
@@ -74,6 +92,8 @@ class SpectrumWidget(QWidget):
     image: MIMiniImageView
     spectrum: PlotItem
     roi_changed = pyqtSignal()
+    roiColorChangeRequested = pyqtSignal(str, tuple)
+
     spectrum_plot_widget: SpectrumPlotWidget
     image_widget: SpectrumProjectionWidget
 
@@ -150,6 +170,7 @@ class SpectrumWidget(QWidget):
         @param name: The name of the ROI.
         @param alpha: The new alpha value of the ROI.
         """
+
         self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
         self.roi_dict[name].setPen(self.roi_dict[name].colour)
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
@@ -164,6 +185,7 @@ class SpectrumWidget(QWidget):
         """
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
+        roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()

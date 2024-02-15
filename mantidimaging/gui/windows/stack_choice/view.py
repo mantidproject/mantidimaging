@@ -79,6 +79,8 @@ class StackChoiceView(BaseMainWindowView):
         self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
         self.original_stack.roi.sigRegionChanged.connect(self.original_stack.roiChanged)
         self.new_stack.roi.sigRegionChanged.connect(self.new_stack.roiChanged)
+        self.original_stack.roi.sigRegionChanged.connect(self.original_stack.viewbox.update)
+        self.new_stack.roi.sigRegionChanged.connect(self.new_stack.viewbox.update)
 
         self._sync_both_image_axis()
         self._ensure_range_is_the_same()
