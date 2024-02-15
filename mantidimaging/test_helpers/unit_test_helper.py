@@ -165,6 +165,8 @@ class FakeFSTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.setUpPyfakefs()
+        if sys.platform == 'linux':
+            self.fs.add_real_file("/proc/meminfo", read_only=True)
 
     def _files_equal(self, file1, file2) -> None:
         self.assertIsNotNone(file1)
