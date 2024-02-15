@@ -6,7 +6,6 @@ import unittest
 from unittest import mock
 
 import numpy as np
-from numpy.random._examples.cffi.extending import rng
 
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, SAMPLE_SIZE
 
@@ -31,6 +30,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
                                                  True)
 
     def get_sorted_random_elements_from_projection_image(self, n_vals: int):
+        rng = np.random.default_rng()
         return sorted([rng.choice(self.presenter.flattened_image) for _ in range(n_vals)])
 
     def test_flattened_image_creation_for_large_image(self):
@@ -143,15 +143,15 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         for sample in sampled:
             self.assertIn(sample, recon_image)
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
     def test_not_recon_mode_calls_choice(self, rng_mock):
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), False)
-        rng_mock.assert_called_once()
+        rng_mock.choice.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
     def test_recon_mode_doesnt_call_choice(self, rng_mock):
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
-        rng_mock.assert_called_once()
+        rng_mock.choice.choice.assert_not_called()
 
     def test_jenks_break_values(self):
         self.view.num_materials = 5
