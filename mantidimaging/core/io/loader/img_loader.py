@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 """
 This module handles the loading of FIT, FITS, TIF, TIFF

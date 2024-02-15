@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def update_copyrights_glob(globpattern, copyright_string):
 def update_copyright_file(filepath, copyright_string):
     global update_count
     copyright_lines = copyright_string.split("\n")
-    lines = open(filepath).readlines()
+    lines = open(filepath, errors='ignore').readlines()
     if CheckLicensesInFiles.has_shebang_line(lines):
         shebang_line = lines.pop(0)
     else:
