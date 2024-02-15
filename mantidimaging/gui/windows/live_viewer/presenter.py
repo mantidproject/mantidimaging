@@ -87,14 +87,13 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         try:
             image_data = self.load_image(image_path)
-
-            image_data = self.perform_operations(image_data)
         except (IOError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
+        image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
             logger.error("reading image: %s: Image has zero size", image_path)
