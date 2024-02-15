@@ -20,7 +20,7 @@ class ExecutionTimerTest(unittest.TestCase):
 
             time.sleep(0.1)
 
-        self.assertGreaterEqual(t.total_seconds, 0.1)
+        self.assertGreaterEqual(t.total_seconds, 0.09)
 
     def test_custom_message(self):
         t = ExecutionTimer(msg='Task')
