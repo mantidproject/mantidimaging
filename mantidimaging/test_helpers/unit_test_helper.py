@@ -17,6 +17,7 @@ import pyfakefs.fake_filesystem_unittest
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.parallel.utility import SharedArray
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 backup_mp_avail = None
@@ -167,6 +168,16 @@ class FakeFSTestCase(pyfakefs.fake_filesystem_unittest.TestCase):
         self.setUpPyfakefs()
         if sys.platform == 'linux':
             self.fs.add_real_file("/proc/meminfo", read_only=True)
+
+            #COMPAT: work around https://github.com/pytest-dev/pyfakefs/issues/949
+            self._mock_create_shared_array = mock.patch(
+                "mantidimaging.core.parallel.utility._create_shared_array",
+                side_effect=lambda s, d: SharedArray(array=np.zeros(s, dtype=d), shared_memory=None))
+            self._mock_create_shared_array.start()
+
+    def tearDown(self) -> None:
+        if sys.platform == 'linux':
+            self._mock_create_shared_array.stop()
 
     def _files_equal(self, file1, file2) -> None:
         self.assertIsNotNone(file1)
