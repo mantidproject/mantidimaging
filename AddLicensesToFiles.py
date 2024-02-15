@@ -23,7 +23,7 @@ def update_copyrights_glob(globpattern, copyright_string):
 def update_copyright_file(filepath, copyright_string):
     global update_count
     copyright_lines = copyright_string.split("\n")
-    lines = open(filepath, errors='ignore').readlines()
+    lines = open(filepath, encoding="utf8").readlines()
     if CheckLicensesInFiles.has_shebang_line(lines):
         shebang_line = lines.pop(0)
     else:
@@ -43,7 +43,7 @@ def update_copyright_file(filepath, copyright_string):
 
     # Output modified file
     update_count += 1
-    with open(filepath, "w") as outfile:
+    with open(filepath, "w", encoding="utf8") as outfile:
         if shebang_line:
             outfile.write(shebang_line)
         outfile.write("\n".join(copyright_lines) + "\n")

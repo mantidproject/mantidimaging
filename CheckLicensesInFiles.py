@@ -23,7 +23,7 @@ def find_files_with_incorrect_license_headers(filepaths: List[str], copyright_te
     incorrect_files = []
 
     for filepath in filepaths:
-        lines = open(filepath).readlines()
+        lines = open(filepath, encoding="utf8").readlines()
 
         if len(lines) > 0:
             if has_shebang_line(lines):
