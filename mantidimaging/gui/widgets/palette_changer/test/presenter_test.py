@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 from unittest import mock
+from unittest.mock import MagicMock
 
 import numpy as np
 
@@ -143,15 +144,19 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         for sample in sampled:
             self.assertIn(sample, recon_image)
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
-    def test_not_recon_mode_calls_choice(self, rng_mock):
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    def test_not_recon_mode_calls_choice(self, default_rng_mock):
+        rng_mock = MagicMock()
+        default_rng_mock.return_value = rng_mock
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), False)
         rng_mock.choice.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
-    def test_recon_mode_doesnt_call_choice(self, rng_mock):
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    def test_recon_mode_doesnt_call_choice(self, default_rng_mock):
+        rng_mock = MagicMock()
+        default_rng_mock.return_value = rng_mock
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
-        rng_mock.choice.choice.assert_not_called()
+        rng_mock.choice.assert_not_called()
 
     def test_jenks_break_values(self):
         self.view.num_materials = 5
