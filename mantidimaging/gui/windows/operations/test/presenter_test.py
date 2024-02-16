@@ -3,6 +3,7 @@
 from __future__ import annotations
 import logging
 import unittest
+
 import numpy as np
 import numpy.testing as npt
 from functools import partial

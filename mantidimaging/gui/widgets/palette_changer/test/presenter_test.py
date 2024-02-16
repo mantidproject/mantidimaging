@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 from unittest import mock
+from unittest.mock import MagicMock
 
 import numpy as np
 
@@ -30,7 +31,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
                                                  True)
 
     def get_sorted_random_elements_from_projection_image(self, n_vals: int):
-        return sorted([np.random.choice(self.presenter.flattened_image) for _ in range(n_vals)])
+        rng = np.random.default_rng()
+        return sorted([rng.choice(self.presenter.flattened_image) for _ in range(n_vals)])
 
     def test_flattened_image_creation_for_large_image(self):
         assert self.presenter.flattened_image.size == SAMPLE_SIZE
@@ -142,15 +144,19 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         for sample in sampled:
             self.assertIn(sample, recon_image)
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
-    def test_not_recon_mode_calls_choice(self, choice_mock):
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    def test_not_recon_mode_calls_choice(self, default_rng_mock):
+        rng_mock = MagicMock()
+        default_rng_mock.return_value = rng_mock
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), False)
-        choice_mock.assert_called_once()
+        rng_mock.choice.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.choice")
-    def test_recon_mode_doesnt_call_choice(self, choice_mock):
+    @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
+    def test_recon_mode_doesnt_call_choice(self, default_rng_mock):
+        rng_mock = MagicMock()
+        default_rng_mock.return_value = rng_mock
         PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
-        choice_mock.assert_not_called()
+        rng_mock.choice.assert_not_called()
 
     def test_jenks_break_values(self):
         self.view.num_materials = 5

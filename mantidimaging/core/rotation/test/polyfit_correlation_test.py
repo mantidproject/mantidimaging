@@ -44,18 +44,20 @@ class PolyfitCorrelationTest(unittest.TestCase):
         assert res_tilt.value == 0.0, f"Found {res_tilt.value}"
 
     def test_find_shift(self):
+        rng = np.random.default_rng()
         images = generate_images((10, 10, 10))
         search_range = get_search_range(images.width)
-        min_correlation_error = np.random.rand(len(search_range), images.height)
-        shift = np.zeros((images.height, ))
+        min_correlation_error = rng.random((len(search_range), images.height))
+        shift = np.zeros(images.height)
         _find_shift(images, search_range, min_correlation_error, shift)
         # check that the shift has been changed
         assert_not_equals(shift, np.zeros((images.height, )))
 
     def test_find_shift_multiple_argmin(self):
+        rng = np.random.default_rng()
         images = generate_images((10, 10, 10))
         search_range = get_search_range(images.width)
-        min_correlation_error = np.random.rand(len(search_range), images.height)
+        min_correlation_error = rng.random((len(search_range), images.height))
         min_correlation_error.T[0][3] = min_correlation_error.T[0][4] = 0
         shift = np.zeros((images.height, ))
         _find_shift(images, search_range, min_correlation_error, shift)

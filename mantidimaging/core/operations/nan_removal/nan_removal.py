@@ -103,7 +103,7 @@ def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
 
         if np.any(data == -np.inf):
             # Convert any left over -infs back to NaNs
-            data = np.where(np.logical_and(nans, data == -np.inf), np.NaN, data)
+            data = np.where(np.logical_and(nans, data == -np.inf), np.nan, data)
 
     return data
 

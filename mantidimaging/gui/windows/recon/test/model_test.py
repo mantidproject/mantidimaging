@@ -5,6 +5,7 @@ from __future__ import annotations
 import unittest
 
 from unittest import mock
+
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
@@ -95,9 +96,10 @@ class ReconWindowModelTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.model.get_reconstructor_for')
     def test_run_preview_recon(self, mock_get_reconstructor_for):
+        rng = np.random.default_rng()
         mock_reconstructor = mock.Mock()
         mock_reconstructor.single_sino = mock.Mock()
-        mock_reconstructor.single_sino.return_value = np.random.rand(256, 256)
+        mock_reconstructor.single_sino.return_value = rng.random((256, 256))
         mock_get_reconstructor_for.return_value = mock_reconstructor
 
         expected_idx = 5

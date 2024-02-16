@@ -1,6 +1,7 @@
 [tool.ruff]
-select = ["E", "W", "F", "B", "FA", "C4"]
-fixable = []
-
 line-length = 120
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "B", "FA", "C4", "NPY"]
+fixable = []

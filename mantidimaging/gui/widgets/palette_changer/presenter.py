@@ -29,7 +29,7 @@ class PaletteChangerPresenter(BasePresenter):
         if recon_mode:
             self.flattened_image = self._get_sample_pixels(self.image, min(SAMPLE_SIZE, image.size))
         else:
-            self.flattened_image = np.random.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
+            self.flattened_image = self.rng.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
 
     def notify(self, signal):
         pass

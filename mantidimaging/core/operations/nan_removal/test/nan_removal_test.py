@@ -29,7 +29,7 @@ class NaNRemovalFilterTest(unittest.TestCase):
     def test_replace_nans_with_median(self):
         images = th.generate_images()
         images.data[:] = 7
-        images.data[3, 4, 5] = np.NaN
+        images.data[3, 4, 5] = np.nan
 
         NaNRemovalFilter().filter_func(images, 0, "Median")
 

@@ -6,6 +6,7 @@ import unittest
 from unittest import mock
 
 import h5py
+import numpy
 import numpy as np
 
 from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
@@ -359,11 +360,11 @@ class NexusLoaderTest(unittest.TestCase):
         recon.name = "Recon"
 
         recon_entry = self.nexus.create_group(recon.name)
-        recon_entry.attrs["NX_class"] = np.string_("NXentry")
-        recon_entry.create_dataset("title", data=np.string_(recon.name))
-        recon_entry.create_dataset("definition", data=np.string_("NXtomoproc"))
+        recon_entry.attrs["NX_class"] = numpy.bytes_("NXentry")
+        recon_entry.create_dataset("title", data=numpy.bytes_(recon.name))
+        recon_entry.create_dataset("definition", data=numpy.bytes_("NXtomoproc"))
         data = recon_entry.create_group("data")
-        data.attrs["NX_class"] = np.string_("NXdata")
+        data.attrs["NX_class"] = numpy.bytes_("NXdata")
         data.create_dataset("data", shape=recon.data.shape, dtype="float16")
         data["data"][:] = recon.data
 
