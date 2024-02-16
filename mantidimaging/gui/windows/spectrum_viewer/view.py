@@ -472,7 +472,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
 
     def disable_roi_properties(self):
-        self.roiPropertiesGroupBox.setTitle(f"Roi Properties: None selected")
+        self.roiPropertiesGroupBox.setTitle("Roi Properties: None selected")
         self.last_clicked_roi = None
         for _, spinbox in self.roiPropertiesSpinBoxes.items():
             with QSignalBlocker(spinbox):
