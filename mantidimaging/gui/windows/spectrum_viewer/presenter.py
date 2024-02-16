@@ -118,6 +118,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image())
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
         self.view.auto_range_image()
+        if self.view.get_roi_properties_spinboxes():
+            self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range

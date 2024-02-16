@@ -234,6 +234,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.redraw_spectrum(ROI_RITS)
             self.last_clicked_roi = self.current_roi
             self.current_roi = ROI_RITS
+            for _, spinbox in self.roiPropertiesSpinBoxes.items():
+                spinbox.setEnabled(True)
             self.set_roi_properties()
         else:
             self.set_roi_alpha(0, ROI_RITS)
@@ -445,7 +447,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_step_spinBox.setHidden(hide_binning)
 
     def set_roi_properties(self) -> None:
-        if not any(list(self.roiPropertiesSpinBoxes.values())):
+        if not any([spinbox.setEnabled(False) for spinbox in self.roiPropertiesSpinBoxes.values()]):
             [spinbox.setEnabled(True) for spinbox in self.roiPropertiesSpinBoxes.values()]
         current_roi = self.presenter.model.get_roi(self.current_roi)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi}")
@@ -473,7 +475,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def disable_roi_properties(self):
         self.roiPropertiesGroupBox.setTitle("Roi Properties: None selected")
-        self.last_clicked_roi = None
+        self.last_clicked_roi = "roi"
         for _, spinbox in self.roiPropertiesSpinBoxes.items():
             with QSignalBlocker(spinbox):
                 spinbox.setMinimum(0)
@@ -481,3 +483,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spinbox.setDisabled(True)
         for _, label in self.roiPropertiesLabels.items():
             label.setText("0")
+
+    def get_roi_properties_spinboxes(self):
+        return self.roiPropertiesSpinBoxes
