@@ -1,6 +1,6 @@
 name: mantidimaging-nightly
 channels:
-  - mantid/label/unstable
+  - mantidimaging/label/unstable
   - astra-toolbox
   - conda-forge
   - ccpi

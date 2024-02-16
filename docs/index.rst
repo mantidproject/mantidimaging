@@ -25,7 +25,7 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
    :caption: Links:
 
    Code Repository <https://github.com/mantidproject/mantidimaging>
-   Anaconda Package <https://anaconda.org/mantid/mantidimaging>
+   Anaconda Package <https://anaconda.org/mantidimaging/mantidimaging>
 
 
 Please cite as:

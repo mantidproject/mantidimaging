@@ -22,10 +22,10 @@ RUN apt-get update && apt-get install -y make wget curl git fontconfig \
     apt-get clean
 
 
-RUN wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh &&\
-    chmod +x Mambaforge.sh &&\
-    bash Mambaforge.sh -b -p /opt/miniconda &&\
-    rm Mambaforge.sh
+RUN wget -nv -O Miniforge3.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh &&\
+    chmod +x Miniforge3.sh &&\
+    bash Miniforge3.sh -b -p /opt/miniconda &&\
+    rm Miniforge3.sh
 
 SHELL ["/bin/bash", "-c"]
 

@@ -162,9 +162,13 @@ class CreateDeveloperEnvironment(Command):
     def make_environment_file(self, extra_deps):
         dev_env_file = Path(__file__).parent / "environment-dev.yml"
         output_env_file = tempfile.NamedTemporaryFile("wt", delete=False, suffix=".yaml")
+        in_dependencies_section = False
         with dev_env_file.open() as dev_env_file_fh:
             for line in dev_env_file_fh:
-                if line.strip().startswith("- mantidimaging"):
+                if line.startswith("dependencies:"):
+                    in_dependencies_section = True
+
+                if in_dependencies_section and line.strip().startswith("- mantidimaging"):
                     for extra_dep in extra_deps:
                         output_env_file.write(f"  - {extra_dep}\n")
                 else:

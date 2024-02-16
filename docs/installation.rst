@@ -56,7 +56,7 @@ Mantid Imaging can be installed using the packages_ published to Anaconda Cloud,
 or Mamba distribution if you already have one on your machine. However if you have issues you may find it worth installing
 a fresh Miniforge3.
 
-.. _packages: https://anaconda.org/mantid/mantidimaging/
+.. _packages: https://anaconda.org/mantidimaging/mantidimaging/
 
 1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
 2. Download and install `Miniforge3 <https://github.com/conda-forge/miniforge#download>`_ (this is the conda distribution that we recommend).
