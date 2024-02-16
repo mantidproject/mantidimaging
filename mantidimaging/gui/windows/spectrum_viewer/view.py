@@ -62,6 +62,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.selected_row: int = 0
         self.current_roi: str = ""
         self.selected_row_data: Optional[list] = None
+        self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
+        self.roiPropertiesLabels: dict[str, QLabel] = {}
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -116,8 +118,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesTableWidget.setColumnWidth(1, 50)
         self.roiPropertiesTableWidget.setColumnWidth(2, 50)
 
-        self.roiPropertiesSpinBoxes = {}
-        self.roiPropertiesLabels = {}
         for prop in self.roi_table_properties:
             spin_box = QSpinBox()
             if prop == "Top" or prop == "Bottom":
@@ -134,7 +134,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesTableWidget.verticalHeader().hide()
         self.roiPropertiesTableWidget.setShowGrid(False)
 
-        roiPropertiesTableText = ["x1, x2", "y1, y2", "Width, Height"]
+        roiPropertiesTableText = ["x1, x2", "y1, y2", "Size"]
         self.roiPropertiesTableTextDict = {}
         for text in roiPropertiesTableText:
             item = QTableWidgetItem(text)
@@ -147,14 +147,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesTableWidget.setItem(1, 0, self.roiPropertiesTableTextDict["y1, y2"])
         self.roiPropertiesTableWidget.setCellWidget(1, 1, self.roiPropertiesSpinBoxes["Top"])
         self.roiPropertiesTableWidget.setCellWidget(1, 2, self.roiPropertiesSpinBoxes["Bottom"])
-        self.roiPropertiesTableWidget.setItem(2, 0, self.roiPropertiesTableTextDict["Width, Height"])
+        self.roiPropertiesTableWidget.setItem(2, 0, self.roiPropertiesTableTextDict["Size"])
         self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
         self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
         _ = self.roi_table_model  # Initialise model
-        self.current_roi = self.roi_table_model.roi_names()[0]
+        self.current_roi = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
 
         def on_row_change(item, _) -> None:
@@ -215,7 +215,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         if self.presenter.export_mode == ExportMode.ROI_MODE:
             self.current_roi = self.last_clicked_roi
-            self.set_roi_properties()
+            if self.roi_table_model.rowCount() == 0:
+                self.disable_roi_properties()
+            if not self.roi_table_model.rowCount() == 0:
+                self.set_roi_properties()
             for roi_name, _, roi_visible in self.roi_table_model:
                 if roi_visible is False:
                     self.set_roi_alpha(0, roi_name)
@@ -329,6 +332,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
+        for _, spinbox in self.roiPropertiesSpinBoxes.items():
+            if not spinbox.isEnabled():
+                spinbox.setEnabled(True)
+        self.set_roi_properties()
 
     def update_roi_color_in_table(self, roi_name: str, new_color: tuple):
         """
@@ -402,6 +409,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         if self.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
+            self.disable_roi_properties()
 
     def clear_all_rois(self) -> None:
         """
@@ -411,6 +419,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.spectrum_data_dict = {}
         self.spectrum_widget.spectrum.clearPlots()
         self.removeBtn.setEnabled(False)
+        self.disable_roi_properties()
 
     @property
     def transmission_error_mode(self) -> str:
@@ -436,6 +445,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_step_spinBox.setHidden(hide_binning)
 
     def set_roi_properties(self) -> None:
+        if not any(list(self.roiPropertiesSpinBoxes.values())):
+            [spinbox.setEnabled(True) for spinbox in self.roiPropertiesSpinBoxes.values()]
         current_roi = self.presenter.model.get_roi(self.current_roi)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
@@ -459,3 +470,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roiPropertiesSpinBoxes["Right"].setMinimum(self.roiPropertiesSpinBoxes["Left"].value() + 1)
         self.roiPropertiesSpinBoxes["Top"].setMaximum(self.roiPropertiesSpinBoxes["Bottom"].value() - 1)
         self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
+
+    def disable_roi_properties(self):
+        self.roiPropertiesGroupBox.setTitle(f"Roi Properties: None selected")
+        self.last_clicked_roi = None
+        for _, spinbox in self.roiPropertiesSpinBoxes.items():
+            with QSignalBlocker(spinbox):
+                spinbox.setMinimum(0)
+                spinbox.setValue(0)
+                spinbox.setDisabled(True)
+        for _, label in self.roiPropertiesLabels.items():
+            label.setText("0")
