@@ -447,8 +447,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_step_spinBox.setHidden(hide_binning)
 
     def set_roi_properties(self) -> None:
-        if not any([spinbox.setEnabled(False) for spinbox in self.roiPropertiesSpinBoxes.values()]):
-            [spinbox.setEnabled(True) for spinbox in self.roiPropertiesSpinBoxes.values()]
+        for spinbox in self.roiPropertiesSpinBoxes.values():
+            spinbox.setEnabled(True)
+        if self.presenter.export_mode == ExportMode.IMAGE_MODE:
+            self.current_roi = ROI_RITS
         current_roi = self.presenter.model.get_roi(self.current_roi)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
