@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def find_files_with_incorrect_license_headers(filepaths: List[str], copyright_te
     incorrect_files = []
 
     for filepath in filepaths:
-        lines = open(filepath).readlines()
+        lines = open(filepath, encoding="utf8").readlines()
 
         if len(lines) > 0:
             if has_shebang_line(lines):
