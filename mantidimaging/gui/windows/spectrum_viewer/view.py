@@ -232,7 +232,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.set_roi_alpha(255, ROI_RITS)
             self.presenter.redraw_spectrum(ROI_RITS)
-            self.last_clicked_roi = self.current_roi
+            if self.current_roi != ROI_RITS:
+                self.last_clicked_roi = self.current_roi
             self.current_roi = ROI_RITS
             for _, spinbox in self.roiPropertiesSpinBoxes.items():
                 spinbox.setEnabled(True)
@@ -447,11 +448,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_step_spinBox.setHidden(hide_binning)
 
     def set_roi_properties(self) -> None:
-        for spinbox in self.roiPropertiesSpinBoxes.values():
-            spinbox.setEnabled(True)
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.current_roi = ROI_RITS
-        current_roi = self.presenter.model.get_roi(self.current_roi)
+        if self.current_roi not in self.presenter.model.get_list_of_roi_names() or not self.roiPropertiesSpinBoxes:
+            return
+        else:
+            current_roi = self.presenter.model.get_roi(self.current_roi)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         for row, pos in enumerate(current_roi):
@@ -461,6 +463,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.presenter.redraw_spectrum(self.current_roi)
         self.roiPropertiesLabels["Width"].setText(str(current_roi.width))
         self.roiPropertiesLabels["Height"].setText(str(current_roi.height))
+        for spinbox in self.roiPropertiesSpinBoxes.values():
+            spinbox.setEnabled(True)
 
     def adjust_roi(self) -> None:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]

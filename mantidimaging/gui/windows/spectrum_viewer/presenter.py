@@ -80,6 +80,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
+        self.view.on_visibility_change()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
