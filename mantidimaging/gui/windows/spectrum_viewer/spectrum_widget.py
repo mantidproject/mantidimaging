@@ -40,6 +40,7 @@ class SpectrumROI(ROI):
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
         self._selected_row = None
+        self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
         change_color_action = QAction("Change ROI Colour", self)
@@ -82,6 +83,10 @@ class SpectrumROI(ROI):
     def selected_row(self) -> Optional[int]:
         return self._selected_row
 
+    def adjust_spec_roi(self, roi: SensibleROI) -> None:
+        self.setPos((roi.left, roi.top))
+        self.setSize((roi.width, roi.height))
+
 
 class SpectrumWidget(QWidget):
     """
@@ -91,6 +96,13 @@ class SpectrumWidget(QWidget):
     """
     image: MIMiniImageView
     spectrum: PlotItem
+
+    range_control: LinearRegionItem
+    roi_dict: dict[Optional[str], ROI]
+    last_clicked_roi: str
+
+    range_changed = pyqtSignal(object)
+    roi_clicked = pyqtSignal(object)
     roi_changed = pyqtSignal()
     roiColorChangeRequested = pyqtSignal(str, tuple)
 
@@ -160,8 +172,9 @@ class SpectrumWidget(QWidget):
         for handle in handles:
             handle.setVisible(visible)
         self.roi_dict[name].setVisible(visible)
-        self.roi_dict[name].setAcceptedMouseButtons(Qt.NoButton)
+        self.roi_dict[name].setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
 
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """
@@ -190,8 +203,17 @@ class SpectrumWidget(QWidget):
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()
         self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+
+    def adjust_roi(self, new_roi: SensibleROI, roi_name: str):
+        """
+        Adjust the existing ROI with the given name.
+        @param new_roi: The new SpectrumROI to replace the existing SpectrumROI
+        @param roi_name: The name of the existing ROI.
+        """
+        self.roi_dict[roi_name].adjust_spec_roi(new_roi)
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """

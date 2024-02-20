@@ -80,6 +80,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
+        self.view.on_visibility_change()
 
     def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -118,6 +119,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_image(self.model.get_averaged_image())
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
         self.view.auto_range_image()
+        if self.view.get_roi_properties_spinboxes():
+            self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
@@ -132,6 +135,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if force_new_spectrums or roi != self.model.get_roi(name):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+
+    def handle_roi_clicked(self, roi) -> None:
+        self.view.current_roi = roi.name
+        self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
         """
