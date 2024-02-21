@@ -2,9 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from functools import partial
 from typing import Union, Callable, Dict, Any, TYPE_CHECKING
 
+import numpy as np
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -28,14 +29,9 @@ class DivideFilter(BaseFilter):
     filter_name = "Divide"
     link_histograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
-        """
-        :param value: The division value.
-        :param unit: The unit of the divisor.
+    @classmethod
+    def filter_func(cls, images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
 
-        :return: The ImageStack object which has been divided by a value.
-        """
         h.check_data_stack(images)
         if not value:
             raise ValueError('value parameter must not equal 0 or None')
@@ -43,8 +39,19 @@ class DivideFilter(BaseFilter):
         if unit == "micron":
             value *= 1e-4
 
-        images.data /= value
+        params = {'value': value}
+        ps.run_compute_func(cls.compute_function, images.data, params, progress)
+
         return images
+
+    def compute_function(data: np.ndarray, params: Dict[str, any], progress=None):
+        value = params['value']
+        num_images = data.shape[0]
+
+        for i in range(num_images):
+            data[i] /= value
+            if progress is not None:
+                progress.update(i / num_images)
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, Any]:
@@ -69,12 +76,15 @@ class DivideFilter(BaseFilter):
 
         return {'value_widget': value_widget, 'unit_widget': unit_widget}
 
-    @staticmethod
-    def execute_wrapper(  # type: ignore
-            value_widget: QDoubleSpinBox, unit_widget: QComboBox) -> partial:
-        value = value_widget.value()
-        unit = unit_widget.currentText()
-        return partial(DivideFilter.filter_func, value=value, unit=unit)
+    @classmethod
+    def execute_wrapper(cls, value_widget: QDoubleSpinBox, unit_widget: QComboBox) -> Callable:
+
+        def wrapper(images: ImageStack, progress=None):
+            value = value_widget.value()
+            unit = unit_widget.currentText()
+            return cls.filter_func(images, value=value, unit=unit, progress=progress)
+
+        return wrapper
 
     @staticmethod
     def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:

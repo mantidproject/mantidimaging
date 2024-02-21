@@ -1,20 +1,20 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+from typing import Union, Optional, List, TYPE_CHECKING, Callable, Dict
 
-from functools import partial
-from typing import Union, Optional, List, TYPE_CHECKING
+import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QLineEdit
+    from PyQt5.QtWidgets import QLineEdit, QFormLayout, QWidget
+    from mantidimaging.gui.mvp_base import BaseMainWindowView
 
 
 class CropCoordinatesFilter(BaseFilter):
@@ -31,9 +31,10 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
     link_histograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack,
-                    region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
+                    region_of_interest: Optional[Union[List[int], List[float], 'SensibleROI']] = None,
                     progress=None) -> ImageStack:
         """Execute the Crop Coordinates by Region of Interest filter. This does
         NOT do any checks if the Region of interest is out of bounds!
@@ -64,17 +65,29 @@ class CropCoordinatesFilter(BaseFilter):
 
         sample = images.data
         shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
-        if any((s < 0 for s in shape)):
+        if any((s <= 0 for s in shape[1:])):
             raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
                              "This can happen on the image preview right after a previous Crop Coordinates.")
-
-        output = pu.create_array(shape, images.dtype)
-        execute_single(sample, region_of_interest, progress, out=output.array)
-        images.shared_array = output
+        params = {'roi': region_of_interest}
+        output = np.empty(shape, dtype=images.data.dtype)
+        cls.compute_function(images.data.shape[0], images.data, params, output, progress)
+        images.data = output
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view):
+    def compute_function(num_images: int,
+                         input_array: np.ndarray,
+                         params: Dict[str, any],
+                         output_array: np.ndarray,
+                         progress=None):
+        roi = params['roi']
+        for i in range(num_images):
+            output_array[i] = input_array[i, roi.top:roi.bottom, roi.left:roi.right]
+            if progress is not None:
+                progress.update(i / num_images)
+
+    @staticmethod
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
         from mantidimaging.gui.utility import add_property_to_form
         label, roi_field = add_property_to_form("ROI",
                                                 Type.STR,
@@ -87,10 +100,10 @@ class CropCoordinatesFilter(BaseFilter):
         return {'roi_field': roi_field}
 
     @staticmethod
-    def execute_wrapper(roi_field: QLineEdit) -> partial:
+    def execute_wrapper(cls, roi_field: QLineEdit) -> Callable:
         try:
             roi = SensibleROI.from_list([int(number) for number in roi_field.text().strip("[").strip("]").split(",")])
-            return partial(CropCoordinatesFilter.filter_func, region_of_interest=roi)
+            return cls.filter_func(region_of_interest=roi)
         except Exception as exc:
             raise ValueError(f"The provided ROI string is invalid! Error: {exc}") from exc
 

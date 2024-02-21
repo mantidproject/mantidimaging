@@ -2,13 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, List, Dict
 
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.progress_reporting import Progress
 
 if TYPE_CHECKING:
+    import numpy as np
     from mantidimaging.core.data import ImageStack
 
 
@@ -25,56 +25,62 @@ class ClipValuesFilter(BaseFilter):
     filter_name = "Clip Values"
     link_histograms = True
 
-    @staticmethod
-    def filter_func(data,
+    @classmethod
+    def filter_func(cls,
+                    data: ImageStack,
                     clip_min=None,
                     clip_max=None,
                     clip_min_new_value=None,
                     clip_max_new_value=None,
-                    progress=None) -> ImageStack:
-        """Clip values below the min and above the max pixels.
-
-        :param data: Input data as a 3D numpy.ndarray.
-        :param clip_min: The minimum value to be clipped from the data.
-                         If None is provided then no lower threshold is used.
-        :param clip_max: The maximum value to be clipped from the data.
-                         If None is provided then no upper threshold is used.
-
-        :param clip_min_new_value: The value to use when replacing values less than
-                                   clip_min.
-                                   If None is provided then the value of clip_min
-                                   is used.
-
-        :param clip_max_new_value: The value to use when replacing values greater
-                                   than clip_max.
-                                   If None is provided then the value of clip_max
-                                   is used.
-
-        :return: The processed 3D numpy.ndarray.
-        """
-        # We're using is None because 0.0 is a valid value
+                    progress=None):
         if clip_min is None and clip_max is None:
-            raise ValueError('At least one of clip_min or clip_max must be supplied')
+            raise ValueError("At least one of clip_min or clip_max must be supplied")
 
-        progress = Progress.ensure_instance(progress, num_steps=2, task_name='Clipping Values.')
-        with progress:
-            sample = data.data
-            progress.update(msg="Determining clip min and clip max")
-            clip_min = clip_min if clip_min is not None else sample.min()
-            clip_max = clip_max if clip_max is not None else sample.max()
+        params = {
+            'clip_min': clip_min,
+            'clip_max': clip_max,
+            'clip_min_new_value': clip_min_new_value,
+            'clip_max_new_value': clip_max_new_value
+        }
 
-            clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
-
-            clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
-
-            progress.update(msg=f"Clipping data with values min {clip_min} and max {clip_max}")
-
-            # this is the fastest way to clip the values, np.clip does not do
-            # the clipping in place and ends up copying the data
-            sample[sample < clip_min] = clip_min_new_value
-            sample[sample > clip_max] = clip_max_new_value
+        ps.run_compute_func(cls.compute_function, data.data.shape[0], [data.shared_array], params, progress)
 
         return data
+
+    @staticmethod
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, any]):
+
+        array = arrays[0][i]
+
+        clip_min = params.get('clip_min', np.min(array))
+        clip_max = params.get('clip_max', np.max(array))
+        clip_min_new_value = params.get('clip_min_new_value', clip_min)
+        clip_max_new_value = params.get('clip_max_new_value', clip_max)
+
+        np.clip(array, clip_min, clip_max, out=array)
+        array[array < clip_min] = clip_min_new_value
+        array[array > clip_max] = clip_max_new_value
+
+    @classmethod
+    def execute_wrapper(cls,
+                        clip_min_field=None,
+                        clip_max_field=None,
+                        clip_min_new_value_field=None,
+                        clip_max_new_value_field=None) -> Callable:
+
+        def wrapper(data: 'ImageStack', progress=None):
+            clip_min = clip_min_field.value() if clip_min_field else None
+            clip_max = clip_max_field.value() if clip_max_field else None
+            clip_min_new_value = clip_min_new_value_field.value() if clip_min_new_value_field else None
+            clip_max_new_value = clip_max_new_value_field.value() if clip_max_new_value_field else None
+            return cls.filter_func(data,
+                                   clip_min=clip_min,
+                                   clip_max=clip_max,
+                                   clip_min_new_value=clip_min_new_value,
+                                   clip_max_new_value=clip_max_new_value,
+                                   progress=progress)
+
+        return wrapper
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -136,18 +142,3 @@ class ClipValuesFilter(BaseFilter):
             "clip_min_new_value_field": clip_min_new_value_field,
             "clip_max_new_value_field": clip_max_new_value_field
         }
-
-    @staticmethod
-    def execute_wrapper(clip_min_field=None,
-                        clip_max_field=None,
-                        clip_min_new_value_field=None,
-                        clip_max_new_value_field=None):
-        clip_min = clip_min_field.value()
-        clip_max = clip_max_field.value()
-        clip_min_new_value = clip_min_new_value_field.value()
-        clip_max_new_value = clip_max_new_value_field.value()
-        return partial(ClipValuesFilter.filter_func,
-                       clip_min=clip_min,
-                       clip_max=clip_max,
-                       clip_min_new_value=clip_min_new_value,
-                       clip_max_new_value=clip_max_new_value)

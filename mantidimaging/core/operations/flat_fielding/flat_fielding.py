@@ -66,7 +66,8 @@ class FlatFieldFilter(BaseFilter):
     filter_name = 'Flat-fielding'
 
     @staticmethod
-    def filter_func(images: ImageStack,
+    def filter_func(cls,
+                    images: ImageStack,
                     flat_before: ImageStack | None = None,
                     flat_after: ImageStack | None = None,
                     dark_before: ImageStack | None = None,
@@ -74,18 +75,7 @@ class FlatFieldFilter(BaseFilter):
                     selected_flat_fielding: str | None = None,
                     use_dark: bool = True,
                     progress=None) -> ImageStack:
-        """Do background correction with flat and dark images.
 
-        :param images: Sample data which is to be processed. Expected in radiograms
-        :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
-        :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged
-        :param dark_before: Dark image to use in normalization, collected before the sample was imaged
-        :param dark_after: Dark image to use in normalization, collected after the sample was imaged
-        :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
-                                       stacks or combined.
-        :param use_dark: Whether to use dark frame subtraction
-        :return: Filtered data (stack of images)
-        """
         h.check_data_stack(images)
 
         if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
@@ -229,16 +219,19 @@ class FlatFieldFilter(BaseFilter):
         dark_after_images = BaseFilter.get_images_from_stack(dark_after_widget, "dark after")
 
         selected_flat_fielding = selected_flat_fielding_widget.currentText()
-
         use_dark = use_dark_widget.isChecked()
 
-        return partial(FlatFieldFilter.filter_func,
-                       flat_before=flat_before_images,
-                       flat_after=flat_after_images,
-                       dark_before=dark_before_images,
-                       dark_after=dark_after_images,
-                       selected_flat_fielding=selected_flat_fielding,
-                       use_dark=use_dark)
+        def wrapper(cls, images: ImageStack, progress=None) -> ImageStack:
+            return cls.filter_func(images,
+                                   flat_before=flat_before_images,
+                                   flat_after=flat_after_images,
+                                   dark_before=dark_before_images,
+                                   dark_after=dark_after_images,
+                                   selected_flat_fielding=selected_flat_fielding,
+                                   use_dark=use_dark,
+                                   progress=progress)
+
+        return wrapper
 
     @staticmethod
     def validate_execute_kwargs(kwargs):
@@ -274,7 +267,7 @@ def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
     return np.subtract(flat, dark)
 
 
-def _execute(images: ImageStack, flat=None, dark=None, progress=None):
+def _execute(cls, images: ImageStack, flat=None, dark=None, progress=None):
     """A benchmark justifying the current implementation, performed on
     500x2048x2048 images.
 
@@ -296,21 +289,21 @@ def _execute(images: ImageStack, flat=None, dark=None, progress=None):
 
         if images.uses_shared_memory:
             shared_dark = pu.copy_into_shared_memory(dark)
-            norm_divide = pu.copy_into_shared_memory(_norm_divide(flat, dark))
+            norm_divide = pu.copy_into_shared_memory(cls._norm_divide(flat, dark))
         else:
             shared_dark = pu.SharedArray(dark, None)
-            norm_divide = pu.SharedArray(_norm_divide(flat, dark), None)
+            norm_divide = pu.SharedArray(cls._norm_divide(flat, dark), None)
 
-        # prevent divide-by-zero issues, and negative pixels make no sense
-        norm_divide.array[norm_divide.array == 0] = MINIMUM_PIXEL_VALUE
+        # Prevent divide-by-zero issues
+        norm_divide.array[norm_divide.array == 0] = cls.MINIMUM_PIXEL_VALUE
 
-        # subtract the dark from all images
-        do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
+        # Subtract the dark from all images
+        do_subtract = ps.create_partial(cls._subtract, fwd_function=ps.inplace_second_2d)
         arrays = [images.shared_array, shared_dark]
         ps.execute(do_subtract, arrays, images.data.shape[0], progress)
 
-        # divide the data by (flat - dark)
-        do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
+        # Divide the data by (flat - dark)
+        do_divide = ps.create_partial(cls._divide, fwd_function=ps.inplace_second_2d)
         arrays = [images.shared_array, norm_divide]
         ps.execute(do_divide, arrays, images.data.shape[0], progress)
 
