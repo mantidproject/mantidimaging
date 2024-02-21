@@ -29,7 +29,7 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
 
 Please cite as:
-Tasev, Dimitar; Akello-Egwel, Dolica; Allen, Jack; Baust, Rachel; Gigg, Martyn; Jones, Samuel; Nixon, Daniel; Stock, Samuel; Taylor, Will; Tygier, Sam. (2023). Mantid Imaging (2.5.0), Zenodo https://doi.org/10.5281/zenodo.4728059
+Akello-Egwel, Dolica; Allen, Jack; Baust, Rachel; Gigg, Martyn; Jones, Samuel; Meigh, Ashley; Nixon, Daniel; Stock, Samuel; Sullivan, Michael; Tasev, Dimitar; Taylor, Will; Tygier, Sam. (2024). Mantid Imaging (2.7.0), Zenodo https://doi.org/10.5281/zenodo.4728059
 
 (See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).
 
