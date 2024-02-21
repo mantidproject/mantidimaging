@@ -1,13 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: Tasev
-    given-names: Dimitar
-    orcid: https://orcid.org/0000-0002-5435-1936
   - family-names: Akello-Egwel
     given-names: Dolica
   - family-names: Allen
     given-names: Jack
+    orcid: https://orcid.org/0009-0007-2873-3731
   - family-names: Baust
     given-names: Rachel
   - family-names: Gigg
@@ -15,10 +13,19 @@ authors:
   - family-names: Jones
     given-names: Samuel
     orcid: https://orcid.org/0000-0001-7217-2280
+  - family-names: Meigh
+    given-names: Ashley
+    orcid: https://orcid.org/0009-0001-6357-0516
   - family-names: Nixon
     given-names: Daniel
   - family-names: Stock
     given-names: Samuel
+  - family-names: Sullivan
+    given-names: Michael
+    orcid: https://orcid.org/0000-0003-4910-7784
+  - family-names: Tasev
+    given-names: Dimitar
+    orcid: https://orcid.org/0000-0002-5435-1936
   - family-names: Taylor
     given-names: Will
   - family-names: Tygier
