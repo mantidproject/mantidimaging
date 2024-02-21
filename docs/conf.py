@@ -69,7 +69,7 @@ root_doc = 'index'
 
 # General information about the project.
 project = 'MantidImaging'
-copyright = '2017-2023, Mantid Project'
+copyright = '2017-2024, Mantid Project'
 author = ('Dimitar Tasev, Ashley Meigh, Michael Sullivan, Jack Allen, Dolica Akello-Egwel, Rachel Baust, Martyn Gigg, '
           ' Samuel Jones, Dan Nixon, Samuel Stock, Will Taylor, Sam Tygier')
 
