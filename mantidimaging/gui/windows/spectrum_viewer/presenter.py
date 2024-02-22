@@ -138,6 +138,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_roi_clicked(self, roi) -> None:
         self.view.current_roi = roi.name
+        self.view.last_clicked_roi = roi.name
         self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
