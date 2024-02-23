@@ -90,6 +90,9 @@ class SpectrumROI(ROI):
     def rename_roi(self, new_name: str) -> None:
         self._name = new_name
 
+    def __repr__(self) -> str:
+        return f"<SpectrumWidget name={self.name} pos={self.pos()} size={self.size()} colour={self.colour}>"
+
 
 class SpectrumWidget(QWidget):
     """
@@ -101,7 +104,7 @@ class SpectrumWidget(QWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[Optional[str], ROI]
+    roi_dict: dict[str, ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
@@ -131,7 +134,7 @@ class SpectrumWidget(QWidget):
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
 
-        self.roi_dict: dict[Optional[str], ROI] = {}
+        self.roi_dict = {}
         self.colour_index = 0
 
     def cleanup(self):

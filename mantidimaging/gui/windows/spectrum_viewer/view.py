@@ -5,9 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QKeySequence
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QShortcut
 from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility import finder
@@ -203,6 +203,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+
+        self.shortcut_debug = QShortcut(QKeySequence('Ctrl+D'), self)
+        self.shortcut_debug.activated.connect(self.presenter.check_roi_sync)
 
     def show(self):
         super().show()

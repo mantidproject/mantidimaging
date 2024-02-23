@@ -290,3 +290,42 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
         self.view.on_visibility_change()
+
+    def check_roi_sync(self) -> None:
+        print("check_roi_sync()")
+
+        def assert_unique(items: list[str]):
+            assert len(items) == len(set(items))
+
+        def assert_subset(items1, items2):
+            for item in items1:
+                assert item in items2
+
+        print("Model")
+        for name, roi in self.model._roi_ranges.items():
+            print(f"  {name}: {roi}")
+        model_roi_names = list(self.model._roi_ranges.keys())
+        assert_unique(model_roi_names)
+
+        print("SpectrumWidget")
+        for name, roi in self.view.spectrum_widget.roi_dict.items():
+            print(f"  {name}: {roi}")
+        spectrum_viewer_roi_names = list(self.view.spectrum_widget.roi_dict.keys())
+        assert_unique(spectrum_viewer_roi_names)
+        assert_subset(spectrum_viewer_roi_names, model_roi_names)
+        assert len(spectrum_viewer_roi_names) == (len(model_roi_names) - 1)
+
+        print("Table")
+        table_roi_names = []
+        for row in self.view.roi_table_model:
+            print(f"  {row}")
+            table_roi_names.append(row[0])
+        assert_unique(table_roi_names)
+        assert_subset(table_roi_names, model_roi_names)
+        assert len(table_roi_names) == (len(model_roi_names) - 2)
+
+        print(f" current_roi={self.view.current_roi}")
+        assert self.view.current_roi in table_roi_names
+        print(f" old_table_names={self.view.old_table_names}")
+        old_table_roi_names = self.view.old_table_names
+        assert sorted(old_table_roi_names) == sorted(table_roi_names)
