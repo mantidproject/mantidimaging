@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from functools import partial
-from logging import getLogger
 from typing import TYPE_CHECKING
 
 import scipy.ndimage as scipy_ndimage
@@ -11,12 +10,12 @@ import scipy.ndimage as scipy_ndimage
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
+    import numpy as np
 
 
 class GaussianFilter(BaseFilter):
@@ -53,9 +52,19 @@ class GaussianFilter(BaseFilter):
         if not size or not size > 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        _execute(data, size, mode, order, progress)
+        params = {'size': size, 'mode': mode, 'order': order}
+        ps.run_compute_func(GaussianFilter.compute_function, data.data.shape[0], data.shared_array, params, progress)
+
         h.check_data_stack(data)
         return data
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params):
+        scipy_ndimage.gaussian_filter(array[i],
+                                      sigma=params['size'],
+                                      mode=params['mode'],
+                                      order=params['order'],
+                                      output=array[i])
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -92,20 +101,3 @@ class GaussianFilter(BaseFilter):
 
 def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
-
-
-def _execute(images: ImageStack, size, mode, order, progress=None):
-    log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, task_name='Gaussian filter')
-
-    f = ps.create_partial(scipy_ndimage.gaussian_filter, ps.return_to_self, sigma=size, mode=mode, order=order)
-
-    log.info("Starting PARALLEL gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(images.dtype, size))
-
-    progress.update()
-    ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Gaussian filter")
-
-    progress.mark_complete()
-    log.info("Finished  gaussian filter, with pixel data type: {0}, "
-             "filter size/width: {1}.".format(images.dtype, size))
