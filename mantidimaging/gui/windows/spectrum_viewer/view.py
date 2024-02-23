@@ -421,6 +421,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
             self.disable_roi_properties()
+        else:
+            self.set_old_table_names()
+            self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            self.set_roi_properties()
 
     def clear_all_rois(self) -> None:
         """
