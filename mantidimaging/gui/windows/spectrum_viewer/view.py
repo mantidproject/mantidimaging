@@ -108,6 +108,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableView.setAlternatingRowColors(True)
+        self.tableView.clicked.connect(self.handle_table_click)
 
         # Roi Prop table
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
@@ -340,10 +341,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spinbox.setEnabled(True)
         self.set_roi_properties()
 
-    def update_roi_color_in_table(self, roi_name: str, new_color: tuple):
+    def handle_table_click(self, index):
+        if index.isValid() and index.column() == 1:
+            roi_name = self.roi_table_model.index(index.row(), 0).data()
+            self.set_spectum_roi_color(roi_name)
+
+    def set_spectum_roi_color(self, roi_name: str) -> None:
+        spectrum_roi = self.spectrum_widget.roi_dict[roi_name]
+        spectrum_roi.change_color_action.trigger()
+
+    def update_roi_color(self, roi_name: str, new_color: tuple) -> None:
         """
         Finds ROI by name in table and updates colour.
-
         @param roi_name: Name of the ROI to update.
         @param new_color: The new color for the ROI in (R, G, B) format.
         """
@@ -354,7 +363,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def find_row_for_roi(self, roi_name: str) -> Optional[int]:
         """
         Returns row index for ROI name, or None if not found.
-
         @param roi_name: Name ROI find.
         @return: Row index ROI or None.
         """
