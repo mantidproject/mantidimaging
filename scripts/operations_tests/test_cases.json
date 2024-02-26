@@ -239,6 +239,7 @@
         ]
     },
     "Clip Values": {
+        "params": {},
         "source_data": "flower128",
         "cases": [
             {
