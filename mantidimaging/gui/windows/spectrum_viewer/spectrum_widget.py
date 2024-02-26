@@ -43,9 +43,9 @@ class SpectrumROI(ROI):
         self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
-        change_color_action = QAction("Change ROI Colour", self)
-        change_color_action.triggered.connect(self.onChangeColor)
-        self.menu.addAction(change_color_action)
+        self.change_color_action = QAction("Change ROI Colour", self)
+        self.change_color_action.triggered.connect(self.onChangeColor)
+        self.menu.addAction(self.change_color_action)
 
     def onChangeColor(self):
         current_color = QColor(*self._colour)

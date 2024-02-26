@@ -10,6 +10,7 @@ New Features
 - #2026: Time of flight graph in the Spectrum Viewer is now resizable
 - #2027: The Spectrum ROI details display in an adjustable table via spinboxes
 - #2048: Update spectrum documentation to reflect changes made to the Spectrum Viewer.
+- #2046 : Enhancement: Implement Click Dialog for Changing ROI Colors in Table
 
 Fixes
 -----
