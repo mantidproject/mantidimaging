@@ -5,10 +5,10 @@ from __future__ import annotations
 from functools import partial
 from typing import Union, Optional, List, TYPE_CHECKING
 
-from mantidimaging import helper as h
+import numpy as np
+
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -32,7 +32,8 @@ class CropCoordinatesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack,
+    def filter_func(cls,
+                    images: ImageStack,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
                     progress=None) -> ImageStack:
         """Execute the Crop Coordinates by Region of Interest filter. This does
@@ -54,24 +55,23 @@ class CropCoordinatesFilter(BaseFilter):
         """
 
         if region_of_interest is None:
-            region_of_interest = SensibleROI.from_list([0, 0, 50, 50])
+            region_of_interest = [0, 0, 50, 50]  # Default ROI
+        # ROI is correct (SensibleROI or list of coords)
         if isinstance(region_of_interest, list):
-            region_of_interest = SensibleROI.from_list(region_of_interest)
+            roi = region_of_interest
+        else:
+            roi = [region_of_interest.left, region_of_interest.top, region_of_interest.right, region_of_interest.bottom]
 
-        assert isinstance(region_of_interest, SensibleROI)
+        params = {'roi': roi}
+        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
 
-        h.check_data_stack(images)
-
-        sample = images.data
-        shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
-        if any((s < 0 for s in shape)):
-            raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
-                             "This can happen on the image preview right after a previous Crop Coordinates.")
-
-        output = pu.create_array(shape, images.dtype)
-        execute_single(sample, region_of_interest, progress, out=output.array)
-        images.shared_array = output
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: dict):
+        roi = params['roi']
+        # Crop ROI
+        array[i] = array[i, roi[1]:roi[3], roi[0]:roi[2]]
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -97,21 +97,3 @@ class CropCoordinatesFilter(BaseFilter):
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
-
-
-def execute_single(data, roi, progress=None, out=None):
-    progress = Progress.ensure_instance(progress, task_name='Crop Coords')
-
-    if roi:
-        progress.add_estimated_steps(1)
-
-        with progress:
-            assert all(isinstance(region, int) for
-                       region in roi), \
-                "The region of interest coordinates are not integers!"
-
-            progress.update(msg="Cropping with coordinates: {0}".format(roi))
-
-            output = out[:] if out is not None else data[:]
-            output[:] = data[:, roi.top:roi.bottom, roi.left:roi.right]
-        return output

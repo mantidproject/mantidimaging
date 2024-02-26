@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict
+
+import numpy as np
 
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.parallel import shared as ps
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -26,7 +28,8 @@ class ClipValuesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data,
+    def filter_func(cls,
+                    data,
                     clip_min=None,
                     clip_max=None,
                     clip_min_new_value=None,
@@ -54,27 +57,31 @@ class ClipValuesFilter(BaseFilter):
         """
         # We're using is None because 0.0 is a valid value
         if clip_min is None and clip_max is None:
-            raise ValueError('At least one of clip_min or clip_max must be supplied')
+            raise ValueError("At least one of clip_min or clip_max must be supplied")
 
-        progress = Progress.ensure_instance(progress, num_steps=2, task_name='Clipping Values.')
-        with progress:
-            sample = data.data
-            progress.update(msg="Determining clip min and clip max")
-            clip_min = clip_min if clip_min is not None else sample.min()
-            clip_max = clip_max if clip_max is not None else sample.max()
+        params = {
+            'clip_min': clip_min,
+            'clip_max': clip_max,
+            'clip_min_new_value': clip_min_new_value,
+            'clip_max_new_value': clip_max_new_value
+        }
 
-            clip_min_new_value = clip_min_new_value if clip_min_new_value is not None else clip_min
-
-            clip_max_new_value = clip_max_new_value if clip_max_new_value is not None else clip_max
-
-            progress.update(msg=f"Clipping data with values min {clip_min} and max {clip_max}")
-
-            # this is the fastest way to clip the values, np.clip does not do
-            # the clipping in place and ends up copying the data
-            sample[sample < clip_min] = clip_min_new_value
-            sample[sample > clip_max] = clip_max_new_value
+        ps.run_compute_func(cls.compute_function, data.data.shape[0], [data.shared_array], params, progress)
 
         return data
+
+    @staticmethod
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, any]):
+        array = arrays[0][i]
+
+        clip_min = params.get('clip_min', np.min(array))
+        clip_max = params.get('clip_max', np.max(array))
+        clip_min_new_value = params.get('clip_min_new_value', clip_min)
+        clip_max_new_value = params.get('clip_max_new_value', clip_max)
+
+        np.clip(array, clip_min, clip_max, out=array)
+        array[array < clip_min] = clip_min_new_value
+        array[array > clip_max] = clip_max_new_value
 
     @staticmethod
     def register_gui(form, on_change, view):

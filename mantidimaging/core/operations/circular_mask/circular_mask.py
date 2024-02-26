@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict
 
+import numpy as np
 import tomopy
 
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
@@ -29,27 +30,30 @@ class CircularMaskFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(data: ImageStack, circular_mask_ratio=0.95, circular_mask_value=0., progress=None) -> ImageStack:
+    def filter_func(cls,
+                    data: ImageStack,
+                    circular_mask_ratio=0.95,
+                    circular_mask_value=0.,
+                    progress=None) -> ImageStack:
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
-                                    The ratio must be 0 < ratio < 1
-        :param circular_mask_value: The value that all pixels in the mask
-                                    will be set to.
-
+    @@ -39,20 +41,21 @@ def filter_func(data: ImageStack, circular_mask_ratio=0.95, circular_mask_value=
         :return: The processed 3D numpy.ndarray
         """
-        if not circular_mask_ratio or not circular_mask_ratio < 1:
-            raise ValueError(f'circular_mask_ratio must be > 0 and < 1. Value provided was {circular_mask_ratio}')
+        if not 0 < circular_mask_ratio < 1:
+            raise ValueError(
+                f"Circular mask ratio must be greater than 0 and less than 1, but value was {circular_mask_ratio}")
 
-        progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
+        params = {'circular_mask_ratio': circular_mask_ratio, 'circular_mask_value': circular_mask_value}
 
-        with progress:
-            progress.update(msg="Applying circular mask")
-
-            tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
+        ps.run_compute_func(cls.compute_function, data.data.shape[0], [data.shared_array], params, progress)
 
         return data
+
+    @staticmethod
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, any]):
+        tomopy.circ_mask(arrays[0][i], axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
 
     @staticmethod
     def register_gui(form, on_change, view):

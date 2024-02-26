@@ -5,7 +5,9 @@ from __future__ import annotations
 from functools import partial
 from typing import Union, Callable, Dict, Any, TYPE_CHECKING
 
-from mantidimaging import helper as h
+import numpy as np
+
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -29,22 +31,30 @@ class DivideFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
+    def filter_func(cls, images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
         """
         :param value: The division value.
         :param unit: The unit of the divisor.
 
         :return: The ImageStack object which has been divided by a value.
         """
-        h.check_data_stack(images)
-        if not value:
-            raise ValueError('value parameter must not equal 0 or None')
+        if value == 0:
+            raise ValueError('value parameter must not equal 0')
 
+        # Convert microns to cm if necessary
         if unit == "micron":
-            value *= 1e-4
+            conversion_factor = 1e-4  # Example conversion factor
+            value *= conversion_factor
 
-        images.data /= value
+        params = {'value': value}
+        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: dict):
+        value = params['value']
+        array[i] /= value
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, Any]:
@@ -75,9 +85,3 @@ class DivideFilter(BaseFilter):
         value = value_widget.value()
         unit = unit_widget.currentText()
         return partial(DivideFilter.filter_func, value=value, unit=unit)
-
-    @staticmethod
-    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
-        if 'value_widget' not in kwargs:
-            return False
-        return True

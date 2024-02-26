@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 from functools import partial
-from logging import getLogger
 from typing import Dict, TYPE_CHECKING
 
 import numpy as np
-import scipy.ndimage as scipy_ndimage
+from tomopy import median_filter
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
@@ -41,8 +39,12 @@ class NaNRemovalFilter(BaseFilter):
 
     MODES = ["Constant", "Median"]
 
-    @staticmethod
-    def filter_func(data, replace_value=None, mode_value="Constant", progress=None) -> ImageStack:
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
+                    replace_value: float = 0.0,
+                    mode_value: str = "Constant",
+                    progress=None) -> ImageStack:
         """
         :param data: The input data.
         :param mode_value: Values to replace NaNs with. One of ["Constant", "Median"]
@@ -51,16 +53,28 @@ class NaNRemovalFilter(BaseFilter):
         :return: The ImageStack object with the NaNs replaced.
         """
 
-        if mode_value == "Constant":
-            sample = data.data
-            nan_idxs = np.isnan(sample)
-            sample[nan_idxs] = replace_value
-        elif mode_value == "Median":
-            _execute(data, 3, "reflect", progress)
-        else:
-            raise ValueError(f"Unknown mode: '{mode_value}'\nShould be one of {NaNRemovalFilter.MODES}")
+        params = {'replace_value': replace_value, 'mode_value': mode_value}
+        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
 
-        return data
+        return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: dict):
+        mode_value = params['mode_value']
+        replace_value = params['replace_value']
+        if mode_value == "Constant":
+            nan_idxs = np.isnan(array[i])
+            array[i][nan_idxs] = replace_value
+        elif mode_value == "Median":
+            nans = np.isnan(array[i])
+            if np.any(nans):
+                median_data = np.where(nans, -np.inf, array[i])
+                median_data = median_filter(median_data, size=3, mode='reflect')
+                array[i] = np.where(nans, median_data, array[i])
+                # Convert infs back to NaNs
+                array[i] = np.where(np.logical_and(nans, array[i] == -np.inf), np.nan, array[i])
+        else:
+            raise ValueError(f"Unknown mode: '{mode_value}'. Should be one of {NaNRemovalFilter.MODES}")
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
@@ -92,32 +106,3 @@ class NaNRemovalFilter(BaseFilter):
         mode_value = mode_field.currentText()
         replace_value = replace_value_field.value()
         return partial(NaNRemovalFilter.filter_func, replace_value=replace_value, mode_value=mode_value)
-
-
-def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
-    nans = np.isnan(data)
-    if np.any(nans):
-        median_data = np.where(nans, -np.inf, data)
-        median_data = scipy_ndimage.median_filter(median_data, size=size, mode=edgemode)
-        data = np.where(nans, median_data, data)
-
-        if np.any(data == -np.inf):
-            # Convert any left over -infs back to NaNs
-            data = np.where(np.logical_and(nans, data == -np.inf), np.nan, data)
-
-    return data
-
-
-def _execute(images: ImageStack, size, edgemode, progress=None):
-    log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, task_name='NaN Removal')
-
-    # create the partial function to forward the parameters
-    f = ps.create_partial(_nan_to_median, ps.return_to_self, size=size, edgemode=edgemode)
-
-    with progress:
-        log.info("PARALLEL NaN Removal filter, with pixel data type: {0}".format(images.dtype))
-
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="NaN Removal")
-
-    return images
