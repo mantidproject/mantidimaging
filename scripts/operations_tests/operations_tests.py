@@ -31,17 +31,23 @@ from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 
-LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
-               "IMAT_Flower_Tomo_000000.tif")
+LOAD_SAMPLE = Path("C:/Users/44770/Downloads/mantidimaging-data-small "
+                   "(2)/mantidimaging-data-small/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif")
 
-if path := os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"):
-    SAVE_DIR = Path(path)
-else:
-    print("Set MANTIDIMAGING_APPROVAL_TESTS_DIR for output path")
-    exit(1)
-if not SAVE_DIR.exists():
-    print(f"Creating directory: {SAVE_DIR}")
-    SAVE_DIR.mkdir()
+
+class ConfigurationManager:
+
+    def __init__(self):
+        self.save_dir = self._get_save_dir()
+
+    def _get_save_dir(self):
+        path = os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR")
+        if not path:
+            raise ValueError("Set MANTIDIMAGING_APPROVAL_TESTS_DIR for output path")
+        save_dir = Path(path)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        return save_dir
+
 
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS: list[TestCase] = []
@@ -306,6 +312,14 @@ def create_plots():
 
 
 def main():
+    global SAVE_DIR
+    try:
+        config_manager = ConfigurationManager()
+        SAVE_DIR = config_manager.save_dir
+        print(f"Save directory is set to: {SAVE_DIR}")
+    except ValueError as e:
+        print(e)
+        exit(1)
     parser = argparse.ArgumentParser()
     parser.add_argument("-m",
                         "--mode",
