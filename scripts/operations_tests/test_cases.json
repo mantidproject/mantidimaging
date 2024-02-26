@@ -222,8 +222,7 @@
     },
     "Ring Removal": {
         "params": {
-            "center_mode": "image center"
-        },
+            "center_mode": "image center"},
         "source_data": "flower128",
         "cases": [
             {
