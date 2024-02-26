@@ -220,8 +220,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.export_mode == ExportMode.ROI_MODE:
             if self.current_roi in self.old_table_names and self.last_clicked_roi in self.old_table_names:
                 pass
-            else:
+            elif self.current_roi == ROI_RITS and self.last_clicked_roi in self.old_table_names:
                 self.current_roi = self.last_clicked_roi
+            elif self.current_roi == ROI_RITS and self.last_clicked_roi not in self.old_table_names:
+                self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            else:
+                self.last_clicked_roi = self.current_roi
             if self.roi_table_model.rowCount() == 0:
                 self.disable_roi_properties()
             if not self.roi_table_model.rowCount() == 0:
