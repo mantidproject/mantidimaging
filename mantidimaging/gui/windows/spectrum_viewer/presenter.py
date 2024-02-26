@@ -243,6 +243,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name in self.view.spectrum_widget.roi_dict:
             self.view.spectrum_widget.roi_dict[roi_name].colour = new_colour
         self.view.update_roi_color(roi_name, new_colour)
+        self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
         roi_name = ROI_RITS
