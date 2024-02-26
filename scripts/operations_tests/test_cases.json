@@ -58,7 +58,7 @@
                 "params": {
                     "mult_val": 3
                 },
-                "source_date": "flower512"
+                "source_data": "flower512"
             }
         ]
     },
@@ -220,8 +220,10 @@
             }
         ]
     },
-        "Ring Removal": {
-        "params": {"center_mode": "image center"},
+    "Ring Removal": {
+        "params": {
+            "center_mode": "image center"
+        },
         "source_data": "flower128",
         "cases": [
             {
@@ -232,6 +234,20 @@
                     "thresh_min": 1000,
                     "theta_min": 30,
                     "rwidth": 30
+                }
+            }
+        ]
+    },
+    "Clip Values": {
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "clip_values_0_to_50",
+                "params": {
+                    "clip_min": 0,
+                    "clip_max": 50,
+                    "clip_min_new_value": 0,
+                    "clip_max_new_value": 50
                 }
             }
         ]
