@@ -30,7 +30,7 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
     link_histograms = True
 
-    @staticmethod
+    @classmethod
     def filter_func(cls, images: ImageStack, rebin_param=0.5, mode=None, progress=None) -> ImageStack:
         """
         :param images: Sample data which is to be processed. Expects radiograms

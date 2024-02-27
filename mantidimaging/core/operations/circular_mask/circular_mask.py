@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List, Dict, Any
 
 import numpy as np
 import tomopy
@@ -29,7 +29,7 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
     link_histograms = True
 
-    @staticmethod
+    @classmethod
     def filter_func(cls,
                     data: ImageStack,
                     circular_mask_ratio=0.95,
@@ -52,7 +52,7 @@ class CircularMaskFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, any]):
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
         tomopy.circ_mask(arrays[0][i], axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
 
     @staticmethod

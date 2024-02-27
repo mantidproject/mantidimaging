@@ -30,7 +30,7 @@ class DivideFilter(BaseFilter):
     filter_name = "Divide"
     link_histograms = True
 
-    @staticmethod
+    @classmethod
     def filter_func(cls, images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
         """
         :param value: The division value.

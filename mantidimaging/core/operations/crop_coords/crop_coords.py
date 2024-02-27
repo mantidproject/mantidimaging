@@ -31,7 +31,7 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
     link_histograms = True
 
-    @staticmethod
+    @classmethod
     def filter_func(cls,
                     images: ImageStack,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,

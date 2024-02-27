@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List, Dict, Any
 
 import numpy as np
 
@@ -27,7 +27,7 @@ class ClipValuesFilter(BaseFilter):
     filter_name = "Clip Values"
     link_histograms = True
 
-    @staticmethod
+    @classmethod
     def filter_func(cls,
                     data,
                     clip_min=None,
@@ -71,7 +71,7 @@ class ClipValuesFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, any]):
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
         array = arrays[0][i]
 
         clip_min = params.get('clip_min', np.min(array))
