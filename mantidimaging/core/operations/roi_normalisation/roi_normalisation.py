@@ -3,16 +3,12 @@
 from __future__ import annotations
 
 from functools import partial
-from logging import getLogger
 from typing import List, Optional, TYPE_CHECKING
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.parallel import utility as pu
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -44,50 +40,50 @@ class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
     link_histograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack,
+    @classmethod
+    def calculate_flat_field_mean(cls, flat_field: ImageStack) -> float:
+        """Calculates the mean of the flat field image stack."""
+        return np.mean(flat_field.data)
+
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
                     region_of_interest: SensibleROI | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
                     flat_field: Optional[ImageStack] = None,
-                    progress=None):
-        """Normalise by beam intensity.
+                    progress=None) -> ImageStack:
+        flat_field_mean = None
+        if normalisation_mode == "Flat Field" and flat_field is not None:
+            flat_field_mean = cls.calculate_flat_field_mean(flat_field)
 
-        This does NOT do any checks if the Air Region is out of bounds!
-        If the Air Region is out of bounds, the crop will fail at runtime.
-        If the Air Region is in bounds, but has overlapping coordinates
-        the crop give back a 0 shape of the coordinates that were wrong.
+        params = {
+            'air_region': region_of_interest,
+            'normalisation_mode': normalisation_mode,
+            'flat_field_mean': flat_field_mean
+        }
 
-        :param images: Sample data which is to be processed. Expected in radiograms
+        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
 
-        :param region_of_interest: The order is - Left Top Right Bottom. The air
-        region for which grey values are summed up and used for normalisation/scaling.
-
-        :param normalisation_mode: Controls what the ROI counts are normalised to.
-            'Stack Average' : The mean value of the air region across all projections is preserved.
-            'Flat Field' : The mean value of the air regions in the projections is made equal to the mean value of the
-                           air region in the flat field image.
-
-        :param flat_field: Flat field to use if 'Flat Field' mode is enabled.
-
-        :param progress: Reference to a progress bar object
-
-        :returns: Filtered data (stack of images)
-        """
-        if normalisation_mode not in modes():
-            raise ValueError(f"Unknown normalisation_mode: {normalisation_mode}, should be one of {modes()}")
-
-        if normalisation_mode == "Flat Field" and flat_field is None:
-            raise ValueError('flat_field must provided if using normalisation_mode of "Flat Field"')
-
-        h.check_data_stack(images)
-
-        if not region_of_interest:
-            raise ValueError('region_of_interest must be provided')
-
-        progress = Progress.ensure_instance(progress, task_name='ROI Normalisation')
-        _execute(images, region_of_interest, normalisation_mode, flat_field, progress)
-        h.check_data_stack(images)
         return images
+
+    @staticmethod
+    def compute_function(image_index: int,
+                         array: np.ndarray,
+                         air_region: SensibleROI,
+                         normalisation_mode: str,
+                         flat_field_mean: Optional[float] = None):
+        air_values = array[image_index][air_region.top:air_region.bottom, air_region.left:air_region.right]
+        air_mean = np.mean(air_values)
+
+        if normalisation_mode == "Stack Average":
+            normalization_factor = air_mean
+        elif normalisation_mode == "Flat Field":
+            if flat_field_mean is None:
+                raise ValueError("flat_field_mean must be provided for 'Flat Field' normalisation mode")
+            normalization_factor = air_mean / flat_field_mean
+        else:
+            raise ValueError(f"Unsupported normalisation_mode: {normalisation_mode}")
+        array[image_index] /= normalization_factor
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -141,63 +137,6 @@ class RoiNormalisationFilter(BaseFilter):
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
-
-
-def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
-    return data[air_top:air_bottom, air_left:air_right].mean()
-
-
-def _divide_by_air(data=None, air_sums=None):
-    data[:] = np.true_divide(data, air_sums)
-
-
-def _execute(images: ImageStack,
-             air_region: SensibleROI,
-             normalisation_mode: str,
-             flat_field: Optional[ImageStack],
-             progress=None):
-    log = getLogger(__name__)
-
-    with progress:
-        progress.update(msg="Normalization by air region")
-        if isinstance(air_region, list):
-            air_region = SensibleROI.from_list(air_region)
-
-        # initialise same number of air sums
-        img_num = images.data.shape[0]
-        air_means = pu.create_array((img_num, ), images.dtype)
-
-        do_calculate_air_means = ps.create_partial(_calc_mean,
-                                                   ps.return_to_second_at_i,
-                                                   air_left=air_region.left,
-                                                   air_top=air_region.top,
-                                                   air_right=air_region.right,
-                                                   air_bottom=air_region.bottom)
-
-        arrays = [images.shared_array, air_means]
-        ps.execute(do_calculate_air_means, arrays, images.data.shape[0], progress)
-
-        if normalisation_mode == 'Stack Average':
-            air_means.array /= air_means.array.mean()
-
-        elif normalisation_mode == 'Flat Field' and flat_field is not None:
-            flat_mean = pu.create_array((flat_field.data.shape[0], ), flat_field.dtype)
-            arrays = [flat_field.shared_array, flat_mean]
-            ps.execute(do_calculate_air_means, arrays, flat_field.data.shape[0], progress)
-            air_means.array /= flat_mean.array.mean()
-
-        if np.isnan(air_means.array).any():
-            raise ValueError("Air region contains invalid (NaN) pixels")
-
-        do_divide = ps.create_partial(_divide_by_air, fwd_function=ps.inplace2)
-        arrays = [images.shared_array, air_means]
-        ps.execute(do_divide, arrays, images.data.shape[0], progress)
-
-        avg = np.average(air_means.array)
-        max_avg = np.max(air_means.array) / avg
-        min_avg = np.min(air_means.array) / avg
-
-        log.info(f"Normalization by air region. Average: {avg}, max ratio: {max_avg}, min ratio: {min_avg}.")
 
 
 def enable_correct_fields_only(text, flat_file_widget):

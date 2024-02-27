@@ -8,10 +8,8 @@ from PyQt5.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
 
-from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import utility as pu, shared as ps
-from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
@@ -48,25 +46,11 @@ def enable_correct_fields_only(selected_flat_fielding_widget, flat_before_widget
 
 
 class FlatFieldFilter(BaseFilter):
-    """Uses the flat (open beam) and dark images to normalise a stack of images (radiograms, projections),
-    and to correct for a beam profile, scintillator imperfections and/or  detector inhomogeneities. This
-    operation produces images of transmission values.
-
-    In practice, several open beam and dark images are averaged in the flat-fielding process.
-
-    Intended to be used on: Projections
-
-    When: As one of the first pre-processing steps
-
-    Caution: Make sure the correct stacks are selected for flat and dark.
-
-    Caution: Check that the flat and dark images don't have any very bright pixels,
-    or this will introduce additional noise in the sample. Remove outliers before flat-fielding.
-    """
     filter_name = 'Flat-fielding'
 
-    @staticmethod
-    def filter_func(images: ImageStack,
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
                     flat_before: ImageStack | None = None,
                     flat_after: ImageStack | None = None,
                     dark_before: ImageStack | None = None,
@@ -74,56 +58,54 @@ class FlatFieldFilter(BaseFilter):
                     selected_flat_fielding: str | None = None,
                     use_dark: bool = True,
                     progress=None) -> ImageStack:
-        """Do background correction with flat and dark images.
 
-        :param images: Sample data which is to be processed. Expected in radiograms
-        :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
-        :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged
-        :param dark_before: Dark image to use in normalization, collected before the sample was imaged
-        :param dark_after: Dark image to use in normalization, collected after the sample was imaged
-        :param selected_flat_fielding: Select which of the flat fielding methods to use, just Before stacks, just After
-                                       stacks or combined.
-        :param use_dark: Whether to use dark frame subtraction
-        :return: Filtered data (stack of images)
-        """
-        h.check_data_stack(images)
+        if images.num_projections < 2:
+            return images
 
-        if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
-                and dark_after is not None and dark_before is not None:
-            flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
-            if use_dark:
-                dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
-        elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
-            flat_avg = flat_before.data.mean(axis=0)
-            if use_dark:
-                dark_avg = dark_before.data.mean(axis=0)
-        elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
-            flat_avg = flat_after.data.mean(axis=0)
-            if use_dark:
-                dark_avg = dark_after.data.mean(axis=0)
-        else:
-            raise ValueError("selected_flat_fielding not in:", valid_methods)
+        params = {
+            "flat_before": flat_before,
+            "flat_after": flat_after,
+            "dark_before": dark_before,
+            "dark_after": dark_after,
+            "selected_flat_fielding": selected_flat_fielding,
+            "use_dark": use_dark
+        }
 
-        if not use_dark:
-            dark_avg = np.zeros_like(flat_avg)
+        ps.run_compute_func(cls.compute_function, images.num_sinograms, images.shared_array, params, progress)
 
-        if flat_avg is not None and dark_avg is not None:
-            if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
-                raise ValueError(
-                    f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
-                    which should match the shape of the sample images ({images.data.shape})")
-
-            if not images.data.shape[1:] == flat_avg.shape == dark_avg.shape:
-                raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
-                                 f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
-
-            progress = Progress.ensure_instance(progress,
-                                                num_steps=images.data.shape[0],
-                                                task_name='Background Correction')
-            _execute(images, flat_avg, dark_avg, progress)
-
-        h.check_data_stack(images)
         return images
+
+    @staticmethod
+    def compute_function(index: int, array: np.ndarray, params: Dict[str, Any]):
+        flat_before = params["flat_before"]
+        flat_after = params["flat_after"]
+        dark_before = params["dark_before"]
+        dark_after = params["dark_after"]
+        selected_flat_fielding = params["selected_flat_fielding"]
+        use_dark = params["use_dark"]
+
+        if selected_flat_fielding == "Only Before":
+            flat_image = flat_before.data[index] if flat_before is not None else None
+            dark_image = dark_before.data[index] if dark_before is not None else None
+        elif selected_flat_fielding == "Only After":
+            flat_image = flat_after.data[index] if flat_after is not None else None
+            dark_image = dark_after.data[index] if dark_after is not None else None
+        elif selected_flat_fielding == "Both, concatenated":
+            flat_image = (flat_before.data[index] + flat_after.data[index]) / 2.0 \
+                if flat_before is not None and flat_after is not None else None
+            dark_image = (dark_before.data[index] + dark_after.data[index]) / 2.0 \
+                if dark_before is not None and dark_after is not None else None
+        else:
+            raise ValueError("Unknown flat fielding method")
+
+        if flat_image is not None and dark_image is not None:
+            corrected_flat = flat_image - dark_image
+            corrected_flat[corrected_flat <= 0] = MINIMUM_PIXEL_VALUE
+            corrected_data = np.divide(array, corrected_flat, out=np.zeros_like(array), where=(corrected_flat != 0))
+            if use_dark:
+                corrected_data -= dark_image
+            np.clip(corrected_data, MINIMUM_PIXEL_VALUE, MAXIMUM_PIXEL_VALUE, out=corrected_data)
+            array[:] = corrected_data
 
     @staticmethod
     def register_gui(form, on_change, view) -> Dict[str, Any]:
@@ -242,76 +224,15 @@ class FlatFieldFilter(BaseFilter):
 
     @staticmethod
     def validate_execute_kwargs(kwargs):
-        # Validate something is in both path text inputs
         if 'selected_flat_fielding_widget' not in kwargs:
             return False
 
-        if 'flat_before_widget' not in kwargs and 'dark_before_widget' not in kwargs or\
-                'flat_after_widget' not in kwargs and 'dark_after_widget' not in kwargs:
+        if ('flat_before_widget' not in kwargs or 'dark_before_widget' not in kwargs) \
+                or ('flat_after_widget' not in kwargs or 'dark_after_widget' not in kwargs):
             return False
-        assert isinstance(kwargs["flat_before_widget"], DatasetSelectorWidgetView)
-        assert isinstance(kwargs["flat_after_widget"], DatasetSelectorWidgetView)
-        assert isinstance(kwargs["dark_before_widget"], DatasetSelectorWidgetView)
-        assert isinstance(kwargs["dark_after_widget"], DatasetSelectorWidgetView)
+
         return True
 
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
-
-
-def _divide(data, norm_divide):
-    np.true_divide(data, norm_divide, out=data)
-
-
-def _subtract(data, dark=None):
-    # specify out to do in place, otherwise the data is copied
-    np.subtract(data, dark, out=data)
-
-
-def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
-    # subtract dark from flat
-    return np.subtract(flat, dark)
-
-
-def _execute(images: ImageStack, flat=None, dark=None, progress=None):
-    """A benchmark justifying the current implementation, performed on
-    500x2048x2048 images.
-
-    #1 Separate runs
-    Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
-    Divide (par) - 1.15s
-
-    #2 Separate parallel runs
-    Subtract (par) - 5.5s
-    Divide (par) - 1.15s
-
-    #3 Added subtract into _divide so that it is:
-                np.true_divide(
-                    np.subtract(data, dark, out=data), norm_divide, out=data)
-    Subtract then divide (par) - 55s
-    """
-    with progress:
-        progress.update(msg="Applying background correction")
-
-        if images.uses_shared_memory:
-            shared_dark = pu.copy_into_shared_memory(dark)
-            norm_divide = pu.copy_into_shared_memory(_norm_divide(flat, dark))
-        else:
-            shared_dark = pu.SharedArray(dark, None)
-            norm_divide = pu.SharedArray(_norm_divide(flat, dark), None)
-
-        # prevent divide-by-zero issues, and negative pixels make no sense
-        norm_divide.array[norm_divide.array == 0] = MINIMUM_PIXEL_VALUE
-
-        # subtract the dark from all images
-        do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
-        arrays = [images.shared_array, shared_dark]
-        ps.execute(do_subtract, arrays, images.data.shape[0], progress)
-
-        # divide the data by (flat - dark)
-        do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
-        arrays = [images.shared_array, norm_divide]
-        ps.execute(do_divide, arrays, images.data.shape[0], progress)
-
-    return images

@@ -6,7 +6,7 @@ from functools import partial
 from typing import Any, Dict, TYPE_CHECKING
 
 import numpy as np
-
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -25,8 +25,9 @@ class RescaleFilter(BaseFilter):
     """
     filter_name = 'Rescale'
 
-    @staticmethod
-    def filter_func(images: ImageStack,
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
                     min_input: float = 0.0,
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
@@ -42,8 +43,15 @@ class RescaleFilter(BaseFilter):
         :return: The ImageStack object scaled to a new range.
         """
 
-        RescaleFilter.filter_array(images.data, min_input, max_input, max_output)
+        params = {'min_input': min_input, 'max_input': max_input, 'max_output': max_output}
+        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
         return images
+
+    @staticmethod
+    def compute_function(image: np.ndarray, params: dict) -> np.ndarray:
+        min_input, max_input, max_output = params['min_input'], params['max_input'], params['max_output']
+        image[:] = np.interp(image, [min_input, max_input], [0, max_output])
+        return image
 
     @staticmethod
     def filter_array(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:

@@ -8,7 +8,6 @@ import numpy as np
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.parallel import utility as pu
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -32,26 +31,28 @@ class MonitorNormalisation(BaseFilter):
     filter_name = "Monitor Normalisation"
     link_histograms = True
 
-    @staticmethod
-    def filter_func(images: ImageStack, progress=None) -> ImageStack:
+    @classmethod
+    def filter_func(cls, images: ImageStack, progress=None) -> ImageStack:
         """
         :return: The ImageStack object which has been normalised.
         """
         if images.num_projections == 1:
-            # we can't really compute the preview as the image stack copy
-            # passed in doesn't have the logfile in it
             raise RuntimeError("No logfile available for this stack.")
 
         counts = images.counts()
-
         if counts is None:
             raise RuntimeError("No loaded log values for this stack.")
 
-        counts_val = pu.copy_into_shared_memory(counts.value / counts.value[0])
-        do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
-        arrays = [images.shared_array, counts_val]
-        ps.execute(do_division, arrays, images.num_projections, progress)
+        normalization_factor = counts.value / counts.value[0]
+        params = {'normalization_factor': normalization_factor}
+        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: Dict[str, np.ndarray]):
+        normalization_factor = params['normalization_factor']
+        array[i] /= normalization_factor
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:

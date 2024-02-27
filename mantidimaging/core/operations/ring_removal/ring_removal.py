@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from functools import partial
 from typing import TYPE_CHECKING
-
+import tomopy.misc.corr as tp
+import numpy as np
 from PyQt5.QtWidgets import QComboBox
 
-from mantidimaging import helper as h
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.optional_imports import safe_import
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
@@ -29,8 +28,9 @@ class RingRemovalFilter(BaseFilter):
     link_histograms = True
     show_negative_overlay = False
 
-    @staticmethod
-    def filter_func(images: ImageStack,
+    @classmethod
+    def filter_func(cls,
+                    images: ImageStack,
                     center_mode="image center",
                     center_x=None,
                     center_y=None,
@@ -40,48 +40,40 @@ class RingRemovalFilter(BaseFilter):
                     theta_min=30,
                     rwidth=30,
                     progress=None):
-        """
-        Removal of ring artifacts in reconstructed volume. Uses Wavelet-Fourier based ring removal
 
-        :param images: Sample data which is to be processed. Expected in radiograms
-        :param center_mode: Whether to use the center of the image or a user-defined value
-        :param center_x: (float, optional) abscissa location of center of rotation
-        :param center_y: (float, optional) ordinate location of center of rotation
-        :param thresh: (float, optional)
-                       maximum value of an offset due to a ring artifact
-        :param thresh_max: (float, optional)
-                       max value for portion of image to filter
-        :param thresh_min: (float, optional)
-                       min value for portion of image to filer
-        :param theta_min: (int, optional)
-                          minimum angle in degrees to be considered ring artifact
-        :param rwidth: (int, optional)
-                       Maximum width of the rings to be filtered in pixels
-        :returns: Filtered data
-        """
-        progress = Progress.ensure_instance(progress, task_name='Ring Removal')
-
-        tp = safe_import('tomopy.misc.corr')
-
-        if center_mode != "manual":
-            center_x = center_y = None
-
-        h.check_data_stack(images)
-
-        with progress:
-            progress.update(msg="Ring Removal")
-            sample = images.data
-            tp.remove_ring(sample,
-                           center_x=center_x,
-                           center_y=center_y,
-                           thresh=thresh,
-                           thresh_max=thresh_max,
-                           thresh_min=thresh_min,
-                           theta_min=theta_min,
-                           rwidth=rwidth,
-                           out=sample)
-
+        params = {
+            "center_mode": center_mode,
+            "center_x": center_x,
+            "center_y": center_y,
+            "thresh": thresh,
+            "thresh_max": thresh_max,
+            "thresh_min": thresh_min,
+            "theta_min": theta_min,
+            "rwidth": rwidth
+        }
+        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
         return images
+
+    @staticmethod
+    def compute_function(image_index, shared_array, params):
+        image = shared_array[image_index]
+        center_mode = params["center_mode"]
+        if center_mode == "manual":
+            center_x = params["center_x"]
+            center_y = params["center_y"]
+        else:
+            center_x = center_y = None
+        corrected_image = tp.remove_ring(image,
+                                         center_x=center_x,
+                                         center_y=center_y,
+                                         thresh=params["thresh"],
+                                         thresh_max=params["thresh_max"],
+                                         thresh_min=params["thresh_min"],
+                                         theta_min=params["theta_min"],
+                                         rwidth=params["rwidth"],
+                                         out=np.empty_like(image))
+
+        np.copyto(image, corrected_image)
 
     @staticmethod
     def register_gui(form, on_change, view):
