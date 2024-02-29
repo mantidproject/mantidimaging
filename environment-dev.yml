@@ -1,6 +1,6 @@
 name: mantidimaging-dev
 channels:
-  - mantidimaging/label/unstable
+  - mantidimaging/label/main
   - dtasev
   - astra-toolbox
   - conda-forge
