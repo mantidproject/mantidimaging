@@ -39,12 +39,8 @@ class NaNRemovalFilter(BaseFilter):
 
     MODES = ["Constant", "Median"]
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
-                    replace_value: float = 0.0,
-                    mode_value: str = "Constant",
-                    progress=None) -> ImageStack:
+    @staticmethod
+    def filter_func(data, replace_value=None, mode_value="Constant", progress=None) -> ImageStack:
         """
         :param data: The input data.
         :param mode_value: Values to replace NaNs with. One of ["Constant", "Median"]
@@ -54,9 +50,9 @@ class NaNRemovalFilter(BaseFilter):
         """
 
         params = {'replace_value': replace_value, 'mode_value': mode_value}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        ps.run_compute_func(NaNRemovalFilter.compute_function, data.data.shape[0], data.shared_array, params, progress)
 
-        return images
+        return data
 
     @staticmethod
     def compute_function(i: int, array: np.ndarray, params: dict):

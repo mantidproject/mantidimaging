@@ -31,8 +31,8 @@ from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 
-LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
-               "IMAT_Flower_Tomo_000000.tif")
+LOAD_SAMPLE = ("C:/Users/44770/Downloads/mantidimaging-data-small "
+               "(2)/mantidimaging-data-small/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif")
 
 if path := os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"):
     SAVE_DIR = Path(path)

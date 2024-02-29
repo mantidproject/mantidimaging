@@ -30,8 +30,8 @@ class DivideFilter(BaseFilter):
     filter_name = "Divide"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
+    @staticmethod
+    def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
         """
         :param value: The division value.
         :param unit: The unit of the divisor.
@@ -47,7 +47,7 @@ class DivideFilter(BaseFilter):
             value *= conversion_factor
 
         params = {'value': value}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        ps.run_compute_func(DivideFilter.compute_function, images.data.shape[0], images.shared_array, params, progress)
 
         return images
 

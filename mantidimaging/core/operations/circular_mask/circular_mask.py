@@ -29,12 +29,8 @@ class CircularMaskFilter(BaseFilter):
     filter_name = "Circular Mask"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls,
-                    data: ImageStack,
-                    circular_mask_ratio=0.95,
-                    circular_mask_value=0.,
-                    progress=None) -> ImageStack:
+    @staticmethod
+    def filter_func(data: ImageStack, circular_mask_ratio=0.95, circular_mask_value=0., progress=None) -> ImageStack:
         """
         :param data: Input data as a 3D numpy.ndarray
         :param circular_mask_ratio: The ratio to the full image.
@@ -47,7 +43,8 @@ class CircularMaskFilter(BaseFilter):
 
         params = {'circular_mask_ratio': circular_mask_ratio, 'circular_mask_value': circular_mask_value}
 
-        ps.run_compute_func(cls.compute_function, data.data.shape[0], [data.shared_array], params, progress)
+        ps.run_compute_func(CircularMaskFilter.compute_function, data.data.shape[0], [data.shared_array], params,
+                            progress)
 
         return data
 

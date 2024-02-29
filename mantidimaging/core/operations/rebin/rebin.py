@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import numpy as np
 from skimage.transform import resize
 
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import shared as ps
+from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -30,8 +30,8 @@ class RebinFilter(BaseFilter):
     filter_name = "Rebin"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, rebin_param=0.5, mode=None, progress=None) -> ImageStack:
+    @staticmethod
+    def filter_func(images: ImageStack, rebin_param=0.5, mode=None, progress=None) -> ImageStack:
         """
         :param images: Sample data which is to be processed. Expects radiograms
         :param rebin_param: int, float or tuple
@@ -43,7 +43,6 @@ class RebinFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        # Validate rebin_param
         if isinstance(rebin_param, tuple):
             new_shape = rebin_param
         elif isinstance(rebin_param, (int, float)):
@@ -52,16 +51,21 @@ class RebinFilter(BaseFilter):
         else:
             raise ValueError("Invalid type for rebin_param")
 
-        params = {'new_shape': new_shape, 'mode': mode}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        output = _create_reshaped_array(images, rebin_param)
 
+        params = {'new_shape': new_shape, 'mode': mode}
+        ps.run_compute_func(RebinFilter.compute_function, images.data.shape[0], [images.shared_array, output], params,
+                            progress)
+        images.shared_array = output
         return images
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: dict):
+    def compute_function(i: int, arrays: List[np.ndarray], params: dict):
+        array = arrays[0]
+        output = arrays[1]
         new_shape = params['new_shape']
         mode = params['mode']
-        array[i] = resize(array[i], output_shape=new_shape, mode=mode, preserve_range=True)
+        output[i] = resize(array[i], output_shape=new_shape, mode=mode, preserve_range=True)
 
     @staticmethod
     def register_gui(form, on_change, view):
@@ -140,6 +144,23 @@ class RebinFilter(BaseFilter):
             raise ValueError('Unknown bin dimension mode')
 
         return partial(RebinFilter.filter_func, mode=mode_field.currentText(), rebin_param=params)
+
+
+def _create_reshaped_array(images, rebin_param):
+    old_shape = images.data.shape
+    num_images = old_shape[0]
+
+    # use SciPy's calculation to find the expected dimensions
+    # int to avoid visible deprecation warning
+    if isinstance(rebin_param, tuple):
+        expected_dimy = int(rebin_param[0])
+        expected_dimx = int(rebin_param[1])
+    else:
+        expected_dimy = int(rebin_param * old_shape[1])
+        expected_dimx = int(rebin_param * old_shape[2])
+
+    shape = (num_images, expected_dimy, expected_dimx)
+    return pu.create_array(shape, images.dtype)
 
 
 def modes():

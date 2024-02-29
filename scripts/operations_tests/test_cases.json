@@ -220,8 +220,10 @@
             }
         ]
     },
-        "Ring Removal": {
-        "params": {"center_mode": "image center"},
+    "Ring Removal": {
+        "params": {
+            "center_mode": "image center"
+        },
         "source_data": "flower128",
         "cases": [
             {
@@ -232,6 +234,43 @@
                     "thresh_min": 1000,
                     "theta_min": 30,
                     "rwidth": 30
+                }
+            }
+        ]
+    },
+    "Rebin": {
+        "params": {
+            "rebin_param": 0.5,
+            "mode": "reflect"
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "rebin_by_factor_0.5",
+                "params": {
+                    "rebin_param": 0.5
+                }
+            },
+            {
+                "test_name": "rebin_to_dimensions_100x100",
+                "params": {
+                    "rebin_param": [
+                        100,
+                        100
+                    ]
+                }
+            }
+        ]
+    },
+    "Divide": {
+        "params": {},
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "divide_by_non_zero_value",
+                "params": {
+                    "value": 1.5,
+                    "unit": "micron"
                 }
             }
         ]

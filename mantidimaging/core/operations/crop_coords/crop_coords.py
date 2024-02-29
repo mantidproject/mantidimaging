@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Union, Optional, List, TYPE_CHECKING
+from typing import Union, Optional, List, TYPE_CHECKING, Dict, Any
 
 import numpy as np
 
-from mantidimaging.core.parallel import shared as ps
+from mantidimaging import helper as h
+from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
@@ -31,9 +32,8 @@ class CropCoordinatesFilter(BaseFilter):
     filter_name = "Crop Coordinates"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
                     progress=None) -> ImageStack:
         """Execute the Crop Coordinates by Region of Interest filter. This does
@@ -55,25 +55,39 @@ class CropCoordinatesFilter(BaseFilter):
         """
 
         if region_of_interest is None:
-            region_of_interest = [0, 0, 50, 50]  # Default ROI
-        # ROI is correct (SensibleROI or list of coords)
+            region_of_interest = SensibleROI.from_list([0, 0, 50, 50])
         if isinstance(region_of_interest, list):
-            roi = region_of_interest
-        else:
-            roi = [region_of_interest.left, region_of_interest.top, region_of_interest.right, region_of_interest.bottom]
+            region_of_interest = SensibleROI.from_list(region_of_interest)
 
-        params = {'roi': roi}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        assert isinstance(region_of_interest, SensibleROI)
 
+        h.check_data_stack(images)
+
+        sample = images.data
+        shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
+        if any((s < 0 for s in shape)):
+            raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
+                             "This can happen on the image preview right after a previous Crop Coordinates.")
+
+        output = pu.create_array(shape, images.dtype)
+        params = {'sample': sample, 'roi': region_of_interest, 'output': output.array}
+        ps.run_compute_func(CropCoordinatesFilter.compute_function, sample.shape[0], images.shared_array, params,
+                            progress)
+        images.shared_array = output
         return images
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: dict):
+    def compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
+        _ = array
+        sample = params['sample']
         roi = params['roi']
-        # Crop ROI
-        array[i] = array[i, roi[1]:roi[3], roi[0]:roi[2]]
+        output = params['output']
+        if isinstance(roi, SensibleROI):
+            left, top, right, bottom = roi.left, roi.top, roi.right, roi.bottom
+        else:
+            left, top, right, bottom = roi[0], roi[1], roi[2], roi[3]
+        output[i] = sample[i, top:bottom, left:right]
 
-    @staticmethod
     def register_gui(form, on_change, view):
         from mantidimaging.gui.utility import add_property_to_form
         label, roi_field = add_property_to_form("ROI",
