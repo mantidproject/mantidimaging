@@ -1,4 +1,4 @@
-name: mantidimaging-nightly
+name: mantidimaging
 channels:
   - mantidimaging/label/main
   - astra-toolbox
