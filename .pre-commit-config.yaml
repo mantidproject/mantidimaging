@@ -1,28 +1,29 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
-    hooks:
-    -   id: end-of-file-fixer
-        types: [python]
--   repo: https://github.com/google/yapf
-    rev: v0.40.2
-    hooks:
-    -   id: yapf
--   repo: local
-    hooks:
-    -   id: check-licenses
-        name: Check Licenses
-        description: Checks that all files have correct copyright licenses
-        entry: python -m CheckLicensesInFiles
-        language: python
-        types: [python]
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.3.0'
-    hooks:
-    -   id: mypy
-        files: ^mantidimaging/
-        args: [--ignore-missing-imports, --no-site-packages]
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
-    hooks:
-    -   id: ruff
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v3.4.0
+      hooks:
+          - id: end-of-file-fixer
+            types: [python]
+    - repo: https://github.com/google/yapf
+      rev: v0.40.2
+      hooks:
+          - id: yapf
+            args: [--diff]
+    - repo: local
+      hooks:
+          - id: check-licenses
+            name: Check Licenses
+            description: Checks that all files have correct copyright licenses
+            entry: python -m CheckLicensesInFiles
+            language: python
+            types: [python]
+    - repo: https://github.com/pre-commit/mirrors-mypy
+      rev: "v1.3.0"
+      hooks:
+          - id: mypy
+            files: ^mantidimaging/
+            args: [--ignore-missing-imports, --no-site-packages]
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.2.1
+      hooks:
+          - id: ruff
