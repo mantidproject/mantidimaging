@@ -43,10 +43,10 @@ install-dev-requirements:
 	python ./setup.py create_dev_env
 
 test:
-	python -m pytest -n auto
+	python -m pytest -n auto --run-tests
 
 test-verbose:
-	python -m pytest -vs -o log_cli=true
+	python -m pytest -vs -o log_cli=true --run-tests
 
 test-system:
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
