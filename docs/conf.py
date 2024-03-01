@@ -177,4 +177,7 @@ html_use_smartypants = False
 smv_tag_whitelist = r'^(2.3.0|2.4.0|2.5.0|2.6.0)$'
 smv_branch_whitelist = None  # No branches
 smv_released_pattern = r''
-smv_prebuild_command = "python setup.py docs_api || python setup.py internal_docs_api"
+smv_prebuild_command = (
+    'sphinx-apidoc -f -M -e -T -d 3 mantidimaging **/test **/test_helpers **/eyes_tests -o docs/api/ || '
+    'python setup.py docs_api || '
+    'python setup.py internal_docs_api')
