@@ -51,6 +51,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     spectrum_widget: SpectrumWidget
 
+    number_roi_properties_procced: int = 0
+
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
@@ -64,6 +66,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.selected_row_data: Optional[list] = None
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
+        self.old_table_names: list = []
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -108,6 +111,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableView.setAlternatingRowColors(True)
+        self.tableView.clicked.connect(self.handle_table_click)
 
         # Roi Prop table
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
@@ -178,19 +182,20 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
             """
             selected_row_data = self.roi_table_model.row_data(self.selected_row)
-
             if selected_row_data[0].lower() not in ["", " ", "all"] and selected_row_data[0] != self.current_roi:
                 if selected_row_data[0] in self.presenter.get_roi_names():
-                    selected_row_data[0] = self.current_roi
-                    return
+                    selected_row_data[0] = self.old_table_names[self.selected_row]
+                    self.current_roi = selected_row_data[0]
+                    self.last_clicked_roi = self.current_roi
                 else:
                     self.presenter.rename_roi(self.current_roi, selected_row_data[0])
                     self.current_roi = selected_row_data[0]
-                    return
+                    self.last_clicked_roi = self.current_roi
+                    self.set_roi_properties()
             else:
-                selected_row_data[0] = self.current_roi
+                selected_row_data[0] = self.old_table_names[self.selected_row]
 
-            selected_row_data[0] = self.current_roi
+            self.set_old_table_names()
             self.on_visibility_change()
             return
 
@@ -214,7 +219,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
         if self.presenter.export_mode == ExportMode.ROI_MODE:
-            self.current_roi = self.last_clicked_roi
+            if self.current_roi in self.old_table_names and self.last_clicked_roi in self.old_table_names:
+                pass
+            elif self.current_roi == ROI_RITS and self.last_clicked_roi in self.old_table_names:
+                self.current_roi = self.last_clicked_roi
+            elif self.current_roi == ROI_RITS and self.last_clicked_roi not in self.old_table_names:
+                self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            else:
+                self.last_clicked_roi = self.current_roi
             if self.roi_table_model.rowCount() == 0:
                 self.disable_roi_properties()
             if not self.roi_table_model.rowCount() == 0:
@@ -340,10 +352,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spinbox.setEnabled(True)
         self.set_roi_properties()
 
-    def update_roi_color_in_table(self, roi_name: str, new_color: tuple):
+    def handle_table_click(self, index):
+        if index.isValid() and index.column() == 1:
+            roi_name = self.roi_table_model.index(index.row(), 0).data()
+            self.set_spectum_roi_color(roi_name)
+
+    def set_spectum_roi_color(self, roi_name: str) -> None:
+        spectrum_roi = self.spectrum_widget.roi_dict[roi_name]
+        spectrum_roi.change_color_action.trigger()
+
+    def update_roi_color(self, roi_name: str, new_color: tuple) -> None:
         """
         Finds ROI by name in table and updates colour.
-
         @param roi_name: Name of the ROI to update.
         @param new_color: The new color for the ROI in (R, G, B) format.
         """
@@ -354,7 +374,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def find_row_for_roi(self, roi_name: str) -> Optional[int]:
         """
         Returns row index for ROI name, or None if not found.
-
         @param roi_name: Name ROI find.
         @return: Row index ROI or None.
         """
@@ -395,6 +414,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.tableView.selectRow(self.selected_row)
         self.current_roi = name
         self.removeBtn.setEnabled(True)
+        self.set_old_table_names()
 
     def remove_roi(self) -> None:
         """
@@ -413,6 +433,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
             self.disable_roi_properties()
+        else:
+            self.set_old_table_names()
+            self.current_roi = self.roi_table_model.row_data(self.selected_row)[0]
+            self.set_roi_properties()
 
     def clear_all_rois(self) -> None:
         """
@@ -492,3 +516,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def get_roi_properties_spinboxes(self):
         return self.roiPropertiesSpinBoxes
+
+    def set_old_table_names(self):
+        self.old_table_names = self.presenter.get_roi_names()
+        if 'all' in self.old_table_names:
+            self.old_table_names.remove('all')
+        if 'rits_roi' in self.old_table_names:
+            self.old_table_names.remove('rits_roi')

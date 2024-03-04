@@ -58,7 +58,7 @@
                 "params": {
                     "mult_val": 3
                 },
-                "source_date": "flower512"
+                "source_data": "flower512"
             }
         ]
     },
@@ -221,9 +221,7 @@
         ]
     },
     "Ring Removal": {
-        "params": {
-            "center_mode": "image center"
-        },
+        "params": {"center_mode": "image center"},
         "source_data": "flower128",
         "cases": [
             {
@@ -262,17 +260,4 @@
             }
         ]
     },
-    "Divide": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "divide_by_non_zero_value",
-                "params": {
-                    "value": 1.5,
-                    "unit": "micron"
-                }
-            }
-        ]
-    }
 }

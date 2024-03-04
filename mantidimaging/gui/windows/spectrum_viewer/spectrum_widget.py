@@ -43,9 +43,9 @@ class SpectrumROI(ROI):
         self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
-        change_color_action = QAction("Change ROI Colour", self)
-        change_color_action.triggered.connect(self.onChangeColor)
-        self.menu.addAction(change_color_action)
+        self.change_color_action = QAction("Change ROI Colour", self)
+        self.change_color_action.triggered.connect(self.onChangeColor)
+        self.menu.addAction(self.change_color_action)
 
     def onChangeColor(self):
         current_color = QColor(*self._colour)
@@ -86,6 +86,9 @@ class SpectrumROI(ROI):
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
         self.setPos((roi.left, roi.top))
         self.setSize((roi.width, roi.height))
+
+    def rename_roi(self, new_name: str) -> None:
+        self._name = new_name
 
 
 class SpectrumWidget(QWidget):
@@ -256,6 +259,7 @@ class SpectrumWidget(QWidget):
         if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
             self.roi_dict[new_name] = self.roi_dict.pop(old_name)
             self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
+            self.roi_dict[new_name].rename_roi(new_name)
 
 
 class SpectrumPlotWidget(GraphicsLayoutWidget):
@@ -263,7 +267,6 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[Optional[str], ROI]
 
     range_changed = pyqtSignal(object)
 

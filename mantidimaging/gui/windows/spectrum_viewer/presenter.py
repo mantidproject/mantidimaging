@@ -137,8 +137,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
     def handle_roi_clicked(self, roi) -> None:
-        self.view.current_roi = roi.name
-        self.view.set_roi_properties()
+        if not roi.name == ROI_RITS:
+            self.view.current_roi = roi.name
+            self.view.last_clicked_roi = roi.name
+            self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
         """
@@ -241,7 +243,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if roi_name in self.view.spectrum_widget.roi_dict:
             self.view.spectrum_widget.roi_dict[roi_name].colour = new_colour
-        self.view.update_roi_color_in_table(roi_name, new_colour)
+        self.view.update_roi_color(roi_name, new_colour)
+        self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
         roi_name = ROI_RITS
