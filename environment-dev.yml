@@ -17,6 +17,9 @@ dependencies:
       - eyes-images==5.20.*
   - yapf==0.40.*
   - mypy==1.8
+  - types-requests
+  - types-PyYAML
+  - types-docutils
   - pytest==7.4.*
   - pytest-cov==4.1.*
   - pytest-randomly==3.15.*
