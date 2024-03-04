@@ -71,19 +71,15 @@ class ClipValuesFilter(BaseFilter):
 
     @staticmethod
     def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
-        array = arrays[0][i]
+        sample = arrays[i]
+        clip_min = params['clip_min'] if params['clip_min'] is not None else sample.min()
+        clip_max = params['clip_max'] if params['clip_max'] is not None else sample.max()
+        clip_min_new_value = params['clip_min_new_value'] if params['clip_min_new_value'] is not None else clip_min
+        clip_max_new_value = params['clip_max_new_value'] if params['clip_max_new_value'] is not None else clip_max
 
-        clip_min = params.get('clip_min', np.min(array))
-        clip_max = params.get('clip_max', np.max(array))
-        clip_min_new_value = params.get('clip_min_new_value', clip_min)
-        clip_max_new_value = params.get('clip_max_new_value', clip_max)
-
-        if clip_min is not None and clip_max is not None:
-            np.clip(array, clip_min, clip_max, out=array)
-        elif clip_min is not None:
-            array[array < clip_min] = clip_min_new_value
-        elif clip_max is not None:
-            array[array > clip_max] = clip_max_new_value
+        # Clip the values
+        sample[sample < clip_min] = clip_min_new_value
+        sample[sample > clip_max] = clip_max_new_value
 
     @staticmethod
     def register_gui(form, on_change, view):
