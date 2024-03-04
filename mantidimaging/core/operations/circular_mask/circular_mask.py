@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict, Any
 
+import numpy as np
 import tomopy
-
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
@@ -42,14 +42,15 @@ class CircularMaskFilter(BaseFilter):
         if not circular_mask_ratio or not circular_mask_ratio < 1:
             raise ValueError(f'circular_mask_ratio must be > 0 and < 1. Value provided was {circular_mask_ratio}')
 
-        progress = Progress.ensure_instance(progress, num_steps=1, task_name='Circular Mask')
+        params = {'circular_mask_ratio': circular_mask_ratio, 'circular_mask_value': circular_mask_value}
 
-        with progress:
-            progress.update(msg="Applying circular mask")
-
-            tomopy.circ_mask(arr=data.data, axis=0, ratio=circular_mask_ratio, val=circular_mask_value)
-
+        ps.run_compute_func(CircularMaskFilter.compute_function, data.data.shape[0], [data.shared_array], params,
+                            progress)
         return data
+
+    @staticmethod
+    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
+        tomopy.circ_mask(arrays[0][i], axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
 
     @staticmethod
     def register_gui(form, on_change, view):
