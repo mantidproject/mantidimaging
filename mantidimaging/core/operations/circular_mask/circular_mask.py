@@ -51,6 +51,8 @@ class CircularMaskFilter(BaseFilter):
     @staticmethod
     def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
         array = arrays[i]
+        if array.ndim == 2:
+            array = np.expand_dims(array, axis=0)
         tomopy.circ_mask(array, axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
 
     @staticmethod
