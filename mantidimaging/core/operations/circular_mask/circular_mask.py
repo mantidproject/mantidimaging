@@ -44,13 +44,14 @@ class CircularMaskFilter(BaseFilter):
 
         params = {'circular_mask_ratio': circular_mask_ratio, 'circular_mask_value': circular_mask_value}
 
-        ps.run_compute_func(CircularMaskFilter.compute_function, data.data.shape[0], [data.shared_array], params,
-                            progress)
+        ps.run_compute_func(CircularMaskFilter.compute_function, len(data.data), [data.shared_array], params, progress)
+
         return data
 
     @staticmethod
     def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
-        tomopy.circ_mask(arrays[0][i], axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
+        array = arrays[i]
+        tomopy.circ_mask(array, axis=0, ratio=params['circular_mask_ratio'], val=params['circular_mask_value'])
 
     @staticmethod
     def register_gui(form, on_change, view):
