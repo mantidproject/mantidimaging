@@ -78,9 +78,12 @@ class ClipValuesFilter(BaseFilter):
         clip_min_new_value = params.get('clip_min_new_value', clip_min)
         clip_max_new_value = params.get('clip_max_new_value', clip_max)
 
-        np.clip(array, clip_min, clip_max, out=array)
-        array[array < clip_min] = clip_min_new_value
-        array[array > clip_max] = clip_max_new_value
+        if clip_min is not None and clip_max is not None:
+            np.clip(array, clip_min, clip_max, out=array)
+        elif clip_min is not None:
+            array[array < clip_min] = clip_min_new_value
+        elif clip_max is not None:
+            array[array > clip_max] = clip_max_new_value
 
     @staticmethod
     def register_gui(form, on_change, view):
