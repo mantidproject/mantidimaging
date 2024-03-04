@@ -6,7 +6,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 import numpy as np
-import scipy.ndimage as scipy_ndimage
+from scipy.ndimage import median_filter
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -39,15 +39,6 @@ class OutliersFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def _execute(data, diff, radius, mode):
-        # Adapted from tomopy source
-        median = scipy_ndimage.median_filter(data, radius)
-        if mode == OUTLIERS_BRIGHT:
-            return np.where((data - median) > diff, median, data)
-        else:
-            return np.where((median - data) > diff, median, data)
-
-    @staticmethod
     def filter_func(images: ImageStack,
                     diff=None,
                     radius=_default_radius,
@@ -62,18 +53,28 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        if not diff or not diff > 0:
-            raise ValueError(f'diff parameter must be greater than 0. Value provided was {diff}')
+        if diff <= 0:
+            raise ValueError("diff parameter must be greater than 0.")
+        if radius <= 0:
+            raise ValueError("radius parameter must be greater than 0.")
 
-        if not radius or not radius > 0:
-            raise ValueError(f'radius parameter must be greater than 0. Value provided was {radius}')
+        params = {'diff': diff, 'radius': radius, 'mode': mode}
+        ps.run_compute_func(OutliersFilter.compute_function, images.data.shape[0], images.shared_array, params,
+                            progress)
 
-        func = ps.create_partial(OutliersFilter._execute, ps.return_to_self, diff=diff, radius=radius, mode=mode)
-        ps.execute(func, [images.shared_array],
-                   images.data.shape[0],
-                   progress=progress,
-                   msg=f"Outliers with threshold {diff} and kernel {radius}")
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params):
+        diff = params['diff']
+        radius = params['radius']
+        mode = params['mode']
+
+        median = median_filter(array[i], size=radius)
+        if mode == OUTLIERS_BRIGHT:
+            array[i] = np.where((array[i] - median) > diff, median, array[i])
+        else:
+            array[i] = np.where((median - array[i]) > diff, median, array[i])
 
     @staticmethod
     def register_gui(form, on_change, view):
