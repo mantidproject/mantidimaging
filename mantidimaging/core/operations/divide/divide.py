@@ -6,6 +6,9 @@ from functools import partial
 from typing import Union, Callable, Dict, Any, TYPE_CHECKING
 
 from mantidimaging import helper as h
+import numpy as np
+
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -43,8 +46,15 @@ class DivideFilter(BaseFilter):
         if unit == "micron":
             value *= 1e-4
 
-        images.data /= value
+        params = {'value': value}
+        ps.run_compute_func(DivideFilter.compute_function, images.data.shape[0], images.shared_array, params, progress)
+
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: dict):
+        value = params['value']
+        array[i] /= value
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, Any]:
@@ -75,9 +85,3 @@ class DivideFilter(BaseFilter):
         value = value_widget.value()
         unit = unit_widget.currentText()
         return partial(DivideFilter.filter_func, value=value, unit=unit)
-
-    @staticmethod
-    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
-        if 'value_widget' not in kwargs:
-            return False
-        return True
