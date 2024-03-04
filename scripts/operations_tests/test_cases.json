@@ -443,5 +443,173 @@
         }
       }
     ]
-  }
+  },
+      "Divide": {
+        "params": {},
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "divide_by_non_zero_value",
+                "params": {
+                    "value": 1.5,
+                    "unit": "micron"
+                }
+            }
+        ]
+    },
+    "Remove Outliers": {
+        "params": {
+            "radius": 3,
+            "mode": "OUTLIERS_BRIGHT"
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "default_settings",
+                "params": {
+                    "diff": 1000,
+                    "radius": 3,
+                    "mode": "OUTLIERS_BRIGHT"
+                }
+            },
+            {
+                "test_name": "increased_diff",
+                "params": {
+                    "diff": 3000,
+                    "radius": 3,
+                    "mode": "OUTLIERS_BRIGHT"
+                }
+            },
+            {
+                "test_name": "dark_outliers",
+                "params": {
+                    "diff": 1000,
+                    "radius": 3,
+                    "mode": "OUTLIERS_DARK"
+                }
+            }
+        ]
+    },
+    "NaN Removal": {
+        "params": {
+            "mode_value": "Constant",
+            "replace_value": null
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "replace_with_constant",
+                "params": {
+                    "mode_value": "Constant",
+                    "replace_value": 0
+                }
+            },
+            {
+                "test_name": "replace_with_median",
+                "params": {
+                    "mode_value": "Median"
+                }
+            }
+        ]
+    },
+    "Rebin": {
+        "params": {
+            "rebin_param": 0.5,
+            "mode": "reflect"
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "rebin_by_factor_0.5",
+                "params": {
+                    "rebin_param": 0.5
+                }
+            },
+            {
+                "test_name": "rebin_to_dimensions_100x100",
+                "params": {
+                    "rebin_param": [
+                        100,
+                        100
+                    ]
+                }
+            }
+        ]
+    },
+    "Rescale": {
+        "params": {
+            "min_input": 0.0,
+            "max_input": 10000.0,
+            "max_output": 256.0
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "default_settings",
+                "params": {
+                    "min_input": 0.0,
+                    "max_input": 10000.0,
+                    "max_output": 256.0
+                }
+            }
+        ]
+    },
+    "ROI Normalisation": {
+        "params": {
+            "region_of_interest": [
+                0,
+                0,
+                200,
+                200
+            ],
+            "normalisation_mode": "Stack Average",
+            "flat_field": null
+        },
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "default_settings",
+                "params": {
+                    "region_of_interest": [
+                        0,
+                        0,
+                        200,
+                        200
+                    ],
+                    "normalisation_mode": "Stack Average",
+                    "flat_field": null
+                }
+            }
+        ]
+    },
+    "Rotate Stack": {
+        "params": {},
+        "source_data": "flower128",
+        "cases": [
+            {
+                "test_name": "rotate_90_degrees",
+                "params": {
+                    "angle": 90
+                }
+            },
+            {
+                "test_name": "rotate_180_degrees",
+                "params": {
+                    "angle": 180
+                }
+            },
+            {
+                "test_name": "rotate_270_degrees",
+                "params": {
+                    "angle": 270
+                }
+            },
+            {
+                "test_name": "rotate_custom_degrees",
+                "params": {
+                    "angle": 45
+                }
+            }
+        ]
+    }
 }
