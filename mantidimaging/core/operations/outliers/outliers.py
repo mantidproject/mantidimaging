@@ -53,10 +53,11 @@ class OutliersFilter(BaseFilter):
 
         :return: The processed 3D numpy.ndarray
         """
-        if diff <= 0:
-            raise ValueError("diff parameter must be greater than 0.")
-        if radius <= 0:
-            raise ValueError("radius parameter must be greater than 0.")
+        if not diff or not diff > 0:
+            raise ValueError(f'diff parameter must be greater than 0. Value provided was {diff}')
+
+        if not radius or not radius > 0:
+            raise ValueError(f'radius parameter must be greater than 0. Value provided was {radius}')
 
         params = {'diff': diff, 'radius': radius, 'mode': mode}
         ps.run_compute_func(OutliersFilter.compute_function, images.data.shape[0], images.shared_array, params,
