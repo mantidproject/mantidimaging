@@ -250,5 +250,198 @@
                 }
             }
         ]
-    }
+    },
+  "Remove dead stripes": {
+    "params": {
+      "snr": 3,
+      "size": 61
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {}
+      },
+      {
+        "test_name": "high_sensitivity",
+        "params": {
+          "snr": 5
+        }
+      },
+      {
+        "test_name": "larger_filter_window",
+        "params": {
+          "size": 81
+        }
+      },
+      {
+        "test_name": "low_sensitivity",
+        "params": {
+          "snr": 2
+        }
+      },
+      {
+        "test_name": "smaller_filter_window",
+        "params": {
+          "size": 41
+        }
+      }
+    ]
+  },
+  "Remove all stripes": {
+    "params": {
+      "snr": 3,
+      "la_size": 61,
+      "sm_size": 21,
+      "dim": 1
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {}
+      },
+      {
+        "test_name": "high_sensitivity",
+        "params": {
+          "snr": 5
+        }
+      },
+      {
+        "test_name": "large_stripes",
+        "params": {
+          "la_size": 81
+        }
+      },
+      {
+        "test_name": "small_to_medium_stripes",
+        "params": {
+          "sm_size": 31
+        }
+      },
+      {
+        "test_name": "2D_median_filter",
+        "params": {
+          "dim": 2
+        }
+      }
+    ]
+  },
+  "Remove large stripes": {
+    "params": {
+      "snr": 3,
+      "la_size": 61
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {}
+      },
+      {
+        "test_name": "high_sensitivity",
+        "params": {
+          "snr": 5
+        }
+      },
+      {
+        "test_name": "larger_filter_window",
+        "params": {
+          "la_size": 81
+        }
+      },
+      {
+        "test_name": "low_sensitivity",
+        "params": {
+          "snr": 2
+        }
+      },
+      {
+        "test_name": "smaller_filter_window",
+        "params": {
+          "la_size": 41
+        }
+      }
+    ]
+  },
+  "Remove stripes with filtering": {
+    "params": {
+      "sigma": 3,
+      "size": 21,
+      "window_dim": 1,
+      "filtering_dim": 1
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {}
+      },
+      {
+        "test_name": "increased_sigma",
+        "params": {
+          "sigma": 5
+        }
+      },
+      {
+        "test_name": "larger_size",
+        "params": {
+          "size": 31
+        }
+      },
+      {
+        "test_name": "2d_window",
+        "params": {
+          "window_dim": 2
+        }
+      },
+      {
+        "test_name": "2d_filtering",
+        "params": {
+          "filtering_dim": 2
+        }
+      },
+      {
+        "test_name": "combined_adjustments",
+        "params": {
+          "sigma": 4,
+          "size": 25,
+          "window_dim": 2,
+          "filtering_dim": 2
+        }
+      }
+    ]
+  },
+  "Remove stripes with sorting and fitting": {
+    "params": {
+      "order": 1,
+      "sigma": 3
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {}
+      },
+      {
+        "test_name": "increased_order",
+        "params": {
+          "order": 2
+        }
+      },
+      {
+        "test_name": "increased_sigma",
+        "params": {
+          "sigma": 5
+        }
+      },
+      {
+        "test_name": "combined_adjustments",
+        "params": {
+          "order": 2,
+          "sigma": 5
+        }
+      }
+    ]
+  }
 }
