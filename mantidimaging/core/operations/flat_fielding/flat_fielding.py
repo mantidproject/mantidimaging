@@ -48,9 +48,8 @@ def enable_correct_fields_only(selected_flat_fielding_widget, flat_before_widget
 class FlatFieldFilter(BaseFilter):
     filter_name = 'Flat-fielding'
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     flat_before: ImageStack | None = None,
                     flat_after: ImageStack | None = None,
                     dark_before: ImageStack | None = None,
@@ -71,7 +70,8 @@ class FlatFieldFilter(BaseFilter):
             "use_dark": use_dark
         }
 
-        ps.run_compute_func(cls.compute_function, images.num_sinograms, images.shared_array, params, progress)
+        ps.run_compute_func(FlatFieldFilter.compute_function, images.num_sinograms, images.shared_array, params,
+                            progress)
 
         return images
 

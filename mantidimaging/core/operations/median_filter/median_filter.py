@@ -67,8 +67,8 @@ class MedianFilter(BaseFilter):
     filter_name = "Median"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls, data: ImageStack, size=None, mode="reflect", progress=None, force_cpu=True):
+    @staticmethod
+    def filter_func(data: ImageStack, size=None, mode="reflect", progress=None, force_cpu=True):
         """
         :param data: Input data as an ImageStack object.
         :param size: Size of the kernel
@@ -90,7 +90,7 @@ class MedianFilter(BaseFilter):
         params = {'mode': mode, 'force_cpu': force_cpu}
         if force_cpu:
             params['size'] = size  # Pass size only if using CPU
-        ps.run_compute_func(cls.compute_function, data.data.shape[0], data.shared_array, params)
+        ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
 
         h.check_data_stack(data)
         return data

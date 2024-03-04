@@ -31,8 +31,8 @@ class MonitorNormalisation(BaseFilter):
     filter_name = "Monitor Normalisation"
     link_histograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, progress=None) -> ImageStack:
+    @staticmethod
+    def filter_func(images: ImageStack, progress=None) -> ImageStack:
         """
         :return: The ImageStack object which has been normalised.
         """
@@ -45,7 +45,8 @@ class MonitorNormalisation(BaseFilter):
 
         normalization_factor = counts.value / counts.value[0]
         params = {'normalization_factor': normalization_factor}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        ps.run_compute_func(MonitorNormalisation.compute_function, images.data.shape[0], images.shared_array, params,
+                            progress)
 
         return images
 

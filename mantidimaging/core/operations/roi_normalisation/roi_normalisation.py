@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING, Dict, Any
 
 import numpy as np
 
@@ -40,21 +40,19 @@ class RoiNormalisationFilter(BaseFilter):
     filter_name = "ROI Normalisation"
     link_histograms = True
 
-    @classmethod
-    def calculate_flat_field_mean(cls, flat_field: ImageStack) -> float:
-        """Calculates the mean of the flat field image stack."""
+    @staticmethod
+    def calculate_flat_field_mean(flat_field: ImageStack) -> float:
         return np.mean(flat_field.data)
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     region_of_interest: SensibleROI | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
                     flat_field: Optional[ImageStack] = None,
                     progress=None) -> ImageStack:
         flat_field_mean = None
         if normalisation_mode == "Flat Field" and flat_field is not None:
-            flat_field_mean = cls.calculate_flat_field_mean(flat_field)
+            flat_field_mean = RoiNormalisationFilter.calculate_flat_field_mean(flat_field)
 
         params = {
             'air_region': region_of_interest,
@@ -62,16 +60,16 @@ class RoiNormalisationFilter(BaseFilter):
             'flat_field_mean': flat_field_mean
         }
 
-        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
+        ps.run_compute_func(RoiNormalisationFilter.compute_function, len(images.data), images.data, params)
 
         return images
 
     @staticmethod
-    def compute_function(image_index: int,
-                         array: np.ndarray,
-                         air_region: SensibleROI,
-                         normalisation_mode: str,
-                         flat_field_mean: Optional[float] = None):
+    def compute_function(image_index: int, array: np.ndarray, params: Dict[str, Any]):
+        air_region = params['air_region']
+        normalisation_mode = params['normalisation_mode']
+        flat_field_mean = params['flat_field_mean'] if 'flat_field_mean' in params else None
+
         air_values = array[image_index][air_region.top:air_region.bottom, air_region.left:air_region.right]
         air_mean = np.mean(air_values)
 
@@ -83,6 +81,7 @@ class RoiNormalisationFilter(BaseFilter):
             normalization_factor = air_mean / flat_field_mean
         else:
             raise ValueError(f"Unsupported normalisation_mode: {normalisation_mode}")
+
         array[image_index] /= normalization_factor
 
     @staticmethod

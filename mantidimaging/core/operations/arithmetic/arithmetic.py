@@ -25,9 +25,8 @@ class ArithmeticFilter(BaseFilter):
     """
     filter_name = "Arithmetic"
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     div_val: float = 1.0,
                     mult_val: float = 1.0,
                     add_val: float = 0.0,
@@ -47,7 +46,8 @@ class ArithmeticFilter(BaseFilter):
             raise ValueError("Unable to proceed with operation because division/multiplication value is zero.")
 
         params = {'div': div_val, 'mult': mult_val, 'add': add_val, 'sub': sub_val}
-        ps.run_compute_func(cls.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        ps.run_compute_func(ArithmeticFilter.compute_function, images.data.shape[0], images.shared_array, params,
+                            progress)
 
         return images
 

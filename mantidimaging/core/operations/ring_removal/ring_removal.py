@@ -28,9 +28,8 @@ class RingRemovalFilter(BaseFilter):
     link_histograms = True
     show_negative_overlay = False
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     center_mode="image center",
                     center_x=None,
                     center_y=None,
@@ -51,7 +50,7 @@ class RingRemovalFilter(BaseFilter):
             "theta_min": theta_min,
             "rwidth": rwidth
         }
-        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
+        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), images.data, params)
         return images
 
     @staticmethod

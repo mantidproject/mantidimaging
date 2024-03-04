@@ -25,9 +25,8 @@ class RescaleFilter(BaseFilter):
     """
     filter_name = 'Rescale'
 
-    @classmethod
-    def filter_func(cls,
-                    images: ImageStack,
+    @staticmethod
+    def filter_func(images: ImageStack,
                     min_input: float = 0.0,
                     max_input: float = 10000.0,
                     max_output: float = 256.0,
@@ -44,14 +43,13 @@ class RescaleFilter(BaseFilter):
         """
 
         params = {'min_input': min_input, 'max_input': max_input, 'max_output': max_output}
-        ps.run_compute_func(cls.compute_function, len(images.data), images.data, params)
+        ps.run_compute_func(RescaleFilter.compute_function, len(images.data), images.data, params)
         return images
 
     @staticmethod
-    def compute_function(image: np.ndarray, params: dict) -> np.ndarray:
+    def compute_function(index: int, array: np.ndarray, params: dict):
         min_input, max_input, max_output = params['min_input'], params['max_input'], params['max_output']
-        image[:] = np.interp(image, [min_input, max_input], [0, max_output])
-        return image
+        array[index] = np.interp(array[index], [min_input, max_input], [0, max_output])
 
     @staticmethod
     def filter_array(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
