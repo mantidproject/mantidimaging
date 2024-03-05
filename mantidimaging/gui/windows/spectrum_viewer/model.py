@@ -218,6 +218,7 @@ class SpectrumViewerWindowModel:
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
+            assert len(self._stack.data.shape) == 3
             return self._stack.data.shape[1:]
         else:
             return 0, 0
