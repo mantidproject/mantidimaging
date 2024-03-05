@@ -8,10 +8,13 @@ SOURCE_DIRS=mantidimaging scripts docs/ext/
 CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 ifeq ($(OS),Windows_NT)
+    ifndef $(APPLITOOLS_API_KEY)
+    $(info 'No Applitools API key has been found, switching to local')
     XVFBRUN=
 	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
 	export APPLITOOLS_API_KEY=local
 	export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+	endif
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
