@@ -76,14 +76,14 @@ def execute(partial_func: partial,
     pu.execute_impl(num_operations, partial_func, all_data_in_shared_memory, progress, msg)
 
 
-ComputeFuncType = Union[Callable[[int, List['ndarray'], Dict[str, Any]], None],
-                        Callable[[int, 'ndarray', Dict[str, Any]], None]]
+ComputeFuncType = (Callable[[int, list['ndarray'], dict[str, Any]], None]
+                   | Callable[[int, 'ndarray', dict[str, Any]], None])
 
 
 class _Worker:
 
-    def __init__(self, func: ComputeFuncType, arrays: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]],
-                 params: Dict[str, Any]):
+    def __init__(self, func: ComputeFuncType, arrays: list[pu.SharedArray] | list[pu.SharedArrayProxy],
+                 params: dict[str, Any]):
         self.func = func
         self.arrays = arrays
         self.params = params
@@ -91,8 +91,8 @@ class _Worker:
     def __call__(self, index: int):
         ndarrays = [sa.array for sa in self.arrays]
         if len(ndarrays) == 1:
-            ndarrays = ndarrays[0]
-        self.func(index, ndarrays, self.params)
+            ndarrays = ndarrays[0]  # type: ignore[assignment]
+        self.func(index, ndarrays, self.params)  # type: ignore[arg-type]
 
 
 def run_compute_func(func: ComputeFuncType,
