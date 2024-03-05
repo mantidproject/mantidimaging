@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 class ImageStack:
     name: str
-    _shared_array: np.ndarray | pu.SharedArray
+    _shared_array: pu.SharedArray
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
