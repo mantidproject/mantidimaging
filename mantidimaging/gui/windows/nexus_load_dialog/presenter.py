@@ -5,7 +5,7 @@ import enum
 import traceback
 from enum import auto, Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, Optional, Union, Tuple, List
+from typing import TYPE_CHECKING, Optional, Union, Tuple
 
 import h5py
 import numpy as np
@@ -65,7 +65,7 @@ class NexusLoadPresenter:
         self.image_key_dataset = None
         self.rotation_angles = None
         self.title = ""
-        self.recon_data: List[np.array] = []
+        self.recon_data: list[np.ndarray] = []
 
         self.sample_array = None
         self.dark_before_array = None

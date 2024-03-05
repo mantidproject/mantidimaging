@@ -363,7 +363,7 @@ class SpectrumViewerWindowModel:
             if sub_bottom == bottom:
                 break
 
-    def get_stack_time_of_flight(self) -> np.array | None:
+    def get_stack_time_of_flight(self) -> np.ndarray | None:
         if self._stack is None or self._stack.log_file is None:
             return None
         try:
