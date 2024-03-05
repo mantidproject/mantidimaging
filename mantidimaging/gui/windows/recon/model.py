@@ -260,13 +260,13 @@ class ReconstructWindowModel(object):
                and images.width == images.proj180deg.width
 
     def stack_contains_nans(self) -> bool:
-        return np.any(np.isnan(self.images.data))
+        return bool(np.any(np.isnan(self.images.data)))
 
     def stack_contains_zeroes(self) -> bool:
         return not np.all(self.images.data)
 
     def stack_contains_negative_values(self) -> bool:
-        return np.any(self.images.data < 0)
+        return bool(np.any(self.images.data < 0))
 
     @property
     def stack_id(self):
