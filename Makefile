@@ -15,6 +15,8 @@ ifeq ($(OS),Windows_NT)
     TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
     export APPLITOOLS_API_KEY=local
     export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+    $(info variable APPLITOOLS_API_KEY = $(APPLITOOLS_API_KEY))
+    $(info variable APPLITOOLS_IMAGE_DIR = $(APPLITOOLS_IMAGE_DIR))
 	endif
 else
 	XVFBRUN=xvfb-run --auto-servernum
