@@ -10,10 +10,11 @@ CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p
 ifeq ($(OS),Windows_NT)
     ifndef $(APPLITOOLS_API_KEY)
     $(info 'No Applitools API key has been found, switching to local')
+    $(info variable TEMP = $(TEMP))
     XVFBRUN=
-	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
-	export APPLITOOLS_API_KEY=local
-	export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+    TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
+    export APPLITOOLS_API_KEY=local
+    export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
 	endif
 else
 	XVFBRUN=xvfb-run --auto-servernum
