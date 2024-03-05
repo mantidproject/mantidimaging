@@ -67,11 +67,11 @@ class NexusLoadPresenter:
         self.title = ""
         self.recon_data: list[np.ndarray] = []
 
-        self.sample_array = None
-        self.dark_before_array = None
-        self.flat_before_array = None
-        self.flat_after_array = None
-        self.dark_after_array = None
+        self.sample_array: np.ndarray | None = None
+        self.dark_before_array: np.ndarray | None = None
+        self.flat_before_array: np.ndarray | None = None
+        self.flat_after_array: np.ndarray | None = None
+        self.dark_after_array: np.ndarray | None = None
 
     def notify(self, n: Notification):
         try:
@@ -298,6 +298,8 @@ class NexusLoadPresenter:
         """
         sample_images = self._create_sample_images()
         sample_images.name = self.title
+        assert self.flat_before_array is not None and self.flat_after_array is not None
+        assert self.dark_before_array is not None and self.dark_after_array is not None
         ds = StrictDataset(sample=sample_images,
                            flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
                                                                        ImageKeys.FlatField.value),
