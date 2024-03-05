@@ -40,7 +40,7 @@ build-conda-package-release: .remind-for-user .remind-for-anaconda-api install-b
 
 
 install-dev-requirements:
-    python ./setup.py create_dev_env
+	python ./setup.py create_dev_env
 
 test:
 	python -m pytest -n auto --run-unit-tests
