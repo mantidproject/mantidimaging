@@ -40,7 +40,7 @@ build-conda-package-release: .remind-for-user .remind-for-anaconda-api install-b
 
 
 install-dev-requirements:
-	python ./setup.py create_dev_env
+    python ./setup.py create_dev_env
 
 test:
 	python -m pytest -n auto --run-unit-tests
@@ -49,13 +49,13 @@ test-verbose:
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
 test-gh-actions:
-    python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
+	python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
 
 test-system:
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
 
 test-gh-system:
-    python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
+	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
@@ -68,7 +68,7 @@ test-screenshots-win:
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 test-gh-screenshots:
-    python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-eyes-tests --durations=10
+	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-eyes-tests --durations=10
 
 mypy:
 	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
