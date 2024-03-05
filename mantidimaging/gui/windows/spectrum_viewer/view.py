@@ -305,7 +305,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def set_image(self, image_data: Optional['np.ndarray'], autoLevels: bool = True):
+    def set_image(self, image_data: np.ndarray, autoLevels: bool = True):
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
 
     def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
