@@ -48,8 +48,14 @@ test:
 test-verbose:
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
+test-gh-actions:
+    python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
+
 test-system:
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+
+test-gh-system:
+    python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
@@ -60,6 +66,9 @@ test-screenshots-win:
 	-mkdir ${TEST_RESULT_DIR}
 	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
+
+test-gh-screenshots:
+    python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-eyes-tests --durations=10
 
 mypy:
 	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
