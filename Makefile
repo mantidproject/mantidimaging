@@ -43,22 +43,22 @@ install-dev-requirements:
 	python ./setup.py create_dev_env
 
 test:
-	python -m pytest -n auto --run-tests
+	python -m pytest -n auto --run-unit-tests
 
 test-verbose:
-	python -m pytest -vs -o log_cli=true --run-tests
+	python -m pytest -vs -o log_cli=true --run-unit-tests
 
 test-system:
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
-	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 test-screenshots-win:
 	-mkdir ${TEST_RESULT_DIR}
-	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:
