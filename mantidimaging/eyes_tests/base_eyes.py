@@ -56,6 +56,7 @@ print(f"base_eyes.py: {API_KEY_PRESENT=}")
 print(f"base_eyes.py: {TEST_NAME=}")
 print(f"base_eyes.py: {APPLITOOLS_IMAGE_DIR=}")
 
+
 @unittest.skipIf(API_KEY_PRESENT is None, "API Key is not defined in the environment, so Eyes tests are skipped.")
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
