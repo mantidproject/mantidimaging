@@ -49,22 +49,27 @@ class NaNRemovalFilter(BaseFilter):
         :return: The ImageStack object with the NaNs replaced.
         """
 
-        params = {'replace_value': replace_value, 'mode_value': mode_value}
-        ps.run_compute_func(NaNRemovalFilter.compute_function, data.data.shape[0], data.shared_array, params, progress)
+        if mode_value == "Constant":
+            params = {'replace_value': replace_value}
+            ps.run_compute_func(NaNRemovalFilter.compute_constant_function, data.data.shape[0], data.shared_array,
+                                params, progress)
+        elif mode_value == "Median":
+            ps.run_compute_func(NaNRemovalFilter.compute_median_function, data.data.shape[0], data.shared_array, {},
+                                progress)
+        else:
+            raise ValueError(f"Unknown mode: '{mode_value}'. Should be one of {NaNRemovalFilter.MODES}")
 
         return data
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: dict):
-        mode_value = params['mode_value']
+    def compute_constant_function(i: int, array: np.ndarray, params: dict):
         replace_value = params['replace_value']
-        if mode_value == "Constant":
-            nan_idxs = np.isnan(array[i])
-            array[i][nan_idxs] = replace_value
-        elif mode_value == "Median":
-            array[i] = NaNRemovalFilter._nan_to_median(array[i], size=3, edgemode='reflect')
-        else:
-            raise ValueError(f"Unknown mode: '{mode_value}'. Should be one of {NaNRemovalFilter.MODES}")
+        nan_idxs = np.isnan(array[i])
+        array[i][nan_idxs] = replace_value
+
+    @staticmethod
+    def compute_median_function(i: int, array: np.ndarray, params: dict):
+        array[i] = NaNRemovalFilter._nan_to_median(array[i], size=3, edgemode='reflect')
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
