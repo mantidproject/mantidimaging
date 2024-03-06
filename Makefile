@@ -10,6 +10,7 @@ CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p
 ifeq ($(OS),Windows_NT)
     XVFBRUN=
     TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
+    APPLITOOLS_IMAGE_DIR=
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
