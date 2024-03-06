@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, List, Dict, Any
+from typing import TYPE_CHECKING, Dict, Any
 
 import numpy as np
 
@@ -70,16 +70,16 @@ class ClipValuesFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
-        sample = arrays[i]
-        clip_min = params['clip_min'] if params['clip_min'] is not None else sample.min()
-        clip_max = params['clip_max'] if params['clip_max'] is not None else sample.max()
+    def compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
+        slice = array[i]
+        clip_min = params['clip_min'] if params['clip_min'] is not None else slice.min()
+        clip_max = params['clip_max'] if params['clip_max'] is not None else slice.max()
         clip_min_new_value = params['clip_min_new_value'] if params['clip_min_new_value'] is not None else clip_min
         clip_max_new_value = params['clip_max_new_value'] if params['clip_max_new_value'] is not None else clip_max
 
         # Clip the values
-        sample[sample < clip_min] = clip_min_new_value
-        sample[sample > clip_max] = clip_max_new_value
+        slice[slice < clip_min] = clip_min_new_value
+        slice[slice > clip_max] = clip_max_new_value
 
     @staticmethod
     def register_gui(form, on_change, view):
