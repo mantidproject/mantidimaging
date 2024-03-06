@@ -28,8 +28,6 @@ skipped_tests = []
 def pytest_collection_modifyitems(config, items):
     if config.getoption("--run-system-tests"):
         allowed_markers.append(pytest.mark.system.mark)
-    if config.getoption("--run-unit-tests"):
-        allowed_markers.append(pytest.mark.unit.mark)
     if config.getoption("--run-eyes-tests"):
         allowed_markers.append(pytest.mark.eyes.mark)
     if config.getoption("--run-unit-tests") or len(allowed_markers) == 0:
