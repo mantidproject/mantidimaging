@@ -56,14 +56,14 @@ test-verbose: test-local-setup
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
 test-gh-unit:
-	@echo "APPLITOOLS_IMAGE_DIR = " ${APPLITOOLS_IMAGE_DIR}
-	python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
+	python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10 --ignore=mantidimaging/eyes_tests
 
 test-system: test-local-setup
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
 
 test-gh-system:
-	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
+	APPLITOOLS_IMAGE_DIR=
+	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10 --ignore=mantidimaging/eyes_tests
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
@@ -75,6 +75,7 @@ test-screenshots-win: test-local-setup
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 test-gh-screenshots:
+	APPLITOOLS_IMAGE_DIR =
 	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-eyes-tests --durations=10
 
 mypy:
