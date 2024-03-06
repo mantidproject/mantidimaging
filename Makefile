@@ -10,7 +10,8 @@ CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p
 ifeq ($(OS),Windows_NT)
     XVFBRUN=
     TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
-    APPLITOOLS_IMAGE_DIR=
+    export APPLITOOLS_IMAGE_DIR=
+    $(info APPLITOOLS_IMAGE_DIR = $(APPLITOOLS_IMAGE_DIR))
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
@@ -49,7 +50,7 @@ install-dev-requirements:
 	python ./setup.py create_dev_env
 
 test: test-local-setup
-	python -m pytest -n auto --run-unit-tests
+	python -m pytest -n auto --run-unit-tests -vs
 
 test-verbose: test-local-setup
 	python -m pytest -vs -o log_cli=true --run-unit-tests
