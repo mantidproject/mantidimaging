@@ -9,14 +9,21 @@ CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p
 
 ifeq ($(OS),Windows_NT)
     XVFBRUN=
-	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
-	export APPLITOOLS_API_KEY=local
-	export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+    TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
+    export APPLITOOLS_IMAGE_DIR=
+    $(info APPLITOOLS_IMAGE_DIR = $(APPLITOOLS_IMAGE_DIR))
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
 endif
 
+test-local-setup:
+    ifeq ($(OS),Windows_NT)
+	-mkdir ${TEST_RESULT_DIR}
+	@echo "created test directory" ${TEST_RESULT_DIR}
+    export APPLITOOLS_API_KEY=local
+    export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+    endif
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
@@ -42,24 +49,34 @@ build-conda-package-release: .remind-for-user .remind-for-anaconda-api install-b
 install-dev-requirements:
 	python ./setup.py create_dev_env
 
-test:
-	python -m pytest -n auto
+test: test-local-setup
+	python -m pytest -n auto --run-unit-tests -vs
 
-test-verbose:
-	python -m pytest -vs -o log_cli=true
+test-verbose: test-local-setup
+	python -m pytest -vs -o log_cli=true --run-unit-tests
 
-test-system:
+test-gh-unit:
+	python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10 --ignore=mantidimaging/eyes_tests
+
+test-system: test-local-setup
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+
+test-gh-system:
+	APPLITOOLS_IMAGE_DIR=
+	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10 --ignore=mantidimaging/eyes_tests
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
-	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
-test-screenshots-win:
-	-mkdir ${TEST_RESULT_DIR}
-	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+test-screenshots-win: test-local-setup
+	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
+
+test-gh-screenshots:
+	APPLITOOLS_IMAGE_DIR =
+	python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-eyes-tests --durations=10
 
 mypy:
 	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
