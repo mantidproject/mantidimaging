@@ -87,7 +87,7 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
-          make test-gh-actions
+          make test-gh-unit
 
       - name: Get test data
         shell: bash -l {0}

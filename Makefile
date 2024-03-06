@@ -8,21 +8,20 @@ SOURCE_DIRS=mantidimaging scripts docs/ext/
 CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
 
 ifeq ($(OS),Windows_NT)
-    ifndef $(APPLITOOLS_API_KEY)
-    $(info 'No Applitools API key has been found, switching to local')
-    $(info variable TEMP = $(TEMP))
     XVFBRUN=
     TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
-    export APPLITOOLS_API_KEY=local
-    export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
-    $(info variable APPLITOOLS_API_KEY = $(APPLITOOLS_API_KEY))
-    $(info variable APPLITOOLS_IMAGE_DIR = $(APPLITOOLS_IMAGE_DIR))
-	endif
 else
 	XVFBRUN=xvfb-run --auto-servernum
 	TEST_RESULT_DIR:=$(shell mktemp -d)
 endif
 
+test-local-setup:
+    ifeq ($(OS),Windows_NT)
+	-mkdir ${TEST_RESULT_DIR}
+	@echo "created test directory" ${TEST_RESULT_DIR}
+    export APPLITOOLS_API_KEY=local
+    export APPLITOOLS_IMAGE_DIR:=${TEST_RESULT_DIR}
+    endif
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
@@ -48,16 +47,16 @@ build-conda-package-release: .remind-for-user .remind-for-anaconda-api install-b
 install-dev-requirements:
 	python ./setup.py create_dev_env
 
-test:
+test: test-local-setup
 	python -m pytest -n auto --run-unit-tests
 
-test-verbose:
+test-verbose: test-local-setup
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
-test-gh-actions:
+test-gh-unit:
 	python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
 
-test-system:
+test-system: test-local-setup
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
 
 test-gh-system:
@@ -68,8 +67,7 @@ test-screenshots:
 	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
-test-screenshots-win:
-	-mkdir ${TEST_RESULT_DIR}
+test-screenshots-win: test-local-setup
 	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
