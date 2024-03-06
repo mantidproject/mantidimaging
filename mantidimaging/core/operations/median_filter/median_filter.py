@@ -150,6 +150,7 @@ def modes():
 def _median_filter(data: np.ndarray, size: int, mode: str) -> np.ndarray:
     nans = np.isnan(data)
     data = np.where(nans, -np.inf, data)
+    # Put the original NaNs back
     data = scipy_ndimage.median_filter(data, size=size, mode=mode)
     data = np.where(nans, np.nan, data)
     return data
