@@ -87,26 +87,28 @@ class MedianFilter(BaseFilter):
         if size is None or size <= 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        params = {'mode': mode, 'force_cpu': force_cpu}
-        if force_cpu:
-            params['size'] = size  # Pass size only if using CPU
-        ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
+        params = {'mode': mode, 'size': size, 'force_cpu': force_cpu, 'progress': progress}
+        if not force_cpu:
+            ps.run_compute_func(MedianFilter.cuda_compute_function, data.data.shape[0], data.shared_array, params)
+        else:
+            ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
 
-        h.check_data_stack(data)
         return data
 
     @staticmethod
     def compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
         mode = params['mode']
-        force_cpu = params['force_cpu']
-        size = params.get('size')
-        progress = params.get('progress')
+        size = params['size']
 
-        if not force_cpu:
-            cuda = gpu.CudaExecuter(array.dtype)
-            cuda.median_filter(i, array, mode=mode, progress=progress)  # Call without size if it is None
-        else:
-            array[i] = _median_filter(array[i], size=size if size is not None else 3, mode=mode)
+        array[i] = _median_filter(array[i], size=size if size is not None else 3, mode=mode)
+
+    @staticmethod
+    def cuda_compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
+        mode = params['mode']
+        progress = params['progress']
+
+        cuda = gpu.CudaExecuter(array.dtype)
+        cuda.median_filter(i, array, mode=mode, progress=progress)
 
     @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
