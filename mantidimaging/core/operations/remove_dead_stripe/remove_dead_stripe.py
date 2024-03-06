@@ -47,11 +47,11 @@ class RemoveDeadStripesFilter(BaseFilter):
             return images
         params = {"snr": snr, "size": size, "residual": False}
         if images.is_sinograms:
-            ps.run_compute_func(RemoveDeadStripesFilter.compute_function_sino, images.num_sinograms,
-                                images.shared_array, params, progress)
+            compute_func = RemoveDeadStripesFilter.compute_function_sino
         else:
-            ps.run_compute_func(RemoveDeadStripesFilter.compute_function, images.num_projections, images.shared_array,
-                                params, progress)
+            compute_func = RemoveDeadStripesFilter.compute_function
+
+        ps.run_compute_func(compute_func, images.num_projections, images.shared_array, params, progress)
         return images
 
     @staticmethod

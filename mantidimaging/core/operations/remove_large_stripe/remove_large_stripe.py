@@ -45,11 +45,11 @@ class RemoveLargeStripesFilter(BaseFilter):
         """
         params = {"snr": snr, "size": la_size}
         if images.is_sinograms:
-            ps.run_compute_func(RemoveLargeStripesFilter.compute_function_sino, images.num_sinograms,
-                                images.shared_array, params, progress)
+            compute_func = RemoveLargeStripesFilter.compute_function_sino
         else:
-            ps.run_compute_func(RemoveLargeStripesFilter.compute_function, images.num_projections, images.shared_array,
-                                params, progress)
+            compute_func = RemoveLargeStripesFilter.compute_function
+
+        ps.run_compute_func(compute_func, images.num_projections, images.shared_array, params, progress)
         return images
 
     @staticmethod
