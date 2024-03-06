@@ -67,6 +67,16 @@ class TestCase:
         return self.status == "pass"
 
 
+def process_params(param):
+    """
+    Handle parameter values that cannot be encoded natively in json
+    """
+    if isinstance(param, list):
+        if param[0] == "tuple":
+            return tuple(param[1:])
+    return param
+
+
 def compare_mode():
     for operation, test_case_info in TEST_CASES.items():
         print(f"Running tests for {operation}:")
@@ -77,6 +87,7 @@ def compare_mode():
             if args.match and args.match not in test_name:
                 continue
             params = test_case_info["params"] | case["params"]
+            params = {k: process_params(v) for k, v in params.items()}
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
             test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)
