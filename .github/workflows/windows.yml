@@ -87,7 +87,7 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
-          make test-gh-unit
+          python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
