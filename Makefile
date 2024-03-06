@@ -54,6 +54,7 @@ test-verbose: test-local-setup
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
 test-gh-unit:
+	@echo "APPLITOOLS_IMAGE_DIR = " ${APPLITOOLS_IMAGE_DIR}
 	python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
 
 test-system: test-local-setup
