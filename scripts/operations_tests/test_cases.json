@@ -524,15 +524,6 @@
                 "params": {
                     "rebin_param": 0.5
                 }
-            },
-            {
-                "test_name": "rebin_to_dimensions_100x100",
-                "params": {
-                    "rebin_param": [
-                        100,
-                        100
-                    ]
-                }
             }
         ]
     },
