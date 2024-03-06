@@ -54,7 +54,7 @@ test-verbose: test-local-setup
 	python -m pytest -vs -o log_cli=true --run-unit-tests
 
 test-gh-unit:
-	python -m pytest --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
+	python -m pytest -vs --cov --cov-report=xml -n auto -o log_cli=true --run-unit-tests --durations=10
 
 test-system: test-local-setup
 	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
