@@ -76,7 +76,7 @@ def compare_mode():
             test_name = f"{operation.lower()}_{sub_test_name}"
             if args.match and args.match not in test_name:
                 continue
-            params = case["params"] | test_case_info["params"]
+            params = test_case_info["params"] | case["params"]
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
             test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)
