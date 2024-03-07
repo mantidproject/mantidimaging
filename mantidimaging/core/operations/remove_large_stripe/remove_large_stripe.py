@@ -48,8 +48,7 @@ class RemoveLargeStripesFilter(BaseFilter):
             compute_func = RemoveLargeStripesFilter.compute_function_sino
         else:
             compute_func = RemoveLargeStripesFilter.compute_function
-
-        ps.run_compute_func(compute_func, images.num_projections, images.shared_array, params, progress)
+        ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
 
     @staticmethod
