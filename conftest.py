@@ -9,32 +9,41 @@ import pytest
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 
-def _test_gui_system_filename_match(basename: str) -> bool:
-    return "gui_system" in basename and "_test.py" in basename
-
-
 def pytest_addoption(parser):
     parser.addoption("--run-system-tests", action="store_true", default=False, help="Run GUI system tests")
+    parser.addoption("--run-unit-tests", action="store_true", default=False, help="Run unit tests")
+    parser.addoption("--run-eyes-tests", action="store_true", default=False, help="Run eyes tests")
 
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "system: GUI system tests")
+    config.addinivalue_line("markers", "unit: unit tests")
+    config.addinivalue_line("markers", "eyes: eyes tests")
 
 
-def pytest_ignore_collect(path, config):
-    # When running GUI system tests, ignore all other files
-    if config.getoption("--run-system-tests") and path.isfile() and not _test_gui_system_filename_match(path.basename):
-        return True
-    else:
-        return False
+allowed_markers = []
+skipped_tests = []
 
 
 def pytest_collection_modifyitems(config, items):
-    if not config.getoption("--run-system-tests"):
-        skip_system = pytest.mark.skip(reason="use --run-system-tests option to run")
-        for item in items:
-            if "system" in item.keywords:
-                item.add_marker(skip_system)
+    if config.getoption("--run-system-tests"):
+        allowed_markers.append(pytest.mark.system.mark)
+    if config.getoption("--run-eyes-tests"):
+        allowed_markers.append(pytest.mark.eyes.mark)
+    if config.getoption("--run-unit-tests") or len(allowed_markers) == 0:
+        allowed_markers.append(pytest.mark.unit.mark)
+    for item in items:
+        if "gui_system" in item.nodeid:
+            item.add_marker(pytest.mark.system)
+        elif "eyes_test" in item.nodeid:
+            item.add_marker(pytest.mark.eyes)
+        else:
+            item.add_marker(pytest.mark.unit)
+        if any(mark in allowed_markers for mark in item.own_markers):
+            pass
+        else:
+            item.add_marker(pytest.mark.skip(reason="Test not selected"))
+            skipped_tests.append(item.nodeid)
 
 
 # Leak track for tests
