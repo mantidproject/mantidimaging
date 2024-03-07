@@ -71,7 +71,7 @@ yapf_apply:
 	python -m yapf -i --parallel --recursive ${SOURCE_DIRS}
 
 ruff:
-	ruff ${SOURCE_DIRS}
+	ruff check ${SOURCE_DIRS}
 
 check: ruff yapf mypy test
 

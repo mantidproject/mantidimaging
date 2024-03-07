@@ -75,7 +75,7 @@ jobs:
       - name: Ruff
         shell: bash -l {0}
         run: |
-          ruff .
+          ruff check .
 
       - name: mypy
         shell: bash -l {0}

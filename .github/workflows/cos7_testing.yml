@@ -34,7 +34,7 @@ jobs:
     - name: ruff
       uses: ./.github/actions/test
       with:
-        command: ruff .
+        command: ruff check .
         label: centos7
 
     - name: mypy
