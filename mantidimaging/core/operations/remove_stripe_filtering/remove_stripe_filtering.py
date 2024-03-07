@@ -35,8 +35,8 @@ class RemoveStripeFilteringFilter(BaseFilter):
     link_histograms = True
     operate_on_sinograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
+    @staticmethod
+    def filter_func(images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
         """
         :param sigma: The sigma of the Gaussian window used to separate the
                       low-pass and high-pass components of the intensity profile
@@ -55,15 +55,15 @@ class RemoveStripeFilteringFilter(BaseFilter):
         if images.is_sinograms:
             if filtering_dim == 1:
                 params["sort"] = True
-                compute_func = cls.compute_function_sino
+                compute_func = RemoveStripeFilteringFilter.compute_function_sino
             else:
-                compute_func = cls.compute_function_2d_sino
+                compute_func = RemoveStripeFilteringFilter.compute_function_2d_sino
         else:
             if filtering_dim == 1:
                 params["sort"] = True
-                compute_func = cls.compute_function
+                compute_func = RemoveStripeFilteringFilter.compute_function
             else:
-                compute_func = cls.compute_function_2d
+                compute_func = RemoveStripeFilteringFilter.compute_function_2d
 
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images

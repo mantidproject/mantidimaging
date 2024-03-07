@@ -35,8 +35,8 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     link_histograms = True
     operate_on_sinograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, order=1, sigma=3, progress=None):
+    @staticmethod
+    def filter_func(images: ImageStack, order=1, sigma=3, progress=None):
         """
         :param order: The polynomial fit order. Check algotom docs for more
                       information.
@@ -49,9 +49,9 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
             return images
         params = {'order': order, 'sigma': sigma, 'sort': True}
         if images.is_sinograms:
-            compute_func = cls.compute_function_sino
+            compute_func = RemoveStripeSortingFittingFilter.compute_function_sino
         else:
-            compute_func = cls.compute_function
+            compute_func = RemoveStripeSortingFittingFilter.compute_function
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
 
         return images

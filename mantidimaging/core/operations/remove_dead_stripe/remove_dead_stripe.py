@@ -35,8 +35,8 @@ class RemoveDeadStripesFilter(BaseFilter):
     link_histograms = True
     operate_on_sinograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, snr=3, size=61, progress=None):
+    @staticmethod
+    def filter_func(images: ImageStack, snr=3, size=61, progress=None):
         """
         :param snr: The ratio value.
         :param size: The window size of the median filter to remove dead stripes.
@@ -47,9 +47,9 @@ class RemoveDeadStripesFilter(BaseFilter):
             return images
         params = {"snr": snr, "size": size, "residual": False}
         if images.is_sinograms:
-            compute_func = cls.compute_function_sino
+            compute_func = RemoveDeadStripesFilter.compute_function_sino
         else:
-            compute_func = cls.compute_function
+            compute_func = RemoveDeadStripesFilter.compute_function
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
 
