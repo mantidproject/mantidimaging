@@ -49,7 +49,7 @@ test-verbose:
 	python -m pytest -vs -o log_cli=true
 
 test-system:
-	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
