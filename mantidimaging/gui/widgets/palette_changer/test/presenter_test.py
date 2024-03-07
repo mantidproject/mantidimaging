@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 import numpy as np
 
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, SAMPLE_SIZE
+from mantidimaging.test_helpers.unit_test_helper import gen_img_numpy_rand
 
 
 def _normalise_break_value(break_value, min_value, max_value):
@@ -25,7 +26,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         self.view = mock.MagicMock()
         self.histograms = [mock.Mock() for _ in range(2)]
         self.recon_histogram = mock.Mock()
-        self.recon_image = np.random.random((200, 200))
+        self.recon_image = gen_img_numpy_rand((200, 200), 2024)
         self.recon_gradient = self.recon_histogram.gradient
         self.presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, self.recon_image,
                                                  True)
@@ -39,8 +40,8 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         assert self.presenter.flattened_image.ndim == 1
 
     def test_flattened_image_creation_for_small_image(self):
-        presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random(
-            (20, 20)), True)
+        presenter = PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram,
+                                            gen_img_numpy_rand((20, 20), 2024), True)
         assert presenter.flattened_image.size == 400
         assert presenter.flattened_image.ndim == 1
 
@@ -137,7 +138,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
 
     def test_get_sample_pixels(self):
         COUNT = 50
-        recon_image = np.random.random((50, 50))
+        recon_image = gen_img_numpy_rand((50, 50), 2024)
         sampled = self.presenter._get_sample_pixels(recon_image, COUNT, 0.9)
 
         self.assertEqual(len(sampled), COUNT)
@@ -148,14 +149,16 @@ class PaletteChangerPresenterTest(unittest.TestCase):
     def test_not_recon_mode_calls_choice(self, default_rng_mock):
         rng_mock = MagicMock()
         default_rng_mock.return_value = rng_mock
-        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), False)
+        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, gen_img_numpy_rand((20, 20), 2024),
+                                False)
         rng_mock.choice.assert_called_once()
 
     @mock.patch("mantidimaging.gui.widgets.palette_changer.presenter.np.random.default_rng")
     def test_recon_mode_doesnt_call_choice(self, default_rng_mock):
         rng_mock = MagicMock()
         default_rng_mock.return_value = rng_mock
-        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, np.random.random((20, 20)), True)
+        PaletteChangerPresenter(self.view, self.histograms, self.recon_histogram, gen_img_numpy_rand((20, 20), 2024),
+                                True)
         rng_mock.choice.assert_not_called()
 
     def test_jenks_break_values(self):
