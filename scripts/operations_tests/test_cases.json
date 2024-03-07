@@ -1,256 +1,267 @@
 {
-    "Arithmetic": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "mult2",
-                "params": {
-                    "mult_val": 2
-                }
-            },
-            {
-                "test_name": "mult3",
-                "params": {
-                    "mult_val": 3
-                }
-            },
-            {
-                "test_name": "add5",
-                "params": {
-                    "add_val": 5
-                }
-            },
-            {
-                "test_name": "add8",
-                "params": {
-                    "add_val": 8
-                },
-                "flags": [
-                    "slow"
-                ]
-            },
-            {
-                "test_name": "sub6",
-                "params": {
-                    "sub_val": 6
-                }
-            },
-            {
-                "test_name": "div2",
-                "params": {
-                    "div_val": 2
-                }
-            },
-            {
-                "test_name": "add4_mult3_sub5_div4",
-                "params": {
-                    "add_val": 4,
-                    "mult_val": 3,
-                    "sub_val": 5,
-                    "div_val": 4
-                }
-            }
-        ],
-        "cases_slow": [
-            {
-                "test_name": "mult3_big",
-                "params": {
-                    "mult_val": 3
-                },
-                "source_data": "flower512"
-            }
-        ]
-    },
-    "Gaussian": {
+  "Arithmetic": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "mult2",
         "params": {
-            "size": 2,
-            "order": 0,
-            "mode": "reflect"
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "size2",
-                "params": {
-                    "size": 2
-                }
-            },
-            {
-                "test_name": "size3",
-                "params": {
-                    "size": 3
-                }
-            },
-            {
-                "test_name": "size3_reflect",
-                "params": {
-                    "size": 3,
-                    "mode": "reflect"
-                }
-            },
-            {
-                "test_name": "size3_constant",
-                "params": {
-                    "size": 3,
-                    "mode": "constant"
-                }
-            },
-            {
-                "test_name": "size3_nearest",
-                "params": {
-                    "size": 3,
-                    "mode": "nearest"
-                }
-            },
-            {
-                "test_name": "size3_order1",
-                "params": {
-                    "size": 3,
-                    "order": 1
-                }
-            },
-            {
-                "test_name": "size3_order2",
-                "params": {
-                    "size": 3,
-                    "order": 2
-                }
-            },
-            {
-                "test_name": "size3_order3",
-                "params": {
-                    "size": 3,
-                    "order": 3
-                }
-            }
-        ]
-    },
-    "Median": {
+          "mult_val": 2
+        }
+      },
+      {
+        "test_name": "mult3",
         "params": {
-            "size": 2
+          "mult_val": 3
+        }
+      },
+      {
+        "test_name": "add5",
+        "params": {
+          "add_val": 5
+        }
+      },
+      {
+        "test_name": "add8",
+        "params": {
+          "add_val": 8
         },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "size2",
-                "params": {
-                    "size": 2
-                }
-            },
-            {
-                "test_name": "size3",
-                "params": {
-                    "size": 3
-                }
-            },
-            {
-                "test_name": "constant",
-                "params": {
-                    "mode": "constant"
-                }
-            },
-            {
-                "test_name": "nearest",
-                "params": {
-                    "mode": "nearest"
-                }
-            },
-            {
-                "test_name": "mirror",
-                "params": {
-                    "mode": "constant"
-                }
-            },
-            {
-                "test_name": "wrap",
-                "params": {
-                    "mode": "constant"
-                }
-            }
+        "flags": [
+          "slow"
         ]
+      },
+      {
+        "test_name": "sub6",
+        "params": {
+          "sub_val": 6
+        }
+      },
+      {
+        "test_name": "div2",
+        "params": {
+          "div_val": 2
+        }
+      },
+      {
+        "test_name": "add4_mult3_sub5_div4",
+        "params": {
+          "add_val": 4,
+          "mult_val": 3,
+          "sub_val": 5,
+          "div_val": 4
+        }
+      }
+    ],
+    "cases_slow": [
+      {
+        "test_name": "mult3_big",
+        "params": {
+          "mult_val": 3
+        },
+        "source_data": "flower512"
+      }
+    ]
+  },
+  "Gaussian": {
+    "params": {
+      "size": 2,
+      "order": 0,
+      "mode": "reflect"
     },
-    "Crop Coordinates": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "zero_fifty",
-                "params": {
-                    "region_of_interest": [
-                        0,
-                        0,
-                        50,
-                        50
-                    ]
-                }
-            },
-            {
-                "test_name": "zero_twentyfive",
-                "params": {
-                    "region_of_interest": [
-                        0,
-                        0,
-                        25,
-                        25
-                    ]
-                }
-            },
-            {
-                "test_name": "twentyfive_fifty",
-                "params": {
-                    "region_of_interest": [
-                        25,
-                        25,
-                        50,
-                        50
-                    ]
-                }
-            },
-            {
-                "test_name": "ten_twenty_thirty_forty",
-                "params": {
-                    "region_of_interest": [
-                        10,
-                        20,
-                        30,
-                        40
-                    ]
-                }
-            }
-        ]
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "size2",
+        "params": {
+          "size": 2
+        }
+      },
+      {
+        "test_name": "size3",
+        "params": {
+          "size": 3
+        }
+      },
+      {
+        "test_name": "size3_reflect",
+        "params": {
+          "size": 3,
+          "mode": "reflect"
+        }
+      },
+      {
+        "test_name": "size3_constant",
+        "params": {
+          "size": 3,
+          "mode": "constant"
+        }
+      },
+      {
+        "test_name": "size3_nearest",
+        "params": {
+          "size": 3,
+          "mode": "nearest"
+        }
+      },
+      {
+        "test_name": "size3_order1",
+        "params": {
+          "size": 3,
+          "order": 1
+        }
+      },
+      {
+        "test_name": "size3_order2",
+        "params": {
+          "size": 3,
+          "order": 2
+        }
+      },
+      {
+        "test_name": "size3_order3",
+        "params": {
+          "size": 3,
+          "order": 3
+        }
+      }
+    ]
+  },
+  "Median": {
+    "params": {
+      "size": 2
     },
-    "Ring Removal": {
-        "params": {"center_mode": "image center"},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "30k_1k",
-                "params": {
-                    "thresh": 300,
-                    "thresh_max": 30000,
-                    "thresh_min": 1000,
-                    "theta_min": 30,
-                    "rwidth": 30
-                }
-            }
-        ]
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "size2",
+        "params": {
+          "size": 2
+        }
+      },
+      {
+        "test_name": "size3",
+        "params": {
+          "size": 3
+        }
+      },
+      {
+        "test_name": "constant",
+        "params": {
+          "mode": "constant"
+        }
+      },
+      {
+        "test_name": "nearest",
+        "params": {
+          "mode": "nearest"
+        }
+      },
+      {
+        "test_name": "mirror",
+        "params": {
+          "mode": "constant"
+        }
+      },
+      {
+        "test_name": "wrap",
+        "params": {
+          "mode": "constant"
+        }
+      }
+    ]
+  },
+  "Crop Coordinates": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "zero_fifty",
+        "params": {
+          "region_of_interest": [
+            0,
+            0,
+            50,
+            50
+          ]
+        }
+      },
+      {
+        "test_name": "zero_twentyfive",
+        "params": {
+          "region_of_interest": [
+            0,
+            0,
+            25,
+            25
+          ]
+        }
+      },
+      {
+        "test_name": "twentyfive_fifty",
+        "params": {
+          "region_of_interest": [
+            25,
+            25,
+            50,
+            50
+          ]
+        }
+      },
+      {
+        "test_name": "ten_twenty_thirty_forty",
+        "params": {
+          "region_of_interest": [
+            10,
+            20,
+            30,
+            40
+          ]
+        }
+      }
+    ]
+  },
+  "Ring Removal": {
+    "params": {
+      "center_mode": "image center"
     },
-    "Clip Values": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "clip_values_0_to_50",
-                "params": {
-                    "clip_min": 0,
-                    "clip_max": 50,
-                    "clip_min_new_value": 0,
-                    "clip_max_new_value": 50
-                }
-            }
-        ]
-    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "30k_1k",
+        "params": {
+          "thresh": 300,
+          "thresh_max": 30000,
+          "thresh_min": 1000,
+          "theta_min": 30,
+          "rwidth": 30
+        }
+      }
+    ]
+  },
+  "Clip Values": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "clip_values_within_2000_to_20000",
+        "params": {
+          "clip_min": 2000,
+          "clip_max": 20000,
+          "clip_min_new_value": 2000,
+          "clip_max_new_value": 20000
+        }
+      },
+      {
+        "test_name": "clip_values_to_1_or_2_outside_2000_to_20000",
+        "params": {
+          "clip_min": 2000,
+          "clip_max": 20000,
+          "clip_min_new_value": 1356,
+          "clip_max_new_value": 24277
+        }
+      }
+    ]
+  },
   "Remove dead stripes": {
     "params": {
       "snr": 3,
@@ -444,173 +455,246 @@
       }
     ]
   },
-      "Divide": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "divide_by_non_zero_value",
-                "params": {
-                    "value": 1.5,
-                    "unit": "micron"
-                }
-            }
-        ]
-    },
-    "Remove Outliers": {
+  "Divide": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "divide_by_value_in_micron",
         "params": {
-            "radius": 3,
-            "mode": "OUTLIERS_BRIGHT"
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "default_settings",
-                "params": {
-                    "diff": 1000,
-                    "radius": 3,
-                    "mode": "OUTLIERS_BRIGHT"
-                }
-            },
-            {
-                "test_name": "increased_diff",
-                "params": {
-                    "diff": 3000,
-                    "radius": 3,
-                    "mode": "OUTLIERS_BRIGHT"
-                }
-            },
-            {
-                "test_name": "dark_outliers",
-                "params": {
-                    "diff": 1000,
-                    "radius": 3,
-                    "mode": "OUTLIERS_DARK"
-                }
-            }
-        ]
-    },
-    "NaN Removal": {
+          "value": 1.5,
+          "unit": "micron"
+        }
+      },
+      {
+        "test_name": "divide_by_value_in_cm",
         "params": {
-            "mode_value": "Constant",
-            "replace_value": null
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "replace_with_constant",
-                "params": {
-                    "mode_value": "Constant",
-                    "replace_value": 0
-                }
-            },
-            {
-                "test_name": "replace_with_median",
-                "params": {
-                    "mode_value": "Median"
-                }
-            }
-        ]
+          "value": 0.02,
+          "unit": "cm"
+        }
+      }
+    ]
+  },
+  "Remove Outliers": {
+    "params": {
+      "radius": 3,
+      "mode": "bright"
     },
-    "Rebin": {
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
         "params": {
-            "rebin_param": 0.5,
-            "mode": "reflect"
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "rebin_by_factor_0.5",
-                "params": {
-                    "rebin_param": 0.5
-                }
-            },
-            {
-                "test_name": "rebin_to_dimensions_100x90",
-                "params": {
-                    "rebin_param": [
-                        "tuple",
-                        100,
-                        90
-                    ]
-                }
-            }
-        ]
-    },
-    "Rescale": {
+          "diff": 1000,
+          "radius": 3,
+          "mode": "bright"
+        }
+      },
+      {
+        "test_name": "increased_diff",
         "params": {
-            "min_input": 0.0,
-            "max_input": 10000.0,
-            "max_output": 256.0
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "default_settings",
-                "params": {
-                    "min_input": 0.0,
-                    "max_input": 10000.0,
-                    "max_output": 256.0
-                }
-            }
-        ]
-    },
-    "ROI Normalisation": {
+          "diff": 3000,
+          "radius": 3,
+          "mode": "bright"
+        }
+      },
+      {
+        "test_name": "dark_outliers",
         "params": {
-            "region_of_interest": [
-                0,
-                0,
-                200,
-                200
-            ],
-            "normalisation_mode": "Stack Average",
-            "flat_field": null
-        },
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "default_settings",
-                "params": {
-                    "region_of_interest": [
-                        0,
-                        0,
-                        200,
-                        200
-                    ],
-                    "normalisation_mode": "Stack Average",
-                    "flat_field": null
-                }
-            }
-        ]
+          "diff": 1000,
+          "radius": 3,
+          "mode": "dark"
+        }
+      }
+    ]
+  },
+  "NaN Removal": {
+    "params": {
+      "mode_value": "Constant",
+      "replace_value": null
     },
-    "Rotate Stack": {
-        "params": {},
-        "source_data": "flower128",
-        "cases": [
-            {
-                "test_name": "rotate_90_degrees",
-                "params": {
-                    "angle": 90
-                }
-            },
-            {
-                "test_name": "rotate_180_degrees",
-                "params": {
-                    "angle": 180
-                }
-            },
-            {
-                "test_name": "rotate_270_degrees",
-                "params": {
-                    "angle": 270
-                }
-            },
-            {
-                "test_name": "rotate_custom_degrees",
-                "params": {
-                    "angle": 45
-                }
-            }
-        ]
-    }
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "replace_with_constant",
+        "params": {
+          "mode_value": "Constant",
+          "replace_value": 0
+        }
+      },
+      {
+        "test_name": "replace_with_median",
+        "params": {
+          "mode_value": "Median"
+        }
+      }
+    ]
+  },
+  "Rebin": {
+    "params": {
+      "rebin_param": 0.5,
+      "mode": "reflect"
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "rebin_by_factor_0.5",
+        "params": {
+          "rebin_param": 0.5
+        }
+      },
+      {
+        "test_name": "rebin_to_dimensions_100x90",
+          "params": {
+              "rebin_param": [
+                  "tuple",
+                  100,
+                  90
+              ]
+        }
+      }
+    ]
+  },
+  "Rescale": {
+    "params": {
+      "min_input": 0.0,
+      "max_input": 10000.0,
+      "max_output": 256.0
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {
+          "min_input": 0.0,
+          "max_input": 10000.0,
+          "max_output": 256.0
+        }
+      }
+    ]
+  },
+  "ROI Normalisation": {
+    "params": {
+      "region_of_interest": [
+        0,
+        0,
+        200,
+        200
+      ],
+      "normalisation_mode": "Stack Average",
+      "flat_field": null
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "params": {
+          "region_of_interest": [
+            0,
+            0,
+            200,
+            200
+          ],
+          "normalisation_mode": "Stack Average",
+          "flat_field": null
+        }
+      }
+    ]
+  },
+  "Rotate Stack": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "rotate_90_degrees",
+        "params": {
+          "angle": 90
+        }
+      },
+      {
+        "test_name": "rotate_180_degrees",
+        "params": {
+          "angle": 180
+        }
+      },
+      {
+        "test_name": "rotate_270_degrees",
+        "params": {
+          "angle": 270
+        }
+      },
+      {
+        "test_name": "rotate_custom_degrees",
+        "params": {
+          "angle": 45
+        }
+      }
+    ]
+  },
+  "NaN Removal": {
+    "params": {
+      "mode_value": "Constant",
+      "replace_value": 0
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "nan_removal_constant_default",
+        "params": {
+          "mode_value": "Constant",
+          "replace_value": 0
+        }
+      },
+      {
+        "test_name": "nan_removal_median",
+        "params": {
+          "mode_value": "Median"
+        }
+      },
+      {
+        "test_name": "nan_removal_constant_specific",
+        "params": {
+          "mode_value": "Constant",
+          "replace_value": 100
+        }
+      }
+    ]
+  },
+  "Circular Mask": {
+    "params": {
+      "circular_mask_ratio": 0.95,
+      "circular_mask_value": 0.0
+    },
+    "source_data": "reconstructedSlices",
+    "cases": [
+      {
+        "test_name": "circular_mask_default",
+        "params": {
+          "circular_mask_ratio": 0.95,
+          "circular_mask_value": 0.0
+        }
+      },
+      {
+        "test_name": "circular_mask_tight",
+        "params": {
+          "circular_mask_ratio": 0.5,
+          "circular_mask_value": 0.0
+        }
+      },
+      {
+        "test_name": "circular_mask_loose",
+        "params": {
+          "circular_mask_ratio": 0.99,
+          "circular_mask_value": 0.0
+        }
+      },
+      {
+        "test_name": "circular_mask_value",
+        "params": {
+          "circular_mask_ratio": 0.95,
+          "circular_mask_value": -1000
+        }
+      }
+    ]
+  }
 }
