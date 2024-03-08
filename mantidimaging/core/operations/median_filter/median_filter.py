@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
+from logging import getLogger
 from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
 
 import numpy as np
@@ -15,6 +16,7 @@ from mantidimaging import helper as h
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
+from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
 
@@ -88,11 +90,10 @@ class MedianFilter(BaseFilter):
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
         params = {'mode': mode, 'size': size, 'force_cpu': force_cpu, 'progress': progress}
-        if not force_cpu:
-            ps.run_compute_func(MedianFilter.cuda_compute_function, data.data.shape[0], data.shared_array, params)
-        else:
+        if force_cpu:
             ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
-
+        else:
+            _execute_gpu(data, size, mode, progress=None)
         return data
 
     @staticmethod
@@ -100,7 +101,7 @@ class MedianFilter(BaseFilter):
         mode = params['mode']
         size = params['size']
 
-        array[i] = _median_filter(array[i], size=size if size is not None else 3, mode=mode)
+        array[i] = _median_filter(array[i], size=size, mode=mode)
 
     @staticmethod
     def cuda_compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
@@ -154,3 +155,14 @@ def _median_filter(data: np.ndarray, size: int, mode: str) -> np.ndarray:
     data = scipy_ndimage.median_filter(data, size=size, mode=mode)
     data = np.where(nans, np.nan, data)
     return data
+
+
+def _execute_gpu(data, size, mode, progress=None):
+    log = getLogger(__name__)
+    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter GPU")
+    cuda = gpu.CudaExecuter(data.dtype)
+
+    with progress:
+        log.info(f"GPU median filter, with pixel data type: {data.dtype}, filter size/width: {size}.")
+
+        cuda.median_filter(data, size, mode, progress)
