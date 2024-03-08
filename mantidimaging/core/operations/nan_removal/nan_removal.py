@@ -98,6 +98,11 @@ class NaNRemovalFilter(BaseFilter):
 
     @staticmethod
     def _nan_to_median(data: np.ndarray, size: int, edgemode: str):
+        """
+        Replaces NaN values in data with median, based on a kernel 'size' and 'edgemode'.
+        Initially converts NaNs to -inf to avoid calculation issues, applies a median filter.
+        After -inf changes back to NaNs to indicate unprocessed blocks.
+        """
         nans = np.isnan(data)
         if np.any(nans):
             median_data = np.where(nans, -np.inf, data)
