@@ -5,7 +5,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from logging import getLogger
 from threading import Lock
-from typing import Union, List, Optional, Tuple, Generator
+from typing import Union, Optional, Generator
 
 import astra
 import numpy as np
@@ -42,7 +42,7 @@ def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, cen
 
 
 @contextmanager
-def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[Tuple[int, int], None, None]:
+def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[tuple[int, int], None, None]:
     proj_id = None
     sino_id = None
     rec_id = None
@@ -127,7 +127,7 @@ class AstraRecon(BaseRecon):
 
     @staticmethod
     def full(images: ImageStack,
-             cors: List[ScalarCoR],
+             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> ImageStack:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
@@ -143,7 +143,7 @@ class AstraRecon(BaseRecon):
         return output_images
 
     @staticmethod
-    def allowed_filters() -> List[str]:
+    def allowed_filters() -> list[str]:
         # removed from list: 'kaiser' as it hard crashes ASTRA
         #                    'projection', 'sinogram', 'rprojection', 'rsinogram' as they error
         return [

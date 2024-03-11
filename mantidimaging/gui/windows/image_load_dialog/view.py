@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Optional, Dict
+from typing import Optional
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
@@ -25,7 +25,7 @@ class ImageLoadDialog(BaseDialogView):
     step_preview: QPushButton
     step_all: QPushButton
 
-    fields: Dict[str, Field]
+    fields: dict[str, Field]
 
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent, 'gui/ui/image_load_dialog.ui')

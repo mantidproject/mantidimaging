@@ -4,7 +4,7 @@ from __future__ import annotations
 import datetime
 import os
 from logging import getLogger
-from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
+from typing import Union, Optional, Callable, TYPE_CHECKING
 
 import h5py
 from pathlib import Path
@@ -73,9 +73,9 @@ def image_save(images: ImageStack,
                custom_idx: Optional[int] = None,
                zfill_len: int = DEFAULT_ZFILL_LENGTH,
                name_postfix: str = DEFAULT_NAME_POSTFIX,
-               indices: Union[List[int], Indices, None] = None,
+               indices: Union[list[int], Indices, None] = None,
                pixel_depth: Optional[str] = None,
-               progress: Optional[Progress] = None) -> Union[str, List[str]]:
+               progress: Optional[Progress] = None) -> Union[str, list[str]]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -120,7 +120,7 @@ def image_save(images: ImageStack,
 
     # Do rescale if needed.
     if pixel_depth is None or pixel_depth == "float32":
-        rescale_params: Optional[Dict[str, Union[str, float]]] = None
+        rescale_params: Optional[dict[str, Union[str, float]]] = None
         rescale_info = ""
     elif pixel_depth == "int16":
         # turn the offset to string otherwise json throws a TypeError when trying to save float32
@@ -283,7 +283,7 @@ def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, 
         index += arr.shape[0]
 
 
-def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], List[int]]:
+def _convert_float_to_int(arrays: list[np.ndarray]) -> tuple[list[np.ndarray], list[int]]:
     """
     Scales a float array to convert it to ints.
     :param arrays: The dataset arrays.
@@ -355,7 +355,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     data.create_dataset("z", shape=z_arr.shape, dtype="float16", data=z_arr)
 
 
-def _create_pixel_size_arrays(recon: ImageStack) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _create_pixel_size_arrays(recon: ImageStack) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Create the pixel size arrays for the NXtomproc x/y/z fields.
     :param recon: The recon data.
@@ -391,12 +391,12 @@ def _rescale_recon_data(data: np.ndarray) -> np.ndarray:
 
 
 def generate_names(name_prefix: str,
-                   indices: Union[List[int], Indices, None],
+                   indices: Union[list[int], Indices, None],
                    num_images: int,
                    custom_idx: Optional[int] = None,
                    zfill_len: int = DEFAULT_ZFILL_LENGTH,
                    name_postfix: str = DEFAULT_NAME_POSTFIX,
-                   out_format: str = DEFAULT_IO_FILE_FORMAT) -> List[str]:
+                   out_format: str = DEFAULT_IO_FILE_FORMAT) -> list[str]:
     start_index = indices[0] if indices else 0
     if custom_idx:
         index = custom_idx

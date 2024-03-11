@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Dict, Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -70,7 +70,7 @@ class ClipValuesFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
+    def compute_function(i: int, array: np.ndarray, params: dict[str, Any]):
         slice = array[i]
         clip_min = params['clip_min'] if params['clip_min'] is not None else slice.min()
         clip_max = params['clip_max'] if params['clip_max'] is not None else slice.max()

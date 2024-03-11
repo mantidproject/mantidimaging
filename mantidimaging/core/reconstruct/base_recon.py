@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 from numpy.polynomial import Polynomial
@@ -53,7 +53,7 @@ class BaseRecon:
 
     @staticmethod
     def full(images: ImageStack,
-             cors: List[ScalarCoR],
+             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None) -> ImageStack:
         """
@@ -69,5 +69,5 @@ class BaseRecon:
         raise NotImplementedError("Base class call")
 
     @staticmethod
-    def allowed_filters() -> List[str]:
+    def allowed_filters() -> list[str]:
         return []

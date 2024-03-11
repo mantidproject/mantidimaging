@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from typing import Optional, List, Union, Tuple
+from typing import Optional, Union
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
@@ -36,7 +36,7 @@ class Field:
         if file_info == FILE_TYPES.SAMPLE:
             self._init_indices()
 
-    def set_images(self, image_files: List[Path]) -> None:
+    def set_images(self, image_files: list[Path]) -> None:
         if len(image_files) > 0:
             self.path = image_files[0]
             self.update_shape(len(image_files))
@@ -176,7 +176,7 @@ class Field:
             else:
                 self._increment_spinbox.setValue(1)
 
-    def _update_expected_mem_usage(self, shape: Tuple[int, int]) -> Tuple[int, float]:
+    def _update_expected_mem_usage(self, shape: tuple[int, int]) -> tuple[int, float]:
         num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),
                                                                    self._increment.value())
 
@@ -185,7 +185,7 @@ class Field:
         exp_mem = round(single_mem * num_images, 2)
         return num_images, exp_mem
 
-    def update_shape(self, shape: Union[int, Tuple[int, int]]) -> None:
+    def update_shape(self, shape: Union[int, tuple[int, int]]) -> None:
         if isinstance(shape, int):
             self._shape = f"{str(shape)} images"
         else:

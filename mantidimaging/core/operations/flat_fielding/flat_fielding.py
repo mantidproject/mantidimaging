@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from PyQt5.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
@@ -126,7 +126,7 @@ class FlatFieldFilter(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form, on_change, view) -> Dict[str, Any]:
+    def register_gui(form, on_change, view) -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         _, selected_flat_fielding_widget = add_property_to_form("Flat Fielding Method",

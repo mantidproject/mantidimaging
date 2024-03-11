@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Union, Optional, List, TYPE_CHECKING
+from typing import Union, Optional, TYPE_CHECKING
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
@@ -33,7 +33,7 @@ class CropCoordinatesFilter(BaseFilter):
 
     @staticmethod
     def filter_func(images: ImageStack,
-                    region_of_interest: Optional[Union[List[int], List[float], SensibleROI]] = None,
+                    region_of_interest: Optional[Union[list[int], list[float], SensibleROI]] = None,
                     progress=None) -> ImageStack:
         """Execute the Crop Coordinates by Region of Interest filter. This does
         NOT do any checks if the Region of interest is out of bounds!

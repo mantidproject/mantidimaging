@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from logging import getLogger
 from multiprocessing import shared_memory
-from typing import Tuple, TYPE_CHECKING, Optional, Callable
+from typing import TYPE_CHECKING, Optional, Callable
 
 import numpy as np
 
@@ -26,7 +26,7 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+def create_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
     """
     Create an array in shared memory
 
@@ -41,7 +41,7 @@ def create_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) ->
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+def _create_shared_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
     size = full_size_bytes(shape, dtype)
 
     LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
@@ -51,7 +51,7 @@ def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.flo
     return _read_array_from_shared_memory(shape, dtype, mem, True)
 
 
-def _read_array_from_shared_memory(shape: Tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory,
+def _read_array_from_shared_memory(shape: tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory,
                                    free_mem_on_delete: bool) -> 'SharedArray':
     array: np.ndarray = np.ndarray(shape, dtype=dtype, buffer=mem.buf)
     return SharedArray(array, mem, free_mem_on_del=free_mem_on_delete)
@@ -172,7 +172,7 @@ class SharedArray:
 
 class SharedArrayProxy:
 
-    def __init__(self, mem_name: Optional[str], shape: Tuple[int, ...], dtype: 'npt.DTypeLike'):
+    def __init__(self, mem_name: Optional[str], shape: tuple[int, ...], dtype: 'npt.DTypeLike'):
         self._mem_name = mem_name
         self._shape = shape
         self._dtype = dtype

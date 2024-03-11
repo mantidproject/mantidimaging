@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Optional, List, Union, NoReturn, TYPE_CHECKING
+from typing import Optional, Union, NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -27,7 +27,7 @@ class MainWindowModel(object):
 
     def __init__(self) -> None:
         super().__init__()
-        self.datasets: Dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
+        self.datasets: dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID) -> Optional[ImageStack]:
         for dataset in self.datasets.values():
@@ -155,7 +155,7 @@ class MainWindowModel(object):
         """
         del self.datasets[dataset_id]
 
-    def remove_container(self, container_id: uuid.UUID) -> List[uuid.UUID]:
+    def remove_container(self, container_id: uuid.UUID) -> list[uuid.UUID]:
         """
         Removes a container from the model.
         :param container_id: The ID of the dataset or image stack.
@@ -186,21 +186,21 @@ class MainWindowModel(object):
         self.datasets[dataset.id] = dataset
 
     @property
-    def image_ids(self) -> List[uuid.UUID]:
+    def image_ids(self) -> list[uuid.UUID]:
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
         return [image.id for image in images if image is not None]
 
     @property
-    def images(self) -> List[ImageStack]:
+    def images(self) -> list[ImageStack]:
         images = []
         for dataset in self.datasets.values():
             images += dataset.all
         return images
 
     @property
-    def proj180s(self) -> List[ImageStack]:
+    def proj180s(self) -> list[ImageStack]:
         proj180s = []
         for dataset in self.datasets.values():
             if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import QVBoxLayout
@@ -36,7 +36,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.live_viewer)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
-        self.filter_params: Dict[str, Dict] = {}
+        self.filter_params: dict[str, dict] = {}
         self.right_click_menu = self.live_viewer.image.vb.menu
         operations_menu = self.right_click_menu.addMenu("Operations")
 

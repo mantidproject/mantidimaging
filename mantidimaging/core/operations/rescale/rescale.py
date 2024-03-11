@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 import numpy as np
 
@@ -51,7 +51,7 @@ class RescaleFilter(BaseFilter):
         return image
 
     @staticmethod
-    def register_gui(form, on_change, view: FiltersWindowView) -> Dict[str, Any]:
+    def register_gui(form, on_change, view: FiltersWindowView) -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
         _, min_input_widget = add_property_to_form('Min input',
                                                    Type.FLOAT,
@@ -111,5 +111,5 @@ class RescaleFilter(BaseFilter):
         return partial(RescaleFilter.filter_func, min_input=min_input, max_input=max_input, max_output=max_output)
 
     @staticmethod
-    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
+    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
         return True

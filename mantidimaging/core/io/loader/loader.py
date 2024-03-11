@@ -5,7 +5,7 @@ import os
 from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
-from typing import Tuple, List, Optional, Union, TYPE_CHECKING, Callable
+from typing import Optional, Union, TYPE_CHECKING, Callable
 
 import numpy as np
 import astropy.io.fits as fits
@@ -85,7 +85,7 @@ def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
     return load_func
 
 
-def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
+def read_image_dimensions(file_path: Path) -> tuple[int, int]:
     load_func = get_loader(file_path.suffix.replace(".", ""))
     img = load_func(file_path)
     assert len(img.shape) == 2
@@ -113,7 +113,7 @@ def load_stack_from_image_params(image_params: ImageParameters,
 
 def load(filename_group: FilenameGroup,
          dtype: 'npt.DTypeLike' = np.float32,
-         indices: Optional[Union[List[int], Indices]] = None,
+         indices: Optional[Union[list[int], Indices]] = None,
          progress: Optional[Progress] = None,
          log_file: Optional[Path] = None) -> ImageStack:
     """

@@ -6,7 +6,7 @@ from __future__ import annotations
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, Qt
-from typing import List, Dict, Optional
+from typing import Optional
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .model import EnablePredicateFactory
@@ -20,7 +20,7 @@ class WizardStage(QWidget):
         self.layout = QVBoxLayout(self)
         self.title_label = QLabel("Stage: " + name)
         self.layout.addWidget(self.title_label)
-        self.steps: List[WizardStep] = []
+        self.steps: list[WizardStep] = []
 
     def add_step(self, wizard_step: WizardStep) -> None:
         self.steps.append(wizard_step)
@@ -90,7 +90,7 @@ class WizardView(BaseDialogView):
 
     def __init__(self, parent, presenter) -> None:
         super().__init__(parent, "gui/ui/wizard.ui")
-        self.stages: Dict[str, WizardStage] = {}
+        self.stages: dict[str, WizardStage] = {}
         self.presenter = presenter
 
     def add_stage(self, stage_name: str) -> None:

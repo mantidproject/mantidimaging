@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
 import numpy
@@ -350,7 +350,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.appendNewRow(row, slice_index, cor)
         self.tableView.selectRow(row)
 
-    def get_cor_table_selected_rows(self) -> List[int]:
+    def get_cor_table_selected_rows(self) -> list[int]:
         rows = self.tableView.selectionModel().selectedRows()
         return [row.row() for row in rows]
 
@@ -428,7 +428,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.regPercentSpinBox.value()
 
     @property
-    def beam_hardening_coefs(self) -> Optional[List[float]]:
+    def beam_hardening_coefs(self) -> Optional[list[float]]:
         if not self.lbhc_enabled.isChecked():
             return None
         params = []
@@ -474,7 +474,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def hide_tilt(self) -> None:
         self.image_view.hide_tilt()
 
-    def set_filters_for_recon_tool(self, filters: List[str]) -> None:
+    def set_filters_for_recon_tool(self, filters: list[str]) -> None:
         self.filterName.clear()
         self.filterName.insertItems(0, filters)
 

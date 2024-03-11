@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List, Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -59,7 +59,7 @@ class BaseDataset:
         return any(image.id == images_id for image in self.all)
 
     @property
-    def all_image_ids(self) -> List[uuid.UUID]:
+    def all_image_ids(self) -> list[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
     def add_recon(self, recon: ImageStack):
@@ -71,7 +71,7 @@ class BaseDataset:
 
 class MixedDataset(BaseDataset):
 
-    def __init__(self, stacks: Optional[List[ImageStack]] = None, name: str = ""):
+    def __init__(self, stacks: Optional[list[ImageStack]] = None, name: str = ""):
         super().__init__(name=name)
         stacks = [] if stacks is None else stacks
         self._stacks = stacks
@@ -80,7 +80,7 @@ class MixedDataset(BaseDataset):
         self._stacks.append(stack)
 
     @property
-    def all(self) -> List[ImageStack]:
+    def all(self) -> list[ImageStack]:
         all_images = self._stacks + self.recons.stacks
         if self.sinograms is None:
             return all_images
@@ -127,7 +127,7 @@ class StrictDataset(BaseDataset):
             self._name = sample.name
 
     @property
-    def all(self) -> List[ImageStack]:
+    def all(self) -> list[ImageStack]:
         image_stacks = [
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
@@ -135,15 +135,15 @@ class StrictDataset(BaseDataset):
         return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
 
     @property
-    def _nexus_stack_order(self) -> List[ImageStack]:
+    def _nexus_stack_order(self) -> list[ImageStack]:
         return list(filter(None, [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]))
 
     @property
-    def nexus_arrays(self) -> List[np.ndarray]:
+    def nexus_arrays(self) -> list[np.ndarray]:
         return [image_stack.data for image_stack in self._nexus_stack_order]
 
     @property
-    def nexus_rotation_angles(self) -> List[np.ndarray]:
+    def nexus_rotation_angles(self) -> list[np.ndarray]:
         proj_angles = []
         for image_stack in self._nexus_stack_order:
             angles = image_stack.real_projection_angles()
@@ -151,7 +151,7 @@ class StrictDataset(BaseDataset):
         return proj_angles
 
     @property
-    def image_keys(self) -> List[int]:
+    def image_keys(self) -> list[int]:
         image_keys = []
         if self.dark_before is not None:
             image_keys += _image_key_list(2, self.dark_before.data.shape[0])

@@ -6,7 +6,7 @@ import uuid
 from enum import Enum, auto
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
+from typing import TYPE_CHECKING, Union, Optional, Any, NamedTuple, Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
@@ -67,7 +67,7 @@ class MainWindowPresenter(BasePresenter):
     def __init__(self, view: 'MainWindowView'):
         super().__init__(view)
         self.model = MainWindowModel()
-        self.stack_visualisers: Dict[uuid.UUID, StackVisualiserView] = {}
+        self.stack_visualisers: dict[uuid.UUID, StackVisualiserView] = {}
 
     def notify(self, signal: Notification, **baggage):
         try:
@@ -218,13 +218,13 @@ class MainWindowPresenter(BasePresenter):
         stack_visualiser = self._create_lone_stack_window(images)
         self._tabify_stack_window(stack_visualiser, sample_dock)
 
-    def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
+    def get_active_stack_visualisers(self) -> list[StackVisualiserView]:
         return list(self.active_stacks.values())
 
-    def get_all_stacks(self) -> List[ImageStack]:
+    def get_all_stacks(self) -> list[ImageStack]:
         return self.model.images
 
-    def get_all_180_projections(self) -> List[ImageStack]:
+    def get_all_180_projections(self) -> list[ImageStack]:
         return self.model.proj180s
 
     def add_alternative_180_if_required(self, dataset: StrictDataset):
@@ -399,7 +399,7 @@ class MainWindowPresenter(BasePresenter):
             self._handle_task_error(self.SAVE_ERROR_STRING, task)
 
     @property
-    def stack_visualiser_list(self) -> List[StackId]:
+    def stack_visualiser_list(self) -> list[StackId]:
         stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
         return sorted(stacks, key=lambda x: x.name)
 
@@ -408,7 +408,7 @@ class MainWindowPresenter(BasePresenter):
         return self.model.datasets.values()
 
     @property
-    def strict_dataset_list(self) -> List[DatasetId]:
+    def strict_dataset_list(self) -> list[DatasetId]:
         datasets = [
             DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
             if isinstance(dataset, StrictDataset)
@@ -427,7 +427,7 @@ class MainWindowPresenter(BasePresenter):
         return stack_ids
 
     @property
-    def stack_visualiser_names(self) -> List[str]:
+    def stack_visualiser_names(self) -> list[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
     def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union[MixedDataset, StrictDataset]]:
@@ -442,14 +442,14 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Stack not found: {stack_id}")
         return images
 
-    def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
+    def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata
 
     def get_dataset_id_for_stack(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.model.get_parent_dataset(stack_id)
 
     @property
-    def active_stacks(self) -> Dict[uuid.UUID, StackVisualiserView]:
+    def active_stacks(self) -> dict[uuid.UUID, StackVisualiserView]:
         return {stack_id: stack for (stack_id, stack) in self.stack_visualisers.items() if stack.isVisible()}
 
     @property

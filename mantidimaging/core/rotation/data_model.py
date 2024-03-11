@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Optional, List, Iterator, NamedTuple
+from typing import Optional, Iterator, NamedTuple
 
 import numpy as np
 import scipy as sp
@@ -21,7 +21,7 @@ class CorTiltDataModel:
     """
     _cached_gradient: Optional[float]
     _cached_cor: Optional[float]
-    _points: List[Point]
+    _points: list[Point]
 
     def __init__(self):
         self._points = []
@@ -89,7 +89,7 @@ class CorTiltDataModel:
         cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor
 
-    def get_all_cors_from_regression(self, image_height) -> List[ScalarCoR]:
+    def get_all_cors_from_regression(self, image_height) -> list[ScalarCoR]:
         """
 
         :param image_height: How many cors will be generated,

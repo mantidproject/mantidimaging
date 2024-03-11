@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List, Optional, Tuple, Callable
+from typing import Optional, Callable
 
 import numpy as np
 from PIL import Image
@@ -17,7 +17,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
                  parent: ViewBox,
                  icon_path: str,
                  icon_pos: int,
-                 color: Optional[List[int]] = None,
+                 color: Optional[list[int]] = None,
                  message: str = ""):
         """An indicator icon for a pyqtgraph ViewBox
 
@@ -48,9 +48,9 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
 
         self.connected_overlay = None
 
-        self.actions: List[QAction] = []
+        self.actions: list[QAction] = []
 
-    def set_icon(self, icon_path: str, color: Optional[List[int]] = None) -> None:
+    def set_icon(self, icon_path: str, color: Optional[list[int]] = None) -> None:
         if color is not None:
             im = Image.open(icon_path)
             image_data = np.array(im)
@@ -97,7 +97,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
             self.connected_overlay.setVisible(False)
         self.label.setVisible(False)
 
-    def add_actions(self, actions: List[Tuple[str, Callable]]) -> None:
+    def add_actions(self, actions: list[tuple[str, Callable]]) -> None:
         for text, method in actions:
             action = QAction(text)
             action.triggered.connect(method)

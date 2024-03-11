@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
 from PyQt5.QtCore import Qt
@@ -180,14 +180,14 @@ class StackChoiceView(BaseMainWindowView):
         """
         Signal triggered when the histograms are locked and the contrast values changed.
         """
-        levels: Tuple[float, float] = self.original_stack.ui.histogram.getLevels()
+        levels: tuple[float, float] = self.original_stack.ui.histogram.getLevels()
         self.new_stack.ui.histogram.setLevels(*levels)
 
     def _set_from_new_to_old(self) -> None:
         """
         Signal triggered when the histograms are locked and the contrast values changed.
         """
-        levels: Tuple[float, float] = self.new_stack.ui.histogram.getLevels()
+        levels: tuple[float, float] = self.new_stack.ui.histogram.getLevels()
         self.original_stack.ui.histogram.setLevels(*levels)
 
     def connect_histogram_changes(self):

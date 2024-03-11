@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, List, Optional, Any
+from typing import Iterable, Optional, Any
 
 
 class EnablePredicate(ABC):
@@ -47,7 +47,7 @@ class AndPredicate(EnablePredicate):
 
 
 def EnablePredicateFactory(rules: str) -> EnablePredicate:
-    predicates: List[EnablePredicate] = []
+    predicates: list[EnablePredicate] = []
     for rule in rules.split(","):
         rule = rule.strip()
         if rule == "loaded":

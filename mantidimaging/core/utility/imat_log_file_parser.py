@@ -7,7 +7,7 @@ import re
 from enum import Enum, auto
 from itertools import zip_longest
 from logging import getLogger
-from typing import Dict, List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import numpy
 
@@ -42,11 +42,11 @@ class TextLogParser:
     EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE = \
             ' TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image\n'
 
-    def __init__(self, data: List[str]) -> None:
+    def __init__(self, data: list[str]) -> None:
         self.data = [line.strip().split("   ") for line in data]
 
-    def parse(self) -> Dict[IMATLogColumn, List]:
-        parsed_log: Dict[IMATLogColumn, List] = {
+    def parse(self) -> dict[IMATLogColumn, list]:
+        parsed_log: dict[IMATLogColumn, list] = {
             IMATLogColumn.TIMESTAMP: [],
             IMATLogColumn.PROJECTION_NUMBER: [],
             IMATLogColumn.PROJECTION_ANGLE: [],
@@ -71,7 +71,7 @@ class TextLogParser:
                 f"Unable to parse value from log file to correct type for row: {line} {index_error}") from index_error
 
     @staticmethod
-    def try_insert_header(file_contents: List[str]) -> List[str]:
+    def try_insert_header(file_contents: list[str]) -> list[str]:
         """
         Attempt to normalise data where no header is present by inserting one.
 
@@ -89,7 +89,7 @@ class TextLogParser:
         return file_contents
 
     @staticmethod
-    def try_remove_invalid_lines(file_contents: List[str]) -> List[str]:
+    def try_remove_invalid_lines(file_contents: list[str]) -> list[str]:
         """
         Attempt to normalise data where invalid lines are the incorrect number of columns are present.
 
@@ -105,11 +105,11 @@ class CSVLogParser:
     EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE = \
         "TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image\n"
 
-    def __init__(self, data: List[str]) -> None:
+    def __init__(self, data: list[str]) -> None:
         self.data = data
 
-    def parse(self) -> Dict[IMATLogColumn, List]:
-        parsed_log: Dict[IMATLogColumn, List] = {
+    def parse(self) -> dict[IMATLogColumn, list]:
+        parsed_log: dict[IMATLogColumn, list] = {
             IMATLogColumn.TIMESTAMP: [],
             IMATLogColumn.PROJECTION_NUMBER: [],
             IMATLogColumn.PROJECTION_ANGLE: [],
@@ -140,7 +140,7 @@ class CSVLogParser:
                 f"Unable to parse value from log file to correct type for row: {row} {value_error}") from value_error
 
     @staticmethod
-    def try_insert_header(file_contents: List[str]) -> List[str]:
+    def try_insert_header(file_contents: list[str]) -> list[str]:
         """
         Attempt to normalise data where no header is present by inserting one.
 
@@ -153,7 +153,7 @@ class CSVLogParser:
         return file_contents
 
     @staticmethod
-    def try_remove_invalid_lines(file_contents: List[str]) -> List[str]:
+    def try_remove_invalid_lines(file_contents: list[str]) -> list[str]:
         """
         Attempt to normalise data where invalid lines are the incorrect number of columns are present.
 
@@ -166,14 +166,14 @@ class CSVLogParser:
 
 class IMATLogFile:
 
-    def __init__(self, data: List[str], source_file: Path):
+    def __init__(self, data: list[str], source_file: Path):
         self._source_file = source_file
 
         self.parser = self.find_parser(data)
         self._data = self.parser.parse()
 
     @staticmethod
-    def find_parser(data: List[str]):
+    def find_parser(data: list[str]):
         """
         Try and determine the format of the log file by checking the first row. for the type of seperator used and then
         attempting to normalise the data if needed before selecting the appropriate parser.
@@ -229,7 +229,7 @@ class IMATLogFile:
 
         return Counts(counts)
 
-    def raise_if_angle_missing(self, image_filenames: Optional[List[str]]) -> None:
+    def raise_if_angle_missing(self, image_filenames: Optional[list[str]]) -> None:
         if image_filenames is None:
             return
 

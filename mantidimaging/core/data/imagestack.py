@@ -7,7 +7,7 @@ import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING, cast
+from typing import Optional, Any, Union, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
@@ -29,9 +29,9 @@ class ImageStack:
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
-                 filenames: Optional[List[str]] = None,
-                 indices: List[int] | Indices | None = None,
-                 metadata: Optional[Dict[str, Any]] = None,
+                 filenames: Optional[list[str]] = None,
+                 indices: list[int] | Indices | None = None,
+                 metadata: Optional[dict[str, Any]] = None,
                  sinograms: bool = False,
                  name: Optional[str] = None):
         """
@@ -53,7 +53,7 @@ class ImageStack:
 
         self._filenames = filenames
 
-        self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
+        self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
         self._proj180deg: Optional[ImageStack] = None
@@ -93,11 +93,11 @@ class ImageStack:
         return len(self._filenames) if self._filenames else 0
 
     @property
-    def filenames(self) -> Optional[List[str]]:
+    def filenames(self) -> Optional[list[str]]:
         return self._filenames
 
     @filenames.setter
-    def filenames(self, new_ones: List[str]) -> None:
+    def filenames(self, new_ones: list[str]) -> None:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
@@ -112,7 +112,7 @@ class ImageStack:
         self.metadata = json.load(f) | self.metadata
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None) -> None:
+    def save_metadata(self, f: TextIO, rescale_params: Optional[dict[str, Union[str, float]]] = None) -> None:
         self.metadata[const.SINOGRAMS] = self.is_sinograms
 
         if rescale_params is not None:
@@ -352,7 +352,7 @@ class ImageStack:
     def clear_proj180deg(self) -> None:
         self._proj180deg = None
 
-    def make_name_unique(self, existing_names: List[str]) -> None:
+    def make_name_unique(self, existing_names: list[str]) -> None:
         name = self.name
         num = 1
         while self.name in existing_names:

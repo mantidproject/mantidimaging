@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from enum import Enum
 from dataclasses import dataclass
-from typing import Any, List, Optional, NamedTuple, TYPE_CHECKING
+from typing import Any, Optional, NamedTuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy
@@ -105,7 +105,7 @@ class ReconstructionParameters:
     alpha: float = 0.0
     non_negative: bool = False
     max_projection_angle: float = 360.0
-    beam_hardening_coefs: Optional[List[float]] = None
+    beam_hardening_coefs: Optional[list[float]] = None
     stochastic: bool = False
     projections_per_subset: int = 50
     regularisation_percent: int = 30

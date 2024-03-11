@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from math import degrees
 from time import sleep
-from typing import Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
@@ -239,7 +239,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
         self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
 
-    def get_roi(self) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
+    def get_roi(self) -> tuple[CloseEnoughPoint, CloseEnoughPoint]:
         return self.presenter.get_roi(self.image,
                                       roi_pos=CloseEnoughPoint(self.roi.pos()),
                                       roi_size=CloseEnoughPoint(self.roi.size()))

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from algotom.prep.removal import remove_dead_stripe
 
@@ -54,11 +54,11 @@ class RemoveDeadStripesFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
         array[index] = remove_dead_stripe(array[index], **params)
 
     @staticmethod
-    def compute_function(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_dead_stripe(array[:, index, :], **params)
 
     @staticmethod

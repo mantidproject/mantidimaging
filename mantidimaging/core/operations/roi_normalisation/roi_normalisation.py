@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
 
 
-def modes() -> List[str]:
+def modes() -> list[str]:
     return ['Stack Average', 'Flat Field']
 
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum, auto
 from pathlib import Path
-from typing import ClassVar, Type
+from typing import ClassVar
 
 import numpy as np
 
@@ -66,9 +66,9 @@ class InstrumentLog:
 
     New parsers can be implemented by subclassing InstrumentLogParser
     """
-    parsers: ClassVar[list[Type[InstrumentLogParser]]] = []
+    parsers: ClassVar[list[type[InstrumentLogParser]]] = []
 
-    parser: Type[InstrumentLogParser]
+    parser: type[InstrumentLogParser]
     data: LogDataType
     length: int
 
@@ -95,7 +95,7 @@ class InstrumentLog:
         self.length = lengths[0]
 
     @classmethod
-    def register_parser(cls, parser: Type[InstrumentLogParser]) -> None:
+    def register_parser(cls, parser: type[InstrumentLogParser]) -> None:
         cls.parsers.append(parser)
 
     def get_column(self, key: LogColumn) -> list[float]:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from itertools import chain, tee
-from typing import List, TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
@@ -78,7 +78,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         return self.im.image
 
     @property
-    def other_histograms(self) -> List[HistogramLUTItem]:
+    def other_histograms(self) -> list[HistogramLUTItem]:
         return [axis.hist for axis in self.axis_siblings]
 
     @property
@@ -110,7 +110,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.set_auto_color_enabled(image is not None)
 
     @staticmethod
-    def set_siblings(sibling_views: List["MIMiniImageView"], axis=False, hist=False):
+    def set_siblings(sibling_views: list["MIMiniImageView"], axis=False, hist=False):
         for view1 in sibling_views:
             for view2 in sibling_views:
                 if view2 is not view1:

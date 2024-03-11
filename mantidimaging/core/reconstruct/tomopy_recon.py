@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 
@@ -49,7 +49,7 @@ class TomopyRecon(BaseRecon):
 
     @staticmethod
     def full(images: ImageStack,
-             cors: List[ScalarCoR],
+             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Optional[Progress] = None):
         """
@@ -84,7 +84,7 @@ class TomopyRecon(BaseRecon):
         return ImageStack(volume)
 
     @staticmethod
-    def allowed_filters() -> List[str]:
+    def allowed_filters() -> list[str]:
         return ["ramlak", 'shepp', 'cosine', 'hann', 'hamming', 'parzen', 'butterworth']
 
 

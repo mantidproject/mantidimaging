@@ -6,7 +6,7 @@ import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Callable, Set
+from typing import TYPE_CHECKING, Any, Optional, Callable
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
@@ -58,8 +58,8 @@ class ReconstructWindowPresenter(BasePresenter):
         super().__init__(view)
         self.view = view
         self.model = ReconstructWindowModel(self.view.cor_table_model)
-        self.allowed_recon_kwargs: Dict[str, List[str]] = self.model.load_allowed_recon_kwargs()
-        self.restricted_arg_widgets: Dict[str, List[QWidget]] = {
+        self.allowed_recon_kwargs: dict[str, list[str]] = self.model.load_allowed_recon_kwargs()
+        self.restricted_arg_widgets: dict[str, list[QWidget]] = {
             'filter_name': [self.view.filterName, self.view.filterNameLabel],
             'num_iter': [self.view.numIter, self.view.numIterLabel],
             'alpha': [self.view.alphaSpinBox, self.view.alphaLabel],
@@ -71,7 +71,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.main_window = main_window
 
         self.recon_is_running = False
-        self.async_tracker: Set[Any] = set()
+        self.async_tracker: set[Any] = set()
 
         self.main_window.stack_changed.connect(self.handle_stack_changed)
         self.stack_changed_pending = False

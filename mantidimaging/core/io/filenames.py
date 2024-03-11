@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-from typing import List, Iterator, Optional, Union, Final
+from typing import Iterator, Optional, Union, Final
 from logging import getLogger
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
@@ -124,7 +124,7 @@ class FilenamePatternGolden(FilenamePattern):
 
 class FilenameGroup:
 
-    def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
+    def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: list[int]):
         self.directory = directory
         self.pattern = pattern
         self.all_indexes = all_indexes

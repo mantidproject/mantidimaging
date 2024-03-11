@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Optional, Set
+from typing import Any, Callable, Optional
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -73,8 +73,8 @@ class AsyncTaskDialogView(BaseDialogView):
 def start_async_task_view(parent: QMainWindow,
                           task: Callable,
                           on_complete: Callable,
-                          kwargs: Optional[Dict] = None,
-                          tracker: Optional[Set[Any]] = None,
+                          kwargs: Optional[dict] = None,
+                          tracker: Optional[set[Any]] = None,
                           busy: Optional[bool] = False):
     atd = AsyncTaskDialogView(parent)
     if not kwargs:

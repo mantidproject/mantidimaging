@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import unittest
 import uuid
-from typing import List
 
 from unittest import mock
 from unittest.mock import patch, call
@@ -21,7 +20,7 @@ from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
-def generate_images_with_filenames(n_images: int) -> List[ImageStack]:
+def generate_images_with_filenames(n_images: int) -> list[ImageStack]:
     images = []
     for _ in range(n_images):
         im = generate_images()
@@ -64,7 +63,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.presenter.stack_visualisers = []
 
-    def create_mock_stacks_with_names(self, stack_names: List[str]):
+    def create_mock_stacks_with_names(self, stack_names: list[str]):
         stacks = {}
         for name in stack_names:
             stack_mock = mock.Mock()

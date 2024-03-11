@@ -6,7 +6,7 @@ import glob
 import os
 import numpy as np
 from logging import getLogger
-from typing import Optional, Tuple
+from typing import Optional
 
 log = getLogger(__name__)
 
@@ -27,7 +27,7 @@ def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
     return None
 
 
-def find_projection_closest_to_180(projections: np.ndarray, projection_angles: np.ndarray) -> Tuple[np.ndarray, float]:
+def find_projection_closest_to_180(projections: np.ndarray, projection_angles: np.ndarray) -> tuple[np.ndarray, float]:
     """
     Finds the projection closest to 180 and returns it with the difference.
     :param projections: The array of projection images.

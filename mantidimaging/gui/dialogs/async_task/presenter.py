@@ -6,7 +6,7 @@ import traceback
 from logging import getLogger
 from enum import Enum
 
-from typing import Callable, Set
+from typing import Callable
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
@@ -48,7 +48,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     def set_on_complete(self, f: Callable):
         self.model.on_complete_function = f
 
-    def set_tracker(self, tracker: Set):
+    def set_tracker(self, tracker: set):
         self.model.set_tracker(tracker)
 
     def do_start_processing(self):

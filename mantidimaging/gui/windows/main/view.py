@@ -6,7 +6,7 @@ import os
 import uuid
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import Optional, Union, TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -435,7 +435,7 @@ class MainWindowView(BaseMainWindowView):
     def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union['MixedDataset', StrictDataset]]:
         return self.presenter.get_dataset(dataset_id)
 
-    def get_all_stacks(self) -> List[ImageStack]:
+    def get_all_stacks(self) -> list[ImageStack]:
         return self.presenter.get_all_stacks()
 
     def get_all_180_projections(self):

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.ndimage import median_filter
@@ -72,7 +72,7 @@ class NaNRemovalFilter(BaseFilter):
         array[i] = NaNRemovalFilter._nan_to_median(array[i], size=3, edgemode='reflect')
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
         from mantidimaging.gui.utility import add_property_to_form
 
         value_range = (-10000000, 10000000)

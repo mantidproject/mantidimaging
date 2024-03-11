@@ -5,7 +5,7 @@ from multiprocessing import get_context
 import os
 import uuid
 from logging import getLogger
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 import psutil
 from psutil import NoSuchProcess, AccessDenied
@@ -55,7 +55,7 @@ def clear_memory_from_current_process_linux() -> None:
             free_shared_memory_linux([mem_name])
 
 
-def find_memory_from_previous_process_linux() -> List[str]:
+def find_memory_from_previous_process_linux() -> list[str]:
     old_memory = []
     for mem_name in _get_shared_mem_names_linux():
         if _is_safe_to_remove(mem_name):
@@ -63,7 +63,7 @@ def find_memory_from_previous_process_linux() -> List[str]:
     return old_memory
 
 
-def free_shared_memory_linux(mem_names: List[str]) -> None:
+def free_shared_memory_linux(mem_names: list[str]) -> None:
     for mem_name in mem_names:
         os.remove(f'{MEM_DIR_LINUX}/{mem_name}')
 
@@ -83,7 +83,7 @@ def _is_safe_to_remove(mem_name: str) -> bool:
     return False
 
 
-def _get_shared_mem_names_linux() -> List[str]:
+def _get_shared_mem_names_linux() -> list[str]:
     return os.listdir(MEM_DIR_LINUX)
 
 

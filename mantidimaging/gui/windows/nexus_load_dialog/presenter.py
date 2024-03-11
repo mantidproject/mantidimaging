@@ -5,7 +5,7 @@ import enum
 import traceback
 from enum import auto, Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, Optional, Union, Tuple
+from typing import TYPE_CHECKING, Optional, Union
 
 import h5py
 import numpy as np
@@ -291,7 +291,7 @@ class NexusLoadPresenter:
             logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
-    def get_dataset(self) -> Tuple[StrictDataset, str]:
+    def get_dataset(self) -> tuple[StrictDataset, str]:
         """
         Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.

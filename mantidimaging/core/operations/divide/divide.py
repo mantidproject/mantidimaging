@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Union, Callable, Dict, Any, TYPE_CHECKING
+from typing import Union, Callable, Any, TYPE_CHECKING
 
 from mantidimaging import helper as h
 import numpy as np
@@ -57,7 +57,7 @@ class DivideFilter(BaseFilter):
         array[i] /= value
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> Dict[str, Any]:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         _, value_widget = add_property_to_form("Divide by",
