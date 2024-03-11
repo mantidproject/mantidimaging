@@ -48,6 +48,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
+        self.main_window.stack_changed.connect(self.handle_stack_changed)
+
+    def handle_stack_changed(self) -> None:
+        if self.current_stack_uuid:
+            self.model.set_stack(self.main_window.get_stack(self.current_stack_uuid))
+        else:
+            return
+        normalise_uuid = self.view.get_normalise_stack()
+        if normalise_uuid is not None:
+            try:
+                norm_stack: Optional['ImageStack'] = self.main_window.get_stack(normalise_uuid)
+            except RuntimeError:
+                norm_stack = None
+            self.model.set_normalise_stack(norm_stack)
+        self.show_new_sample()
+        self.redraw_all_rois()
 
     def handle_sample_change(self, uuid: Optional['UUID']) -> None:
         if uuid == self.current_stack_uuid:
