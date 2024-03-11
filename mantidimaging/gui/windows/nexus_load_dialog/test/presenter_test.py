@@ -10,7 +10,7 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
@@ -32,7 +32,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.tomo_entry = self.nexus.create_group(self.full_tomo_path)
 
         self.n_images = 10
-        self.data_array = np.random.random((self.n_images, 10, 10))
+        self.data_array = gen_img_numpy_rand((self.n_images, 10, 10), 2024)
         self.tomo_entry.create_dataset(DATA_PATH, data=self.data_array, dtype="float64")
 
         self.flat_before = self.data_array[:2]
