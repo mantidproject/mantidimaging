@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from enum import Enum
 from dataclasses import dataclass
-from typing import List, Optional, NamedTuple, TYPE_CHECKING
+from typing import Any, List, Optional, NamedTuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy
@@ -21,10 +21,9 @@ if TYPE_CHECKING:
 @dataclass
 class SingleValue:
     __slots__ = 'value'
-    value: float
+    value: Any
 
-    def __init__(self, value: float):
-        assert isinstance(value, float), f"Value is not float. Actual type:{type(value)}"
+    def __init__(self, value: Any):
         self.value = value
 
     def __str__(self):

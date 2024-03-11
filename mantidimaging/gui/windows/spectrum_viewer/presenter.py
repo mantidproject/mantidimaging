@@ -132,7 +132,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         image view accordingly. Resets the ROIs.
         """
 
-        self.view.set_image(self.model.get_averaged_image())
+        averaged_image = self.model.get_averaged_image()
+        assert averaged_image is not None
+        self.view.set_image(averaged_image)
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
         self.view.auto_range_image()
         if self.view.get_roi_properties_spinboxes():
@@ -140,7 +142,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
-        self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
+        averaged_image = self.model.get_averaged_image()
+        assert averaged_image is not None
+        self.view.set_image(averaged_image, autoLevels=False)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
         """

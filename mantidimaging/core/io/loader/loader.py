@@ -88,6 +88,7 @@ def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
 def read_image_dimensions(file_path: Path) -> Tuple[int, int]:
     load_func = get_loader(file_path.suffix.replace(".", ""))
     img = load_func(file_path)
+    assert len(img.shape) == 2
     return img.shape
 
 

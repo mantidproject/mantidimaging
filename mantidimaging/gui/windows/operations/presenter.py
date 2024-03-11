@@ -410,7 +410,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.previews.set_histogram_log_scale()
 
     @staticmethod
-    def _update_preview_image(image_data: Optional[np.ndarray], image: 'MIMiniImageView'):
+    def _update_preview_image(image_data: np.ndarray, image: 'MIMiniImageView'):
         image.clear()
         image.setImage(image_data)
 

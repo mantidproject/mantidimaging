@@ -218,6 +218,7 @@ class SpectrumViewerWindowModel:
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
+            assert len(self._stack.data.shape) == 3
             return self._stack.data.shape[1:]
         else:
             return 0, 0
@@ -363,7 +364,7 @@ class SpectrumViewerWindowModel:
             if sub_bottom == bottom:
                 break
 
-    def get_stack_time_of_flight(self) -> np.array | None:
+    def get_stack_time_of_flight(self) -> np.ndarray | None:
         if self._stack is None or self._stack.log_file is None:
             return None
         try:

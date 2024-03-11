@@ -20,11 +20,12 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 if TYPE_CHECKING:
     from mantidimaging.core.io.instrument_log import InstrumentLog
+    import numpy.typing as npt
 
 
 class ImageStack:
     name: str
-    _shared_array: np.ndarray | pu.SharedArray
+    _shared_array: pu.SharedArray
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
@@ -274,11 +275,11 @@ class ImageStack:
         return self._shared_array.has_shared_memory
 
     @property
-    def dtype(self) -> np.typing.DTypeLike:
+    def dtype(self) -> np.dtype:
         return self.data.dtype
 
     @staticmethod
-    def create_empty_image_stack(shape: tuple[int, ...], dtype: np.dtype, metadata: dict[str, Any]) -> 'ImageStack':
+    def create_empty_image_stack(shape: tuple[int, ...], dtype: npt.DTypeLike, metadata: dict[str, Any]) -> ImageStack:
         arr = pu.create_array(shape, dtype)
         return ImageStack(arr, metadata=metadata)
 

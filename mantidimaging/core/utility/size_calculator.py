@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import math
+
 import numpy
-from typing import Iterable
+from typing import Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 
-def _determine_dtype_size(dtype: numpy.dtype) -> int:
+def _determine_dtype_size(dtype: npt.DTypeLike) -> int:
     try:
         return numpy.dtype(dtype).itemsize
     except TypeError as exc:
@@ -25,15 +29,15 @@ def full_size(shape: Iterable[int]) -> int:
     return math.prod(shape)
 
 
-def full_size_bytes(shape: Iterable[int], dtype: numpy.dtype):
+def full_size_bytes(shape: Iterable[int], dtype: npt.DTypeLike):
     return full_size(shape) * _determine_dtype_size(dtype)
 
 
-def full_size_KB(shape: Iterable[int], dtype: numpy.dtype):
+def full_size_KB(shape: Iterable[int], dtype: npt.DTypeLike):
     return full_size_bytes(shape, dtype) / 1024
 
 
-def full_size_MB(shape: Iterable[int], dtype: numpy.dtype):
+def full_size_MB(shape: Iterable[int], dtype: npt.DTypeLike):
     return full_size_KB(shape, dtype) / 1024
 
 

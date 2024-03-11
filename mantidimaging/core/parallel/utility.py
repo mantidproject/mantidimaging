@@ -53,7 +53,7 @@ def _create_shared_array(shape: Tuple[int, ...], dtype: 'npt.DTypeLike' = np.flo
 
 def _read_array_from_shared_memory(shape: Tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory,
                                    free_mem_on_delete: bool) -> 'SharedArray':
-    array = np.ndarray(shape, dtype=dtype, buffer=mem.buf)
+    array: np.ndarray = np.ndarray(shape, dtype=dtype, buffer=mem.buf)
     return SharedArray(array, mem, free_mem_on_del=free_mem_on_delete)
 
 
