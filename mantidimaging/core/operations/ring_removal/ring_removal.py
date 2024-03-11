@@ -5,12 +5,12 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PyQt5.QtWidgets import QComboBox
+import tomopy.misc.corr as tp
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.utility.optional_imports import safe_import
-from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
@@ -59,29 +59,46 @@ class RingRemovalFilter(BaseFilter):
                        Maximum width of the rings to be filtered in pixels
         :returns: Filtered data
         """
-        progress = Progress.ensure_instance(progress, task_name='Ring Removal')
+        h.check_data_stack(images)
+        params = {
+            "center_mode": center_mode,
+            "center_x": center_x if center_mode == "manual" else None,
+            "center_y": center_y if center_mode == "manual" else None,
+            "thresh": thresh,
+            "thresh_max": thresh_max,
+            "thresh_min": thresh_min,
+            "theta_min": theta_min,
+            "rwidth": rwidth
+        }
+        for i in range(len(images.data)):
+            corrected_image = RingRemovalFilter.compute_function(i, images.data, params)
+            images.data[i] = corrected_image
+        return images
 
-        tp = safe_import('tomopy.misc.corr')
+    @staticmethod
+    def compute_function(image_index, shared_array, params):
+        image = shared_array[image_index]
+        images = image[np.newaxis, :, :]
 
-        if center_mode != "manual":
+        if params["center_mode"] == "manual":
+            center_x = params["center_x"]
+            center_y = params["center_y"]
+        else:
             center_x = center_y = None
 
-        h.check_data_stack(images)
+        corrected_image = tp.remove_ring(images,
+                                         center_x=center_x,
+                                         center_y=center_y,
+                                         thresh=params["thresh"],
+                                         thresh_max=params["thresh_max"],
+                                         thresh_min=params["thresh_min"],
+                                         theta_min=params["theta_min"],
+                                         rwidth=params["rwidth"],
+                                         out=np.empty_like(images))
 
-        with progress:
-            progress.update(msg="Ring Removal")
-            sample = images.data
-            tp.remove_ring(sample,
-                           center_x=center_x,
-                           center_y=center_y,
-                           thresh=thresh,
-                           thresh_max=thresh_max,
-                           thresh_min=thresh_min,
-                           theta_min=theta_min,
-                           rwidth=rwidth,
-                           out=sample)
+        corrected_slice = corrected_image[0, :, :]
 
-        return images
+        return corrected_slice
 
     @staticmethod
     def register_gui(form, on_change, view):
