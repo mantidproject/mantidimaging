@@ -104,14 +104,6 @@ class MedianFilter(BaseFilter):
         array[i] = _median_filter(array[i], size=size, mode=mode)
 
     @staticmethod
-    def cuda_compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
-        mode = params['mode']
-        progress = params['progress']
-
-        cuda = gpu.CudaExecuter(array.dtype)
-        cuda.median_filter(i, array, mode=mode, progress=progress)
-
-    @staticmethod
     def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
 
         # Create a spin box for kernel size without add_property_to_form in order to allow a custom validate method
