@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QComboBox
 import tomopy.misc.corr as tp
 
 from mantidimaging import helper as h
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 
@@ -70,10 +71,7 @@ class RingRemovalFilter(BaseFilter):
             "theta_min": theta_min,
             "rwidth": rwidth
         }
-        for i in range(len(images.data)):
-            corrected_image = RingRemovalFilter.compute_function(i, images.data, params)
-            images.data[i] = corrected_image
-        return images
+        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), [images.shared_array], params)
 
     @staticmethod
     def compute_function(image_index, shared_array, params):
