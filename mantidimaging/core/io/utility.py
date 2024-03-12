@@ -6,7 +6,6 @@ import glob
 import os
 import numpy as np
 from logging import getLogger
-from typing import Optional
 
 log = getLogger(__name__)
 
@@ -16,7 +15,7 @@ NEXUS_PROCESSED_DATA_PATH = "processed-data"
 THRESHOLD_180 = np.radians(1)
 
 
-def find_first_file_that_is_possibly_a_sample(file_path: str) -> Optional[str]:
+def find_first_file_that_is_possibly_a_sample(file_path: str) -> str | None:
     # Grab all .tif or .tiff files
     possible_files = glob.glob(os.path.join(file_path, "**/*.tif*"), recursive=True)
 

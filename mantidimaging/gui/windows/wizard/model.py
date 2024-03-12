@@ -3,19 +3,19 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, Optional, Any
+from typing import Iterable, Any
 
 
 class EnablePredicate(ABC):
 
     @abstractmethod
-    def __call__(self, history: Optional[dict[str, Any]]) -> bool:
+    def __call__(self, history: dict[str, Any] | None) -> bool:
         pass
 
 
 class LoadedPredicate(EnablePredicate):
 
-    def __call__(self, history: Optional[dict[str, Any]]) -> bool:
+    def __call__(self, history: dict[str, Any] | None) -> bool:
         return history is not None
 
 
@@ -26,7 +26,7 @@ class HistoryPredicate(EnablePredicate):
             raise ValueError
         self.filter_name = rule.partition(":")[2]
 
-    def __call__(self, history: Optional[dict[str, Any]]) -> bool:
+    def __call__(self, history: dict[str, Any] | None) -> bool:
         if history is not None and "operation_history" in history:
             for op in history["operation_history"]:
                 if op["name"] == self.filter_name:
@@ -39,7 +39,7 @@ class AndPredicate(EnablePredicate):
     def __init__(self, predicates: Iterable[EnablePredicate]):
         self.predicates = predicates
 
-    def __call__(self, history: Optional[dict[str, Any]]) -> bool:
+    def __call__(self, history: dict[str, Any] | None) -> bool:
         for predicate in self.predicates:
             if not predicate(history):
                 return False

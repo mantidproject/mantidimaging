@@ -3,7 +3,6 @@
 from __future__ import annotations
 import uuid
 from dataclasses import dataclass
-from typing import Optional, Union
 
 import numpy as np
 
@@ -26,7 +25,7 @@ class BaseDataset:
         self._id: uuid.UUID = uuid.uuid4()
         self.recons = ReconList()
         self._name = name
-        self._sinograms: Optional[ImageStack] = None
+        self._sinograms: ImageStack | None = None
 
     @property
     def id(self) -> uuid.UUID:
@@ -41,11 +40,11 @@ class BaseDataset:
         self._name = arg
 
     @property
-    def sinograms(self) -> Optional[ImageStack]:
+    def sinograms(self) -> ImageStack | None:
         return self._sinograms
 
     @sinograms.setter
-    def sinograms(self, sino: Optional[ImageStack]):
+    def sinograms(self, sino: ImageStack | None):
         self._sinograms = sino
 
     @property
@@ -71,7 +70,7 @@ class BaseDataset:
 
 class MixedDataset(BaseDataset):
 
-    def __init__(self, stacks: Optional[list[ImageStack]] = None, name: str = ""):
+    def __init__(self, stacks: list[ImageStack] | None = None, name: str = ""):
         super().__init__(name=name)
         stacks = [] if stacks is None else stacks
         self._stacks = stacks
@@ -104,17 +103,17 @@ class MixedDataset(BaseDataset):
 @dataclass
 class StrictDataset(BaseDataset):
     sample: ImageStack
-    flat_before: Optional[ImageStack] = None
-    flat_after: Optional[ImageStack] = None
-    dark_before: Optional[ImageStack] = None
-    dark_after: Optional[ImageStack] = None
+    flat_before: ImageStack | None = None
+    flat_after: ImageStack | None = None
+    dark_before: ImageStack | None = None
+    dark_after: ImageStack | None = None
 
     def __init__(self,
                  sample: ImageStack,
-                 flat_before: Optional[ImageStack] = None,
-                 flat_after: Optional[ImageStack] = None,
-                 dark_before: Optional[ImageStack] = None,
-                 dark_after: Optional[ImageStack] = None,
+                 flat_before: ImageStack | None = None,
+                 flat_after: ImageStack | None = None,
+                 dark_before: ImageStack | None = None,
+                 dark_after: ImageStack | None = None,
                  name: str = ""):
         super().__init__(name=name)
         self.sample = sample
@@ -220,7 +219,7 @@ class StrictDataset(BaseDataset):
         return False
 
 
-def _get_stack_data_type(stack_id: uuid.UUID, dataset: Union[MixedDataset, StrictDataset]) -> str:
+def _get_stack_data_type(stack_id: uuid.UUID, dataset: MixedDataset | StrictDataset) -> str:
     """
     Find the data type as a string of a stack.
     :param stack_id: The ID of the stack.

@@ -5,7 +5,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from logging import getLogger
 from threading import Lock
-from typing import Union, Optional, Generator
+from typing import Generator
 
 import astra
 import numpy as np
@@ -28,7 +28,7 @@ def rotation_matrix2d(theta: float):
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
-def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, center_rot_offset: Union[float]):
+def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, center_rot_offset: float):
     angles_value = angles_rad.value
     s0 = [0.0, -1.0]  # source
     u0 = [detector_spacing_x, 0.0]  # detector coordinates
@@ -106,7 +106,7 @@ class AstraRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None) -> np.ndarray:
+                    progress: Progress | None = None) -> np.ndarray:
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
         sino = BaseRecon.prepare_sinogram(sino, recon_params)
@@ -129,7 +129,7 @@ class AstraRecon(BaseRecon):
     def full(images: ImageStack,
              cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None) -> ImageStack:
+             progress: Progress | None = None) -> ImageStack:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
         output_shape = (images.num_sinograms, images.width, images.width)
         output_images: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)

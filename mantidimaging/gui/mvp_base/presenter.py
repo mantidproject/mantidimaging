@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView  # pragma: no cover
 
 
 class BasePresenter(object):
-    view: Union['BaseMainWindowView', 'BaseDialogView']
+    view: 'BaseMainWindowView' | 'BaseDialogView'
 
     def __init__(self, view: 'BaseMainWindowView'):
         self.view = view

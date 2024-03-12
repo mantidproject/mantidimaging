@@ -6,7 +6,7 @@ import os
 import uuid
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -76,7 +76,7 @@ class MainWindowView(BaseMainWindowView):
     menuWorkflow: QMenu
     menuImage: QMenu
     menuHelp: QMenu
-    menuTreeView: Optional[QMenu] = None
+    menuTreeView: QMenu | None = None
 
     actionRecon: QAction
     actionFilters: QAction
@@ -93,17 +93,17 @@ class MainWindowView(BaseMainWindowView):
     actionSaveNeXusFile: QAction
     actionExit: QAction
 
-    filters: Optional[FiltersWindowView] = None
-    recon: Optional[ReconstructWindowView] = None
-    spectrum_viewer: Optional[SpectrumViewerWindowView] = None
-    live_viewer: Optional[LiveViewerWindowView] = None
+    filters: FiltersWindowView | None = None
+    recon: ReconstructWindowView | None = None
+    spectrum_viewer: SpectrumViewerWindowView | None = None
+    live_viewer: LiveViewerWindowView | None = None
 
-    image_load_dialog: Optional[ImageLoadDialog] = None
-    image_save_dialog: Optional[ImageSaveDialog] = None
-    nexus_load_dialog: Optional[NexusLoadDialog] = None
-    nexus_save_dialog: Optional[NexusSaveDialog] = None
-    add_to_dataset_dialog: Optional[AddImagesToDatasetDialog] = None
-    move_stack_dialog: Optional[MoveStackDialog] = None
+    image_load_dialog: ImageLoadDialog | None = None
+    image_save_dialog: ImageSaveDialog | None = None
+    nexus_load_dialog: NexusLoadDialog | None = None
+    nexus_save_dialog: NexusSaveDialog | None = None
+    add_to_dataset_dialog: AddImagesToDatasetDialog | None = None
+    move_stack_dialog: MoveStackDialog | None = None
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -198,7 +198,7 @@ class MainWindowView(BaseMainWindowView):
         else:
             populate_menu(self.menuImage, current_stack.actions)
 
-    def current_showing_stack(self) -> Optional[StackVisualiserView]:
+    def current_showing_stack(self) -> StackVisualiserView | None:
         for stack in self.findChildren(StackVisualiserView):
             if not stack.visibleRegion().isEmpty():
                 return stack
@@ -432,7 +432,7 @@ class MainWindowView(BaseMainWindowView):
     def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.presenter.get_dataset_id_for_stack(stack_id)
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union['MixedDataset', StrictDataset]]:
+    def get_dataset(self, dataset_id: uuid.UUID) -> "MixedDataset" | StrictDataset | None:
         return self.presenter.get_dataset(dataset_id)
 
     def get_all_stacks(self) -> list[ImageStack]:
@@ -569,7 +569,7 @@ class MainWindowView(BaseMainWindowView):
         parent.addChild(child)
 
     @staticmethod
-    def get_sinograms_item(parent: QTreeDatasetWidgetItem) -> Optional[QTreeDatasetWidgetItem]:
+    def get_sinograms_item(parent: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem | None:
         """
         Tries to look for a sinograms entry in a dataset tree view item.
         :return: The sinograms entry if found, None otherwise.
@@ -645,7 +645,7 @@ class MainWindowView(BaseMainWindowView):
         return recon_group
 
     @staticmethod
-    def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> Optional[QTreeDatasetWidgetItem]:
+    def get_recon_group(dataset_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem | None:
         """
         Looks for an existing recon group in a dataset tree view item.
         :param dataset_item: The dataset item to look for the recon group in.

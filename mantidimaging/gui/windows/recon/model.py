@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import Optional, Union, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -28,7 +28,7 @@ LOG = getLogger(__name__)
 class ReconstructWindowModel(object):
 
     def __init__(self, data_model: CorTiltPointQtModel):
-        self._images: Optional[ImageStack] = None
+        self._images: ImageStack | None = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
         self._selected_row = 0
@@ -82,7 +82,7 @@ class ReconstructWindowModel(object):
     def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'Optional[ImageStack]'):
+    def initial_select_data(self, images: 'ImageStack | None'):
         self._images = images
         self.reset_cor_model()
 
@@ -119,7 +119,7 @@ class ReconstructWindowModel(object):
                           slice_idx: int,
                           cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
-                          progress: Progress | None = None) -> Optional[ImageStack]:
+                          progress: Progress | None = None) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -137,7 +137,7 @@ class ReconstructWindowModel(object):
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
-    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[ImageStack]:
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -163,7 +163,7 @@ class ReconstructWindowModel(object):
         return recon
 
     @property
-    def tilt_angle(self) -> Optional[Degrees]:
+    def tilt_angle(self) -> Degrees | None:
         if self.data_model.has_results:
             return self.data_model.angle_in_degrees
         else:
@@ -190,7 +190,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None) -> ScalarCoR:
+    def get_me_a_cor(self, cor: ScalarCoR | None = None) -> ScalarCoR:
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -214,7 +214,7 @@ class ReconstructWindowModel(object):
     def is_current_stack(self, uuid: "uuid.UUID") -> bool:
         return self.stack_id == uuid
 
-    def get_slice_indices(self, num_cors: int) -> tuple[int, Union[np.ndarray, tuple[np.ndarray, Optional[float]]]]:
+    def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray | tuple[np.ndarray, float | None]]:
         # used to crop off 20% off the top and bottom, which is usually noise/empty
         remove_a_bit = self.images.height * 0.2
         slices = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)

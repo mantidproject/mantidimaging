@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Union, Callable, Any, TYPE_CHECKING
+from typing import Callable, Any, TYPE_CHECKING
 
 from mantidimaging import helper as h
 import numpy as np
@@ -32,7 +32,7 @@ class DivideFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
-    def filter_func(images: ImageStack, value: Union[int, float] = 0, unit="micron", progress=None) -> ImageStack:
+    def filter_func(images: ImageStack, value: int | float = 0, unit="micron", progress=None) -> ImageStack:
         """
         :param value: The division value.
         :param unit: The unit of the divisor.

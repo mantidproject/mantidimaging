@@ -4,7 +4,7 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 from __future__ import annotations
-from typing import Optional, Callable, Union, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
@@ -20,8 +20,8 @@ def execute(load_func: Callable[[str], np.ndarray],
             sample_path: list[str],
             img_format: str,
             dtype: 'npt.DTypeLike',
-            indices: Union[list[int], Indices, None],
-            progress: Optional[Progress] = None) -> ImageStack:
+            indices: list[int] | Indices | None,
+            progress: Progress | None = None) -> ImageStack:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -61,8 +61,8 @@ class ImageLoader(object):
                  img_format: str,
                  img_shape: tuple[int, ...],
                  data_dtype: 'npt.DTypeLike',
-                 indices: Union[list[int], Indices, None],
-                 progress: Optional[Progress] = None):
+                 indices: list[int] | Indices | None,
+                 progress: Progress | None = None):
         self.load_func = load_func
         self.img_format = img_format
         self.img_shape = img_shape

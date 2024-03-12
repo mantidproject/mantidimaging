@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 from collections import UserList
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class ReconList(UserList):
 
-    def __init__(self, data: Optional[list[ImageStack]] = None):
+    def __init__(self, data: list[ImageStack] | None = None):
         data = [] if data is None else data
         super().__init__(data)
         self._id: uuid.UUID = uuid.uuid4()

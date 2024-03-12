@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from logging import getLogger
 from multiprocessing import shared_memory
-from typing import TYPE_CHECKING, Optional, Callable
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 
@@ -145,7 +145,7 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
 
 class SharedArray:
 
-    def __init__(self, array: np.ndarray, shared_memory: Optional[SharedMemory], free_mem_on_del: bool = True):
+    def __init__(self, array: np.ndarray, shared_memory: SharedMemory | None, free_mem_on_del: bool = True):
         self.array = array
         self._shared_memory = shared_memory
         self._free_mem_on_del = free_mem_on_del
@@ -172,11 +172,11 @@ class SharedArray:
 
 class SharedArrayProxy:
 
-    def __init__(self, mem_name: Optional[str], shape: tuple[int, ...], dtype: 'npt.DTypeLike'):
+    def __init__(self, mem_name: str | None, shape: tuple[int, ...], dtype: 'npt.DTypeLike'):
         self._mem_name = mem_name
         self._shape = shape
         self._dtype = dtype
-        self._shared_array: Optional['SharedArray'] = None
+        self._shared_array: 'SharedArray' | None = None
 
     @property
     def array(self) -> np.ndarray:

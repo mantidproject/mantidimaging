@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, Union, NoReturn, TYPE_CHECKING
+from typing import NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
-def _matching_dataset_attribute(dataset_attribute: Optional[ImageStack], images_id: uuid.UUID) -> bool:
+def _matching_dataset_attribute(dataset_attribute: ImageStack | None, images_id: uuid.UUID) -> bool:
     return isinstance(dataset_attribute, ImageStack) and dataset_attribute.id == images_id
 
 
@@ -27,9 +27,9 @@ class MainWindowModel(object):
 
     def __init__(self) -> None:
         super().__init__()
-        self.datasets: dict[uuid.UUID, Union[MixedDataset, StrictDataset]] = {}
+        self.datasets: dict[uuid.UUID, MixedDataset | StrictDataset] = {}
 
-    def get_images_by_uuid(self, images_uuid: uuid.UUID) -> Optional[ImageStack]:
+    def get_images_by_uuid(self, images_uuid: uuid.UUID) -> ImageStack | None:
         for dataset in self.datasets.values():
             for image in dataset.all:
                 if images_uuid == image.id:
@@ -82,15 +82,14 @@ class MainWindowModel(object):
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str,
-                        save_as_float: bool) -> Optional[bool]:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool | None:
         if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
             saver.nexus_save(self.datasets[dataset_id], path, sample_name, save_as_float)  # type: ignore
             return True
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
-    def get_existing_180_id(self, dataset_id: uuid.UUID) -> Optional[uuid.UUID]:
+    def get_existing_180_id(self, dataset_id: uuid.UUID) -> uuid.UUID | None:
         """
         Gets the ID of the 180 projection object in a Dataset.
         :param dataset_id: The Dataset ID.
@@ -182,7 +181,7 @@ class MainWindowModel(object):
                     return ids_to_remove
         self.raise_error_when_images_not_found(container_id)
 
-    def add_dataset_to_model(self, dataset: Union[StrictDataset, MixedDataset]) -> None:
+    def add_dataset_to_model(self, dataset: StrictDataset | MixedDataset) -> None:
         self.datasets[dataset.id] = dataset
 
     @property

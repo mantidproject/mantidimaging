@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Optional, Iterator, NamedTuple
+from typing import Iterator, NamedTuple
 
 import numpy as np
 import scipy as sp
@@ -19,8 +19,8 @@ class CorTiltDataModel:
     """
     Model for finding COR/Tilt from (slice index, centre of rotation) data points
     """
-    _cached_gradient: Optional[float]
-    _cached_cor: Optional[float]
+    _cached_gradient: float | None
+    _cached_cor: float | None
     _points: list[Point]
 
     def __init__(self):

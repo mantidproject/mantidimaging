@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -36,7 +36,7 @@ class TomopyRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None):
+                    progress: Progress | None = None):
         sino = BaseRecon.prepare_sinogram(sino, recon_params)
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
@@ -51,7 +51,7 @@ class TomopyRecon(BaseRecon):
     def full(images: ImageStack,
              cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None):
+             progress: Progress | None = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

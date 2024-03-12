@@ -6,7 +6,7 @@ import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Optional, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
@@ -239,7 +239,7 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def _get_slice_index(self, slice_idx: Optional[int]) -> int:
+    def _get_slice_index(self, slice_idx: int | None) -> int:
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
@@ -248,7 +248,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_preview_reconstruct_slice(self,
                                      cor=None,
-                                     slice_idx: Optional[int] = None,
+                                     slice_idx: int | None = None,
                                      force_update: bool = False,
                                      reset_roi: bool = False):
         if self.model.images is None:
@@ -272,7 +272,7 @@ class ReconstructWindowPresenter(BasePresenter):
             # will still be available after this function ends
             self.view.update_recon_preview(np.copy(images.data[0]), reset_roi)
 
-    def do_stack_reconstruct_slice(self, cor=None, slice_idx: Optional[int] = None):
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx: int | None = None):
         self.view.set_recon_buttons_enabled(False)
         slice_idx = self._get_slice_index(slice_idx)
         self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)

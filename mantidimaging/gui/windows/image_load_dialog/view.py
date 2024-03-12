@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Optional
 
 from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
     QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
@@ -82,7 +81,7 @@ class ImageLoadDialog(BaseDialogView):
         return field
 
     @staticmethod
-    def select_file(caption: str, image_file: bool = True) -> Optional[str]:
+    def select_file(caption: str, image_file: bool = True) -> str | None:
         """
         :param caption: Title of the file browser window that will be opened
         :param image_file: Whether or not the file being looked for is an image

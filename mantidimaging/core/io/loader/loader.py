@@ -5,7 +5,7 @@ import os
 from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
-from typing import Optional, Union, TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 import astropy.io.fits as fits
@@ -35,8 +35,8 @@ class ImageParameters:
     Dataclass to hold info about an image stack that is to be loaded. Used with LoadingParameters
     """
     file_group: FilenameGroup
-    log_file: Optional[Path] = None
-    indices: Optional[Indices] = None
+    log_file: Path | None = None
+    indices: Indices | None = None
 
 
 @dataclass
@@ -53,7 +53,7 @@ class LoadingParameters:
     sinograms: bool = DEFAULT_IS_SINOGRAM
 
 
-def _fitsread(filename: Union[Path, str]) -> np.ndarray:
+def _fitsread(filename: Path | str) -> np.ndarray:
     """
     Read one image and return it as a 2d numpy array
 
@@ -68,14 +68,14 @@ def _fitsread(filename: Union[Path, str]) -> np.ndarray:
     return image[0].data
 
 
-def _imread(filename: Union[Path, str]) -> np.ndarray:
+def _imread(filename: Path | str) -> np.ndarray:
     try:
         return tifffile.imread(filename)
     except tifffile.TiffFileError as e:
         raise RuntimeError(f"TiffFileError {e.args[0]}: {filename}") from e
 
 
-def get_loader(in_format: str) -> Callable[[Union[Path, str]], np.ndarray]:
+def get_loader(in_format: str) -> Callable[[Path | str], np.ndarray]:
     if in_format in ['fits', 'fit']:
         load_func = _fitsread
     elif in_format in ['tiff', 'tif']:
@@ -97,12 +97,12 @@ def load_log(log_file: Path) -> InstrumentLog:
         return InstrumentLog(f.readlines(), log_file)
 
 
-def load_stack_from_group(group: FilenameGroup, progress: Optional[Progress] = None) -> ImageStack:
+def load_stack_from_group(group: FilenameGroup, progress: Progress | None = None) -> ImageStack:
     return load(filename_group=group, progress=progress)
 
 
 def load_stack_from_image_params(image_params: ImageParameters,
-                                 progress: Optional[Progress] = None,
+                                 progress: Progress | None = None,
                                  dtype: npt.DTypeLike = np.float32):
     return load(filename_group=image_params.file_group,
                 progress=progress,
@@ -113,9 +113,9 @@ def load_stack_from_image_params(image_params: ImageParameters,
 
 def load(filename_group: FilenameGroup,
          dtype: 'npt.DTypeLike' = np.float32,
-         indices: Optional[Union[list[int], Indices]] = None,
-         progress: Optional[Progress] = None,
-         log_file: Optional[Path] = None) -> ImageStack:
+         indices: list[int] | Indices | None = None,
+         progress: Progress | None = None,
+         log_file: Path | None = None) -> ImageStack:
     """
 
     Loads a stack, including sample, white and dark images.
@@ -164,7 +164,7 @@ def load(filename_group: FilenameGroup,
     return image_stack
 
 
-def create_loading_parameters_for_file_path(file_path: Path) -> Optional[LoadingParameters]:
+def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameters | None:
     sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
     if sample_file is None:
         return None

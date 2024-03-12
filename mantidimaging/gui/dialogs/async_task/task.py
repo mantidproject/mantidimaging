@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Callable, Optional
+from typing import Callable
 
 from PyQt5.QtCore import QThread
 
@@ -27,8 +27,8 @@ class TaskWorkerThread(QThread):
         t.error
     """
 
-    task_function: Optional[Callable]
-    error: Optional[Exception]
+    task_function: Callable | None
+    error: Exception | None
 
     def __init__(self, parent=None):
         super().__init__(parent)

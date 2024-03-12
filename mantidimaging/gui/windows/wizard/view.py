@@ -6,7 +6,6 @@ from __future__ import annotations
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, Qt
-from typing import Optional
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .model import EnablePredicateFactory
@@ -26,7 +25,7 @@ class WizardStage(QWidget):
         self.steps.append(wizard_step)
         self.layout.addWidget(wizard_step)
 
-    def handle_stack_change(self, stack_history: Optional[dict]) -> None:
+    def handle_stack_change(self, stack_history: dict | None) -> None:
         for step in self.steps:
             step.handle_stack_change(stack_history)
 
@@ -72,7 +71,7 @@ class WizardStep(QWidget):
     def hide_step(self) -> None:
         self.step_box.setVisible(False)
 
-    def handle_stack_change(self, stack_history: Optional[dict]) -> None:
+    def handle_stack_change(self, stack_history: dict | None) -> None:
         enabled = self.enable_predicate(stack_history)
 
         if not enabled:

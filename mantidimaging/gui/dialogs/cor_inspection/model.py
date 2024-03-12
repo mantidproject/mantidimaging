@@ -3,7 +3,6 @@
 from __future__ import annotations
 from dataclasses import replace
 from logging import getLogger
-from typing import Union
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct import get_reconstructor_for
@@ -26,7 +25,7 @@ class CORInspectionDialogModel(object):
 
         # Initial parameters
         if iters_mode:
-            self.centre_value: Union[int, float] = INIT_ITERS_CENTRE_VALUE
+            self.centre_value: int | float = INIT_ITERS_CENTRE_VALUE
             self.step = INIT_ITERS_STEP
             self.initial_cor = initial_cor
             self._recon_preview = self._recon_iters_preview

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 
@@ -17,13 +17,13 @@ if TYPE_CHECKING:
 class DatasetSelectorDialog(BaseDialogView):
 
     def __init__(self,
-                 main_window: Optional['MainWindowView'],
-                 title: Optional[str] = None,
-                 message: Optional[str] = None,
+                 main_window: 'MainWindowView' | None,
+                 title: str | None = None,
+                 message: str | None = None,
                  show_stacks: bool = False):
         super().__init__(main_window)
 
-        self.selected_id: Optional[uuid.UUID] = None
+        self.selected_id: uuid.UUID | None = None
 
         self.setModal(True)
         self.setMinimumWidth(300)

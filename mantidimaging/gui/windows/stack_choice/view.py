@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtCore import Qt
@@ -31,7 +31,7 @@ class StackChoiceView(BaseMainWindowView):
     lockHistograms: QCheckBox
 
     def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
-                 presenter: Union['StackComparePresenter', 'StackChoicePresenter'], parent: Optional[QMainWindow]):
+                 presenter: 'StackComparePresenter' | 'StackChoicePresenter', parent: QMainWindow | None):
         super().__init__(parent, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter

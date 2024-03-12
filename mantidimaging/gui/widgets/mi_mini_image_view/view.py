@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from itertools import chain, tee
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 from weakref import WeakSet
 
 from pyqtgraph import ImageItem, ViewBox
@@ -36,7 +36,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     bright_levels: None | list[int] = None
     levels: list[float]
 
-    def __init__(self, name: str = "MIMiniImageView", parent: 'Optional[QWidget]' = None, recon_mode: bool = False):
+    def __init__(self, name: str = "MIMiniImageView", parent: 'QWidget | None' = None, recon_mode: bool = False):
         super().__init__()
 
         self.name = name.title()
@@ -70,7 +70,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         return self.hist.region.getRegion()
 
     @histogram_region.setter
-    def histogram_region(self, new_region: tuple[Union[int, list[int]], Union[int, list[int]]]):
+    def histogram_region(self, new_region: tuple[int | list[int], int | list[int]]):
         self.hist.region.setRegion(new_region)
 
     @property

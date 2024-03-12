@@ -6,7 +6,7 @@ import uuid
 from enum import Enum, auto
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Union, Optional, Any, NamedTuple, Iterable
+from typing import TYPE_CHECKING, Any, NamedTuple, Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
@@ -102,7 +102,7 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def _get_stack_visualiser_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
+    def _get_stack_visualiser_by_name(self, search_name: str) -> StackVisualiserView | None:
         """
         Uses the stack name to retrieve the QDockWidget object.
         :param search_name: The name of the stack widget to find.
@@ -113,7 +113,7 @@ class MainWindowPresenter(BasePresenter):
                 return self.active_stacks[stack_id.id]
         return None
 
-    def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
+    def get_stack_id_by_name(self, search_name: str) -> uuid.UUID | None:
         for stack_id in self.stack_visualiser_list:
             if stack_id.name == search_name:
                 return stack_id.id
@@ -323,9 +323,7 @@ class MainWindowPresenter(BasePresenter):
         self.stack_visualisers[stack_vis.id] = stack_vis
         return stack_vis
 
-    def _tabify_stack_window(self,
-                             stack_window: StackVisualiserView,
-                             tabify_stack: Optional[StackVisualiserView] = None):
+    def _tabify_stack_window(self, stack_window: StackVisualiserView, tabify_stack: StackVisualiserView | None = None):
         """
         Places the newly created stack window into a tab.
         :param stack_window: The new stack window.
@@ -404,7 +402,7 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def datasets(self) -> Iterable[Union[MixedDataset, StrictDataset]]:
+    def datasets(self) -> Iterable[MixedDataset | StrictDataset]:
         return self.model.datasets.values()
 
     @property
@@ -430,7 +428,7 @@ class MainWindowPresenter(BasePresenter):
     def stack_visualiser_names(self) -> list[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union[MixedDataset, StrictDataset]]:
+    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
         return self.model.datasets.get(dataset_id)
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
@@ -744,7 +742,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
 
-    def _add_recon_to_dataset_and_tree_view(self, dataset: Union[MixedDataset, StrictDataset], recon: ImageStack):
+    def _add_recon_to_dataset_and_tree_view(self, dataset: MixedDataset | StrictDataset, recon: ImageStack):
         """
         Adds a recon to the dataset and updates the tree view.
         :param dataset: The dataset.

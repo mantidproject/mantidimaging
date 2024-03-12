@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -13,7 +13,7 @@ from PyQt5.QtCore import QTimer
 
 
 class AsyncTaskDialogView(BaseDialogView):
-    _presenter: Optional[AsyncTaskDialogPresenter]
+    _presenter: AsyncTaskDialogPresenter | None
 
     def __init__(self, parent: QMainWindow):
         super().__init__(parent, 'gui/ui/async_task_dialog.ui')
@@ -73,9 +73,9 @@ class AsyncTaskDialogView(BaseDialogView):
 def start_async_task_view(parent: QMainWindow,
                           task: Callable,
                           on_complete: Callable,
-                          kwargs: Optional[dict] = None,
-                          tracker: Optional[set[Any]] = None,
-                          busy: Optional[bool] = False):
+                          kwargs: dict | None = None,
+                          tracker: set[Any] | None = None,
+                          busy: bool | None = False):
     atd = AsyncTaskDialogView(parent)
     if not kwargs:
         kwargs = {'progress': Progress()}

@@ -7,7 +7,7 @@ import re
 from enum import Enum, auto
 from itertools import zip_longest
 from logging import getLogger
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -229,7 +229,7 @@ class IMATLogFile:
 
         return Counts(counts)
 
-    def raise_if_angle_missing(self, image_filenames: Optional[list[str]]) -> None:
+    def raise_if_angle_missing(self, image_filenames: list[str] | None) -> None:
         if image_filenames is None:
             return
 

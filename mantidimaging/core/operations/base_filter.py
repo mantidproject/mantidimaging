@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Callable
 from enum import Enum, auto
 
 import numpy as np
@@ -94,7 +94,7 @@ class BaseFilter:
         return FilterGroup.NoGroup
 
     @staticmethod
-    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> Optional[ImageStack]:
+    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> ImageStack | None:
         stack_uuid = widget.current()
         if stack_uuid is None:
             raise ValueError(f"No stack for {msg}")

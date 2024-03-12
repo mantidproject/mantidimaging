@@ -2,8 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Optional
-
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
@@ -17,7 +15,7 @@ def open_user_operation_docs(operation_name: str):
     open_help_webpage(SECTION_USER_GUIDE, page_url, section)
 
 
-def open_help_webpage(section_url: str, page_url: str, section: Optional[str] = None):
+def open_help_webpage(section_url: str, page_url: str, section: str | None = None):
     if section is not None:
         url = f"{section_url}{page_url}.html#{section}"
     else:

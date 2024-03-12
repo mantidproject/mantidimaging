@@ -8,7 +8,7 @@ from functools import partial
 from itertools import groupby
 from logging import getLogger
 from time import sleep
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -94,7 +94,7 @@ def _group_consecutive_values(slices: list[int]) -> list[str]:
 
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
-    stack: Optional[ImageStack] = None
+    stack: ImageStack | None = None
     divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
@@ -142,13 +142,13 @@ class FiltersWindowPresenter(BasePresenter):
         else:
             return self.stack.num_sinograms - 1
 
-    def set_stack_uuid(self, uuid: Optional[uuid.UUID]):
+    def set_stack_uuid(self, uuid: uuid.UUID | None):
         if uuid is not None:
             self.set_stack(self.main_window.get_stack(uuid))
         else:
             self.set_stack(None)
 
-    def set_stack(self, stack: Optional[ImageStack]):
+    def set_stack(self, stack: ImageStack | None):
         self.stack = stack
 
         # Update the preview image index

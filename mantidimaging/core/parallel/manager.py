@@ -5,7 +5,7 @@ from multiprocessing import get_context
 import os
 import uuid
 from logging import getLogger
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import psutil
 from psutil import NoSuchProcess, AccessDenied
@@ -22,7 +22,7 @@ CURRENT_PID = psutil.Process().pid
 LOG = getLogger(__name__)
 
 cores: int = 1
-pool: Optional['Pool'] = None
+pool: 'Pool' | None = None
 
 
 def create_and_start_pool():

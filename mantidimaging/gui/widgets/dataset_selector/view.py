@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox
@@ -28,10 +28,7 @@ class DatasetSelectorWidgetView(QComboBox):
 
     main_window: 'MainWindowView'
 
-    def __init__(self,
-                 parent,
-                 show_stacks: bool = False,
-                 relevant_dataset_types: Union[type, tuple[type]] | None = None):
+    def __init__(self, parent, show_stacks: bool = False, relevant_dataset_types: type | tuple[type] | None = None):
         super().__init__(parent)
 
         self.presenter = DatasetSelectorWidgetPresenter(self,
@@ -64,7 +61,7 @@ class DatasetSelectorWidgetView(QComboBox):
         """
         self.presenter.notify(Notification.RELOAD_DATASETS)
 
-    def current(self) -> Optional[uuid.UUID]:
+    def current(self) -> uuid.UUID | None:
         return self.presenter.current_dataset
 
     def try_to_select_relevant_stack(self, name: str) -> None:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Union, Iterator, TYPE_CHECKING
+from typing import Iterator, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -29,7 +29,7 @@ class SensibleROI(Iterable):
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
 
     @staticmethod
-    def from_list(roi: Union[list[int], list[float]]):
+    def from_list(roi: list[int] | list[float]):
         return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
 
     def __iter__(self) -> Iterator[int]:

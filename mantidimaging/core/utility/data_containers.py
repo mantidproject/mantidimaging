@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from enum import Enum
 from dataclasses import dataclass
-from typing import Any, Optional, NamedTuple, TYPE_CHECKING
+from typing import Any, NamedTuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy
@@ -99,13 +99,13 @@ class ReconstructionParameters:
     algorithm: str
     filter_name: str
     num_iter: int = 1
-    cor: Optional[ScalarCoR] = None
-    tilt: Optional[Degrees] = None
+    cor: ScalarCoR | None = None
+    tilt: Degrees | None = None
     pixel_size: float = 0.0
     alpha: float = 0.0
     non_negative: bool = False
     max_projection_angle: float = 360.0
-    beam_hardening_coefs: Optional[list[float]] = None
+    beam_hardening_coefs: list[float] | None = None
     stochastic: bool = False
     projections_per_subset: int = 50
     regularisation_percent: int = 30

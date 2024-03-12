@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Optional, Callable
+from typing import Callable
 
 import numpy as np
 from PIL import Image
@@ -17,7 +17,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
                  parent: ViewBox,
                  icon_path: str,
                  icon_pos: int,
-                 color: Optional[list[int]] = None,
+                 color: list[int] | None = None,
                  message: str = ""):
         """An indicator icon for a pyqtgraph ViewBox
 
@@ -50,7 +50,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
 
         self.actions: list[QAction] = []
 
-    def set_icon(self, icon_path: str, color: Optional[list[int]] = None) -> None:
+    def set_icon(self, icon_path: str, color: list[int] | None = None) -> None:
         if color is not None:
             im = Image.open(icon_path)
             image_data = np.array(im)

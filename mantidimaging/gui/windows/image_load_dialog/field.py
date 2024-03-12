@@ -4,7 +4,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from typing import Optional, Union
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
@@ -15,11 +14,11 @@ from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES
 class Field:
     _widget: QTreeWidgetItem
     _use: QCheckBox
-    _spinbox_widget: Optional[QWidget] = None
-    _start_spinbox: Optional[QSpinBox] = None
-    _stop_spinbox: Optional[QSpinBox] = None
-    _increment_spinbox: Optional[QSpinBox] = None
-    _shape_widget: Optional[QTreeWidgetItem] = None
+    _spinbox_widget: QWidget | None = None
+    _start_spinbox: QSpinBox | None = None
+    _stop_spinbox: QSpinBox | None = None
+    _increment_spinbox: QSpinBox | None = None
+    _shape_widget: QTreeWidgetItem | None = None
     _tree: QTreeWidget
     _path: QTreeWidgetItem
 
@@ -63,7 +62,7 @@ class Field:
         return self._path
 
     @property
-    def path(self) -> Optional[Path]:
+    def path(self) -> Path | None:
         if path_text := self.path_widget.text(1):
             return Path(path_text)
         else:
@@ -185,7 +184,7 @@ class Field:
         exp_mem = round(single_mem * num_images, 2)
         return num_images, exp_mem
 
-    def update_shape(self, shape: Union[int, tuple[int, int]]) -> None:
+    def update_shape(self, shape: int | tuple[int, int]) -> None:
         if isinstance(shape, int):
             self._shape = f"{str(shape)} images"
         else:

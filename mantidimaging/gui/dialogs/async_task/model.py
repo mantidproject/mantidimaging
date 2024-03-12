@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Callable, Optional
+from typing import Callable
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
@@ -21,8 +21,8 @@ class AsyncTaskDialogModel(QObject):
         self.task = TaskWorkerThread()
         self.task.finished.connect(self._on_task_exit)
 
-        self.on_complete_function: Optional[Callable] = None
-        self.tracker: Optional[set] = None
+        self.on_complete_function: Callable | None = None
+        self.tracker: set | None = None
 
     def set_tracker(self, tracker: set):
         self.tracker = tracker
