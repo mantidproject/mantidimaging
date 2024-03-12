@@ -60,7 +60,7 @@ class RoiNormalisationFilter(BaseFilter):
             'flat_field_mean': flat_field_mean
         }
 
-        ps.run_compute_func(RoiNormalisationFilter.compute_function, len(images.data), images.data, params)
+        ps.run_compute_func(RoiNormalisationFilter.compute_function, len(images.data), [images.shared_array], params)
 
         return images
 
