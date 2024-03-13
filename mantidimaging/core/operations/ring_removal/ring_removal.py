@@ -5,7 +5,6 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING
 
-import numpy as np
 from PyQt5.QtWidgets import QComboBox
 import tomopy.misc.corr as tp
 
@@ -71,7 +70,7 @@ class RingRemovalFilter(BaseFilter):
             "theta_min": theta_min,
             "rwidth": rwidth
         }
-        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), [images.shared_array], params)
+        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), images.data, params)
         return images
 
     @staticmethod
@@ -84,8 +83,7 @@ class RingRemovalFilter(BaseFilter):
         else:
             center_x = center_y = None
 
-        images = np.atleast_3d(image_slice)
-
+        images = shared_array
         corrected_image = tp.remove_ring(images,
                                          center_x=center_x,
                                          center_y=center_y,
@@ -97,6 +95,8 @@ class RingRemovalFilter(BaseFilter):
                                          out=image_slice)
 
         shared_array[image_index] = corrected_image[0]
+
+        return corrected_image
 
     @staticmethod
     def register_gui(form, on_change, view):
