@@ -62,7 +62,7 @@ test-screenshots-win:
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:
-	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
+	python -m mypy --ignore-missing-imports ${SOURCE_DIRS}
 
 yapf:
 	python -m yapf --parallel --diff --recursive ${SOURCE_DIRS}

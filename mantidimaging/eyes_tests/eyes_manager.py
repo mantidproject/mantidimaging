@@ -6,15 +6,22 @@ import inspect
 import os
 import sys
 from tempfile import mkdtemp
+from typing import TYPE_CHECKING, Any
 from unittest import mock
 from uuid import uuid4
 
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtTest import QTest
-from applitools.common import BatchInfo, MatchLevel
-from applitools.images import Eyes
 
 from mantidimaging.gui.windows.main import MainWindowView
+
+# COMPAT: applitools has some bad signatures, so avoid importing it when type checking
+# See https://github.com/mantidproject/mantidimaging/issues/2008
+if not TYPE_CHECKING:
+    from applitools.common import BatchInfo, MatchLevel
+    from applitools.images import Eyes
+else:
+    MatchLevel = Any
 
 # Used to disabiguate tests on the Applitools platform. set explicitly to avoid depending on the window size
 VIEWPORT_WIDTH = 1920
