@@ -75,22 +75,26 @@ class RingRemovalFilter(BaseFilter):
 
     @staticmethod
     def compute_function(image_index, shared_array, params):
-        # Extract parameters
+        image_slice = shared_array[image_index]
+        images = image_slice[np.newaxis, :, :]
+
         if params["center_mode"] == "manual":
             center_x = params["center_x"]
             center_y = params["center_y"]
         else:
             center_x = center_y = None
 
-        tp.remove_ring(shared_array,
-                       center_x=center_x,
-                       center_y=center_y,
-                       thresh=params["thresh"],
-                       thresh_max=params["thresh_max"],
-                       thresh_min=params["thresh_min"],
-                       theta_min=params["theta_min"],
-                       rwidth=params["rwidth"],
-                       out=shared_array[image_index])
+        corrected_image = tp.remove_ring(images,
+                                         center_x=center_x,
+                                         center_y=center_y,
+                                         thresh=params["thresh"],
+                                         thresh_max=params["thresh_max"],
+                                         thresh_min=params["thresh_min"],
+                                         theta_min=params["theta_min"],
+                                         rwidth=params["rwidth"],
+                                         out=np.empty_like(images))
+        corrected_slice = corrected_image[0, :, :]
+        shared_array[image_index] = corrected_slice
 
     @staticmethod
     def register_gui(form, on_change, view):
