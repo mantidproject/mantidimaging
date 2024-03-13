@@ -63,7 +63,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         graveyard.append(self)
         self.presenter = MIImagePresenter()
         self.details = QLabel("", self.ui.layoutWidget)
-        self.details.setStyleSheet("QLabel { color : white; background-color: black}")
+        self.details.setStyleSheet("QLabel { color : white; background-color: black; font: 14px;}")
         if detailsSpanAllCols:
             self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 3)
             self.ui.gridLayout.setColumnStretch(0, 8)

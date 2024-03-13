@@ -6,7 +6,7 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
-from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from PyQt5.QtGui import QGuiApplication, QResizeEvent, QFont
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
@@ -32,6 +32,8 @@ def _data_valid_for_histogram(data) -> bool:
 class FilterPreviews(GraphicsLayoutWidget):
     histogram: PlotItem
     z_slider: ZSlider
+    font_size = '12pt'
+    font: QFont = QFont("Arial", 12)
 
     def __init__(self, parent=None, **kwargs) -> None:
         super().__init__(parent, **kwargs)
@@ -45,9 +47,10 @@ class FilterPreviews(GraphicsLayoutWidget):
             LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
-        self.addLabel("Image before")
-        self.addLabel("Image after")
-        self.addLabel("Image difference")
+        self.addLabel("Image before", size=self.font_size)
+        self.addLabel("Image after", size=self.font_size)
+        self.addLabel("Image difference", size=self.font_size)
+
         self.nextRow()
 
         self.imageview_before = MIMiniImageView(name="before", parent=self)
@@ -70,11 +73,11 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.nextRow()
 
         self.z_slider = ZSlider()
+        self.z_slider.getAxis("bottom").setTickFont(self.font)
         self.addItem(self.z_slider, colspan=3)
         self.nextRow()
 
         self.histogram = self.init_histogram()
-
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
@@ -108,7 +111,10 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     def init_histogram(self) -> PlotItem:
         histogram = self.addPlot(labels=histogram_axes_labels, lockAspect=True, colspan=3)
-
+        histogram.getAxis("bottom").setTickFont(self.font)
+        histogram.getAxis("left").setTickFont(self.font)
+        histogram.getAxis("bottom").label.setFont(self.font)
+        histogram.getAxis("left").label.setFont(self.font)
         legend = histogram.addLegend()
         legend.setOffset((0, 1))
 

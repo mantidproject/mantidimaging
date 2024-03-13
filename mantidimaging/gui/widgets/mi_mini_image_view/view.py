@@ -6,6 +6,7 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING
 from weakref import WeakSet
 
+from PyQt5.QtGui import QFont
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
@@ -35,6 +36,7 @@ def pairwise(iterable):
 class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     bright_levels: None | list[int] = None
     levels: list[float]
+    font: QFont = QFont("Arial", 12)
 
     def __init__(self, name: str = "MIMiniImageView", parent: 'QWidget | None' = None, recon_mode: bool = False):
         super().__init__()
@@ -51,6 +53,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         image_layout.addItem(self.vb)
         image_layout.addItem(self.hist)
         self.hist.setFixedWidth(100)  # HistogramLUTItem used pixel sizes
+        self.hist.axis.setTickFont(self.font)
 
         self.nextRow()
         self.details = self.addLabel("", colspan=2)
