@@ -159,10 +159,15 @@ def _execute(images: ImageStack, size, mode, progress=None):
 
 def _execute_gpu(data, size, mode, progress=None):
     log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, num_steps=data.shape[0], task_name="Median filter GPU")
+    try:
+        num_steps = len(data)
+    except TypeError as err:
+        raise ValueError("Data structure does not support len().") from err
+
+    progress = Progress.ensure_instance(progress, num_steps=num_steps, task_name="Median filter GPU")
+
     cuda = gpu.CudaExecuter(data.dtype)
 
     with progress:
         log.info(f"GPU median filter, with pixel data type: {data.dtype}, filter size/width: {size}.")
-
         cuda.median_filter(data, size, mode, progress)
