@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import Any, Callable, Iterable
+from typing import Any
+from collections.abc import Callable, Iterable
 
 import numpy as np
 

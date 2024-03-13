@@ -6,7 +6,7 @@ import traceback
 from logging import getLogger
 from enum import Enum
 
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt5.QtCore import QObject, pyqtSignal
 

@@ -4,7 +4,8 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu

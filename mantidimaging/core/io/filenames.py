@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-from typing import Iterator, Final
+from typing import Final
+from collections.abc import Iterator
 from logging import getLogger
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES

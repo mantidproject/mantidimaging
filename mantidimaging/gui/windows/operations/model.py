@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Callable, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
 
 from mantidimaging.core.operations.base_filter import FilterGroup
 from mantidimaging.core.operations.loader import load_filter_packages

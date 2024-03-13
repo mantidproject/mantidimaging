@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Iterator, NamedTuple
+from typing import NamedTuple
+from collections.abc import Iterator
 
 import numpy as np
 import scipy as sp

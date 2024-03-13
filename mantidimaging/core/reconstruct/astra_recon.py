@@ -5,7 +5,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from logging import getLogger
 from threading import Lock
-from typing import Generator
+from collections.abc import Generator
 
 import astra
 import numpy as np
