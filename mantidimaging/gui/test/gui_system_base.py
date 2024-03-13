@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Optional
 import unittest
 from unittest import mock
 
@@ -72,7 +71,7 @@ class GuiSystemBase(unittest.TestCase):
                                  f"Message box: {widget.windowTitle()} {widget.text()}")
 
     @classmethod
-    def _click_InputDialog(cls, set_int: Optional[int] = None):
+    def _click_InputDialog(cls, set_int: int | None = None):
         """
         Needs to be queued with QTimer.singleShot before triggering the message box
         Will raise a RuntimeError if a QInputDialog is not found

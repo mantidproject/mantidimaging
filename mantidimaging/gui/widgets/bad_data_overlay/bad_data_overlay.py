@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Callable, List, Optional, Tuple
+from typing import Callable
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
@@ -76,13 +76,13 @@ class BadDataOverlay:
     def viewbox(self) -> ViewBox:
         raise NotImplementedError
 
-    def enable_nan_check(self, enable: bool = True, actions: Optional[List[Tuple[str, Callable]]] = None):
+    def enable_nan_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None):
         if enable:
             self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan, "Invalid values: Not a number", actions)
         else:
             self.disable_check("nan")
 
-    def enable_nonpositive_check(self, enable: bool = True, actions: Optional[List[Tuple[str, Callable]]] = None):
+    def enable_nonpositive_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None):
         if enable:
 
             def is_non_positive(data):
@@ -92,8 +92,8 @@ class BadDataOverlay:
         else:
             self.disable_check("nonpos")
 
-    def enable_check(self, name: str, color: List[int], pos: int, func: Callable, message: str,
-                     actions: Optional[List[Tuple[str, Callable]]]):
+    def enable_check(self, name: str, color: list[int], pos: int, func: Callable, message: str,
+                     actions: list[tuple[str, Callable]] | None):
         if name not in self.enabled_checks:
             icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
             indicator = IndicatorIconView(self.viewbox, icon_path, pos, color, message)
@@ -111,7 +111,7 @@ class BadDataOverlay:
             self.enabled_checks[name].remove()
             self.enabled_checks.pop(name, None)
 
-    def _get_current_slice(self) -> Optional[np.ndarray]:
+    def _get_current_slice(self) -> np.ndarray | None:
         data = self.image_item.image
         return data
 

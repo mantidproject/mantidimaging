@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader import load_log
@@ -20,7 +20,7 @@ logger = getLogger(__name__)
 
 class LoadPresenter:
     view: 'ImageLoadDialog'
-    sample_fg: Optional[FilenameGroup] = None
+    sample_fg: FilenameGroup | None = None
 
     def __init__(self, view: 'ImageLoadDialog'):
         self.view = view

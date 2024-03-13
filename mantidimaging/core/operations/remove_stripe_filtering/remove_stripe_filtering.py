@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from algotom.prep.removal import remove_stripe_based_filtering, remove_stripe_based_2d_filtering_sorting
 
@@ -69,19 +69,19 @@ class RemoveStripeFilteringFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
         array[index] = remove_stripe_based_filtering(array[index], **params)
 
     @staticmethod
-    def compute_function(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_stripe_based_filtering(array[:, index, :], **params)
 
     @staticmethod
-    def compute_function_2d_sino(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function_2d_sino(index: int, array: ndarray, params: dict[str, Any]):
         array[index] = remove_stripe_based_2d_filtering_sorting(array[index], **params)
 
     @staticmethod
-    def compute_function_2d(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function_2d(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_stripe_based_2d_filtering_sorting(array[:, index, :], **params)
 
     @staticmethod

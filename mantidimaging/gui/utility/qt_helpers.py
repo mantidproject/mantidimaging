@@ -8,7 +8,7 @@ from __future__ import annotations
 import os
 from enum import IntEnum, auto
 from logging import getLogger
-from typing import Any, Tuple, Union, List, Callable
+from typing import Any, Callable
 
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject, Qt
@@ -26,7 +26,7 @@ class BlockQtSignals(object):
     Used to block Qt signals from a selection of QWidgets within a context.
     """
 
-    def __init__(self, q_objects: Union[QObject, List[QObject]]):
+    def __init__(self, q_objects: QObject | list[QObject]):
         if not isinstance(q_objects, list):
             q_objects = [q_objects]
         for obj in q_objects:
@@ -94,7 +94,7 @@ def on_change_and_disable(widget: QWidget, on_change: Callable):
 
 
 def add_property_to_form(label: str,
-                         dtype: Union[Type, str],
+                         dtype: Type | str,
                          default_value=None,
                          valid_values=None,
                          tooltip=None,
@@ -102,7 +102,7 @@ def add_property_to_form(label: str,
                          form=None,
                          filters_view=None,
                          run_on_press=None,
-                         single_step_size=None) -> Tuple[Union[QLabel, QLineEdit], Any]:
+                         single_step_size=None) -> tuple[QLabel | QLineEdit, Any]:
     """
     Adds a property to the algorithm dialog.
 
@@ -256,7 +256,7 @@ def delete_all_widgets_from_layout(lo):
             item.widget().setParent(None)
 
 
-def populate_menu(menu: QMenu, actions_list: List[QAction]):
+def populate_menu(menu: QMenu, actions_list: list[QAction]):
     for (menu_text, func) in actions_list:
         if func is None:
             menu.addSeparator()

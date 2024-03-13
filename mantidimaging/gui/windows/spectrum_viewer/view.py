@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
@@ -37,7 +37,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportButton: QPushButton
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
-    _current_dataset_id: Optional['UUID']
+    _current_dataset_id: 'UUID' | None
     normalise_error_issue: str = ""
     image_output_mode_combobox: QComboBox
     transmission_error_mode_combobox: QComboBox
@@ -63,7 +63,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.selected_row: int = 0
         self.current_roi: str = ""
-        self.selected_row_data: Optional[list] = None
+        self.selected_row_data: list | None = None
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
         self.old_table_names: list = []
@@ -261,11 +261,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         return self.tableView.model()
 
     @property
-    def current_dataset_id(self) -> Optional['UUID']:
+    def current_dataset_id(self) -> 'UUID' | None:
         return self._current_dataset_id
 
     @current_dataset_id.setter
-    def current_dataset_id(self, uuid: Optional['UUID']) -> None:
+    def current_dataset_id(self, uuid: 'UUID' | None) -> None:
         self._current_dataset_id = uuid
 
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
@@ -275,10 +275,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def try_to_select_relevant_normalise_stack(self, name: str) -> None:
         self.normaliseStackSelector.try_to_select_relevant_stack(name)
 
-    def get_normalise_stack(self) -> Optional['UUID']:
+    def get_normalise_stack(self) -> 'UUID' | None:
         return self.normaliseStackSelector.current()
 
-    def get_csv_filename(self) -> Optional[Path]:
+    def get_csv_filename(self) -> Path | None:
         path = QFileDialog.getSaveFileName(self, "Save CSV file", "", "CSV file (*.csv)")[0]
         if path:
             return Path(path)
@@ -371,7 +371,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if row is not None:
             self.roi_table_model.update_color(row, new_color)
 
-    def find_row_for_roi(self, roi_name: str) -> Optional[int]:
+    def find_row_for_roi(self, roi_name: str) -> int | None:
         """
         Returns row index for ROI name, or None if not found.
         @param roi_name: Name ROI find.

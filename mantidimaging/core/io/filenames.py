@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-from typing import List, Iterator, Optional, Union, Final
+from typing import Iterator, Final
 from logging import getLogger
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
@@ -124,15 +124,15 @@ class FilenamePatternGolden(FilenamePattern):
 
 class FilenameGroup:
 
-    def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: List[int]):
+    def __init__(self, directory: Path, pattern: FilenamePattern, all_indexes: list[int]):
         self.directory = directory
         self.pattern = pattern
         self.all_indexes = all_indexes
-        self.metadata_path: Optional[Path] = None
-        self.log_path: Optional[Path] = None
+        self.metadata_path: Path | None = None
+        self.log_path: Path | None = None
 
     @classmethod
-    def from_file(cls, path: Union[Path, str]) -> "FilenameGroup":
+    def from_file(cls, path: Path | str) -> "FilenameGroup":
         path = Path(path)
         if path.is_dir():
             raise ValueError(f"path is a directory: {path}")
@@ -149,7 +149,7 @@ class FilenameGroup:
         return new_filename_group
 
     @classmethod
-    def from_directory(cls, path: Union[Path, str]) -> FilenameGroup | None:
+    def from_directory(cls, path: Path | str) -> FilenameGroup | None:
         path = Path(path)
         if not path.is_dir():
             raise ValueError(f"path is a file: {path}")
@@ -205,7 +205,7 @@ class FilenameGroup:
             shortest = min(log_paths, key=lambda p: len(p.name))
             self.log_path = self.directory / shortest
 
-    def find_related(self, file_type: FILE_TYPES) -> Optional[FilenameGroup]:
+    def find_related(self, file_type: FILE_TYPES) -> FilenameGroup | None:
         if self.directory.name not in ["Tomo", "tomo"]:
             return None
 
@@ -226,7 +226,7 @@ class FilenameGroup:
 
         return None
 
-    def _find_related_180_proj(self) -> Optional[FilenameGroup]:
+    def _find_related_180_proj(self) -> FilenameGroup | None:
         sample_first_name = self.first_file().name
 
         test_name = "180deg"

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import List, Optional, Tuple, Union, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -28,7 +28,7 @@ LOG = getLogger(__name__)
 class ReconstructWindowModel(object):
 
     def __init__(self, data_model: CorTiltPointQtModel):
-        self._images: Optional[ImageStack] = None
+        self._images: ImageStack | None = None
         self._preview_projection_idx = 0
         self._preview_slice_idx = 0
         self._selected_row = 0
@@ -71,7 +71,7 @@ class ReconstructWindowModel(object):
     def has_results(self) -> bool:
         return self.data_model.has_results
 
-    def get_results(self) -> Tuple[ScalarCoR, Degrees, Slope]:
+    def get_results(self) -> tuple[ScalarCoR, Degrees, Slope]:
         return self.data_model.cor, self.data_model.angle_in_degrees, self.data_model.gradient
 
     @property
@@ -82,7 +82,7 @@ class ReconstructWindowModel(object):
     def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'Optional[ImageStack]'):
+    def initial_select_data(self, images: 'ImageStack | None'):
         self._images = images
         self.reset_cor_model()
 
@@ -94,7 +94,7 @@ class ReconstructWindowModel(object):
         self.preview_projection_idx = 0
         self.preview_slice_idx = slice_idx
 
-    def find_initial_cor(self) -> Tuple[int, ScalarCoR]:
+    def find_initial_cor(self) -> tuple[int, ScalarCoR]:
         if self.images is None:
             return 0, ScalarCoR(0)
 
@@ -119,7 +119,7 @@ class ReconstructWindowModel(object):
                           slice_idx: int,
                           cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
-                          progress: Progress | None = None) -> Optional[ImageStack]:
+                          progress: Progress | None = None) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -137,7 +137,7 @@ class ReconstructWindowModel(object):
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
-    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> Optional[ImageStack]:
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -163,7 +163,7 @@ class ReconstructWindowModel(object):
         return recon
 
     @property
-    def tilt_angle(self) -> Optional[Degrees]:
+    def tilt_angle(self) -> Degrees | None:
         if self.data_model.has_results:
             return self.data_model.angle_in_degrees
         else:
@@ -190,7 +190,7 @@ class ReconstructWindowModel(object):
         reconstructor = get_reconstructor_for(alg_name)
         return reconstructor.allowed_filters()
 
-    def get_me_a_cor(self, cor: Optional[ScalarCoR] = None) -> ScalarCoR:
+    def get_me_a_cor(self, cor: ScalarCoR | None = None) -> ScalarCoR:
         if cor is not None:
             # a rotation has been passed in!
             return cor
@@ -214,14 +214,14 @@ class ReconstructWindowModel(object):
     def is_current_stack(self, uuid: "uuid.UUID") -> bool:
         return self.stack_id == uuid
 
-    def get_slice_indices(self, num_cors: int) -> Tuple[int, Union[np.ndarray, Tuple[np.ndarray, Optional[float]]]]:
+    def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray | tuple[np.ndarray, float | None]]:
         # used to crop off 20% off the top and bottom, which is usually noise/empty
         remove_a_bit = self.images.height * 0.2
         slices = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
         return self.selected_row, slices
 
-    def auto_find_minimisation_sqsum(self, slices: List[int], recon_params: ReconstructionParameters,
-                                     initial_cor: List[float], progress: Progress) -> List[float]:
+    def auto_find_minimisation_sqsum(self, slices: list[int], recon_params: ReconstructionParameters,
+                                     initial_cor: list[float], progress: Progress) -> list[float]:
         """
 
         :param slices: Slice indices to be reconstructed
@@ -251,7 +251,7 @@ class ReconstructWindowModel(object):
             progress.update(msg=f"Calculating COR for slice {slice}")
         return cors
 
-    def auto_find_correlation(self, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
+    def auto_find_correlation(self, progress: Progress) -> tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
 
     @staticmethod

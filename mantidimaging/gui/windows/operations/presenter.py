@@ -8,7 +8,7 @@ from functools import partial
 from itertools import groupby
 from logging import getLogger
 from time import sleep
-from typing import List, TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
@@ -65,7 +65,7 @@ def _find_nan_change(before_image, filtered_image_data):
     return nan_change
 
 
-def sub(x: Tuple[int, int]) -> int:
+def sub(x: tuple[int, int]) -> int:
     """
     Subtracts two tuples. Helper method for generating the negative slice list.
     :param x: The int tuple.
@@ -74,7 +74,7 @@ def sub(x: Tuple[int, int]) -> int:
     return x[1] - x[0]
 
 
-def _group_consecutive_values(slices: List[int]) -> List[str]:
+def _group_consecutive_values(slices: list[int]) -> list[str]:
     """
     Creates a list of slices with negative indices in a readable format.
     :param slices: The list of indices of the slices that contain negative values.
@@ -94,7 +94,7 @@ def _group_consecutive_values(slices: List[int]) -> List[str]:
 
 class FiltersWindowPresenter(BasePresenter):
     view: 'FiltersWindowView'
-    stack: Optional[ImageStack] = None
+    stack: ImageStack | None = None
     divider = "------------------------------------"
 
     def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
@@ -142,13 +142,13 @@ class FiltersWindowPresenter(BasePresenter):
         else:
             return self.stack.num_sinograms - 1
 
-    def set_stack_uuid(self, uuid: Optional[uuid.UUID]):
+    def set_stack_uuid(self, uuid: uuid.UUID | None):
         if uuid is not None:
             self.set_stack(self.main_window.get_stack(uuid))
         else:
             self.set_stack(None)
 
-    def set_stack(self, stack: Optional[ImageStack]):
+    def set_stack(self, stack: ImageStack | None):
         self.stack = stack
 
         # Update the preview image index
@@ -265,7 +265,7 @@ class FiltersWindowPresenter(BasePresenter):
     def is_a_proj180deg(self, stack_to_check: ImageStack):
         return any(stack_to_check is stack for stack in self.main_window.get_all_180_projections())
 
-    def _post_filter(self, updated_stacks: List[ImageStack], task):
+    def _post_filter(self, updated_stacks: list[ImageStack], task):
         try:
             use_new_data = True
             negative_stacks = []
@@ -313,7 +313,7 @@ class FiltersWindowPresenter(BasePresenter):
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
             self.filter_is_running = False
 
-    def _do_apply_filter(self, apply_to: List[ImageStack]):
+    def _do_apply_filter(self, apply_to: list[ImageStack]):
         self.filter_is_running = True
         # Record the previous button states
         self.prev_apply_single_state = self.view.applyButton.isEnabled()
@@ -462,7 +462,7 @@ class FiltersWindowPresenter(BasePresenter):
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
 
-    def _show_negative_values_error(self, negative_stacks: List[ImageStack]):
+    def _show_negative_values_error(self, negative_stacks: list[ImageStack]):
         """
         Shows information on the view and in the log about negative values in the output.
         :param negative_stacks: A list of stacks with negative values in the data.

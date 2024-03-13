@@ -4,7 +4,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from typing import Optional, List, Union, Tuple
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
@@ -15,11 +14,11 @@ from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES
 class Field:
     _widget: QTreeWidgetItem
     _use: QCheckBox
-    _spinbox_widget: Optional[QWidget] = None
-    _start_spinbox: Optional[QSpinBox] = None
-    _stop_spinbox: Optional[QSpinBox] = None
-    _increment_spinbox: Optional[QSpinBox] = None
-    _shape_widget: Optional[QTreeWidgetItem] = None
+    _spinbox_widget: QWidget | None = None
+    _start_spinbox: QSpinBox | None = None
+    _stop_spinbox: QSpinBox | None = None
+    _increment_spinbox: QSpinBox | None = None
+    _shape_widget: QTreeWidgetItem | None = None
     _tree: QTreeWidget
     _path: QTreeWidgetItem
 
@@ -36,7 +35,7 @@ class Field:
         if file_info == FILE_TYPES.SAMPLE:
             self._init_indices()
 
-    def set_images(self, image_files: List[Path]) -> None:
+    def set_images(self, image_files: list[Path]) -> None:
         if len(image_files) > 0:
             self.path = image_files[0]
             self.update_shape(len(image_files))
@@ -63,7 +62,7 @@ class Field:
         return self._path
 
     @property
-    def path(self) -> Optional[Path]:
+    def path(self) -> Path | None:
         if path_text := self.path_widget.text(1):
             return Path(path_text)
         else:
@@ -176,7 +175,7 @@ class Field:
             else:
                 self._increment_spinbox.setValue(1)
 
-    def _update_expected_mem_usage(self, shape: Tuple[int, int]) -> Tuple[int, float]:
+    def _update_expected_mem_usage(self, shape: tuple[int, int]) -> tuple[int, float]:
         num_images = size_calculator.number_of_images_from_indices(self._start.value(), self._stop.value(),
                                                                    self._increment.value())
 
@@ -185,7 +184,7 @@ class Field:
         exp_mem = round(single_mem * num_images, 2)
         return num_images, exp_mem
 
-    def update_shape(self, shape: Union[int, Tuple[int, int]]) -> None:
+    def update_shape(self, shape: int | tuple[int, int]) -> None:
         if isinstance(shape, int):
             self._shape = f"{str(shape)} images"
         else:

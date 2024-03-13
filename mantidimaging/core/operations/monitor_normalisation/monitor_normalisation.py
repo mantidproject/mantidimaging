@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import Callable, Dict, Any, TYPE_CHECKING
+from typing import Callable, Any, TYPE_CHECKING
 
 import numpy as np
 
@@ -54,7 +54,7 @@ class MonitorNormalisation(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
         return {}
 
     @staticmethod
@@ -62,5 +62,5 @@ class MonitorNormalisation(BaseFilter):
         return partial(MonitorNormalisation.filter_func)
 
     @staticmethod
-    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
+    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
         return True

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import Callable, Dict, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
 from mantidimaging.core.operations.base_filter import BaseFilter
@@ -52,11 +52,11 @@ class ArithmeticFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: Dict[str, float]):
+    def compute_function(i: int, array: np.ndarray, params: dict[str, float]):
         array[i] = array[i] * (params["mult"] / params["div"]) + (params["add"] - params["sub"])
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
         _, mult_input_widget = add_property_to_form('Multiply',
                                                     Type.FLOAT,
                                                     form=form,

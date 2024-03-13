@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import List
 
 import numpy as np
 
@@ -48,7 +47,7 @@ class MIImagePresenter:
         return roi_pos, roi_size
 
     @staticmethod
-    def get_nearest_timeline_tick(x_pos_clicked: float, x_axis, view_range: List[int]):
+    def get_nearest_timeline_tick(x_pos_clicked: float, x_axis, view_range: list[int]):
         """
         Calculate the closes point to the clicked position on the histogram's timeline.
 

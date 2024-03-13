@@ -5,7 +5,7 @@ import enum
 import traceback
 from enum import auto, Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, Optional, Union, Tuple
+from typing import TYPE_CHECKING
 
 import h5py
 import numpy as np
@@ -124,7 +124,7 @@ class NexusLoadPresenter:
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-    def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> Optional[np.ndarray]:
+    def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> np.ndarray | None:
         """
         Reads the rotation angles array and coverts them to radians if needed.
         :param image_key: The image key for the angles to read.
@@ -160,8 +160,7 @@ class NexusLoadPresenter:
 
         self.view.show_data_error(error_msg)
 
-    def _look_for_tomo_data_and_update_view(self, field: str,
-                                            position: int) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+    def _look_for_tomo_data_and_update_view(self, field: str, position: int) -> h5py.Group | h5py.Dataset | None:
         """
         Looks for the data in the NeXus file and adds information about it to the view if it's found.
         :param field: The name of the NeXus field.
@@ -177,7 +176,7 @@ class NexusLoadPresenter:
             self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
         return dataset
 
-    def _look_for_image_data_and_update_view(self) -> Optional[h5py.Dataset]:
+    def _look_for_image_data_and_update_view(self) -> h5py.Dataset | None:
         position = 2
         dataset = self._look_for_tomo_data(DATA_PATH)
         if dataset is not None:
@@ -195,7 +194,7 @@ class NexusLoadPresenter:
         self.view.disable_ok_button()
         return None
 
-    def _look_for_nxtomo_entry(self) -> Optional[h5py.Group]:
+    def _look_for_nxtomo_entry(self) -> h5py.Group | None:
         """
         Look for a tomo_entry field in the NeXus file. Generate an error and disable the view OK button if it can't be
         found.
@@ -222,7 +221,7 @@ class NexusLoadPresenter:
                     nexus_recon = self.nexus_file[key]
                     self.recon_data.append(np.array(nexus_recon["data"]["data"]))
 
-    def _look_for_tomo_data(self, entry_path: str) -> Optional[Union[h5py.Group, h5py.Dataset]]:
+    def _look_for_tomo_data(self, entry_path: str) -> h5py.Group | h5py.Dataset | None:
         """
         Retrieve data from the tomo entry field.
         :param entry_path: The path in which the data is found.
@@ -258,7 +257,7 @@ class NexusLoadPresenter:
         self.dark_after_array = self._get_images(ImageKeys.DarkField, False)
         self.view.set_images_found(4, self.dark_after_array.size != 0, self.dark_after_array.shape)
 
-    def _get_images(self, image_key_number: ImageKeys, before: Optional[bool] = None) -> np.ndarray:
+    def _get_images(self, image_key_number: ImageKeys, before: bool | None = None) -> np.ndarray:
         """
         Retrieve images from the data based on an image key number.
         :param image_key_number: The image key number.
@@ -291,7 +290,7 @@ class NexusLoadPresenter:
             logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
-    def get_dataset(self) -> Tuple[StrictDataset, str]:
+    def get_dataset(self) -> tuple[StrictDataset, str]:
         """
         Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
@@ -350,7 +349,7 @@ class NexusLoadPresenter:
         data.array[:] = data_array
         return ImageStack(data, [f"{name} {self.title}"])
 
-    def _create_images_if_required(self, data_array: np.ndarray, name: str, image_key: int) -> Optional[ImageStack]:
+    def _create_images_if_required(self, data_array: np.ndarray, name: str, image_key: int) -> ImageStack | None:
         """
         Create the ImageStack objects if the corresponding data was found in the NeXus file, and the user checked the
         "Use?" checkbox.

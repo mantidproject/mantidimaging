@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from math import degrees
 from time import sleep
-from typing import Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
@@ -47,9 +47,9 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     details: QLabel
     roiString = None
     imageItem: ImageItem
-    _angles: Optional[ProjectionAngles] = None
+    _angles: ProjectionAngles | None = None
 
-    roi_changed_callback: Optional[Callable[[SensibleROI], None]] = None
+    roi_changed_callback: Callable[[SensibleROI], None] | None = None
 
     def __init__(self,
                  parent=None,
@@ -139,11 +139,11 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         return self.view
 
     @property
-    def angles(self) -> Optional[ProjectionAngles]:
+    def angles(self) -> ProjectionAngles | None:
         return self._angles
 
     @angles.setter
-    def angles(self, angles: Optional[ProjectionAngles]):
+    def angles(self, angles: ProjectionAngles | None):
         self._angles = angles
         self._update_message(self._last_mouse_hover_location)
 
@@ -196,7 +196,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             self.roi_changed_callback(roi)
         self._refresh_message()
 
-    def _update_roi_region_avg(self) -> Optional[SensibleROI]:
+    def _update_roi_region_avg(self) -> SensibleROI | None:
         if self.image.ndim != 3:
             return None
         roi_pos, roi_size = self.get_roi()
@@ -239,7 +239,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
         self.ui.roiPlot.mousePressEvent = lambda ev: extended_handler(ev)
 
-    def get_roi(self) -> Tuple[CloseEnoughPoint, CloseEnoughPoint]:
+    def get_roi(self) -> tuple[CloseEnoughPoint, CloseEnoughPoint]:
         return self.presenter.get_roi(self.image,
                                       roi_pos=CloseEnoughPoint(self.roi.pos()),
                                       roi_size=CloseEnoughPoint(self.roi.size()))

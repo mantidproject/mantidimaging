@@ -1,7 +1,7 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QPushButton
@@ -18,7 +18,7 @@ class ROISelectorView(QMainWindow):
                  parent,
                  image_stack: 'ImageStack',
                  slice_idx: int,
-                 roi_values: Optional[list[int]] = None,
+                 roi_values: list[int] | None = None,
                  roi_changed_callback=None) -> None:
         super().__init__(parent)
 

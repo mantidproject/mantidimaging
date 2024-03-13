@@ -4,7 +4,7 @@
 This module handles the loading of FIT, FITS, TIF, TIFF
 """
 from __future__ import annotations
-from typing import Tuple, Optional, List, Callable, Union, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
@@ -17,11 +17,11 @@ if TYPE_CHECKING:
 
 
 def execute(load_func: Callable[[str], np.ndarray],
-            sample_path: List[str],
+            sample_path: list[str],
             img_format: str,
             dtype: 'npt.DTypeLike',
-            indices: Union[List[int], Indices, None],
-            progress: Optional[Progress] = None) -> ImageStack:
+            indices: list[int] | Indices | None,
+            progress: Progress | None = None) -> ImageStack:
     """
     Reads a stack of images into memory, assuming dark and flat images
     are in separate directories.
@@ -59,10 +59,10 @@ class ImageLoader(object):
     def __init__(self,
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
-                 img_shape: Tuple[int, ...],
+                 img_shape: tuple[int, ...],
                  data_dtype: 'npt.DTypeLike',
-                 indices: Union[List[int], Indices, None],
-                 progress: Optional[Progress] = None):
+                 indices: list[int] | Indices | None,
+                 progress: Progress | None = None):
         self.load_func = load_func
         self.img_format = img_format
         self.img_shape = img_shape
@@ -70,7 +70,7 @@ class ImageLoader(object):
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names: List[str]) -> pu.SharedArray:
+    def load_sample_data(self, input_file_names: list[str]) -> pu.SharedArray:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
@@ -78,7 +78,7 @@ class ImageLoader(object):
         else:
             raise ValueError(f"Data loaded has invalid shape: {self.img_shape}")
 
-    def _do_files_load_seq(self, data: pu.SharedArray, files: List[str]) -> pu.SharedArray:
+    def _do_files_load_seq(self, data: pu.SharedArray, files: list[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
 
         with progress:
@@ -96,7 +96,7 @@ class ImageLoader(object):
 
         return data
 
-    def load_files(self, files: List[str]) -> pu.SharedArray:
+    def load_files(self, files: list[str]) -> pu.SharedArray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)

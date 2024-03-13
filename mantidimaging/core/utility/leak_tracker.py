@@ -6,7 +6,7 @@ import sys
 import traceback
 import weakref
 from types import FunctionType
-from typing import NamedTuple, List, Set, Iterable
+from typing import NamedTuple, Iterable
 
 from numpy import ndarray
 
@@ -14,7 +14,7 @@ from numpy import ndarray
 class ItemInfo(NamedTuple):
     ref: weakref.ref
     msg: str
-    created: List[str]
+    created: list[str]
 
 
 def obj_to_string(obj, relative=None) -> str:
@@ -43,7 +43,7 @@ def obj_to_string(obj, relative=None) -> str:
     return f"{type(obj)} pyid={id(obj)} {extra_info}"
 
 
-def find_owners(obj, depth: int, path: List[str] | None = None, ignore: Set[int] | None = None) -> List[List[str]]:
+def find_owners(obj, depth: int, path: list[str] | None = None, ignore: set[int] | None = None) -> list[list[str]]:
     """Recursively track though references to objects and return a list of routes"""
     all_routes = []
     if path is None:

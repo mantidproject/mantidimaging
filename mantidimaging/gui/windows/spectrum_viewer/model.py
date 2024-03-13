@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from math import ceil
@@ -52,8 +52,8 @@ class SpectrumViewerWindowModel:
     The model is also responsible for saving ROI data to a csv file.
     """
     presenter: 'SpectrumViewerWindowPresenter'
-    _stack: Optional[ImageStack] = None
-    _normalise_stack: Optional[ImageStack] = None
+    _stack: ImageStack | None = None
+    _normalise_stack: ImageStack | None = None
     tof_range: tuple[int, int] = (0, 0)
     _roi_ranges: dict[str, SensibleROI]
 
@@ -79,7 +79,7 @@ class SpectrumViewerWindowModel:
         """
         return list(self._roi_ranges.keys())
 
-    def set_stack(self, stack: Optional[ImageStack]) -> None:
+    def set_stack(self, stack: ImageStack | None) -> None:
         """
         Sets the stack to be used by the model
         If that stack is None, then the model will be reset
@@ -105,7 +105,7 @@ class SpectrumViewerWindowModel:
         height, width = self.get_image_shape()
         self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
 
-    def set_normalise_stack(self, normalise_stack: Optional[ImageStack]) -> None:
+    def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
 
     def set_roi(self, roi_name: str, roi: SensibleROI):
@@ -122,7 +122,7 @@ class SpectrumViewerWindowModel:
             raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
         return self._roi_ranges[roi_name]
 
-    def get_averaged_image(self) -> Optional['np.ndarray']:
+    def get_averaged_image(self) -> "np.ndarray" | None:
         """
         Get the averaged image from the stack in the model returning as a numpy array
         or None if it does not
@@ -133,7 +133,7 @@ class SpectrumViewerWindowModel:
         return None
 
     @staticmethod
-    def get_stack_spectrum(stack: Optional[ImageStack], roi: SensibleROI):
+    def get_stack_spectrum(stack: ImageStack | None, roi: SensibleROI):
         """
         Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
         If the image stack is None, an empty numpy array is returned.

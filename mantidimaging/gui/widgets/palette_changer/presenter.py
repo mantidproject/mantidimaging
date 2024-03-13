@@ -1,7 +1,7 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
@@ -17,7 +17,7 @@ SAMPLE_SIZE = 15000  # Chosen to avoid Jenks becoming slow
 
 class PaletteChangerPresenter(BasePresenter):
 
-    def __init__(self, view, other_hists: 'List[HistogramLUTItem]', main_hist: 'HistogramLUTItem', image: np.ndarray,
+    def __init__(self, view, other_hists: 'list[HistogramLUTItem]', main_hist: 'HistogramLUTItem', image: np.ndarray,
                  recon_mode: bool):
         super().__init__(view)
         self.rng = np.random.default_rng()
@@ -57,7 +57,7 @@ class PaletteChangerPresenter(BasePresenter):
         """
         self.old_ticks = list(self.main_hist.gradient.ticks.keys())
 
-    def _insert_new_ticks(self, tick_points: List[float]):
+    def _insert_new_ticks(self, tick_points: list[float]):
         """
         Adds new ticks to the recon histogram.
         """
@@ -74,21 +74,21 @@ class PaletteChangerPresenter(BasePresenter):
         for hist in self.other_hists + [self.main_hist]:
             hist.gradient.loadPreset(preset)
 
-    def _generate_otsu_tick_points(self) -> List[float]:
+    def _generate_otsu_tick_points(self) -> list[float]:
         """
         Determine the Otsu threshold tick point.
         """
         vals = filters.threshold_multiotsu(self.image, classes=self.view.num_materials)
         return self._normalise_tick_values(vals.tolist())
 
-    def _generate_jenks_tick_points(self) -> List[float]:
+    def _generate_jenks_tick_points(self) -> list[float]:
         """
         Determine the Jenks tick points.
         """
         breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
         return self._normalise_tick_values(list(breaks)[1:-1])
 
-    def _normalise_tick_values(self, breaks: List[float]) -> List[float]:
+    def _normalise_tick_values(self, breaks: list[float]) -> list[float]:
         """
         Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an
         x value in this range.
@@ -114,7 +114,7 @@ class PaletteChangerPresenter(BasePresenter):
         self.main_hist.gradient.updateGradient()
         self.main_hist.gradient.sigGradientChangeFinished.emit(self.main_hist.gradient)
 
-    def _get_colours(self, num_ticks: int) -> List[float]:
+    def _get_colours(self, num_ticks: int) -> list[float]:
         """
         Determine the colours that should be used for the new recon histogram ticks. Should ensure that there is a
         suitable amount of contrast between the different materials, even if the ticks are quite close together on

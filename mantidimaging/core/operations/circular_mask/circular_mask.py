@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, List, Dict, Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import tomopy
@@ -49,7 +49,7 @@ class CircularMaskFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: Dict[str, Any]):
+    def compute_function(i: int, arrays: list[np.ndarray], params: dict[str, Any]):
         array = arrays[i]
         if array.ndim == 2:
             array = np.expand_dims(array, axis=0)

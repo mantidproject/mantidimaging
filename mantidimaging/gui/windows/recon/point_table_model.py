@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
@@ -77,7 +76,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
                 return 'Centre of rotation for specific slice'
             return ''
 
-    def getColumn(self, column_index) -> List[int]:
+    def getColumn(self, column_index) -> list[int]:
         if column_index != 0 and column_index != 1:
             return []
         else:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy
@@ -78,7 +78,7 @@ class ReconstructWindowView(BaseMainWindowView):
     messageIcon: QLabel
 
     changeColourPaletteButton: QPushButton
-    change_colour_palette_dialog: Optional[PaletteChangerView] = None
+    change_colour_palette_dialog: PaletteChangerView | None = None
 
     stackSelector: DatasetSelectorWidgetView
 
@@ -275,7 +275,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Optional[Degrees]):
+    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Degrees | None):
         """
         Updates the preview projection image and associated annotations.
 
@@ -350,7 +350,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.appendNewRow(row, slice_index, cor)
         self.tableView.selectRow(row)
 
-    def get_cor_table_selected_rows(self) -> List[int]:
+    def get_cor_table_selected_rows(self) -> list[int]:
         rows = self.tableView.selectionModel().selectedRows()
         return [row.row() for row in rows]
 
@@ -428,7 +428,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.regPercentSpinBox.value()
 
     @property
-    def beam_hardening_coefs(self) -> Optional[List[float]]:
+    def beam_hardening_coefs(self) -> list[float] | None:
         if not self.lbhc_enabled.isChecked():
             return None
         params = []
@@ -466,7 +466,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack(self, uuid) -> Optional['ImageStack']:
+    def get_stack(self, uuid) -> 'ImageStack' | None:
         if uuid is not None:
             return self.main_window.get_stack(uuid)
         return None
@@ -474,11 +474,11 @@ class ReconstructWindowView(BaseMainWindowView):
     def hide_tilt(self) -> None:
         self.image_view.hide_tilt()
 
-    def set_filters_for_recon_tool(self, filters: List[str]) -> None:
+    def set_filters_for_recon_tool(self, filters: list[str]) -> None:
         self.filterName.clear()
         self.filterName.insertItems(0, filters)
 
-    def get_number_of_cors(self) -> Optional[int]:
+    def get_number_of_cors(self) -> int | None:
         num, accepted = QInputDialog.getInt(self,
                                             "Number of slices",
                                             "On how many slices to run the automatic CoR finding?",

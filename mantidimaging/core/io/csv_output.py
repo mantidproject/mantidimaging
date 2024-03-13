@@ -1,7 +1,7 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import IO, Optional
+from typing import IO
 
 import numpy as np
 
@@ -10,7 +10,7 @@ class CSVOutput:
 
     def __init__(self) -> None:
         self.columns: dict[str, np.ndarray] = {}
-        self.num_rows: Optional[int] = None
+        self.num_rows: int | None = None
 
     def add_column(self, name: str, values: np.ndarray) -> None:
         as_column = values.reshape((-1, 1))

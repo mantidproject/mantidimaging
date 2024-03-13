@@ -4,7 +4,7 @@ from __future__ import annotations
 import datetime
 import os
 from logging import getLogger
-from typing import List, Union, Optional, Dict, Callable, Tuple, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 import h5py
 from pathlib import Path
@@ -35,17 +35,17 @@ INT16_SIZE = 65536
 package_version = CheckVersion().get_version()
 
 
-def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
+def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = ""):
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, overwrite=overwrite)
 
 
-def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: Optional[str] = ""):
+def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = ""):
     tifffile.imwrite(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
-def write_nxs(data: np.ndarray, filename: str, projection_angles: Optional[np.ndarray] = None, overwrite: bool = False):
+def write_nxs(data: np.ndarray, filename: str, projection_angles: np.ndarray | None = None, overwrite: bool = False):
     import h5py
     nxs = h5py.File(filename, 'w')
 
@@ -70,12 +70,12 @@ def image_save(images: ImageStack,
                swap_axes: bool = False,
                out_format: str = DEFAULT_IO_FILE_FORMAT,
                overwrite_all: bool = False,
-               custom_idx: Optional[int] = None,
+               custom_idx: int | None = None,
                zfill_len: int = DEFAULT_ZFILL_LENGTH,
                name_postfix: str = DEFAULT_NAME_POSTFIX,
-               indices: Union[List[int], Indices, None] = None,
-               pixel_depth: Optional[str] = None,
-               progress: Optional[Progress] = None) -> Union[str, List[str]]:
+               indices: list[int] | Indices | None = None,
+               pixel_depth: str | None = None,
+               progress: Progress | None = None) -> str | list[str]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -120,7 +120,7 @@ def image_save(images: ImageStack,
 
     # Do rescale if needed.
     if pixel_depth is None or pixel_depth == "float32":
-        rescale_params: Optional[Dict[str, Union[str, float]]] = None
+        rescale_params: dict[str, str | float] | None = None
         rescale_info = ""
     elif pixel_depth == "int16":
         # turn the offset to string otherwise json throws a TypeError when trying to save float32
@@ -146,7 +146,7 @@ def image_save(images: ImageStack,
         return filename
     else:
         if out_format in ['fit', 'fits']:
-            write_func: Callable[[np.ndarray, str, bool, Optional[str]], None] = write_fits
+            write_func: Callable[[np.ndarray, str, bool, str | None], None] = write_fits
         else:
             # pass all other formats to skimage
             write_func = write_img
@@ -283,7 +283,7 @@ def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, 
         index += arr.shape[0]
 
 
-def _convert_float_to_int(arrays: List[np.ndarray]) -> Tuple[List[np.ndarray], List[int]]:
+def _convert_float_to_int(arrays: list[np.ndarray]) -> tuple[list[np.ndarray], list[int]]:
     """
     Scales a float array to convert it to ints.
     :param arrays: The dataset arrays.
@@ -355,7 +355,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     data.create_dataset("z", shape=z_arr.shape, dtype="float16", data=z_arr)
 
 
-def _create_pixel_size_arrays(recon: ImageStack) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _create_pixel_size_arrays(recon: ImageStack) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Create the pixel size arrays for the NXtomproc x/y/z fields.
     :param recon: The recon data.
@@ -391,12 +391,12 @@ def _rescale_recon_data(data: np.ndarray) -> np.ndarray:
 
 
 def generate_names(name_prefix: str,
-                   indices: Union[List[int], Indices, None],
+                   indices: list[int] | Indices | None,
                    num_images: int,
-                   custom_idx: Optional[int] = None,
+                   custom_idx: int | None = None,
                    zfill_len: int = DEFAULT_ZFILL_LENGTH,
                    name_postfix: str = DEFAULT_NAME_POSTFIX,
-                   out_format: str = DEFAULT_IO_FILE_FORMAT) -> List[str]:
+                   out_format: str = DEFAULT_IO_FILE_FORMAT) -> list[str]:
     start_index = indices[0] if indices else 0
     if custom_idx:
         index = custom_idx
@@ -413,7 +413,7 @@ def generate_names(name_prefix: str,
     return names
 
 
-def make_dirs_if_needed(dirname: Optional[str] = None, overwrite_all: bool = False) -> None:
+def make_dirs_if_needed(dirname: str | None = None, overwrite_all: bool = False) -> None:
     """
     Makes sure that the directory needed (for example to save a file)
     exists, otherwise creates it.

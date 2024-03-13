@@ -2,8 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Union
-
 import numpy as np
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
 
@@ -25,7 +23,7 @@ class CORInspectionDialogView(BaseDialogView):
     stepStackedWidget: QStackedWidget
     instructionStackedWidget: QStackedWidget
 
-    spin_box: Union[QSpinBox, QDoubleSpinBox]
+    spin_box: QSpinBox | QDoubleSpinBox
 
     def __init__(self, parent, images: ImageStack, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):

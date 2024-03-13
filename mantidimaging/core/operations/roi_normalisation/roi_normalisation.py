@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
 
 
-def modes() -> List[str]:
+def modes() -> list[str]:
     return ['Stack Average', 'Flat Field']
 
 
@@ -48,7 +48,7 @@ class RoiNormalisationFilter(BaseFilter):
     def filter_func(images: ImageStack,
                     region_of_interest: SensibleROI | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
-                    flat_field: Optional[ImageStack] = None,
+                    flat_field: ImageStack | None = None,
                     progress=None):
         """Normalise by beam intensity.
 
@@ -154,7 +154,7 @@ def _divide_by_air(data=None, air_sums=None):
 def _execute(images: ImageStack,
              air_region: SensibleROI,
              normalisation_mode: str,
-             flat_field: Optional[ImageStack],
+             flat_field: ImageStack | None,
              progress=None):
     log = getLogger(__name__)
 

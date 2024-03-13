@@ -5,7 +5,7 @@ from __future__ import annotations
 import traceback
 from enum import Enum
 from logging import getLogger
-from typing import TYPE_CHECKING, List, Tuple, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -27,10 +27,10 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
     def __init__(self,
                  view: 'DatasetSelectorWidgetView',
                  show_stacks: bool = False,
-                 relevant_dataset_types: type | Tuple[type] | None = None):
+                 relevant_dataset_types: type | tuple[type] | None = None):
         super().__init__(view)
 
-        self.current_dataset: Optional['UUID'] = None
+        self.current_dataset: 'UUID' | None = None
         self.show_stacks = show_stacks
         self.relevant_dataset_types = relevant_dataset_types
 
@@ -71,7 +71,7 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
         self.view.datasets_updated.emit()
         self.handle_selection(new_selected_index)
 
-    def _get_dataset_list(self) -> List[Tuple[UUID, str]]:
+    def _get_dataset_list(self) -> list[tuple[UUID, str]]:
         result = []
         for dataset in self.view.main_window.presenter.datasets:
             # If no relevant dataset types have been specified then all should be included

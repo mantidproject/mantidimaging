@@ -1,7 +1,7 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QAction
 
@@ -21,7 +21,7 @@ class AutoColorMenu:
     """
 
     def __init__(self) -> None:
-        self.auto_color_action: Optional[QAction] = None
+        self.auto_color_action: QAction | None = None
 
     @property
     def histogram(self) -> 'HistogramLUTItem':
@@ -32,11 +32,11 @@ class AutoColorMenu:
         raise NotImplementedError('Required image_data property not implemented')
 
     @property
-    def other_histograms(self) -> 'List[HistogramLUTItem]':
+    def other_histograms(self) -> 'list[HistogramLUTItem]':
         return []
 
     def add_auto_color_menu_action(self,
-                                   parent: 'Optional[QWidget]',
+                                   parent: 'QWidget | None',
                                    recon_mode: bool = False,
                                    index: int = DEFAULT_MENU_POSITION,
                                    set_enabled: bool = True) -> QAction:

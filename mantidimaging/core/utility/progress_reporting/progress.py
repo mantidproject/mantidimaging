@@ -5,7 +5,7 @@ from __future__ import annotations
 import threading
 import time
 from logging import getLogger
-from typing import NamedTuple, Optional, SupportsInt
+from typing import NamedTuple, SupportsInt
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
@@ -30,7 +30,7 @@ class Progress(object):
     """
 
     @staticmethod
-    def ensure_instance(p: Optional['Progress'] = None, *args, num_steps: Optional[int] = None, **kwargs) -> 'Progress':
+    def ensure_instance(p: 'Progress' | None = None, *args, num_steps: int | None = None, **kwargs) -> 'Progress':
         """
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.

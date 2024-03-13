@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
+from typing import Callable, Any, TYPE_CHECKING
 
 import numpy as np
 from PyQt5.QtGui import QValidator
@@ -43,7 +43,7 @@ class KernelSpinBox(QSpinBox):
         self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
 
-    def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
+    def validate(self, input: str, pos: int) -> tuple[QValidator.State, str, int]:
         """
         Validate the spin box input. Returns as Intermediate state if the input is empty or contains an even number,
         otherwise it returns Acceptable.
@@ -97,14 +97,14 @@ class MedianFilter(BaseFilter):
         return data
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: Dict[str, Any]):
+    def compute_function(i: int, array: np.ndarray, params: dict[str, Any]):
         mode = params['mode']
         size = params['size']
 
         array[i] = _median_filter(array[i], size=size, mode=mode)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
+    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> dict[str, Any]:
 
         # Create a spin box for kernel size without add_property_to_form in order to allow a custom validate method
         size_field = KernelSpinBox(on_change)
