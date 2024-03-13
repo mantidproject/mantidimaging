@@ -70,12 +70,13 @@ class RingRemovalFilter(BaseFilter):
             "theta_min": theta_min,
             "rwidth": rwidth
         }
-        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), images.data, params)
+        ps.run_compute_func(RingRemovalFilter.compute_function, len(images.data), [images.shared_array], params)
         return images
 
     @staticmethod
     def compute_function(image_index, shared_array, params):
-        image_slice = shared_array[image_index]
+
+        sample = shared_array.data[image_index]
 
         if params["center_mode"] == "manual":
             center_x = params["center_x"]
@@ -83,8 +84,7 @@ class RingRemovalFilter(BaseFilter):
         else:
             center_x = center_y = None
 
-        images = shared_array
-        corrected_image = tp.remove_ring(images,
+        corrected_image = tp.remove_ring(sample,
                                          center_x=center_x,
                                          center_y=center_y,
                                          thresh=params["thresh"],
@@ -92,11 +92,9 @@ class RingRemovalFilter(BaseFilter):
                                          thresh_min=params["thresh_min"],
                                          theta_min=params["theta_min"],
                                          rwidth=params["rwidth"],
-                                         out=image_slice)
+                                         out=sample)
 
-        shared_array[image_index] = corrected_image[0]
-
-        return corrected_image
+        shared_array.data[image_index] = corrected_image
 
     @staticmethod
     def register_gui(form, on_change, view):
