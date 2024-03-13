@@ -6,6 +6,7 @@ from functools import partial
 from typing import List, Optional, TYPE_CHECKING, Dict, Any
 
 import numpy as np
+from mantidimaging import helper as h
 
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
@@ -44,45 +45,55 @@ class RoiNormalisationFilter(BaseFilter):
     def calculate_flat_field_mean(flat_field: ImageStack) -> float:
         return np.mean(flat_field.data)
 
-    @staticmethod
     def filter_func(images: ImageStack,
-                    region_of_interest: SensibleROI | None = None,
+                    region_of_interest: SensibleROI | list | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,
                     flat_field: Optional[ImageStack] = None,
-                    progress=None) -> ImageStack:
-        flat_field_mean = None
-        if normalisation_mode == "Flat Field" and flat_field is not None:
-            flat_field_mean = RoiNormalisationFilter.calculate_flat_field_mean(flat_field)
+                    progress=None):
+        h.check_data_stack(images)
 
-        params = {
-            'air_region': region_of_interest,
-            'normalisation_mode': normalisation_mode,
-            'flat_field_mean': flat_field_mean
-        }
+        if not region_of_interest:
+            raise ValueError('region_of_interest must be provided')
+        if normalisation_mode not in ['Stack Average', 'Flat Field']:
+            raise ValueError(f'Unknown normalisation_mode: {normalisation_mode}')
 
-        ps.run_compute_func(RoiNormalisationFilter.compute_function, len(images.data), [images.shared_array], params)
+        params = {'normalisation_mode': normalisation_mode, 'flat_field_mean': None}
 
+        if hasattr(region_of_interest, 'to_list'):
+            roi_list = region_of_interest.to_list()
+        elif isinstance(region_of_interest, list):
+            roi_list = region_of_interest
+        else:
+            raise TypeError("region_of_interest must be a list or an object with a to_list() method")
+
+        params['region_of_interest'] = roi_list
+
+        if normalisation_mode == 'Flat Field':
+            if flat_field is None:
+                raise ValueError('flat_field must be provided for "Flat Field" normalisation mode')
+            flat_field_roi = flat_field.data[:, roi_list[1]:roi_list[3], roi_list[0]:roi_list[2]]
+            params['flat_field_mean'] = np.mean(flat_field_roi)
+
+        ps.run_compute_func(RoiNormalisationFilter.compute_function, images.data.shape[0], images.shared_array, params,
+                            progress)
+
+        h.check_data_stack(images)
         return images
 
     @staticmethod
-    def compute_function(image_index: int, array: np.ndarray, params: Dict[str, Any]):
-        air_region = params['air_region']
-        normalisation_mode = params['normalisation_mode']
-        flat_field_mean = params['flat_field_mean'] if 'flat_field_mean' in params else None
+    def compute_function(i: int, array: np.ndarray, params):
+        roi = params['region_of_interest']
+        norm_mode = params['normalisation_mode']
+        flat_field_mean = params['flat_field_mean']
 
-        air_values = array[image_index][air_region.top:air_region.bottom, air_region.left:air_region.right]
-        air_mean = np.mean(air_values)
+        image_roi = array[i, roi[1]:roi[3], roi[0]:roi[2]]
+        image_mean = np.mean(image_roi)
 
-        if normalisation_mode == "Stack Average":
-            normalization_factor = air_mean
-        elif normalisation_mode == "Flat Field":
-            if flat_field_mean is None:
-                raise ValueError("flat_field_mean must be provided for 'Flat Field' normalisation mode")
-            normalization_factor = air_mean / flat_field_mean
-        else:
-            raise ValueError(f"Unsupported normalisation_mode: {normalisation_mode}")
-
-        array[image_index] /= normalization_factor
+        if norm_mode == 'Stack Average':
+            normalization_factor = image_mean
+        elif norm_mode == 'Flat Field':
+            normalization_factor = flat_field_mean
+        array[i] = array[i] * (normalization_factor / image_mean) if image_mean != 0 else array[i]
 
     @staticmethod
     def register_gui(form, on_change, view):
