@@ -49,7 +49,7 @@ class RescaleFilter(BaseFilter):
     @staticmethod
     def compute_function(index: int, array: np.ndarray, params: dict):
         min_input, max_input, max_output = params['min_input'], params['max_input'], params['max_output']
-        array[index] = np.interp(array[index], [min_input, max_input], [0, max_output])
+        array[index] = RescaleFilter.filter_array(array[index], min_input, max_input, max_output)
 
     @staticmethod
     def filter_array(image: np.ndarray, min_input: float, max_input: float, max_output: float) -> np.ndarray:
