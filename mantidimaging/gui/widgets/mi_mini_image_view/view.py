@@ -36,7 +36,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     bright_levels: None | list[int] = None
     levels: list[float]
 
-    def __init__(self, name: str = "MIMiniImageView", parent: 'QWidget | None' = None, recon_mode: bool = False):
+    def __init__(self, name: str = "MIMiniImageView", parent: QWidget | None = None, recon_mode: bool = False):
         super().__init__()
 
         self.name = name.title()
@@ -56,8 +56,8 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.details = self.addLabel("", colspan=2)
         self.im.hoverEvent = lambda ev: self.mouse_over(ev)
 
-        self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
-        self.histogram_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
+        self.axis_siblings: WeakSet[MIMiniImageView] = WeakSet()
+        self.histogram_siblings: WeakSet[MIMiniImageView] = WeakSet()
 
         self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
 
@@ -74,7 +74,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.hist.region.setRegion(new_region)
 
     @property
-    def image_data(self) -> 'np.ndarray':
+    def image_data(self) -> np.ndarray:
         return self.im.image
 
     @property
@@ -110,7 +110,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.set_auto_color_enabled(image is not None)
 
     @staticmethod
-    def set_siblings(sibling_views: list["MIMiniImageView"], axis=False, hist=False):
+    def set_siblings(sibling_views: list[MIMiniImageView], axis=False, hist=False):
         for view1 in sibling_views:
             for view2 in sibling_views:
                 if view2 is not view1:
@@ -119,10 +119,10 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
                     if hist:
                         view1.add_hist_sibling(view2)
 
-    def add_axis_sibling(self, sibling: "MIMiniImageView"):
+    def add_axis_sibling(self, sibling: MIMiniImageView):
         self.axis_siblings.add(sibling)
 
-    def add_hist_sibling(self, sibling: "MIMiniImageView"):
+    def add_hist_sibling(self, sibling: MIMiniImageView):
         self.histogram_siblings.add(sibling)
 
     def mouse_over(self, ev):

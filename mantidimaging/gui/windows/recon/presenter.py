@@ -52,9 +52,9 @@ class Notifications(Enum):
 
 class ReconstructWindowPresenter(BasePresenter):
     ERROR_STRING = "COR/Tilt finding failed: {}"
-    view: 'ReconstructWindowView'
+    view: ReconstructWindowView
 
-    def __init__(self, view: 'ReconstructWindowView', main_window: 'MainWindowView'):
+    def __init__(self, view: ReconstructWindowView, main_window: MainWindowView):
         super().__init__(view)
         self.view = view
         self.model = ReconstructWindowModel(self.view.cor_table_model)

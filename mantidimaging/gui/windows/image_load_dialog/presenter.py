@@ -19,10 +19,10 @@ logger = getLogger(__name__)
 
 
 class LoadPresenter:
-    view: 'ImageLoadDialog'
+    view: ImageLoadDialog
     sample_fg: FilenameGroup | None = None
 
-    def __init__(self, view: 'ImageLoadDialog'):
+    def __init__(self, view: ImageLoadDialog):
         self.view = view
         self.image_format = ''
         self.single_mem = 0

@@ -93,11 +93,11 @@ def _group_consecutive_values(slices: list[int]) -> list[str]:
 
 
 class FiltersWindowPresenter(BasePresenter):
-    view: 'FiltersWindowView'
+    view: FiltersWindowView
     stack: ImageStack | None = None
     divider = "------------------------------------"
 
-    def __init__(self, view: 'FiltersWindowView', main_window: 'MainWindowView'):
+    def __init__(self, view: FiltersWindowView, main_window: MainWindowView):
         super().__init__(view)
 
         self.model = FiltersWindowModel(self)
@@ -111,7 +111,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.prev_apply_all_state = True
 
     @property
-    def main_window(self) -> 'MainWindowView':
+    def main_window(self) -> MainWindowView:
         return self._main_window
 
     def notify(self, signal):
@@ -410,7 +410,7 @@ class FiltersWindowPresenter(BasePresenter):
         self.view.previews.set_histogram_log_scale()
 
     @staticmethod
-    def _update_preview_image(image_data: np.ndarray, image: 'MIMiniImageView'):
+    def _update_preview_image(image_data: np.ndarray, image: MIMiniImageView):
         image.clear()
         image.setImage(image_data)
 

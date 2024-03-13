@@ -21,16 +21,16 @@ class Notification(Enum):
 
 
 class DatasetSelectorWidgetPresenter(BasePresenter):
-    view: 'DatasetSelectorWidgetView'
+    view: DatasetSelectorWidgetView
     show_stacks: bool
 
     def __init__(self,
-                 view: 'DatasetSelectorWidgetView',
+                 view: DatasetSelectorWidgetView,
                  show_stacks: bool = False,
                  relevant_dataset_types: type | tuple[type] | None = None):
         super().__init__(view)
 
-        self.current_dataset: 'UUID' | None = None
+        self.current_dataset: UUID | None = None
         self.show_stacks = show_stacks
         self.relevant_dataset_types = relevant_dataset_types
 

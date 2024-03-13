@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class DatasetSelectorDialog(BaseDialogView):
 
     def __init__(self,
-                 main_window: 'MainWindowView' | None,
+                 main_window: MainWindowView | None,
                  title: str | None = None,
                  message: str | None = None,
                  show_stacks: bool = False):

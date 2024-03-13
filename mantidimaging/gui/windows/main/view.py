@@ -432,7 +432,7 @@ class MainWindowView(BaseMainWindowView):
     def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.presenter.get_dataset_id_for_stack(stack_id)
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> "MixedDataset" | StrictDataset | None:
+    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
         return self.presenter.get_dataset(dataset_id)
 
     def get_all_stacks(self) -> list[ImageStack]:

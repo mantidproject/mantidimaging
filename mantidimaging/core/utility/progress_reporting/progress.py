@@ -30,7 +30,7 @@ class Progress(object):
     """
 
     @staticmethod
-    def ensure_instance(p: 'Progress' | None = None, *args, num_steps: int | None = None, **kwargs) -> 'Progress':
+    def ensure_instance(p: Progress | None = None, *args, num_steps: int | None = None, **kwargs) -> Progress:
         """
         Helper function used to select either a non-None Progress instance as a
         parameter, or simply create and configure a new one.

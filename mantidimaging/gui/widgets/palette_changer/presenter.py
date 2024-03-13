@@ -17,7 +17,7 @@ SAMPLE_SIZE = 15000  # Chosen to avoid Jenks becoming slow
 
 class PaletteChangerPresenter(BasePresenter):
 
-    def __init__(self, view, other_hists: 'list[HistogramLUTItem]', main_hist: 'HistogramLUTItem', image: np.ndarray,
+    def __init__(self, view, other_hists: list[HistogramLUTItem], main_hist: HistogramLUTItem, image: np.ndarray,
                  recon_mode: bool):
         super().__init__(view)
         self.rng = np.random.default_rng()

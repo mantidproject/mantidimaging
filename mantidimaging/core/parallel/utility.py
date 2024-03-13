@@ -26,7 +26,7 @@ def enough_memory(shape, dtype):
     return full_size_KB(shape=shape, dtype=dtype) < system_free_memory().kb()
 
 
-def create_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+def create_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> SharedArray:
     """
     Create an array in shared memory
 
@@ -41,7 +41,7 @@ def create_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) ->
     return _create_shared_array(shape, dtype)
 
 
-def _create_shared_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.float32) -> 'SharedArray':
+def _create_shared_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> SharedArray:
     size = full_size_bytes(shape, dtype)
 
     LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
@@ -51,13 +51,13 @@ def _create_shared_array(shape: tuple[int, ...], dtype: 'npt.DTypeLike' = np.flo
     return _read_array_from_shared_memory(shape, dtype, mem, True)
 
 
-def _read_array_from_shared_memory(shape: tuple[int, ...], dtype: 'npt.DTypeLike', mem: SharedMemory,
-                                   free_mem_on_delete: bool) -> 'SharedArray':
+def _read_array_from_shared_memory(shape: tuple[int, ...], dtype: npt.DTypeLike, mem: SharedMemory,
+                                   free_mem_on_delete: bool) -> SharedArray:
     array: np.ndarray = np.ndarray(shape, dtype=dtype, buffer=mem.buf)
     return SharedArray(array, mem, free_mem_on_del=free_mem_on_delete)
 
 
-def copy_into_shared_memory(array: np.ndarray) -> 'SharedArray':
+def copy_into_shared_memory(array: np.ndarray) -> SharedArray:
     shared_array = create_array(array.shape, array.dtype)
     shared_array.array[:] = array[:]
     return shared_array
@@ -165,18 +165,18 @@ class SharedArray:
         return self._shared_memory is not None
 
     @property
-    def array_proxy(self) -> 'SharedArrayProxy':
+    def array_proxy(self) -> SharedArrayProxy:
         mem_name = self._shared_memory.name if self._shared_memory else None
         return SharedArrayProxy(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
 
 
 class SharedArrayProxy:
 
-    def __init__(self, mem_name: str | None, shape: tuple[int, ...], dtype: 'npt.DTypeLike'):
+    def __init__(self, mem_name: str | None, shape: tuple[int, ...], dtype: npt.DTypeLike):
         self._mem_name = mem_name
         self._shape = shape
         self._dtype = dtype
-        self._shared_array: 'SharedArray' | None = None
+        self._shared_array: SharedArray | None = None
 
     @property
     def array(self) -> np.ndarray:

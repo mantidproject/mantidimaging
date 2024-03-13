@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.presenter import StackId
 
 
-def sort_by_tomo_and_recon(stack_id: "StackId"):
+def sort_by_tomo_and_recon(stack_id: StackId):
     if "Recon" in stack_id.name:
         return 1
     elif "Tomo" in stack_id.name:

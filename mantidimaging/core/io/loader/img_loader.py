@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 def execute(load_func: Callable[[str], np.ndarray],
             sample_path: list[str],
             img_format: str,
-            dtype: 'npt.DTypeLike',
+            dtype: npt.DTypeLike,
             indices: list[int] | Indices | None,
             progress: Progress | None = None) -> ImageStack:
     """
@@ -60,7 +60,7 @@ class ImageLoader(object):
                  load_func: Callable[[str], np.ndarray],
                  img_format: str,
                  img_shape: tuple[int, ...],
-                 data_dtype: 'npt.DTypeLike',
+                 data_dtype: npt.DTypeLike,
                  indices: list[int] | Indices | None,
                  progress: Progress | None = None):
         self.load_func = load_func

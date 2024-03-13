@@ -84,7 +84,7 @@ class LiveViewerWindowModel:
         list of images in directory
     """
 
-    def __init__(self, presenter: 'LiveViewerWindowPresenter'):
+    def __init__(self, presenter: LiveViewerWindowPresenter):
         """
         Constructor for LiveViewerWindowModel class.
 

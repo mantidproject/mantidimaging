@@ -58,7 +58,7 @@ class FiltersWindowView(BaseMainWindowView):
     applyToAllButton: QPushButton
     filterSelector: QComboBox
 
-    def __init__(self, main_window: 'MainWindowView'):
+    def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/filters_window.ui')
 
         self.main_window = main_window
@@ -187,15 +187,15 @@ class FiltersWindowView(BaseMainWindowView):
             self.previews.unlink_all_views()
 
     @property
-    def preview_image_before(self) -> 'MIMiniImageView':
+    def preview_image_before(self) -> MIMiniImageView:
         return self.previews.imageview_before
 
     @property
-    def preview_image_after(self) -> 'MIMiniImageView':
+    def preview_image_after(self) -> MIMiniImageView:
         return self.previews.imageview_after
 
     @property
-    def preview_image_difference(self) -> 'MIMiniImageView':
+    def preview_image_difference(self) -> MIMiniImageView:
         return self.previews.imageview_difference
 
     def show_error_dialog(self, msg=""):

@@ -22,7 +22,7 @@ class FiltersWindowModel(object):
     selected_filter: BaseFilterClass
     filter_widget_kwargs: dict[str, Any]
 
-    def __init__(self, presenter: 'FiltersWindowPresenter'):
+    def __init__(self, presenter: FiltersWindowPresenter):
         super().__init__()
 
         self.presenter = presenter
@@ -72,7 +72,7 @@ class FiltersWindowModel(object):
         return filter_names
 
     def filter_registration_func(
-            self, filter_name: str) -> Callable[['QFormLayout', Callable, BaseMainWindowView], dict[str, Any]]:
+            self, filter_name: str) -> Callable[[QFormLayout, Callable, BaseMainWindowView], dict[str, Any]]:
         """
         Gets the function used to register the GUI of a given filter.
 
@@ -106,7 +106,7 @@ class FiltersWindowModel(object):
         self.selected_filter = self.filters[filter_idx]
         self.filter_widget_kwargs = filter_widget_kwargs
 
-    def apply_to_stacks(self, stacks: list['ImageStack'], progress=None):
+    def apply_to_stacks(self, stacks: list[ImageStack], progress=None):
         """
         Applies the selected filter to a given image stack.
 
@@ -134,7 +134,7 @@ class FiltersWindowModel(object):
             *exec_func.args,
             **exec_func.keywords)
 
-    def do_apply_filter(self, stacks: list['ImageStack'], post_filter: Callable[[Any], None]):
+    def do_apply_filter(self, stacks: list[ImageStack], post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack.
         """
@@ -146,7 +146,7 @@ class FiltersWindowModel(object):
         apply_func = partial(self.apply_to_stacks, stacks)
         start_async_task_view(self.presenter.view, apply_func, post_filter)
 
-    def do_apply_filter_sync(self, stacks: list['ImageStack'], post_filter: Callable[[Any], None]):
+    def do_apply_filter_sync(self, stacks: list[ImageStack], post_filter: Callable[[Any], None]):
         """
         Applies the selected filter to the selected stack in a synchronous manner
         """

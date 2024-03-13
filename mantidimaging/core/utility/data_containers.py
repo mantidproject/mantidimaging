@@ -38,7 +38,7 @@ class SingleValue:
     def __abs__(self):
         return abs(self.value)
 
-    def __sub__(self, other: 'SingleValue'):
+    def __sub__(self, other: SingleValue):
         assert isinstance(other, SingleValue), "Can only compare against other `SingleValue`s"
         return self.value - other.value
 

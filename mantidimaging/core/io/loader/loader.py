@@ -112,7 +112,7 @@ def load_stack_from_image_params(image_params: ImageParameters,
 
 
 def load(filename_group: FilenameGroup,
-         dtype: 'npt.DTypeLike' = np.float32,
+         dtype: npt.DTypeLike = np.float32,
          indices: list[int] | Indices | None = None,
          progress: Progress | None = None,
          log_file: Path | None = None) -> ImageStack:

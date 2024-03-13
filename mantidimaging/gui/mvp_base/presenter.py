@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 
 
 class BasePresenter(object):
-    view: 'BaseMainWindowView' | 'BaseDialogView'
+    view: BaseMainWindowView | BaseDialogView
 
-    def __init__(self, view: 'BaseMainWindowView'):
+    def __init__(self, view: BaseMainWindowView):
         self.view = view
 
     def notify(self, signal):

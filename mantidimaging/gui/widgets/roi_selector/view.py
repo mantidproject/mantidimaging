@@ -16,7 +16,7 @@ class ROISelectorView(QMainWindow):
 
     def __init__(self,
                  parent,
-                 image_stack: 'ImageStack',
+                 image_stack: ImageStack,
                  slice_idx: int,
                  roi_values: list[int] | None = None,
                  roi_changed_callback=None) -> None:

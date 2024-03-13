@@ -57,7 +57,7 @@ class DivideFilter(BaseFilter):
         array[i] /= value
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BasePresenter') -> dict[str, Any]:
+    def register_gui(form: QFormLayout, on_change: Callable, view: BasePresenter) -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
         _, value_widget = add_property_to_form("Divide by",

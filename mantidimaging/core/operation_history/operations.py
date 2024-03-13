@@ -34,7 +34,7 @@ class ImageOperation:
             raise KeyError(msg) from exc
 
     @staticmethod
-    def from_serialized(metadata_entry: dict[str, Any]) -> 'ImageOperation':
+    def from_serialized(metadata_entry: dict[str, Any]) -> ImageOperation:
         return ImageOperation(filter_name=metadata_entry[const.OPERATION_NAME],
                               filter_kwargs=metadata_entry[const.OPERATION_KEYWORD_ARGS],
                               display_name=metadata_entry[const.OPERATION_DISPLAY_NAME])

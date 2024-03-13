@@ -56,7 +56,7 @@ class ArithmeticFilter(BaseFilter):
         array[i] = array[i] * (params["mult"] / params["div"]) + (params["add"] - params["sub"])
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
+    def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
         _, mult_input_widget = add_property_to_form('Multiply',
                                                     Type.FLOAT,
                                                     form=form,

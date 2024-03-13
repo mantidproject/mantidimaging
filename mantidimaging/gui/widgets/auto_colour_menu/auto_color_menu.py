@@ -24,19 +24,19 @@ class AutoColorMenu:
         self.auto_color_action: QAction | None = None
 
     @property
-    def histogram(self) -> 'HistogramLUTItem':
+    def histogram(self) -> HistogramLUTItem:
         raise NotImplementedError('Required histogram property not implemented')
 
     @property
-    def image_data(self) -> 'np.ndarray':
+    def image_data(self) -> np.ndarray:
         raise NotImplementedError('Required image_data property not implemented')
 
     @property
-    def other_histograms(self) -> 'list[HistogramLUTItem]':
+    def other_histograms(self) -> list[HistogramLUTItem]:
         return []
 
     def add_auto_color_menu_action(self,
-                                   parent: 'QWidget | None',
+                                   parent: QWidget | None,
                                    recon_mode: bool = False,
                                    index: int = DEFAULT_MENU_POSITION,
                                    set_enabled: bool = True) -> QAction:

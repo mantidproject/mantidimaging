@@ -150,7 +150,7 @@ class ImageStack:
         """
         return const.OPERATION_HISTORY in self.metadata
 
-    def copy(self, flip_axes: bool = False) -> 'ImageStack':
+    def copy(self, flip_axes: bool = False) -> ImageStack:
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
@@ -164,7 +164,7 @@ class ImageStack:
                             sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
-    def copy_roi(self, roi: SensibleROI) -> 'ImageStack':
+    def copy_roi(self, roi: SensibleROI) -> ImageStack:
         shape = (self.data.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
@@ -178,11 +178,11 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def slice_as_image_stack(self, index: int) -> 'ImageStack':
+    def slice_as_image_stack(self, index: int) -> ImageStack:
         "A slice, either projection or sinogram depending on current ordering"
         return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
-    def sino_as_image_stack(self, index: int) -> 'ImageStack':
+    def sino_as_image_stack(self, index: int) -> ImageStack:
         "A single sinogram slice as an ImageStack in projection ordering"
         return ImageStack(np.asarray([self.sino(index)]).swapaxes(0, 1), metadata=deepcopy(self.metadata))
 
@@ -238,11 +238,11 @@ class ImageStack:
         return self._proj180deg is not None
 
     @property
-    def proj180deg(self) -> "ImageStack" | None:
+    def proj180deg(self) -> ImageStack | None:
         return self._proj180deg
 
     @proj180deg.setter
-    def proj180deg(self, value: 'ImageStack') -> None:
+    def proj180deg(self, value: ImageStack) -> None:
         assert isinstance(value, ImageStack)
         self._proj180deg = value
 

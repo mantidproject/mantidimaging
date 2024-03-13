@@ -37,7 +37,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportButton: QPushButton
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
-    _current_dataset_id: 'UUID' | None
+    _current_dataset_id: UUID | None
     normalise_error_issue: str = ""
     image_output_mode_combobox: QComboBox
     transmission_error_mode_combobox: QComboBox
@@ -53,7 +53,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     number_roi_properties_procced: int = 0
 
-    def __init__(self, main_window: 'MainWindowView'):
+    def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
         self.main_window = main_window
@@ -261,11 +261,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         return self.tableView.model()
 
     @property
-    def current_dataset_id(self) -> 'UUID' | None:
+    def current_dataset_id(self) -> UUID | None:
         return self._current_dataset_id
 
     @current_dataset_id.setter
-    def current_dataset_id(self, uuid: 'UUID' | None) -> None:
+    def current_dataset_id(self, uuid: UUID | None) -> None:
         self._current_dataset_id = uuid
 
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
@@ -275,7 +275,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def try_to_select_relevant_normalise_stack(self, name: str) -> None:
         self.normaliseStackSelector.try_to_select_relevant_stack(name)
 
-    def get_normalise_stack(self) -> 'UUID' | None:
+    def get_normalise_stack(self) -> UUID | None:
         return self.normaliseStackSelector.current()
 
     def get_csv_filename(self) -> Path | None:
@@ -308,7 +308,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True):
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
 
-    def set_spectrum(self, name: str, spectrum_data: 'np.ndarray'):
+    def set_spectrum(self, name: str, spectrum_data: np.ndarray):
         """
         Try to set the spectrum data for a given ROI assuming the
         roi may not exist in the spectrum widget yet depending on when method is called

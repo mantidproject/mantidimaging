@@ -33,7 +33,7 @@ class Notification(Enum):
 class CORInspectionDialogPresenter(BasePresenter):
     progress_updated = pyqtSignal(float, str)
 
-    view: 'CORInspectionDialogView'
+    view: CORInspectionDialogView
 
     def __init__(self, view, images: ImageStack, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
