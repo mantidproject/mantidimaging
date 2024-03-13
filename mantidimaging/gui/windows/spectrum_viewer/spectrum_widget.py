@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
+
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, PlotWidget, ViewBox
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -257,6 +258,28 @@ class SpectrumWidget(QWidget):
             self.roi_dict[new_name].rename_roi(new_name)
 
 
+class CustomViewBox(ViewBox):
+    def __init__(self, *args, **kwds):
+        kwds['enableMenu'] = False
+        ViewBox.__init__(self, *args, **kwds)
+        self.setMouseMode(self.RectMode)
+
+    ## reimplement right-click to zoom out
+    def mouseClickEvent(self, ev):
+        if ev.button() == Qt.MouseButton.RightButton:
+            self.autoRange()
+
+    ## reimplement mouseDragEvent to disable continuous axis zoom
+    def mouseDragEvent(self, ev, axis=None):
+        if axis is not None and ev.button() == Qt.MouseButton.RightButton:
+            ev.ignore()
+        elif ev.button() == Qt.MouseButton.MiddleButton:
+            self.setMouseMode(self.PanMode)
+            ViewBox.mouseDragEvent(self, ev)
+            self.setMouseMode(self.RectMode)
+        else:
+            ViewBox.mouseDragEvent(self, ev, axis=axis)
+
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
     spectrum: PlotItem
@@ -268,8 +291,8 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.vb = ViewBox()
-        self.spectrum = self.addPlot(viewbox=self.vb)
+        self.spectrum_viewbox = CustomViewBox()
+        self.spectrum = self.addPlot(viewBox=self.spectrum_viewbox)
         self.nextRow()
         self._tof_range_label = self.addLabel()
         self.nextRow()
