@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, PlotWidget, ViewBox
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -259,6 +259,7 @@ class SpectrumWidget(QWidget):
 
 
 class CustomViewBox(ViewBox):
+
     def __init__(self, *args, **kwds):
         kwds['enableMenu'] = False
         ViewBox.__init__(self, *args, **kwds)
@@ -279,6 +280,7 @@ class CustomViewBox(ViewBox):
             self.setMouseMode(self.RectMode)
         else:
             ViewBox.mouseDragEvent(self, ev, axis=axis)
+
 
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
