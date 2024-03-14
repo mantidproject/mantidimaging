@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from statistics import stdev
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd

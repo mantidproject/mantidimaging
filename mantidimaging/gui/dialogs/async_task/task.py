@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Callable
+from collections.abc import Callable
 
 from PyQt5.QtCore import QThread
 

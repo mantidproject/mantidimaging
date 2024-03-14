@@ -6,7 +6,8 @@ import uuid
 from enum import Enum, auto
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, NamedTuple, Iterable
+from typing import TYPE_CHECKING, Any, NamedTuple
+from collections.abc import Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem

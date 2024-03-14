@@ -5,7 +5,8 @@ from __future__ import annotations
 import math
 
 import numpy
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from collections.abc import Iterable
 
 if TYPE_CHECKING:
     import numpy.typing as npt

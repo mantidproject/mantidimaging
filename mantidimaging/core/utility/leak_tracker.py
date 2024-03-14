@@ -6,7 +6,8 @@ import sys
 import traceback
 import weakref
 from types import FunctionType
-from typing import NamedTuple, Iterable
+from typing import NamedTuple
+from collections.abc import Iterable
 
 from numpy import ndarray
 

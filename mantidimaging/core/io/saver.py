@@ -4,7 +4,8 @@ from __future__ import annotations
 import datetime
 import os
 from logging import getLogger
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 import h5py
 from pathlib import Path

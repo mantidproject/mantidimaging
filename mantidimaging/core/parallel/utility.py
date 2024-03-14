@@ -5,7 +5,8 @@ from __future__ import annotations
 import os
 from logging import getLogger
 from multiprocessing import shared_memory
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 import numpy as np
 

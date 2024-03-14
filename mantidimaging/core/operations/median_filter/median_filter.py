@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import Callable, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
+from collections.abc import Callable
 
 import numpy as np
 from PyQt5.QtGui import QValidator

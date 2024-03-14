@@ -8,7 +8,8 @@ from __future__ import annotations
 import os
 from enum import IntEnum, auto
 from logging import getLogger
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 from PyQt5 import uic  # type: ignore
 from PyQt5.QtCore import QObject, Qt

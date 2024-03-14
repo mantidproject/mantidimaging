@@ -6,7 +6,8 @@ import traceback
 from enum import Enum, auto
 from functools import partial
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget

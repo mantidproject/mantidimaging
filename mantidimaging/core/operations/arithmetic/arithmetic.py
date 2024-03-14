@@ -2,7 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
 from mantidimaging.core.operations.base_filter import BaseFilter
