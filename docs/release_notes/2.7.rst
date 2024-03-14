@@ -1,3 +1,6 @@
+Mantid Imaging 2.7
+==================
+
 New Features
 ------------
 - #1912 : Support sub-directories in Live viewer
