@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
 
@@ -265,7 +265,7 @@ class SpectrumWidget(QWidget):
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
     spectrum: PlotItem
-
+    font: QFont = QFont("Arial", 12)
     range_control: LinearRegionItem
 
     range_changed = pyqtSignal(object)
@@ -274,8 +274,11 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         super().__init__()
 
         self.spectrum = self.addPlot()
+        self.spectrum.getAxis("bottom").setTickFont(self.font)
+        self.spectrum.getAxis("left").setTickFont(self.font)
         self.nextRow()
         self._tof_range_label = self.addLabel()
+        self._tof_range_label.setAttr('size', '12pt')
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
