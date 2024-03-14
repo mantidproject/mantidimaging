@@ -93,7 +93,7 @@ class MedianFilter(BaseFilter):
         if force_cpu:
             ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
         else:
-            _execute_gpu(data, size, mode, progress=None)
+            _execute_gpu(data.data, size, mode, progress=None)
         return data
 
     @staticmethod
