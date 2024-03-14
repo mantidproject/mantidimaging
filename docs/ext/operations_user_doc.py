@@ -6,7 +6,7 @@ import inspect
 
 from docutils import nodes
 from docutils.nodes import Node
-from docutils.statemachine import ViewList
+from docutils.statemachine import StringList
 from docutils.parsers.rst import Directive
 from sphinx.util.nodes import nested_parse_with_titles
 """Custom extension to add nicely formatted documentation for the operations.
@@ -81,7 +81,7 @@ class OperationsUserDoc(Directive):
             rst_lines.append(f":class:`{op.filter_name} API docs<mantidimaging.core.operations.{op.__module__}>`")
             rst_lines.append("")
 
-        rst = ViewList()
+        rst = StringList()
         for n, rst_line in enumerate(rst_lines):
             rst.append(rst_line, "generated.rst", n)
 

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Iterable
 
 from docutils import nodes
-from docutils.statemachine import ViewList
+from docutils.statemachine import StringList
 from docutils.parsers.rst import Directive
 from sphinx.errors import SphinxError
 from sphinx.util.nodes import nested_parse_with_titles
@@ -24,10 +24,10 @@ class ReleaseNotes(Directive):
     has_content = True
 
     @classmethod
-    def make_rst(cls, note_type: str) -> ViewList:
+    def make_rst(cls, note_type: str) -> StringList:
         note_paths: Iterable[Path] = (Path() / 'docs' / 'release_notes' / 'next').glob(note_type + '*')
 
-        rst = ViewList()
+        rst = StringList()
         try:
             note_paths = sorted(note_paths, key=lambda p: int(p.name.split('-')[1]))
         except ValueError as exc:
