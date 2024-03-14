@@ -38,9 +38,9 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
     def __init__(self,
                  name: str = "MIMiniImageView",
-                 parent: 'Optional[QWidget]' = None,
+                 parent: QWidget | None = None,
                  recon_mode: bool = False,
-                 view_box: 'Optional[ViewBox]' = None):
+                 view_box: ViewBox | None = None):
         super().__init__()
 
         self.name = name.title()
