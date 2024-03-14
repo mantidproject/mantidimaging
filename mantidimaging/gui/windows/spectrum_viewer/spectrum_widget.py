@@ -261,7 +261,7 @@ class SpectrumWidget(QWidget):
 class CustomViewBox(ViewBox):
 
     def __init__(self, *args, **kwds):
-        kwds['enableMenu'] = False
+        #kwds['enableMenu'] = False
         ViewBox.__init__(self, *args, **kwds)
         self.setMouseMode(self.PanMode)
 
@@ -276,8 +276,10 @@ class CustomViewBox(ViewBox):
 
     ## reimplement right-click to zoom out
     def mouseClickEvent(self, ev):
-        if ev.button() == Qt.MouseButton.RightButton:
+        if ev.button() == Qt.MouseButton.RightButton and not self.menuEnabled():
             self.autoRange()
+        else:
+            ViewBox.mouseClickEvent(self, ev)
 
     ## reimplement mouseDragEvent to disable continuous axis zoom
     def mouseDragEvent(self, ev, axis=None):
@@ -300,7 +302,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.spectrum_viewbox = CustomViewBox()
+        self.spectrum_viewbox = CustomViewBox(enableMenu=False)
         self.spectrum = self.addPlot(viewBox=self.spectrum_viewbox)
         self.nextRow()
         self._tof_range_label = self.addLabel()
@@ -341,7 +343,7 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
 
     def __init__(self) -> None:
         super().__init__()
-
-        self.image = MIMiniImageView(name="Projection")
+        self.spectrum_projection_viewbox = CustomViewBox(enableMenu=True)
+        self.image = MIMiniImageView(name="Projection", view_box=self.spectrum_projection_viewbox)
         self.addItem(self.image, 0, 0)
         self.ci.layout.setRowStretchFactor(0, 3)
