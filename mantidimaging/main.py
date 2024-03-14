@@ -17,6 +17,8 @@ import mantidimaging.core.parallel.manager as pm
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 
+from qt_material import apply_stylesheet
+
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
     message, category, filename, lineno, line="")
@@ -57,7 +59,9 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    q_application.setStyle('Fusion')
+    #q_application.setStyle('Fusion')
+
+    apply_stylesheet(q_application, theme='light_blue.xml', invert_secondary=True)
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
