@@ -36,7 +36,7 @@ class RemoveLargeStripesFilter(BaseFilter):
     operate_on_sinograms = True
 
     @staticmethod
-    def filter_func(images: 'ImageStack', snr=3, la_size=61, progress=None):
+    def filter_func(images: ImageStack, snr=3, la_size=61, progress=None):
         """
         :param snr: The ratio value.
         :param size: The window size of the median filter to remove large stripes.
@@ -52,11 +52,11 @@ class RemoveLargeStripesFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: 'ndarray', params: dict[str, Any]):
+    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
         array[index] = remove_large_stripe(array[index], **params)
 
     @staticmethod
-    def compute_function(index: int, array: 'ndarray', params: dict[str, Any]):
+    def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_large_stripe(array[:, index, :], **params)
 
     @staticmethod

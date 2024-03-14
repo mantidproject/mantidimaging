@@ -51,13 +51,13 @@ class SpectrumViewerWindowModel:
     the presenter with the data it needs to update the view.
     The model is also responsible for saving ROI data to a csv file.
     """
-    presenter: 'SpectrumViewerWindowPresenter'
+    presenter: SpectrumViewerWindowPresenter
     _stack: ImageStack | None = None
     _normalise_stack: ImageStack | None = None
     tof_range: tuple[int, int] = (0, 0)
     _roi_ranges: dict[str, SensibleROI]
 
-    def __init__(self, presenter: 'SpectrumViewerWindowPresenter'):
+    def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
         self._roi_ranges = {}
@@ -122,7 +122,7 @@ class SpectrumViewerWindowModel:
             raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
         return self._roi_ranges[roi_name]
 
-    def get_averaged_image(self) -> "np.ndarray" | None:
+    def get_averaged_image(self) -> np.ndarray | None:
         """
         Get the averaged image from the stack in the model returning as a numpy array
         or None if it does not
@@ -167,7 +167,7 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
-    def get_spectrum(self, roi: str | SensibleROI, mode: SpecType) -> 'np.ndarray':
+    def get_spectrum(self, roi: str | SensibleROI, mode: SpecType) -> np.ndarray:
         if self._stack is None:
             return np.array([])
 

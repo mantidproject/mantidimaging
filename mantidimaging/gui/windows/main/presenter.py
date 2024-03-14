@@ -62,9 +62,9 @@ class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save data. Error: {}"
 
-    view: 'MainWindowView'
+    view: MainWindowView
 
-    def __init__(self, view: 'MainWindowView'):
+    def __init__(self, view: MainWindowView):
         super().__init__(view)
         self.model = MainWindowModel()
         self.stack_visualisers: dict[uuid.UUID, StackVisualiserView] = {}
@@ -158,7 +158,7 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_stack_load_done,
                               {'file_path': file_path})
 
-    def _on_stack_load_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_stack_load_done(self, task: TaskWorkerThread) -> None:
 
         if task.was_successful():
             self.create_mixed_dataset_tree_view_items(task.result)
@@ -183,7 +183,7 @@ class MainWindowPresenter(BasePresenter):
             self.view.show_spectrum_viewer_window()
             self.view.args.clear_window_args()
 
-    def _on_dataset_load_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_dataset_load_done(self, task: TaskWorkerThread) -> None:
 
         if task.was_successful():
             self._add_strict_dataset_to_view(task.result)
@@ -203,7 +203,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_strict_dataset_tree_view_items(dataset)
         self.add_alternative_180_if_required(dataset)
 
-    def _handle_task_error(self, base_message: str, task: 'TaskWorkerThread') -> None:
+    def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
         msg = base_message.format(task.error)
         logger.error(msg)
         self.show_error(msg, traceback.format_exc())
@@ -391,7 +391,7 @@ class MainWindowPresenter(BasePresenter):
         }
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
-    def _on_save_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_save_done(self, task: TaskWorkerThread) -> None:
 
         if not task.was_successful():
             self._handle_task_error(self.SAVE_ERROR_STRING, task)

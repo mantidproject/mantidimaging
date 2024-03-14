@@ -54,9 +54,9 @@ def _missing_data_message(data_string: str) -> str:
 
 
 class NexusLoadPresenter:
-    view: 'NexusLoadDialog'
+    view: NexusLoadDialog
 
-    def __init__(self, view: 'NexusLoadDialog'):
+    def __init__(self, view: NexusLoadDialog):
         self.view = view
         self.nexus_file = None
         self.tomo_entry = None

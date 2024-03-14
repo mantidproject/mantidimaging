@@ -62,7 +62,7 @@ class BaseFilter:
         return partial(lambda: None)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
+    def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
         """
         Adds any required input widgets to the given form and returns references to them.
 
@@ -94,7 +94,7 @@ class BaseFilter:
         return FilterGroup.NoGroup
 
     @staticmethod
-    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> ImageStack | None:
+    def get_images_from_stack(widget: DatasetSelectorWidgetView, msg: str) -> ImageStack | None:
         stack_uuid = widget.current()
         if stack_uuid is None:
             raise ValueError(f"No stack for {msg}")

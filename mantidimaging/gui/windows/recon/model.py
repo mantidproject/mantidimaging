@@ -82,7 +82,7 @@ class ReconstructWindowModel(object):
     def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: 'ImageStack | None'):
+    def initial_select_data(self, images: ImageStack | None):
         self._images = images
         self.reset_cor_model()
 
@@ -211,7 +211,7 @@ class ReconstructWindowModel(object):
     def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.data_model.set_precalculated(cor, tilt)
 
-    def is_current_stack(self, uuid: "uuid.UUID") -> bool:
+    def is_current_stack(self, uuid: uuid.UUID) -> bool:
         return self.stack_id == uuid
 
     def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray | tuple[np.ndarray, float | None]]:

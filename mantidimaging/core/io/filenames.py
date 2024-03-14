@@ -132,7 +132,7 @@ class FilenameGroup:
         self.log_path: Path | None = None
 
     @classmethod
-    def from_file(cls, path: Path | str) -> "FilenameGroup":
+    def from_file(cls, path: Path | str) -> FilenameGroup:
         path = Path(path)
         if path.is_dir():
             raise ValueError(f"path is a directory: {path}")

@@ -20,7 +20,7 @@ class Notification(Enum):
 
 class MoveStackPresenter(BasePresenter):
 
-    def __init__(self, view: 'MoveStackDialog'):
+    def __init__(self, view: MoveStackDialog):
         super().__init__(view)
 
     def notify(self, n: Notification):

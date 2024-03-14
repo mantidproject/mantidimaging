@@ -54,7 +54,7 @@ class MonitorNormalisation(BaseFilter):
         return images
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> dict[str, 'QWidget']:
+    def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
         return {}
 
     @staticmethod

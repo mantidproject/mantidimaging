@@ -31,7 +31,7 @@ class StackChoiceView(BaseMainWindowView):
     lockHistograms: QCheckBox
 
     def __init__(self, original_stack: ImageStack, new_stack: ImageStack,
-                 presenter: 'StackComparePresenter' | 'StackChoicePresenter', parent: QMainWindow | None):
+                 presenter: StackComparePresenter | StackChoicePresenter, parent: QMainWindow | None):
         super().__init__(parent, "gui/ui/stack_choice_window.ui")
 
         self.presenter = presenter

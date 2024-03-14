@@ -82,7 +82,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     stackSelector: DatasetSelectorWidgetView
 
-    def __init__(self, main_window: 'MainWindowView'):
+    def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/recon_window.ui')
 
         self.main_window = main_window
@@ -466,7 +466,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack(self, uuid) -> 'ImageStack' | None:
+    def get_stack(self, uuid) -> ImageStack | None:
         if uuid is not None:
             return self.main_window.get_stack(uuid)
         return None

@@ -22,7 +22,7 @@ CURRENT_PID = psutil.Process().pid
 LOG = getLogger(__name__)
 
 cores: int = 1
-pool: 'Pool' | None = None
+pool: Pool | None = None
 
 
 def create_and_start_pool():

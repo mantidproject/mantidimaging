@@ -25,7 +25,7 @@ class SensibleROI(Iterable):
         self.bottom = bottom
 
     @staticmethod
-    def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> 'SensibleROI':
+    def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> SensibleROI:
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
 
     @staticmethod

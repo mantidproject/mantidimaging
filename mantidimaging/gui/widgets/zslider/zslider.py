@@ -47,7 +47,7 @@ class ZSlider(PlotItem):
     def value_changed(self) -> None:
         self.valueChanged.emit(int(self.z_line.value()))
 
-    def mousePressEvent(self, ev: 'QGraphicsSceneMouseEvent') -> None:
+    def mousePressEvent(self, ev: QGraphicsSceneMouseEvent) -> None:
         """
         Adjusts built in behaviour to allow user to click anywhere on the line to jump there.
         """

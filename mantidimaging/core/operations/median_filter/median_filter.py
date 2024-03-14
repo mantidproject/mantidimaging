@@ -104,7 +104,7 @@ class MedianFilter(BaseFilter):
         array[i] = _median_filter(array[i], size=size, mode=mode)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> dict[str, Any]:
+    def register_gui(form: QFormLayout, on_change: Callable, view) -> dict[str, Any]:
 
         # Create a spin box for kernel size without add_property_to_form in order to allow a custom validate method
         size_field = KernelSpinBox(on_change)
