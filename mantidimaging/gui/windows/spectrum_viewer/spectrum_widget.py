@@ -263,7 +263,16 @@ class CustomViewBox(ViewBox):
     def __init__(self, *args, **kwds):
         kwds['enableMenu'] = False
         ViewBox.__init__(self, *args, **kwds)
-        self.setMouseMode(self.RectMode)
+        self.setMouseMode(self.PanMode)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Control:
+            self.setMouseMode(self.RectMode)
+
+    def keyReleaseEvent(self, event):
+        if event.key() == Qt.Key_Control:
+            self.rbScaleBox.hide()
+            self.setMouseMode(self.PanMode)
 
     ## reimplement right-click to zoom out
     def mouseClickEvent(self, ev):
@@ -274,10 +283,8 @@ class CustomViewBox(ViewBox):
     def mouseDragEvent(self, ev, axis=None):
         if axis is not None and ev.button() == Qt.MouseButton.RightButton:
             ev.ignore()
-        elif ev.button() == Qt.MouseButton.MiddleButton:
-            self.setMouseMode(self.PanMode)
+        elif ev.button() == Qt.MouseButton.LeftButton:
             ViewBox.mouseDragEvent(self, ev)
-            self.setMouseMode(self.RectMode)
         else:
             ViewBox.mouseDragEvent(self, ev, axis=axis)
 
