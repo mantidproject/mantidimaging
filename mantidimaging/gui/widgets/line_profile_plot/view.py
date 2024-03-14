@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QRect, QPoint
+from PyQt5.QtGui import QFont
 from pyqtgraph import GraphicsLayout, LineSegmentROI
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 
 
 class LineProfilePlot(GraphicsLayout):
+    font: QFont = QFont("Arial", 12)
 
     def __init__(self, image_view: MIMiniImageView | MIImageView) -> None:
         super().__init__()
@@ -23,8 +25,12 @@ class LineProfilePlot(GraphicsLayout):
         self._plot = self.addPlot()
         self._line_profile = self._plot.plot()
         self._info_label = self.addLabel(row=1, col=0)
+        self._info_label.setAttr('size', '12pt')
         self._roi_line = ImageViewLineROI(image_view, reset_menu_name="Reset Profile Line")
         self._roi_line.sigRegionChanged.connect(self.update)
+
+        self._plot.getAxis("bottom").setTickFont(self.font)
+        self._plot.getAxis("left").setTickFont(self.font)
 
     def cleanup(self):
         self._roi_line.cleanup()

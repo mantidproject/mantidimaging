@@ -7,6 +7,7 @@ from time import sleep
 from typing import Callable, TYPE_CHECKING
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
@@ -48,6 +49,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     roiString = None
     imageItem: ImageItem
     _angles: ProjectionAngles | None = None
+    font: QFont = QFont("Arial", 12)
 
     roi_changed_callback: Callable[[SensibleROI], None] | None = None
 
@@ -63,7 +65,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         graveyard.append(self)
         self.presenter = MIImagePresenter()
         self.details = QLabel("", self.ui.layoutWidget)
-        self.details.setStyleSheet("QLabel { color : white; background-color: black; font: 14px;}")
+        self.details.setStyleSheet("QLabel { color : white; background-color: black; font: 12px;}")
         if detailsSpanAllCols:
             self.ui.gridLayout.addWidget(self.details, 1, 0, 1, 3)
             self.ui.gridLayout.setColumnStretch(0, 8)
@@ -121,6 +123,8 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene.contextMenu = [item for item in self.scene.contextMenu if "export" not in item.text().lower()]
+
+        self.getHistogramWidget().axis.setTickFont(self.font)
 
     @property
     def histogram(self) -> 'HistogramLUTItem':

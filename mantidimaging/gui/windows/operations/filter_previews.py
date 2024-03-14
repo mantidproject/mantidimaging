@@ -116,6 +116,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         histogram.getAxis("bottom").label.setFont(self.font)
         histogram.getAxis("left").label.setFont(self.font)
         legend = histogram.addLegend()
+        legend.setLabelTextSize(self.font_size)
         legend.setOffset((0, 1))
 
         return histogram

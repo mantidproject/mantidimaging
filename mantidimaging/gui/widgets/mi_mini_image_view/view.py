@@ -57,6 +57,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
         self.nextRow()
         self.details = self.addLabel("", colspan=2)
+        self.details.setAttr('size', '12pt')
         self.im.hoverEvent = lambda ev: self.mouse_over(ev)
 
         self.axis_siblings: "WeakSet[MIMiniImageView]" = WeakSet()
