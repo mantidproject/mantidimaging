@@ -92,7 +92,7 @@ class ImageLoader:
                                      "dimensions! All images must have the same "
                                      f"dimensions. Expected dimensions: {self.img_shape} Error "
                                      f"message: {exc}") from exc
-                except IOError as exc:
+                except OSError as exc:
                     raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
         return data
