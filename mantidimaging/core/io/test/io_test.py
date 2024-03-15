@@ -153,12 +153,7 @@ class IOTest(FileOutputtingTestCase):
         loaded_images = loader.load(group, indices=loader_indices)
 
         if loader_indices:
-            assert len(loaded_images.data) == expected_len, \
-                "The length of the loaded data does not " \
-                "match the expected length! Expected: {0}, " \
-                "Got {1}".format(expected_len, len(
-                    loaded_images.data))
-
+            self.assertEqual(expected_len, len(loaded_images.data))
             expected_images.data = expected_images.data[loader_indices[0]:loader_indices[1]]
 
         npt.assert_equal(loaded_images.data, expected_images.data)

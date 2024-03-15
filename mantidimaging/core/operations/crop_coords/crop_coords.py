@@ -110,7 +110,7 @@ def execute_single(data, roi, progress=None, out=None):
                        region in roi), \
                 "The region of interest coordinates are not integers!"
 
-            progress.update(msg="Cropping with coordinates: {0}".format(roi))
+            progress.update(msg=f"Cropping with coordinates: {roi}")
 
             output = out[:] if out is not None else data[:]
             output[:] = data[:, roi.top:roi.bottom, roi.left:roi.right]

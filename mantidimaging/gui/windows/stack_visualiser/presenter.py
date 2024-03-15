@@ -87,7 +87,7 @@ class StackVisualiserPresenter(BasePresenter):
             return self.view.current_roi
         else:
             raise ValueError("Invalid parameter name has been requested from the Stack "
-                             "Visualiser, parameter: {0}".format(parameter))
+                             f"Visualiser, parameter: {parameter}")
 
     def toggle_image_mode(self):
         if self.image_mode is SVImageMode.NORMAL:

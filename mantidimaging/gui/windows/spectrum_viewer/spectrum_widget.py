@@ -234,8 +234,7 @@ class SpectrumWidget(QWidget):
             size = CloseEnoughPoint(self.max_roi_size)
             return SensibleROI.from_points(pos, size)
         else:
-            raise KeyError("ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'".format(
-                roi_name=roi_name))
+            raise KeyError(f"ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'")
 
     def remove_roi(self, roi_name: str) -> None:
         """

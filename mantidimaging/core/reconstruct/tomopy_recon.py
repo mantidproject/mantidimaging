@@ -79,7 +79,7 @@ class TomopyRecon(BaseRecon):
 
         with progress:
             volume = tomopy.recon(**kwargs)
-            LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+            LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
 
         return ImageStack(volume)
 

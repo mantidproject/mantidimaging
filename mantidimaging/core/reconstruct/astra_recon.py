@@ -49,7 +49,7 @@ def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[tupl
     alg_id = None
     try:
         proj_type = 'cuda' if CudaChecker().cuda_is_present() else 'line'
-        LOG.debug("Using projection type {}".format(proj_type))
+        LOG.debug(f"Using projection type {proj_type}")
 
         proj_id = astra.create_projector(proj_type, proj_geom, vol_geom)
         sino_id = astra.data2d.create('-sino', proj_geom, sino)
