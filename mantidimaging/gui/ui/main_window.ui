@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -45,6 +45,8 @@
     <addaction name="actionSaveNeXusFile"/>
     <addaction name="separator"/>
     <addaction name="actionLiveViewer"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -237,6 +239,11 @@
    </property>
    <property name="toolTip">
     <string>Open Live Viewer</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>
