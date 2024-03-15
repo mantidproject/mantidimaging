@@ -263,7 +263,7 @@ class NexusLoaderTest(unittest.TestCase):
 
     def test_empty_name_field(self):
         del self.tomo_entry["title"]
-        self.tomo_entry["title"] = "".encode("UTF-8")
+        self.tomo_entry["title"] = b""
         self.nexus_loader.tomo_entry = self.tomo_entry
         with self.assertLogs(nexus_logger, level="INFO") as log_mock:
             assert self.nexus_loader._find_data_title() == "NeXus Data"
