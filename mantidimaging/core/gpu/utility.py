@@ -79,7 +79,7 @@ def _load_cuda_kernel(dtype):
     :return: The CUDA kernel in string format.
     """
     cuda_kernel = ""
-    with open(os.path.join(os.path.dirname(__file__), KERNEL_FILENAME), "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), KERNEL_FILENAME)) as f:
         cuda_kernel += f.read()
     if "float64" in str(dtype):
         return cuda_kernel.replace("float", "double")

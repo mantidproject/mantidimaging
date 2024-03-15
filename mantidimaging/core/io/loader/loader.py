@@ -94,7 +94,7 @@ def read_image_dimensions(file_path: Path) -> tuple[int, int]:
 
 
 def load_log(log_file: Path) -> InstrumentLog:
-    with open(log_file, 'r') as f:
+    with open(log_file) as f:
         return InstrumentLog(f.readlines(), log_file)
 
 

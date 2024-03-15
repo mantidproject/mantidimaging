@@ -11,7 +11,7 @@ class ProjectionAngleFileParser:
                     separated values on a single line, or a single angle value per line"
 
     def __init__(self, file: str) -> None:
-        with open(file, 'r') as f:
+        with open(file) as f:
             self.contents = f.readlines()
 
     def get_projection_angles(self) -> ProjectionAngles:
