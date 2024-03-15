@@ -6,7 +6,8 @@ import uuid
 from enum import Enum, auto
 from logging import getLogger
 from pathlib import Path
-from typing import TYPE_CHECKING, Union, Optional, Dict, List, Any, NamedTuple, Iterable
+from typing import TYPE_CHECKING, Any, NamedTuple
+from collections.abc import Iterable
 
 import numpy as np
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
@@ -62,12 +63,12 @@ class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save data. Error: {}"
 
-    view: 'MainWindowView'
+    view: MainWindowView
 
-    def __init__(self, view: 'MainWindowView'):
+    def __init__(self, view: MainWindowView):
         super().__init__(view)
         self.model = MainWindowModel()
-        self.stack_visualisers: Dict[uuid.UUID, StackVisualiserView] = {}
+        self.stack_visualisers: dict[uuid.UUID, StackVisualiserView] = {}
 
     def notify(self, signal: Notification, **baggage):
         try:
@@ -102,7 +103,7 @@ class MainWindowPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def _get_stack_visualiser_by_name(self, search_name: str) -> Optional[StackVisualiserView]:
+    def _get_stack_visualiser_by_name(self, search_name: str) -> StackVisualiserView | None:
         """
         Uses the stack name to retrieve the QDockWidget object.
         :param search_name: The name of the stack widget to find.
@@ -113,7 +114,7 @@ class MainWindowPresenter(BasePresenter):
                 return self.active_stacks[stack_id.id]
         return None
 
-    def get_stack_id_by_name(self, search_name: str) -> Optional[uuid.UUID]:
+    def get_stack_id_by_name(self, search_name: str) -> uuid.UUID | None:
         for stack_id in self.stack_visualiser_list:
             if stack_id.name == search_name:
                 return stack_id.id
@@ -158,7 +159,7 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_stack_load_done,
                               {'file_path': file_path})
 
-    def _on_stack_load_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_stack_load_done(self, task: TaskWorkerThread) -> None:
 
         if task.was_successful():
             self.create_mixed_dataset_tree_view_items(task.result)
@@ -183,7 +184,7 @@ class MainWindowPresenter(BasePresenter):
             self.view.show_spectrum_viewer_window()
             self.view.args.clear_window_args()
 
-    def _on_dataset_load_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_dataset_load_done(self, task: TaskWorkerThread) -> None:
 
         if task.was_successful():
             self._add_strict_dataset_to_view(task.result)
@@ -203,7 +204,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_strict_dataset_tree_view_items(dataset)
         self.add_alternative_180_if_required(dataset)
 
-    def _handle_task_error(self, base_message: str, task: 'TaskWorkerThread') -> None:
+    def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
         msg = base_message.format(task.error)
         logger.error(msg)
         self.show_error(msg, traceback.format_exc())
@@ -218,13 +219,13 @@ class MainWindowPresenter(BasePresenter):
         stack_visualiser = self._create_lone_stack_window(images)
         self._tabify_stack_window(stack_visualiser, sample_dock)
 
-    def get_active_stack_visualisers(self) -> List[StackVisualiserView]:
+    def get_active_stack_visualisers(self) -> list[StackVisualiserView]:
         return list(self.active_stacks.values())
 
-    def get_all_stacks(self) -> List[ImageStack]:
+    def get_all_stacks(self) -> list[ImageStack]:
         return self.model.images
 
-    def get_all_180_projections(self) -> List[ImageStack]:
+    def get_all_180_projections(self) -> list[ImageStack]:
         return self.model.proj180s
 
     def add_alternative_180_if_required(self, dataset: StrictDataset):
@@ -323,9 +324,7 @@ class MainWindowPresenter(BasePresenter):
         self.stack_visualisers[stack_vis.id] = stack_vis
         return stack_vis
 
-    def _tabify_stack_window(self,
-                             stack_window: StackVisualiserView,
-                             tabify_stack: Optional[StackVisualiserView] = None):
+    def _tabify_stack_window(self, stack_window: StackVisualiserView, tabify_stack: StackVisualiserView | None = None):
         """
         Places the newly created stack window into a tab.
         :param stack_window: The new stack window.
@@ -393,22 +392,22 @@ class MainWindowPresenter(BasePresenter):
         }
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
-    def _on_save_done(self, task: 'TaskWorkerThread') -> None:
+    def _on_save_done(self, task: TaskWorkerThread) -> None:
 
         if not task.was_successful():
             self._handle_task_error(self.SAVE_ERROR_STRING, task)
 
     @property
-    def stack_visualiser_list(self) -> List[StackId]:
+    def stack_visualiser_list(self) -> list[StackId]:
         stacks = [StackId(stack_id, widget.windowTitle()) for stack_id, widget in self.active_stacks.items()]
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def datasets(self) -> Iterable[Union[MixedDataset, StrictDataset]]:
+    def datasets(self) -> Iterable[MixedDataset | StrictDataset]:
         return self.model.datasets.values()
 
     @property
-    def strict_dataset_list(self) -> List[DatasetId]:
+    def strict_dataset_list(self) -> list[DatasetId]:
         datasets = [
             DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
             if isinstance(dataset, StrictDataset)
@@ -427,10 +426,10 @@ class MainWindowPresenter(BasePresenter):
         return stack_ids
 
     @property
-    def stack_visualiser_names(self) -> List[str]:
+    def stack_visualiser_names(self) -> list[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> Optional[Union[MixedDataset, StrictDataset]]:
+    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
         return self.model.datasets.get(dataset_id)
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
@@ -442,14 +441,14 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Stack not found: {stack_id}")
         return images
 
-    def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> Dict[str, Any]:
+    def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> dict[str, Any]:
         return self.get_stack_visualiser(stack_id).presenter.images.metadata
 
     def get_dataset_id_for_stack(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.model.get_parent_dataset(stack_id)
 
     @property
-    def active_stacks(self) -> Dict[uuid.UUID, StackVisualiserView]:
+    def active_stacks(self) -> dict[uuid.UUID, StackVisualiserView]:
         return {stack_id: stack for (stack_id, stack) in self.stack_visualisers.items() if stack.isVisible()}
 
     @property
@@ -744,7 +743,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
 
-    def _add_recon_to_dataset_and_tree_view(self, dataset: Union[MixedDataset, StrictDataset], recon: ImageStack):
+    def _add_recon_to_dataset_and_tree_view(self, dataset: MixedDataset | StrictDataset, recon: ImageStack):
         """
         Adds a recon to the dataset and updates the tree view.
         :param dataset: The dataset.

@@ -6,7 +6,6 @@ import os
 import sys
 from functools import partial
 from pathlib import Path
-from typing import Optional
 
 from unittest import mock
 import numpy as np
@@ -24,7 +23,7 @@ backup_mp_avail = None
 g_shape = (10, 8, 10)
 
 
-def gen_img_numpy_rand(shape=g_shape, seed: Optional[int] = None) -> np.ndarray:
+def gen_img_numpy_rand(shape=g_shape, seed: int | None = None) -> np.ndarray:
     if seed is not None:
         bg = np.random.PCG64(seed)
     else:
@@ -33,12 +32,12 @@ def gen_img_numpy_rand(shape=g_shape, seed: Optional[int] = None) -> np.ndarray:
     return rng.random(shape)
 
 
-def generate_images(shape=g_shape, dtype=np.float32, seed: Optional[int] = None) -> ImageStack:
+def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
 
 
-def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Optional[int] = None) -> ImageStack:
+def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: int | None = None) -> ImageStack:
     """
     Doesn't do anything special, just makes a number of images big enough to be
     ran in parallel from the logic of multiprocessing_necessary
@@ -47,7 +46,7 @@ def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: Opti
     return _set_random_data(d, shape, seed=seed)
 
 
-def _set_random_data(shared_array, shape, seed: Optional[int] = None):
+def _set_random_data(shared_array, shape, seed: int | None = None):
     n = gen_img_numpy_rand(shape, seed=seed)
     # move the data in the shared array
     shared_array.array[:] = n[:]

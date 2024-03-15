@@ -33,14 +33,13 @@ jobs:
     - name: ruff
       uses: ./.github/actions/test
       with:
-        command: ruff .
+        command: ruff check .
         label: ubuntu18
 
     - name: mypy
       uses: ./.github/actions/test
       with:
-        # COMPAT: applitools has some bad signatures, so use --no-site-packages
-        command: mypy --ignore-missing-imports --no-site-packages mantidimaging
+        command: mypy --ignore-missing-imports mantidimaging
         label: ubuntu18
 
     - name: pytest

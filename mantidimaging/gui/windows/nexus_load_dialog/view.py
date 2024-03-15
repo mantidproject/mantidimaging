@@ -1,7 +1,6 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import Tuple
 
 from PyQt5.QtCore import Qt, QEventLoop
 from PyQt5.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
@@ -118,7 +117,7 @@ class NexusLoadDialog(BaseDialogView):
                 child.setText(column, "")
             self.tree.removeItemWidget(child, CHECKBOX_COLUMN)
 
-    def set_data_found(self, position: int, found: bool, path: str, shape: Tuple[int, ...]) -> None:
+    def set_data_found(self, position: int, found: bool, path: str, shape: tuple[int, ...]) -> None:
         """
         Indicate on the QTreeWidget if the image key and data fields have been found or not.
         :param position: The row position for the data.
@@ -137,7 +136,7 @@ class NexusLoadDialog(BaseDialogView):
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))
 
-    def set_images_found(self, position: int, found: bool, shape: Tuple[int, int, int]) -> None:
+    def set_images_found(self, position: int, found: bool, shape: tuple[int, int, int]) -> None:
         """
         Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.
         :param position: The row position for the image type.

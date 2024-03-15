@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_180: Tuple[np.ndarray, np.ndarray],
+def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_180: tuple[np.ndarray, np.ndarray],
                                  image_width: int):
     """
     Calculates squared sum error in the difference between the projection at 0 degrees, and the one at 180 degrees
@@ -25,7 +25,7 @@ def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_18
     store[:] = np.square(np.roll(p0_and_180[0], search_index, axis=1) - p0_and_180[1]).sum(axis=1) / image_width
 
 
-def find_center(images: ImageStack, progress: Progress) -> Tuple[ScalarCoR, Degrees]:
+def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degrees]:
     # assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
     shift = pu.create_array((images.height, ))

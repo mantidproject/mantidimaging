@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from math import isnan
-from typing import Optional
 
 import numpy as np
 from PyQt5 import QtCore
@@ -64,7 +63,7 @@ class ReconImagesView(GraphicsLayoutWidget):
     def slice_line_moved(self):
         self.slice_changed(int(self.slice_line.value()))
 
-    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Optional[Degrees]):
+    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Degrees | None):
         self.imageview_projection.clear()
         self.imageview_projection.setImage(image_data)
         self.imageview_projection.histogram.imageChanged(autoLevel=True, autoRange=True)
@@ -127,7 +126,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         if self.tilt_line.scene() is not None:
             self.imageview_projection.viewbox.removeItem(self.tilt_line)
 
-    def set_tilt(self, tilt: Degrees, pos: Optional[int] = None):
+    def set_tilt(self, tilt: Degrees, pos: int | None = None):
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
             if pos is not None:
                 self.tilt_line.setAngle(90)

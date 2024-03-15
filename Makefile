@@ -49,20 +49,20 @@ test-verbose:
 	python -m pytest -vs -o log_cli=true
 
 test-system:
-	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests
+	${XVFBRUN} python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
 
 test-screenshots:
 	-mkdir ${TEST_RESULT_DIR}
-	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=${TEST_RESULT_DIR} ${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 test-screenshots-win:
 	-mkdir ${TEST_RESULT_DIR}
-	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs
+	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:
-	python -m mypy --ignore-missing-imports --no-site-packages ${SOURCE_DIRS}
+	python -m mypy --ignore-missing-imports ${SOURCE_DIRS}
 
 yapf:
 	python -m yapf --parallel --diff --recursive ${SOURCE_DIRS}
@@ -71,7 +71,7 @@ yapf_apply:
 	python -m yapf -i --parallel --recursive ${SOURCE_DIRS}
 
 ruff:
-	ruff ${SOURCE_DIRS}
+	ruff check ${SOURCE_DIRS}
 
 check: ruff yapf mypy test
 

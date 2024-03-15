@@ -7,7 +7,7 @@ import json
 import os.path
 import uuid
 from copy import deepcopy
-from typing import List, Optional, Any, Dict, Union, TextIO, TYPE_CHECKING, cast
+from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
@@ -20,19 +20,20 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 if TYPE_CHECKING:
     from mantidimaging.core.io.instrument_log import InstrumentLog
+    import numpy.typing as npt
 
 
 class ImageStack:
     name: str
-    _shared_array: np.ndarray | pu.SharedArray
+    _shared_array: pu.SharedArray
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
-                 filenames: Optional[List[str]] = None,
-                 indices: List[int] | Indices | None = None,
-                 metadata: Optional[Dict[str, Any]] = None,
+                 filenames: list[str] | None = None,
+                 indices: list[int] | Indices | None = None,
+                 metadata: dict[str, Any] | None = None,
                  sinograms: bool = False,
-                 name: Optional[str] = None):
+                 name: str | None = None):
         """
         :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
@@ -52,12 +53,12 @@ class ImageStack:
 
         self._filenames = filenames
 
-        self.metadata: Dict[str, Any] = deepcopy(metadata) if metadata else {}
+        self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self._proj180deg: Optional[ImageStack] = None
+        self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
-        self._projection_angles: Optional[ProjectionAngles] = None
+        self._projection_angles: ProjectionAngles | None = None
 
         if name is None:
             if filenames is not None:
@@ -92,11 +93,11 @@ class ImageStack:
         return len(self._filenames) if self._filenames else 0
 
     @property
-    def filenames(self) -> Optional[List[str]]:
+    def filenames(self) -> list[str] | None:
         return self._filenames
 
     @filenames.setter
-    def filenames(self, new_ones: List[str]) -> None:
+    def filenames(self, new_ones: list[str]) -> None:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
@@ -111,7 +112,7 @@ class ImageStack:
         self.metadata = json.load(f) | self.metadata
         self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
-    def save_metadata(self, f: TextIO, rescale_params: Optional[Dict[str, Union[str, float]]] = None) -> None:
+    def save_metadata(self, f: TextIO, rescale_params: dict[str, str | float] | None = None) -> None:
         self.metadata[const.SINOGRAMS] = self.is_sinograms
 
         if rescale_params is not None:
@@ -149,7 +150,7 @@ class ImageStack:
         """
         return const.OPERATION_HISTORY in self.metadata
 
-    def copy(self, flip_axes: bool = False) -> 'ImageStack':
+    def copy(self, flip_axes: bool = False) -> ImageStack:
         shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
@@ -163,7 +164,7 @@ class ImageStack:
                             sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
         return images
 
-    def copy_roi(self, roi: SensibleROI) -> 'ImageStack':
+    def copy_roi(self, roi: SensibleROI) -> ImageStack:
         shape = (self.data.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
@@ -177,11 +178,11 @@ class ImageStack:
         mark_cropped(images, roi)
         return images
 
-    def slice_as_image_stack(self, index: int) -> 'ImageStack':
+    def slice_as_image_stack(self, index: int) -> ImageStack:
         "A slice, either projection or sinogram depending on current ordering"
         return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
 
-    def sino_as_image_stack(self, index: int) -> 'ImageStack':
+    def sino_as_image_stack(self, index: int) -> ImageStack:
         "A single sinogram slice as an ImageStack in projection ordering"
         return ImageStack(np.asarray([self.sino(index)]).swapaxes(0, 1), metadata=deepcopy(self.metadata))
 
@@ -237,11 +238,11 @@ class ImageStack:
         return self._proj180deg is not None
 
     @property
-    def proj180deg(self) -> Optional['ImageStack']:
+    def proj180deg(self) -> ImageStack | None:
         return self._proj180deg
 
     @proj180deg.setter
-    def proj180deg(self, value: 'ImageStack') -> None:
+    def proj180deg(self, value: ImageStack) -> None:
         assert isinstance(value, ImageStack)
         self._proj180deg = value
 
@@ -274,11 +275,11 @@ class ImageStack:
         return self._shared_array.has_shared_memory
 
     @property
-    def dtype(self) -> np.typing.DTypeLike:
+    def dtype(self) -> np.dtype:
         return self.data.dtype
 
     @staticmethod
-    def create_empty_image_stack(shape: tuple[int, ...], dtype: np.dtype, metadata: dict[str, Any]) -> 'ImageStack':
+    def create_empty_image_stack(shape: tuple[int, ...], dtype: npt.DTypeLike, metadata: dict[str, Any]) -> ImageStack:
         arr = pu.create_array(shape, dtype)
         return ImageStack(arr, metadata=metadata)
 
@@ -305,7 +306,7 @@ class ImageStack:
 
         self._projection_angles = angles
 
-    def real_projection_angles(self) -> Optional[ProjectionAngles]:
+    def real_projection_angles(self) -> ProjectionAngles | None:
         """
         Return only the projection angles that are from a log file or have been manually loaded.
         :return: Real projection angles if they were found, None otherwise.
@@ -333,7 +334,7 @@ class ImageStack:
         else:
             return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), self.num_projections))
 
-    def counts(self) -> Optional[Counts]:
+    def counts(self) -> Counts | None:
         if self._log_file is not None:
             return self._log_file.counts()
         else:
@@ -351,7 +352,7 @@ class ImageStack:
     def clear_proj180deg(self) -> None:
         self._proj180deg = None
 
-    def make_name_unique(self, existing_names: List[str]) -> None:
+    def make_name_unique(self, existing_names: list[str]) -> None:
         name = self.name
         num = 1
         while self.name in existing_names:

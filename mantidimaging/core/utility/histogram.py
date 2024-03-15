@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 DEFAULT_NUM_BINS = 2048
 
 
-def set_histogram_log_scale(histogram: 'HistogramLUTItem'):
+def set_histogram_log_scale(histogram: HistogramLUTItem):
     """
     Sets the y-values of a histogram to use a log scale.
     :param histogram: The HistogramLUTItem of an image.

@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import unittest
-from typing import Tuple
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -24,7 +23,7 @@ class StackVisualiserViewTest(unittest.TestCase):
             self.window = MainWindowView()
         self.view, self.test_data = self._add_stack_visualiser()
 
-    def _add_stack_visualiser(self) -> Tuple[StackVisualiserView, ImageStack]:
+    def _add_stack_visualiser(self) -> tuple[StackVisualiserView, ImageStack]:
         test_data = th.generate_images()
         test_data.name = "Test Data"
         self.window.create_new_stack(test_data)

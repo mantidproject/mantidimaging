@@ -4,12 +4,14 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from typing import Callable, Dict, Any, TYPE_CHECKING, Tuple
+from typing import Any, TYPE_CHECKING
+from collections.abc import Callable
 
 import numpy as np
-import scipy.ndimage as scipy_ndimage
 from PyQt5.QtGui import QValidator
 from PyQt5.QtWidgets import QSpinBox, QLabel, QSizePolicy
+
+import scipy.ndimage as scipy_ndimage
 
 from mantidimaging import helper as h
 from mantidimaging.core.gpu import utility as gpu
@@ -42,7 +44,7 @@ class KernelSpinBox(QSpinBox):
         self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
         self.valueChanged.connect(lambda: on_change_and_disable(self, on_change))
 
-    def validate(self, input: str, pos: int) -> Tuple[QValidator.State, str, int]:
+    def validate(self, input: str, pos: int) -> tuple[QValidator.State, str, int]:
         """
         Validate the spin box input. Returns as Intermediate state if the input is empty or contains an even number,
         otherwise it returns Acceptable.
@@ -83,21 +85,27 @@ class MedianFilter(BaseFilter):
         :return: Returns the processed data
 
         """
+        # Validation
         h.check_data_stack(data)
-
-        if not size or not size > 1:
+        if size is None or size <= 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        if not force_cpu:
-            _execute_gpu(data.data, size, mode, progress)
+        params = {'mode': mode, 'size': size, 'force_cpu': force_cpu, 'progress': progress}
+        if force_cpu:
+            ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
         else:
-            _execute(data, size, mode, progress)
-
-        h.check_data_stack(data)
+            _execute_gpu(data.data, size, mode, progress=None)
         return data
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view) -> Dict[str, Any]:
+    def compute_function(i: int, array: np.ndarray, params: dict[str, Any]):
+        mode = params['mode']
+        size = params['size']
+
+        array[i] = _median_filter(array[i], size=size, mode=mode)
+
+    @staticmethod
+    def register_gui(form: QFormLayout, on_change: Callable, view) -> dict[str, Any]:
 
         # Create a spin box for kernel size without add_property_to_form in order to allow a custom validate method
         size_field = KernelSpinBox(on_change)
@@ -133,28 +141,13 @@ def modes():
     return ['reflect', 'constant', 'nearest', 'mirror', 'wrap']
 
 
-def _median_filter(data: np.ndarray, size: int, mode: str):
-    # Replaces NaNs with negative infinity before median filter
-    # so they do not effect neighbouring pixels
+def _median_filter(data: np.ndarray, size: int, mode: str) -> np.ndarray:
     nans = np.isnan(data)
     data = np.where(nans, -np.inf, data)
-    data = scipy_ndimage.median_filter(data, size=size, mode=mode)
     # Put the original NaNs back
+    data = scipy_ndimage.median_filter(data, size=size, mode=mode)
     data = np.where(nans, np.nan, data)
     return data
-
-
-def _execute(images: ImageStack, size, mode, progress=None):
-    log = getLogger(__name__)
-    progress = Progress.ensure_instance(progress, task_name='Median filter')
-
-    # create the partial function to forward the parameters
-    f = ps.create_partial(_median_filter, ps.return_to_self, size=size, mode=mode)
-
-    with progress:
-        log.info(f"PARALLEL median filter, with pixel data type: {images.dtype}, filter size/width: {size}.")
-
-        ps.execute(f, [images.shared_array], images.data.shape[0], progress, msg="Median filter")
 
 
 def _execute_gpu(data, size, mode, progress=None):

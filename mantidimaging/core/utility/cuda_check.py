@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import Tuple
 
 LOG = getLogger(__name__)
 
@@ -28,7 +27,7 @@ def _cuda_is_present() -> bool:
     return cuda_is_present
 
 
-def not_found_message() -> Tuple[str, str]:
+def not_found_message() -> tuple[str, str]:
     """
     Generates a message that can be displayed if a working CUDA installation isn't found.
     """

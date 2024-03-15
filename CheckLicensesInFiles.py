@@ -11,14 +11,13 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import List, Dict
 
 
-def load_copyright_header() -> Dict[str, str]:
+def load_copyright_header() -> dict[str, str]:
     return json.load(open(".licenserc.json"))
 
 
-def find_files_with_incorrect_license_headers(filepaths: List[str], copyright_text: str) -> List[str]:
+def find_files_with_incorrect_license_headers(filepaths: list[str], copyright_text: str) -> list[str]:
     copyright_lines = copyright_text.split("\n")
     incorrect_files = []
 
@@ -35,11 +34,11 @@ def find_files_with_incorrect_license_headers(filepaths: List[str], copyright_te
     return incorrect_files
 
 
-def has_shebang_line(file_lines: List[str]) -> bool:
+def has_shebang_line(file_lines: list[str]) -> bool:
     return file_lines[0].startswith("#!")
 
 
-def has_correct_copyright_lines(file_lines: List[str], copyright_lines: List[str]) -> bool:
+def has_correct_copyright_lines(file_lines: list[str], copyright_lines: list[str]) -> bool:
     if len(file_lines) < len(copyright_lines):
         return False
 

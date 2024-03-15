@@ -75,13 +75,12 @@ jobs:
       - name: Ruff
         shell: bash -l {0}
         run: |
-          ruff .
+          ruff check .
 
       - name: mypy
         shell: bash -l {0}
-        # COMPAT: applitools has some bad signatures, so use --no-site-packages
         run: |
-          mypy --ignore-missing-imports --no-site-packages mantidimaging
+          mypy --ignore-missing-imports mantidimaging
 
       - name: pytest
         timeout-minutes: 10

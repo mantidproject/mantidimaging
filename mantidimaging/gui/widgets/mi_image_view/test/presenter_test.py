@@ -2,8 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 import pytest
 
@@ -18,7 +16,7 @@ from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
         ([-50, -50], [10, 10], [0, 0], [10, 10]),  # outside of bounds on the left/top
         ([-50, -50], [101, 101], [0, 0], [100, 100]),  # also outside of bounds on the bottom/right
     ])
-def test_get_roi(init_pos: List[int], init_size: List[int], exp_pos: List[int], exp_size: List[int]):
+def test_get_roi(init_pos: list[int], init_size: list[int], exp_pos: list[int], exp_size: list[int]):
     image = np.zeros((100, 100))
     pres = MIImagePresenter()
     roi_pos = CloseEnoughPoint(init_pos)

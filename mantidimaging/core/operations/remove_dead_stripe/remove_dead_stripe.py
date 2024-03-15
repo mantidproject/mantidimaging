@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from algotom.prep.removal import remove_dead_stripe
 
@@ -35,8 +35,8 @@ class RemoveDeadStripesFilter(BaseFilter):
     link_histograms = True
     operate_on_sinograms = True
 
-    @classmethod
-    def filter_func(cls, images: ImageStack, snr=3, size=61, progress=None):
+    @staticmethod
+    def filter_func(images: ImageStack, snr=3, size=61, progress=None):
         """
         :param snr: The ratio value.
         :param size: The window size of the median filter to remove dead stripes.
@@ -47,18 +47,18 @@ class RemoveDeadStripesFilter(BaseFilter):
             return images
         params = {"snr": snr, "size": size, "residual": False}
         if images.is_sinograms:
-            compute_func = cls.compute_function_sino
+            compute_func = RemoveDeadStripesFilter.compute_function_sino
         else:
-            compute_func = cls.compute_function
+            compute_func = RemoveDeadStripesFilter.compute_function
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
         array[index] = remove_dead_stripe(array[index], **params)
 
     @staticmethod
-    def compute_function(index: int, array: ndarray, params: Dict[str, Any]):
+    def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_dead_stripe(array[:, index, :], **params)
 
     @staticmethod

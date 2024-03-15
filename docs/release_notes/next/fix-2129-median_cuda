@@ -1,0 +1,1 @@
+#2129 : fix: Pytest failure AttributeError: 'ImageStack' object has no attribute 'shape

@@ -17,9 +17,9 @@ class Notification(Enum):
 
 
 class AddImagesToDatasetPresenter(BasePresenter):
-    view: 'AddImagesToDatasetDialog'
+    view: AddImagesToDatasetDialog
 
-    def __init__(self, view: 'AddImagesToDatasetDialog'):
+    def __init__(self, view: AddImagesToDatasetDialog):
         super().__init__(view)
         self._images = None
 
@@ -37,7 +37,7 @@ class AddImagesToDatasetPresenter(BasePresenter):
         start_async_task_view(self.view, self.view.parent_view.presenter.model.load_image_stack,
                               self._on_images_load_done, {'file_path': self.view.path})
 
-    def _on_images_load_done(self, task: 'TaskWorkerThread'):
+    def _on_images_load_done(self, task: TaskWorkerThread):
         """
         Checks if loading images was successful and then triggers the necessary updates.
         :param task: The file loading task.

@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.polynomial import Polynomial
@@ -38,7 +38,7 @@ class BaseRecon:
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None) -> np.ndarray:
+                    progress: Progress | None = None) -> np.ndarray:
         """
         Reconstruct a single sinogram
 
@@ -53,9 +53,9 @@ class BaseRecon:
 
     @staticmethod
     def full(images: ImageStack,
-             cors: List[ScalarCoR],
+             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None) -> ImageStack:
+             progress: Progress | None = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -69,5 +69,5 @@ class BaseRecon:
         raise NotImplementedError("Base class call")
 
     @staticmethod
-    def allowed_filters() -> List[str]:
+    def allowed_filters() -> list[str]:
         return []

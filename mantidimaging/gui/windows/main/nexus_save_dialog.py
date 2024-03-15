@@ -3,7 +3,6 @@
 from __future__ import annotations
 import os
 import uuid
-from typing import Optional, List
 
 from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
@@ -15,11 +14,11 @@ NXS_EXT = ".nxs"
 
 class NexusSaveDialog(BaseDialogView):
 
-    selected_dataset: Optional[uuid.UUID]
+    selected_dataset: uuid.UUID | None
     floatRadioButton: QRadioButton
     intRadioButton: QRadioButton
 
-    def __init__(self, parent, dataset_list: List[StrictDataset]):
+    def __init__(self, parent, dataset_list: list[StrictDataset]):
         super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
 
         self.browseButton.clicked.connect(self._set_save_path)
@@ -28,7 +27,7 @@ class NexusSaveDialog(BaseDialogView):
         self.savePath.editingFinished.connect(self._check_extension)
         self.sampleNameLineEdit.textChanged.connect(self.enable_save)
 
-        self.dataset_uuids: List[uuid.UUID] = []
+        self.dataset_uuids: list[uuid.UUID] = []
         self._create_dataset_lists(dataset_list)
 
         self.selected_dataset = None

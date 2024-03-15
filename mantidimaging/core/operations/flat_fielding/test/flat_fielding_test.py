@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from parameterized import parameterized
 import unittest
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from unittest import mock
 
 import numpy as np
@@ -25,7 +25,7 @@ class FlatFieldingTest(unittest.TestCase):
     Tests return value and in-place modified data.
     """
 
-    def _make_images(self) -> Tuple[ImageStack, ImageStack, ImageStack, ImageStack, ImageStack]:
+    def _make_images(self) -> tuple[ImageStack, ImageStack, ImageStack, ImageStack, ImageStack]:
         images = th.generate_images()
         flat_before = th.generate_images()
         dark_before = th.generate_images()

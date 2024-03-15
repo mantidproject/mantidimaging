@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import List, Tuple, Union, Callable, Dict, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
+from collections.abc import Callable
 
 from mantidimaging.core.parallel import utility as pu
 
@@ -11,27 +12,27 @@ if TYPE_CHECKING:
     from numpy import ndarray
 
 
-def inplace3(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def inplace3(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace2(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def inplace2(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     func(data[0].array[i], data[1].array[i], **kwargs)
 
 
-def inplace1(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def inplace1(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     func(data[0].array[i], **kwargs)
 
 
-def return_to_self(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def return_to_self(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     data[0].array[i] = func(data[0].array[i], **kwargs)
 
 
-def inplace_second_2d(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def inplace_second_2d(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     func(data[0].array[i], data[1].array, **kwargs)
 
 
-def return_to_second_at_i(func, data: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]], i, **kwargs):
+def return_to_second_at_i(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     data[1].array[i] = func(data[0].array[i], **kwargs)
 
 
@@ -51,7 +52,7 @@ def create_partial(func, fwd_function, **kwargs):
 
 
 def execute(partial_func: partial,
-            arrays: List[pu.SharedArray],
+            arrays: list[pu.SharedArray],
             num_operations: int,
             progress=None,
             msg: str = '') -> None:
@@ -76,14 +77,14 @@ def execute(partial_func: partial,
     pu.execute_impl(num_operations, partial_func, all_data_in_shared_memory, progress, msg)
 
 
-ComputeFuncType = Union[Callable[[int, List['ndarray'], Dict[str, Any]], None],
-                        Callable[[int, 'ndarray', Dict[str, Any]], None]]
+ComputeFuncType = (Callable[[int, list['ndarray'], dict[str, Any]], None]
+                   | Callable[[int, 'ndarray', dict[str, Any]], None])
 
 
 class _Worker:
 
-    def __init__(self, func: ComputeFuncType, arrays: Union[List[pu.SharedArray], List[pu.SharedArrayProxy]],
-                 params: Dict[str, Any]):
+    def __init__(self, func: ComputeFuncType, arrays: list[pu.SharedArray] | list[pu.SharedArrayProxy],
+                 params: dict[str, Any]):
         self.func = func
         self.arrays = arrays
         self.params = params
@@ -91,14 +92,14 @@ class _Worker:
     def __call__(self, index: int):
         ndarrays = [sa.array for sa in self.arrays]
         if len(ndarrays) == 1:
-            ndarrays = ndarrays[0]
-        self.func(index, ndarrays, self.params)
+            ndarrays = ndarrays[0]  # type: ignore[assignment]
+        self.func(index, ndarrays, self.params)  # type: ignore[arg-type]
 
 
 def run_compute_func(func: ComputeFuncType,
                      num_operations: int,
-                     arrays: Union[List[pu.SharedArray], pu.SharedArray],
-                     params: Dict[str, Any],
+                     arrays: list[pu.SharedArray] | pu.SharedArray,
+                     params: dict[str, Any],
                      progress=None):
     if isinstance(arrays, pu.SharedArray):
         arrays = [arrays]
@@ -108,7 +109,7 @@ def run_compute_func(func: ComputeFuncType,
 
 
 def _check_shared_mem_and_get_data(
-        arrays: List[pu.SharedArray]) -> Tuple[bool, Union[List[pu.SharedArray], List[pu.SharedArrayProxy]]]:
+        arrays: list[pu.SharedArray]) -> tuple[bool, list[pu.SharedArray] | list[pu.SharedArrayProxy]]:
     """
     Checks if all shared arrays in shared_list are using shared memory and returns this result in the first element
     of the tuple. The second element of the tuple gives the data to use in the processing.

@@ -7,7 +7,6 @@ import os
 import sys
 from logging import getLogger
 import requests
-from typing import Optional
 from packaging.version import Version, parse
 import shutil
 
@@ -30,7 +29,7 @@ LOG = getLogger(__name__)
 class CheckVersion:
     _version: str
     _package_type: str
-    _conda_available_version: Optional[str]
+    _conda_available_version: str | None
 
     def __init__(self):
         self._version = package_version

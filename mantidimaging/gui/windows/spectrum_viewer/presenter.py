@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from enum import Enum
 from functools import partial
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from logging import getLogger
 from mantidimaging.core.data.dataset import StrictDataset
@@ -34,22 +34,38 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     This presenter is responsible for handling user interaction with the view and
     updating the model and view accordingly to look after the state of the window.
     """
-    view: 'SpectrumViewerWindowView'
+    view: SpectrumViewerWindowView
     model: SpectrumViewerWindowModel
     spectrum_mode: SpecType = SpecType.SAMPLE
-    current_stack_uuid: Optional['UUID'] = None
-    current_norm_stack_uuid: Optional['UUID'] = None
+    current_stack_uuid: UUID | None = None
+    current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
 
-    def __init__(self, view: 'SpectrumViewerWindowView', main_window: 'MainWindowView'):
+    def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
 
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
+        self.main_window.stack_changed.connect(self.handle_stack_changed)
 
-    def handle_sample_change(self, uuid: Optional['UUID']) -> None:
+    def handle_stack_changed(self) -> None:
+        if self.current_stack_uuid:
+            self.model.set_stack(self.main_window.get_stack(self.current_stack_uuid))
+        else:
+            return
+        normalise_uuid = self.view.get_normalise_stack()
+        if normalise_uuid is not None:
+            try:
+                norm_stack: ImageStack | None = self.main_window.get_stack(normalise_uuid)
+            except RuntimeError:
+                norm_stack = None
+            self.model.set_normalise_stack(norm_stack)
+        self.show_new_sample()
+        self.redraw_all_rois()
+
+    def handle_sample_change(self, uuid: UUID | None) -> None:
         if uuid == self.current_stack_uuid:
             return
         else:
@@ -71,7 +87,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
             try:
-                norm_stack: Optional['ImageStack'] = self.main_window.get_stack(normalise_uuid)
+                norm_stack: ImageStack | None = self.main_window.get_stack(normalise_uuid)
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
@@ -82,7 +98,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_new_sample()
         self.view.on_visibility_change()
 
-    def handle_normalise_stack_change(self, normalise_uuid: Optional['UUID']) -> None:
+    def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
             return
         else:
@@ -107,7 +123,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 elif new_dataset.flat_after is not None:
                     self.view.try_to_select_relevant_normalise_stack(new_dataset.flat_after.name)
 
-    def get_dataset_id_for_stack(self, stack_id: Optional['UUID']) -> Optional['UUID']:
+    def get_dataset_id_for_stack(self, stack_id: UUID | None) -> UUID | None:
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
     def show_new_sample(self) -> None:
@@ -116,7 +132,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         image view accordingly. Resets the ROIs.
         """
 
-        self.view.set_image(self.model.get_averaged_image())
+        averaged_image = self.model.get_averaged_image()
+        assert averaged_image is not None
+        self.view.set_image(averaged_image)
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
         self.view.auto_range_image()
         if self.view.get_roi_properties_spinboxes():
@@ -124,7 +142,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_range_slide_moved(self, tof_range) -> None:
         self.model.tof_range = tof_range
-        self.view.set_image(self.model.get_averaged_image(), autoLevels=False)
+        averaged_image = self.model.get_averaged_image()
+        assert averaged_image is not None
+        self.view.set_image(averaged_image, autoLevels=False)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
         """

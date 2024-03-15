@@ -6,7 +6,7 @@ import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
 from threading import Lock
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -133,7 +133,7 @@ class CILRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Optional[Progress] = None) -> np.ndarray:
+                    progress: Progress | None = None) -> np.ndarray:
         """
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
@@ -214,9 +214,9 @@ class CILRecon(BaseRecon):
 
     @staticmethod
     def full(images: ImageStack,
-             cors: List[ScalarCoR],
+             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Optional[Progress] = None) -> ImageStack:
+             progress: Progress | None = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

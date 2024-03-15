@@ -125,7 +125,7 @@ def _do_rotation(data, angle, progress) -> np.ndarray:
     return data
 
 
-def _cardinal_rotation_per_slice(data: ImageStack, angle: float, progress) -> 'pu.SharedArray':
+def _cardinal_rotation_per_slice(data: ImageStack, angle: float, progress) -> pu.SharedArray:
     """
     Perform a cardinal rotation of the image stack by angle if angle is cardinal and additionally
     in-place rotation if general angle.
@@ -147,7 +147,7 @@ def _cardinal_rotation_per_slice(data: ImageStack, angle: float, progress) -> 'p
     return new_data
 
 
-def _inplace_rotation(number_of_slices: int, data, angle: float, progress) -> 'pu.SharedArray':
+def _inplace_rotation(number_of_slices: int, data, angle: float, progress) -> pu.SharedArray:
     """
     In-place rotation of image slices by angle.
 

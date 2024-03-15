@@ -180,7 +180,6 @@ class RoiNormalisationFilter(BaseFilter):
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
 
-
 def enable_correct_fields_only(text, flat_file_widget):
     if text == "Flat Field":
         flat_file_widget.setEnabled(True)

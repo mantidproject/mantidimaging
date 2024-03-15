@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Optional, Union, Tuple, List
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView
 
 
-def _string_contains_all_parts(string: str, parts: List[str]) -> bool:
+def _string_contains_all_parts(string: str, parts: list[str]) -> bool:
     for part in parts:
         if part.lower() not in string:
             return False
@@ -26,12 +26,9 @@ class DatasetSelectorWidgetView(QComboBox):
     dataset_selected_uuid = pyqtSignal('PyQt_PyObject')
     stack_selected_uuid = pyqtSignal('PyQt_PyObject')
 
-    main_window: 'MainWindowView'
+    main_window: MainWindowView
 
-    def __init__(self,
-                 parent,
-                 show_stacks: bool = False,
-                 relevant_dataset_types: Union[type, Tuple[type]] | None = None):
+    def __init__(self, parent, show_stacks: bool = False, relevant_dataset_types: type | tuple[type] | None = None):
         super().__init__(parent)
 
         self.presenter = DatasetSelectorWidgetPresenter(self,
@@ -39,7 +36,7 @@ class DatasetSelectorWidgetView(QComboBox):
                                                         relevant_dataset_types=relevant_dataset_types)
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
-    def subscribe_to_main_window(self, main_window: 'MainWindowView') -> None:
+    def subscribe_to_main_window(self, main_window: MainWindowView) -> None:
         self.main_window = main_window
 
         # Initial population of dataset list
@@ -64,7 +61,7 @@ class DatasetSelectorWidgetView(QComboBox):
         """
         self.presenter.notify(Notification.RELOAD_DATASETS)
 
-    def current(self) -> Optional[uuid.UUID]:
+    def current(self) -> uuid.UUID | None:
         return self.presenter.current_dataset
 
     def try_to_select_relevant_stack(self, name: str) -> None:

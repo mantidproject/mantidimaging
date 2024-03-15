@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -16,7 +16,7 @@ class CloseEnoughPoint:
     y: int
     x: int
 
-    def __init__(self, points: Union[Sequence[int], Sequence[float]]):
+    def __init__(self, points: Sequence[int] | Sequence[float]):
         self.y = int(points[1])
         self.x = int(points[0])
 

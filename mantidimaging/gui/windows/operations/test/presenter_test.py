@@ -7,7 +7,6 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 from functools import partial
-from typing import List
 
 from unittest import mock
 from unittest.mock import DEFAULT, Mock
@@ -31,7 +30,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
-        self.mock_stacks: List[ImageStack] = []
+        self.mock_stacks: list[ImageStack] = []
         for _ in range(2):
             mock_stack = mock.Mock()
             mock_stack.data = np.zeros([3, 3, 3])
@@ -197,7 +196,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         mock_stack = mock.MagicMock()
         mock_stack.has_proj180deg.return_value = True
         mock_stack.data = np.arange(3)
-        mock_stacks: List[ImageStack] = [mock_stack]
+        mock_stacks: list[ImageStack] = [mock_stack]
         mock_task = mock.MagicMock()
         mock_task.error = None
 

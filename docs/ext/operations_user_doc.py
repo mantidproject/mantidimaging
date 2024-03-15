@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import List
 import inspect
 
 from docutils import nodes
@@ -19,11 +18,11 @@ in a documentation rst file to generate.
 """
 
 
-def make_heading(s: str, char: str) -> List[str]:
+def make_heading(s: str, char: str) -> list[str]:
     return [s, len(s) * char, ""]
 
 
-def split_lines(s: str) -> List[str]:
+def split_lines(s: str) -> list[str]:
     s = s.replace("\n\n", "DOUBLE_NEW_LINE")
     s = s.replace("\n", " ")
     s = s.replace("DOUBLE_NEW_LINE", "\n\n")
@@ -33,7 +32,7 @@ def split_lines(s: str) -> List[str]:
 PARAM_SKIP_LIST = ["images", "progress"]
 
 
-def get_params(s: str) -> List[str]:
+def get_params(s: str) -> list[str]:
     ret = []
     for line in s.split("\n"):
         if line.strip().startswith(":param"):
@@ -51,7 +50,7 @@ def get_params(s: str) -> List[str]:
 
 class OperationsUserDoc(Directive):
 
-    def run(self) -> List[Node]:
+    def run(self) -> list[Node]:
 
         try:
             from mantidimaging.core.operations.loader import load_filter_packages

@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from statistics import stdev
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
@@ -67,6 +67,16 @@ class TestCase:
         return self.status == "pass"
 
 
+def process_params(param):
+    """
+    Handle parameter values that cannot be encoded natively in json
+    """
+    if isinstance(param, list):
+        if param[0] == "tuple":
+            return tuple(param[1:])
+    return param
+
+
 def compare_mode():
     for operation, test_case_info in TEST_CASES.items():
         print(f"Running tests for {operation}:")
@@ -76,7 +86,8 @@ def compare_mode():
             test_name = f"{operation.lower()}_{sub_test_name}"
             if args.match and args.match not in test_name:
                 continue
-            params = case["params"] | test_case_info["params"]
+            params = test_case_info["params"] | case["params"]
+            params = {k: process_params(v) for k, v in params.items()}
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
             test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)

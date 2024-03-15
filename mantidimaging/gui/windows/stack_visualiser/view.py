@@ -31,7 +31,7 @@ class StackVisualiserView(QDockWidget):
     presenter: StackVisualiserPresenter
     layout: QVBoxLayout
 
-    def __init__(self, parent: 'MainWindowView', images: ImageStack):
+    def __init__(self, parent: MainWindowView, images: ImageStack):
         # enforce not showing a single image
         assert images.data.ndim == 3, \
             "Data does NOT have 3 dimensions! Dimensions found: {0}".format(images.data.ndim)
@@ -105,7 +105,7 @@ class StackVisualiserView(QDockWidget):
         self.image_view.angles = image_stack.real_projection_angles()
 
     @property
-    def main_window(self) -> 'MainWindowView':
+    def main_window(self) -> MainWindowView:
         return self._main_window
 
     @property

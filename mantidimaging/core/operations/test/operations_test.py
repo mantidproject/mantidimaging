@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Dict, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import unittest
 from unittest import mock
 
@@ -39,8 +39,8 @@ def get_filter_func_args():
 
 
 class OperationsTest(unittest.TestCase):
-    filters: List[BaseFilterClass]
-    filter_args: Dict
+    filters: list[BaseFilterClass]
+    filter_args: dict
 
     @classmethod
     def setUpClass(cls) -> None:

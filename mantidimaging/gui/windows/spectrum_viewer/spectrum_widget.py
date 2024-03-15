@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5.QtGui import QColor
@@ -80,7 +80,7 @@ class SpectrumROI(ROI):
         self.setPen(self._colour)
 
     @property
-    def selected_row(self) -> Optional[int]:
+    def selected_row(self) -> int | None:
         return self._selected_row
 
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
@@ -101,7 +101,7 @@ class SpectrumWidget(QWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[Optional[str], ROI]
+    roi_dict: dict[str | None, ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
@@ -131,7 +131,7 @@ class SpectrumWidget(QWidget):
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
 
-        self.roi_dict: dict[Optional[str], ROI] = {}
+        self.roi_dict: dict[str | None, ROI] = {}
         self.colour_index = 0
 
     def cleanup(self):

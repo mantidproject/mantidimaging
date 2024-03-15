@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import uuid
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QDialogButtonBox
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.presenter import StackId
 
 
-def sort_by_tomo_and_recon(stack_id: "StackId"):
+def sort_by_tomo_and_recon(stack_id: StackId):
     if "Recon" in stack_id.name:
         return 1
     elif "Tomo" in stack_id.name:
@@ -25,7 +25,7 @@ def sort_by_tomo_and_recon(stack_id: "StackId"):
 
 
 class ImageSaveDialog(BaseDialogView):
-    selected_stack = Optional[uuid.UUID]
+    selected_stack = uuid.UUID | None
 
     def __init__(self, parent, stack_list):
         super().__init__(parent, 'gui/ui/image_save_dialog.ui')

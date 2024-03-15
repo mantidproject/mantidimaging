@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
+from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
 from enum import Enum, auto
 
 import numpy as np
@@ -62,7 +63,7 @@ class BaseFilter:
         return partial(lambda: None)
 
     @staticmethod
-    def register_gui(form: 'QFormLayout', on_change: Callable, view: 'BaseMainWindowView') -> Dict[str, 'QWidget']:
+    def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
         """
         Adds any required input widgets to the given form and returns references to them.
 
@@ -78,7 +79,7 @@ class BaseFilter:
         return {}
 
     @staticmethod
-    def sv_params() -> Dict[str, Any]:
+    def sv_params() -> dict[str, Any]:
         """
         Any parameters required from the StackVisualizer ie. ROI
         :return: a map of parameters names
@@ -86,7 +87,7 @@ class BaseFilter:
         return {}
 
     @staticmethod
-    def validate_execute_kwargs(kwargs: Dict[str, Any]) -> bool:
+    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
         return True
 
     @staticmethod
@@ -94,7 +95,7 @@ class BaseFilter:
         return FilterGroup.NoGroup
 
     @staticmethod
-    def get_images_from_stack(widget: "DatasetSelectorWidgetView", msg: str) -> Optional[ImageStack]:
+    def get_images_from_stack(widget: DatasetSelectorWidgetView, msg: str) -> ImageStack | None:
         stack_uuid = widget.current()
         if stack_uuid is None:
             raise ValueError(f"No stack for {msg}")

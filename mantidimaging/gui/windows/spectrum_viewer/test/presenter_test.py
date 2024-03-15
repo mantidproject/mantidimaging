@@ -157,6 +157,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.addBtn.setEnabled.assert_called_once_with(True)
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
+        self.presenter.model.set_stack(generate_images([10, 5, 5]))
         self.presenter.model.tof_range = (0, 9)
         self.presenter.show_new_sample()
         self.view.spectrum_widget.spectrum_plot_widget.add_range.assert_called_once_with(0, 9)

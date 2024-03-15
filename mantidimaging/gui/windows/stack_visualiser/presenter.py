@@ -41,9 +41,9 @@ class SVImageMode(IntEnum):
 
 
 class StackVisualiserPresenter(BasePresenter):
-    view: 'StackVisualiserView'
+    view: StackVisualiserView
 
-    def __init__(self, view: 'StackVisualiserView', images: ImageStack):
+    def __init__(self, view: StackVisualiserView, images: ImageStack):
         super().__init__(view)
         self.model = SVModel()
         self.images = images
