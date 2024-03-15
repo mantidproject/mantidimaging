@@ -12,7 +12,7 @@ from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str)])
 
 
-class ProgressHandler(object):
+class ProgressHandler:
 
     def __init__(self):
         self.progress = None
@@ -24,7 +24,7 @@ class ProgressHandler(object):
 STEPS_TO_AVERAGE = 30
 
 
-class Progress(object):
+class Progress:
     """
     Class used to perform basic progress monitoring and reporting.
     """

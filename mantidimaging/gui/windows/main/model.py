@@ -23,7 +23,7 @@ def _matching_dataset_attribute(dataset_attribute: ImageStack | None, images_id:
     return isinstance(dataset_attribute, ImageStack) and dataset_attribute.id == images_id
 
 
-class MainWindowModel(object):
+class MainWindowModel:
 
     def __init__(self) -> None:
         super().__init__()

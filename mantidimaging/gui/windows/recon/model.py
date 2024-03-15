@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-class ReconstructWindowModel(object):
+class ReconstructWindowModel:
 
     def __init__(self, data_model: CorTiltPointQtModel):
         self._images: ImageStack | None = None

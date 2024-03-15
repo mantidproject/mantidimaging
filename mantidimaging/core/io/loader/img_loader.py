@@ -55,7 +55,7 @@ def execute(load_func: Callable[[str], np.ndarray],
     return ImageStack(sample_data, chosen_input_filenames, indices)
 
 
-class ImageLoader(object):
+class ImageLoader:
 
     def __init__(self,
                  load_func: Callable[[str], np.ndarray],

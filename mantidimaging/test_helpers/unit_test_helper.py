@@ -117,7 +117,7 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
         cls.assertTrue(os.path.isfile(filename))
 
 
-class IgnoreOutputStreams(object):
+class IgnoreOutputStreams:
 
     def __init__(self):
         self.stdout = None

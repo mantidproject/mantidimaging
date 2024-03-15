@@ -22,7 +22,7 @@ MAX_SPIN_BOX = 2147483647
 INPUT_DIALOG_FLAGS = Qt.WindowSystemMenuHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
 
 
-class BlockQtSignals(object):
+class BlockQtSignals:
     """
     Used to block Qt signals from a selection of QWidgets within a context.
     """

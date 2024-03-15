@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from mantidimaging.core.operations.loader import BaseFilterClass
 
 
-class FiltersWindowModel(object):
+class FiltersWindowModel:
     filters: list[BaseFilterClass]
     selected_filter: BaseFilterClass
     filter_widget_kwargs: dict[str, Any]
