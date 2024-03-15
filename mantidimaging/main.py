@@ -17,11 +17,20 @@ import mantidimaging.core.parallel.manager as pm
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
 
-from qt_material import apply_stylesheet
-
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
     message, category, filename, lineno, line="")
+
+settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
+
+if settings.contains("theme_selection"):
+    # there is the key in QSettings
+    print('Checking for theme preference in config')
+    theme_selection = settings.value('theme_selection')
+    print('Found theme_selection in config:' + theme_selection)
+else:
+    print('theme_selection not found in config. Using default Fusion')
+    settings.setValue('theme_selection', 'Fusion')
 
 
 def parse_args() -> argparse.Namespace:
@@ -59,9 +68,9 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    #q_application.setStyle('Fusion')
+    q_application.setStyle(settings.value('theme_selection'))
 
-    apply_stylesheet(q_application, theme='light_blue.xml', invert_secondary=True)
+    #apply_stylesheet(q_application, theme='light_blue.xml', invert_secondary=True)
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
