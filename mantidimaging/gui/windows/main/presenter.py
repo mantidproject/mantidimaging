@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple, Iterable
 import numpy as np
 from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QSpinBox
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
@@ -35,12 +35,12 @@ settings = QSettings('mantidproject', 'Mantid Imaging')
 
 extra_style_default = {
 
-        # Density Scale
-        'density_scale': '-5',
+    # Density Scale
+    'density_scale': '-5',
 
-        # font
-        'font_size': '10px',
-    }
+    # font
+    'font_size': '10px',
+}
 
 if settings.contains("extra_style") and settings.value('extra_style'):
     extra_style = settings.value('extra_style')
@@ -851,11 +851,12 @@ class MainWindowPresenter(BasePresenter):
         theme = settings.value('theme_selection')
         extra_style = settings.value('extra_style')
         font = QFont("Arial", int(extra_style['font_size'].replace('px', '')))
-        for window in [self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
-                       self.view.settings_window]:
+        for window in [
+                self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
+                self.view.settings_window
+        ]:
             if window:
                 QApplication.instance().setFont(font)
                 window.setStyleSheet(theme)
                 if theme != 'Fusion':
                     apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
-
