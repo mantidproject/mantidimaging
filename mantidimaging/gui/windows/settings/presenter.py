@@ -38,4 +38,3 @@ class SettingsWindowPresenter(BasePresenter):
         extra_style.update({'font_size': self.view.current_menu_font_size + 'px'})
         settings.setValue('extra_style', extra_style)
         self.main_window.presenter.do_update_UI()
-

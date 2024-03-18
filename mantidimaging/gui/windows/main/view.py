@@ -16,7 +16,6 @@ from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
 
-
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
