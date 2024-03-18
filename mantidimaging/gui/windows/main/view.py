@@ -15,7 +15,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint, QSettings
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
-from qt_material import apply_stylesheet
+
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -175,10 +175,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
+        self.presenter.do_update_UI()
+
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
         super()._window_ready()
+
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -389,14 +392,6 @@ class MainWindowView(BaseMainWindowView):
             self.settings_window.activateWindow()
             self.settings_window.raise_()
             self.settings_window.show()
-
-    def set_theme(self, theme: str) -> None:
-        for window in [self, self.recon, self.live_viewer, self.spectrum_viewer, self.filters, self.settings_window]:
-            if window:
-                if theme == 'Fusion':
-                    window.setStyleSheet(theme)
-                else:
-                    apply_stylesheet(window, theme=theme, invert_secondary=False)
 
     def show_recon_window(self):
         if not self.recon:

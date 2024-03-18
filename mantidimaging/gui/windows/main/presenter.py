@@ -10,7 +10,10 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
 import numpy as np
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
+from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QSpinBox
+from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
@@ -28,6 +31,22 @@ if TYPE_CHECKING:
     from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
 RECON_TEXT = "Recon"
+
+settings = QSettings('mantidproject', 'Mantid Imaging')
+
+extra_style_default = {
+
+        # Density Scale
+        'density_scale': '-5',
+
+        # font
+        'font_size': '10px',
+    }
+
+if settings.contains("extra_style") and settings.value('extra_style'):
+    extra_style = settings.value('extra_style')
+else:
+    settings.setValue('extra_style', extra_style_default)
 
 
 class StackId(NamedTuple):
@@ -828,3 +847,16 @@ class MainWindowPresenter(BasePresenter):
 
     def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
         return self.model.is_dataset_strict(ds_id)
+
+    def do_update_UI(self) -> None:
+        theme = settings.value('theme_selection')
+        extra_style = settings.value('extra_style')
+        font = QFont("Arial", int(extra_style['font_size'].replace('px', '')))
+        for window in [self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
+                       self.view.settings_window]:
+            if window:
+                QApplication.instance().setFont(font)
+                window.setStyleSheet(theme)
+                if theme != 'Fusion':
+                    apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
+
