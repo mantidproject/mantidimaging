@@ -38,6 +38,7 @@ requirements:
     - pyqt=5.15.*
     - pyqtgraph=0.13.3
     - qt-gtk-platformtheme # [linux]
+    - qt-material
 
 build:
   number: 1

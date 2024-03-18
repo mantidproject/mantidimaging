@@ -28,8 +28,6 @@ class BaseMainWindowView(QMainWindow):
         if ui_file is not None:
             compile_ui(ui_file, self)
 
-        print(f"mvp_case: {settings.value('theme_selection')=}")
-
         if settings.value('theme_selection') == 'Fusion':
             self.setStyleSheet('Fusion')
         else:

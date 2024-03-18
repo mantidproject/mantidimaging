@@ -26,8 +26,16 @@ class SettingsWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.current_theme = settings.value('theme_selection')
+        self.current_menu_font_size = settings.value('extra_style')['font_size']
 
     def set_theme(self):
         self.current_theme = self.view.current_theme
         settings.setValue('theme_selection', self.current_theme)
-        self.main_window.set_theme(self.current_theme)
+        self.main_window.presenter.do_update_UI()
+
+    def set_extra_style(self):
+        extra_style = settings.value('extra_style')
+        extra_style.update({'font_size': self.view.current_menu_font_size + 'px'})
+        settings.setValue('extra_style', extra_style)
+        self.main_window.presenter.do_update_UI()
+
