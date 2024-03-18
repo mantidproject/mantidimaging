@@ -25,12 +25,10 @@ settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
 
 if settings.contains("theme_selection"):
     # there is the key in QSettings
-    print('Checking for theme preference in config')
     theme_selection = settings.value('theme_selection')
-    print('Found theme_selection in config:' + theme_selection)
 else:
-    print('theme_selection not found in config. Using default Fusion')
     settings.setValue('theme_selection', 'Fusion')
+    theme_selection = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -68,9 +66,9 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    q_application.setStyle(settings.value('theme_selection'))
+    if theme_selection:
+        q_application.setStyle(settings.value('theme_selection'))
 
-    #apply_stylesheet(q_application, theme='light_blue.xml', invert_secondary=True)
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
