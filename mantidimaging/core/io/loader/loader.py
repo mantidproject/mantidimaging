@@ -63,7 +63,7 @@ def _fitsread(filename: Path | str) -> np.ndarray:
     """
     image = fits.open(filename)
     if len(image) < 1:
-        raise RuntimeError("Could not load at least one FITS image/table file from: {0}".format(filename))
+        raise RuntimeError(f"Could not load at least one FITS image/table file from: {filename}")
 
     # get the image data
     return image[0].data
@@ -94,7 +94,7 @@ def read_image_dimensions(file_path: Path) -> tuple[int, int]:
 
 
 def load_log(log_file: Path) -> InstrumentLog:
-    with open(log_file, 'r') as f:
+    with open(log_file) as f:
         return InstrumentLog(f.readlines(), log_file)
 
 
@@ -158,7 +158,7 @@ def load(filename_group: FilenameGroup,
     if metadata_filename:
         with open(metadata_filename) as f:
             image_stack.load_metadata(f)
-            LOG.debug('Loaded metadata from: {}'.format(metadata_filename))
+            LOG.debug(f'Loaded metadata from: {metadata_filename}')
     else:
         LOG.debug('No metadata file found')
 

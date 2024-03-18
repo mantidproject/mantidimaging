@@ -37,7 +37,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
             self.presenter.notify(Notification.IMAGE_CLICKED_LESS)
         self.model.adjust.assert_called_once_with(ImageType.LESS)
-        self.assertIn("Image selected: {}".format(ImageType.LESS), presenter_log.output[0])
+        self.assertIn(f"Image selected: {ImageType.LESS}", presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
         calls = [
@@ -49,7 +49,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
             self.presenter.notify(Notification.IMAGE_CLICKED_CURRENT)
         self.model.adjust.assert_called_once_with(ImageType.CURRENT)
-        self.assertIn("Image selected: {}".format(ImageType.CURRENT), presenter_log.output[0])
+        self.assertIn(f"Image selected: {ImageType.CURRENT}", presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
         calls = [
@@ -62,7 +62,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
         with self.assertLogs(self.presenter.__module__, level='DEBUG') as presenter_log:
             self.presenter.notify(Notification.IMAGE_CLICKED_MORE)
         self.model.adjust.assert_called_once_with(ImageType.MORE)
-        self.assertIn("Image selected: {}".format(ImageType.MORE), presenter_log.output[0])
+        self.assertIn(f"Image selected: {ImageType.MORE}", presenter_log.output[0])
 
         assert self.view.step_size == self.model.step
         calls = [

@@ -35,7 +35,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_bad_view_causes_errors_to_be_logged(self):
 
-        class V(object):
+        class V:
             pass
 
         view = V()

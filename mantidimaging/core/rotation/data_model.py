@@ -33,10 +33,10 @@ class CorTiltDataModel:
         self.clear_results()
 
         self._points = [Point(int(idx), cor) for idx in np.linspace(begin, end, count, dtype=int)]
-        LOG.debug('Populated slice indices: {}'.format(self.slices))
+        LOG.debug(f'Populated slice indices: {self.slices}')
 
     def linear_regression(self):
-        LOG.debug('Running linear regression with {} points'.format(self.num_points))
+        LOG.debug(f'Running linear regression with {self.num_points} points')
         self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
     def add_point(self, idx=None, slice_idx=0, cor=0.0):

@@ -64,7 +64,7 @@ class CropCoordinatesFilter(BaseFilter):
 
         sample = images.data
         shape = (sample.shape[0], region_of_interest.height, region_of_interest.width)
-        if any((s < 0 for s in shape)):
+        if any(s < 0 for s in shape):
             raise ValueError("It seems the Region of Interest is outside of the current image dimensions.\n"
                              "This can happen on the image preview right after a previous Crop Coordinates.")
 
@@ -110,7 +110,7 @@ def execute_single(data, roi, progress=None, out=None):
                        region in roi), \
                 "The region of interest coordinates are not integers!"
 
-            progress.update(msg="Cropping with coordinates: {0}".format(roi))
+            progress.update(msg=f"Cropping with coordinates: {roi}")
 
             output = out[:] if out is not None else data[:]
             output[:] = data[:, roi.top:roi.bottom, roi.left:roi.right]

@@ -86,7 +86,7 @@ def _group_consecutive_values(slices: list[int]) -> list[str]:
         if len(rng) == 1:
             s = str(rng[0][1])
         else:
-            s = "{}-{}".format(rng[0][1], rng[-1][1])
+            s = f"{rng[0][1]}-{rng[-1][1]}"
         ranges.append(s)
 
     return ranges

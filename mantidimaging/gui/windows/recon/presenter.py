@@ -311,10 +311,10 @@ class ReconstructWindowPresenter(BasePresenter):
 
         res = dialog.exec()
         dialog.deleteLater()
-        LOG.debug('COR refine dialog result: {}'.format(res))
+        LOG.debug(f'COR refine dialog result: {res}')
         if res == CORInspectionDialogView.Accepted:
             new_cor = dialog.optimal_rotation_centre
-            LOG.debug('New optimal rotation centre: {}'.format(new_cor))
+            LOG.debug(f'New optimal rotation centre: {new_cor}')
             self.model.data_model.set_cor_at_slice(slice_idx, new_cor.value)
             self.model.last_cor = new_cor
             # Update reconstruction preview with new COR
@@ -327,10 +327,10 @@ class ReconstructWindowPresenter(BasePresenter):
                                          self.view.recon_params(), True)
 
         res = dialog.exec()
-        LOG.debug('COR refine iteration result: {}'.format(res))
+        LOG.debug(f'COR refine iteration result: {res}')
         if res == CORInspectionDialogView.Accepted:
             new_iters = dialog.optimal_iterations
-            LOG.debug('New optimal iterations: {}'.format(new_iters))
+            LOG.debug(f'New optimal iterations: {new_iters}')
             self.view.num_iter = new_iters
 
     def do_cor_fit(self) -> None:

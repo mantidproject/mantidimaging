@@ -15,7 +15,7 @@ INIT_ITERS_CENTRE_VALUE = 100
 INIT_ITERS_STEP = 50
 
 
-class CORInspectionDialogModel(object):
+class CORInspectionDialogModel:
     step: int | float
 
     def __init__(self, images: ImageStack, slice_idx: int, initial_cor: ScalarCoR,

@@ -55,7 +55,7 @@ class PublishDocsToGitHubPages(Command):
         g.init()
         g.checkout(b="main")
         g.add(".")
-        g.commit("-m {}".format(self.commit_msg))
+        g.commit(f"-m {self.commit_msg}")
         g.push("--force", self.repo, "main:gh-pages")
 
 

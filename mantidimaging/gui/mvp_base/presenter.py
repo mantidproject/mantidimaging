@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseDialogView  # pragma: no cover
 
 
-class BasePresenter(object):
+class BasePresenter:
     view: BaseMainWindowView | BaseDialogView
 
     def __init__(self, view: BaseMainWindowView):

@@ -27,7 +27,7 @@ class ConsoleProgressBar(ProgressHandler):
         self.width = width
 
     def progress_update(self):
-        suffix = '{}/{}'.format(self.progress.current_step, self.progress.end_step)
+        suffix = f'{self.progress.current_step}/{self.progress.end_step}'
 
         _print_ascii_progress_bar(self.progress.completion(), self.width, self.progress.task_name, suffix)
 

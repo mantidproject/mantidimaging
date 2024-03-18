@@ -326,7 +326,7 @@ class CILRecon(BaseRecon):
                     algo.next()
 
                 volume = algo.solution.as_array()
-                LOG.info('Reconstructed 3D volume with shape: {0}'.format(volume.shape))
+                LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
             t1 = time.perf_counter()
             LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
             return ImageStack(volume)

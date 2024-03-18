@@ -51,7 +51,7 @@ def get_memory_usage_linux(kb=False, mb=False):
 def get_memory_usage_linux_str():
     memory_in_kbs, memory_in_mbs = get_memory_usage_linux(kb=True, mb=True)
     # handle caching
-    memory_string = "{0} KB, {1} MB".format(memory_in_kbs, memory_in_mbs)
+    memory_string = f"{memory_in_kbs} KB, {memory_in_mbs} MB"
 
     # use an attribute to this function only, instead a global variable visible
     # outside
@@ -66,7 +66,7 @@ def get_memory_usage_linux_str():
         # remove cached memory, del removes the reference so that hasattr will
         # work correctly
         del get_memory_usage_linux_str.last_memory_cache
-        memory_string += ". Memory change: {0} MB".format(delta_memory)
+        memory_string += f". Memory change: {delta_memory} MB"
 
     return memory_string
 
@@ -77,9 +77,8 @@ def debug_log_memory_usage_linux(message=""):
         # silently fail
         import resource as res
         log = getLogger(__name__)
-        log.info("Memory usage {} KB, {} MB".format(
-            res.getrusage(res.RUSAGE_SELF).ru_maxrss,
-            int(res.getrusage(res.RUSAGE_SELF).ru_maxrss) / 1024))
+        max_rss = res.getrusage(res.RUSAGE_SELF).ru_maxrss
+        log.info(f"Memory usage {max_rss} KB, {int(max_rss) / 1024} MB")
         log.info(message)
     except ImportError:
         log.warning('Resource monitoring is not available on Windows')

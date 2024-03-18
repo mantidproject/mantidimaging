@@ -70,7 +70,7 @@ class CORInspectionDialogPresenter(BasePresenter):
         self.notify(Notification.FULL_UPDATE)
 
     def on_select_image(self, img):
-        LOG.debug('Image selected: {}'.format(img))
+        LOG.debug(f'Image selected: {img}')
 
         # Adjust COR/iterations step
         self.model.adjust(img)
@@ -82,10 +82,10 @@ class CORInspectionDialogPresenter(BasePresenter):
             self.do_refresh([ImageType.LESS, ImageType.MORE])
 
     def _make_cor_title(self, image) -> str:
-        return 'COR: {}'.format(self.model.cor(image))
+        return f'COR: {self.model.cor(image)}'
 
     def _make_iters_title(self, image) -> str:
-        return 'Iterations: {}'.format(self.model.iterations(image))
+        return f'Iterations: {self.model.iterations(image)}'
 
     def do_refresh(self, images=None):
         if images is None:

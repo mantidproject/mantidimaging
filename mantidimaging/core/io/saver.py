@@ -132,7 +132,7 @@ def image_save(images: ImageStack,
 
     # Save metadata
     metadata_filename = os.path.join(output_dir, name_prefix + '.json')
-    LOG.debug('Metadata filename: {}'.format(metadata_filename))
+    LOG.debug(f'Metadata filename: {metadata_filename}')
     with open(metadata_filename, 'w+') as f:
         images.save_metadata(f, rescale_params)
 
@@ -429,8 +429,8 @@ def make_dirs_if_needed(dirname: str | None = None, overwrite_all: bool = False)
     if not os.path.exists(path):
         os.makedirs(path)
     elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError("The output directory is NOT empty:{0}\nThis can be "
-                           "overridden by specifying 'Overwrite on name conflict'.".format(path))
+        raise RuntimeError(f"The output directory is NOT empty:{path}\nThis can be "
+                           "overridden by specifying 'Overwrite on name conflict'.")
 
 
 def create_rits_format(tof: np.ndarray, transmission: np.ndarray, transmission_error: np.ndarray) -> str:
@@ -458,4 +458,4 @@ def export_to_dat_rits_format(rits_formatted_data: str, path: Path) -> None:
     """
     with path.open('w') as f:
         f.write(rits_formatted_data)
-    LOG.info('RITS formatted data saved to: {}'.format(path))
+    LOG.info(f'RITS formatted data saved to: {path}')

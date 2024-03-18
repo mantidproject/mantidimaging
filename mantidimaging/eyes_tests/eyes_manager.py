@@ -111,7 +111,7 @@ class EyesManager:
         if window_image.save(file_path, "PNG"):
             return file_path
         else:
-            raise IOError("Failed to save", file_path)
+            raise OSError("Failed to save", file_path)
 
     def close_eyes(self):
         if self.eyes.is_open:
