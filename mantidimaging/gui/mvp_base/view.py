@@ -16,6 +16,9 @@ LOG = getLogger(__name__)
 perf_logger = getLogger("perf." + __name__)
 settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
 
+if not settings.contains("theme_selection") or settings.value("theme_selection") is None:
+    settings.setValue('theme_selection', 'Fusion')
+
 
 class BaseMainWindowView(QMainWindow):
 
