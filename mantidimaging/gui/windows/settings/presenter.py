@@ -31,10 +31,26 @@ class SettingsWindowPresenter(BasePresenter):
     def set_theme(self):
         self.current_theme = self.view.current_theme
         settings.setValue('theme_selection', self.current_theme)
+        if self.current_theme == 'Fusion':
+            self.view.useOsThemeCheckBox.setEnabled(True)
+        else:
+            self.view.useOsThemeCheckBox.setEnabled(False)
         self.main_window.presenter.do_update_UI()
 
     def set_extra_style(self):
         extra_style = settings.value('extra_style')
         extra_style.update({'font_size': self.view.current_menu_font_size + 'px'})
         settings.setValue('extra_style', extra_style)
+        self.main_window.presenter.do_update_UI()
+
+    def set_dark_mode(self):
+        print(f"{self.view.useOsThemeCheckBox.isChecked()=}")
+        if self.view.useOsThemeCheckBox.isChecked():
+            use_dark_mode = 1
+        else:
+            use_dark_mode = 0
+        print(f"{use_dark_mode=}")
+
+        settings.setValue('use_dark_mode', use_dark_mode)
+        settings.setValue('override_os_theme', True)
         self.main_window.presenter.do_update_UI()
