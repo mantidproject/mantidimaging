@@ -32,6 +32,13 @@ class SpecType(Enum):
     SAMPLE_NORMED = 3
 
 
+class ToFUnitMode(Enum):
+    IMAGE_NUMBER = 1
+    TOF_US = 2
+    WAVELENGTH = 3
+    ENERGY = 4
+
+
 class ErrorMode(Enum):
     STANDARD_DEVIATION = "Standard Deviation"
     PROPAGATED = "Propagated"
@@ -175,6 +182,7 @@ class SpectrumViewerWindowModel:
             roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
+            print(f"TOF Spectrum: {self.get_stack_spectrum(self._stack, roi)}, Length: {len(self.get_stack_spectrum(self._stack, roi))}")
             return self.get_stack_spectrum(self._stack, roi)
 
         if self._normalise_stack is None:
@@ -441,3 +449,30 @@ class SpectrumViewerWindowModel:
         Remove all ROIs from the model
         """
         self._roi_ranges = {}
+
+    def get_stack_time_of_flight_wavelength(self, target_to_camera_dist: float = 56) -> np.ndarray | None:
+        # target_to_camera_dist = 56 m taken from https://scripts.iucr.org/cgi-bin/paper?S1600576719001730
+        tof = self.get_stack_time_of_flight()
+        if tof is not None:
+            velocity = target_to_camera_dist / tof
+            planck_h = 6.62606896e-34  # [JHz-1]
+            neutron_mass = 1.674927211e-27  # [kg]
+            angstrom = 1e-10  #[m]
+            wavelength = planck_h / (neutron_mass * velocity)
+            wavelength_angstroms = wavelength / angstrom
+            return wavelength_angstroms
+        else:
+            return None
+
+    def get_stack_time_of_flight_energy(self, target_to_camera_dist: float = 56) -> np.ndarray | None:
+        tof = self.get_stack_time_of_flight()
+        # target_to_camera_dist = 56 m taken from https://scripts.iucr.org/cgi-bin/paper?S1600576719001730
+        if tof is not None:
+            velocity = target_to_camera_dist / tof
+            neutron_mass = 1.674927211e-27  # [kg]
+            energy = neutron_mass * velocity / 2
+            mega_electro_volt = 1.60217662e-13
+            energy_evs = energy / mega_electro_volt
+            return energy_evs
+        else:
+            return None
