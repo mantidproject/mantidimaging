@@ -1,6 +1,8 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+import time
 from multiprocessing import get_context
 import os
 import uuid
@@ -20,6 +22,7 @@ MEM_DIR_LINUX = '/dev/shm'
 CURRENT_PID = psutil.Process().pid
 
 LOG = getLogger(__name__)
+perf_logger = getLogger("perf." + __name__)
 
 cores: int = 1
 pool: Pool | None = None
@@ -27,11 +30,15 @@ pool: Pool | None = None
 
 def create_and_start_pool():
     LOG.info('Creating process pool')
+    t0 = time.monotonic()
     context = get_context('spawn')
     global cores
     cores = context.cpu_count()
     global pool
     pool = context.Pool(cores, initializer=worker_setup)
+
+    if perf_logger.isEnabledFor(1):
+        perf_logger.info(f"Process pool started in {time.monotonic() - t0}")
 
 
 def worker_setup():
