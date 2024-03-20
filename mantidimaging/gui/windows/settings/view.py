@@ -4,8 +4,8 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QTabWidget, QWidget, QComboBox, QLabel
+from PyQt5.QtCore import QSettings, QSignalBlocker
+from PyQt5.QtWidgets import QTabWidget, QWidget, QComboBox, QLabel, QCheckBox
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 
@@ -28,6 +28,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
     themeLabel: QLabel
     menuFontSizeLabel: QLabel
     menuFontSizeChoice: QComboBox
+    useOsThemeCheckBox: QCheckBox
 
     def __init__(self, main_window: 'MainWindowView'):
         super().__init__(None, 'gui/ui/settings_window.ui')
@@ -45,6 +46,16 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
 
         self.themeName.currentTextChanged.connect(self.presenter.set_theme)
         self.menuFontSizeChoice.currentTextChanged.connect(self.presenter.set_extra_style)
+        self.useOsThemeCheckBox.stateChanged.connect(self.presenter.set_dark_mode)
+
+        if self.current_theme != 'Fusion':
+            self.useOsThemeCheckBox.setEnabled(False)
+        with (QSignalBlocker(self.useOsThemeCheckBox)):
+            if settings.value('use_dark_mode') or (settings.value('os_theme') == 'Dark'
+                                                   and not settings.value('override_os_theme')):
+                self.useOsThemeCheckBox.setChecked(True)
+            else:
+                self.useOsThemeCheckBox.setChecked(False)
 
     @property
     def current_theme(self) -> str:
