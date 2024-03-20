@@ -13,7 +13,7 @@ from PyQt5.QtCore import QSignalBlocker, Qt
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .model import ROI_RITS
+from .model import ROI_RITS, ToFUnitMode
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -160,6 +160,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
+
+        print(f"{self.presenter.model.get_stack_time_of_flight()=}")
+        print(f"{self.presenter.model.get_stack_time_of_flight_wavelength()=}")
+        print(f"{self.presenter.model.get_stack_time_of_flight_energy()=}")
 
         def on_row_change(item, _) -> None:
             """
@@ -397,10 +401,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
 
-    def show_visible_spectrums(self):
+    def show_visible_spectrums(self, mode: ToFUnitMode = ToFUnitMode.WAVELENGTH):
+        if mode == ToFUnitMode.WAVELENGTH:
+            tof_data = self.presenter.model.get_stack_time_of_flight_wavelength()
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot(value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
+                self.spectrum_widget.spectrum.plot(tof_data, value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
+
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
