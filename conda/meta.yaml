@@ -38,6 +38,7 @@ requirements:
     - pyqt=5.15.*
     - pyqtgraph=0.13.3
     - qt-material=2.14
+    - darkdetect=0.8.0
     - qt-gtk-platformtheme # [linux]
 
 
