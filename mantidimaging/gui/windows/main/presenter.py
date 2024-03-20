@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
+import darkdetect
 import numpy as np
-from PyQt5.QtCore import QSettings
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import QSettings, Qt
+from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
@@ -47,6 +48,12 @@ if settings.contains("extra_style") and settings.value('extra_style'):
     extra_style = settings.value('extra_style')
 else:
     settings.setValue('extra_style', extra_style_default)
+settings.setValue('os_theme', darkdetect.theme())
+#settings.clear()
+print(f"{settings.value('use_dark_mode')=}")
+print(f"{settings.value('os_theme')=}")
+print(f"{settings.value('override_os_theme')=}")
+print(f"{not settings.value('override_os_theme')=}")
 
 
 class StackId(NamedTuple):
@@ -851,6 +858,9 @@ class MainWindowPresenter(BasePresenter):
     def do_update_UI(self) -> None:
         theme = settings.value('theme_selection')
         extra_style = settings.value('extra_style')
+        os_theme = settings.value('os_theme')
+        use_dark_mode = settings.value('use_dark_mode')
+        override_os_theme = settings.value('override_os_theme')
         font = QFont("Arial", int(extra_style['font_size'].replace('px', '')))
         for window in [
                 self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
@@ -859,5 +869,43 @@ class MainWindowPresenter(BasePresenter):
             if window:
                 QApplication.instance().setFont(font)
                 window.setStyleSheet(theme)
-                if theme != 'Fusion':
+                if theme == 'Fusion':
+                    print(f"Using Fusion theme\n {use_dark_mode=}")
+                    if not override_os_theme:
+                        if os_theme == 'Light':
+                            self.use_fusion_light_mode()
+                        elif os_theme == 'Dark':
+                            self.use_fusion_dark_mode()
+                    else:
+                        if use_dark_mode:
+                            print("using dark mode")
+                            self.use_fusion_dark_mode()
+                        else:
+                            print("using light mode")
+                            self.use_fusion_light_mode()
+                    QApplication.instance().setFont(font)
+                    window.setStyleSheet(theme)
+                else:
+                    print(f"using apply_stylesheet: {theme=}")
                     apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
+
+    def use_fusion_dark_mode(self) -> None:
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ToolTipBase, Qt.black)
+        palette.setColor(QPalette.ToolTipText, Qt.white)
+        palette.setColor(QPalette.Text, Qt.white)
+        palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ButtonText, Qt.white)
+        palette.setColor(QPalette.BrightText, Qt.red)
+        palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.HighlightedText, Qt.black)
+        QApplication.instance().setPalette(palette)
+
+    def use_fusion_light_mode(self) -> None:
+        palette = QPalette()
+        QApplication.instance().setPalette(palette)
