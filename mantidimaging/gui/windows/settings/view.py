@@ -41,7 +41,6 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         self.themeName.setCurrentText(self.presenter.current_theme)
 
         self.menuFontSizeChoice.addItems(['8', '10', '12', '14', '16'])
-        print(f"{self.presenter.current_menu_font_size=}")
         self.menuFontSizeChoice.setCurrentText(self.presenter.current_menu_font_size.replace('px', ''))
 
         self.themeName.currentTextChanged.connect(self.presenter.set_theme)

@@ -44,12 +44,10 @@ class SettingsWindowPresenter(BasePresenter):
         self.main_window.presenter.do_update_UI()
 
     def set_dark_mode(self):
-        print(f"{self.view.useOsThemeCheckBox.isChecked()=}")
         if self.view.useOsThemeCheckBox.isChecked():
             use_dark_mode = 1
         else:
             use_dark_mode = 0
-        print(f"{use_dark_mode=}")
 
         settings.setValue('use_dark_mode', use_dark_mode)
         settings.setValue('override_os_theme', True)

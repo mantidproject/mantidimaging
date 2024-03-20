@@ -49,11 +49,6 @@ if settings.contains("extra_style") and settings.value('extra_style'):
 else:
     settings.setValue('extra_style', extra_style_default)
 settings.setValue('os_theme', darkdetect.theme())
-#settings.clear()
-print(f"{settings.value('use_dark_mode')=}")
-print(f"{settings.value('os_theme')=}")
-print(f"{settings.value('override_os_theme')=}")
-print(f"{not settings.value('override_os_theme')=}")
 
 
 class StackId(NamedTuple):
@@ -870,7 +865,6 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.instance().setFont(font)
                 window.setStyleSheet(theme)
                 if theme == 'Fusion':
-                    print(f"Using Fusion theme\n {use_dark_mode=}")
                     if not override_os_theme:
                         if os_theme == 'Light':
                             self.use_fusion_light_mode()
@@ -878,15 +872,12 @@ class MainWindowPresenter(BasePresenter):
                             self.use_fusion_dark_mode()
                     else:
                         if use_dark_mode:
-                            print("using dark mode")
                             self.use_fusion_dark_mode()
                         else:
-                            print("using light mode")
                             self.use_fusion_light_mode()
                     QApplication.instance().setFont(font)
                     window.setStyleSheet(theme)
                 else:
-                    print(f"using apply_stylesheet: {theme=}")
                     apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
 
     def use_fusion_dark_mode(self) -> None:
