@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 import numpy as np
 from skimage.transform import resize
@@ -45,7 +45,7 @@ class RebinFilter(BaseFilter):
         """
         if isinstance(rebin_param, tuple):
             new_shape = rebin_param
-        elif isinstance(rebin_param, (int, float)):
+        elif isinstance(rebin_param, (int | float)):
             current_shape = images.data.shape[1:]
             new_shape = (int(current_shape[0] * rebin_param), int(current_shape[1] * rebin_param))
         else:
@@ -60,7 +60,7 @@ class RebinFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function(i: int, arrays: List[np.ndarray], params: dict):
+    def compute_function(i: int, arrays: list[np.ndarray], params: dict):
         array = arrays[0]
         output = arrays[1]
         new_shape = params['new_shape']
