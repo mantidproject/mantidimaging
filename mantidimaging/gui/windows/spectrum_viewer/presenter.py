@@ -7,6 +7,9 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from logging import getLogger
+
+import numpy as np
+
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -84,6 +87,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
+        self.model.set_relevant_tof_units()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
             try:
@@ -135,13 +139,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image)
-        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
+        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.auto_range_image()
         if self.view.get_roi_properties_spinboxes():
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
-        self.model.tof_range = tof_range
+        tof_range_min_rescaled = int(np.interp(tof_range[0], (self.model.tof_data.min(), self.model.tof_data.max()), (self.model.tof_range_full[0], self.model.tof_range_full[1])))
+        tof_range_max_rescaled = int(np.interp(tof_range[1], (self.model.tof_data.min(), self.model.tof_data.max()), (self.model.tof_range_full[0], self.model.tof_range_full[1])))
+        self.model.tof_range = (tof_range_min_rescaled, tof_range_max_rescaled)
+        print(f"{self.model.tof_range=}")
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image, autoLevels=False)
@@ -312,3 +319,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
         self.view.on_visibility_change()
+
+    def handle_tof_unit_change(self) -> None:
+        print("handle_tof_unit_change")
+        self.model.set_relevant_tof_units()
+
+
+

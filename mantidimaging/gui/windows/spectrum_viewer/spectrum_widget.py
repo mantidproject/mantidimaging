@@ -279,9 +279,10 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
 
-    def get_tof_range(self) -> tuple[int, int]:
+    def get_tof_range(self) -> tuple[float, float]:
         r_min, r_max = self.range_control.getRegion()
-        return int(r_min), int(r_max)
+        print(f"{(r_min, r_max)=}")
+        return r_min, r_max
 
     def _handle_tof_range_changed(self) -> None:
         tof_range = self.get_tof_range()
@@ -295,8 +296,9 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.spectrum.addItem(self.range_control)
         self._set_tof_range_label(range_min, range_max)
 
-    def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
+    def _set_tof_range_label(self, range_min: float, range_max: float) -> None:
         self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
+        # Need to add the range of image numbers to the label
 
 
 class SpectrumProjectionWidget(GraphicsLayoutWidget):
