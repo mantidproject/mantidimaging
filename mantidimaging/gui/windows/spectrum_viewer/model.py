@@ -62,7 +62,11 @@ class SpectrumViewerWindowModel:
     _stack: ImageStack | None = None
     _normalise_stack: ImageStack | None = None
     tof_range: tuple[int, int] = (0, 0)
+    tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     _roi_ranges: dict[str, SensibleROI]
+    tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
+    tof_data: np.ndarray | None = None
+    tof_range_full: tuple[int, int] = (0, 0)
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
@@ -101,6 +105,7 @@ class SpectrumViewerWindowModel:
             return
         self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
+        self.tof_range_full = self.tof_range
         self.set_new_roi(ROI_ALL)
 
     def set_new_roi(self, name: str) -> None:
@@ -453,6 +458,7 @@ class SpectrumViewerWindowModel:
     def get_stack_time_of_flight_wavelength(self, target_to_camera_dist: float = 56) -> np.ndarray | None:
         # target_to_camera_dist = 56 m taken from https://scripts.iucr.org/cgi-bin/paper?S1600576719001730
         tof = self.get_stack_time_of_flight()
+        print("tof", tof)
         if tof is not None:
             velocity = target_to_camera_dist / tof
             planck_h = 6.62606896e-34  # [JHz-1]
@@ -471,8 +477,23 @@ class SpectrumViewerWindowModel:
             velocity = target_to_camera_dist / tof
             neutron_mass = 1.674927211e-27  # [kg]
             energy = neutron_mass * velocity / 2
-            mega_electro_volt = 1.60217662e-13
+            mega_electro_volt = 1.60217662e-19 / 1e6
             energy_evs = energy / mega_electro_volt
             return energy_evs
         else:
             return None
+
+    def set_relevant_tof_units(self) -> None:
+        print(f"{self.tof_mode=}")
+        if self.tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            self.tof_data = None
+            self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
+        else:
+            if self.tof_mode == ToFUnitMode.TOF_US:
+                self.tof_data = self.get_stack_time_of_flight()
+            elif self.tof_mode == ToFUnitMode.WAVELENGTH:
+                self.tof_data = self.get_stack_time_of_flight_wavelength()
+                print(f"{self.tof_data=}")
+            elif self.tof_mode == ToFUnitMode.ENERGY:
+                self.tof_data = self.get_stack_time_of_flight_energy()
+            self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
