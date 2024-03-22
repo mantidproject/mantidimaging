@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility import finder
@@ -80,6 +80,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
+
+        self.spectrum_right_click_menu = self.spectrum_widget.spectrum_plot_widget.spectrum.vb.menu
+        self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
+        self.tof_mode_select_group = QActionGroup(self)
+
+        self.allowed_modes = {"Image Index": ToFUnitMode.IMAGE_NUMBER, "Wavelength": ToFUnitMode.WAVELENGTH,
+                              "Energy": ToFUnitMode.ENERGY, "us": ToFUnitMode.TOF_US}
+        for mode in self.allowed_modes.keys():
+            action = QAction(mode, self.tof_mode_select_group)
+            action.setCheckable(True)
+            self.units_menu.addAction(action)
+            action.triggered.connect(self.presenter.handle_tof_unit_change)
+            if mode == "Image Index":
+                action.setChecked(True)
+        if self.presenter.model.tof_data is None:
+            self.tof_mode_select_group.setEnabled(False)
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
@@ -161,10 +177,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
-
-        print(f"{self.presenter.model.get_stack_time_of_flight()=}")
-        print(f"{self.presenter.model.get_stack_time_of_flight_wavelength()=}")
-        print(f"{self.presenter.model.get_stack_time_of_flight_energy()=}")
 
         def on_row_change(item, _) -> None:
             """
