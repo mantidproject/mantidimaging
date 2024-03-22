@@ -13,7 +13,8 @@ import numpy as np
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
+    ToFUnitMode
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -65,6 +66,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
+        print(f"handle_stack_changed: {self.model.tof_data}")
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
+        self.model.set_relevant_tof_units()
         self.show_new_sample()
         self.redraw_all_rois()
 
@@ -87,6 +94,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
+        print(f"handle_sample_changed: {self.model.tof_data}")
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
         self.model.set_relevant_tof_units()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
@@ -140,15 +152,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         assert averaged_image is not None
         self.view.set_image(averaged_image)
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
         if self.view.get_roi_properties_spinboxes():
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
-        tof_range_min_rescaled = int(np.interp(tof_range[0], (self.model.tof_data.min(), self.model.tof_data.max()), (self.model.tof_range_full[0], self.model.tof_range_full[1])))
-        tof_range_max_rescaled = int(np.interp(tof_range[1], (self.model.tof_data.min(), self.model.tof_data.max()), (self.model.tof_range_full[0], self.model.tof_range_full[1])))
-        self.model.tof_range = (tof_range_min_rescaled, tof_range_max_rescaled)
-        print(f"{self.model.tof_range=}")
+        if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            self.model.tof_range = tof_range
+        else:
+            image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
+            image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
+            self.model.tof_range = (image_index_min, image_index_max)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image, autoLevels=False)
@@ -321,8 +337,26 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def handle_tof_unit_change(self) -> None:
-        print("handle_tof_unit_change")
+        selected_mode = self.view.tof_mode_select_group.checkedAction().text()
+        print(f"{selected_mode=}")
+        self.model.tof_mode = self.view.allowed_modes[selected_mode]
+        print(f"{self.model.tof_mode=}")
+        print(f"1: {self.model.tof_data=}")
         self.model.set_relevant_tof_units()
-
+        print(f"2: {self.model.tof_data=}")
+        tof_mode = self.model.tof_mode
+        if tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            return
+        tof_axis_label = ""
+        if tof_mode == ToFUnitMode.TOF_US:
+            tof_axis_label = "Time of Flight (\u03BC s)"
+        if tof_mode == ToFUnitMode.WAVELENGTH:
+            tof_axis_label = "Neutron Wavelength (\u212B)"
+        if tof_mode == ToFUnitMode.ENERGY:
+            tof_axis_label = "Neutron Energy (MeV)"
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
+        self.view.spectrum_widget.spectrum.clearPlots()
+        self.view.spectrum_widget.spectrum.update()
+        self.view.show_visible_spectrums()
 
 
