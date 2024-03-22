@@ -92,7 +92,7 @@ def main() -> None:
 
     from mantidimaging import gui
     try:
-        pm.create_and_start_pool()
+        pm.create_and_start_pool(0)
         gui.execute()
         result = q_application.exec_()
     except BaseException as e:
