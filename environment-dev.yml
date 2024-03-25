@@ -19,7 +19,7 @@ dependencies:
   - mypy==1.8
   - types-requests
   - types-PyYAML
-  - types-docutils==0.20.0.20240311 # https://github.com/mantidproject/mantidimaging/issues/2139
+  - types-docutils
   - pytest==7.4.*
   - pytest-cov==4.1.*
   - pytest-randomly==3.15.*
