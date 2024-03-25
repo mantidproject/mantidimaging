@@ -54,7 +54,7 @@ def initialise_logging(arg_level: str) -> None:
     perf_logger = logging.getLogger('perf')
     perf_logger.setLevel(100)
     perf_logger.propagate = False
-    if settings.value("logging/performance_log", defaultValue=False):
+    if settings.value("logging/performance_log", defaultValue=False, type=bool):
         perf_logger.setLevel(1)
         perf_logger.addHandler(console_handler)
         if log_directory != Path(""):

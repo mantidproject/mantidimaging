@@ -6,6 +6,7 @@ import os
 import uuid
 from logging import getLogger
 from pathlib import Path
+import time
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -42,6 +43,7 @@ from mantidimaging.gui.windows.stack_choice.compare_presenter import StackCompar
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
+from mantidimaging.__main__ import process_start_time
 
 if TYPE_CHECKING:
     from mantidimaging.core.data.dataset import MixedDataset
@@ -50,6 +52,7 @@ RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
 
 LOG = getLogger(__name__)
+perf_logger = getLogger("perf." + __name__)
 
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
@@ -163,6 +166,11 @@ class MainWindowView(BaseMainWindowView):
         self.setCentralWidget(self.splitter)
 
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
+
+    def _window_ready(self) -> None:
+        if perf_logger.isEnabledFor(1):
+            perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
+        super()._window_ready()
 
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)

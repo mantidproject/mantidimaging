@@ -2,6 +2,9 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+import time
+
+process_start_time = time.monotonic()
 
 if __name__ == '__main__':
     from multiprocessing import freeze_support
