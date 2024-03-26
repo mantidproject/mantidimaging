@@ -94,12 +94,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         for mode in self.allowed_modes.keys():
             action = QAction(mode, self.tof_mode_select_group)
             action.setCheckable(True)
+            action.setObjectName(mode)
             self.units_menu.addAction(action)
             action.triggered.connect(self.presenter.handle_tof_unit_change)
             if mode == "Image Index":
                 action.setChecked(True)
         if self.presenter.model.tof_data is None:
             self.tof_mode_select_group.setEnabled(False)
+
+        print(f"{self.tof_mode_select_group.actions()=}")
+        print(f"{self.tof_mode_select_group.actions()[0].objectName()=}")
 
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
