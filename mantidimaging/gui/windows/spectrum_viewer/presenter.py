@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
+from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -71,6 +72,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.tof_mode_select_group.setEnabled(False)
         else:
             self.view.tof_mode_select_group.setEnabled(True)
+        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        for action in self.view.tof_mode_select_group.actions():
+            with QSignalBlocker(action):
+                if action.objectName() == 'Image Index':
+                    action.setChecked(True)
+                else:
+                    action.setChecked(False)
         self.model.set_relevant_tof_units()
         self.show_new_sample()
         self.redraw_all_rois()
@@ -91,6 +99,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
+            self.view.tof_mode_select_group.setEnabled(False)
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
@@ -99,6 +108,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.tof_mode_select_group.setEnabled(False)
         else:
             self.view.tof_mode_select_group.setEnabled(True)
+        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        for action in self.view.tof_mode_select_group.actions():
+            with QSignalBlocker(action):
+                if action.objectName() == 'Image Index':
+                    action.setChecked(True)
+                else:
+                    action.setChecked(False)
         self.model.set_relevant_tof_units()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
