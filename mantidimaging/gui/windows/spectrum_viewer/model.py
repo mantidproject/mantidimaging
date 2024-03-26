@@ -467,16 +467,17 @@ class SpectrumViewerWindowModel:
     def set_relevant_tof_units(self) -> None:
         if self._stack is not None:
             self.tof_data = self.get_stack_time_of_flight()
-            if self.tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data is None:
                 self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
                 self.tof_range = (0, self._stack.data.shape[0] - 1)
                 self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
             else:
                 units = UnitConversion(self.tof_data)
                 if self.tof_mode == ToFUnitMode.TOF_US:
-                    self.tof_data = self.get_stack_time_of_flight() * 1e6
+                    self.tof_data = self.tof_data * 1e6
                 elif self.tof_mode == ToFUnitMode.WAVELENGTH:
                     self.tof_data = units.tof_seconds_to_wavelength()
                 elif self.tof_mode == ToFUnitMode.ENERGY:
                     self.tof_data = units.tof_seconds_to_energy()
                 self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
+                self.tof_range = (0, self.tof_data.size)
