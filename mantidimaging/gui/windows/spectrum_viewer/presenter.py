@@ -158,13 +158,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
+        print(f"handle_range_slide_moved: tof_range={tof_range}")
+        self.model.tof_plot_range = tof_range
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
-            self.model.tof_range = tof_range
+            self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
             image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
             image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
-            self.model.tof_range = (image_index_min, image_index_max)
+            print(f"{(image_index_min, image_index_max)=}")
+            self.model.tof_range = sorted((image_index_min, image_index_max))
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image, autoLevels=False)
@@ -345,9 +349,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         print(f"2: {self.model.tof_data=}")
         tof_mode = self.model.tof_mode
-        if tof_mode == ToFUnitMode.IMAGE_NUMBER:
-            return
         tof_axis_label = ""
+        if tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            tof_axis_label = "Image index"
         if tof_mode == ToFUnitMode.TOF_US:
             tof_axis_label = "Time of Flight (\u03BC s)"
         if tof_mode == ToFUnitMode.WAVELENGTH:
@@ -358,5 +362,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
-
-
+        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(0, len(self.model.tof_data) - 1)
+        self.view.auto_range_image()

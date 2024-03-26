@@ -85,8 +85,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
         self.tof_mode_select_group = QActionGroup(self)
 
-        self.allowed_modes = {"Image Index": ToFUnitMode.IMAGE_NUMBER, "Wavelength": ToFUnitMode.WAVELENGTH,
-                              "Energy": ToFUnitMode.ENERGY, "us": ToFUnitMode.TOF_US}
+        self.allowed_modes = {
+            "Image Index": ToFUnitMode.IMAGE_NUMBER,
+            "Wavelength": ToFUnitMode.WAVELENGTH,
+            "Energy": ToFUnitMode.ENERGY,
+            "us": ToFUnitMode.TOF_US
+        }
         for mode in self.allowed_modes.keys():
             action = QAction(mode, self.tof_mode_select_group)
             action.setCheckable(True)
@@ -417,13 +421,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def show_visible_spectrums(self):
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                if self.presenter.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
-                    self.spectrum_widget.spectrum.plot(value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
-                else:
-                    self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data, value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
-
-
-
+                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
+                                                   value,
+                                                   name=key,
+                                                   pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """
