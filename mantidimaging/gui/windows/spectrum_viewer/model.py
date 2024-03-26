@@ -197,7 +197,6 @@ class SpectrumViewerWindowModel:
             roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
-            print(f"TOF Spectrum: {self.get_stack_spectrum(self._stack, roi)}, Length: {len(self.get_stack_spectrum(self._stack, roi))}")
             return self.get_stack_spectrum(self._stack, roi)
 
         if self._normalise_stack is None:
@@ -468,9 +467,9 @@ class SpectrumViewerWindowModel:
     def set_relevant_tof_units(self) -> None:
         self.tof_data = self.get_stack_time_of_flight()
         if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data is None:
-            self.tof_data = None
             self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
             self.tof_range = (0, self._stack.data.shape[0] - 1)
+            self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
         else:
             units = UnitConversion(self.tof_data)
             if self.tof_mode == ToFUnitMode.TOF_US:
