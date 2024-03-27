@@ -123,7 +123,7 @@ jobs:
           APPLITOOLS_BATCH_ID: ${{ github.sha }}
           GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true mantidimaging/eyes_tests --durations=10
+          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true mantidimaging/eyes_tests --run-eyes-tests --durations=10
         timeout-minutes: 15
 
       - name: Coveralls
