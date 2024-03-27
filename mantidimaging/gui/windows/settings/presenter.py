@@ -32,9 +32,9 @@ class SettingsWindowPresenter(BasePresenter):
         self.current_theme = self.view.current_theme
         settings.setValue('theme_selection', self.current_theme)
         if self.current_theme == 'Fusion':
-            self.view.useOsThemeCheckBox.setEnabled(True)
+            self.view.darkModeCheckBox.setEnabled(True)
         else:
-            self.view.useOsThemeCheckBox.setEnabled(False)
+            self.view.darkModeCheckBox.setEnabled(False)
         self.main_window.presenter.do_update_UI()
 
     def set_extra_style(self):
@@ -44,7 +44,7 @@ class SettingsWindowPresenter(BasePresenter):
         self.main_window.presenter.do_update_UI()
 
     def set_dark_mode(self):
-        if self.view.useOsThemeCheckBox.isChecked():
+        if self.view.darkModeCheckBox.isChecked():
             use_dark_mode = 1
         else:
             use_dark_mode = 0

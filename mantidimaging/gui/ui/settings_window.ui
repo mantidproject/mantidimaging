@@ -110,7 +110,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QCheckBox" name="useOsThemeCheckBox">
+           <widget class="QCheckBox" name="darkModeCheckBox">
             <property name="text">
              <string/>
             </property>
