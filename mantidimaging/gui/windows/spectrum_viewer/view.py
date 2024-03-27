@@ -102,9 +102,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.model.tof_data is None:
             self.tof_mode_select_group.setEnabled(False)
 
-        print(f"{self.tof_mode_select_group.actions()=}")
-        print(f"{self.tof_mode_select_group.actions()[0].objectName()=}")
-
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)

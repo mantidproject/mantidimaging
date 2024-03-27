@@ -67,18 +67,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-        print(f"handle_stack_changed: {self.model.tof_data}")
-        if self.model.tof_data is None:
-            self.view.tof_mode_select_group.setEnabled(False)
-        else:
-            self.view.tof_mode_select_group.setEnabled(True)
-        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
-        for action in self.view.tof_mode_select_group.actions():
-            with QSignalBlocker(action):
-                if action.objectName() == 'Image Index':
-                    action.setChecked(True)
-                else:
-                    action.setChecked(False)
+        self.reset_units_menu()
         self.model.set_relevant_tof_units()
         self.show_new_sample()
         self.redraw_all_rois()
@@ -103,18 +92,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
-        print(f"handle_sample_changed: {self.model.tof_data}")
-        if self.model.tof_data is None:
-            self.view.tof_mode_select_group.setEnabled(False)
-        else:
-            self.view.tof_mode_select_group.setEnabled(True)
-        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
-        for action in self.view.tof_mode_select_group.actions():
-            with QSignalBlocker(action):
-                if action.objectName() == 'Image Index':
-                    action.setChecked(True)
-                else:
-                    action.setChecked(False)
+        self.reset_units_menu()
         self.model.set_relevant_tof_units()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
@@ -129,6 +107,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
         self.view.on_visibility_change()
+
+    def reset_units_menu(self):
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
+        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        for action in self.view.tof_mode_select_group.actions():
+            with QSignalBlocker(action):
+                if action.objectName() == 'Image Index':
+                    action.setChecked(True)
+                else:
+                    action.setChecked(False)
 
     def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -174,14 +165,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
-        print(f"handle_range_slide_moved: tof_range={tof_range}")
         self.model.tof_plot_range = tof_range
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
             image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
             image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
-            print(f"{(image_index_min, image_index_max)=}")
             self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
@@ -358,12 +347,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_tof_unit_change(self) -> None:
         selected_mode = self.view.tof_mode_select_group.checkedAction().text()
-        print(f"{selected_mode=}")
         self.model.tof_mode = self.view.allowed_modes[selected_mode]
-        print(f"{self.model.tof_mode=}")
-        print(f"1: {self.model.tof_data=}")
         self.model.set_relevant_tof_units()
-        print(f"2: {self.model.tof_data=}")
         tof_mode = self.model.tof_mode
         tof_axis_label = ""
         if tof_mode == ToFUnitMode.IMAGE_NUMBER:
