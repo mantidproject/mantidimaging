@@ -1,0 +1,16 @@
+mantidimaging.gui.widgets.palette\_changer package
+==================================================
+
+.. automodule:: mantidimaging.gui.widgets.palette_changer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.palette_changer.presenter
+   mantidimaging.gui.widgets.palette_changer.view

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.stack_visualiser.presenter - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_visualiser.presenter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.stack_visualiser.presenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">Images</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operation_history</span> <span class="kn">import</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">SVModel</span>
+<span class="kn">from</span> <span class="nn">...utility.common</span> <span class="kn">import</span> <span class="n">operation_in_progress</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">MixedDataset</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.view</span> <span class="kn">import</span> <span class="n">StackVisualiserView</span>  <span class="c1"># pragma: no cover</span>
+
+
+<div class="viewcode-block" id="SVNotification">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification">[docs]</a>
+<span class="k">class</span> <span class="nc">SVNotification</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">REFRESH_IMAGE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">TOGGLE_IMAGE_MODE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">SWAP_AXES</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DUPE_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DUPE_STACK_ROI</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SVParameters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">SVParameters</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stack Visualiser parameters that the Stack Visualiser presenter can retrieve</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ROI</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="SVImageMode">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVImageMode">[docs]</a>
+<span class="k">class</span> <span class="nc">SVImageMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">NORMAL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SUMMED</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter">[docs]</a>
+<span class="k">class</span> <span class="nc">StackVisualiserPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+    <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;StackVisualiserView&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;StackVisualiserView&#39;</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Images</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">SVModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_image_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span><span class="p">:</span> <span class="n">SVImageMode</span> <span class="o">=</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">NORMAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="StackVisualiserPresenter.notify">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">SVNotification</span><span class="o">.</span><span class="n">REFRESH_IMAGE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh_image</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">SVNotification</span><span class="o">.</span><span class="n">TOGGLE_IMAGE_MODE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_image_mode</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">SVNotification</span><span class="o">.</span><span class="n">SWAP_AXES</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_swapped_axis_stack</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dupe_stack</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK_ROI</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dupe_stack_roi</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.delete_data">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.delete_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.get_image">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Images</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">index_as_images</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.refresh_image">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.refresh_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">refresh_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="ow">is</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">SUMMED</span> \
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.get_parameter_value">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_parameter_value">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_parameter_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="n">SVParameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).</span>
+<span class="sd">        :param parameter: The parameter value to be retrieved</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameter</span> <span class="o">==</span> <span class="n">SVParameters</span><span class="o">.</span><span class="n">ROI</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_roi</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid parameter name has been requested from the Stack &quot;</span>
+                             <span class="s2">&quot;Visualiser, parameter: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.toggle_image_mode">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.toggle_image_mode">[docs]</a>
+    <span class="k">def</span> <span class="nf">toggle_image_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="ow">is</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="o">=</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">SUMMED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="o">=</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">NORMAL</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="ow">is</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">SUMMED</span> <span class="ow">and</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="ow">is</span> <span class="kc">None</span>
+                 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sum_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_image</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.create_swapped_axis_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.create_swapped_axis_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_swapped_axis_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Creating sinograms, copying data, this may take a while&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+            <span class="n">new_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">new_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_sino&quot;</span>
+            <span class="n">new_stack</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_AXES_SWAP</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Axes Swapped&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_sinograms_to_model_and_update_view</span><span class="p">(</span><span class="n">new_stack</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.dupe_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">dupe_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Copying data, this may take a while&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.dupe_stack_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">dupe_stack_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Copying data, this may take a while&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+            <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy_roi</span><span class="p">(</span><span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()))</span>
+            <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.add_mixed_dataset_to_model_and_update_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_mixed_dataset_to_model_and_update_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Images</span><span class="p">):</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">MixedDataset</span><span class="p">([</span><span class="n">images</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_dataset_to_model</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">create_mixed_dataset_tree_view_items</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">create_mixed_dataset_stack_windows</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.get_num_images">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_num_images">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_num_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">num_projections</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.find_image_from_angle">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.find_image_from_angle">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_image_from_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">selected_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">selected_angle</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">angle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="n">selected_angle</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserPresenter.add_sinograms_to_model_and_update_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_sinograms_to_model_and_update_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_sinograms_to_model_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_stack</span><span class="p">:</span> <span class="n">Images</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_sinograms_to_dataset_and_update_view</span><span class="p">(</span><span class="n">new_stack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="presenter.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_visualiser.presenter</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

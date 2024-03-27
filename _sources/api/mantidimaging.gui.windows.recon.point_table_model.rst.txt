@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.recon.point\_table\_model module
+==========================================================
+
+.. automodule:: mantidimaging.gui.windows.recon.point_table_model
+   :members:
+   :undoc-members:
+   :show-inheritance:

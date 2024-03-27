@@ -1,0 +1,7 @@
+mantidimaging.core.utility.close\_enough\_point module
+======================================================
+
+.. automodule:: mantidimaging.core.utility.close_enough_point
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.recon.model - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.recon.model</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.recon.model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operation_history</span> <span class="kn">import</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.divide</span> <span class="kn">import</span> <span class="n">DivideFilter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct</span> <span class="kn">import</span> <span class="n">get_reconstructor_for</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.astra_recon</span> <span class="kn">import</span> <span class="n">allowed_recon_kwargs</span> <span class="k">as</span> <span class="n">astra_allowed_kwargs</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.tomopy_recon</span> <span class="kn">import</span> <span class="n">allowed_recon_kwargs</span> <span class="k">as</span> <span class="n">tomopy_allowed_kwargs</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.cil_recon</span> <span class="kn">import</span> <span class="n">allowed_recon_kwargs</span> <span class="k">as</span> <span class="n">cil_allowed_kwargs</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.rotation.polyfit_correlation</span> <span class="kn">import</span> <span class="n">find_center</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.cuda_check</span> <span class="kn">import</span> <span class="n">CudaChecker</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Degrees</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Slope</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.recon.point_table_model</span> <span class="kn">import</span> <span class="n">CorTiltPointQtModel</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel">[docs]</a>
+<span class="k">class</span> <span class="nc">ReconstructWindowModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_model</span><span class="p">:</span> <span class="n">CorTiltPointQtModel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preview_projection_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preview_slice_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span> <span class="o">=</span> <span class="n">data_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+
+    <span class="nd">@last_result</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">last_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_row</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_row</span>
+
+    <span class="nd">@selected_row</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">selected_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_row</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">preview_projection_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preview_projection_idx</span>
+
+    <span class="nd">@preview_projection_idx</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">preview_projection_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preview_projection_idx</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">preview_slice_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preview_slice_idx</span>
+
+    <span class="nd">@preview_slice_idx</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">preview_slice_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preview_slice_idx</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_cor</span>
+
+    <span class="nd">@last_cor</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">last_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_cor</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">has_results</span>
+
+<div class="viewcode-block" id="ReconstructWindowModel.get_results">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_results">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">,</span> <span class="n">Slope</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">angle_in_degrees</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">gradient</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">num_points</span>
+
+<div class="viewcode-block" id="ReconstructWindowModel.initial_select_data">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.initial_select_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">initial_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="s1">&#39;ImageStack&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_cor_model</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.reset_cor_model">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_cor_model">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_cor_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">clear_results</span><span class="p">()</span>
+
+        <span class="n">slice_idx</span><span class="p">,</span> <span class="n">cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_initial_cor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cor</span> <span class="o">=</span> <span class="n">cor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_projection_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_slice_idx</span> <span class="o">=</span> <span class="n">slice_idx</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.find_initial_cor">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.find_initial_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_initial_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ScalarCoR</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">first_slice_to_recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">h_middle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">first_slice_to_recon</span><span class="p">,</span> <span class="n">cor</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.do_fit">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.do_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Ensure we have some sample data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No image stack is provided&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">linear_regression</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_COR_TILT_FINDING</span><span class="p">,</span>
+                                     <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;Calculated COR/Tilt&quot;</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">stack_properties</span><span class="p">)</span>
+
+        <span class="c1"># Cache last result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">stack_properties</span>
+
+        <span class="c1"># Async task needs a non-None result of some sort</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.run_preview_recon">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_preview_recon">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_preview_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
+                          <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
+                          <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+        <span class="c1"># Ensure we have some sample data</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Perform single slice reconstruction</span>
+        <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
+        <span class="n">output_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="o">.</span><span class="n">create_empty_image_stack</span><span class="p">(</span><span class="n">output_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">recon</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">),</span>
+                                                  <span class="n">cor</span><span class="p">,</span>
+                                                  <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">),</span>
+                                                  <span class="n">recon_params</span><span class="p">,</span>
+                                                  <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+        <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">recon</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.run_full_recon">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_full_recon">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_full_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+        <span class="c1"># Ensure we have some sample data</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
+        <span class="c1"># get the image height based on the current ROI</span>
+        <span class="n">recon</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">get_all_cors_from_regression</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">recon_params</span><span class="p">,</span>
+                                   <span class="n">progress</span><span class="p">)</span>
+
+        <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">recon</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">recon</span> <span class="o">=</span> <span class="n">DivideFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micron&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+            <span class="c1"># update the reconstructed stack pixel size with the value actually used for division</span>
+            <span class="n">recon</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span>
+            <span class="n">recon</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="n">DivideFilter</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                   <span class="n">DivideFilter</span><span class="o">.</span><span class="n">filter_name</span><span class="p">,</span>
+                                   <span class="n">value</span><span class="o">=</span><span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span>
+                                   <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micron&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">recon</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tilt_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Degrees</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">has_results</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">angle_in_degrees</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">cors</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">slices</span>
+
+<div class="viewcode-block" id="ReconstructWindowModel.load_allowed_recon_kwargs">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.load_allowed_recon_kwargs">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_allowed_recon_kwargs</span><span class="p">():</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">tomopy_allowed_kwargs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">CudaChecker</span><span class="p">()</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="p">():</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">astra_allowed_kwargs</span><span class="p">())</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cil_allowed_kwargs</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.get_allowed_filters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_allowed_filters">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_allowed_filters</span><span class="p">(</span><span class="n">alg_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">alg_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">allowed_filters</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.get_me_a_cor">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_me_a_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># a rotation has been passed in!</span>
+            <span class="k">return</span> <span class="n">cor</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_results</span><span class="p">:</span>
+            <span class="n">cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cor_for_slice_from_regression</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise just use the last cached CoR</span>
+            <span class="n">cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_cor</span>
+        <span class="k">return</span> <span class="n">cor</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.get_cor_for_slice_from_regression">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_cor_for_slice_from_regression">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_cor_for_slice_from_regression</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">get_cor_from_regression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_slice_idx</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.reset_selected_row">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_selected_row">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_selected_row</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.set_precalculated">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.set_precalculated">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_precalculated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">set_precalculated</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">stack_properties</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.is_current_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_current_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="s2">&quot;uuid.UUID&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_id</span> <span class="o">==</span> <span class="n">uuid</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.get_slice_indices">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_slice_indices">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_cors</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]]:</span>
+        <span class="c1"># used to crop off 20% off the top and bottom, which is usually noise/empty</span>
+        <span class="n">remove_a_bit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.2</span>
+        <span class="n">slices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">remove_a_bit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">remove_a_bit</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num_cors</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">,</span> <span class="n">slices</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.auto_find_minimisation_sqsum">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_minimisation_sqsum">[docs]</a>
+    <span class="k">def</span> <span class="nf">auto_find_minimisation_sqsum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
+                                     <span class="n">initial_cor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param slices: Slice indices to be reconstructed</span>
+<span class="sd">        :param recon_params: Reconstruction parameters</span>
+<span class="sd">        :param initial_cor: Initial COR for the slices. Will be used as the start for the minimisation.</span>
+<span class="sd">                            If a float is passed it will be used for all slices.</span>
+<span class="sd">                            If a list is passed, the COR will be retrieved for each slice.</span>
+<span class="sd">        :param progress: Progress reporter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Ensure we have some sample data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">initial_cor</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_cor</span><span class="p">),</span> <span class="s2">&quot;A COR for each slice index being reconstructed must be provided&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># why be efficient when you can be lazy?</span>
+            <span class="n">initial_cor</span> <span class="o">=</span> <span class="p">[</span><span class="n">initial_cor</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span>
+
+        <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">))</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Calculating COR for slice </span><span class="si">{</span><span class="n">slices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">cors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="nb">slice</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices</span><span class="p">):</span>
+            <span class="n">cor</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">find_cor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="n">cors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Calculating COR for slice </span><span class="si">{</span><span class="nb">slice</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cors</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.auto_find_correlation">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation">[docs]</a>
+    <span class="k">def</span> <span class="nf">auto_find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">find_center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.proj_180_degree_shape_matches_images">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">proj_180_degree_shape_matches_images</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">height</span> \
+               <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">width</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.stack_contains_nans">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_nans">[docs]</a>
+    <span class="k">def</span> <span class="nf">stack_contains_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.stack_contains_zeroes">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_zeroes">[docs]</a>
+    <span class="k">def</span> <span class="nf">stack_contains_zeroes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowModel.stack_contains_negative_values">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_negative_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">stack_contains_negative_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stack_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="model.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.recon.model</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

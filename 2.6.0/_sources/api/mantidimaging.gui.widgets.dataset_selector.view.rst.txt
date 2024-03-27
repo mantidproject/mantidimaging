@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.dataset\_selector.view module
+=======================================================
+
+.. automodule:: mantidimaging.gui.widgets.dataset_selector.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

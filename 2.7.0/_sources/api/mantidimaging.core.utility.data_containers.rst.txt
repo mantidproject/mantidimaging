@@ -1,0 +1,7 @@
+mantidimaging.core.utility.data\_containers module
+==================================================
+
+.. automodule:: mantidimaging.core.utility.data_containers
+   :members:
+   :undoc-members:
+   :show-inheritance:

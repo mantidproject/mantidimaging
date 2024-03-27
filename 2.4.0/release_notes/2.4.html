@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Mantid Imaging 2.4 - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.3" href="2.3.html" />
+    <link rel="prev" title="Mantid Imaging next release" href="next.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.3.html" title="Mantid Imaging 2.3"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="next.html" title="Mantid Imaging next release"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.4</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mantid-imaging-2-4">
+<h1>Mantid Imaging 2.4<a class="headerlink" href="#mantid-imaging-2-4" title="Link to this heading">¶</a></h1>
+<p>This release brings some significant new features:</p>
+<dl class="simple">
+<dt>Windows support</dt><dd><p>This release contains initial Windows support. It should be fully functional, although may have performance differences compared to Linux. It can be installed using conda (See <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a>). We are interested in user feedback and aim to ship an installer in a future version.</p>
+</dd>
+<dt>NEXUS export</dt><dd><p>MI can now save datasets into the NXtomo and NXtomoproc formats.</p>
+</dd>
+<dt>Operations window improvements</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Angle/Z slider</dt><dd><p>In the operations window there is now a slider to move through images in a stack.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Automatic sinograms</dt><dd><p>It is no longer necessary to manually convert to sinograms to use the stripe removal filters</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Improvements to levels and zoom</dt><dd><p>These are now locked by default to so it is easier to see the effect of changes to filters. They can be unlocked to enable auto scaling.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>Reconstruction improvements</dt><dd><ul class="simple">
+<li><p>CIL PDHG non-negativity constraint</p></li>
+<li><dl class="simple">
+<dt>Line profile</dt><dd><p>Movable line profile through the reconstruction preview</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>Internal changes</dt><dd><p>In order to support Windows MI has switched its multiprocessing implementation from fork to spawn which has required a change from multiprocessing.SharedArray to multiprocessing.shared_memory.</p>
+</dd>
+<dt>Experimental spectrum viewer</dt><dd><p>Some initial work on supporting Time of Flight imaging data.</p>
+</dd>
+</dl>
+<p>Many fixes and clean ups to the code</p>
+<dl class="simple">
+<dt>Removed some unneeded options</dt><dd><ul class="simple">
+<li><p>ROI normalisation - preserve max option</p></li>
+<li><p>Stripe Removal filter (note other 5 stripe removal filters remain)</p></li>
+<li><p>Console progress bar</p></li>
+</ul>
+</dd>
+</dl>
+<p>There have also been many smaller changes and fixes which are listed below.</p>
+<section id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1340 : ROI norm - remove preserve max option</p></li>
+<li><p>#1379 : Add angle/z axis slider in the operations window</p></li>
+<li><p>#1217 : Basic NeXus Saving</p></li>
+<li><p>#1385 : Load all NeXus rotation angles</p></li>
+<li><p>#1394 : NeXus Busy Indicator</p></li>
+<li><p>#1394 : Add .nxs extension to NeXus save path</p></li>
+<li><p>#1399 : NeXus Saving OSError message</p></li>
+<li><p>#1331 : Make MI Windows compatible</p></li>
+<li><p>#1430 : Provide an Anaconda package that is compatible with Windows</p></li>
+<li><p>#1398 : Save recons to NeXus file</p></li>
+<li><p>#1444 : CIL PDHG non-negativity constraint</p></li>
+<li><p>#1483 : Add line profile to reconstruction window</p></li>
+<li><p>#1480 : Automatic sinograms for sinogram operations</p></li>
+<li><p>#1523 : Lock zoom and lock scale selected by default in operations window</p></li>
+<li><p>#1524 : Flat fielding after histogram locks to appropriate range when using lock scale</p></li>
+<li><p>#1583 : Remove sinogram Stripe Removal filter as it is not needed</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1381 : Don’t use console progress bar in GUI application</p></li>
+<li><p>#1405 : MedianFilter work inplace on ImageStack</p></li>
+<li><p>#1395 : Delete file when NeXus saving fails</p></li>
+<li><p>#1397 : Only use real NeXus projection angles</p></li>
+<li><p>#1473 : Tomopy COR finder use -log</p></li>
+<li><p>#1475 : Fix scaling when saving to int</p></li>
+<li><p>#1484 : Clear image previews in open windows when there are no stacks to select</p></li>
+<li><p>#1496 : OutliersFilter IndexError when using sinograms</p></li>
+<li><p>#1515 : Unlink axis in recon window</p></li>
+<li><p>#1351 : Double clicking reconstruct buttons can cause RunTimeError</p></li>
+<li><p>#1562 : Stop reconstruction previews updating when window is closed</p></li>
+<li><p>#1564 : 180 stack not removed from main window when projection stack is deleted</p></li>
+<li><p>#1561 : IndexError in Reconstruction window if select a slice or projection index that’s too high</p></li>
+<li><p>#1565 : Compiler no longer needed for conda install</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1272 : Consistent test class filenames</p></li>
+<li><p>#1352 : Update astra-toolbox and cudatoolkit to allow windows installation</p></li>
+<li><p>#1317 : Unify auto color palette code between MIMiniImageView and MIImageView</p></li>
+<li><p>#1363 : Add auto color menu from constructor in MIMiniImageView</p></li>
+<li><p>#1362 : Rename Images class to ImageStack</p></li>
+<li><p>#1148 : Re-enable coverage checking</p></li>
+<li><p>#1375 : Leak tracking tool</p></li>
+<li><p>#1376 : Fix leak in StackChoiceView</p></li>
+<li><p>#1387 : Fix async task leak</p></li>
+<li><p>#1384 : Remove StackSelectorWidget and StackSelectorDialog</p></li>
+<li><p>#1420 : Save NeXus data without concatenate</p></li>
+<li><p>#1402 : Add GitHub Actions tests for Windows</p></li>
+<li><p>#1449 : Update CIL to 21.4, Astra to 2.0</p></li>
+<li><p>#1341 : Update to python 3.9, numpy 1.20</p></li>
+<li><p>#1509 : Change nametuples to use NamedTuples from typing</p></li>
+<li><p>#1495 : Document the harmless libdlfaker.so errors on IDAaaS</p></li>
+<li><p>#1427 : Update pytest and coverage to latest versions</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mantid Imaging 2.4</a><ul>
+<li><a class="reference internal" href="#new-features">New Features</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#developer-changes">Developer Changes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="next.html"
+                          title="previous chapter">Mantid Imaging next release</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="2.3.html"
+                          title="next chapter">Mantid Imaging 2.3</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="2.4.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/release_notes/2.4.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/release_notes/2.4.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/release_notes/2.4.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.3.html" title="Mantid Imaging 2.3"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="next.html" title="Mantid Imaging next release"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.4</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

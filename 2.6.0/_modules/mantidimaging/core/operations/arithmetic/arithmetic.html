@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.operations.arithmetic.arithmetic - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.arithmetic.arithmetic</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.operations.arithmetic.arithmetic</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">add_property_to_form</span><span class="p">,</span> <span class="n">MAX_SPIN_BOX</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span>
+
+
+<div class="viewcode-block" id="ArithmeticFilter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#mantidimaging.core.operations.arithmetic.arithmetic.ArithmeticFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">ArithmeticFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add, subtract, multiply, or divide all grey values of an image with the given values.</span>
+
+<span class="sd">    Intended to be used on: Any</span>
+
+<span class="sd">    When: If you want to offset or rescale an image.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Arithmetic&quot;</span>
+
+<div class="viewcode-block" id="ArithmeticFilter.filter_func">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#mantidimaging.core.operations.arithmetic.arithmetic.ArithmeticFilter.filter_func">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                    <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+                    <span class="n">div_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">mult_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">add_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">sub_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply arithmetic operations to the pixels.</span>
+<span class="sd">        :param images: The ImageStack object.</span>
+<span class="sd">        :param mult_val: The multiplication value.</span>
+<span class="sd">        :param div_val: The division value.</span>
+<span class="sd">        :param add_val: The addition value.</span>
+<span class="sd">        :param sub_val: The subtraction value.</span>
+<span class="sd">        :param progress: The Progress object isn&#39;t used.</span>
+<span class="sd">        :return: The processed ImageStack object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">div_val</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">mult_val</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to proceed with operation because division/multiplication value is zero.&quot;</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;div&#39;</span><span class="p">:</span> <span class="n">div_val</span><span class="p">,</span> <span class="s1">&#39;mult&#39;</span><span class="p">:</span> <span class="n">mult_val</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span> <span class="n">add_val</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="n">sub_val</span><span class="p">}</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="ArithmeticFilter.compute_function">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#mantidimaging.core.operations.arithmetic.arithmetic.ArithmeticFilter.compute_function">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;mult&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;div&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sub&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ArithmeticFilter.register_gui">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#mantidimaging.core.operations.arithmetic.arithmetic.ArithmeticFilter.register_gui">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="s1">&#39;QFormLayout&#39;</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;BaseMainWindowView&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;QWidget&#39;</span><span class="p">]:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">mult_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Multiply&#39;</span><span class="p">,</span>
+                                                    <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+                                                    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                                    <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                                    <span class="n">default_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                                    <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">MAX_SPIN_BOX</span><span class="p">,</span> <span class="n">MAX_SPIN_BOX</span><span class="p">),</span>
+                                                    <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The multiplication value.&quot;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">div_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Divide&#39;</span><span class="p">,</span>
+                                                   <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+                                                   <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                                   <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                                   <span class="n">default_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                                   <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">MAX_SPIN_BOX</span><span class="p">,</span> <span class="n">MAX_SPIN_BOX</span><span class="p">),</span>
+                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The division value.&quot;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">add_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Add&#39;</span><span class="p">,</span>
+                                                   <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+                                                   <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                                   <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                                   <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                                   <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">MAX_SPIN_BOX</span><span class="p">,</span> <span class="n">MAX_SPIN_BOX</span><span class="p">),</span>
+                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The add value.&quot;</span><span class="p">,</span>
+                                                   <span class="n">single_step_size</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">sub_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Subtract&#39;</span><span class="p">,</span>
+                                                   <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+                                                   <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                                   <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                                   <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                                   <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">MAX_SPIN_BOX</span><span class="p">,</span> <span class="n">MAX_SPIN_BOX</span><span class="p">),</span>
+                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The subtract value.&quot;</span><span class="p">,</span>
+                                                   <span class="n">single_step_size</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+
+        <span class="n">add_input_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">sub_input_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;mult_input_widget&#39;</span><span class="p">:</span> <span class="n">mult_input_widget</span><span class="p">,</span>
+            <span class="s1">&#39;div_input_widget&#39;</span><span class="p">:</span> <span class="n">div_input_widget</span><span class="p">,</span>
+            <span class="s1">&#39;add_input_widget&#39;</span><span class="p">:</span> <span class="n">add_input_widget</span><span class="p">,</span>
+            <span class="s1">&#39;sub_input_widget&#39;</span><span class="p">:</span> <span class="n">sub_input_widget</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ArithmeticFilter.execute_wrapper">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#mantidimaging.core.operations.arithmetic.arithmetic.ArithmeticFilter.execute_wrapper">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+            <span class="n">mult_input_widget</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">div_input_widget</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">add_input_widget</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span>
+            <span class="n">sub_input_widget</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">ArithmeticFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span>
+                       <span class="n">mult_val</span><span class="o">=</span><span class="n">mult_input_widget</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                       <span class="n">div_val</span><span class="o">=</span><span class="n">div_input_widget</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                       <span class="n">add_val</span><span class="o">=</span><span class="n">add_input_widget</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                       <span class="n">sub_val</span><span class="o">=</span><span class="n">sub_input_widget</span><span class="o">.</span><span class="n">value</span><span class="p">())</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="arithmetic.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.arithmetic.arithmetic</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

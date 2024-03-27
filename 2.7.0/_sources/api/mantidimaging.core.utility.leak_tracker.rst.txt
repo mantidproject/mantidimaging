@@ -1,0 +1,7 @@
+mantidimaging.core.utility.leak\_tracker module
+===============================================
+
+.. automodule:: mantidimaging.core.utility.leak_tracker
+   :members:
+   :undoc-members:
+   :show-inheritance:

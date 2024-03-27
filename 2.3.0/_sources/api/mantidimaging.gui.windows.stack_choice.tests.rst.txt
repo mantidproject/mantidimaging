@@ -1,0 +1,17 @@
+mantidimaging.gui.windows.stack\_choice.tests package
+=====================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_choice.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.stack_choice.tests.test_compare_presenter
+   mantidimaging.gui.windows.stack_choice.tests.test_presenter
+   mantidimaging.gui.windows.stack_choice.tests.test_view

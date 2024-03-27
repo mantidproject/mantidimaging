@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.stack_choice.view module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.stack_visualiser package" href="mantidimaging.gui.windows.stack_visualiser.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.stack_choice.presenter_base module" href="mantidimaging.gui.windows.stack_choice.presenter_base.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_visualiser.html" title="mantidimaging.gui.windows.stack_visualiser package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_choice.presenter_base.html" title="mantidimaging.gui.windows.stack_choice.presenter_base module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.stack_choice.html" accesskey="U">mantidimaging.gui.windows.stack_choice package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.stack_choice.view">
+<span id="mantidimaging-gui-windows-stack-choice-view-module"></span><h1>mantidimaging.gui.windows.stack_choice.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.stack_choice.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.stack_choice.view.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_choice/view.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.Notification" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_NEW_DATA">
+<span class="sig-name descname"><span class="pre">CHOOSE_NEW_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_NEW_DATA" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_ORIGINAL">
+<span class="sig-name descname"><span class="pre">CHOOSE_ORIGINAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_ORIGINAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.Notification.TOGGLE_LOCK_HISTOGRAMS">
+<span class="sig-name descname"><span class="pre">TOGGLE_LOCK_HISTOGRAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.Notification.TOGGLE_LOCK_HISTOGRAMS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.stack_choice.view.</span></span><span class="sig-name descname"><span class="pre">StackChoiceView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">presenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.stack_choice.compare_presenter.html#mantidimaging.gui.windows.stack_choice.compare_presenter.StackComparePresenter" title="mantidimaging.gui.windows.stack_choice.compare_presenter.StackComparePresenter"><span class="pre">StackComparePresenter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter" title="mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter"><span class="pre">StackChoicePresenter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QMainWindow</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_choice/view.html#StackChoiceView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMainWindowView</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QCloseEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_choice/view.html#StackChoiceView.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.closeEvent" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.connect_histogram_changes">
+<span class="sig-name descname"><span class="pre">connect_histogram_changes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_choice/view.html#StackChoiceView.connect_histogram_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.connect_histogram_changes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.disconnect_histogram_changes">
+<span class="sig-name descname"><span class="pre">disconnect_histogram_changes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_choice/view.html#StackChoiceView.disconnect_histogram_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.disconnect_histogram_changes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.lockHistograms">
+<span class="sig-name descname"><span class="pre">lockHistograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QCheckBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.lockHistograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.newDataButton">
+<span class="sig-name descname"><span class="pre">newDataButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.newDataButton" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_choice.view.StackChoiceView.originalDataButton">
+<span class="sig-name descname"><span class="pre">originalDataButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.originalDataButton" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.stack_choice.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_NEW_DATA"><code class="docutils literal notranslate"><span class="pre">Notification.CHOOSE_NEW_DATA</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.Notification.CHOOSE_ORIGINAL"><code class="docutils literal notranslate"><span class="pre">Notification.CHOOSE_ORIGINAL</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.Notification.TOGGLE_LOCK_HISTOGRAMS"><code class="docutils literal notranslate"><span class="pre">Notification.TOGGLE_LOCK_HISTOGRAMS</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView"><code class="docutils literal notranslate"><span class="pre">StackChoiceView</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.closeEvent"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.closeEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.connect_histogram_changes"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.connect_histogram_changes()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.disconnect_histogram_changes"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.disconnect_histogram_changes()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.lockHistograms"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.lockHistograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.newDataButton"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.newDataButton</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.originalDataButton"><code class="docutils literal notranslate"><span class="pre">StackChoiceView.originalDataButton</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.stack_choice.presenter_base.html"
+                          title="previous chapter">mantidimaging.gui.windows.stack_choice.presenter_base module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.stack_visualiser.html"
+                          title="next chapter">mantidimaging.gui.windows.stack_visualiser package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.gui.windows.stack_choice.view.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_visualiser.html" title="mantidimaging.gui.windows.stack_visualiser package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_choice.presenter_base.html" title="mantidimaging.gui.windows.stack_choice.presenter_base module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.stack_choice.html" >mantidimaging.gui.windows.stack_choice package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

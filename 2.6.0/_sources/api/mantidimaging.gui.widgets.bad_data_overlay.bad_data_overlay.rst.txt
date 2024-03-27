@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.bad\_data\_overlay.bad\_data\_overlay module
+======================================================================
+
+.. automodule:: mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay
+   :members:
+   :undoc-members:
+   :show-inheritance:

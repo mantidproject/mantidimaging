@@ -1,0 +1,19 @@
+mantidimaging.gui.windows.spectrum\_viewer package
+==================================================
+
+.. automodule:: mantidimaging.gui.windows.spectrum_viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.spectrum_viewer.model
+   mantidimaging.gui.windows.spectrum_viewer.presenter
+   mantidimaging.gui.windows.spectrum_viewer.roi_table_model
+   mantidimaging.gui.windows.spectrum_viewer.spectrum_widget
+   mantidimaging.gui.windows.spectrum_viewer.view

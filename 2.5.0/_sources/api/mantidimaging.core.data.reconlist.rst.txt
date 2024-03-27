@@ -1,0 +1,7 @@
+mantidimaging.core.data.reconlist module
+========================================
+
+.. automodule:: mantidimaging.core.data.reconlist
+   :members:
+   :undoc-members:
+   :show-inheritance:

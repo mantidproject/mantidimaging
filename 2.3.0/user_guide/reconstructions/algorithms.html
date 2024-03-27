@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Reconstruction Algorithms - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reconstruction Filters" href="filters.html" />
+    <link rel="prev" title="Center of Rotation and Tilt" href="center_of_rotation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filters.html" title="Reconstruction Filters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="center_of_rotation.html" title="Center of Rotation and Tilt"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Reconstruction Help page</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Reconstruction Algorithms</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="reconstruction-algorithms">
+<span id="id1"></span><h1>Reconstruction Algorithms<a class="headerlink" href="#reconstruction-algorithms" title="Link to this heading">¶</a></h1>
+<section id="astra-toolbox">
+<h2>ASTRA Toolbox<a class="headerlink" href="#astra-toolbox" title="Link to this heading">¶</a></h2>
+<p>These filters are used from the ASTRA Toolbox package.</p>
+<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html">Link to the original documentation for FBP_CUDA</a>.</p>
+<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html">Link to the original documentation for SIRT_CUDA</a>.</p>
+<p>This is an implementation of the algorithms for 2D data sets. They require a CUDA-compatible graphics card.</p>
+<p>The creation of a projector and geometry is automated inside Mantid Imaging, and parallel beam geometry is assumed.</p>
+<p>The geometry used is the parallel beam vector geometry, which allows tilt to be taken into account via the
+centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn’t be necessary.</p>
+<p>The vector creation code was re-used from <a class="reference external" href="https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70">ToMoBAR</a>.</p>
+<section id="fbp-cuda">
+<h3>FBP_CUDA<a class="headerlink" href="#fbp-cuda" title="Link to this heading">¶</a></h3>
+<p>This algorithm has the option to use different filters to improve reconstruction quality.</p>
+<p>For an evaluation of the filters please go to the <a class="reference internal" href="filters.html#reconstruction-filters"><span class="std std-ref">Reconstruction Filters</span></a> page.</p>
+</section>
+<section id="sirt-cuda">
+<h3>SIRT_CUDA<a class="headerlink" href="#sirt-cuda" title="Link to this heading">¶</a></h3>
+<p>Instead of filters for improving the reconstruction quality, this filter uses number of iterations.</p>
+<p>Have a look at our refine iterations tool on the Reconstruct tab of the Reconstruction window that
+should assist you in finding the optimal number of rotations for your data.</p>
+</section>
+</section>
+<section id="tomopy">
+<h2>TomoPy<a class="headerlink" href="#tomopy" title="Link to this heading">¶</a></h2>
+<section id="gridrec">
+<h3>gridrec<a class="headerlink" href="#gridrec" title="Link to this heading">¶</a></h3>
+<p>This filter is from the TomoPy package.</p>
+<p>The original documentation for gridrec can be found <a class="reference external" href="https://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html#module-tomopy.recon.algorithm">here</a>.</p>
+<p>This is a CPU filter, and does not require a CUDA graphics card to run.</p>
+<p>From the TomoPy documentation, these are the paper references for this filter:</p>
+<ul class="simple">
+<li><p>Dowd BA, Campbell GH, Marr RB, Nagarkar VV, Tipnis SV, Axe L, and Siddons DP. Developments in synchrotron x-ray computed microtomography at the national synchrotron light source. In Proc. SPIE, volume 3772, 224–236. 1999.</p></li>
+<li><p>Rivers ML. Tomorecon: high-speed tomography reconstruction on workstations using multi-threading. In Proc. SPIE, volume 8506, 85060U–85060U–13. 2012.</p></li>
+</ul>
+</section>
+</section>
+<section id="core-imaging-library">
+<h2>Core Imaging Library<a class="headerlink" href="#core-imaging-library" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference external" href="https://www.ccpi.ac.uk/cil">Core Imaging Library (CIL)</a> is an open-source Python framework for tomographic imaging with particular emphasis on reconstruction of challenging datasets.</p>
+<section id="pdhg-tv">
+<h3>PDHG-TV<a class="headerlink" href="#pdhg-tv" title="Link to this heading">¶</a></h3>
+<p>Primal Dual Hybrid Gradient optimiser with Total Variation regularisation. This is an advanced iterative optimised reconstruction algorithm, described in the paper below. The user can adjust regularisation parameter alpha, the figure shows a 2 values of alpha for a reconstructed slice.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../../_images/pdhg_tv_alpha.png"><img alt="PDHG-TV with alpha=0.1 on the left and alpha=10 on the right" src="../../_images/pdhg_tv_alpha.png" style="width: 90%;" /></a>
+<figcaption>
+<p><span class="caption-text">PDHG-TV with alpha=0.1 on the left and alpha=10 on the right</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p>Jørgensen JS et al. 2021 <a class="reference external" href="https://doi.org/10.1098/rsta.2020.0192">Core Imaging Library Part I: a versatile python framework for tomographic imaging</a>. Phil. Trans. R. Soc. A 20200192. Code.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Reconstruction Algorithms</a><ul>
+<li><a class="reference internal" href="#astra-toolbox">ASTRA Toolbox</a><ul>
+<li><a class="reference internal" href="#fbp-cuda">FBP_CUDA</a></li>
+<li><a class="reference internal" href="#sirt-cuda">SIRT_CUDA</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tomopy">TomoPy</a><ul>
+<li><a class="reference internal" href="#gridrec">gridrec</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core-imaging-library">Core Imaging Library</a><ul>
+<li><a class="reference internal" href="#pdhg-tv">PDHG-TV</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="center_of_rotation.html"
+                          title="previous chapter">Center of Rotation and Tilt</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="filters.html"
+                          title="next chapter">Reconstruction Filters</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../index.html">Latest</a></li>
+  <li><a href="algorithms.html">2.3.0</a></li>
+  <li><a href="../../../2.4.0/user_guide/reconstructions/algorithms.html">2.4.0</a></li>
+  <li><a href="../../../2.5.0/user_guide/reconstructions/algorithms.html">2.5.0</a></li>
+  <li><a href="../../../2.6.0/user_guide/reconstructions/algorithms.html">2.6.0</a></li>
+  <li><a href="../../../2.7.0/user_guide/reconstructions/algorithms.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filters.html" title="Reconstruction Filters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="center_of_rotation.html" title="Center of Rotation and Tilt"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Reconstruction Help page</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Reconstruction Algorithms</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

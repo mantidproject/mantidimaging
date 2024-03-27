@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.operations.view module
+================================================
+
+.. automodule:: mantidimaging.gui.windows.operations.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

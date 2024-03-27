@@ -1,0 +1,27 @@
+mantidimaging.gui.windows package
+=================================
+
+.. automodule:: mantidimaging.gui.windows
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.add_images_to_dataset_dialog
+   mantidimaging.gui.windows.image_load_dialog
+   mantidimaging.gui.windows.live_viewer
+   mantidimaging.gui.windows.main
+   mantidimaging.gui.windows.move_stack_dialog
+   mantidimaging.gui.windows.nexus_load_dialog
+   mantidimaging.gui.windows.operations
+   mantidimaging.gui.windows.recon
+   mantidimaging.gui.windows.spectrum_viewer
+   mantidimaging.gui.windows.stack_choice
+   mantidimaging.gui.windows.stack_visualiser
+   mantidimaging.gui.windows.welcome_screen
+   mantidimaging.gui.windows.wizard

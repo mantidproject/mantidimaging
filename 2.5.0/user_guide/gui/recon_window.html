@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Reconstruction Window - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Spectrum Viewer" href="spectrum_viewer.html" />
+    <link rel="prev" title="Operations Window" href="operations_window.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="spectrum_viewer.html" title="Spectrum Viewer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="operations_window.html" title="Operations Window"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Reconstruction Window</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="reconstruction-window">
+<h1>Reconstruction Window<a class="headerlink" href="#reconstruction-window" title="Link to this heading">¶</a></h1>
+<p>The reconstruction window contains the tools for center of rotation (COR) and tilt alignment, beam hardening correction (BHC) and tomographic reconstruction.</p>
+<a class="reference internal image-reference" href="../../_images/recon_window.png"><img alt="Operations dialog" src="../../_images/recon_window.png" style="width: 100%;" /></a>
+<p>The main part of the window shows the currently selected stack in projection and sinogram space and a preview reconstruction of the currently selected slice. The slice can be selected by clicking in the projection view or using the controls in the Preview section.</p>
+<p>Underneath the preview reconstruction is a line profile plot. This plots the pixel values of a line region taken from the preview reconstruction. The red line through the middle of the preview can be moved to select the region of interest to plot.
+The handles at either end of the line can be used to resize or change the angle of the line region. The line profile plot gives greater visibility of the detail of the reconstruction preview and the effect of changes in reconstruction parameters.
+Once moved, the line can be reset to its original position by right clicking the reconstruction preview image and selecting <em>Reset Profile Line</em> from the menu.</p>
+<p>Previews are automatically updated when parameters are changed. For reconstructions that take a long time to run, such as iterative algorithms, it is worthwhile to disable the Auto Update option and trigger preview updates manually using the Update Now button.</p>
+<section id="cor-and-tilt">
+<h2>COR and Tilt<a class="headerlink" href="#cor-and-tilt" title="Link to this heading">¶</a></h2>
+<p>Is described in the section <a class="reference internal" href="../reconstructions/center_of_rotation.html#center-of-rotation"><span class="std std-ref">Center of Rotation and Tilt</span></a></p>
+</section>
+<section id="beam-hardening-correction">
+<h2>Beam Hardening Correction<a class="headerlink" href="#beam-hardening-correction" title="Link to this heading">¶</a></h2>
+<p>Mantid Imaging implements a linearization correction to compensate for the beam hardening effect. This is applied to the projection pixel values before being passed to the reconstruction algorithm. First we convert from transmission to line density as normal:</p>
+<div class="math notranslate nohighlight">
+\[s = -log(I)\]</div>
+<p>then a polynomial correction is applied:</p>
+<div class="math notranslate nohighlight">
+\[s' = s + a_0\, s^2 + a_1\, s^3 + a_2\, s^4 + a_3\, s^5\]</div>
+<p>The coefficients <span class="math notranslate nohighlight">\(a_0, a_1, a_2, a_3\)</span> can be input by the user on the BHC tab in the reconstruction window.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Reconstruction Window</a><ul>
+<li><a class="reference internal" href="#cor-and-tilt">COR and Tilt</a></li>
+<li><a class="reference internal" href="#beam-hardening-correction">Beam Hardening Correction</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="operations_window.html"
+                          title="previous chapter">Operations Window</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="spectrum_viewer.html"
+                          title="next chapter">Spectrum Viewer</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../index.html">Latest</a></li>
+  <li><a href="../../../2.3.0/user_guide/gui/recon_window.html">2.3.0</a></li>
+  <li><a href="../../../2.4.0/user_guide/gui/recon_window.html">2.4.0</a></li>
+  <li><a href="recon_window.html">2.5.0</a></li>
+  <li><a href="../../../2.6.0/user_guide/gui/recon_window.html">2.6.0</a></li>
+  <li><a href="../../../2.7.0/user_guide/gui/recon_window.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="spectrum_viewer.html" title="Spectrum Viewer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="operations_window.html" title="Operations Window"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Reconstruction Window</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

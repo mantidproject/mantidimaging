@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.utility.imat_log_file_parser module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.utility.leak_tracker module" href="mantidimaging.core.utility.leak_tracker.html" />
+    <link rel="prev" title="mantidimaging.core.utility.histogram_test module" href="mantidimaging.core.utility.histogram_test.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.leak_tracker.html" title="mantidimaging.core.utility.leak_tracker module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.histogram_test.html" title="mantidimaging.core.utility.histogram_test module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" accesskey="U">mantidimaging.core.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.imat_log_file_parser module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.utility.imat_log_file_parser">
+<span id="mantidimaging-core-utility-imat-log-file-parser-module"></span><h1>mantidimaging.core.utility.imat_log_file_parser module<a class="headerlink" href="#module-mantidimaging.core.utility.imat_log_file_parser" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.CSVLogParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.imat_log_file_parser.</span></span><span class="sig-name descname"><span class="pre">CSVLogParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#CSVLogParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE">
+<span class="sig-name descname"><span class="pre">EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TIME</span> <span class="pre">STAMP,IMAGE</span> <span class="pre">TYPE,IMAGE</span> <span class="pre">COUNTER,COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image,COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image\n'</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn" title="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn"><span class="pre">IMATLogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#CSVLogParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.parse" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_insert_header">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_insert_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#CSVLogParser.try_insert_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_insert_header" title="Link to this definition">¶</a></dt>
+<dd><p>Attempt to normalise data where no header is present by inserting one.</p>
+<p>&#64;param file_contents: The file contents to be reformatted
+&#64;return: The reformatted file contents</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_remove_invalid_lines">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_remove_invalid_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#CSVLogParser.try_remove_invalid_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_remove_invalid_lines" title="Link to this definition">¶</a></dt>
+<dd><p>Attempt to normalise data where invalid lines are the incorrect number of columns are present.</p>
+<p>&#64;param file_contents: The file contents to be reformatted
+&#64;return: The reformatted file contents</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.imat_log_file_parser.</span></span><span class="sig-name descname"><span class="pre">IMATLogColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_AFTER">
+<span class="sig-name descname"><span class="pre">COUNTS_AFTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_AFTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_BEFORE">
+<span class="sig-name descname"><span class="pre">COUNTS_BEFORE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_BEFORE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER">
+<span class="sig-name descname"><span class="pre">IMAGE_TYPE_IMAGE_COUNTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_ANGLE">
+<span class="sig-name descname"><span class="pre">PROJECTION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_ANGLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_NUMBER">
+<span class="sig-name descname"><span class="pre">PROJECTION_NUMBER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_NUMBER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.TIMESTAMP">
+<span class="sig-name descname"><span class="pre">TIMESTAMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.TIMESTAMP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.imat_log_file_parser.</span></span><span class="sig-name descname"><span class="pre">IMATLogFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Counts" title="mantidimaging.core.utility.data_containers.Counts"><span class="pre">Counts</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.counts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.find_parser">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.find_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.find_parser" title="Link to this definition">¶</a></dt>
+<dd><p>Try and determine the format of the log file by checking the first row. for the type of seperator used and then
+attempting to normalise the data if needed before selecting the appropriate parser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.get_seperator">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_seperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.get_seperator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.get_seperator" title="Link to this definition">¶</a></dt>
+<dd><p>Try and determine the seperator used in the log file.
+If neither a tab or comma is found, then return a RuntimeError
+as the format is not recognised.</p>
+<p>&#64;param data: The file contents to be checked
+&#64;return: The seperator used in the file
+Exception: RuntimeError if the format is not recognised</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_angles">
+<span class="sig-name descname"><span class="pre">projection_angles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_angles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_numbers">
+<span class="sig-name descname"><span class="pre">projection_numbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.projection_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_numbers" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.raise_if_angle_missing">
+<span class="sig-name descname"><span class="pre">raise_if_angle_missing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_filenames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#IMATLogFile.raise_if_angle_missing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.raise_if_angle_missing" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.source_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.source_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.TextLogParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.imat_log_file_parser.</span></span><span class="sig-name descname"><span class="pre">TextLogParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#TextLogParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE">
+<span class="sig-name descname"><span class="pre">EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'</span> <span class="pre">TIME</span> <span class="pre">STAMP</span>&#160; <span class="pre">IMAGE</span> <span class="pre">TYPE</span>&#160;&#160; <span class="pre">IMAGE</span> <span class="pre">COUNTER</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image\n'</span></em><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.TextLogParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn" title="mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn"><span class="pre">IMATLogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#TextLogParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.parse" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_insert_header">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_insert_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#TextLogParser.try_insert_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_insert_header" title="Link to this definition">¶</a></dt>
+<dd><p>Attempt to normalise data where no header is present by inserting one.</p>
+<p>&#64;param file_contents: The file contents to be reformatted
+&#64;return: The reformatted file contents</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_remove_invalid_lines">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_remove_invalid_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_contents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/imat_log_file_parser.html#TextLogParser.try_remove_invalid_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_remove_invalid_lines" title="Link to this definition">¶</a></dt>
+<dd><p>Attempt to normalise data where invalid lines are the incorrect number of columns are present.</p>
+<p>&#64;param file_contents: The file contents to be reformatted
+&#64;return: The reformatted file contents</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.utility.imat_log_file_parser module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser"><code class="docutils literal notranslate"><span class="pre">CSVLogParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE"><code class="docutils literal notranslate"><span class="pre">CSVLogParser.EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.parse"><code class="docutils literal notranslate"><span class="pre">CSVLogParser.parse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_insert_header"><code class="docutils literal notranslate"><span class="pre">CSVLogParser.try_insert_header()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_remove_invalid_lines"><code class="docutils literal notranslate"><span class="pre">CSVLogParser.try_remove_invalid_lines()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_AFTER"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.COUNTS_AFTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.COUNTS_BEFORE"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.COUNTS_BEFORE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.IMAGE_TYPE_IMAGE_COUNTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_ANGLE"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.PROJECTION_ANGLE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.PROJECTION_NUMBER"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.PROJECTION_NUMBER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn.TIMESTAMP"><code class="docutils literal notranslate"><span class="pre">IMATLogColumn.TIMESTAMP</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile"><code class="docutils literal notranslate"><span class="pre">IMATLogFile</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.counts"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.counts()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.find_parser"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.find_parser()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.get_seperator"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.get_seperator()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_angles"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_numbers"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.projection_numbers()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.raise_if_angle_missing"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.raise_if_angle_missing()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.source_file"><code class="docutils literal notranslate"><span class="pre">IMATLogFile.source_file</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser"><code class="docutils literal notranslate"><span class="pre">TextLogParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE"><code class="docutils literal notranslate"><span class="pre">TextLogParser.EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.parse"><code class="docutils literal notranslate"><span class="pre">TextLogParser.parse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_insert_header"><code class="docutils literal notranslate"><span class="pre">TextLogParser.try_insert_header()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_remove_invalid_lines"><code class="docutils literal notranslate"><span class="pre">TextLogParser.try_remove_invalid_lines()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.histogram_test.html"
+                          title="previous chapter">mantidimaging.core.utility.histogram_test module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.leak_tracker.html"
+                          title="next chapter">mantidimaging.core.utility.leak_tracker module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.core.utility.imat_log_file_parser.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.leak_tracker.html" title="mantidimaging.core.utility.leak_tracker module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.histogram_test.html" title="mantidimaging.core.utility.histogram_test module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" >mantidimaging.core.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.imat_log_file_parser module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

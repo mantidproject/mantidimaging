@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.add_images_to_dataset_dialog.view module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.image_load_dialog package" href="mantidimaging.gui.windows.image_load_dialog.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter module" href="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.image_load_dialog.html" title="mantidimaging.gui.windows.image_load_dialog package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html" title="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.html" accesskey="U">mantidimaging.gui.windows.add_images_to_dataset_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.add_images_to_dataset_dialog.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.add_images_to_dataset_dialog.view">
+<span id="mantidimaging-gui-windows-add-images-to-dataset-dialog-view-module"></span><h1>mantidimaging.gui.windows.add_images_to_dataset_dialog.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.add_images_to_dataset_dialog.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.add_images_to_dataset_dialog.view.</span></span><span class="sig-name descname"><span class="pre">AddImagesToDatasetDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/add_images_to_dataset_dialog/view.html#AddImagesToDatasetDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView" title="mantidimaging.gui.mvp_base.view.BaseDialogView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDialogView</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.chooseFileButton">
+<span class="sig-name descname"><span class="pre">chooseFileButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.chooseFileButton" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.choose_file_path">
+<span class="sig-name descname"><span class="pre">choose_file_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/add_images_to_dataset_dialog/view.html#AddImagesToDatasetDialog.choose_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.choose_file_path" title="Link to this definition">¶</a></dt>
+<dd><p>Select a file in the stack path that we wish to add/replace in the dataset.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.datasetNameText">
+<span class="sig-name descname"><span class="pre">datasetNameText</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.datasetNameText" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.dataset_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dataset_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.dataset_id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ID of the parent dataset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.filePathLineEdit">
+<span class="sig-name descname"><span class="pre">filePathLineEdit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLineEdit</span></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.filePathLineEdit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.imageTypeComboBox">
+<span class="sig-name descname"><span class="pre">imageTypeComboBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.imageTypeComboBox" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.images_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">images_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.images_type" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The name of the image stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.path" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The path string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.add_images_to_dataset_dialog.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.chooseFileButton"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.chooseFileButton</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.choose_file_path"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.choose_file_path()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.datasetNameText"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.datasetNameText</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.dataset_id"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.dataset_id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.filePathLineEdit"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.filePathLineEdit</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.imageTypeComboBox"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.imageTypeComboBox</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.images_type"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.images_type</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.path"><code class="docutils literal notranslate"><span class="pre">AddImagesToDatasetDialog.path</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html"
+                          title="previous chapter">mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.image_load_dialog.html"
+                          title="next chapter">mantidimaging.gui.windows.image_load_dialog package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.view.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.image_load_dialog.html" title="mantidimaging.gui.windows.image_load_dialog package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html" title="mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.add_images_to_dataset_dialog.html" >mantidimaging.gui.windows.add_images_to_dataset_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.add_images_to_dataset_dialog.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

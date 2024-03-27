@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.tools.abstract_tool module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.tools.importer module" href="mantidimaging.core.tools.importer.html" />
+    <link rel="prev" title="mantidimaging.core.tools package" href="mantidimaging.core.tools.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.tools.importer.html" title="mantidimaging.core.tools.importer module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.tools.html" title="mantidimaging.core.tools package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.tools.html" accesskey="U">mantidimaging.core.tools package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.tools.abstract_tool module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.tools.abstract_tool">
+<span id="mantidimaging-core-tools-abstract-tool-module"></span><h1>mantidimaging.core.tools.abstract_tool module<a class="headerlink" href="#module-mantidimaging.core.tools.abstract_tool" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.tools.abstract_tool.AbstractTool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.tools.abstract_tool.</span></span><span class="sig-name descname"><span class="pre">AbstractTool</span></span><a class="reference internal" href="../_modules/mantidimaging/core/tools/abstract_tool.html#AbstractTool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.tools.abstract_tool.AbstractTool" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The AbstractTool class requires the tools to know how to import themselves,
+and how to run their reconstructions.</p>
+<p>Currently there can only be one reconstruction tool supported, and this
+might have to be changed in future revisions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.tools.abstract_tool.AbstractTool.check_algorithm_compatibility">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_algorithm_compatibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/tools/abstract_tool.html#AbstractTool.check_algorithm_compatibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.check_algorithm_compatibility" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.tools.abstract_tool.AbstractTool.import_self">
+<span class="sig-name descname"><span class="pre">import_self</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/tools/abstract_tool.html#AbstractTool.import_self"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.import_self" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.tools.abstract_tool.AbstractTool.run_reconstruct">
+<span class="sig-name descname"><span class="pre">run_reconstruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj_angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/tools/abstract_tool.html#AbstractTool.run_reconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.run_reconstruct" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.tools.abstract_tool.AbstractTool.tool_supported_methods">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tool_supported_methods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/tools/abstract_tool.html#AbstractTool.tool_supported_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.tool_supported_methods" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.tools.abstract_tool module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.tools.abstract_tool.AbstractTool"><code class="docutils literal notranslate"><span class="pre">AbstractTool</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.check_algorithm_compatibility"><code class="docutils literal notranslate"><span class="pre">AbstractTool.check_algorithm_compatibility()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.import_self"><code class="docutils literal notranslate"><span class="pre">AbstractTool.import_self()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.run_reconstruct"><code class="docutils literal notranslate"><span class="pre">AbstractTool.run_reconstruct()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.tools.abstract_tool.AbstractTool.tool_supported_methods"><code class="docutils literal notranslate"><span class="pre">AbstractTool.tool_supported_methods()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.tools.html"
+                          title="previous chapter">mantidimaging.core.tools package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.tools.importer.html"
+                          title="next chapter">mantidimaging.core.tools.importer module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.core.tools.abstract_tool.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.tools.importer.html" title="mantidimaging.core.tools.importer module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.tools.html" title="mantidimaging.core.tools package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.tools.html" >mantidimaging.core.tools package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.tools.abstract_tool module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

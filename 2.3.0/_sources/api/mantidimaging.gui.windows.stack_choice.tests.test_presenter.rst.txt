@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.stack\_choice.tests.test\_presenter module
+====================================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_choice.tests.test_presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

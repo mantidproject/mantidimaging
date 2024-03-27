@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.stack_visualiser.view module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.welcome_screen package" href="mantidimaging.gui.windows.welcome_screen.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.stack_visualiser.presenter module" href="mantidimaging.gui.windows.stack_visualiser.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.welcome_screen.html" title="mantidimaging.gui.windows.welcome_screen package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_visualiser.presenter.html" title="mantidimaging.gui.windows.stack_visualiser.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.stack_visualiser.html" accesskey="U">mantidimaging.gui.windows.stack_visualiser package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_visualiser.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.stack_visualiser.view">
+<span id="mantidimaging-gui-windows-stack-visualiser-view-module"></span><h1>mantidimaging.gui.windows.stack_visualiser.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.stack_visualiser.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.stack_visualiser.view.</span></span><span class="sig-name descname"><span class="pre">StackVisualiserView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDockWidget</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.actions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">actions</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.actions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.ask_confirmation">
+<span class="sig-name descname"><span class="pre">ask_confirmation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.ask_confirmation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.ask_confirmation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.build_context_menu">
+<span class="sig-name descname"><span class="pre">build_context_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QMenu</span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.build_context_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.build_context_menu" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.change_window_name_clicked">
+<span class="sig-name descname"><span class="pre">change_window_name_clicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.change_window_name_clicked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.change_window_name_clicked" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.cleanup" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QCloseEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.closeEvent" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.context_actions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">context_actions</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.context_actions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.copy_roi_to_clipboard">
+<span class="sig-name descname"><span class="pre">copy_roi_to_clipboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.copy_roi_to_clipboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.copy_roi_to_clipboard" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.current_roi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_roi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.current_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_angle">
+<span class="sig-name descname"><span class="pre">goto_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.goto_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_angle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_projection">
+<span class="sig-name descname"><span class="pre">goto_projection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.goto_projection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_projection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image_view">
+<span class="sig-name descname"><span class="pre">image_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView" title="mantidimaging.gui.widgets.mi_image_view.view.MIImageView"><span class="pre">MIImageView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image_view" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.main_window">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_window</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.main_window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.mark_as_sinograms">
+<span class="sig-name descname"><span class="pre">mark_as_sinograms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.mark_as_sinograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.mark_as_sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.presenter">
+<span class="sig-name descname"><span class="pre">presenter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter" title="mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter"><span class="pre">StackVisualiserPresenter</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.presenter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_changed_callback">
+<span class="sig-name descname"><span class="pre">roi_changed_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.roi_changed_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_changed_callback" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_updated">
+<span class="sig-name descname"><span class="pre">roi_updated</span></span><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_updated" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.set_roi">
+<span class="sig-name descname"><span class="pre">set_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.set_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.set_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_image_metadata">
+<span class="sig-name descname"><span class="pre">show_image_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.show_image_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_image_metadata" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_op_history_copy_dialog">
+<span class="sig-name descname"><span class="pre">show_op_history_copy_dialog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/stack_visualiser/view.html#StackVisualiserView.show_op_history_copy_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_op_history_copy_dialog" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.stack_visualiser.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.actions"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.actions</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.ask_confirmation"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.ask_confirmation()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.build_context_menu"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.build_context_menu()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.change_window_name_clicked"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.change_window_name_clicked()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.cleanup"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.cleanup()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.closeEvent"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.closeEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.context_actions"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.context_actions</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.copy_roi_to_clipboard"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.copy_roi_to_clipboard()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.current_roi"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.current_roi</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_angle"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.goto_angle()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_projection"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.goto_projection()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.id"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.image</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image_view"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.image_view</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.main_window"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.main_window</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.mark_as_sinograms"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.mark_as_sinograms()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.name"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.presenter"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.presenter</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_changed_callback"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.roi_changed_callback()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_updated"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.roi_updated</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.set_roi"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.set_roi()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_image_metadata"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.show_image_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_op_history_copy_dialog"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.show_op_history_copy_dialog()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.stack_visualiser.presenter.html"
+                          title="previous chapter">mantidimaging.gui.windows.stack_visualiser.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.welcome_screen.html"
+                          title="next chapter">mantidimaging.gui.windows.welcome_screen package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.gui.windows.stack_visualiser.view.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.welcome_screen.html" title="mantidimaging.gui.windows.welcome_screen package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.stack_visualiser.presenter.html" title="mantidimaging.gui.windows.stack_visualiser.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.stack_visualiser.html" >mantidimaging.gui.windows.stack_visualiser package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_visualiser.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

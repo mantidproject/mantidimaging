@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.recon.model module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.recon.point_table_model module" href="mantidimaging.gui.windows.recon.point_table_model.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.recon.image_view module" href="mantidimaging.gui.windows.recon.image_view.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.recon.point_table_model.html" title="mantidimaging.gui.windows.recon.point_table_model module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.recon.image_view.html" title="mantidimaging.gui.windows.recon.image_view module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.recon.html" accesskey="U">mantidimaging.gui.windows.recon package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.recon.model module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.recon.model">
+<span id="mantidimaging-gui-windows-recon-model-module"></span><h1>mantidimaging.gui.windows.recon.model module<a class="headerlink" href="#module-mantidimaging.gui.windows.recon.model" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.recon.model.</span></span><span class="sig-name descname"><span class="pre">ReconstructWindowModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel" title="mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel"><span class="pre">CorTiltPointQtModel</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation">
+<span class="sig-name descname"><span class="pre">auto_find_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.auto_find_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_minimisation_sqsum">
+<span class="sig-name descname"><span class="pre">auto_find_minimisation_sqsum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ReconstructionParameters" title="mantidimaging.core.utility.data_containers.ReconstructionParameters"><span class="pre">ReconstructionParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.auto_find_minimisation_sqsum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_minimisation_sqsum" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slices</strong> – Slice indices to be reconstructed</p></li>
+<li><p><strong>recon_params</strong> – Reconstruction parameters</p></li>
+<li><p><strong>initial_cor</strong> – Initial COR for the slices. Will be used as the start for the minimisation.
+If a float is passed it will be used for all slices.
+If a list is passed, the COR will be retrieved for each slice.</p></li>
+<li><p><strong>progress</strong> – Progress reporter</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.cors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.cors" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.do_fit">
+<span class="sig-name descname"><span class="pre">do_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.do_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.do_fit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.find_initial_cor">
+<span class="sig-name descname"><span class="pre">find_initial_cor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.find_initial_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.find_initial_cor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_allowed_filters">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_allowed_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.get_allowed_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_allowed_filters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_cor_for_slice_from_regression">
+<span class="sig-name descname"><span class="pre">get_cor_for_slice_from_regression</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.get_cor_for_slice_from_regression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_cor_for_slice_from_regression" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor">
+<span class="sig-name descname"><span class="pre">get_me_a_cor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.get_me_a_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_results">
+<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Slope" title="mantidimaging.core.utility.data_containers.Slope"><span class="pre">Slope</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.get_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_results" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_slice_indices">
+<span class="sig-name descname"><span class="pre">get_slice_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_cors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.get_slice_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_slice_indices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.has_results">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.has_results" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.images">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.images" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.initial_select_data">
+<span class="sig-name descname"><span class="pre">initial_select_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.initial_select_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.initial_select_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack">
+<span class="sig-name descname"><span class="pre">is_current_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">uuid.UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.is_current_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.last_cor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_cor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.last_cor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.load_allowed_recon_kwargs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_allowed_recon_kwargs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.load_allowed_recon_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.load_allowed_recon_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.num_points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_points</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.num_points" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_projection_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">preview_projection_idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_projection_idx" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_slice_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">preview_slice_idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_slice_idx" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proj_180_degree_shape_matches_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.proj_180_degree_shape_matches_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_cor_model">
+<span class="sig-name descname"><span class="pre">reset_cor_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.reset_cor_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_cor_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_selected_row">
+<span class="sig-name descname"><span class="pre">reset_selected_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.reset_selected_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_selected_row" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_full_recon">
+<span class="sig-name descname"><span class="pre">run_full_recon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recon_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ReconstructionParameters" title="mantidimaging.core.utility.data_containers.ReconstructionParameters"><span class="pre">ReconstructionParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.run_full_recon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_full_recon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_preview_recon">
+<span class="sig-name descname"><span class="pre">run_preview_recon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ReconstructionParameters" title="mantidimaging.core.utility.data_containers.ReconstructionParameters"><span class="pre">ReconstructionParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.run_preview_recon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_preview_recon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.selected_row">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.selected_row" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.set_precalculated">
+<span class="sig-name descname"><span class="pre">set_precalculated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.set_precalculated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.set_precalculated" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.slices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.slices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_nans">
+<span class="sig-name descname"><span class="pre">stack_contains_nans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.stack_contains_nans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_nans" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_negative_values">
+<span class="sig-name descname"><span class="pre">stack_contains_negative_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.stack_contains_negative_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_negative_values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_zeroes">
+<span class="sig-name descname"><span class="pre">stack_contains_zeroes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/model.html#ReconstructWindowModel.stack_contains_zeroes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_zeroes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack_id</span></span><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.model.ReconstructWindowModel.tilt_angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.tilt_angle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.recon.model module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.auto_find_correlation()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_minimisation_sqsum"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.auto_find_minimisation_sqsum()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.cors"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.cors</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.do_fit"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.do_fit()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.find_initial_cor"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.find_initial_cor()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_allowed_filters"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.get_allowed_filters()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_cor_for_slice_from_regression"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.get_cor_for_slice_from_regression()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_me_a_cor"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.get_me_a_cor()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_results"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.get_results()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.get_slice_indices"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.get_slice_indices()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.has_results"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.has_results</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.images"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.images</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.initial_select_data"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.initial_select_data()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.is_current_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.last_cor"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.last_cor</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.load_allowed_recon_kwargs"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.load_allowed_recon_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.num_points"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.num_points</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_projection_idx"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.preview_projection_idx</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.preview_slice_idx"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.preview_slice_idx</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.proj_180_degree_shape_matches_images()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_cor_model"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.reset_cor_model()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.reset_selected_row"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.reset_selected_row()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_full_recon"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.run_full_recon()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_preview_recon"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.run_preview_recon()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.selected_row"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.selected_row</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.set_precalculated"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.set_precalculated()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.slices"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.slices</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_nans"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.stack_contains_nans()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_negative_values"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.stack_contains_negative_values()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_zeroes"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.stack_contains_zeroes()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_id"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.stack_id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.tilt_angle"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowModel.tilt_angle</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.recon.image_view.html"
+                          title="previous chapter">mantidimaging.gui.windows.recon.image_view module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.recon.point_table_model.html"
+                          title="next chapter">mantidimaging.gui.windows.recon.point_table_model module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.gui.windows.recon.model.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.recon.point_table_model.html" title="mantidimaging.gui.windows.recon.point_table_model module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.recon.image_view.html" title="mantidimaging.gui.windows.recon.image_view module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.recon.html" >mantidimaging.gui.windows.recon package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.recon.model module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

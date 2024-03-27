@@ -1,0 +1,7 @@
+mantidimaging.core.utility.sensible\_roi module
+===============================================
+
+.. automodule:: mantidimaging.core.utility.sensible_roi
+   :members:
+   :undoc-members:
+   :show-inheritance:

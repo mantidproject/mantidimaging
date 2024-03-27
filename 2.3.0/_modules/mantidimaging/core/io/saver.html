@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.io.saver - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.saver</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.io.saver</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span>
+<span class="kn">from</span> <span class="nn">..data.images</span> <span class="kn">import</span> <span class="n">Images</span>
+<span class="kn">from</span> <span class="nn">..operations.rescale</span> <span class="kn">import</span> <span class="n">RescaleFilter</span>
+<span class="kn">from</span> <span class="nn">..utility.data_containers</span> <span class="kn">import</span> <span class="n">Indices</span>
+<span class="kn">from</span> <span class="nn">..utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DEFAULT_ZFILL_LENGTH</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">DEFAULT_NAME_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;image&#39;</span>
+<span class="n">DEFAULT_NAME_POSTFIX</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">INT16_SIZE</span> <span class="o">=</span> <span class="mi">65536</span>
+
+
+<div class="viewcode-block" id="write_fits">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.write_fits">[docs]</a>
+<span class="k">def</span> <span class="nf">write_fits</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
+    <span class="n">hdu</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">PrimaryHDU</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">HDUList</span><span class="p">([</span><span class="n">hdu</span><span class="p">])</span>
+    <span class="n">hdulist</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_img">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.write_img">[docs]</a>
+<span class="k">def</span> <span class="nf">write_img</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.special_imports</span> <span class="kn">import</span> <span class="n">import_skimage_io</span>
+    <span class="n">skio</span> <span class="o">=</span> <span class="n">import_skimage_io</span><span class="p">()</span>
+    <span class="n">skio</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_nxs">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.write_nxs">[docs]</a>
+<span class="k">def</span> <span class="nf">write_nxs</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">projection_angles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">h5py</span>
+    <span class="n">nxs</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="c1"># appending flat and dark images is disabled for now</span>
+    <span class="c1"># new shape to account for appending flat and dark images</span>
+    <span class="c1"># correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])</span>
+
+    <span class="n">dset</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;tomography/sample_data&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">dset</span><span class="p">[:</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:]</span>
+    <span class="c1"># left here if we decide to start appending the flat and dark images again</span>
+    <span class="c1"># dset[-2] = flat[:]</span>
+    <span class="c1"># dset[-1] = dark[:]</span>
+
+    <span class="k">if</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rangle</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;tomography/rotation_angle&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">projection_angles</span><span class="p">)</span>
+        <span class="n">rangle</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">projection_angles</span></div>
+
+
+
+<div class="viewcode-block" id="save">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.save">[docs]</a>
+<span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">Images</span><span class="p">,</span>
+         <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+         <span class="n">name_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_PREFIX</span><span class="p">,</span>
+         <span class="n">swap_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">out_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span><span class="p">,</span>
+         <span class="n">overwrite_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="n">custom_idx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">zfill_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_ZFILL_LENGTH</span><span class="p">,</span>
+         <span class="n">name_postfix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_POSTFIX</span><span class="p">,</span>
+         <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Indices</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">pixel_depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Progress</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save image volume (3d) into a series of slices along the Z axis.</span>
+<span class="sd">    The Z axis in the script is the ndarray.shape[0].</span>
+
+<span class="sd">    :param images: Data as images/slices stores in numpy array</span>
+<span class="sd">    :param output_dir: Output directory for the files</span>
+<span class="sd">    :param name_prefix: Prefix for the names of the images,</span>
+<span class="sd">           appended before the image number</span>
+<span class="sd">    :param swap_axes: Swap the 0 and 1 axis of the images</span>
+<span class="sd">           (convert from radiograms to sinograms on saving)</span>
+<span class="sd">    :param out_format: File format of the saved out images</span>
+<span class="sd">    :param overwrite_all: Overwrite existing images with conflicting names</span>
+<span class="sd">    :param custom_idx: Single index to be used for the file name,</span>
+<span class="sd">           instead of incremental numbers</span>
+<span class="sd">    :param zfill_len: This option is ignored if custom_idx is specified!</span>
+<span class="sd">           Prepend zeros to the output file names to have a</span>
+<span class="sd">           constant file name length. Example:</span>
+<span class="sd">           - saving out an image with zfill_len = 6:</span>
+<span class="sd">           saved_image000001,...saved_image000201 and so on</span>
+<span class="sd">           - saving out an image with zfill_len = 3:</span>
+<span class="sd">           saved_image001,...saved_image201 and so on</span>
+<span class="sd">    :param name_postfix: Postfix for the name after the index</span>
+<span class="sd">    :param indices: Only works if custom_idx is not specified.</span>
+<span class="sd">           Specify the start and end range of the indices</span>
+<span class="sd">           which will be used for the file names.</span>
+<span class="sd">    :param progress: Passed to ensure progress during saving is tracked properly</span>
+<span class="sd">    :param pixel_depth: Defines the target pixel depth of the save operation so</span>
+<span class="sd">           np.float32 or np.int16 will ensure the values are scaled</span>
+<span class="sd">           correctly to these values.</span>
+<span class="sd">    :returns: The filename/filenames of the saved data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Save&#39;</span><span class="p">)</span>
+
+    <span class="c1"># expand the path for plugins that don&#39;t do it themselves</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">output_dir</span><span class="p">))</span>
+    <span class="n">make_dirs_if_needed</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">)</span>
+
+    <span class="c1"># Define current parameters</span>
+    <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">int_16_slope</span> <span class="o">=</span> <span class="n">max_value</span> <span class="o">/</span> <span class="n">INT16_SIZE</span>
+
+    <span class="c1"># Do rescale if needed.</span>
+    <span class="k">if</span> <span class="n">pixel_depth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;float32&quot;</span><span class="p">:</span>
+        <span class="n">rescale_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
+        <span class="c1"># turn the offset to string otherwise json throws a TypeError when trying to save float32</span>
+        <span class="n">rescale_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">min_value</span><span class="p">),</span> <span class="s2">&quot;slope&quot;</span><span class="p">:</span> <span class="n">int_16_slope</span><span class="p">}</span>
+        <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">&quot;offset = </span><span class="si">{offset}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> slope = </span><span class="si">{slope}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">rescale_params</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The pixel depth given is not handled: &quot;</span> <span class="o">+</span> <span class="n">pixel_depth</span><span class="p">)</span>
+
+    <span class="c1"># Save metadata</span>
+    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name_prefix</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Metadata filename: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metadata_filename</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metadata_filename</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">images</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">rescale_params</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">if</span> <span class="n">swap_axes</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nxs&#39;</span><span class="p">]:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name_prefix</span> <span class="o">+</span> <span class="n">name_postfix</span><span class="p">)</span>
+        <span class="n">write_nxs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.nxs&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite_all</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;fits&#39;</span><span class="p">]:</span>
+            <span class="n">write_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">write_fits</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># pass all other formats to skimage</span>
+            <span class="n">write_func</span> <span class="o">=</span> <span class="n">write_img</span>
+
+        <span class="n">num_images</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">set_estimated_steps</span><span class="p">(</span><span class="n">num_images</span><span class="p">)</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="n">generate_names</span><span class="p">(</span><span class="n">name_prefix</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">num_images</span><span class="p">,</span> <span class="n">custom_idx</span><span class="p">,</span> <span class="n">zfill_len</span><span class="p">,</span> <span class="n">name_postfix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+            <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
+                <span class="c1"># Overwrite images with the copy that has been rescaled.</span>
+                <span class="k">if</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
+                    <span class="n">write_func</span><span class="p">(</span>
+                        <span class="n">rescale_single_image</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span>
+                                             <span class="n">min_input</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+                                             <span class="n">max_input</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+                                             <span class="n">max_output</span><span class="o">=</span><span class="n">INT16_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">write_func</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
+
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Image&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">names</span></div>
+
+
+
+<div class="viewcode-block" id="rescale_single_image">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.rescale_single_image">[docs]</a>
+<span class="k">def</span> <span class="nf">rescale_single_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">min_input</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_input</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_output</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_single_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">max_output</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_names">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.generate_names">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_names</span><span class="p">(</span><span class="n">name_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                   <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Indices</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                   <span class="n">num_images</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                   <span class="n">custom_idx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">zfill_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_ZFILL_LENGTH</span><span class="p">,</span>
+                   <span class="n">name_postfix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_POSTFIX</span><span class="p">,</span>
+                   <span class="n">out_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">start_index</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">custom_idx</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">custom_idx</span>
+        <span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start_index</span><span class="p">)</span>
+        <span class="n">increment</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
+        <span class="c1"># create the file name, and use the format as extension</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name_prefix</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfill_len</span><span class="p">)</span> <span class="o">+</span> <span class="n">name_postfix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">out_format</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="n">increment</span>
+    <span class="k">return</span> <span class="n">names</span></div>
+
+
+
+<div class="viewcode-block" id="make_dirs_if_needed">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.make_dirs_if_needed">[docs]</a>
+<span class="k">def</span> <span class="nf">make_dirs_if_needed</span><span class="p">(</span><span class="n">dirname</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes sure that the directory needed (for example to save a file)</span>
+<span class="sd">    exists, otherwise creates it.</span>
+
+<span class="sd">    :param dirname :: (output) directory to check</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dirname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">dirname</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_all</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The output directory is NOT empty:</span><span class="si">{0}</span><span class="se">\n</span><span class="s2">This can be &quot;</span>
+                           <span class="s2">&quot;overridden by specifying &#39;Overwrite on name conflict&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../index.html">Latest</a></li>
+  <li><a href="saver.html">2.3.0</a></li>
+  <li><a href="../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.saver</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

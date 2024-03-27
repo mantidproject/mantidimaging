@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.dialogs.async_task.presenter module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.dialogs.async_task.task module" href="mantidimaging.gui.dialogs.async_task.task.html" />
+    <link rel="prev" title="mantidimaging.gui.dialogs.async_task.model module" href="mantidimaging.gui.dialogs.async_task.model.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.async_task.task.html" title="mantidimaging.gui.dialogs.async_task.task module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.async_task.model.html" title="mantidimaging.gui.dialogs.async_task.model module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.async_task.html" accesskey="U">mantidimaging.gui.dialogs.async_task package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.async_task.presenter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.dialogs.async_task.presenter">
+<span id="mantidimaging-gui-dialogs-async-task-presenter-module"></span><h1>mantidimaging.gui.dialogs.async_task.presenter module<a class="headerlink" href="#module-mantidimaging.gui.dialogs.async_task.presenter" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.dialogs.async_task.presenter.</span></span><span class="sig-name descname"><span class="pre">AsyncTaskDialogPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code>, <a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler" title="mantidimaging.core.utility.progress_reporting.progress.ProgressHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressHandler</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.do_start_processing">
+<span class="sig-name descname"><span class="pre">do_start_processing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.do_start_processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.do_start_processing" title="Link to this definition">¶</a></dt>
+<dd><p>Starts async task execution and shows GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.notify" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update">
+<span class="sig-name descname"><span class="pre">progress_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.progress_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated">
+<span class="sig-name descname"><span class="pre">progress_updated</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_on_complete">
+<span class="sig-name descname"><span class="pre">set_on_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.set_on_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_on_complete" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_parameters">
+<span class="sig-name descname"><span class="pre">set_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.set_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_parameters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_task">
+<span class="sig-name descname"><span class="pre">set_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.set_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_task" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_tracker">
+<span class="sig-name descname"><span class="pre">set_tracker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.12)"><span class="pre">Set</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.set_tracker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_tracker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_is_running</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.dialogs.async_task.presenter.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.Notification" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.Notification.START">
+<span class="sig-name descname"><span class="pre">START</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.Notification.START" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.dialogs.async_task.presenter module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.do_start_processing"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.do_start_processing()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.notify"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.notify()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.progress_update()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.progress_updated</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_on_complete"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.set_on_complete()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_parameters"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.set_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_task"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.set_task()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_tracker"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.set_tracker()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.task_is_running</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.async_task.presenter.Notification.START"><code class="docutils literal notranslate"><span class="pre">Notification.START</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.async_task.model.html"
+                          title="previous chapter">mantidimaging.gui.dialogs.async_task.model module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.async_task.task.html"
+                          title="next chapter">mantidimaging.gui.dialogs.async_task.task module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.gui.dialogs.async_task.presenter.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.async_task.task.html" title="mantidimaging.gui.dialogs.async_task.task module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.async_task.model.html" title="mantidimaging.gui.dialogs.async_task.model module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.async_task.html" >mantidimaging.gui.dialogs.async_task package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.async_task.presenter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

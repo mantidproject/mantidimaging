@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Developer Guide - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Documentation" href="documentation.html" />
+    <link rel="prev" title="Quick start: Example Reconstruction" href="../user_guide/quick_start.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../user_guide/quick_start.html" title="Quick start: Example Reconstruction"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Developer Guide</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="developer-guide">
+<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">¶</a></h1>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<p>You will need conda/mamba, CUDA and gcc installed, see the <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a> instructions.</p>
+<p>First download the Mantid Imaging source code using Git.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/mantidproject/mantidimaging.git</span></code></p>
+<p>If you have a github account you can use ssh access:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:mantidproject/mantidimaging.git</span></code></p>
+<p>To set up a developer environment, from with in the cloned directory run:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">./setup.py</span> <span class="pre">create_dev_env</span></code></p>
+<p>This will create a conda environment containing all the packages needed to run and develop Mantid Imaging. The activate command will activate the environment.</p>
+<p>Afterwards the environment can be activated by running:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">mantidimaging-dev</span></code></p>
+<p>To check that the set up was successful, try running the tests from the source directory:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pytest</span></code></p>
+<p>Mantid Imaging can be run directly from the checked-out git directory:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">mantidimaging</span></code></p>
+<p>or to run with additional diagnostics:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-X</span> <span class="pre">faulthandler</span> <span class="pre">-m</span> <span class="pre">mantidimaging</span> <span class="pre">--log-level</span> <span class="pre">DEBUG</span></code></p>
+</section>
+<section id="command-line-arguments">
+<h2>Command Line Arguments<a class="headerlink" href="#command-line-arguments" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">--log-level</span></code> - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">--version</span></code> - Print the version number and exit.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">--path</span></code> - Set the path for the data you wish to load.</p></li>
+</ul>
+<p>The following command line arguments will only work if a valid path containing images has been given:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">--operation</span></code> - Opens the operation window on start up with the given operation selected in the combo box. The operation name should the same was what appears in Mantid Imaging but joined with hyphens in place of spaces. Case insensitive.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">--recon</span></code> - Shows the recon window on start up.</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_conventions.html">Developer Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conda_packaging_and_docker_image.html">Conda Packaging and Docker images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">Creating a Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Developer Guide</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#command-line-arguments">Command Line Arguments</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../user_guide/quick_start.html"
+                          title="previous chapter">Quick start: Example Reconstruction</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="documentation.html"
+                          title="next chapter">Documentation</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/developer_guide/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/developer_guide/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/developer_guide/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/developer_guide/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../user_guide/quick_start.html" title="Quick start: Example Reconstruction"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Developer Guide</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

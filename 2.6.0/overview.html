@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Overview - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="_static/extra.css?v=c0834052" />
+    
+    <script src="_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="MantidImaging" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MantidImaging"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<p>Mantid Imaging contains tools for loading data from neutron imaging experiments, preprocessing to enhance images and tomographic reconstruction into 3 dimensional data that can be output for further analysis.</p>
+<p>Mantid Imaging makes use of a range of algorithms, some from external tools including <a class="reference external" href="http://www.astra-toolbox.com/">Astra</a>, <a class="reference external" href="https://tomopy.readthedocs.io/en/latest/">Tomopy</a>, <a class="reference external" href="https://github.com/algotom/algotom">Algotom</a> and the <a class="reference external" href="https://github.com/TomographicImaging/CIL">Core Imaging Library</a>. Many of these are optimised for multithreading and GPU computing.</p>
+<p>Mantid Imaging is written in Python and requires a CUDA capable GPU for full functionality. It runs on Linux and Windows. See <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a> for more details.</p>
+<p>See the <a class="reference internal" href="user_guide/index.html#user-guide"><span class="std std-ref">User Guide</span></a> for an example taking data from a set of images to full reconstruction.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<section id="operations">
+<h3>Operations<a class="headerlink" href="#operations" title="Link to this heading">¶</a></h3>
+<p>The Operations Window provides a selection of tools and filters to process and enhance the 2D images before running the reconstruction.</p>
+<ul class="simple">
+<li><p>Crop Coordinates</p></li>
+<li><p>Flat-fielding</p></li>
+<li><p>Remove Outliers</p></li>
+<li><p>ROI Normalisation</p></li>
+<li><p>Arithmetic</p></li>
+<li><p>Circular Mask</p></li>
+<li><p>Clip Values</p></li>
+<li><p>Divide</p></li>
+<li><p>Gaussian</p></li>
+<li><p>Median</p></li>
+<li><p>Monitor Normalisation</p></li>
+<li><p>NaN Removal</p></li>
+<li><p>Rebin</p></li>
+<li><p>Rescale</p></li>
+<li><p>Ring Removal</p></li>
+<li><p>Rotate Stack</p></li>
+<li><p>Remove all stripes</p></li>
+<li><p>Remove dead stripes</p></li>
+<li><p>Remove large stripes</p></li>
+<li><p>Remove stripes with filtering</p></li>
+<li><p>Remove stripes with sorting and fitting</p></li>
+</ul>
+<p>More details on using these are available in the <a class="reference internal" href="api.html#api-reference"><span class="std std-ref">API Reference</span></a> and <a class="reference internal" href="user_guide/index.html#user-guide"><span class="std std-ref">User Guide</span></a>.</p>
+</section>
+<section id="reconstruction">
+<h3>Reconstruction<a class="headerlink" href="#reconstruction" title="Link to this heading">¶</a></h3>
+<p>Mantid Imaging offers several reconstruction algorithms</p>
+<ul class="simple">
+<li><p>FBP_CUDA - Filtered Backprojection</p></li>
+<li><p>SIRT_CUDA - Simultaneous Iterative Reconstruction Technique</p></li>
+<li><p>CIL: PDHG-TV - Core Imaging Library</p></li>
+<li><p>gridrec</p></li>
+</ul>
+</section>
+<section id="spectrum-viewer">
+<h3>Spectrum Viewer<a class="headerlink" href="#spectrum-viewer" title="Link to this heading">¶</a></h3>
+<p>Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI.
+The spectrum viewer can be used to export the spectrum of each ROI and its respective coordinates to a separate csv file.</p>
+<p>The spectrum viewer can be accessed from the main menu under “Workflow” &gt; “Spectrum Viewer”.</p>
+</section>
+</section>
+<section id="glossary">
+<h2>Glossary<a class="headerlink" href="#glossary" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>COR</dt><dd><p>Centre of Rotation.</p>
+</dd>
+<dt>Dataset</dt><dd><p>Consists of images stacks plus additional files or metadata, such as flat and dark frames, and log files.</p>
+</dd>
+<dt>Image</dt><dd><p>A single 2D recorded by the experiment. Typically loaded from TIFF files.</p>
+</dd>
+<dt>Image Stack</dt><dd><p>A set of multiple related images, for example images of the same object from a range of angles.</p>
+</dd>
+<dt>Projection</dt><dd><p>The original image formed by the unscattered/unabsorbed neutrons reaching the imaging detector.</p>
+</dd>
+<dt>ROI</dt><dd><p>Region of Interest. A cropped part of an image.</p>
+</dd>
+<dt>Sinogram</dt><dd><p>A projection of all rotations of a single slice through an object. Each point in the slice becomes a sinusoidal line. Also known as a Radon transform.</p>
+</dd>
+<dt>Tomography</dt><dd><p>The process of creating a 3D model if an object from a series 2D images taken at a range angles through it.</p>
+</dd>
+<dt>TOF</dt><dd><p>Time of Flight. The time taken for a neutron to travel from the source to the detector.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#features">Features</a><ul>
+<li><a class="reference internal" href="#operations">Operations</a></li>
+<li><a class="reference internal" href="#reconstruction">Reconstruction</a></li>
+<li><a class="reference internal" href="#spectrum-viewer">Spectrum Viewer</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">MantidImaging</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="installation.html"
+                          title="next chapter">Installation</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href=".././index.html">Latest</a></li>
+  <li><a href="../2.3.0/overview.html">2.3.0</a></li>
+  <li><a href="../2.4.0/overview.html">2.4.0</a></li>
+  <li><a href="../2.5.0/overview.html">2.5.0</a></li>
+  <li><a href="overview.html">2.6.0</a></li>
+  <li><a href="../2.7.0/overview.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MantidImaging"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

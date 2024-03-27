@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.utility.qt_helpers - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.utility.qt_helpers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.utility.qt_helpers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing helper functions relating to PyQt.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">uic</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span>
+                             <span class="n">QMenu</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
+
+<span class="n">MAX_SPIN_BOX</span> <span class="o">=</span> <span class="mi">2147483647</span>
+<span class="n">INPUT_DIALOG_FLAGS</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowSystemMenuHint</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowTitleHint</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span>
+
+
+<div class="viewcode-block" id="BlockQtSignals">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.BlockQtSignals">[docs]</a>
+<span class="k">class</span> <span class="nc">BlockQtSignals</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to block Qt signals from a selection of QWidgets within a context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q_objects</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QObject</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QObject</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q_objects</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">q_objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">q_objects</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">q_objects</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">QObject</span><span class="p">),</span> \
+                <span class="s2">&quot;This class must be used with QObjects&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span> <span class="o">=</span> <span class="n">q_objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">prev</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="compile_ui">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.compile_ui">[docs]</a>
+<span class="k">def</span> <span class="nf">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">,</span> <span class="n">qt_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span>
+    <span class="k">return</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">ui_file</span><span class="p">),</span> <span class="n">qt_obj</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="select_directory">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.select_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">select_directory</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">caption</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;The passed object is of type </span><span class="si">{0}</span><span class="s2">. This function only works with &quot;</span>
+                                          <span class="s2">&quot;QLineEdit&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)))</span>
+
+    <span class="c1"># open file dialog and set the text if file is selected</span>
+    <span class="n">field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="n">caption</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_value_from_qwidget">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.get_value_from_qwidget">[docs]</a>
+<span class="k">def</span> <span class="nf">get_value_from_qwidget</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Type">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.Type">[docs]</a>
+<span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">STR</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">TUPLE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">NONETYPE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">LIST</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">FLOAT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">INT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">CHOICE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">BOOL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">LABEL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">BUTTON</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="on_change_and_disable">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.on_change_and_disable">[docs]</a>
+<span class="k">def</span> <span class="nf">on_change_and_disable</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that</span>
+<span class="sd">    continue increasing when generating a preview image is computationally intensive.</span>
+<span class="sd">    :param widget: The widget to disable.</span>
+<span class="sd">    :param on_change: The method to call when the widget has been changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">widget</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">on_change</span><span class="p">()</span>
+    <span class="n">widget</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_property_to_form">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.add_property_to_form">[docs]</a>
+<span class="k">def</span> <span class="nf">add_property_to_form</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                         <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">valid_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">tooltip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">on_change</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">filters_view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">run_on_press</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">single_step_size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a property to the algorithm dialog.</span>
+
+<span class="sd">    Handles adding basic data options to the UI.</span>
+
+<span class="sd">    :param label: Label that describes the option</span>
+<span class="sd">    :param dtype: Option data type (any of: file, int, float, bool, list)</span>
+<span class="sd">    :param default_value: Optionally select the default value</span>
+<span class="sd">    :param valid_values: Optionally provide the range or selection of valid</span>
+<span class="sd">                         values</span>
+<span class="sd">    :param tooltip: Optional tooltip text to show on property</span>
+<span class="sd">    :param on_change: Function to be called when the property changes</span>
+<span class="sd">    :param form: Form layout to optionally add the new widgets to</span>
+<span class="sd">    :param filters_view: The Filter window view - passed to connect Type.STACK to the stack change events</span>
+<span class="sd">    :param run_on_press: Run this function on press, specialisation for button.</span>
+<span class="sd">    :param single_step_size: Optionally provide a step size for a SpinBox widget.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># By default assume the left hand side widget will be a label</span>
+    <span class="n">left_widget</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">right_widget</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># sanitize default value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">default_value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+        <span class="n">default_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">set_spin_box</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">cast_func</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper function to set default options on a spin box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">valid_values</span><span class="p">:</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="n">valid_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">valid_values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">default_value</span><span class="p">:</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">cast_func</span><span class="p">(</span><span class="n">default_value</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">single_step_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setSingleStep</span><span class="p">(</span><span class="n">single_step_size</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cast_func</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="c1"># Override the default step size for QDoubleSpinBox</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">setSingleStep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">STR</span><span class="p">,</span> <span class="s1">&#39;tuple&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">TUPLE</span><span class="p">,</span> <span class="s1">&#39;NoneType&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">NONETYPE</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">LIST</span><span class="p">]:</span>
+        <span class="c1"># TODO for tuple with numbers add N combo boxes, N = number of tuple members</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tooltip</span><span class="p">)</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">default_value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">:</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setKeyboardTracking</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">set_spin_box</span><span class="p">(</span><span class="n">right_widget</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change_and_disable</span><span class="p">(</span><span class="n">right_widget</span><span class="p">,</span> <span class="n">on_change</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">:</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
+        <span class="n">set_spin_box</span><span class="p">(</span><span class="n">right_widget</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setKeyboardTracking</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change_and_disable</span><span class="p">(</span><span class="n">right_widget</span><span class="p">,</span> <span class="n">on_change</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">BOOL</span><span class="p">:</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">default_value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="s2">&quot;True&quot;</span> <span class="o">==</span> <span class="n">default_value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># have to pick something</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert value </span><span class="si">{</span><span class="n">default_value</span><span class="si">}</span><span class="s2"> to a Boolean.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">stateChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;choice&quot;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">:</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setSizeAdjustPolicy</span><span class="p">(</span><span class="n">QComboBox</span><span class="o">.</span><span class="n">SizeAdjustPolicy</span><span class="o">.</span><span class="n">AdjustToContents</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid_values</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;stack&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">STACK</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
+        <span class="n">right_widget</span> <span class="o">=</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">(</span><span class="n">filters_view</span><span class="p">,</span> <span class="n">show_stacks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;button&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">BUTTON</span><span class="p">:</span>
+        <span class="n">left_widget</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">run_on_press</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">left_widget</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">run_on_press</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">LABEL</span><span class="p">:</span>
+        <span class="c1"># do nothing for label, just use the left widget</span>
+        <span class="k">pass</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown data type&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">tooltip</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">left_widget</span><span class="p">:</span>
+            <span class="n">left_widget</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tooltip</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">right_widget</span><span class="p">:</span>
+            <span class="n">right_widget</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tooltip</span><span class="p">)</span>
+
+    <span class="c1"># right widget check avoids printing debug msg for labels only</span>
+    <span class="k">if</span> <span class="n">tooltip</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">right_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Missing tooltip for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">left_widget</span><span class="p">:</span>
+        <span class="n">left_widget</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Maximum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">right_widget</span><span class="p">:</span>
+        <span class="n">right_widget</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Maximum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+    <span class="c1"># Add to form layout</span>
+    <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">left_widget</span><span class="p">,</span> <span class="n">right_widget</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">left_widget</span><span class="p">,</span> <span class="n">right_widget</span></div>
+
+
+
+<div class="viewcode-block" id="delete_all_widgets_from_layout">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.delete_all_widgets_from_layout">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_all_widgets_from_layout</span><span class="p">(</span><span class="n">lo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes and deletes all child widgets form a layout.</span>
+
+<span class="sd">    :param lo: Layout to clean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># For each item in the layout (removed as iterated)</span>
+    <span class="k">while</span> <span class="n">lo</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">lo</span><span class="o">.</span><span class="n">takeAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Recurse for child layouts</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">QLayout</span><span class="p">):</span>
+            <span class="n">delete_all_widgets_from_layout</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Orphan child widgets (seting a None parent removes them from the</span>
+        <span class="c1"># layout and marks them for deletion)</span>
+        <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="populate_menu">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.populate_menu">[docs]</a>
+<span class="k">def</span> <span class="nf">populate_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">actions_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAction</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">menu_text</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span> <span class="ow">in</span> <span class="n">actions_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">menu_text</span><span class="p">,</span> <span class="n">menu</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="qt_helpers.html">2.6.0</a></li>
+  <li><a href="../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.utility.qt_helpers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

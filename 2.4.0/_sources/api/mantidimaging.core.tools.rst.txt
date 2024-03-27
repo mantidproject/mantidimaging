@@ -1,0 +1,17 @@
+mantidimaging.core.tools package
+================================
+
+.. automodule:: mantidimaging.core.tools
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.tools.abstract_tool
+   mantidimaging.core.tools.importer
+   mantidimaging.core.tools.tomopy_tool

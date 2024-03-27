@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.io.instrument_log_implmentations module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.io.saver module" href="mantidimaging.core.io.saver.html" />
+    <link rel="prev" title="mantidimaging.core.io.instrument_log module" href="mantidimaging.core.io.instrument_log.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.saver.html" title="mantidimaging.core.io.saver module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log.html" title="mantidimaging.core.io.instrument_log module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" accesskey="U">mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log_implmentations module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.io.instrument_log_implmentations">
+<span id="mantidimaging-core-io-instrument-log-implmentations-module"></span><h1>mantidimaging.core.io.instrument_log_implmentations module<a class="headerlink" href="#module-mantidimaging.core.io.instrument_log_implmentations" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log_implmentations.</span></span><span class="sig-name descname"><span class="pre">LegacyIMATLogFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacyIMATLogFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a></p>
+<p>Wrap existing IMATLogFile class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacyIMATLogFile.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the name and content of the file is likely to be readable by this parser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacyIMATLogFile.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the log file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_imat_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacyIMATLogFile.read_imat_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log_implmentations.</span></span><span class="sig-name descname"><span class="pre">LegacySpectraLogParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacySpectraLogParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a></p>
+<p>Parser for spectra files without a header</p>
+<p>Tab separated columns of Time of flight [s], Counts</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.delimiter">
+<span class="sig-name descname"><span class="pre">delimiter</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\t'</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.delimiter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacySpectraLogParser.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the name and content of the file is likely to be readable by this parser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log_implmentations.html#LegacySpectraLogParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the log file</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.io.instrument_log_implmentations module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.match()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.parse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.read_imat_date()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser"><code class="docutils literal notranslate"><span class="pre">LegacySpectraLogParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.delimiter"><code class="docutils literal notranslate"><span class="pre">LegacySpectraLogParser.delimiter</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match"><code class="docutils literal notranslate"><span class="pre">LegacySpectraLogParser.match()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.parse"><code class="docutils literal notranslate"><span class="pre">LegacySpectraLogParser.parse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.instrument_log.html"
+                          title="previous chapter">mantidimaging.core.io.instrument_log module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.saver.html"
+                          title="next chapter">mantidimaging.core.io.saver module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.core.io.instrument_log_implmentations.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.saver.html" title="mantidimaging.core.io.saver module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log.html" title="mantidimaging.core.io.instrument_log module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" >mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log_implmentations module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

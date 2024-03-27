@@ -1,0 +1,17 @@
+mantidimaging.gui.dialogs.op\_history\_copy package
+===================================================
+
+.. automodule:: mantidimaging.gui.dialogs.op_history_copy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.dialogs.op_history_copy.model
+   mantidimaging.gui.dialogs.op_history_copy.presenter
+   mantidimaging.gui.dialogs.op_history_copy.view

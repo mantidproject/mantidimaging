@@ -1,0 +1,26 @@
+mantidimaging.gui.windows.stack\_choice package
+===============================================
+
+.. automodule:: mantidimaging.gui.windows.stack_choice
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.stack_choice.tests
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.stack_choice.compare_presenter
+   mantidimaging.gui.windows.stack_choice.presenter
+   mantidimaging.gui.windows.stack_choice.presenter_base
+   mantidimaging.gui.windows.stack_choice.view

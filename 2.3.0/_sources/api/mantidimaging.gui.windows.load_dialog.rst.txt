@@ -1,0 +1,17 @@
+mantidimaging.gui.windows.load\_dialog package
+==============================================
+
+.. automodule:: mantidimaging.gui.windows.load_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.load_dialog.field
+   mantidimaging.gui.windows.load_dialog.presenter
+   mantidimaging.gui.windows.load_dialog.view

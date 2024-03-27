@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.spectrum_viewer.spectrum_widget - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">,</span> <span class="n">LinearRegionItem</span><span class="p">,</span> <span class="n">ROI</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.close_enough_point</span> <span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.view</span> <span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>
+
+
+<div class="viewcode-block" id="SpectrumWidget">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget">[docs]</a>
+<span class="k">class</span> <span class="nc">SpectrumWidget</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span>
+    <span class="n">spectrum</span><span class="p">:</span> <span class="n">PlotItem</span>
+    <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
+    <span class="n">roi</span><span class="p">:</span> <span class="n">ROI</span>
+
+    <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">roi_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="s1">&#39;SpectrumViewerWindowView&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Projection&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addPlot</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ci</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setRowStretchFactor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ci</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setRowStretchFactor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span> <span class="o">=</span> <span class="n">LinearRegionItem</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_tof_range_changed</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span> <span class="o">=</span> <span class="n">ROI</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rotatable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaleSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translateSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpectrumWidget.add_range">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.add_range">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_min</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">range_max</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="o">.</span><span class="n">setBounds</span><span class="p">((</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="o">.</span><span class="n">setRegion</span><span class="p">((</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_tof_range_label</span><span class="p">(</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumWidget.get_tof_range">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.get_tof_range">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tof_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="n">r_min</span><span class="p">,</span> <span class="n">r_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">r_min</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumWidget.add_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.add_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">maxBounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">parentBounds</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumWidget.get_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.get_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_tof_range_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_min</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">range_max</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ToF range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_tof_range_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tof_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tof_range</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_tof_range_label</span><span class="p">(</span><span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">tof_range</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpectrumWidget.clear_data">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.clear_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="spectrum_widget.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

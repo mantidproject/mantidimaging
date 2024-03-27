@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.operations.nan_removal.nan_removal module - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.operations.outliers package" href="mantidimaging.core.operations.outliers.html" />
+    <link rel="prev" title="mantidimaging.core.operations.nan_removal package" href="mantidimaging.core.operations.nan_removal.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.outliers.html" title="mantidimaging.core.operations.outliers package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.nan_removal.html" title="mantidimaging.core.operations.nan_removal package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.nan_removal.html" accesskey="U">mantidimaging.core.operations.nan_removal package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.nan_removal.nan_removal module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.operations.nan_removal.nan_removal">
+<span id="mantidimaging-core-operations-nan-removal-nan-removal-module"></span><h1>mantidimaging.core.operations.nan_removal.nan_removal module<a class="headerlink" href="#module-mantidimaging.core.operations.nan_removal.nan_removal" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.nan_removal.nan_removal.</span></span><span class="sig-name descname"><span class="pre">NaNRemovalFilter</span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/nan_removal/nan_removal.html#NaNRemovalFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter" title="mantidimaging.core.operations.base_filter.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Replaces the NaNs with a specified value or the median of neighbouring pixels.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: To remove NaNs before reconstruction.</p>
+<p>Note that the median method cannot remove continuous blocks of NaNs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.MODES">
+<span class="sig-name descname"><span class="pre">MODES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Constant',</span> <span class="pre">'Median']</span></em><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.MODES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.execute_wrapper">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_value_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/nan_removal/nan_removal.html#NaNRemovalFilter.execute_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.execute_wrapper" title="Link to this definition">¶</a></dt>
+<dd><p>Should construct a partial call to _filter_func using values taken from the widgets passed to this function
+as kwargs.
+:param kwargs: widgets which contain values required for _filter_func.
+:return: a partial call to _filter_func using parameters taken from the input widgets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_func">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Constant'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/nan_removal/nan_removal.html#NaNRemovalFilter.filter_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_func" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The input data.</p></li>
+<li><p><strong>mode_value</strong> – Values to replace NaNs with. One of [“Constant”, “Median”]</p></li>
+<li><p><strong>replace_value</strong> – In constant mode, the value to replace NaNs with.</p></li>
+<li><p><strong>progress</strong> – The optional Progress object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ImageStack object with the NaNs replaced.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_name">
+<span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NaN</span> <span class="pre">Removal'</span></em><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.link_histograms">
+<span class="sig-name descname"><span class="pre">link_histograms</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.link_histograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.register_gui">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_gui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFormLayout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><span class="pre">BaseMainWindowView</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'QWidget'</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/nan_removal/nan_removal.html#NaNRemovalFilter.register_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.register_gui" title="Link to this definition">¶</a></dt>
+<dd><p>Adds any required input widgets to the given form and returns references to them.</p>
+<p>The return values should be in a dict which can be unpacked as kwargs for a call to
+the operations <cite>execute_wrapper</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>view</strong> – </p></li>
+<li><p><strong>form</strong> – the layout to create input widgets in</p></li>
+<li><p><strong>on_change</strong> – the filter view action to be bound to all created inputs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the widgets bound as kwargs which are needed to call execute_wrapper</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.nan_removal.nan_removal.enable_correct_fields_only">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.nan_removal.nan_removal.</span></span><span class="sig-name descname"><span class="pre">enable_correct_fields_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_value_field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/nan_removal/nan_removal.html#enable_correct_fields_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.nan_removal.nan_removal.enable_correct_fields_only" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.operations.nan_removal.nan_removal module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.MODES"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.MODES</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.execute_wrapper()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.filter_func()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.filter_name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.link_histograms"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.link_histograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.register_gui"><code class="docutils literal notranslate"><span class="pre">NaNRemovalFilter.register_gui()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.nan_removal.nan_removal.enable_correct_fields_only"><code class="docutils literal notranslate"><span class="pre">enable_correct_fields_only()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.nan_removal.html"
+                          title="previous chapter">mantidimaging.core.operations.nan_removal package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.outliers.html"
+                          title="next chapter">mantidimaging.core.operations.outliers package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="mantidimaging.core.operations.nan_removal.nan_removal.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.outliers.html" title="mantidimaging.core.operations.outliers package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.nan_removal.html" title="mantidimaging.core.operations.nan_removal package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.nan_removal.html" >mantidimaging.core.operations.nan_removal package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.nan_removal.nan_removal module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

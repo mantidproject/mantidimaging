@@ -1,0 +1,31 @@
+mantidimaging.gui.widgets package
+=================================
+
+.. automodule:: mantidimaging.gui.widgets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.bad_data_overlay
+   mantidimaging.gui.widgets.dataset_selector
+   mantidimaging.gui.widgets.dataset_selector_dialog
+   mantidimaging.gui.widgets.indicator_icon
+   mantidimaging.gui.widgets.mi_image_view
+   mantidimaging.gui.widgets.mi_mini_image_view
+   mantidimaging.gui.widgets.palette_changer
+   mantidimaging.gui.widgets.stack_selector
+   mantidimaging.gui.widgets.stack_selector_dialog
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.removable_row_table_view

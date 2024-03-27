@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.widgets.mi_image_view.view - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.view</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.widgets.mi_image_view.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">degrees</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ROI</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">,</span> <span class="n">ViewBox</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph.GraphicsScene.mouseEvents</span> <span class="kn">import</span> <span class="n">HoverEvent</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.close_enough_point</span> <span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.histogram</span> <span class="kn">import</span> <span class="n">set_histogram_log_scale</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu</span> <span class="kn">import</span> <span class="n">AutoColorMenu</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_image_view.presenter</span> <span class="kn">import</span> <span class="n">MIImagePresenter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</span> <span class="kn">import</span> <span class="n">BadDataOverlay</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">HistogramLUTItem</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span>
+
+
+<div class="viewcode-block" id="UnrotateablePlotROI">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.UnrotateablePlotROI">[docs]</a>
+<span class="k">class</span> <span class="nc">UnrotateablePlotROI</span><span class="p">(</span><span class="n">ROI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Like PlotROI but does not add a rotation handle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ROI</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="clip">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.clip">[docs]</a>
+<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">lower</span> <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">lower</span> <span class="k">else</span> <span class="n">upper</span> <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">upper</span> <span class="k">else</span> <span class="n">value</span></div>
+
+
+
+<span class="c1"># ImageView objects cannot always be safely garbage collected. To prevent this</span>
+<span class="c1"># we need keep a reference to the dead objects.</span>
+<span class="n">graveyard</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<div class="viewcode-block" id="MIImageView">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView">[docs]</a>
+<span class="k">class</span> <span class="nc">MIImageView</span><span class="p">(</span><span class="n">ImageView</span><span class="p">,</span> <span class="n">BadDataOverlay</span><span class="p">,</span> <span class="n">AutoColorMenu</span><span class="p">):</span>
+    <span class="n">details</span><span class="p">:</span> <span class="n">QLabel</span>
+    <span class="n">roiString</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">imageItem</span><span class="p">:</span> <span class="n">ImageItem</span>
+    <span class="n">_angles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProjectionAngles</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">roi_changed_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">SensibleROI</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ImageView&quot;</span><span class="p">,</span>
+                 <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">imageItem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">levelMode</span><span class="o">=</span><span class="s1">&#39;mono&#39;</span><span class="p">,</span>
+                 <span class="n">detailsSpanAllCols</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">imageItem</span><span class="p">,</span> <span class="n">levelMode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">graveyard</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">MIImagePresenter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">layoutWidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { color : white; background-color: black}&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">detailsSpanAllCols</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Hide the norm button as it allows for manual data changes and we don&#39;t want users to do that unrecorded.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menuBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="c1"># Construct and add the left and right buttons for the stack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">setMaximumSize</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_jumping_frame</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">released</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_jumping_frame</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">setMaximumSize</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_jumping_frame</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">released</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_jumping_frame</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button_stack_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button_stack_right</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageItem</span><span class="o">.</span><span class="n">hoverEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_hover_event</span>
+        <span class="c1"># disconnect the ROI recalculation on every move</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roiChanged</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span> <span class="o">=</span> <span class="n">UnrotateablePlotROI</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setZValue</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="c1"># make ROI red</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPen</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChangeFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roiChanged</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extend_roi_plot_mouse_press_handler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageItem</span><span class="o">.</span><span class="n">setAutoDownsample</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageItem</span><span class="o">.</span><span class="n">sigImageChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refresh_message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageItem</span><span class="o">.</span><span class="n">sigImageChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_log_scale</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_auto_color_menu_action</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Work around for https://github.com/mantidproject/mantidimaging/issues/565</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">contextMenu</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">contextMenu</span> <span class="k">if</span> <span class="s2">&quot;export&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HistogramLUTItem&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">item</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageItem</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProjectionAngles</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span>
+
+    <span class="nd">@angles</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProjectionAngles</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="o">=</span> <span class="n">angles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MIImageView.setImage">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.setImage">[docs]</a>
+    <span class="k">def</span> <span class="nf">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">dimensions_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># For a 3 dimensional image, we need to specify which axes we are providing and their indices in the</span>
+            <span class="c1"># array&#39;s shape attribute</span>
+            <span class="c1"># If we don&#39;t do this then it is interpreted incorrectly for very small images by ImageView.setImage</span>
+            <span class="c1"># Note that, for our purposes, the t axis corresponds to angle data</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;axes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+        <span class="n">ImageView</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_for_bad_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dimensions_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_roi</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.toggle_jumping_frame">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.toggle_jumping_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">toggle_jumping_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_to_jump_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span> <span class="ow">and</span> <span class="n">images_to_jump_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jumpFrames</span><span class="p">(</span><span class="n">images_to_jump_by</span><span class="p">)</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>
+            <span class="n">QApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_refresh_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recalculate_roi_avg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">recalculate_roi_avg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_roi_region_avg</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="c1"># this happens after the image is cropped, and the last location</span>
+            <span class="c1"># is outside of the new bounds. To prevent this happening again just reset back to 0, 0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<div class="viewcode-block" id="MIImageView.roiChanged">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiChanged">[docs]</a>
+    <span class="k">def</span> <span class="nf">roiChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Re-implements the roiChanged function to expect only 3D data,</span>
+<span class="sd">        and uses a faster mean calculation on the ROI view of the data,</span>
+<span class="sd">        instead of the full sized data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the data isn&#39;t 3D the following code can&#39;t handle it correctly</span>
+        <span class="c1"># so defer back to the original implementation which can handle 2D (any maybe ND)</span>
+        <span class="c1"># more sensibly, albeit slower</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">roiChanged</span><span class="p">()</span>
+
+        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_roi_region_avg</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span> <span class="ow">and</span> <span class="n">roi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_roi_region_avg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SensibleROI</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()</span>
+        <span class="c1"># image indices are in order [Z, X, Y]</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">[:,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roiCurves</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">roiCurves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiPlot</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roiCurves</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tVals</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiString</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">bottom</span><span class="si">}</span><span class="s2">) | &quot;</span> \
+                         <span class="sa">f</span><span class="s2">&quot;region avg=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeLine</span><span class="o">.</span><span class="n">value</span><span class="p">())]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">SensibleROI</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MIImageView.extend_roi_plot_mouse_press_handler">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.extend_roi_plot_mouse_press_handler">[docs]</a>
+    <span class="k">def</span> <span class="nf">extend_roi_plot_mouse_press_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">original_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiPlot</span><span class="o">.</span><span class="n">mousePressEvent</span>
+
+        <span class="k">def</span> <span class="nf">extended_handler</span><span class="p">(</span><span class="n">ev</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_timeline_to_tick_nearest</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">x</span><span class="p">())</span>
+            <span class="n">original_handler</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiPlot</span><span class="o">.</span><span class="n">mousePressEvent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ev</span><span class="p">:</span> <span class="n">extended_handler</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.get_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.get_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CloseEnoughPoint</span><span class="p">,</span> <span class="n">CloseEnoughPoint</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+                                      <span class="n">roi_pos</span><span class="o">=</span><span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">pos</span><span class="p">()),</span>
+                                      <span class="n">roi_size</span><span class="o">=</span><span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.image_hover_event">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_hover_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">image_hover_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">HoverEvent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">exit</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span> <span class="o">=</span> <span class="n">pt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+        <span class="c1"># event holds the coordinates in column-major coordinate</span>
+        <span class="c1"># while the data is in row-major coordinate, hence why</span>
+        <span class="c1"># the data access below is [y, x]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;x=</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">, y=</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, z=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">currentIndex</span><span class="si">}</span><span class="s2">, value=</span><span class="si">{</span><span class="n">value</span><span class="w"> </span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">:</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">])</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | angle = </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;x=</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">, y=</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, value=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiString</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | roi = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">roiString</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MIImageView.set_timeline_to_tick_nearest">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_timeline_to_tick_nearest">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_timeline_to_tick_nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos_clicked</span><span class="p">):</span>
+        <span class="n">x_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRoiPlot</span><span class="p">()</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+        <span class="n">view_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRoiPlot</span><span class="p">()</span><span class="o">.</span><span class="n">viewRange</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nearest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_nearest_timeline_tick</span><span class="p">(</span><span class="n">x_pos_clicked</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">view_range</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeLine</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">nearest</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.set_selected_image">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_selected_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_selected_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeLine</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">image_index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.set_log_scale">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_log_scale">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getHistogramWidget</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.close">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.set_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Keep default update=True for setSize otherwise the scale handle can become detached from the ROI box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">([</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiChanged</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_message</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIImageView.default_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.default_roi">[docs]</a>
+    <span class="k">def</span> <span class="nf">default_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Recommend an ROI that covers the top left quadrant</span>
+        <span class="c1"># However set min dimensions to avoid an ROI that is so small it&#39;s difficult to work with</span>
+        <span class="n">min_size</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">roi_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">min_size</span><span class="p">)</span>
+        <span class="n">roi_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">min_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">roi_width</span><span class="p">,</span> <span class="n">roi_height</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="view.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.view</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

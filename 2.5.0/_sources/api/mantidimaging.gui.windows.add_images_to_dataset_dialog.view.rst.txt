@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.add\_images\_to\_dataset\_dialog.view module
+======================================================================
+
+.. automodule:: mantidimaging.gui.windows.add_images_to_dataset_dialog.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

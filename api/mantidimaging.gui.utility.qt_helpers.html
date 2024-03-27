@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.utility.qt_helpers module &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.widgets package" href="mantidimaging.gui.widgets.html" />
+    <link rel="prev" title="mantidimaging.gui.utility.common module" href="mantidimaging.gui.utility.common.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.html" title="mantidimaging.gui.widgets package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.utility.common.html" title="mantidimaging.gui.utility.common module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.utility.html" accesskey="U">mantidimaging.gui.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.utility.qt_helpers module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.utility.qt_helpers">
+<span id="mantidimaging-gui-utility-qt-helpers-module"></span><h1>mantidimaging.gui.utility.qt_helpers module<a class="headerlink" href="#module-mantidimaging.gui.utility.qt_helpers" title="Link to this heading">¶</a></h1>
+<p>Module containing helper functions relating to PyQt.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.BlockQtSignals">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">BlockQtSignals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_objects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QObject</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QObject</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#BlockQtSignals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.BlockQtSignals" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Used to block Qt signals from a selection of QWidgets within a context.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">Type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#Type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.BOOL">
+<span class="sig-name descname"><span class="pre">BOOL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.BOOL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.BUTTON">
+<span class="sig-name descname"><span class="pre">BUTTON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.BUTTON" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.CHOICE">
+<span class="sig-name descname"><span class="pre">CHOICE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.CHOICE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.FLOAT">
+<span class="sig-name descname"><span class="pre">FLOAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.FLOAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.INT">
+<span class="sig-name descname"><span class="pre">INT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.INT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.LABEL">
+<span class="sig-name descname"><span class="pre">LABEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.LABEL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.LIST">
+<span class="sig-name descname"><span class="pre">LIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.LIST" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.NONETYPE">
+<span class="sig-name descname"><span class="pre">NONETYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.NONETYPE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.STACK">
+<span class="sig-name descname"><span class="pre">STACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.STACK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.STR">
+<span class="sig-name descname"><span class="pre">STR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.STR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.Type.TUPLE">
+<span class="sig-name descname"><span class="pre">TUPLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.Type.TUPLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.add_property_to_form">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">add_property_to_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type" title="mantidimaging.gui.utility.qt_helpers.Type"><span class="pre">Type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooltip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters_view</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_on_press</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QLabel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">QLineEdit</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#add_property_to_form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.add_property_to_form" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a property to the algorithm dialog.</p>
+<p>Handles adding basic data options to the UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> – Label that describes the option</p></li>
+<li><p><strong>dtype</strong> – Option data type (any of: file, int, float, bool, list)</p></li>
+<li><p><strong>default_value</strong> – Optionally select the default value</p></li>
+<li><p><strong>valid_values</strong> – Optionally provide the range or selection of valid
+values</p></li>
+<li><p><strong>tooltip</strong> – Optional tooltip text to show on property</p></li>
+<li><p><strong>on_change</strong> – Function to be called when the property changes</p></li>
+<li><p><strong>form</strong> – Form layout to optionally add the new widgets to</p></li>
+<li><p><strong>filters_view</strong> – The Filter window view - passed to connect Type.STACK to the stack change events</p></li>
+<li><p><strong>run_on_press</strong> – Run this function on press, specialisation for button.</p></li>
+<li><p><strong>single_step_size</strong> – Optionally provide a step size for a SpinBox widget.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.compile_ui">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">compile_ui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ui_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qt_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#compile_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.compile_ui" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.delete_all_widgets_from_layout">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">delete_all_widgets_from_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#delete_all_widgets_from_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.delete_all_widgets_from_layout" title="Link to this definition">¶</a></dt>
+<dd><p>Removes and deletes all child widgets form a layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lo</strong> – Layout to clean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.get_value_from_qwidget">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">get_value_from_qwidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#get_value_from_qwidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.get_value_from_qwidget" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.on_change_and_disable">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">on_change_and_disable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#on_change_and_disable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.on_change_and_disable" title="Link to this definition">¶</a></dt>
+<dd><p>Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that
+continue increasing when generating a preview image is computationally intensive.
+:param widget: The widget to disable.
+:param on_change: The method to call when the widget has been changed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.populate_menu">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">populate_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">menu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QMenu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QAction</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#populate_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.populate_menu" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.utility.qt_helpers.select_directory">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.utility.qt_helpers.</span></span><span class="sig-name descname"><span class="pre">select_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caption</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/utility/qt_helpers.html#select_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.utility.qt_helpers.select_directory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.utility.qt_helpers module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.BlockQtSignals"><code class="docutils literal notranslate"><span class="pre">BlockQtSignals</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type"><code class="docutils literal notranslate"><span class="pre">Type</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.BOOL"><code class="docutils literal notranslate"><span class="pre">Type.BOOL</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.BUTTON"><code class="docutils literal notranslate"><span class="pre">Type.BUTTON</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.CHOICE"><code class="docutils literal notranslate"><span class="pre">Type.CHOICE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.FLOAT"><code class="docutils literal notranslate"><span class="pre">Type.FLOAT</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.INT"><code class="docutils literal notranslate"><span class="pre">Type.INT</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.LABEL"><code class="docutils literal notranslate"><span class="pre">Type.LABEL</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.LIST"><code class="docutils literal notranslate"><span class="pre">Type.LIST</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.NONETYPE"><code class="docutils literal notranslate"><span class="pre">Type.NONETYPE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.STACK"><code class="docutils literal notranslate"><span class="pre">Type.STACK</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.STR"><code class="docutils literal notranslate"><span class="pre">Type.STR</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.Type.TUPLE"><code class="docutils literal notranslate"><span class="pre">Type.TUPLE</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.add_property_to_form"><code class="docutils literal notranslate"><span class="pre">add_property_to_form()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.compile_ui"><code class="docutils literal notranslate"><span class="pre">compile_ui()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.delete_all_widgets_from_layout"><code class="docutils literal notranslate"><span class="pre">delete_all_widgets_from_layout()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.get_value_from_qwidget"><code class="docutils literal notranslate"><span class="pre">get_value_from_qwidget()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.on_change_and_disable"><code class="docutils literal notranslate"><span class="pre">on_change_and_disable()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.populate_menu"><code class="docutils literal notranslate"><span class="pre">populate_menu()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.utility.qt_helpers.select_directory"><code class="docutils literal notranslate"><span class="pre">select_directory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.utility.common.html"
+                          title="previous chapter">mantidimaging.gui.utility.common module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.html"
+                          title="next chapter">mantidimaging.gui.widgets package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../index.html">Latest</a></li>
+  <li><a href="../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.html" title="mantidimaging.gui.widgets package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.utility.common.html" title="mantidimaging.gui.utility.common module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.utility.html" >mantidimaging.gui.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.utility.qt_helpers module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.main.presenter - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.main.presenter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.main.presenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QTabBar</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">MixedDataset</span><span class="p">,</span> <span class="n">_get_stack_data_type</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_projection_closest_to_180</span><span class="p">,</span> <span class="n">THRESHOLD_180</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.async_task</span> <span class="kn">import</span> <span class="n">start_async_task_view</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_visualiser.view</span> <span class="kn">import</span> <span class="n">StackVisualiserView</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">MainWindowModel</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.image_save_dialog</span> <span class="kn">import</span> <span class="n">ImageSaveDialog</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main</span> <span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.async_task.task</span> <span class="kn">import</span> <span class="n">TaskWorkerThread</span>
+
+<span class="n">RECON_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Recon&quot;</span>
+
+
+<div class="viewcode-block" id="StackId">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId">[docs]</a>
+<span class="k">class</span> <span class="nc">StackId</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="DatasetId">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.DatasetId">[docs]</a>
+<span class="k">class</span> <span class="nc">DatasetId</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Notification">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification">[docs]</a>
+<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">IMAGE_FILE_LOAD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">IMAGE_FILE_SAVE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">REMOVE_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">RENAME_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">NEXUS_LOAD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">NEXUS_SAVE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">FOCUS_TAB</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">ADD_RECON</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">SHOW_ADD_STACK_DIALOG</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DATASET_ADD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">TAB_CLICKED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">SHOW_MOVE_STACK_DIALOG</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">MOVE_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="MainWindowPresenter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter">[docs]</a>
+<span class="k">class</span> <span class="nc">MainWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+    <span class="n">LOAD_ERROR_STRING</span> <span class="o">=</span> <span class="s2">&quot;Failed to load stack. Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
+    <span class="n">SAVE_ERROR_STRING</span> <span class="o">=</span> <span class="s2">&quot;Failed to save data. Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
+
+    <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;MainWindowView&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;MainWindowView&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">MainWindowModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">StackVisualiserView</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.notify">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">Notification</span><span class="p">,</span> <span class="o">**</span><span class="n">baggage</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">IMAGE_FILE_LOAD</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_image_files</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">IMAGE_FILE_SAVE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_image_files</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">REMOVE_STACK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_container</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">RENAME_STACK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_rename_stack</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">NEXUS_LOAD</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_nexus_file</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">NEXUS_SAVE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_nexus_file</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">FOCUS_TAB</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_restore_and_focus_tab</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">ADD_RECON</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_recon_to_dataset</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">SHOW_ADD_STACK_DIALOG</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_show_add_stack_to_dataset_dialog</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">DATASET_ADD</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_dataset</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">TAB_CLICKED</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_tab_clicked</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">SHOW_MOVE_STACK_DIALOG</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_show_move_stack_dialog</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">MOVE_STACK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_move_stack</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_stack_visualiser_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StackVisualiserView</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses the stack name to retrieve the QDockWidget object.</span>
+<span class="sd">        :param search_name: The name of the stack widget to find.</span>
+<span class="sd">        :return: The QDockWidget if it could be found, None otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualiser_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stack_id</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">search_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_stacks</span><span class="p">[</span><span class="n">stack_id</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.get_stack_id_by_name">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_id_by_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack_id_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualiser_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stack_id</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">search_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">stack_id</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_log_to_sample">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_log_to_sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_do_rename_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stack_visualiser_by_name</span><span class="p">(</span><span class="n">current_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dock</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.load_image_files">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_image_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_load_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_load_dialog</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_load_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_dataset_load_done</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">par</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.load_nexus_file">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_nexus_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_load_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">dataset</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_load_dialog</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_dataset_to_model</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_strict_dataset_to_view</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.save_nexus_file">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.save_nexus_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_save_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_save_dialog</span><span class="o">.</span><span class="n">selected_dataset</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_nexus_saving</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">_on_save_done</span><span class="p">,</span> <span class="p">{</span>
+                                  <span class="s1">&#39;dataset_id&#39;</span><span class="p">:</span> <span class="n">dataset_id</span><span class="p">,</span>
+                                  <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">(),</span>
+                                  <span class="s1">&#39;sample_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_save_dialog</span><span class="o">.</span><span class="n">sample_name</span><span class="p">(),</span>
+                                  <span class="s1">&#39;save_as_float&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">nexus_save_dialog</span><span class="o">.</span><span class="n">save_as_float</span>
+                              <span class="p">},</span>
+                              <span class="n">busy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.load_image_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_images_into_mixed_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_stack_load_done</span><span class="p">,</span>
+                              <span class="p">{</span><span class="s1">&#39;file_path&#39;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">})</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_on_stack_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="s1">&#39;TaskWorkerThread&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_mixed_dataset_tree_view_items</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_mixed_dataset_stack_windows</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_task_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOAD_ERROR_STRING</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_open_window_if_not_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launches windows that requires loaded data if the CLI flags are set.</span>
+<span class="sd">        Resets args after window has opened.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">operation</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">operation</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">clear_window_args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">recon</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_recon_window</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">clear_window_args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_viewer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_spectrum_viewer_window</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">clear_window_args</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_dataset_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="s1">&#39;TaskWorkerThread&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_strict_dataset_to_view</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_open_window_if_not_open</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_task_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOAD_ERROR_STRING</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_strict_dataset_to_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a loaded dataset and tries to find a substitute 180 projection (if required) then creates the stack window</span>
+<span class="sd">        and dataset tree view items.</span>
+<span class="sd">        :param dataset: The loaded dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_strict_dataset_stack_windows</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_strict_dataset_tree_view_items</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_alternative_180_if_required</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_task_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="s1">&#39;TaskWorkerThread&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">base_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_create_and_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">sample_dock</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new stack window with a given ImageStack object then makes sure it is placed on top of a</span>
+<span class="sd">        sample/original stack window.</span>
+<span class="sd">        :param images: The ImageStack object for the new stack window.</span>
+<span class="sd">        :param sample_dock: The existing stack window that the new one should be placed on top of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack_visualiser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">stack_visualiser</span><span class="p">,</span> <span class="n">sample_dock</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.get_active_stack_visualisers">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_active_stack_visualisers">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_active_stack_visualisers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StackVisualiserView</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_stacks</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_all_stacks">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_all_stacks">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_all_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_all_180_projections">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_all_180_projections">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_all_180_projections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">proj180s</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_alternative_180_if_required">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_alternative_180_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.</span>
+<span class="sd">        :param dataset: The loaded dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">closest_projection</span><span class="p">,</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">find_projection_closest_to_180</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projections</span><span class="p">,</span>
+                                                                      <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;=</span> <span class="n">THRESHOLD_180</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_to_use_closest_to_180</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
+                <span class="n">_180_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">closest_projection</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">closest_projection</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">_180_arr</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_180&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">)</span>
+                <span class="n">sample_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="n">sample_vis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.create_strict_dataset_stack_windows">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_strict_dataset_stack_windows">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_strict_dataset_stack_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the stack widgets for the strict dataset.</span>
+<span class="sd">        :param dataset: The loaded dataset.</span>
+<span class="sd">        :return: The stack widget for the sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">sample_stack_vis</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="p">,</span> <span class="n">sample_stack_vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span><span class="p">,</span> <span class="n">sample_stack_vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span><span class="p">,</span> <span class="n">sample_stack_vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span><span class="p">,</span> <span class="n">sample_stack_vis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+                <span class="n">sample_stack_vis</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">recon</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">sample_stack_vis</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_on_newest_stack_tab</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sample_stack_vis</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_focus_on_newest_stack_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Focuses on the newest stack when there is more than one being displayed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_stack_visualisers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_active_stack_visualisers</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">n_stack_visualisers</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">tab_bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QTabBar</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tab_bar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">last_stack_pos</span> <span class="o">=</span> <span class="n">n_stack_visualisers</span>
+            <span class="c1"># make Qt process the addition of the dock onto the main window</span>
+            <span class="n">QApplication</span><span class="o">.</span><span class="n">sendPostedEvents</span><span class="p">()</span>
+            <span class="n">tab_bar</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">last_stack_pos</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.create_mixed_dataset_stack_windows">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_stack_windows">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_mixed_dataset_stack_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">MixedDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates stack windows for a mixed dataset.</span>
+<span class="sd">        :param dataset: The dataset object.</span>
+<span class="sd">        :return: The first stack visualiser from the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">first_stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">first_stack_vis</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">first_stack_vis</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_on_newest_stack_tab</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">first_stack_vis</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.create_single_tabbed_images_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_single_tabbed_images_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_single_tabbed_images_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a stack for a single ImageStack object and focuses on it.</span>
+<span class="sd">        :param images: The ImageStack object for the new stack window.</span>
+<span class="sd">        :return: The new StackVisualiserView.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">stack_vis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_on_newest_stack_tab</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">stack_vis</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_create_lone_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a stack window and adds it to the stack list without tabifying.</span>
+<span class="sd">        :param images: The ImageStack array for the stack window to display.</span>
+<span class="sd">        :return: The new stack window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_stack_window</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_vis</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">stack_vis</span>
+        <span class="k">return</span> <span class="n">stack_vis</span>
+
+    <span class="k">def</span> <span class="nf">_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">stack_window</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">,</span>
+                             <span class="n">tabify_stack</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StackVisualiserView</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Places the newly created stack window into a tab.</span>
+<span class="sd">        :param stack_window: The new stack window.</span>
+<span class="sd">        :param tabify_stack: The optional existing stack tab that needs to be</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_stack_visualisers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_stack_visualisers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tabify_stack</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_stack_visualisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">current_stack_visualisers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">stack_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">stack</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tabifyDockWidget</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">stack_window</span><span class="p">)</span>
+                    <span class="k">return</span>
+        <span class="k">if</span> <span class="n">tabify_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tabifyDockWidget</span><span class="p">(</span><span class="n">tabify_stack</span><span class="p">,</span> <span class="n">stack_window</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_tab_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_tree_view_selection_with_id</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.create_strict_dataset_tree_view_items">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_strict_dataset_tree_view_items">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_strict_dataset_tree_view_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the tree view items for a strict dataset.</span>
+<span class="sd">        :param dataset: The loaded dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_dataset_tree_widget_item</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Projections&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Flat Before&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Flat After&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Dark Before&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Dark After&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span>
+                <span class="n">dataset_tree_item</span><span class="p">,</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+                <span class="s2">&quot;180&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">recon</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_recon_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_item_to_tree_view</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.create_mixed_dataset_tree_view_items">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_mixed_dataset_tree_view_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">MixedDataset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the tree view items for a mixed dataset.</span>
+<span class="sd">        :param dataset: The loaded dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_dataset_tree_widget_item</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_item_to_tree_view</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.save_image_files">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.save_image_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_image_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="p">,</span> <span class="n">ImageSaveDialog</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">selected_stack</span><span class="p">,</span>
+            <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">(),</span>
+            <span class="s1">&#39;name_prefix&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">name_prefix</span><span class="p">(),</span>
+            <span class="s1">&#39;image_format&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">image_format</span><span class="p">(),</span>
+            <span class="s1">&#39;overwrite&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">overwrite</span><span class="p">(),</span>
+            <span class="s1">&#39;pixel_depth&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">pixel_depth</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_images_saving</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_save_done</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_on_save_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="s1">&#39;TaskWorkerThread&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_task_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAVE_ERROR_STRING</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stack_visualiser_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
+        <span class="n">stacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">StackId</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">widget</span><span class="o">.</span><span class="n">windowTitle</span><span class="p">())</span> <span class="k">for</span> <span class="n">stack_id</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_stacks</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stacks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MixedDataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">strict_dataset_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DatasetId</span><span class="p">]:</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">DatasetId</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_dataset_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_stack_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
+        <span class="n">stack_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">stack_ids</span> <span class="o">+=</span> <span class="n">ds</span><span class="o">.</span><span class="n">all_image_ids</span>
+        <span class="k">return</span> <span class="n">stack_ids</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stack_visualiser_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">widget</span><span class="o">.</span><span class="n">windowTitle</span><span class="p">()</span> <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.get_dataset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_dataset">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MixedDataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_stack_visualiser">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack_visualiser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack not found: </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_stack_visualiser_history">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser_history">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack_visualiser_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">metadata</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.get_dataset_id_for_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_dataset_id_for_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dataset_id_for_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">active_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">StackVisualiserView</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">stack</span> <span class="k">for</span> <span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">stack</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">have_active_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_stacks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.get_stack_with_images">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_with_images">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack_with_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="n">sv</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">sv</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Did not find stack </span><span class="si">{</span><span class="n">images</span><span class="si">}</span><span class="s2"> in stacks! Stacks: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_180_deg_file_to_dataset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_180_deg_file_to_dataset">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_180_deg_file_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.</span>
+<span class="sd">        :param dataset_id: The ID of the dataset to update.</span>
+<span class="sd">        :param _180_deg_file: The filename for the 180 file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">existing_180_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_existing_180_id</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="n">_180_deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_180_deg_to_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">)</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">_180_deg</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">existing_180_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_child_item_id</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">existing_180_id</span><span class="p">,</span> <span class="n">_180_deg</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack</span><span class="p">(</span><span class="n">existing_180_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.replace_child_item_id">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.replace_child_item_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">replace_child_item_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">prev_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">new_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces the ID in an existing child item.</span>
+<span class="sd">        :param dataset_id: The ID of the parent dataset.</span>
+<span class="sd">        :param prev_id: The previous ID of the tree view item.</span>
+<span class="sd">        :param new_id: The new ID that should be given to the tree view item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dataset_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()):</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">dataset_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">prev_id</span><span class="p">:</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">new_id</span>
+                <span class="k">return</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get tree view item with ID </span><span class="si">{</span><span class="n">prev_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_projection_angles_to_sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.load_stacks_from_folder">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_stacks_from_folder">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_stacks_from_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">loading_params</span> <span class="o">=</span> <span class="n">create_loading_parameters_for_file_path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">loading_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_load_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_dataset_load_done</span><span class="p">,</span>
+                              <span class="p">{</span><span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">loading_params</span><span class="p">})</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.wizard_action_load">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.wizard_action_load">[docs]</a>
+    <span class="k">def</span> <span class="nf">wizard_action_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_image_load_dialog</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.show_operation">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.show_operation">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_filters_window</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_filter_by_name</span><span class="p">(</span><span class="n">operation_name</span><span class="p">)</span>  <span class="c1"># type:ignore[union-attr]</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.wizard_action_show_reconstruction">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.wizard_action_show_reconstruction">[docs]</a>
+    <span class="k">def</span> <span class="nf">wizard_action_show_reconstruction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_recon_window</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.remove_item_from_tree_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.remove_item_from_tree_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_item_from_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid_remove</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes an item from the tree view using a given ID.</span>
+<span class="sd">        :param uuid_remove: The ID of the item to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()):</span>
+            <span class="n">top_level_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">top_level_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_remove</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">takeTopLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">top_level_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">top_level_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_remove</span><span class="p">:</span>
+                    <span class="n">top_level_item</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_recon_item_from_tree_view</span><span class="p">(</span><span class="n">child_item</span><span class="p">,</span> <span class="n">uuid_remove</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># Delete recon group when last recon item has been removed</span>
+                            <span class="n">top_level_item</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_tree_view_selection_with_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid_select</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects an item on the tree view using the given ID.</span>
+<span class="sd">        :param uuid_select: The ID of the item to select.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()):</span>
+            <span class="n">top_level_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">top_level_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_select</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_select_tree_widget_item</span><span class="p">(</span><span class="n">top_level_item</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">top_level_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">top_level_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_select</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_select_tree_widget_item</span><span class="p">(</span><span class="n">child_item</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()):</span>
+                        <span class="n">recon_item</span> <span class="o">=</span> <span class="n">child_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">recon_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_select</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_select_tree_widget_item</span><span class="p">(</span><span class="n">recon_item</span><span class="p">)</span>
+                            <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_select_tree_widget_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree_widget_item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clears the existing selection on the dataset tree view and selects a given item.</span>
+<span class="sd">        :param tree_widget_item: The item to select.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">clearSelection</span><span class="p">()</span>
+        <span class="n">tree_widget_item</span><span class="o">.</span><span class="n">setSelected</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_remove_recon_item_from_tree_view</span><span class="p">(</span><span class="n">recon_group</span><span class="p">,</span> <span class="n">uuid_remove</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a recon item from the recon group in the tree view.</span>
+<span class="sd">        :param recon_group: The recon group.</span>
+<span class="sd">        :param uuid_remove: The ID of the recon data to remove.</span>
+<span class="sd">        :return: True if a recon with a matching ID was removed, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recon_count</span> <span class="o">=</span> <span class="n">recon_group</span><span class="o">.</span><span class="n">childCount</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">recon_count</span><span class="p">):</span>
+            <span class="n">recon_item</span> <span class="o">=</span> <span class="n">recon_group</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">recon_item</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">uuid_remove</span><span class="p">:</span>
+                <span class="n">recon_group</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.add_child_item_to_tree_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_child_item_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a child item to the tree view.</span>
+<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
+<span class="sd">        :param child_id: The ID of the corresponding ImageStack object.</span>
+<span class="sd">        :param child_name: The name that should appear in the tree view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">child_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_recon_item_to_tree_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_recon_item_to_tree_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_recon_item_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a recon item to the tree view.</span>
+<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
+<span class="sd">        :param child_id: The ID of the corresponding ImageStack object.</span>
+<span class="sd">        :param name: The name to display for the recon in the tree view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+
+        <span class="n">recon_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">recon_group</span><span class="p">:</span>
+            <span class="n">recon_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_recon_list_id</span><span class="p">(</span><span class="n">parent_id</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">recon_group</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowPresenter.add_stack_to_dictionary">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_stack_to_dictionary">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_stack_to_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">stack</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_delete_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Informs the model to delete a container, then updates the view elements.</span>
+<span class="sd">        :param container_id: The ID of the container to delete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We need the ids of the stacks that have been deleted to tidy up the stack visualiser tabs</span>
+        <span class="n">removed_stack_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="n">removed_stack_ids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+
+        <span class="c1"># If the container_id provided is not a stack id then we remove the entire container from the tree view,</span>
+        <span class="c1"># otherwise we remove the individual stacks that were deleted</span>
+        <span class="n">tree_view_items_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">container_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">container_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">removed_stack_ids</span> <span class="k">else</span> <span class="n">removed_stack_ids</span>
+        <span class="k">for</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">tree_view_items_to_remove</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_item_from_tree_view</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_delete_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a stack and frees memory.</span>
+<span class="sd">        :param stack_id: The ID of the stack to delete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">delete_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_restore_and_focus_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a stack tab visible and brings it to the front. If dataset ID is given then nothing happens.</span>
+<span class="sd">        :param stack_id: The ID of the stack tab to focus on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">recon_list_ids</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find stack with ID </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_recon_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a recon to the dataset and tree view and creates a stack image view.</span>
+<span class="sd">        :param recon_data: The recon data.</span>
+<span class="sd">        :param stack_id: The ID of one of the stacks in the dataset that the recon data should be added to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_recon_to_dataset</span><span class="p">(</span><span class="n">recon_data</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_new_stack</span><span class="p">(</span><span class="n">recon_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_recon_item_to_tree_view</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">recon_data</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon_data</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.add_sinograms_to_dataset_and_update_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_sinograms_to_dataset_and_update_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_sinograms_to_dataset_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">original_stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds sinograms to a dataset or replaces an existing one.</span>
+<span class="sd">        :param sino_stack: The sinogram stack.</span>
+<span class="sd">        :param original_stack_id: The ID of a stack in the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">original_stack_id</span><span class="p">)</span>
+        <span class="n">prev_sino</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">sinograms</span>
+        <span class="k">if</span> <span class="n">prev_sino</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack</span><span class="p">(</span><span class="n">prev_sino</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">sinograms</span> <span class="o">=</span> <span class="n">sino_stack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_sinograms_to_tree_view</span><span class="p">(</span><span class="n">sino_stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">sino_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_add_sinograms_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a sinograms item to the tree view or updates the id of an existing one.</span>
+<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
+<span class="sd">        :param sino_id: The ID of the corresponding ImageStack object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+        <span class="n">sinograms_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_sinograms_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sinograms_item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="n">sino_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">sino_text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sinograms_item</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">sino_id</span>
+
+    <span class="k">def</span> <span class="nf">_show_add_stack_to_dataset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asks the user to add a stack to a given dataset.</span>
+<span class="sd">        :param container_id: The ID of the dataset or stack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">container_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_dataset_ids</span><span class="p">:</span>
+            <span class="c1"># get parent ID if selected item is a stack</span>
+            <span class="n">container_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset_id_for_stack</span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_add_stack_to_existing_dataset_dialog</span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_show_move_stack_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shows the move stack dialog.</span>
+<span class="sd">        :param stack_id: The ID of the stack to move.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset_id_for_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">stack_data_type</span> <span class="o">=</span> <span class="n">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_move_stack_dialog</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stack_data_type</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_images_to_existing_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if</span>
+<span class="sd">        necessary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">dataset_id</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+
+        <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">images_type</span> <span class="o">==</span> <span class="n">RECON_TEXT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_recon_to_dataset_and_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">MixedDataset</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_mixed_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">images_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_recon_to_dataset_and_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MixedDataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">],</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a recon to the dataset and updates the tree view.</span>
+<span class="sd">        :param dataset: The dataset.</span>
+<span class="sd">        :param recon: The recon ImageStack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">recon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_recon_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_images_to_existing_mixed_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">MixedDataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the stack list in the mixed dataset and updates the tree view.</span>
+<span class="sd">        :param dataset: The MixedDataset to update.</span>
+<span class="sd">        :param new_images: The new images to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">add_stack</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds or replaces images in a StrictDataset and updates the tree view if required.</span>
+<span class="sd">        :param dataset: The StrictDataset to change.</span>
+<span class="sd">        :param new_images: The new images to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image_attr</span> <span class="o">=</span> <span class="n">stack_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">image_attr</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># the image type doesn&#39;t exist in the dataset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">stack_type</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># the image type already exists in the dataset and needs to be replaced</span>
+            <span class="n">prev_images_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">image_attr</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_child_item_id</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">prev_images_id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack</span><span class="p">(</span><span class="n">prev_images_id</span><span class="p">)</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">image_attr</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                    <span class="n">destination_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moves a stack from one dataset to another.</span>
+<span class="sd">        :param origin_dataset_id: The ID of the origin dataset.</span>
+<span class="sd">        :param stack_id: The ID of the stack to move.</span>
+<span class="sd">        :param destination_stack_type: The data type the dataset should be when moved.</span>
+<span class="sd">        :param destination_dataset_id: The ID of the destination dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">origin_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">origin_dataset_id</span><span class="p">)</span>
+        <span class="n">destination_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">destination_dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">origin_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unable to find origin dataset with ID </span><span class="si">{</span><span class="n">origin_dataset_id</span><span class="si">}</span><span class="s2"> when attempting to move stack&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">destination_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unable to find destination dataset with ID </span><span class="si">{</span><span class="n">destination_dataset_id</span><span class="si">}</span><span class="s2"> when attempting to move stack&quot;</span><span class="p">)</span>
+
+        <span class="n">stack_to_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_item_from_tree_view</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">destination_stack_type</span> <span class="ow">is</span> <span class="n">RECON_TEXT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_recon_to_dataset_and_tree_view</span><span class="p">(</span><span class="n">destination_dataset</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">destination_dataset</span><span class="p">,</span> <span class="n">MixedDataset</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_mixed_dataset</span><span class="p">(</span><span class="n">destination_dataset</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">move_stack_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">data_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">move_stack_dialog</span><span class="o">.</span><span class="n">destination_stack_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="n">destination_dataset</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+            <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">origin_dataset</span><span class="o">.</span><span class="n">delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a name for strict dataset stacks by using the dataset name and the image type.</span>
+<span class="sd">        :param stack_type: The type of stack in the StrictDataset.</span>
+<span class="sd">        :param dataset_name: The name of the dataset.</span>
+<span class="sd">        :return: A string for the stack name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="MainWindowPresenter.is_dataset_strict">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_dataset_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">is_dataset_strict</span><span class="p">(</span><span class="n">ds_id</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="presenter.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.main.presenter</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

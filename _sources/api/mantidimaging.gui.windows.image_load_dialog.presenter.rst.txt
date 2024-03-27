@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.image\_load\_dialog.presenter module
+==============================================================
+
+.. automodule:: mantidimaging.gui.windows.image_load_dialog.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

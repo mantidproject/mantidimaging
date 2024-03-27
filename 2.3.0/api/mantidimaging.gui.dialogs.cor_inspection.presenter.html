@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.dialogs.cor_inspection.presenter module - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view module" href="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html" />
+    <link rel="prev" title="mantidimaging.gui.dialogs.cor_inspection.model module" href="mantidimaging.gui.dialogs.cor_inspection.model.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html" title="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.cor_inspection.model.html" title="mantidimaging.gui.dialogs.cor_inspection.model module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.cor_inspection.html" accesskey="U">mantidimaging.gui.dialogs.cor_inspection package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.presenter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.dialogs.cor_inspection.presenter">
+<span id="mantidimaging-gui-dialogs-cor-inspection-presenter-module"></span><h1>mantidimaging.gui.dialogs.cor_inspection.presenter module<a class="headerlink" href="#module-mantidimaging.gui.dialogs.cor_inspection.presenter" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.dialogs.cor_inspection.presenter.</span></span><span class="sig-name descname"><span class="pre">CORInspectionDialogPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.images.html#mantidimaging.core.data.images.Images" title="mantidimaging.core.data.images.Images"><span class="pre">Images</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ReconstructionParameters" title="mantidimaging.core.utility.data_containers.ReconstructionParameters"><span class="pre">ReconstructionParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">iters_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_refresh">
+<span class="sig-name descname"><span class="pre">do_refresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter.do_refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_refresh" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_update_ui_parameters">
+<span class="sig-name descname"><span class="pre">do_update_ui_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter.do_update_ui_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_update_ui_parameters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.notify" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_load">
+<span class="sig-name descname"><span class="pre">on_load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter.on_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_load" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_select_image">
+<span class="sig-name descname"><span class="pre">on_select_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#CORInspectionDialogPresenter.on_select_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_select_image" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_iterations">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimal_iterations</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_iterations" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_rotation_centre">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimal_rotation_centre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_rotation_centre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.progress_updated">
+<span class="sig-name descname"><span class="pre">progress_updated</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.progress_updated" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.view">
+<span class="sig-name descname"><span class="pre">view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView" title="mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView"><span class="pre">CORInspectionDialogView</span></a></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.view" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.dialogs.cor_inspection.presenter.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/cor_inspection/presenter.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.FULL_UPDATE">
+<span class="sig-name descname"><span class="pre">FULL_UPDATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.FULL_UPDATE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_CURRENT">
+<span class="sig-name descname"><span class="pre">IMAGE_CLICKED_CURRENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_CURRENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_LESS">
+<span class="sig-name descname"><span class="pre">IMAGE_CLICKED_LESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_LESS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_MORE">
+<span class="sig-name descname"><span class="pre">IMAGE_CLICKED_MORE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_MORE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.LOADED">
+<span class="sig-name descname"><span class="pre">LOADED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.LOADED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.UPDATE_PARAMETERS_FROM_UI">
+<span class="sig-name descname"><span class="pre">UPDATE_PARAMETERS_FROM_UI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.UPDATE_PARAMETERS_FROM_UI" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.dialogs.cor_inspection.presenter module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_refresh"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.do_refresh()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_update_ui_parameters"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.do_update_ui_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.notify"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.notify()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_load"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.on_load()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_select_image"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.on_select_image()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_iterations"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.optimal_iterations</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.optimal_rotation_centre"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.optimal_rotation_centre</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.progress_updated"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.progress_updated</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.view"><code class="docutils literal notranslate"><span class="pre">CORInspectionDialogPresenter.view</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.FULL_UPDATE"><code class="docutils literal notranslate"><span class="pre">Notification.FULL_UPDATE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_CURRENT"><code class="docutils literal notranslate"><span class="pre">Notification.IMAGE_CLICKED_CURRENT</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_LESS"><code class="docutils literal notranslate"><span class="pre">Notification.IMAGE_CLICKED_LESS</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.IMAGE_CLICKED_MORE"><code class="docutils literal notranslate"><span class="pre">Notification.IMAGE_CLICKED_MORE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.LOADED"><code class="docutils literal notranslate"><span class="pre">Notification.LOADED</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.cor_inspection.presenter.Notification.UPDATE_PARAMETERS_FROM_UI"><code class="docutils literal notranslate"><span class="pre">Notification.UPDATE_PARAMETERS_FROM_UI</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.cor_inspection.model.html"
+                          title="previous chapter">mantidimaging.gui.dialogs.cor_inspection.model module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html"
+                          title="next chapter">mantidimaging.gui.dialogs.cor_inspection.recon_slice_view module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="mantidimaging.gui.dialogs.cor_inspection.presenter.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html" title="mantidimaging.gui.dialogs.cor_inspection.recon_slice_view module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.cor_inspection.model.html" title="mantidimaging.gui.dialogs.cor_inspection.model module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.cor_inspection.html" >mantidimaging.gui.dialogs.cor_inspection package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.presenter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

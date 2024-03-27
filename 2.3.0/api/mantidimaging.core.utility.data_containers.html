@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.utility.data_containers module - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.utility.execution_timer module" href="mantidimaging.core.utility.execution_timer.html" />
+    <link rel="prev" title="mantidimaging.core.utility.cuda_check module" href="mantidimaging.core.utility.cuda_check.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.execution_timer.html" title="mantidimaging.core.utility.execution_timer module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.cuda_check.html" title="mantidimaging.core.utility.cuda_check module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" accesskey="U">mantidimaging.core.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.data_containers module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.utility.data_containers">
+<span id="mantidimaging-core-utility-data-containers-module"></span><h1>mantidimaging.core.utility.data_containers module<a class="headerlink" href="#module-mantidimaging.core.utility.data_containers" title="Link to this heading">¶</a></h1>
+<p>Containers for data. They don’t do much apart from storing the data,
+and optionally provide helpful operations.</p>
+<p>The biggest benefit is explicitly marking what the value represents (e.g. Degrees),
+and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),
+while they’re both Float underneath and the value can be used, it just will produce nonsense.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Counts">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">Counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#Counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Counts" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Counts.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Counts.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Degrees">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">Degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#Degrees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Degrees" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Degrees.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Degrees.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">ImageParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices" title="mantidimaging.core.utility.data_containers.Indices"><span class="pre">mantidimaging.core.utility.data_containers.Indices</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ImageParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters.format">
+<span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters.format" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices" title="mantidimaging.core.utility.data_containers.Indices"><span class="pre">Indices</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters.indices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters.input_path">
+<span class="sig-name descname"><span class="pre">input_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters.input_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters.log_file">
+<span class="sig-name descname"><span class="pre">log_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters.log_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ImageParameters.prefix">
+<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ImageParameters.prefix" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Indices">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">Indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Indices" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Indices.end">
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Indices.end" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Indices.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Indices.start" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Indices.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Indices.step" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">LoadingParameters</span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#LoadingParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.dark_after">
+<span class="sig-name descname"><span class="pre">dark_after</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dark_after" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.dark_before">
+<span class="sig-name descname"><span class="pre">dark_before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dark_before" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dtype" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.flat_after">
+<span class="sig-name descname"><span class="pre">flat_after</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.flat_after" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.flat_before">
+<span class="sig-name descname"><span class="pre">flat_before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.flat_before" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.pixel_size">
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.pixel_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.proj_180deg">
+<span class="sig-name descname"><span class="pre">proj_180deg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.proj_180deg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters" title="mantidimaging.core.utility.data_containers.ImageParameters"><span class="pre">ImageParameters</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.sample" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.LoadingParameters.sinograms">
+<span class="sig-name descname"><span class="pre">sinograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.LoadingParameters.sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Micron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">Micron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#Micron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Micron" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Micron.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Micron.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ProjectionAngles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">ProjectionAngles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ProjectionAngles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ProjectionAngles" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ProjectionAngles.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ProjectionAngles.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">ReconstructionParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">mantidimaging.core.utility.data_containers.ScalarCoR</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">mantidimaging.core.utility.data_containers.Degrees</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_projection_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">360.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_hardening_coefs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ReconstructionParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.algorithm">
+<span class="sig-name descname"><span class="pre">algorithm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.algorithm" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.alpha" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.beam_hardening_coefs">
+<span class="sig-name descname"><span class="pre">beam_hardening_coefs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.beam_hardening_coefs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.cor">
+<span class="sig-name descname"><span class="pre">cor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.cor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.filter_name">
+<span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.filter_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.max_projection_angle">
+<span class="sig-name descname"><span class="pre">max_projection_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">360.0</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.max_projection_angle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.num_iter">
+<span class="sig-name descname"><span class="pre">num_iter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.num_iter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.pixel_size">
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.pixel_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.tilt">
+<span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.tilt" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ReconstructionParameters.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ReconstructionParameters.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ScalarCoR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">ScalarCoR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ScalarCoR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ScalarCoR" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ScalarCoR.to_vec">
+<span class="sig-name descname"><span class="pre">to_vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#ScalarCoR.to_vec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ScalarCoR.to_vec" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.ScalarCoR.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.ScalarCoR.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.SingleValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">SingleValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#SingleValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.SingleValue" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.SingleValue.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.SingleValue.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Slope">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">Slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#Slope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Slope" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.Slope.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.Slope.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.VectorCoR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">VectorCoR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#VectorCoR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.VectorCoR" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue" title="mantidimaging.core.utility.data_containers.SingleValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleValue</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.VectorCoR.to_scalar">
+<span class="sig-name descname"><span class="pre">to_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#VectorCoR.to_scalar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.VectorCoR.to_scalar" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.VectorCoR.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.VectorCoR.value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.utility.data_containers module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Counts"><code class="docutils literal notranslate"><span class="pre">Counts</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Counts.value"><code class="docutils literal notranslate"><span class="pre">Counts.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Degrees"><code class="docutils literal notranslate"><span class="pre">Degrees</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Degrees.value"><code class="docutils literal notranslate"><span class="pre">Degrees.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters"><code class="docutils literal notranslate"><span class="pre">ImageParameters</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters.format"><code class="docutils literal notranslate"><span class="pre">ImageParameters.format</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters.indices"><code class="docutils literal notranslate"><span class="pre">ImageParameters.indices</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters.input_path"><code class="docutils literal notranslate"><span class="pre">ImageParameters.input_path</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters.log_file"><code class="docutils literal notranslate"><span class="pre">ImageParameters.log_file</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ImageParameters.prefix"><code class="docutils literal notranslate"><span class="pre">ImageParameters.prefix</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices"><code class="docutils literal notranslate"><span class="pre">Indices</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices.end"><code class="docutils literal notranslate"><span class="pre">Indices.end</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices.start"><code class="docutils literal notranslate"><span class="pre">Indices.start</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Indices.step"><code class="docutils literal notranslate"><span class="pre">Indices.step</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters"><code class="docutils literal notranslate"><span class="pre">LoadingParameters</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dark_after"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.dark_after</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dark_before"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.dark_before</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.dtype"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.dtype</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.flat_after"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.flat_after</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.flat_before"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.flat_before</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.name"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.pixel_size"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.pixel_size</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.proj_180deg"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.proj_180deg</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.sample"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.sample</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.LoadingParameters.sinograms"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.sinograms</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Micron"><code class="docutils literal notranslate"><span class="pre">Micron</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Micron.value"><code class="docutils literal notranslate"><span class="pre">Micron.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ProjectionAngles"><code class="docutils literal notranslate"><span class="pre">ProjectionAngles</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ProjectionAngles.value"><code class="docutils literal notranslate"><span class="pre">ProjectionAngles.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.algorithm"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.algorithm</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.alpha"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.alpha</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.beam_hardening_coefs"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.beam_hardening_coefs</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.cor"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.cor</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.filter_name"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.filter_name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.max_projection_angle"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.max_projection_angle</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.num_iter"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.num_iter</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.pixel_size"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.pixel_size</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.tilt"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.tilt</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ReconstructionParameters.to_dict"><code class="docutils literal notranslate"><span class="pre">ReconstructionParameters.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ScalarCoR"><code class="docutils literal notranslate"><span class="pre">ScalarCoR</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ScalarCoR.to_vec"><code class="docutils literal notranslate"><span class="pre">ScalarCoR.to_vec()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.ScalarCoR.value"><code class="docutils literal notranslate"><span class="pre">ScalarCoR.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue"><code class="docutils literal notranslate"><span class="pre">SingleValue</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.SingleValue.value"><code class="docutils literal notranslate"><span class="pre">SingleValue.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Slope"><code class="docutils literal notranslate"><span class="pre">Slope</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.Slope.value"><code class="docutils literal notranslate"><span class="pre">Slope.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.VectorCoR"><code class="docutils literal notranslate"><span class="pre">VectorCoR</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.VectorCoR.to_scalar"><code class="docutils literal notranslate"><span class="pre">VectorCoR.to_scalar()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.VectorCoR.value"><code class="docutils literal notranslate"><span class="pre">VectorCoR.value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.cuda_check.html"
+                          title="previous chapter">mantidimaging.core.utility.cuda_check module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.execution_timer.html"
+                          title="next chapter">mantidimaging.core.utility.execution_timer module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="mantidimaging.core.utility.data_containers.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.execution_timer.html" title="mantidimaging.core.utility.execution_timer module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.cuda_check.html" title="mantidimaging.core.utility.cuda_check module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" >mantidimaging.core.utility package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.data_containers module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

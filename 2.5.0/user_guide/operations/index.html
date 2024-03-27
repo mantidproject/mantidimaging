@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Operations - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reconstruction Help page" href="../reconstructions/index.html" />
+    <link rel="prev" title="Spectrum Viewer" href="../gui/spectrum_viewer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../reconstructions/index.html" title="Reconstruction Help page"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../gui/spectrum_viewer.html" title="Spectrum Viewer"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operations</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="operations">
+<span id="id1"></span><h1>Operations<a class="headerlink" href="#operations" title="Link to this heading">¶</a></h1>
+<section id="operations-list">
+<h2>Operations List<a class="headerlink" href="#operations-list" title="Link to this heading">¶</a></h2>
+<section id="arithmetic">
+<h3>Arithmetic<a class="headerlink" href="#arithmetic" title="Link to this heading">¶</a></h3>
+<p>Add, subtract, multiply, or divide all grey values of an image with the given values.</p>
+<p>Intended to be used on: Any</p>
+<p>When: If you want to offset or rescale an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param mult_val<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The multiplication value.</p>
+</dd>
+<dt class="field-even">param div_val<span class="colon">:</span></dt>
+<dd class="field-even"><p>The division value.</p>
+</dd>
+<dt class="field-odd">param add_val<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The addition value.</p>
+</dd>
+<dt class="field-even">param sub_val<span class="colon">:</span></dt>
+<dd class="field-even"><p>The subtraction value.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.arithmetic.arithmetic.html#module-mantidimaging.core.operations.arithmetic.arithmetic" title="mantidimaging.core.operations.arithmetic.arithmetic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arithmetic</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="circular-mask">
+<h3>Circular Mask<a class="headerlink" href="#circular-mask" title="Link to this heading">¶</a></h3>
+<p>Masks a circular area around the center of the image, by setting it to a specified value.</p>
+<p>Intended to be used on: Reconstructed slices</p>
+<p>When: To remove reconstruction artifacts on the outer edge of the image.</p>
+<p>Caution: Ensure that the radius does not mask data from the sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input data as a 3D numpy.ndarray</p>
+</dd>
+<dt class="field-even">param circular_mask_ratio<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ratio to the full image. The ratio must be 0 &lt; ratio &lt; 1</p>
+</dd>
+<dt class="field-odd">param circular_mask_value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The value that all pixels in the mask will be set to.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.circular_mask.circular_mask.html#module-mantidimaging.core.operations.circular_mask.circular_mask" title="mantidimaging.core.operations.circular_mask.circular_mask"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circular</span> <span class="pre">Mask</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="clip-values">
+<h3>Clip Values<a class="headerlink" href="#clip-values" title="Link to this heading">¶</a></h3>
+<p>Clips grey values of the image based on the parameters. Can be used to remove outliers and noise (e.g. negative values) from reconstructed images.</p>
+<p>Intended to be used on: Projections and reconstructed slices</p>
+<p>When: To remove a range of pixel values from the data.</p>
+<p>Caution: Make sure the value range does not clip information from the sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input data as a 3D numpy.ndarray.</p>
+</dd>
+<dt class="field-even">param clip_min<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum value to be clipped from the data. If None is provided then no lower threshold is used.</p>
+</dd>
+<dt class="field-odd">param clip_max<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum value to be clipped from the data. If None is provided then no upper threshold is used.</p>
+</dd>
+<dt class="field-even">param clip_min_new_value<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value to use when replacing values less than clip_min. If None is provided then the value of clip_min is used.</p>
+</dd>
+<dt class="field-odd">param clip_max_new_value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The value to use when replacing values greater than clip_max. If None is provided then the value of clip_max is used.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.clip_values.clip_values.html#module-mantidimaging.core.operations.clip_values.clip_values" title="mantidimaging.core.operations.clip_values.clip_values"><code class="xref py py-class docutils literal notranslate"><span class="pre">Clip</span> <span class="pre">Values</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="crop-coordinates">
+<h3>Crop Coordinates<a class="headerlink" href="#crop-coordinates" title="Link to this heading">¶</a></h3>
+<p>Crop a region of interest from the image.</p>
+<p>Intended to be used on: A stack of projections, or reconstructed slices</p>
+<p>When: To select part of the image that is to be processed further; this reduces memory usage and can greatly improve the speed of reconstruction.</p>
+<p>Caution: Make sure the region of cropping does not crop parts of the sample during the rotation of the sample in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param region_of_interest<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Crop original images using these coordinates. The selection is a rectangle and expected order is - Left Top Right Bottom.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#module-mantidimaging.core.operations.crop_coords.crop_coords" title="mantidimaging.core.operations.crop_coords.crop_coords"><code class="xref py py-class docutils literal notranslate"><span class="pre">Crop</span> <span class="pre">Coordinates</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="divide">
+<h3>Divide<a class="headerlink" href="#divide" title="Link to this heading">¶</a></h3>
+<p>Divides a stack of images by a value. That value can be the pixel size, and can be specified in either microns or cms, to obtain attenuation values.</p>
+<p>Intended to be used on: Reconstructed slices</p>
+<p>When: To calculate attenuation values by dividing by the pixel size in microns</p>
+<p>Caution: Check preview values before applying divide</p>
+<dl class="field-list simple">
+<dt class="field-odd">param value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The division value.</p>
+</dd>
+<dt class="field-even">param unit<span class="colon">:</span></dt>
+<dd class="field-even"><p>The unit of the divisor.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.divide.divide.html#module-mantidimaging.core.operations.divide.divide" title="mantidimaging.core.operations.divide.divide"><code class="xref py py-class docutils literal notranslate"><span class="pre">Divide</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="flat-fielding">
+<h3>Flat-fielding<a class="headerlink" href="#flat-fielding" title="Link to this heading">¶</a></h3>
+<p>Uses the flat (open beam) and dark images to normalise a stack of images (radiograms, projections), and to correct for a beam profile, scintillator imperfections and/or  detector inhomogeneities. This operation produces images of transmission values.</p>
+<p>In practice, several open beam and dark images are averaged in the flat-fielding process.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: As one of the first pre-processing steps</p>
+<p>Caution: Make sure the correct stacks are selected for flat and dark.</p>
+<p>Caution: Check that the flat and dark images don’t have any very bright pixels, or this will introduce additional noise in the sample. Remove outliers before flat-fielding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param flat_before<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flat (open beam) image to use in normalization, collected before the sample was imaged</p>
+</dd>
+<dt class="field-even">param flat_after<span class="colon">:</span></dt>
+<dd class="field-even"><p>Flat (open beam) image to use in normalization, collected after the sample was imaged</p>
+</dd>
+<dt class="field-odd">param dark_before<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dark image to use in normalization, collected before the sample was imaged</p>
+</dd>
+<dt class="field-even">param dark_after<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dark image to use in normalization, collected after the sample was imaged</p>
+</dd>
+<dt class="field-odd">param selected_flat_fielding<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Select which of the flat fielding methods to use, just Before stacks, just After stacks or combined.</p>
+</dd>
+<dt class="field-even">param use_dark<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether to use dark frame subtraction</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.flat_fielding.flat_fielding.html#module-mantidimaging.core.operations.flat_fielding.flat_fielding" title="mantidimaging.core.operations.flat_fielding.flat_fielding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flat-fielding</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="gaussian">
+<h3>Gaussian<a class="headerlink" href="#gaussian" title="Link to this heading">¶</a></h3>
+<p>Applies Gaussian filter to the data.</p>
+<p>Intended to be used on: Projections or reconstructed slices</p>
+<p>When: As a pre-processing or post-reconstruction step to reduce noise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input data as a 3D numpy.ndarray</p>
+</dd>
+<dt class="field-even">param size<span class="colon">:</span></dt>
+<dd class="field-even"><p>Size of the kernel</p>
+</dd>
+<dt class="field-odd">param mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The mode with which to handle the edges. One of [reflect, constant, nearest, mirror, wrap]. Modes are described in the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html">SciPy documentation</a>.</p>
+</dd>
+<dt class="field-even">param order<span class="colon">:</span></dt>
+<dd class="field-even"><p>The order of the filter along each axis is given as a sequence of integers, or as a single number. An order of 0 corresponds to convolution with a Gaussian kernel. An order of 1, 2, or 3 corresponds to convolution with the first, second or third derivatives of a Gaussian. Higher order derivatives are not implemented</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.gaussian.gaussian.html#module-mantidimaging.core.operations.gaussian.gaussian" title="mantidimaging.core.operations.gaussian.gaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="median">
+<h3>Median<a class="headerlink" href="#median" title="Link to this heading">¶</a></h3>
+<p>Applies Median filter to the data.</p>
+<p>Intended to be used on: Projections or reconstructed slices</p>
+<p>When: As a pre-processing or post-reconstruction step to reduce noise.</p>
+<p>Note: NaN values are preserved through the filter. They are treated as negative infinity while calculating neighbouring pixels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input data as an ImageStack object.</p>
+</dd>
+<dt class="field-even">param size<span class="colon">:</span></dt>
+<dd class="field-even"><p>Size of the kernel</p>
+</dd>
+<dt class="field-odd">param mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The mode with which to handle the edges. One of [reflect, constant, nearest, mirror, wrap]. Modes are described in the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.median_filter.html">SciPy documentation</a>.</p>
+</dd>
+<dt class="field-even">param force_cpu<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether or not to use the CPU.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.median_filter.median_filter.html#module-mantidimaging.core.operations.median_filter.median_filter" title="mantidimaging.core.operations.median_filter.median_filter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Median</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="monitor-normalisation">
+<h3>Monitor Normalisation<a class="headerlink" href="#monitor-normalisation" title="Link to this heading">¶</a></h3>
+<p>Normalises the image data using the average count of a beam monitor from the experiment log file. This scaling operation is an alternative to ROI normalisation and allows to account for beam fluctuations and different exposure times of projections.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: As a pre-processing step to normalise the grey value ranges of the data.</p>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.html#module-mantidimaging.core.operations.monitor_normalisation.monitor_normalisation" title="mantidimaging.core.operations.monitor_normalisation.monitor_normalisation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Monitor</span> <span class="pre">Normalisation</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="nan-removal">
+<h3>NaN Removal<a class="headerlink" href="#nan-removal" title="Link to this heading">¶</a></h3>
+<p>Replaces the NaNs with a specified value or the median of neighbouring pixels.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: To remove NaNs before reconstruction.</p>
+<p>Note that the median method cannot remove continuous blocks of NaNs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The input data.</p>
+</dd>
+<dt class="field-even">param mode_value<span class="colon">:</span></dt>
+<dd class="field-even"><p>Values to replace NaNs with. One of [“Constant”, “Median”]</p>
+</dd>
+<dt class="field-odd">param replace_value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>In constant mode, the value to replace NaNs with.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#module-mantidimaging.core.operations.nan_removal.nan_removal" title="mantidimaging.core.operations.nan_removal.nan_removal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaN</span> <span class="pre">Removal</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-outliers">
+<h3>Remove Outliers<a class="headerlink" href="#remove-outliers" title="Link to this heading">¶</a></h3>
+<p>Removes pixel values that are found to be outliers as defined by the given parameters.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: As a pre-processing step to reduce very bright or dead pixels in the data.</p>
+<p>Caution: This should usually be one of the first steps applied to the data, flat and dark images, to remove pixels with very large values that will cause issues for flat-fielding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param diff<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pixel value difference above which to crop bright pixels</p>
+</dd>
+<dt class="field-even">param radius<span class="colon">:</span></dt>
+<dd class="field-even"><p>Size of the median filter to apply</p>
+</dd>
+<dt class="field-odd">param mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether to remove bright or dark outliers One of [OUTLIERS_BRIGHT, OUTLIERS_DARK]</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.outliers.outliers.html#module-mantidimaging.core.operations.outliers.outliers" title="mantidimaging.core.operations.outliers.outliers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">Outliers</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="rebin">
+<h3>Rebin<a class="headerlink" href="#rebin" title="Link to this heading">¶</a></h3>
+<p>Rebin the image to reduce the resolution.</p>
+<p>This filter temporarily increases memory usage, while the image is being rebinned. The memory usage will be lowered after the filter has finished executing.</p>
+<p>Intended to be used on: Any data</p>
+<p>When: If you want to reduce the data size and to smoothen the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param rebin_param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, float or tuple int - Percentage of current size. float - Fraction of current size. tuple - Size of the output image (x, y).</p>
+</dd>
+<dt class="field-even">param mode<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mode with which to handle the edges. One of (‘constant’, ‘edge’, ‘symmetric’, ‘reflect’, ‘wrap’).</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.rebin.rebin.html#module-mantidimaging.core.operations.rebin.rebin" title="mantidimaging.core.operations.rebin.rebin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rebin</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-all-stripes">
+<h3>Remove all stripes<a class="headerlink" href="#remove-all-stripes" title="Link to this heading">¶</a></h3>
+<p>Stripe and ring artifact removal. Remove all types of stripe artifacts by combining algorithm 6, 5, and 3  in Vo et al., Optics Express 28396 (2018).</p>
+<p>Source: <a class="reference external" href="https://github.com/algotom/algotom">https://github.com/algotom/algotom</a></p>
+<p>Intended to be used on: Sinograms</p>
+<p>When: If stripes artifacts are present that have not been removed with outliers + flat-fielding the projections</p>
+<p>Caution: Horizontal stripes caused by changes in image intensity (pixel values) should be fixed by ROI Normalisation instead!</p>
+<dl class="field-list simple">
+<dt class="field-odd">param snr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ratio used to segment between useful information and noise. Greater is less sensitive.</p>
+</dd>
+<dt class="field-even">param la_size<span class="colon">:</span></dt>
+<dd class="field-even"><p>The window size of the median filter to remove large stripes.</p>
+</dd>
+<dt class="field-odd">param sm_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The window size of the median filter to remove small-to-medium stripes.</p>
+</dd>
+<dt class="field-even">param dim<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether to perform the median on 1D or 2D view of the data.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.remove_all_stripe.remove_all_stripe.html#module-mantidimaging.core.operations.remove_all_stripe.remove_all_stripe" title="mantidimaging.core.operations.remove_all_stripe.remove_all_stripe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">all</span> <span class="pre">stripes</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-dead-stripes">
+<h3>Remove dead stripes<a class="headerlink" href="#remove-dead-stripes" title="Link to this heading">¶</a></h3>
+<p>Stripe and ring artifact removal. Algorithm 6 in Vo et al., Optics Express 28396 (2018). Remove unresponsive or fluctuating stripes by: locating stripes, correction by interpolation.</p>
+<p>Source: <a class="reference external" href="https://github.com/algotom/algotom">https://github.com/algotom/algotom</a></p>
+<p>Intended to be used on: Sinograms</p>
+<p>When: If stripes artifacts are present that have not been removed with outliers + flat-fielding the projections</p>
+<p>Caution: Horizontal stripes caused by changes in image intensity (pixel values) should be fixed by ROI Normalisation instead!</p>
+<dl class="field-list simple">
+<dt class="field-odd">param snr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ratio value.</p>
+</dd>
+<dt class="field-even">param size<span class="colon">:</span></dt>
+<dd class="field-even"><p>The window size of the median filter to remove dead stripes.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.remove_dead_stripe.remove_dead_stripe.html#module-mantidimaging.core.operations.remove_dead_stripe.remove_dead_stripe" title="mantidimaging.core.operations.remove_dead_stripe.remove_dead_stripe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">dead</span> <span class="pre">stripes</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-large-stripes">
+<h3>Remove large stripes<a class="headerlink" href="#remove-large-stripes" title="Link to this heading">¶</a></h3>
+<p>Stripe and ring artifact removal: Algorithm 5 in Vo et al., Optics Express 28396 (2018). Remove large stripes by: locating stripes, normalizing them to remove full stripes, using the sorting technique to remove partial stripes.</p>
+<p>Source: <a class="reference external" href="https://github.com/algotom/algotom">https://github.com/algotom/algotom</a></p>
+<p>Intended to be used on: Sinograms When: If stripes artifacts are present that have not been removed with outliers + flat-fielding the projections</p>
+<p>Caution: Horizontal stripes caused by changes in image intensity (pixel values) should be fixed by ROI Normalisation instead!</p>
+<dl class="field-list simple">
+<dt class="field-odd">param snr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ratio value.</p>
+</dd>
+<dt class="field-even">param size<span class="colon">:</span></dt>
+<dd class="field-even"><p>The window size of the median filter to remove large stripes.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.remove_large_stripe.remove_large_stripe.html#module-mantidimaging.core.operations.remove_large_stripe.remove_large_stripe" title="mantidimaging.core.operations.remove_large_stripe.remove_large_stripe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">large</span> <span class="pre">stripes</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-stripes-with-filtering">
+<h3>Remove stripes with filtering<a class="headerlink" href="#remove-stripes-with-filtering" title="Link to this heading">¶</a></h3>
+<p>Stripe and ring artifact removal. Combination of algorithm 2 and algorithm 3 in Vo et al., Optics Express 28396 (2018). Removing stripes using the filtering and sorting technique.</p>
+<p>Source: <a class="reference external" href="https://github.com/algotom/algotom">https://github.com/algotom/algotom</a></p>
+<p>Intended to be used on: Sinograms</p>
+<p>When: If stripes artifacts are present that have not been removed with outliers + flat-fielding the projections</p>
+<p>Caution: Horizontal stripes caused by changes in image intensity (pixel values) should be fixed by ROI Normalisation instead!</p>
+<dl class="field-list simple">
+<dt class="field-odd">param sigma<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The sigma of the Gaussian window used to separate the low-pass and high-pass components of the intensity profile of each column.</p>
+</dd>
+<dt class="field-even">param size<span class="colon">:</span></dt>
+<dd class="field-even"><p>The window size of the median filter to remove large stripes.</p>
+</dd>
+<dt class="field-odd">param window_dim<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether to perform the median on 1D or 2D view of the data.</p>
+</dd>
+<dt class="field-even">param filtering_dim<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether to use a 1D or 2D low-pass filter. This uses different Sarepy methods. filtering and sorting technique.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html#module-mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering" title="mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">stripes</span> <span class="pre">with</span> <span class="pre">filtering</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="remove-stripes-with-sorting-and-fitting">
+<h3>Remove stripes with sorting and fitting<a class="headerlink" href="#remove-stripes-with-sorting-and-fitting" title="Link to this heading">¶</a></h3>
+<p>Stripe and ring artifact removal. Combination of algorithm 3 and 1 in Vo et al., Optics Express 28396 (2018). Remove stripes using the sorting and fitting technique.</p>
+<p>Source: <a class="reference external" href="https://github.com/algotom/algotom">https://github.com/algotom/algotom</a></p>
+<p>Intended to be used on: Sinograms</p>
+<p>When: If stripes artifacts are present that have not been removed with outliers + flat-fielding the projections</p>
+<p>Caution: Horizontal stripes caused by changes in image intensity (pixel values) should be fixed by ROI Normalisation instead!</p>
+<dl class="field-list simple">
+<dt class="field-odd">param order<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The polynomial fit order. Check algotom docs for more information.</p>
+</dd>
+<dt class="field-even">param sigma<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sigma of the Gaussian window in the x-direction. sorting and fitting technique.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#module-mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting" title="mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">stripes</span> <span class="pre">with</span> <span class="pre">sorting</span> <span class="pre">and</span> <span class="pre">fitting</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="rescale">
+<h3>Rescale<a class="headerlink" href="#rescale" title="Link to this heading">¶</a></h3>
+<p>Rescales the image data to a new [0, maximum output] range.</p>
+<p>Intended to be used on: Any</p>
+<p>When: Automatically used when saving as unsigned integer image formats, to avoid clipping negative values</p>
+<dl class="field-list simple">
+<dt class="field-odd">param min_input<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Minimum value of the data that will be used. Anything below this will be clipped to 0.</p>
+</dd>
+<dt class="field-even">param max_input<span class="colon">:</span></dt>
+<dd class="field-even"><p>Maximum value of the data that will be used. Anything above it will be clipped to 0.</p>
+</dd>
+<dt class="field-odd">param max_output<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum value of the OUTPUT images. They will be rescaled to range [0, MAX OUTPUT].</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.rescale.rescale.html#module-mantidimaging.core.operations.rescale.rescale" title="mantidimaging.core.operations.rescale.rescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rescale</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="ring-removal">
+<h3>Ring Removal<a class="headerlink" href="#ring-removal" title="Link to this heading">¶</a></h3>
+<p>Remove ring artifacts from images in the reconstructed domain.</p>
+<p>Intended to be used on: Reconstructed slices</p>
+<p>When: To remove ring-artifacts that have not been removed, or have been introduced by pre-processing</p>
+<dl class="field-list simple">
+<dt class="field-odd">param center_mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether to use the center of the image or a user-defined value</p>
+</dd>
+<dt class="field-even">param center_x<span class="colon">:</span></dt>
+<dd class="field-even"><p>(float, optional) abscissa location of center of rotation</p>
+</dd>
+<dt class="field-odd">param center_y<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(float, optional) ordinate location of center of rotation</p>
+</dd>
+<dt class="field-even">param thresh<span class="colon">:</span></dt>
+<dd class="field-even"><p>(float, optional) maximum value of an offset due to a ring artifact</p>
+</dd>
+<dt class="field-odd">param thresh_max<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(float, optional) max value for portion of image to filter</p>
+</dd>
+<dt class="field-even">param thresh_min<span class="colon">:</span></dt>
+<dd class="field-even"><p>(float, optional) min value for portion of image to filer</p>
+</dd>
+<dt class="field-odd">param theta_min<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(int, optional) minimum angle in degrees to be considered ring artifact</p>
+</dd>
+<dt class="field-even">param rwidth<span class="colon">:</span></dt>
+<dd class="field-even"><p>(int, optional) Maximum width of the rings to be filtered in pixels</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.ring_removal.ring_removal.html#module-mantidimaging.core.operations.ring_removal.ring_removal" title="mantidimaging.core.operations.ring_removal.ring_removal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ring</span> <span class="pre">Removal</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="roi-normalisation">
+<h3>ROI Normalisation<a class="headerlink" href="#roi-normalisation" title="Link to this heading">¶</a></h3>
+<p>Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the image. This scaling operation allows to account for beam fluctuations and different exposure times of projections.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: Always, to ensure that any fluctuations in beam intensity are normalised.</p>
+<p>Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are brighter/darker than the neighbours. This can be fixed with this operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param region_of_interest<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The order is - Left Top Right Bottom. The air region for which grey values are summed up and used for normalisation/scaling.</p>
+</dd>
+<dt class="field-even">param normalisation_mode<span class="colon">:</span></dt>
+<dd class="field-even"><p>Controls what the ROI counts are normalised to. ‘Stack Average’ : The mean value of the air region across all projections is preserved. ‘Flat Field’ : The mean value of the air regions in the projections is made equal to the mean value of the air region in the flat field image.</p>
+</dd>
+<dt class="field-odd">param flat_field<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flat field to use if ‘Flat Field’ mode is enabled.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.roi_normalisation.roi_normalisation.html#module-mantidimaging.core.operations.roi_normalisation.roi_normalisation" title="mantidimaging.core.operations.roi_normalisation.roi_normalisation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ROI</span> <span class="pre">Normalisation</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+<section id="rotate-stack">
+<h3>Rotate Stack<a class="headerlink" href="#rotate-stack" title="Link to this heading">¶</a></h3>
+<p>Rotates the image data by an arbitrary degree counter-clockwise.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: 90 or 270 degree rotation for rotation axis to be vertical for some camera types.</p>
+<p>Caution: Rotations of images others than multiples of 90 degrees could introduce additional artifacts in the reconstructed volume. Such rotations are usually not required as small tilts can be taken into account at the reconstruction stage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>stack of sample images</p>
+</dd>
+<dt class="field-even">param angle<span class="colon">:</span></dt>
+<dd class="field-even"><p>The rotation to be performed, in degrees</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#module-mantidimaging.core.operations.rotate_stack.rotate_stack" title="mantidimaging.core.operations.rotate_stack.rotate_stack"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rotate</span> <span class="pre">Stack</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Operations</a><ul>
+<li><a class="reference internal" href="#operations-list">Operations List</a><ul>
+<li><a class="reference internal" href="#arithmetic">Arithmetic</a></li>
+<li><a class="reference internal" href="#circular-mask">Circular Mask</a></li>
+<li><a class="reference internal" href="#clip-values">Clip Values</a></li>
+<li><a class="reference internal" href="#crop-coordinates">Crop Coordinates</a></li>
+<li><a class="reference internal" href="#divide">Divide</a></li>
+<li><a class="reference internal" href="#flat-fielding">Flat-fielding</a></li>
+<li><a class="reference internal" href="#gaussian">Gaussian</a></li>
+<li><a class="reference internal" href="#median">Median</a></li>
+<li><a class="reference internal" href="#monitor-normalisation">Monitor Normalisation</a></li>
+<li><a class="reference internal" href="#nan-removal">NaN Removal</a></li>
+<li><a class="reference internal" href="#remove-outliers">Remove Outliers</a></li>
+<li><a class="reference internal" href="#rebin">Rebin</a></li>
+<li><a class="reference internal" href="#remove-all-stripes">Remove all stripes</a></li>
+<li><a class="reference internal" href="#remove-dead-stripes">Remove dead stripes</a></li>
+<li><a class="reference internal" href="#remove-large-stripes">Remove large stripes</a></li>
+<li><a class="reference internal" href="#remove-stripes-with-filtering">Remove stripes with filtering</a></li>
+<li><a class="reference internal" href="#remove-stripes-with-sorting-and-fitting">Remove stripes with sorting and fitting</a></li>
+<li><a class="reference internal" href="#rescale">Rescale</a></li>
+<li><a class="reference internal" href="#ring-removal">Ring Removal</a></li>
+<li><a class="reference internal" href="#roi-normalisation">ROI Normalisation</a></li>
+<li><a class="reference internal" href="#rotate-stack">Rotate Stack</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../gui/spectrum_viewer.html"
+                          title="previous chapter">Spectrum Viewer</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../reconstructions/index.html"
+                          title="next chapter">Reconstruction Help page</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../index.html">Latest</a></li>
+  <li><a href="../../../2.3.0/user_guide/operations/index.html">2.3.0</a></li>
+  <li><a href="../../../2.4.0/user_guide/operations/index.html">2.4.0</a></li>
+  <li><a href="index.html">2.5.0</a></li>
+  <li><a href="../../../2.6.0/user_guide/operations/index.html">2.6.0</a></li>
+  <li><a href="../../../2.7.0/user_guide/operations/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../reconstructions/index.html" title="Reconstruction Help page"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../gui/spectrum_viewer.html" title="Spectrum Viewer"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operations</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

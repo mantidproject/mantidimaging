@@ -1,0 +1,17 @@
+mantidimaging.gui.windows.wizard package
+========================================
+
+.. automodule:: mantidimaging.gui.windows.wizard
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.wizard.model
+   mantidimaging.gui.windows.wizard.presenter
+   mantidimaging.gui.windows.wizard.view

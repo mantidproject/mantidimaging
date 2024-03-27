@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.widgets.mi_image_view.view module - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.widgets.mi_mini_image_view package" href="mantidimaging.gui.widgets.mi_mini_image_view.html" />
+    <link rel="prev" title="mantidimaging.gui.widgets.mi_image_view.presenter module" href="mantidimaging.gui.widgets.mi_image_view.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.mi_mini_image_view.html" title="mantidimaging.gui.widgets.mi_mini_image_view package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.mi_image_view.presenter.html" title="mantidimaging.gui.widgets.mi_image_view.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.mi_image_view.html" accesskey="U">mantidimaging.gui.widgets.mi_image_view package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.widgets.mi_image_view.view">
+<span id="mantidimaging-gui-widgets-mi-image-view-view-module"></span><h1>mantidimaging.gui.widgets.mi_image_view.view module<a class="headerlink" href="#module-mantidimaging.gui.widgets.mi_image_view.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.mi_image_view.view.</span></span><span class="sig-name descname"><span class="pre">MIImageView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ImageView'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imageItem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levelMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mono'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailsSpanAllCols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageView</span></code>, <a class="reference internal" href="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay" title="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay"><code class="xref py py-class docutils literal notranslate"><span class="pre">BadDataOverlay</span></code></a>, <a class="reference internal" href="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.html#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu" title="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoColorMenu</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.angles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.angles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.close" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the widget nicely, making sure to clear the graphics scene and release memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.default_roi">
+<span class="sig-name descname"><span class="pre">default_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.default_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.default_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.details">
+<span class="sig-name descname"><span class="pre">details</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.details" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.extend_roi_plot_mouse_press_handler">
+<span class="sig-name descname"><span class="pre">extend_roi_plot_mouse_press_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.extend_roi_plot_mouse_press_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.extend_roi_plot_mouse_press_handler" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.get_roi">
+<span class="sig-name descname"><span class="pre">get_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.close_enough_point.html#mantidimaging.core.utility.close_enough_point.CloseEnoughPoint" title="mantidimaging.core.utility.close_enough_point.CloseEnoughPoint"><span class="pre">CloseEnoughPoint</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.close_enough_point.html#mantidimaging.core.utility.close_enough_point.CloseEnoughPoint" title="mantidimaging.core.utility.close_enough_point.CloseEnoughPoint"><span class="pre">CloseEnoughPoint</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.get_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.get_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.histogram">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HistogramLUTItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.histogram" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.imageItem">
+<span class="sig-name descname"><span class="pre">imageItem</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ImageItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.imageItem" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_hover_event">
+<span class="sig-name descname"><span class="pre">image_hover_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HoverEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.image_hover_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_hover_event" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_item">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_item</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ImageItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_item" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiChanged">
+<span class="sig-name descname"><span class="pre">roiChanged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.roiChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiChanged" title="Link to this definition">¶</a></dt>
+<dd><p>Re-implements the roiChanged function to expect only 3D data,
+and uses a faster mean calculation on the ROI view of the data,
+instead of the full sized data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiString">
+<span class="sig-name descname"><span class="pre">roiString</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiString" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roi_changed_callback">
+<span class="sig-name descname"><span class="pre">roi_changed_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roi_changed_callback" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.setImage">
+<span class="sig-name descname"><span class="pre">setImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.setImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.setImage" title="Link to this definition">¶</a></dt>
+<dd><p>Set the image to be displayed in the widget.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>img<span class="classifier">np.ndarray</span></dt><dd><p>The image to be displayed. See <code class="xref py py-func docutils literal notranslate"><span class="pre">ImageItem.setImage()</span></code> and <em>notes</em> below.</p>
+</dd>
+<dt>autoRange<span class="classifier">bool</span></dt><dd><p>Whether to scale/pan the view to fit the image.</p>
+</dd>
+<dt>autoLevels<span class="classifier">bool</span></dt><dd><p>Whether to update the white/black levels to fit the image.</p>
+</dd>
+<dt>levels<span class="classifier">tuple</span></dt><dd><p>(min, max) white and black level values to use.</p>
+</dd>
+<dt>axes<span class="classifier">dict</span></dt><dd><p>Dictionary indicating the interpretation for each axis. This is only needed to override the default guess.
+Format is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;t&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">};</span>
+</pre></div>
+</div>
+</dd>
+<dt>xvals<span class="classifier">np.ndarray</span></dt><dd><p>1D array of values corresponding to the first axis in a 3D image. For video, this array should contain
+the time of each frame.</p>
+</dd>
+<dt>pos</dt><dd><p>Change the position of the displayed image</p>
+</dd>
+<dt>scale</dt><dd><p>Change the scale of the displayed image</p>
+</dd>
+<dt>transform</dt><dd><p>Set the transform of the displayed image. This option overrides <em>pos</em> and <em>scale</em>.</p>
+</dd>
+<dt>autoHistogramRange<span class="classifier">bool</span></dt><dd><p>If True, the histogram y-range is automatically scaled to fit the image data.</p>
+</dd>
+<dt>levelMode<span class="classifier">str</span></dt><dd><p>If specified, this sets the user interaction mode for setting image levels. Options are ‘mono’,
+which provides a single level control for all image channels, and ‘rgb’ or ‘rgba’, which provide
+individual controls for each channel.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<p>For backward compatibility, image data is assumed to be in column-major order (column, row).
+However, most image data is stored in row-major order (row, column) and will need to be
+transposed before calling setImage():</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">imageview</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">imagedata</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This requirement can be changed by the <code class="docutils literal notranslate"><span class="pre">imageAxisOrder</span></code>
+<span class="xref std std-ref">global configuration option</span>.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_log_scale">
+<span class="sig-name descname"><span class="pre">set_log_scale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.set_log_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_log_scale" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_roi">
+<span class="sig-name descname"><span class="pre">set_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.set_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_selected_image">
+<span class="sig-name descname"><span class="pre">set_selected_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.set_selected_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_selected_image" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_timeline_to_tick_nearest">
+<span class="sig-name descname"><span class="pre">set_timeline_to_tick_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos_clicked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.set_timeline_to_tick_nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_timeline_to_tick_nearest" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.toggle_jumping_frame">
+<span class="sig-name descname"><span class="pre">toggle_jumping_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_to_jump_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#MIImageView.toggle_jumping_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.toggle_jumping_frame" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.MIImageView.viewbox">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">viewbox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ViewBox</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.viewbox" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.UnrotateablePlotROI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.mi_image_view.view.</span></span><span class="sig-name descname"><span class="pre">UnrotateablePlotROI</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#UnrotateablePlotROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.UnrotateablePlotROI" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ROI</span></code></p>
+<p>Like PlotROI but does not add a rotation handle.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.mi_image_view.view.clip">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.mi_image_view.view.</span></span><span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/mi_image_view/view.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.mi_image_view.view.clip" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.widgets.mi_image_view.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView"><code class="docutils literal notranslate"><span class="pre">MIImageView</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.angles"><code class="docutils literal notranslate"><span class="pre">MIImageView.angles</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.close"><code class="docutils literal notranslate"><span class="pre">MIImageView.close()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.default_roi"><code class="docutils literal notranslate"><span class="pre">MIImageView.default_roi()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.details"><code class="docutils literal notranslate"><span class="pre">MIImageView.details</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.extend_roi_plot_mouse_press_handler"><code class="docutils literal notranslate"><span class="pre">MIImageView.extend_roi_plot_mouse_press_handler()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.get_roi"><code class="docutils literal notranslate"><span class="pre">MIImageView.get_roi()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.histogram"><code class="docutils literal notranslate"><span class="pre">MIImageView.histogram</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.imageItem"><code class="docutils literal notranslate"><span class="pre">MIImageView.imageItem</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_data"><code class="docutils literal notranslate"><span class="pre">MIImageView.image_data</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_hover_event"><code class="docutils literal notranslate"><span class="pre">MIImageView.image_hover_event()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.image_item"><code class="docutils literal notranslate"><span class="pre">MIImageView.image_item</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiChanged"><code class="docutils literal notranslate"><span class="pre">MIImageView.roiChanged()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roiString"><code class="docutils literal notranslate"><span class="pre">MIImageView.roiString</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.roi_changed_callback"><code class="docutils literal notranslate"><span class="pre">MIImageView.roi_changed_callback</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.setImage"><code class="docutils literal notranslate"><span class="pre">MIImageView.setImage()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_log_scale"><code class="docutils literal notranslate"><span class="pre">MIImageView.set_log_scale()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_roi"><code class="docutils literal notranslate"><span class="pre">MIImageView.set_roi()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_selected_image"><code class="docutils literal notranslate"><span class="pre">MIImageView.set_selected_image()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.set_timeline_to_tick_nearest"><code class="docutils literal notranslate"><span class="pre">MIImageView.set_timeline_to_tick_nearest()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.toggle_jumping_frame"><code class="docutils literal notranslate"><span class="pre">MIImageView.toggle_jumping_frame()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.viewbox"><code class="docutils literal notranslate"><span class="pre">MIImageView.viewbox</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.UnrotateablePlotROI"><code class="docutils literal notranslate"><span class="pre">UnrotateablePlotROI</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.mi_image_view.view.clip"><code class="docutils literal notranslate"><span class="pre">clip()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.mi_image_view.presenter.html"
+                          title="previous chapter">mantidimaging.gui.widgets.mi_image_view.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.mi_mini_image_view.html"
+                          title="next chapter">mantidimaging.gui.widgets.mi_mini_image_view package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="mantidimaging.gui.widgets.mi_image_view.view.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.mi_mini_image_view.html" title="mantidimaging.gui.widgets.mi_mini_image_view package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.mi_image_view.presenter.html" title="mantidimaging.gui.widgets.mi_image_view.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.mi_image_view.html" >mantidimaging.gui.widgets.mi_image_view package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.io.instrument_log module &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.io.instrument_log_implmentations module" href="mantidimaging.core.io.instrument_log_implmentations.html" />
+    <link rel="prev" title="mantidimaging.core.io.filenames module" href="mantidimaging.core.io.filenames.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log_implmentations.html" title="mantidimaging.core.io.instrument_log_implmentations module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.filenames.html" title="mantidimaging.core.io.filenames module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" accesskey="U">mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.io.instrument_log">
+<span id="mantidimaging-core-io-instrument-log-module"></span><h1>mantidimaging.core.io.instrument_log module<a class="headerlink" href="#module-mantidimaging.core.io.instrument_log" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InstrumentLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Multiformat instrument log reader</p>
+<p>New parsers can be implemented by subclassing InstrumentLogParser</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Counts" title="mantidimaging.core.utility.data_containers.Counts"><span class="pre">Counts</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.counts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.get_column">
+<span class="sig-name descname"><span class="pre">get_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.get_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.get_column" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.has_projection_angles">
+<span class="sig-name descname"><span class="pre">has_projection_angles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.has_projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.has_projection_angles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.length">
+<span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.length" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parse" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="mantidimaging.core.io.instrument_log.InstrumentLogParser"><span class="pre">InstrumentLogParser</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parser" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.parsers">
+<span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="mantidimaging.core.io.instrument_log.InstrumentLogParser"><span class="pre">InstrumentLogParser</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile'&gt;]</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parsers" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.projection_angles">
+<span class="sig-name descname"><span class="pre">projection_angles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.projection_angles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.projection_numbers">
+<span class="sig-name descname"><span class="pre">projection_numbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.projection_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.projection_numbers" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.raise_if_angle_missing">
+<span class="sig-name descname"><span class="pre">raise_if_angle_missing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_filenames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.raise_if_angle_missing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.raise_if_angle_missing" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog.register_parser">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="mantidimaging.core.io.instrument_log.InstrumentLogParser"><span class="pre">InstrumentLogParser</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog.register_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog.register_parser" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InstrumentLogParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base class for parsers</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines">
+<span class="sig-name descname"><span class="pre">cleaned_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.cleaned_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.match">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.match" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the name and content of the file is likely to be readable by this parser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.parse">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the log file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InvalidLog">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InvalidLog</span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InvalidLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InvalidLog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">LogColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#LogColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.COUNTS_AFTER">
+<span class="sig-name descname"><span class="pre">COUNTS_AFTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.COUNTS_AFTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.COUNTS_BEFORE">
+<span class="sig-name descname"><span class="pre">COUNTS_BEFORE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.COUNTS_BEFORE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.IMAGE_TYPE_IMAGE_COUNTER">
+<span class="sig-name descname"><span class="pre">IMAGE_TYPE_IMAGE_COUNTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.IMAGE_TYPE_IMAGE_COUNTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_ANGLE">
+<span class="sig-name descname"><span class="pre">PROJECTION_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_ANGLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_NUMBER">
+<span class="sig-name descname"><span class="pre">PROJECTION_NUMBER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_NUMBER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.SPECTRUM_COUNTS">
+<span class="sig-name descname"><span class="pre">SPECTRUM_COUNTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.SPECTRUM_COUNTS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.TIMESTAMP">
+<span class="sig-name descname"><span class="pre">TIMESTAMP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.TIMESTAMP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.LogColumn.TIME_OF_FLIGHT">
+<span class="sig-name descname"><span class="pre">TIME_OF_FLIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.LogColumn.TIME_OF_FLIGHT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.NoParserFound">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">NoParserFound</span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#NoParserFound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.NoParserFound" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.io.instrument_log module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog"><code class="docutils literal notranslate"><span class="pre">InstrumentLog</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.counts"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.counts()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.data"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.data</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.get_column"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.get_column()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.has_projection_angles"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.has_projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.length"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.length</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.parse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parser"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.parser</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.parsers"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.parsers</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.projection_angles"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.projection_numbers"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.projection_numbers()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.raise_if_angle_missing"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.raise_if_angle_missing()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.register_parser"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.register_parser()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.cleaned_lines()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.match"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.match()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InvalidLog"><code class="docutils literal notranslate"><span class="pre">InvalidLog</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn"><code class="docutils literal notranslate"><span class="pre">LogColumn</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.COUNTS_AFTER"><code class="docutils literal notranslate"><span class="pre">LogColumn.COUNTS_AFTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.COUNTS_BEFORE"><code class="docutils literal notranslate"><span class="pre">LogColumn.COUNTS_BEFORE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.IMAGE_TYPE_IMAGE_COUNTER"><code class="docutils literal notranslate"><span class="pre">LogColumn.IMAGE_TYPE_IMAGE_COUNTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_ANGLE"><code class="docutils literal notranslate"><span class="pre">LogColumn.PROJECTION_ANGLE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_NUMBER"><code class="docutils literal notranslate"><span class="pre">LogColumn.PROJECTION_NUMBER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.SPECTRUM_COUNTS"><code class="docutils literal notranslate"><span class="pre">LogColumn.SPECTRUM_COUNTS</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.TIMESTAMP"><code class="docutils literal notranslate"><span class="pre">LogColumn.TIMESTAMP</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn.TIME_OF_FLIGHT"><code class="docutils literal notranslate"><span class="pre">LogColumn.TIME_OF_FLIGHT</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.NoParserFound"><code class="docutils literal notranslate"><span class="pre">NoParserFound</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.filenames.html"
+                          title="previous chapter">mantidimaging.core.io.filenames module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.instrument_log_implmentations.html"
+                          title="next chapter">mantidimaging.core.io.instrument_log_implmentations module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../index.html">Latest</a></li>
+  <li><a href="../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log_implmentations.html" title="mantidimaging.core.io.instrument_log_implmentations module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.filenames.html" title="mantidimaging.core.io.filenames module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" >mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

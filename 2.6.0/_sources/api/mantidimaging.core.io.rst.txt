@@ -1,0 +1,26 @@
+mantidimaging.core.io package
+=============================
+
+.. automodule:: mantidimaging.core.io
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.io.loader
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.io.csv_output
+   mantidimaging.core.io.filenames
+   mantidimaging.core.io.saver
+   mantidimaging.core.io.utility

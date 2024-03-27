@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.mi\_image\_view.presenter module
+==========================================================
+
+.. automodule:: mantidimaging.gui.widgets.mi_image_view.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

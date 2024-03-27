@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.nexus_load_dialog.view - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.nexus_load_dialog.view</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.nexus_load_dialog.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QEventLoop</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> \
+    <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> \
+    <span class="n">QStackedWidget</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QSpinBox</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.nexus_load_dialog.presenter</span> <span class="kn">import</span> <span class="n">NexusLoadPresenter</span><span class="p">,</span> <span class="n">Notification</span>
+
+<span class="n">NEXUS_CAPTION</span> <span class="o">=</span> <span class="s2">&quot;NeXus&quot;</span>
+<span class="n">NEXUS_FILTER</span> <span class="o">=</span> <span class="s2">&quot;NeXus (*.nxs *.hd5)&quot;</span>
+
+<span class="n">FOUND_TEXT</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;✓&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;✕&quot;</span><span class="p">}</span>
+
+<span class="n">FOUND_COLUMN</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PATH_COLUMN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">SHAPE_COLUMN</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">CHECKBOX_COLUMN</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">TEXT_COLUMNS</span> <span class="o">=</span> <span class="p">[</span><span class="n">FOUND_COLUMN</span><span class="p">,</span> <span class="n">PATH_COLUMN</span><span class="p">,</span> <span class="n">SHAPE_COLUMN</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="NexusLoadDialog">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog">[docs]</a>
+<span class="k">class</span> <span class="nc">NexusLoadDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+    <span class="n">tree</span><span class="p">:</span> <span class="n">QTreeWidget</span>
+    <span class="n">chooseFileButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">filePathLineEdit</span><span class="p">:</span> <span class="n">QLineEdit</span>
+    <span class="n">buttonBox</span><span class="p">:</span> <span class="n">QDialogButtonBox</span>
+    <span class="n">pixelDepthComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
+    <span class="n">pixelSizeSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">stackedWidget</span><span class="p">:</span> <span class="n">QStackedWidget</span>
+    <span class="n">previewPushButton</span><span class="p">:</span> <span class="n">QStackedWidget</span>
+    <span class="n">allPushButton</span><span class="p">:</span> <span class="n">QStackedWidget</span>
+    <span class="n">presenter</span><span class="p">:</span> <span class="n">NexusLoadPresenter</span>
+    <span class="n">checkboxes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/nexus_load_dialog.ui&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">NexusLoadPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">expandItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkboxes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="o">.</span><span class="n">Stretch</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chooseFileButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">choose_nexus_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_widget</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_widget</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">h_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">))</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_widget</span><span class="p">)</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Stop&quot;</span><span class="p">))</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="p">)</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Increment&quot;</span><span class="p">))</span>
+        <span class="n">h_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment_widget</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">h_layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment_widget</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Indices&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span><span class="o">.</span><span class="n">execute_nexus_load</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">previewPushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_preview_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allPushButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_all_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixelBitDepthLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixelDepthComboBox</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NexusLoadDialog.choose_nexus_file">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.choose_nexus_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">choose_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the</span>
+<span class="sd">        QTreeWidget and enable the OK button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected_file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="n">NEXUS_CAPTION</span><span class="p">,</span>
+                                                       <span class="nb">filter</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">NEXUS_FILTER</span><span class="si">}</span><span class="s2">;;All (*.*)&quot;</span><span class="p">,</span>
+                                                       <span class="n">initialFilter</span><span class="o">=</span><span class="n">NEXUS_FILTER</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">selected_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">processEvents</span><span class="p">(</span><span class="n">QEventLoop</span><span class="o">.</span><span class="n">ProcessEventsFlag</span><span class="o">.</span><span class="n">AllEvents</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkboxes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_widgets</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filePathLineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">NEXUS_FILE_SELECTED</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.clear_widgets">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.clear_widgets">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove text and checkbox widgets from the QTreeWidget when a new file has been selected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">TEXT_COLUMNS</span><span class="p">:</span>
+                <span class="n">section</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">data_section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">data_section</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">TEXT_COLUMNS</span><span class="p">:</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">removeItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">CHECKBOX_COLUMN</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.set_data_found">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_data_found">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_data_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicate on the QTreeWidget if the image key and data fields have been found or not.</span>
+<span class="sd">        :param position: The row position for the data.</span>
+<span class="sd">        :param found: Whether or not the data has been found.</span>
+<span class="sd">        :param path: The data path in the NeXus file.</span>
+<span class="sd">        :param shape: The shape of the data/image key array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_found_status</span><span class="p">(</span><span class="n">data_section</span><span class="p">,</span> <span class="n">found</span><span class="p">)</span>
+
+        <span class="c1"># Nothing else to do if the data wasn&#39;t found</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Add the path and array shape information to the QTreeWidget</span>
+        <span class="n">data_section</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">PATH_COLUMN</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">data_section</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">SHAPE_COLUMN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.set_images_found">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_images_found">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_images_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.</span>
+<span class="sd">        :param position: The row position for the image type.</span>
+<span class="sd">        :param found: Whether or not the images were found.</span>
+<span class="sd">        :param shape: The shape of the images array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_found_status</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">found</span><span class="p">)</span>
+
+        <span class="c1"># Nothing else to do if the images weren&#39;t found</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Set shape information and add a &quot;Use?&quot; checkbox</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">SHAPE_COLUMN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span>
+        <span class="n">checkbox</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">()</span>
+        <span class="n">checkbox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">position</span><span class="p">:</span>
+            <span class="n">checkbox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">CHECKBOX_COLUMN</span><span class="p">,</span> <span class="n">checkbox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkboxes</span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">checkbox</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.set_projections_increment">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_projections_increment">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_projections_increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_proj</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the properties of the indices spin boxes.</span>
+<span class="sd">        :param n_proj: The number of projections that have been found in the NeXus file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span> <span class="o">=</span> <span class="n">n_proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">n_proj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">n_proj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">n_proj</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment_widget</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.show_exception">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.show_exception">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show an error about an exception.</span>
+<span class="sd">        :param msg: The error message.</span>
+<span class="sd">        :param traceback: The traceback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.show_data_error">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.show_data_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show an error about missing required data or an unreadable file.</span>
+<span class="sd">        :param msg: The error message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.disable_ok_button">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.disable_ok_button">[docs]</a>
+    <span class="k">def</span> <span class="nf">disable_ok_button</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disable the OK button when the NeXus file isn&#39;t usable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NexusLoadDialog.set_found_status">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_found_status">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_found_status</span><span class="p">(</span><span class="n">tree_widget_item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a tick or cross to the found column in the QTreeWidget to indicate if certain data could be found in the</span>
+<span class="sd">        NeXus file.</span>
+<span class="sd">        :param tree_widget_item: The QTreeWidgetItem that contains a found column.</span>
+<span class="sd">        :param found: Whether or not the data was found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree_widget_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">FOUND_COLUMN</span><span class="p">,</span> <span class="n">FOUND_TEXT</span><span class="p">[</span><span class="n">found</span><span class="p">])</span>
+        <span class="n">tree_widget_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">FOUND_COLUMN</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_preview_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the spin boxes to load a preview of the projections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span> <span class="o">//</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_all_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the spin boxes to load all the projections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="view.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.nexus_load_dialog.view</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+mantidimaging.core.io.instrument\_log\_implmentations module
+============================================================
+
+.. automodule:: mantidimaging.core.io.instrument_log_implmentations
+   :members:
+   :undoc-members:
+   :show-inheritance:

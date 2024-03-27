@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.utility.progress_reporting.progress module &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.utility.close_enough_point module" href="mantidimaging.core.utility.close_enough_point.html" />
+    <link rel="prev" title="mantidimaging.core.utility.progress_reporting.console_progress_bar module" href="mantidimaging.core.utility.progress_reporting.console_progress_bar.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.close_enough_point.html" title="mantidimaging.core.utility.close_enough_point module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.progress_reporting.console_progress_bar.html" title="mantidimaging.core.utility.progress_reporting.console_progress_bar module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" >mantidimaging.core.utility package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.utility.progress_reporting.html" accesskey="U">mantidimaging.core.utility.progress_reporting package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.progress_reporting.progress module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.utility.progress_reporting.progress">
+<span id="mantidimaging-core-utility-progress-reporting-progress-module"></span><h1>mantidimaging.core.utility.progress_reporting.progress module<a class="headerlink" href="#module-mantidimaging.core.utility.progress_reporting.progress" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">Progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Task'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class used to perform basic progress monitoring and reporting.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps">
+<span class="sig-name descname"><span class="pre">add_estimated_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.add_estimated_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps" title="Link to this definition">¶</a></dt>
+<dd><p>Increments the number of steps this task is expected to take to
+complete.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.add_progress_handler">
+<span class="sig-name descname"><span class="pre">add_progress_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler" title="mantidimaging.core.utility.progress_reporting.progress.ProgressHandler"><span class="pre">ProgressHandler</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.add_progress_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_progress_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a handler to receiver progress updates.
+:param handler: Instance of a progress handler</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.calculate_mean_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_mean_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory" title="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory"><span class="pre">ProgressHistory</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.calculate_mean_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.calculate_mean_time" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cancelled'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.cancel" title="Link to this definition">¶</a></dt>
+<dd><p>Mark the task tree that uses this progress instance for cancellation.</p>
+<p>Task should either periodically inspect should_cancel or have suitably
+many calls to update() to be cancellable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.completion">
+<span class="sig-name descname"><span class="pre">completion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.completion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.completion" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the completion of the task in the range of 0.0 - 1.0</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.ensure_instance">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ensure_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.ensure_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.ensure_instance" title="Link to this definition">¶</a></dt>
+<dd><p>Helper function used to select either a non-None Progress instance as a
+parameter, or simply create and configure a new one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.execution_time">
+<span class="sig-name descname"><span class="pre">execution_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.execution_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.execution_time" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the total time this task has been executing.</p>
+<p>Total time is measured from the timestamp of the first progress message
+to the timestamp of the last progress message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.is_completed">
+<span class="sig-name descname"><span class="pre">is_completed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.is_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.is_completed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the task has been marked as completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.is_started">
+<span class="sig-name descname"><span class="pre">is_started</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.is_started"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.is_started" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the task has been started.</p>
+<p>A task starts when it reports it’s first progress update.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.last_status_message">
+<span class="sig-name descname"><span class="pre">last_status_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.last_status_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.last_status_message" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the message from the last progress update.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.mark_complete">
+<span class="sig-name descname"><span class="pre">mark_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'complete'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.mark_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.mark_complete" title="Link to this definition">¶</a></dt>
+<dd><p>Marks the task as completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.set_estimated_steps">
+<span class="sig-name descname"><span class="pre">set_estimated_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.set_estimated_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.set_estimated_steps" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the number of steps this task is expected to take to complete.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.should_cancel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">should_cancel</span></span><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.should_cancel" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the task should be cancelled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_continue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.update" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the progress of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>steps</strong> – Number of steps that have been completed since last call
+to this function</p></li>
+<li><p><strong>msg</strong> – Message describing current step</p></li>
+<li><p><strong>force_continue</strong> – Prevent cancellation of the async progress</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressHandler</span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#ProgressHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHandler.progress_update">
+<span class="sig-name descname"><span class="pre">progress_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#ProgressHandler.progress_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler.progress_update" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressHistory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.msg">
+<span class="sig-name descname"><span class="pre">msg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.msg" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.step">
+<span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.step" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.time" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.utility.progress_reporting.progress module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress"><code class="docutils literal notranslate"><span class="pre">Progress</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps"><code class="docutils literal notranslate"><span class="pre">Progress.add_estimated_steps()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_progress_handler"><code class="docutils literal notranslate"><span class="pre">Progress.add_progress_handler()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.calculate_mean_time"><code class="docutils literal notranslate"><span class="pre">Progress.calculate_mean_time()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.cancel"><code class="docutils literal notranslate"><span class="pre">Progress.cancel()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.completion"><code class="docutils literal notranslate"><span class="pre">Progress.completion()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.ensure_instance"><code class="docutils literal notranslate"><span class="pre">Progress.ensure_instance()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.execution_time"><code class="docutils literal notranslate"><span class="pre">Progress.execution_time()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.is_completed"><code class="docutils literal notranslate"><span class="pre">Progress.is_completed()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.is_started"><code class="docutils literal notranslate"><span class="pre">Progress.is_started()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.last_status_message"><code class="docutils literal notranslate"><span class="pre">Progress.last_status_message()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.mark_complete"><code class="docutils literal notranslate"><span class="pre">Progress.mark_complete()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.set_estimated_steps"><code class="docutils literal notranslate"><span class="pre">Progress.set_estimated_steps()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.should_cancel"><code class="docutils literal notranslate"><span class="pre">Progress.should_cancel</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.update"><code class="docutils literal notranslate"><span class="pre">Progress.update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler"><code class="docutils literal notranslate"><span class="pre">ProgressHandler</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHandler.progress_update"><code class="docutils literal notranslate"><span class="pre">ProgressHandler.progress_update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory"><code class="docutils literal notranslate"><span class="pre">ProgressHistory</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.msg"><code class="docutils literal notranslate"><span class="pre">ProgressHistory.msg</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.step"><code class="docutils literal notranslate"><span class="pre">ProgressHistory.step</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.time"><code class="docutils literal notranslate"><span class="pre">ProgressHistory.time</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.progress_reporting.console_progress_bar.html"
+                          title="previous chapter">mantidimaging.core.utility.progress_reporting.console_progress_bar module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.utility.close_enough_point.html"
+                          title="next chapter">mantidimaging.core.utility.close_enough_point module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../index.html">Latest</a></li>
+  <li><a href="../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.close_enough_point.html" title="mantidimaging.core.utility.close_enough_point module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.utility.progress_reporting.console_progress_bar.html" title="mantidimaging.core.utility.progress_reporting.console_progress_bar module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.utility.html" >mantidimaging.core.utility package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.utility.progress_reporting.html" >mantidimaging.core.utility.progress_reporting package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.utility.progress_reporting.progress module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

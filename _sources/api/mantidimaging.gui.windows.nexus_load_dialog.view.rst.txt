@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.nexus\_load\_dialog.view module
+=========================================================
+
+.. automodule:: mantidimaging.gui.windows.nexus_load_dialog.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

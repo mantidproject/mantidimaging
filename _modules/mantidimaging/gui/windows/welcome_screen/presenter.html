@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.welcome_screen.presenter &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.welcome_screen.presenter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.welcome_screen.presenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSettings</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">cuda_check</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base.presenter</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.welcome_screen.view</span> <span class="kn">import</span> <span class="n">WelcomeScreenView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.version_check</span> <span class="kn">import</span> <span class="n">versions</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">WELCOME_LINKS</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;Homepage&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/mantidproject/mantidimaging&quot;</span><span class="p">],</span>
+                 <span class="p">[</span><span class="s2">&quot;Documentation&quot;</span><span class="p">,</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/index.html&quot;</span><span class="p">],</span>
+                 <span class="p">[</span><span class="s2">&quot;Troubleshooting&quot;</span><span class="p">,</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/troubleshooting.html&quot;</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter">[docs]</a>
+<span class="k">class</span> <span class="nc">WelcomeScreenPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">WelcomeScreenView</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_set_up</span><span class="p">()</span>
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.do_set_up">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_set_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_version_label</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging </span><span class="si">{</span><span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_up_links</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_up_show_at_start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.show">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show">[docs]</a>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.show_at_start_enabled">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_at_start_enabled">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">show_at_start_enabled</span><span class="p">():</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.show_today">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_today">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">show_today</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show if show_at_start or if version has changed&quot;&quot;&quot;</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="n">show_at_start</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">show_at_start</span><span class="p">:</span>
+            <span class="n">last_run_version</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">last_run_version</span> <span class="o">!=</span> <span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">show_at_start</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.set_up_links">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.set_up_links">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_up_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">WELCOME_LINKS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.add_link">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.add_link">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="n">rich_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">link_name</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">rich_text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">link_count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.set_up_show_at_start">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.set_up_show_at_start">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">show_at_start</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_show_at_start</span><span class="p">(</span><span class="n">show_at_start</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start_changed</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.show_at_start_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_at_start_changed">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_at_start_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">show_at_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_show_at_start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="n">show_at_start</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenPresenter.check_issues">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.check_issues">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">versions</span><span class="o">.</span><span class="n">needs_update</span><span class="p">():</span>
+            <span class="n">msg</span><span class="p">,</span> <span class="n">detailed</span> <span class="o">=</span> <span class="n">versions</span><span class="o">.</span><span class="n">conda_update_message</span><span class="p">()</span>
+            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">detailed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cuda_check</span><span class="o">.</span><span class="n">CudaChecker</span><span class="p">()</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="p">():</span>
+            <span class="n">msg</span><span class="p">,</span> <span class="n">detailed</span> <span class="o">=</span> <span class="n">cuda_check</span><span class="o">.</span><span class="n">not_found_message</span><span class="p">()</span>
+            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">detailed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_issues</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.welcome_screen.presenter</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

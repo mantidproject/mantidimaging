@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.stack_choice.view - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.view</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.stack_choice.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ViewBox</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.images</span> <span class="kn">import</span> <span class="n">Images</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_image_view.view</span> <span class="kn">import</span> <span class="n">MIImageView</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.compare_presenter</span> <span class="kn">import</span> <span class="n">StackComparePresenter</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.presenter</span> <span class="kn">import</span> <span class="n">StackChoicePresenter</span>  <span class="c1"># pragma: no cover</span>
+
+
+<div class="viewcode-block" id="Notification">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.view.html#mantidimaging.gui.windows.stack_choice.view.Notification">[docs]</a>
+<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CHOOSE_ORIGINAL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">CHOOSE_NEW_DATA</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">TOGGLE_LOCK_HISTOGRAMS</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="StackChoiceView">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.view.html#mantidimaging.gui.windows.stack_choice.view.StackChoiceView">[docs]</a>
+<span class="k">class</span> <span class="nc">StackChoiceView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
+    <span class="n">originalDataButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">newDataButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">lockHistograms</span><span class="p">:</span> <span class="n">QCheckBox</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_stack</span><span class="p">:</span> <span class="n">Images</span><span class="p">,</span> <span class="n">new_stack</span><span class="p">:</span> <span class="n">Images</span><span class="p">,</span>
+                 <span class="n">presenter</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;StackComparePresenter&#39;</span><span class="p">,</span> <span class="s1">&#39;StackChoicePresenter&#39;</span><span class="p">],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QMainWindow</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/stack_choice_window.ui&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Choose the stack you want to keep&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
+
+        <span class="c1"># Create stacks and place them in the choice window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">MIImageView</span><span class="p">(</span><span class="n">detailsSpanAllCols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Original Stack&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">MIImageView</span><span class="p">(</span><span class="n">detailsSpanAllCols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;New Stack&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_stack_for_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="p">,</span> <span class="n">original_stack</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_stack_for_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="p">,</span> <span class="n">new_stack</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">topVerticalOriginal</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topVerticalNew</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shifting_through_images</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_new_stack_with_old_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_old_stack_with_new_stack</span><span class="p">)</span>
+
+        <span class="c1"># Hook nav buttons into original stack (new stack not needed as the timelines are synced)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leftButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leftButton</span><span class="o">.</span><span class="n">released</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">released</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rightButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rightButton</span><span class="o">.</span><span class="n">released</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">released</span><span class="p">)</span>
+
+        <span class="c1"># Hook the choice buttons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">originalDataButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_ORIGINAL</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newDataButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_NEW_DATA</span><span class="p">))</span>
+
+        <span class="c1"># Hooks the lock histograms checkbox</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lockHistograms</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">TOGGLE_LOCK_HISTOGRAMS</span><span class="p">))</span>
+
+        <span class="c1"># Hook ROI button into both stacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_roi</span><span class="p">)</span>
+
+        <span class="c1"># Hook the two plot ROIs together so that any changes are synced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync_both_image_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_range_is_the_same</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_shown</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_ensure_range_is_the_same</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
+        <span class="n">original_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
+
+        <span class="n">new_max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">new_min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">original_max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">original_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">original_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">original_min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">original_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">original_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y_range_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_min_y</span><span class="p">,</span> <span class="n">original_min_y</span><span class="p">)</span>
+        <span class="n">y_range_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_max_y</span><span class="p">,</span> <span class="n">original_max_y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="n">y_range_min</span><span class="p">,</span> <span class="n">y_range_max</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="n">y_range_min</span><span class="p">,</span> <span class="n">y_range_max</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_toggle_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_shown</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_shown</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_shown</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setup_stack_for_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">MIImageView</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menuBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="n">details_size_policy</span> <span class="o">=</span> <span class="n">QSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">MinimumExpanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Preferred</span><span class="p">)</span>
+        <span class="n">details_size_policy</span><span class="o">.</span><span class="n">setHorizontalStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">details_size_policy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_timelines_for_new_stack_with_old_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_old_stack_with_new_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_old_stack_with_new_stack</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_timelines_for_old_stack_with_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_new_stack_with_old_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync_timelines_for_new_stack_with_old_stack</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_both_image_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StackChoiceView.closeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.view.html#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.closeEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="c1"># Confirm exit is actually wanted as it will lead to data loss</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">choice_made</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Data Loss! Are you sure?&quot;</span><span class="p">,</span>
+                                           <span class="s2">&quot;You will lose the original stack if you close this window! Are you sure?&quot;</span><span class="p">,</span>
+                                           <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_NEW_DATA</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">ignore</span><span class="p">()</span>
+                <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_from_old_to_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Signal triggered when the histograms are locked and the contrast values changed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">levels</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_from_new_to_old</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Signal triggered when the histograms are locked and the contrast values changed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">levels</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StackChoiceView.connect_histogram_changes">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.view.html#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.connect_histogram_changes">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect_histogram_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_from_old_to_new</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_from_old_to_new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_from_new_to_old</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceView.disconnect_histogram_changes">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.view.html#mantidimaging.gui.windows.stack_choice.view.StackChoiceView.disconnect_histogram_changes">[docs]</a>
+    <span class="k">def</span> <span class="nf">disconnect_histogram_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_from_old_to_new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_from_new_to_old</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="view.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.view</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

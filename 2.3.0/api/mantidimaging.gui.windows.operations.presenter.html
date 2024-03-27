@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.operations.presenter module - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.operations.view module" href="mantidimaging.gui.windows.operations.view.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.operations.model module" href="mantidimaging.gui.windows.operations.model.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.operations.view.html" title="mantidimaging.gui.windows.operations.view module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.operations.model.html" title="mantidimaging.gui.windows.operations.model module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.operations.html" accesskey="U">mantidimaging.gui.windows.operations package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.presenter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.operations.presenter">
+<span id="mantidimaging-gui-windows-operations-presenter-module"></span><h1>mantidimaging.gui.windows.operations.presenter module<a class="headerlink" href="#module-mantidimaging.gui.windows.operations.presenter" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.operations.presenter.</span></span><span class="sig-name descname"><span class="pre">FiltersWindowPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView" title="mantidimaging.gui.windows.operations.view.FiltersWindowView"><span class="pre">FiltersWindowView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.divider">
+<span class="sig-name descname"><span class="pre">divider</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'------------------------------------'</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.divider" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter">
+<span class="sig-name descname"><span class="pre">do_apply_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.do_apply_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_all">
+<span class="sig-name descname"><span class="pre">do_apply_filter_to_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.do_apply_filter_to_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_all" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_register_active_filter">
+<span class="sig-name descname"><span class="pre">do_register_active_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.do_register_active_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_register_active_filter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_scroll_preview">
+<span class="sig-name descname"><span class="pre">do_scroll_preview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.do_scroll_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_scroll_preview" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews">
+<span class="sig-name descname"><span class="pre">do_update_previews</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.do_update_previews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter">
+<span class="sig-name descname"><span class="pre">filter_uses_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.filter_uses_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.get_filter_module_name">
+<span class="sig-name descname"><span class="pre">get_filter_module_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.get_filter_module_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.get_filter_module_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_crop_coords">
+<span class="sig-name descname"><span class="pre">init_crop_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QLineEdit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.init_crop_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_crop_coords" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the initial value of the crop coordinates line edit widget so that it doesn’t contain values that are
+larger than the image.
+:param roi_field: The ROI field line edit widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.is_a_proj180deg">
+<span class="sig-name descname"><span class="pre">is_a_proj180deg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack_to_check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.images.html#mantidimaging.core.data.images.Images" title="mantidimaging.core.data.images.Images"><span class="pre">Images</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.is_a_proj180deg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.is_a_proj180deg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.main_window">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_window</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.main_window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.max_preview_image_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_preview_image_idx</span></span><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.max_preview_image_idx" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.notify" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_filter_by_name">
+<span class="sig-name descname"><span class="pre">set_filter_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_menu_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.set_filter_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_filter_by_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index">
+<span class="sig-name descname"><span class="pre">set_preview_image_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.set_preview_image_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the current preview image index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack">
+<span class="sig-name descname"><span class="pre">set_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.images.html#mantidimaging.core.data.images.Images" title="mantidimaging.core.data.images.Images"><span class="pre">Images</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.set_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid">
+<span class="sig-name descname"><span class="pre">set_stack_uuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#FiltersWindowPresenter.set_stack_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.stack">
+<span class="sig-name descname"><span class="pre">stack</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.data.images.html#mantidimaging.core.data.images.Images" title="mantidimaging.core.data.images.Images"><span class="pre">Images</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.view">
+<span class="sig-name descname"><span class="pre">view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView" title="mantidimaging.gui.windows.operations.view.FiltersWindowView"><span class="pre">FiltersWindowView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.view" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.operations.presenter.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER">
+<span class="sig-name descname"><span class="pre">APPLY_FILTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER_TO_ALL">
+<span class="sig-name descname"><span class="pre">APPLY_FILTER_TO_ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER_TO_ALL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.REGISTER_ACTIVE_FILTER">
+<span class="sig-name descname"><span class="pre">REGISTER_ACTIVE_FILTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.REGISTER_ACTIVE_FILTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_DOWN">
+<span class="sig-name descname"><span class="pre">SCROLL_PREVIEW_DOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_DOWN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_UP">
+<span class="sig-name descname"><span class="pre">SCROLL_PREVIEW_UP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_UP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.Notification.UPDATE_PREVIEWS">
+<span class="sig-name descname"><span class="pre">UPDATE_PREVIEWS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.Notification.UPDATE_PREVIEWS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.operations.presenter.sub">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.operations.presenter.</span></span><span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/operations/presenter.html#sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.operations.presenter.sub" title="Link to this definition">¶</a></dt>
+<dd><p>Subtracts two tuples. Helper method for generating the negative slice list.
+:param x: The int tuple.
+:return: The first value subtracted from the second value.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.operations.presenter module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.divider"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.divider</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_apply_filter()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_all"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_apply_filter_to_all()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_register_active_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_register_active_filter()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_scroll_preview"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_scroll_preview()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_update_previews()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.filter_uses_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.get_filter_module_name"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.get_filter_module_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_crop_coords"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.init_crop_coords()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.is_a_proj180deg"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.is_a_proj180deg()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.main_window"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.main_window</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.max_preview_image_idx"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.max_preview_image_idx</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.notify"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.notify()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_filter_by_name"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_filter_by_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_preview_image_index()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_stack_uuid()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.stack"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.stack</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.view</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER"><code class="docutils literal notranslate"><span class="pre">Notification.APPLY_FILTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER_TO_ALL"><code class="docutils literal notranslate"><span class="pre">Notification.APPLY_FILTER_TO_ALL</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.REGISTER_ACTIVE_FILTER"><code class="docutils literal notranslate"><span class="pre">Notification.REGISTER_ACTIVE_FILTER</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_DOWN"><code class="docutils literal notranslate"><span class="pre">Notification.SCROLL_PREVIEW_DOWN</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_UP"><code class="docutils literal notranslate"><span class="pre">Notification.SCROLL_PREVIEW_UP</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.Notification.UPDATE_PREVIEWS"><code class="docutils literal notranslate"><span class="pre">Notification.UPDATE_PREVIEWS</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.operations.presenter.sub"><code class="docutils literal notranslate"><span class="pre">sub()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.operations.model.html"
+                          title="previous chapter">mantidimaging.gui.windows.operations.model module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.operations.view.html"
+                          title="next chapter">mantidimaging.gui.windows.operations.view module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="mantidimaging.gui.windows.operations.presenter.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.operations.view.html" title="mantidimaging.gui.windows.operations.view module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.operations.model.html" title="mantidimaging.gui.windows.operations.model module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.operations.html" >mantidimaging.gui.windows.operations package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.presenter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

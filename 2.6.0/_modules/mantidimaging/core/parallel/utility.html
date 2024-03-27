@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.parallel.utility - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel.utility</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.parallel.utility</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">shared_memory</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.memory_usage</span> <span class="kn">import</span> <span class="n">system_free_memory</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.size_calculator</span> <span class="kn">import</span> <span class="n">full_size_KB</span><span class="p">,</span> <span class="n">full_size_bytes</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">manager</span> <span class="k">as</span> <span class="n">pm</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+    <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+    <span class="kn">from</span> <span class="nn">multiprocessing.shared_memory</span> <span class="kn">import</span> <span class="n">SharedMemory</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="enough_memory">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.enough_memory">[docs]</a>
+<span class="k">def</span> <span class="nf">enough_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">full_size_KB</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">system_free_memory</span><span class="p">()</span><span class="o">.</span><span class="n">kb</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="create_array">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.create_array">[docs]</a>
+<span class="k">def</span> <span class="nf">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="s1">&#39;npt.DTypeLike&#39;</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SharedArray&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an array in shared memory</span>
+
+<span class="sd">    :param shape: Shape of the array</span>
+<span class="sd">    :param dtype: Dtype of the array</span>
+<span class="sd">    :return: The created SharedArray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">enough_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;The machine does not have enough physical memory available to allocate space for this data.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_create_shared_array</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_create_shared_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="s1">&#39;npt.DTypeLike&#39;</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SharedArray&#39;</span><span class="p">:</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">full_size_bytes</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Requested shared array with shape=</span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">, dtype=</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">generate_mi_shared_mem_name</span><span class="p">()</span>
+    <span class="n">mem</span> <span class="o">=</span> <span class="n">shared_memory</span><span class="o">.</span><span class="n">SharedMemory</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_read_array_from_shared_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_read_array_from_shared_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="s1">&#39;npt.DTypeLike&#39;</span><span class="p">,</span> <span class="n">mem</span><span class="p">:</span> <span class="n">SharedMemory</span><span class="p">,</span>
+                                   <span class="n">free_mem_on_delete</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SharedArray&#39;</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="n">mem</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SharedArray</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="n">free_mem_on_del</span><span class="o">=</span><span class="n">free_mem_on_delete</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="copy_into_shared_memory">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.copy_into_shared_memory">[docs]</a>
+<span class="k">def</span> <span class="nf">copy_into_shared_memory</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SharedArray&#39;</span><span class="p">:</span>
+    <span class="n">shared_array</span> <span class="o">=</span> <span class="n">create_array</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">shared_array</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:]</span>
+    <span class="k">return</span> <span class="n">shared_array</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_chunksize">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.calculate_chunksize">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_chunksize</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO possible proper calculation of chunksize, although best performance has been with 1</span>
+<span class="sd">    From performance tests, the chunksize doesn&#39;t seem to make much of a</span>
+<span class="sd">    difference, but having larger chunks usually led to slower performance:</span>
+
+<span class="sd">    Shape: (50,512,512)</span>
+<span class="sd">    1 chunk 3.06s</span>
+<span class="sd">    2 chunks 3.05s</span>
+<span class="sd">    3 chunks 3.07s</span>
+<span class="sd">    4 chunks 3.06s</span>
+<span class="sd">    5 chunks 3.16s</span>
+<span class="sd">    6 chunks 3.06s</span>
+<span class="sd">    7 chunks 3.058s</span>
+<span class="sd">    8 chunks 3.25s</span>
+<span class="sd">    9 chunks 3.45s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="multiprocessing_necessary">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.multiprocessing_necessary">[docs]</a>
+<span class="k">def</span> <span class="nf">multiprocessing_necessary</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="c1"># This environment variable will be present when running PYDEVD from PyCharm</span>
+    <span class="c1"># and that has the bug that multiprocessing Pools can never finish `.join()` ing</span>
+    <span class="c1"># thus never actually finish their processing.</span>
+    <span class="k">if</span> <span class="s1">&#39;PYDEVD_LOAD_VALUES_ASYNC&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="s1">&#39;PYTEST_CURRENT_TEST&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Debugging environment variable &#39;PYDEVD_LOAD_VALUES_ASYNC&#39; found. Running synchronously on 1 core&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_shared_data</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not all of the data uses shared memory&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">shape</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shape under 10&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Multiprocessing required&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="execute_impl">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.execute_impl">[docs]</a>
+<span class="k">def</span> <span class="nf">execute_impl</span><span class="p">(</span><span class="n">img_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partial_func</span><span class="p">:</span> <span class="n">partial</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">img_num</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">)</span>
+    <span class="n">indices_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">img_num</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">multiprocessing_necessary</span><span class="p">(</span><span class="n">img_num</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores&quot;</span><span class="p">)</span>
+        <span class="c1"># Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn&#39;t unpacked,</span>
+        <span class="c1"># and thus some time is saved</span>
+        <span class="c1"># Using imap here seems to be the best choice:</span>
+        <span class="c1"># - imap_unordered gives the images back in random order</span>
+        <span class="c1"># - map and map_async do not improve speed performance</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">partial_func</span><span class="p">,</span> <span class="n">indices_list</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">calculate_chunksize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="p">)):</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running synchronously on 1 core&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">indices_list</span><span class="p">:</span>
+            <span class="n">partial_func</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="n">progress</span><span class="o">.</span><span class="n">mark_complete</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="run_compute_func_impl">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.run_compute_func_impl">[docs]</a>
+<span class="k">def</span> <span class="nf">run_compute_func_impl</span><span class="p">(</span><span class="n">worker_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+                          <span class="n">num_operations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                          <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">num_operations</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">)</span>
+    <span class="n">indices_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_operations</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">multiprocessing_necessary</span><span class="p">(</span><span class="n">num_operations</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">worker_func</span><span class="p">,</span> <span class="n">indices_list</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">calculate_chunksize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="p">)):</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running synchronously on 1 core&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">indices_list</span><span class="p">:</span>
+            <span class="n">worker_func</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="n">progress</span><span class="o">.</span><span class="n">mark_complete</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SharedArray">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray">[docs]</a>
+<span class="k">class</span> <span class="nc">SharedArray</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shared_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SharedMemory</span><span class="p">],</span> <span class="n">free_mem_on_del</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="o">=</span> <span class="n">shared_memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_mem_on_del</span> <span class="o">=</span> <span class="n">free_mem_on_del</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_shared_memory</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_mem_on_del</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                    <span class="c1"># Do nothing, memory has already been freed</span>
+                    <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">array_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SharedArrayProxy&#39;</span><span class="p">:</span>
+        <span class="n">mem_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">SharedArrayProxy</span><span class="p">(</span><span class="n">mem_name</span><span class="o">=</span><span class="n">mem_name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SharedArrayProxy">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArrayProxy">[docs]</a>
+<span class="k">class</span> <span class="nc">SharedArrayProxy</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="s1">&#39;npt.DTypeLike&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mem_name</span> <span class="o">=</span> <span class="n">mem_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;SharedArray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="n">shared_memory</span><span class="o">.</span><span class="n">SharedMemory</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mem_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">_read_array_from_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="o">.</span><span class="n">array</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="utility.html">2.6.0</a></li>
+  <li><a href="../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel.utility</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

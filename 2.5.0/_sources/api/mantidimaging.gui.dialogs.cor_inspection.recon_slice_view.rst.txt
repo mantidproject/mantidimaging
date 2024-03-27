@@ -1,0 +1,7 @@
+mantidimaging.gui.dialogs.cor\_inspection.recon\_slice\_view module
+===================================================================
+
+.. automodule:: mantidimaging.gui.dialogs.cor_inspection.recon_slice_view
+   :members:
+   :undoc-members:
+   :show-inheritance:

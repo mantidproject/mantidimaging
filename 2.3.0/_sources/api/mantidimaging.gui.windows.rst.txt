@@ -1,0 +1,23 @@
+mantidimaging.gui.windows package
+=================================
+
+.. automodule:: mantidimaging.gui.windows
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.load_dialog
+   mantidimaging.gui.windows.main
+   mantidimaging.gui.windows.nexus_load_dialog
+   mantidimaging.gui.windows.operations
+   mantidimaging.gui.windows.recon
+   mantidimaging.gui.windows.stack_choice
+   mantidimaging.gui.windows.stack_visualiser
+   mantidimaging.gui.windows.welcome_screen
+   mantidimaging.gui.windows.wizard

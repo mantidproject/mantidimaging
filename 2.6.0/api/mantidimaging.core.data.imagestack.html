@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.data.imagestack module - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.data.reconlist module" href="mantidimaging.core.data.reconlist.html" />
+    <link rel="prev" title="mantidimaging.core.data.dataset module" href="mantidimaging.core.data.dataset.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.data.reconlist.html" title="mantidimaging.core.data.reconlist module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.data.dataset.html" title="mantidimaging.core.data.dataset module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.data.html" accesskey="U">mantidimaging.core.data package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.data.imagestack module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.data.imagestack">
+<span id="mantidimaging-core-data-imagestack-module"></span><h1>mantidimaging.core.data.imagestack module<a class="headerlink" href="#module-mantidimaging.core.data.imagestack" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.data.imagestack.</span></span><span class="sig-name descname"><span class="pre">ImageStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray" title="mantidimaging.core.parallel.utility.SharedArray"><span class="pre">SharedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filenames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Indices" title="mantidimaging.core.utility.data_containers.Indices"><span class="pre">Indices</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinograms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.clear_proj180deg">
+<span class="sig-name descname"><span class="pre">clear_proj180deg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.clear_proj180deg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.clear_proj180deg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flip_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.copy" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.copy_roi">
+<span class="sig-name descname"><span class="pre">copy_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.copy_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.copy_roi" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.count" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Counts" title="mantidimaging.core.utility.data_containers.Counts"><span class="pre">Counts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.counts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.create_empty_image_stack">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_empty_image_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.create_empty_image_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.create_empty_image_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.dtype" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.filenames">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filenames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.filenames" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.h_middle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h_middle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.h_middle" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the horizontal middle (middle column) of the projections</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.has_proj180deg">
+<span class="sig-name descname"><span class="pre">has_proj180deg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.has_proj180deg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.has_proj180deg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.height">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.height" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.is_processed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_processed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.is_processed" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if any of the data has been processed, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.is_sinograms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_sinograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.is_sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.load_metadata">
+<span class="sig-name descname"><span class="pre">load_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TextIO" title="(in Python v3.12)"><span class="pre">TextIO</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.load_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.load_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Load metadata json without overwriting existing values</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.log_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_file</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.log_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.make_name_unique">
+<span class="sig-name descname"><span class="pre">make_name_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">existing_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.make_name_unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.make_name_unique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.num_images">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_images</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.num_images" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.num_projections">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_projections</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.num_projections" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.num_sinograms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_sinograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.num_sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.pixel_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_size</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.pixel_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.proj180deg">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proj180deg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.proj180deg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.projection">
+<span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection_idx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.projection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.projection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.projection_angles">
+<span class="sig-name descname"><span class="pre">projection_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">360.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.projection_angles" title="Link to this definition">¶</a></dt>
+<dd><p>Return projection angles, in priority order:
+- From a log
+- From the manually loaded file with a list of angles
+- Automatically generated with equidistant step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_angle</strong> – The maximum angle up to which the angles will be generated.
+Only used when the angles are generated, if they are provided
+via a log or a file the argument will be ignored.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.projections">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">projections</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.projections" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.real_projection_angles">
+<span class="sig-name descname"><span class="pre">real_projection_angles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.real_projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.real_projection_angles" title="Link to this definition">¶</a></dt>
+<dd><p>Return only the projection angles that are from a log file or have been manually loaded.
+:return: Real projection angles if they were found, None otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.record_operation">
+<span class="sig-name descname"><span class="pre">record_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.record_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.record_operation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.save_metadata">
+<span class="sig-name descname"><span class="pre">save_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TextIO" title="(in Python v3.12)"><span class="pre">TextIO</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.save_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.save_metadata" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.set_projection_angles">
+<span class="sig-name descname"><span class="pre">set_projection_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.set_projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.shared_array">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shared_array</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray" title="mantidimaging.core.parallel.utility.SharedArray"><span class="pre">SharedArray</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.shared_array" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.sino">
+<span class="sig-name descname"><span class="pre">sino</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.sino"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.sino" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.sino_as_image_stack">
+<span class="sig-name descname"><span class="pre">sino_as_image_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.sino_as_image_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.sino_as_image_stack" title="Link to this definition">¶</a></dt>
+<dd><p>A single sinogram slice as an ImageStack in projection ordering</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.sinograms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sinograms</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.slice_as_array">
+<span class="sig-name descname"><span class="pre">slice_as_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.slice_as_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_array" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.slice_as_image_stack">
+<span class="sig-name descname"><span class="pre">slice_as_image_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.slice_as_image_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_image_stack" title="Link to this definition">¶</a></dt>
+<dd><p>A slice, either projection or sinogram depending on current ordering</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uses_shared_memory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.width" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.data.imagestack module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack"><code class="docutils literal notranslate"><span class="pre">ImageStack</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.clear_proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.clear_proj180deg()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.copy"><code class="docutils literal notranslate"><span class="pre">ImageStack.copy()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.copy_roi"><code class="docutils literal notranslate"><span class="pre">ImageStack.copy_roi()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.count"><code class="docutils literal notranslate"><span class="pre">ImageStack.count()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.counts"><code class="docutils literal notranslate"><span class="pre">ImageStack.counts()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.create_empty_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.create_empty_image_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.data"><code class="docutils literal notranslate"><span class="pre">ImageStack.data</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.dtype"><code class="docutils literal notranslate"><span class="pre">ImageStack.dtype</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.filenames"><code class="docutils literal notranslate"><span class="pre">ImageStack.filenames</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.h_middle"><code class="docutils literal notranslate"><span class="pre">ImageStack.h_middle</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.has_proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.has_proj180deg()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.height"><code class="docutils literal notranslate"><span class="pre">ImageStack.height</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.id"><code class="docutils literal notranslate"><span class="pre">ImageStack.id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.is_processed"><code class="docutils literal notranslate"><span class="pre">ImageStack.is_processed</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.is_sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.is_sinograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.load_metadata"><code class="docutils literal notranslate"><span class="pre">ImageStack.load_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.log_file"><code class="docutils literal notranslate"><span class="pre">ImageStack.log_file</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.make_name_unique"><code class="docutils literal notranslate"><span class="pre">ImageStack.make_name_unique()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.name"><code class="docutils literal notranslate"><span class="pre">ImageStack.name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.num_images"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_images</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.num_projections"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_projections</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.num_sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_sinograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.pixel_size"><code class="docutils literal notranslate"><span class="pre">ImageStack.pixel_size</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.proj180deg</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.projection"><code class="docutils literal notranslate"><span class="pre">ImageStack.projection()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.projections"><code class="docutils literal notranslate"><span class="pre">ImageStack.projections</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.real_projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.real_projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.record_operation"><code class="docutils literal notranslate"><span class="pre">ImageStack.record_operation()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.save_metadata"><code class="docutils literal notranslate"><span class="pre">ImageStack.save_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.set_projection_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.shared_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.shared_array</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.sino"><code class="docutils literal notranslate"><span class="pre">ImageStack.sino()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.sino_as_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.sino_as_image_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.sinograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_array()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_image_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory"><code class="docutils literal notranslate"><span class="pre">ImageStack.uses_shared_memory</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.data.imagestack.ImageStack.width"><code class="docutils literal notranslate"><span class="pre">ImageStack.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.data.dataset.html"
+                          title="previous chapter">mantidimaging.core.data.dataset module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.data.reconlist.html"
+                          title="next chapter">mantidimaging.core.data.reconlist module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="mantidimaging.core.data.imagestack.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.data.reconlist.html" title="mantidimaging.core.data.reconlist module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.data.dataset.html" title="mantidimaging.core.data.dataset module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.data.html" >mantidimaging.core.data package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.data.imagestack module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

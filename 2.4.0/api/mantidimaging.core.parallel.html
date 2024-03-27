@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.parallel package - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.parallel.manager module" href="mantidimaging.core.parallel.manager.html" />
+    <link rel="prev" title="mantidimaging.core.operations.loader module" href="mantidimaging.core.operations.loader.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.manager.html" title="mantidimaging.core.parallel.manager module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.loader.html" title="mantidimaging.core.operations.loader module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" accesskey="U">mantidimaging.core package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.parallel">
+<span id="mantidimaging-core-parallel-package"></span><h1>mantidimaging.core.parallel package<a class="headerlink" href="#module-mantidimaging.core.parallel" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.parallel.manager.html">mantidimaging.core.parallel.manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.clear_memory_from_current_process_linux"><code class="docutils literal notranslate"><span class="pre">clear_memory_from_current_process_linux()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.create_and_start_pool"><code class="docutils literal notranslate"><span class="pre">create_and_start_pool()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.end_pool"><code class="docutils literal notranslate"><span class="pre">end_pool()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.find_memory_from_previous_process_linux"><code class="docutils literal notranslate"><span class="pre">find_memory_from_previous_process_linux()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.free_shared_memory_linux"><code class="docutils literal notranslate"><span class="pre">free_shared_memory_linux()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.generate_mi_shared_mem_name"><code class="docutils literal notranslate"><span class="pre">generate_mi_shared_mem_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.parallel.shared.html">mantidimaging.core.parallel.shared module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.create_partial"><code class="docutils literal notranslate"><span class="pre">create_partial()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.inplace1"><code class="docutils literal notranslate"><span class="pre">inplace1()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.inplace2"><code class="docutils literal notranslate"><span class="pre">inplace2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.inplace3"><code class="docutils literal notranslate"><span class="pre">inplace3()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.inplace_second_2d"><code class="docutils literal notranslate"><span class="pre">inplace_second_2d()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.return_to_second_at_i"><code class="docutils literal notranslate"><span class="pre">return_to_second_at_i()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.return_to_self"><code class="docutils literal notranslate"><span class="pre">return_to_self()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.shared.html#mantidimaging.core.parallel.shared.run_compute_func"><code class="docutils literal notranslate"><span class="pre">run_compute_func()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.parallel.utility.html">mantidimaging.core.parallel.utility module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray"><code class="docutils literal notranslate"><span class="pre">SharedArray</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray.array_proxy"><code class="docutils literal notranslate"><span class="pre">SharedArray.array_proxy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray.has_shared_memory"><code class="docutils literal notranslate"><span class="pre">SharedArray.has_shared_memory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArrayProxy"><code class="docutils literal notranslate"><span class="pre">SharedArrayProxy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArrayProxy.array"><code class="docutils literal notranslate"><span class="pre">SharedArrayProxy.array</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.calculate_chunksize"><code class="docutils literal notranslate"><span class="pre">calculate_chunksize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.copy_into_shared_memory"><code class="docutils literal notranslate"><span class="pre">copy_into_shared_memory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.create_array"><code class="docutils literal notranslate"><span class="pre">create_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.enough_memory"><code class="docutils literal notranslate"><span class="pre">enough_memory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.execute_impl"><code class="docutils literal notranslate"><span class="pre">execute_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.multiprocessing_necessary"><code class="docutils literal notranslate"><span class="pre">multiprocessing_necessary()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.run_compute_func_impl"><code class="docutils literal notranslate"><span class="pre">run_compute_func_impl()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.parallel package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.loader.html"
+                          title="previous chapter">mantidimaging.core.operations.loader module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.parallel.manager.html"
+                          title="next chapter">mantidimaging.core.parallel.manager module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.core.parallel.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.manager.html" title="mantidimaging.core.parallel.manager module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.loader.html" title="mantidimaging.core.operations.loader module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

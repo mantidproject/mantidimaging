@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.operations.filter\_previews module
+============================================================
+
+.. automodule:: mantidimaging.gui.windows.operations.filter_previews
+   :members:
+   :undoc-members:
+   :show-inheritance:

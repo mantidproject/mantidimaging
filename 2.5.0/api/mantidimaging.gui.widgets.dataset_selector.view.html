@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.widgets.dataset_selector.view module - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.widgets.dataset_selector_dialog package" href="mantidimaging.gui.widgets.dataset_selector_dialog.html" />
+    <link rel="prev" title="mantidimaging.gui.widgets.dataset_selector.presenter module" href="mantidimaging.gui.widgets.dataset_selector.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector_dialog.html" title="mantidimaging.gui.widgets.dataset_selector_dialog package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.presenter.html" title="mantidimaging.gui.widgets.dataset_selector.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.dataset_selector.html" accesskey="U">mantidimaging.gui.widgets.dataset_selector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.dataset_selector.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.widgets.dataset_selector.view">
+<span id="mantidimaging-gui-widgets-dataset-selector-view-module"></span><h1>mantidimaging.gui.widgets.dataset_selector.view module<a class="headerlink" href="#module-mantidimaging.gui.widgets.dataset_selector.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.dataset_selector.view.</span></span><span class="sig-name descname"><span class="pre">DatasetSelectorWidgetView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_stacks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relevant_dataset_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QComboBox</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current">
+<span class="sig-name descname"><span class="pre">current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current_is_strict">
+<span class="sig-name descname"><span class="pre">current_is_strict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.current_is_strict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current_is_strict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.dataset_selected_uuid">
+<span class="sig-name descname"><span class="pre">dataset_selected_uuid</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.dataset_selected_uuid" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.datasets_updated">
+<span class="sig-name descname"><span class="pre">datasets_updated</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.datasets_updated" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.main_window">
+<span class="sig-name descname"><span class="pre">main_window</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.main_window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.select_eligible_stack">
+<span class="sig-name descname"><span class="pre">select_eligible_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.select_eligible_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.select_eligible_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.stack_selected_uuid">
+<span class="sig-name descname"><span class="pre">stack_selected_uuid</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.stack_selected_uuid" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.subscribe_to_main_window">
+<span class="sig-name descname"><span class="pre">subscribe_to_main_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.subscribe_to_main_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.subscribe_to_main_window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.try_to_select_relevant_stack">
+<span class="sig-name descname"><span class="pre">try_to_select_relevant_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.try_to_select_relevant_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.try_to_select_relevant_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.unsubscribe_from_main_window">
+<span class="sig-name descname"><span class="pre">unsubscribe_from_main_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/view.html#DatasetSelectorWidgetView.unsubscribe_from_main_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.unsubscribe_from_main_window" title="Link to this definition">¶</a></dt>
+<dd><p>Removes connections to main window.</p>
+<p>Must be called before the widget is destroyed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.widgets.dataset_selector.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.current()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.current_is_strict"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.current_is_strict()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.dataset_selected_uuid"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.dataset_selected_uuid</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.datasets_updated"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.datasets_updated</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.main_window"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.main_window</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.select_eligible_stack"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.select_eligible_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.stack_selected_uuid"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.stack_selected_uuid</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.subscribe_to_main_window"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.subscribe_to_main_window()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.try_to_select_relevant_stack"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.try_to_select_relevant_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.unsubscribe_from_main_window"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetView.unsubscribe_from_main_window()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.dataset_selector.presenter.html"
+                          title="previous chapter">mantidimaging.gui.widgets.dataset_selector.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.dataset_selector_dialog.html"
+                          title="next chapter">mantidimaging.gui.widgets.dataset_selector_dialog package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="mantidimaging.gui.widgets.dataset_selector.view.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector_dialog.html" title="mantidimaging.gui.widgets.dataset_selector_dialog package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.presenter.html" title="mantidimaging.gui.widgets.dataset_selector.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.dataset_selector.html" >mantidimaging.gui.widgets.dataset_selector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.dataset_selector.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

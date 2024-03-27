@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.move\_stack\_dialog.presenter module
+==============================================================
+
+.. automodule:: mantidimaging.gui.windows.move_stack_dialog.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,17 @@
+mantidimaging.gui.dialogs package
+=================================
+
+.. automodule:: mantidimaging.gui.dialogs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.dialogs.async_task
+   mantidimaging.gui.dialogs.cor_inspection
+   mantidimaging.gui.dialogs.multiple_stack_select

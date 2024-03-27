@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.spectrum\_viewer.spectrum\_widget module
+==================================================================
+
+.. automodule:: mantidimaging.gui.windows.spectrum_viewer.spectrum_widget
+   :members:
+   :undoc-members:
+   :show-inheritance:

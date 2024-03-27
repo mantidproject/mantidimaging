@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ViewBox</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.indicator_icon.view</span> <span class="kn">import</span> <span class="n">IndicatorIconView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
+
+<span class="n">OVERLAY_COLOUR_NAN</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+<span class="n">OVERLAY_COLOUR_NONPOSITVE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="BadDataCheck">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck">[docs]</a>
+<span class="k">class</span> <span class="nc">BadDataCheck</span><span class="p">:</span>
+    <span class="n">check_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="n">indicator</span><span class="p">:</span> <span class="n">IndicatorIconView</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_function</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_function</span> <span class="o">=</span> <span class="n">check_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span> <span class="o">=</span> <span class="n">indicator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span> <span class="o">=</span> <span class="n">overlay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_overlay</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="o">.</span><span class="n">connected_overlay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span>
+
+<div class="viewcode-block" id="BadDataCheck.do_check">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.do_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">bad_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">any_bad</span> <span class="o">=</span> <span class="n">bad_data</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="c1"># cast any_bad to python bool to prevent DeprecationWarning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">any_bad</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">bad_data</span><span class="p">,</span> <span class="n">autoLevels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadDataCheck.setup_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.setup_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">setup_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ubyte</span><span class="p">)</span>
+        <span class="n">color_map</span> <span class="o">=</span> <span class="n">ColorMap</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">lut</span> <span class="o">=</span> <span class="n">color_map</span><span class="o">.</span><span class="n">getLookupTable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setLookupTable</span><span class="p">(</span><span class="n">lut</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setZValue</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setLevels</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="BadDataCheck.remove">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.remove">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BadDataCheck.clear">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.clear">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BadDataOverlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay">[docs]</a>
+<span class="k">class</span> <span class="nc">BadDataOverlay</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin class to be used with MIImageView and MIMiniImageView</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;sigTimeChanged&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_for_bad_data</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="BadDataOverlay.enable_nan_check">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_nan_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">enable_nan_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enable_check</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="n">OVERLAY_COLOUR_NAN</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">,</span> <span class="s2">&quot;Invalid values: Not a number&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">disable_check</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadDataOverlay.enable_nonpositive_check">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_nonpositive_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">enable_nonpositive_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">is_non_positive</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">data</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">enable_check</span><span class="p">(</span><span class="s2">&quot;nonpos&quot;</span><span class="p">,</span> <span class="n">OVERLAY_COLOUR_NONPOSITVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">is_non_positive</span><span class="p">,</span> <span class="s2">&quot;Non-positive values&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">disable_check</span><span class="p">(</span><span class="s2">&quot;nonpos&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadDataOverlay.enable_check">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">enable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                     <span class="n">actions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]]):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">:</span>
+            <span class="n">icon_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">+</span> <span class="s2">&quot;/gui/ui/images/exclamation-triangle-red.png&quot;</span>
+            <span class="n">indicator</span> <span class="o">=</span> <span class="n">IndicatorIconView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viewbox</span><span class="p">,</span> <span class="n">icon_path</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">actions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">indicator</span><span class="o">.</span><span class="n">add_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">ImageItem</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span>
+
+            <span class="n">check</span> <span class="o">=</span> <span class="n">BadDataCheck</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">check</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_for_bad_data</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BadDataOverlay.disable_check">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.disable_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">disable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_current_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">image</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="BadDataOverlay.check_for_bad_data">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.check_for_bad_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_for_bad_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">current_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_slice</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">current_slice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">test</span><span class="o">.</span><span class="n">do_check</span><span class="p">(</span><span class="n">current_slice</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadDataOverlay.clear_overlays">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.clear_overlays">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_overlays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">check</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="bad_data_overlay.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

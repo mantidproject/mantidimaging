@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.dialogs.cor_inspection.view - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.view</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.dialogs.cor_inspection.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QStackedWidget</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">Images</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.presenter</span> <span class="kn">import</span> <span class="n">CORInspectionDialogPresenter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.recon_slice_view</span> <span class="kn">import</span> <span class="n">CompareSlicesView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.types</span> <span class="kn">import</span> <span class="n">ImageType</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
+
+
+<div class="viewcode-block" id="CORInspectionDialogView">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView">[docs]</a>
+<span class="k">class</span> <span class="nc">CORInspectionDialogView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+    <span class="n">lessButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">currentButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">moreButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">stepCOR</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">stepIterations</span><span class="p">:</span> <span class="n">QSpinBox</span>
+    <span class="n">stepStackedWidget</span><span class="p">:</span> <span class="n">QStackedWidget</span>
+    <span class="n">instructionStackedWidget</span><span class="p">:</span> <span class="n">QStackedWidget</span>
+
+    <span class="n">spin_box</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Images</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
+                 <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">iters_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/cor_inspection_dialog.ui&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iters_mode</span> <span class="o">=</span> <span class="n">iters_mode</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iters_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stepIterations</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stepCOR</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">CORInspectionDialogPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">iters_mode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stepCOR</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_ui_parameters</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stepIterations</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_ui_parameters</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lessButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currentButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moreButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">finishButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stepStackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iters_mode</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instructionStackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iters_mode</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_canvas</span> <span class="o">=</span> <span class="n">CompareSlicesView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagePlotLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_canvas</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_refresh</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CORInspectionDialogView.set_image">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.set_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_canvas</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="n">image_type</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CORInspectionDialogView.set_maximum_cor">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.set_maximum_cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_maximum_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the maximum valid rotation centre.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stepCOR</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+    <span class="nd">@step_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">optimal_rotation_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">optimal_rotation_centre</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">optimal_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">optimal_iterations</span>
+
+<div class="viewcode-block" id="CORInspectionDialogView.mark_best_recon">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.mark_best_recon">[docs]</a>
+    <span class="k">def</span> <span class="nf">mark_best_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffs</span><span class="p">):</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="n">diffs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">diffs</span><span class="p">))</span>
+        <span class="n">buttons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QPushButton</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lessButton</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentButton</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">moreButton</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">buttons</span><span class="p">:</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">buttons</span><span class="p">[</span><span class="n">best</span><span class="p">]</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QPushButton{ background-color:green;}&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="view.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.view</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

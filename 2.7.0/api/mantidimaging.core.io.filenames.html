@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.io.filenames module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.io.instrument_log module" href="mantidimaging.core.io.instrument_log.html" />
+    <link rel="prev" title="mantidimaging.core.io.csv_output module" href="mantidimaging.core.io.csv_output.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log.html" title="mantidimaging.core.io.instrument_log module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.csv_output.html" title="mantidimaging.core.io.csv_output module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" accesskey="U">mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.filenames module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.io.filenames">
+<span id="mantidimaging-core-io-filenames-module"></span><h1>mantidimaging.core.io.filenames module<a class="headerlink" href="#module-mantidimaging.core.io.filenames" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.filenames.</span></span><span class="sig-name descname"><span class="pre">FilenameGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern" title="mantidimaging.core.io.filenames.FilenamePattern"><span class="pre">FilenamePattern</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_indexes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.all_files">
+<span class="sig-name descname"><span class="pre">all_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.all_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.all_files" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_all_files">
+<span class="sig-name descname"><span class="pre">find_all_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.find_all_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.find_all_files" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_log_file">
+<span class="sig-name descname"><span class="pre">find_log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.find_log_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.find_log_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_related">
+<span class="sig-name descname"><span class="pre">find_related</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES" title="mantidimaging.core.utility.data_containers.FILE_TYPES"><span class="pre">FILE_TYPES</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.find_related"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.find_related" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.first_file">
+<span class="sig-name descname"><span class="pre">first_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.first_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.first_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.from_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.from_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.from_directory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.from_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.get_pattern_class">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_pattern_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.get_pattern_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.get_pattern_class" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.valid_image_filename">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_image_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.valid_image_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.valid_image_filename" title="Link to this definition">¶</a></dt>
+<dd><p>Check that file is not hidden (starts with a dot) and that it has an image extension</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.filenames.</span></span><span class="sig-name descname"><span class="pre">FilenamePattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">digit_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Representation of a filename pattern to handle stacks of related images</p>
+<p>Handles patterns like “aaaa_####.bbb” where # are digits</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.PATTERN">
+<span class="sig-name descname"><span class="pre">PATTERN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('^(.+?)([0-9]+)(\\.[a-zA-Z_]+)$')</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.PATTERN_d">
+<span class="sig-name descname"><span class="pre">PATTERN_d</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'([0-9]+)'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_d" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.PATTERN_p">
+<span class="sig-name descname"><span class="pre">PATTERN_p</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'^(.+?)'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_p" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.PATTERN_s">
+<span class="sig-name descname"><span class="pre">PATTERN_s</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'(\\.[a-zA-Z_]+)$'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_s" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.from_name">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern" title="mantidimaging.core.io.filenames.FilenamePattern"><span class="pre">FilenamePattern</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern.from_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.from_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.generate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.get_index">
+<span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern.get_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.get_index" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.match" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePattern.match_metadata">
+<span class="sig-name descname"><span class="pre">match_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePattern.match_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePattern.match_metadata" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.filenames.</span></span><span class="sig-name descname"><span class="pre">FilenamePatternGolden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">digit_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePatternGolden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern" title="mantidimaging.core.io.filenames.FilenamePattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilenamePattern</span></code></a></p>
+<p>Representation of a filename pattern for IMAT Golden ratio scans</p>
+<p>“aaaa_**.**_####.bbb” where <strong>.</strong> is an angle and #### is the projection number</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN">
+<span class="sig-name descname"><span class="pre">PATTERN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('^(.+?)_([0-9\\.]+)_([0-9]+)(\\.[a-zA-Z]+)$')</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_a">
+<span class="sig-name descname"><span class="pre">PATTERN_a</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_([0-9\\.]+)_'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_a" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_d">
+<span class="sig-name descname"><span class="pre">PATTERN_d</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'([0-9]+)'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_d" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_p">
+<span class="sig-name descname"><span class="pre">PATTERN_p</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'^(.+?)'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_p" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_s">
+<span class="sig-name descname"><span class="pre">PATTERN_s</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'(\\.[a-zA-Z]+)$'</span></em><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_s" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.from_name">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern" title="mantidimaging.core.io.filenames.FilenamePattern"><span class="pre">FilenamePattern</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePatternGolden.from_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.from_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePatternGolden.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.generate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenamePatternGolden.get_index">
+<span class="sig-name descname"><span class="pre">get_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenamePatternGolden.get_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.get_index" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.io.filenames module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup"><code class="docutils literal notranslate"><span class="pre">FilenameGroup</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.all_files"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.all_files()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.find_all_files"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_all_files()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.find_log_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_log_file()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.find_related"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_related()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.first_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.first_file()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.from_directory"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.from_directory()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.from_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.from_file()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.get_pattern_class"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.get_pattern_class()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenameGroup.valid_image_filename"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.valid_image_filename()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern"><code class="docutils literal notranslate"><span class="pre">FilenamePattern</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.PATTERN</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_d"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.PATTERN_d</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_p"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.PATTERN_p</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.PATTERN_s"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.PATTERN_s</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.from_name"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.from_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.generate"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.generate()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.get_index"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.get_index()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.match"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.match()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePattern.match_metadata"><code class="docutils literal notranslate"><span class="pre">FilenamePattern.match_metadata()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.PATTERN</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_a"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.PATTERN_a</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_d"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.PATTERN_d</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_p"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.PATTERN_p</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.PATTERN_s"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.PATTERN_s</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.from_name"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.from_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.generate"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.generate()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.filenames.FilenamePatternGolden.get_index"><code class="docutils literal notranslate"><span class="pre">FilenamePatternGolden.get_index()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.csv_output.html"
+                          title="previous chapter">mantidimaging.core.io.csv_output module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.instrument_log.html"
+                          title="next chapter">mantidimaging.core.io.instrument_log module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.core.io.filenames.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.instrument_log.html" title="mantidimaging.core.io.instrument_log module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.csv_output.html" title="mantidimaging.core.io.csv_output module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" >mantidimaging.core.io package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.filenames module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

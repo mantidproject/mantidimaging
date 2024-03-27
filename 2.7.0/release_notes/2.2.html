@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Mantid Imaging 2.2 - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.1" href="2.1.html" />
+    <link rel="prev" title="Mantid Imaging 2.3" href="2.3.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.1.html" title="Mantid Imaging 2.1"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.3.html" title="Mantid Imaging 2.3"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.2</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mantid-imaging-2-2">
+<h1>Mantid Imaging 2.2<a class="headerlink" href="#mantid-imaging-2-2" title="Link to this heading">¶</a></h1>
+<p>This release brings some new features and bug fixes.</p>
+<p>The key new features of 2.2 are NeXuS import and a new reconstruction algorithm, Primal-Dual Hybrid Gradient from the <a class="reference external" href="https://www.ccpi.ac.uk/cil">Core Imaging Library (CIL)</a>.</p>
+<section id="new-features">
+<h2>New features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#927 : ROI norm: use averaged view in ROI selector</p></li>
+<li><p>#925 : Jenks / Otsu everywhere</p></li>
+<li><p>#926 : Manual arithmetic filter</p></li>
+<li><p>#988 : Use averaged view in ROI selector for crop</p></li>
+<li><p>#964 : Open NeXus files</p></li>
+<li><p>#1010 : Write slope and offset into int tiffs</p></li>
+<li><p>#987 : Allow Flat-fielding without dark subtraction</p></li>
+<li><p>#1011 : Pixel size should allow setting decimal places</p></li>
+<li><p>#1013 : NeXus Loading Window</p></li>
+<li><p>#904 : Default to using image center for ring removal COR</p></li>
+<li><p>#1025 : Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL</p></li>
+<li><p>#1027 : Flat field warning if output has negative values</p></li>
+<li><p>#1027 : NeXus Loader: Message when loading large files</p></li>
+<li><p>#1026 : Recon warn if input has NaNs</p></li>
+<li><p>#816 : NaN Removal Filter</p></li>
+<li><p>#1035 : NeXus Loader: Select every Nth image</p></li>
+<li><p>#1035 : List of bad slices in error message could be compressed</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#939 : median: NameError: name ‘cp’ is not defined</p></li>
+<li><p>#957 : Crop Coordinates ROI not changing</p></li>
+<li><p>#961 : Test failure: ImportError: libcuda.so.1</p></li>
+<li><p>#959 : Median GPU does not work with even values</p></li>
+<li><p>#990 : Remove combine histogram checkbox</p></li>
+<li><p>#989 : Remove legend checkbox</p></li>
+<li><p>#1001 : Exception when selecting Log in Load Dataset dialog</p></li>
+<li><p>#991 : Handle longer running previews better</p></li>
+<li><p>#1021 : Prevent simultaneous Astra calls</p></li>
+<li><p>#1036 : Exception in ReconstructWindowView.show_recon_volume prevents recon closing</p></li>
+<li><p>#1046 : Can’t rotate NeXus images</p></li>
+<li><p>#1048 : NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace</p></li>
+<li><p>#1055: Arithmetic operation breaks flat-fielding</p></li>
+<li><p>#898: Improve user documentation for operations</p></li>
+<li><p>#1059: Crash in recon Minimise Error with CIL</p></li>
+<li><p>#1032: Crash in RingRemovalFilter</p></li>
+<li><p>#1057: Fix crash when refining COR</p></li>
+<li><p>#1056: Cannot set range [nan, nan] in ROI normalisation</p></li>
+<li><p>#1019: ERROR: Presenter error: Error applying filter for preview - when closing stacks</p></li>
+<li><p>#1068: Don’t show misleading success message when operation cancelled</p></li>
+<li><p>#1082: CIL show memory warning</p></li>
+<li><p>#1014: KeyError when closing stacks</p></li>
+<li><p>#1029: Segmentation fault in image_in_vb</p></li>
+<li><p>#1081: Error if pressing preview button before selecting a dataset</p></li>
+<li><p>#940: Ops window, pixel value not updating for part of image</p></li>
+<li><p>#1093: TIFF output blank if NaN in stack</p></li>
+<li><p>#1095: AttributeError loading 180 deg projection</p></li>
+<li><p>#1110: Segmentation fault COR table refine</p></li>
+<li><p>#1115: Copy everything from metadata dialog</p></li>
+<li><p>#1112: Minimise Error, number of slices input should have minimum of 2</p></li>
+<li><p>#1067: Failed to load stack “log file is not recognised”</p></li>
+<li><p>#1121: FF when negative values in output, no completed message</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf</p></li>
+<li><p>#980 : Use pre-commit</p></li>
+<li><p>#978 : Update Qt API usage</p></li>
+<li><p>#998 : setup.py command to install current developer requirements</p></li>
+<li><p>#969 : Improve mypy coverage in core.io</p></li>
+<li><p>#1007 : Change applitools check level to content</p></li>
+<li><p>#1086 : GUI system tests</p></li>
+</ul>
+</section>
+<section id="dependency-updates">
+<h2>Dependency updates<a class="headerlink" href="#dependency-updates" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9, numpy 1.18</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mantid Imaging 2.2</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#developer-changes">Developer Changes</a></li>
+<li><a class="reference internal" href="#dependency-updates">Dependency updates</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="2.3.html"
+                          title="previous chapter">Mantid Imaging 2.3</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="2.1.html"
+                          title="next chapter">Mantid Imaging 2.1</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/release_notes/2.2.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/release_notes/2.2.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/release_notes/2.2.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/release_notes/2.2.html">2.6.0</a></li>
+  <li><a href="2.2.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.1.html" title="Mantid Imaging 2.1"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.3.html" title="Mantid Imaging 2.3"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.2</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
