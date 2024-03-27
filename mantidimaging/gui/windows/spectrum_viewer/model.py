@@ -149,7 +149,6 @@ class SpectrumViewerWindowModel:
         or None if it does not
         """
         if self._stack is not None:
-            print(f"{self.tof_range=}")
             tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
             return self._stack.data[tof_slice].mean(axis=0)
         return None
