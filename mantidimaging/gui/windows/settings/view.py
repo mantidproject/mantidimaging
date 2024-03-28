@@ -50,8 +50,8 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         if self.current_theme != 'Fusion':
             self.darkModeCheckBox.setEnabled(False)
         with (QSignalBlocker(self.darkModeCheckBox)):
-            if settings.value('use_dark_mode') or (settings.value('os_theme') == 'Dark'
-                                                   and not settings.value('override_os_theme')):
+            if settings.value('use_dark_mode') == 'True' or (settings.value('os_theme') == 'Dark'
+                                                             and settings.value('override_os_theme') == 'False'):
                 self.darkModeCheckBox.setChecked(True)
             else:
                 self.darkModeCheckBox.setChecked(False)
