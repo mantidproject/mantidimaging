@@ -57,8 +57,6 @@ perf_logger = getLogger("perf." + __name__)
 
 settings = QSettings('mantidproject', 'Mantid Imaging')
 
-settings = QSettings('mantidproject', 'Mantid Imaging')
-
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):
 
