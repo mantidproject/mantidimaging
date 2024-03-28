@@ -45,10 +45,10 @@ class SettingsWindowPresenter(BasePresenter):
 
     def set_dark_mode(self):
         if self.view.darkModeCheckBox.isChecked():
-            use_dark_mode = 1
+            use_dark_mode = 'True'
         else:
-            use_dark_mode = 0
+            use_dark_mode = 'False'
 
         settings.setValue('use_dark_mode', use_dark_mode)
-        settings.setValue('override_os_theme', True)
+        settings.setValue('override_os_theme', 'True')
         self.main_window.presenter.do_update_UI()

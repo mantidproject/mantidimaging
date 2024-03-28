@@ -865,13 +865,13 @@ class MainWindowPresenter(BasePresenter):
                 QApplication.instance().setFont(font)
                 window.setStyleSheet(theme)
                 if theme == 'Fusion':
-                    if not override_os_theme:
+                    if override_os_theme == 'False':
                         if os_theme == 'Light':
                             self.use_fusion_light_mode()
                         elif os_theme == 'Dark':
                             self.use_fusion_dark_mode()
                     else:
-                        if use_dark_mode:
+                        if use_dark_mode == 'True':
                             self.use_fusion_dark_mode()
                         else:
                             self.use_fusion_light_mode()
