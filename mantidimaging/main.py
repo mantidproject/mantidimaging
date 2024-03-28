@@ -21,6 +21,15 @@ formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
     message, category, filename, lineno, line="")
 
+settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
+
+if settings.contains("theme_selection"):
+    # there is the key in QSettings
+    theme_selection = settings.value('theme_selection')
+else:
+    settings.setValue('theme_selection', 'Fusion')
+    theme_selection = None
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Mantid Imaging GUI")
@@ -57,7 +66,9 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    q_application.setStyle('Fusion')
+    if theme_selection:
+        q_application.setStyle(settings.value('theme_selection'))
+
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")

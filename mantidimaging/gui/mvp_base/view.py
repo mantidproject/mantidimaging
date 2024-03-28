@@ -5,13 +5,19 @@ from __future__ import annotations
 import time
 from logging import getLogger
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
+from qt_material import apply_stylesheet
 
 from mantidimaging.gui.utility import compile_ui
 
 LOG = getLogger(__name__)
 perf_logger = getLogger("perf." + __name__)
+settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
+
+if not settings.contains("theme_selection") or settings.value("theme_selection") is None:
+    settings.setValue('theme_selection', 'Fusion')
 
 
 class BaseMainWindowView(QMainWindow):
@@ -24,6 +30,11 @@ class BaseMainWindowView(QMainWindow):
 
         if ui_file is not None:
             compile_ui(ui_file, self)
+
+        if settings.value('theme_selection') == 'Fusion':
+            self.setStyleSheet('Fusion')
+        else:
+            apply_stylesheet(self, theme=settings.value('theme_selection'), invert_secondary=False)
 
     def closeEvent(self, e):
         LOG.debug('UI window closed')
