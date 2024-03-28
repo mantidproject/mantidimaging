@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .model import ROI_RITS
+from .model import ROI_RITS, ToFUnitMode
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -81,6 +81,27 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
+        self.spectrum_right_click_menu = self.spectrum_widget.spectrum_plot_widget.spectrum.vb.menu
+        self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
+        self.tof_mode_select_group = QActionGroup(self)
+
+        self.allowed_modes = {
+            "Image Index": ToFUnitMode.IMAGE_NUMBER,
+            "Wavelength": ToFUnitMode.WAVELENGTH,
+            "Energy": ToFUnitMode.ENERGY,
+            "us": ToFUnitMode.TOF_US
+        }
+        for mode in self.allowed_modes.keys():
+            action = QAction(mode, self.tof_mode_select_group)
+            action.setCheckable(True)
+            action.setObjectName(mode)
+            self.units_menu.addAction(action)
+            action.triggered.connect(self.presenter.handle_tof_unit_change)
+            if mode == "Image Index":
+                action.setChecked(True)
+        if self.presenter.model.tof_data is None:
+            self.tof_mode_select_group.setEnabled(False)
+
         self._current_dataset_id = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
@@ -103,6 +124,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.sampleStackSelector.select_eligible_stack()
         self.try_to_select_relevant_normalise_stack("Flat")
+        self.presenter.handle_tof_unit_change()
 
         self.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
@@ -400,7 +422,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def show_visible_spectrums(self):
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot(value, name=key, pen=self.spectrum_widget.roi_dict[key].colour)
+                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
+                                                   value,
+                                                   name=key,
+                                                   pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
         """

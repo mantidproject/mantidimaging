@@ -136,7 +136,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertNotIn(spectrum_roi, self.spectrum_widget.image.vb.addedItems)
 
     def test_WHEN_set_tof_range_called_THEN_range_control_set_correctly(self):
-        self.spectrum_plot_widget._set_tof_range_label(0, 100)
+        self.spectrum_plot_widget.set_tof_range_label(0, 100)
         self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, "ToF range: 0 - 100")
 
     def test_WHEN_rename_roi_called_THEN_roi_renamed(self):

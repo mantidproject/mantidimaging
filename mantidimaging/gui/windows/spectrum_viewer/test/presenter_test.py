@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QPushButton, QActionGroup
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -34,6 +34,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButton = mock.create_autospec(QPushButton)
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
         self.view.addBtn = mock.create_autospec(QPushButton)
+        self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -158,7 +159,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
         self.presenter.model.set_stack(generate_images([10, 5, 5]))
-        self.presenter.model.tof_range = (0, 9)
+        self.presenter.model.tof_plot_range = (0, 9)
         self.presenter.show_new_sample()
         self.view.spectrum_widget.spectrum_plot_widget.add_range.assert_called_once_with(0, 9)
 
