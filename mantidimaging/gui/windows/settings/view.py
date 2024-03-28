@@ -30,7 +30,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
     menuFontSizeChoice: QComboBox
     darkModeCheckBox: QCheckBox
 
-    def __init__(self, main_window: 'MainWindowView'):
+    def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/settings_window.ui')
         self.setWindowTitle('Settings')
         self.main_window = main_window

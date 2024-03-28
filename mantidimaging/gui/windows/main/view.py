@@ -181,7 +181,6 @@ class MainWindowView(BaseMainWindowView):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
         super()._window_ready()
 
-
     def setup_shortcuts(self):
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
