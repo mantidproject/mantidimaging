@@ -19,9 +19,9 @@ settings = QSettings('mantidproject', 'Mantid Imaging')
 
 
 class SettingsWindowPresenter(BasePresenter):
-    view: 'SettingsWindowView'
+    view: SettingsWindowView
 
-    def __init__(self, view: 'SettingsWindowView', main_window: 'MainWindowView'):
+    def __init__(self, view: SettingsWindowView, main_window: MainWindowView):
         super().__init__(view)
         self.view = view
         self.main_window = main_window
