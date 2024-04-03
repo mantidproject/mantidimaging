@@ -57,6 +57,7 @@ class SettingsWindowPresenter(BasePresenter):
         settings.setValue('override_os_theme', 'True')
         self.main_window.presenter.do_update_UI()
 
+
     def set_to_os_defaults(self):
         if self.view.osDefaultsCheckBox.isChecked():
             settings.setValue('use_os_defaults', 'True')
@@ -90,3 +91,7 @@ class SettingsWindowPresenter(BasePresenter):
             self.view.darkModeCheckBox.setChecked(dark_mode_checked)
             self.view.darkModeCheckBox.setEnabled(dark_mode_enabled)
         self.main_window.presenter.do_update_UI()
+
+    def set_processes_value(self):
+        print(self.view.current_processes_value)
+        settings.setValue('multiprocessing/process_count', self.view.current_processes_value)
