@@ -578,8 +578,8 @@
       "region_of_interest": [
         0,
         0,
-        200,
-        200
+        20,
+        20
       ],
       "normalisation_mode": "Stack Average",
       "flat_field": null
@@ -592,8 +592,8 @@
           "region_of_interest": [
             0,
             0,
-            200,
-            200
+            20,
+            20
           ],
           "normalisation_mode": "Stack Average",
           "flat_field": null
