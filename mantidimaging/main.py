@@ -10,7 +10,7 @@ import os
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
-from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -69,6 +69,10 @@ def setup_application() -> QApplication:
     if theme_selection:
         q_application.setStyle(settings.value('theme_selection'))
 
+    default_font = QFont('-1')
+    default_font_info = QFontInfo(default_font)
+    settings.setValue('default_font_size', str(default_font.pointSize()))
+    settings.setValue('default_font_family', str(default_font_info.family()))
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")

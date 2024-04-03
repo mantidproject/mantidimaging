@@ -41,13 +41,14 @@ extra_style_default = {
     'density_scale': '-5',
 
     # font
-    'font_size': '10px',
+    'font_size': settings.value('default_font_size', defaultValue='12') + 'px',
 }
 
-if settings.contains("extra_style") and settings.value('extra_style'):
+if settings.contains("extra_style") and settings.value('extra_style') is not None:
     extra_style = settings.value('extra_style')
 else:
     settings.setValue('extra_style', extra_style_default)
+    extra_style = extra_style_default
 settings.setValue('os_theme', darkdetect.theme())
 
 
@@ -856,7 +857,7 @@ class MainWindowPresenter(BasePresenter):
         os_theme = settings.value('os_theme')
         use_dark_mode = settings.value('use_dark_mode')
         override_os_theme = settings.value('override_os_theme')
-        font = QFont("Arial", int(extra_style['font_size'].replace('px', '')))
+        font = QFont(settings.value('default_font_family'), int(extra_style['font_size'].replace('px', '')))
         for window in [
                 self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
                 self.view.settings_window
