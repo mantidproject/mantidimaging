@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, TypedDict
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction, QDoubleSpinBox
 from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility import finder
@@ -57,6 +57,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     spectrum_widget: SpectrumWidget
 
     number_roi_properties_procced: int = 0
+
+    flightPathSpinBox: QDoubleSpinBox
+    timeDelaySpinBox: QDoubleSpinBox
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
@@ -199,6 +202,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         _ = self.roi_table_model  # Initialise model
         self.current_roi = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
+
+        self.flightPathSpinBox.setMinimum(0)
+        self.flightPathSpinBox.setMaximum(1e10)
+        self.flightPathSpinBox.setValue(56)
+        self.timeDelaySpinBox.setMaximum(1e10)
+        self.flightPathSpinBox.valueChanged.connect(self.presenter.handle_flight_path_change)
+        self.timeDelaySpinBox.valueChanged.connect(self.presenter.handle_time_delay_change)
 
         def on_row_change(item, _) -> None:
             """

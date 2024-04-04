@@ -349,11 +349,40 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         selected_mode = self.view.tof_mode_select_group.checkedAction().text()
         self.model.tof_mode = self.view.allowed_modes[selected_mode]["mode"]
         self.model.set_relevant_tof_units()
-        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(
-            self.view.allowed_modes[selected_mode]["label"])
+        tof_mode = self.model.tof_mode
+        tof_axis_label = ""
+        if tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            tof_axis_label = "Image index"
+        if tof_mode == ToFUnitMode.TOF_US:
+            tof_axis_label = "Time of Flight (\u03BC s)"
+        if tof_mode == ToFUnitMode.WAVELENGTH:
+            tof_axis_label = "Neutron Wavelength (\u212B)"
+        if tof_mode == ToFUnitMode.ENERGY:
+            tof_axis_label = "Neutron Energy (MeV)"
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
+        self.refresh_spectrum_plot()
+
+    def refresh_spectrum_plot(self):
+
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
+
+    def handle_flight_path_change(self) -> None:
+        self.model.units.set_target_to_camera_dist(self.view.flightPathSpinBox.value())
+        self.model.set_relevant_tof_units()
+        self.refresh_spectrum_plot()
+
+    def handle_time_delay_change(self) -> None:
+        self.model.tof_data = self.model.get_stack_time_of_flight()
+        print(f"self.model.tof_data: {self.model.tof_data}")
+        #self.model.tof_data = np.add(self.model.tof_data,
+        #                             np.full_like(self.model.tof_data, self.view.timeDelaySpinBox.value()))
+        self.model.units.set_data_offset(self.view.timeDelaySpinBox.value())
+        print(f"self.model.tof_data: {self.model.tof_data}")
+        self.model.set_relevant_tof_units()
+        print(f"self.model.tof_data: {self.model.tof_data}\n")
+        self.refresh_spectrum_plot()

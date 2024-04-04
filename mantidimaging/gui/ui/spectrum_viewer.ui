@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>905</width>
-    <height>752</height>
+    <width>1009</width>
+    <height>795</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -391,7 +391,78 @@
          </widget>
         </item>
         <item>
-         <spacer name="PropertiesSpacer">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>84</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Time of Flight Properties</string>
+          </property>
+          <widget class="QLabel" name="label_3">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>31</y>
+             <width>101</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Flight path:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_4">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>91</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Time delay: </string>
+           </property>
+          </widget>
+          <widget class="QDoubleSpinBox" name="flightPathSpinBox">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>30</y>
+             <width>211</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QDoubleSpinBox" name="timeDelaySpinBox">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>50</y>
+             <width>211</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
