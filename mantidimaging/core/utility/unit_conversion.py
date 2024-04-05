@@ -13,11 +13,12 @@ class UnitConversion:
     mega_electro_volt: float = 1.60217662e-19 / 1e6
     target_to_camera_dist: float = 56  # [m]
     data_offset: float = 0  # [us]
+    tof_data_to_convert: np.ndarray
+    velocity: np.ndarray
 
     def __init__(self, data_to_convert: np.ndarray | None = None) -> None:
-        self.tof_data_to_convert = data_to_convert
         if data_to_convert is not None:
-            self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
+            self.set_data_to_convert(data_to_convert)
 
     def tof_seconds_to_wavelength(self) -> np.ndarray:
         self.check_data()

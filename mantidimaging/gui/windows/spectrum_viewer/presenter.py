@@ -382,6 +382,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         #self.model.tof_data = np.add(self.model.tof_data,
         #                             np.full_like(self.model.tof_data, self.view.timeDelaySpinBox.value()))
         self.model.units.set_data_offset(self.view.timeDelaySpinBox.value())
+        print(f"self.model.units.data_offset: {self.model.units.data_offset}")
         print(f"self.model.tof_data: {self.model.tof_data}")
         self.model.set_relevant_tof_units()
         print(f"self.model.tof_data: {self.model.tof_data}\n")
