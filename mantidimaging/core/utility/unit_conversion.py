@@ -32,17 +32,21 @@ class UnitConversion:
         energy_evs = energy / self.mega_electro_volt
         return energy_evs
 
+    def tof_seconds_to_us(self) -> np.ndarray:
+        self.check_data()
+        return (self.tof_data_to_convert + self.data_offset) * 1e6
+
     def set_target_to_camera_dist(self, target_to_camera_dist: float) -> None:
         self.target_to_camera_dist = target_to_camera_dist
 
     def set_data_to_convert(self, data_to_convert: np.ndarray) -> None:
         self.tof_data_to_convert = data_to_convert
-        self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
 
     def check_data(self) -> None:
         if self.tof_data_to_convert is None:
             raise TypeError("Data is not present")
+        else:
+            self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
 
     def set_data_offset(self, data_offset: float) -> None:
         self.data_offset = data_offset * 1e-6
-        self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)

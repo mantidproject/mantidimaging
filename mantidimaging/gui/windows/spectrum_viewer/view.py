@@ -206,7 +206,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.flightPathSpinBox.setMinimum(0)
         self.flightPathSpinBox.setMaximum(1e10)
         self.flightPathSpinBox.setValue(56)
+        self.flightPathSpinBox.setSuffix(" m")
         self.timeDelaySpinBox.setMaximum(1e10)
+        self.timeDelaySpinBox.setSuffix(" \u03BCs")
+
         self.flightPathSpinBox.valueChanged.connect(self.presenter.handle_flight_path_change)
         self.timeDelaySpinBox.valueChanged.connect(self.presenter.handle_time_delay_change)
 

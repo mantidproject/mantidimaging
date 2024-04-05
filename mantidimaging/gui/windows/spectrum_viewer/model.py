@@ -474,7 +474,7 @@ class SpectrumViewerWindowModel:
             else:
                 self.units.set_data_to_convert(self.tof_data)
                 if self.tof_mode == ToFUnitMode.TOF_US:
-                    self.tof_data = self.tof_data * 1e6
+                    self.tof_data = self.units.tof_seconds_to_us()
                 elif self.tof_mode == ToFUnitMode.WAVELENGTH:
                     self.tof_data = self.units.tof_seconds_to_wavelength()
                 elif self.tof_mode == ToFUnitMode.ENERGY:
