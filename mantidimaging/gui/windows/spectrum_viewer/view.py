@@ -58,6 +58,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     number_roi_properties_procced: int = 0
 
+    tofPropertiesGroupBox: QGroupBox
     flightPathSpinBox: QDoubleSpinBox
     timeDelaySpinBox: QDoubleSpinBox
 

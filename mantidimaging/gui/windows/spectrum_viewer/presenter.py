@@ -109,6 +109,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def reset_units_menu(self):
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+            self.view.tofPropertiesGroupBox.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
+            self.view.tofPropertiesGroupBox.setEnabled(True)
         self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
@@ -362,8 +368,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
         self.refresh_spectrum_plot()
 
-    def refresh_spectrum_plot(self):
 
+    def refresh_spectrum_plot(self) -> None:
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
@@ -378,12 +384,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_time_delay_change(self) -> None:
         self.model.tof_data = self.model.get_stack_time_of_flight()
-        print(f"self.model.tof_data: {self.model.tof_data}")
-        #self.model.tof_data = np.add(self.model.tof_data,
-        #                             np.full_like(self.model.tof_data, self.view.timeDelaySpinBox.value()))
         self.model.units.set_data_offset(self.view.timeDelaySpinBox.value())
-        print(f"self.model.units.data_offset: {self.model.units.data_offset}")
-        print(f"self.model.tof_data: {self.model.tof_data}")
         self.model.set_relevant_tof_units()
-        print(f"self.model.tof_data: {self.model.tof_data}\n")
         self.refresh_spectrum_plot()
