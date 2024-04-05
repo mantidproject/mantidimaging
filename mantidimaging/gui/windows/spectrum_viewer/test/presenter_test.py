@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
-from PyQt5.QtWidgets import QPushButton, QActionGroup
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -35,7 +35,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
         self.view.addBtn = mock.create_autospec(QPushButton)
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
-        self.view.allowed_modes = mock.create_autospec(dict)
+        self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
