@@ -104,7 +104,8 @@ class SpectrumWidgetTest(unittest.TestCase):
     def test_WHEN_add_range_called_THEN_region_and_label_set_correctly(self, _, range_min, range_max):
         self.spectrum_plot_widget.add_range(range_min, range_max)
         self.assertEqual(self.spectrum_plot_widget.range_control.getRegion(), (range_min, range_max))
-        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, f"ToF range: {range_min} - {range_max}")
+        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text,
+                         f"ToF range: {range_min:.3f} - {range_max:.3f}")
 
     def test_WHEN_get_roi_called_THEN_SensibleROI_returned(self):
         spectrum_roi = SpectrumROI("roi",
@@ -137,7 +138,7 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     def test_WHEN_set_tof_range_called_THEN_range_control_set_correctly(self):
         self.spectrum_plot_widget.set_tof_range_label(0, 100)
-        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, "ToF range: 0 - 100")
+        self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, "ToF range: 0.000 - 100.000")
 
     def test_WHEN_rename_roi_called_THEN_roi_renamed(self):
         spectrum_roi = SpectrumROI("roi_1",
