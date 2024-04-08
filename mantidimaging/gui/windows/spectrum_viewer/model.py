@@ -78,7 +78,6 @@ class SpectrumViewerWindowModel:
         self.tof_data = self.get_stack_time_of_flight()
         if self.tof_data is None:
             self.tof_mode = ToFUnitMode.IMAGE_NUMBER
-            #self.presenter.view.units_menu.setEnabled(False)
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
 

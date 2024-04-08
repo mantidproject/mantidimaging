@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
@@ -25,6 +25,11 @@ import numpy as np
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
+
+
+class AllowedModesTypedDict(TypedDict):
+    mode: ToFUnitMode
+    label: str
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -85,11 +90,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
         self.tof_mode_select_group = QActionGroup(self)
 
-        self.allowed_modes = {
-            "Image Index": ToFUnitMode.IMAGE_NUMBER,
-            "Wavelength": ToFUnitMode.WAVELENGTH,
-            "Energy": ToFUnitMode.ENERGY,
-            "us": ToFUnitMode.TOF_US
+        self.allowed_modes: dict[str, AllowedModesTypedDict] = {
+            "Image Index": {
+                "mode": ToFUnitMode.IMAGE_NUMBER,
+                "label": "Image index"
+            },
+            "Wavelength": {
+                "mode": ToFUnitMode.WAVELENGTH,
+                "label": "Neutron Wavelength (\u212B)"
+            },
+            "Energy": {
+                "mode": ToFUnitMode.ENERGY,
+                "label": "Neutron Energy (MeV)"
+            },
+            "Time of Flight (\u03BCs)": {
+                "mode": ToFUnitMode.TOF_US,
+                "label": "Time of Flight (\u03BCs)"
+            }
         }
         for mode in self.allowed_modes.keys():
             action = QAction(mode, self.tof_mode_select_group)

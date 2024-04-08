@@ -347,19 +347,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_tof_unit_change(self) -> None:
         selected_mode = self.view.tof_mode_select_group.checkedAction().text()
-        self.model.tof_mode = self.view.allowed_modes[selected_mode]
+        self.model.tof_mode = self.view.allowed_modes[selected_mode]["mode"]
         self.model.set_relevant_tof_units()
-        tof_mode = self.model.tof_mode
-        tof_axis_label = ""
-        if tof_mode == ToFUnitMode.IMAGE_NUMBER:
-            tof_axis_label = "Image index"
-        if tof_mode == ToFUnitMode.TOF_US:
-            tof_axis_label = "Time of Flight (\u03BC s)"
-        if tof_mode == ToFUnitMode.WAVELENGTH:
-            tof_axis_label = "Neutron Wavelength (\u212B)"
-        if tof_mode == ToFUnitMode.ENERGY:
-            tof_axis_label = "Neutron Energy (MeV)"
-        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(
+            self.view.allowed_modes[selected_mode]["label"])
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
