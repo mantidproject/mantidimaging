@@ -80,6 +80,7 @@ def setup_application() -> QApplication:
         # font
         'font_size': str(default_font.pointSize()) + 'px',
     }
+    settings.setValue('extra_style_default', extra_style_default)
     if settings.value('extra_style') is None:
         settings.setValue('extra_style', extra_style_default)
     settings.setValue('os_theme', darkdetect.theme())

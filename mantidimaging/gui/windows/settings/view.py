@@ -29,6 +29,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
     menuFontSizeLabel: QLabel
     menuFontSizeChoice: QComboBox
     darkModeCheckBox: QCheckBox
+    osDefaultsCheckBox: QCheckBox
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/settings_window.ui')
@@ -46,6 +47,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         self.themeName.currentTextChanged.connect(self.presenter.set_theme)
         self.menuFontSizeChoice.currentTextChanged.connect(self.presenter.set_extra_style)
         self.darkModeCheckBox.stateChanged.connect(self.presenter.set_dark_mode)
+        self.osDefaultsCheckBox.stateChanged.connect(self.presenter.set_to_os_defaults)
 
         if self.current_theme != 'Fusion':
             self.darkModeCheckBox.setEnabled(False)
@@ -55,6 +57,9 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
                 self.darkModeCheckBox.setChecked(True)
             else:
                 self.darkModeCheckBox.setChecked(False)
+
+        if settings.value('use_os_defaults') == 'True' or settings.value('use_os_defaults') is None:
+            self.osDefaultsCheckBox.setChecked(True)
 
     @property
     def current_theme(self) -> str:

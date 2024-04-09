@@ -8,7 +8,6 @@ from logging import getLogger
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
-from qt_material import apply_stylesheet
 
 from mantidimaging.gui.utility import compile_ui
 
@@ -30,11 +29,6 @@ class BaseMainWindowView(QMainWindow):
 
         if ui_file is not None:
             compile_ui(ui_file, self)
-
-        if settings.value('theme_selection') == 'Fusion':
-            self.setStyleSheet('Fusion')
-        else:
-            apply_stylesheet(self, theme=settings.value('theme_selection'), invert_secondary=False)
 
     def closeEvent(self, e):
         LOG.debug('UI window closed')
