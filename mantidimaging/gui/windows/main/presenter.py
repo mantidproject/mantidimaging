@@ -841,6 +841,7 @@ class MainWindowPresenter(BasePresenter):
         use_dark_mode = settings.value('use_dark_mode')
         override_os_theme = settings.value('override_os_theme')
         font = QFont(settings.value('default_font_family'), int(extra_style['font_size'].replace('px', '')))
+        print(f"extra_style: {extra_style}")
         for window in [
                 self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
                 self.view.settings_window
