@@ -85,7 +85,7 @@ def start_qapplication(cls):
 def start_multiprocessing_pool(cls):
 
     def setUpClass():
-        create_and_start_pool()
+        create_and_start_pool(0)
 
     def tearDownClass():
         end_pool()
