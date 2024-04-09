@@ -8,6 +8,7 @@ import sys
 import warnings
 import os
 
+import darkdetect
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
 from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
@@ -69,10 +70,21 @@ def setup_application() -> QApplication:
     if theme_selection:
         q_application.setStyle(settings.value('theme_selection'))
 
-    default_font = QFont('-1')
+    default_font = QFont()
     default_font_info = QFontInfo(default_font)
+    extra_style_default = {
+
+        # Density Scale
+        'density_scale': '-5',
+
+        # font
+        'font_size': str(default_font.pointSize()) + 'px',
+    }
+    settings.setValue('extra_style', extra_style_default)
+    settings.setValue('os_theme', darkdetect.theme())
     settings.setValue('default_font_size', str(default_font.pointSize()))
     settings.setValue('default_font_family', str(default_font_info.family()))
+
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")

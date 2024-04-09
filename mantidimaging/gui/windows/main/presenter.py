@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
-import darkdetect
 import numpy as np
 from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QFont, QPalette, QColor
@@ -34,22 +33,6 @@ if TYPE_CHECKING:
 RECON_TEXT = "Recon"
 
 settings = QSettings('mantidproject', 'Mantid Imaging')
-
-extra_style_default = {
-
-    # Density Scale
-    'density_scale': '-5',
-
-    # font
-    'font_size': settings.value('default_font_size', defaultValue='12') + 'px',
-}
-
-if settings.contains("extra_style") and settings.value('extra_style') is not None:
-    extra_style = settings.value('extra_style')
-else:
-    settings.setValue('extra_style', extra_style_default)
-    extra_style = extra_style_default
-settings.setValue('os_theme', darkdetect.theme())
 
 
 class StackId(NamedTuple):
@@ -881,7 +864,8 @@ class MainWindowPresenter(BasePresenter):
                 else:
                     apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
 
-    def use_fusion_dark_mode(self) -> None:
+    @staticmethod
+    def use_fusion_dark_mode() -> None:
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor(53, 53, 53))
         palette.setColor(QPalette.WindowText, Qt.white)
@@ -898,6 +882,7 @@ class MainWindowPresenter(BasePresenter):
         palette.setColor(QPalette.HighlightedText, Qt.black)
         QApplication.instance().setPalette(palette)
 
-    def use_fusion_light_mode(self) -> None:
+    @staticmethod
+    def use_fusion_light_mode() -> None:
         palette = QPalette()
         QApplication.instance().setPalette(palette)
