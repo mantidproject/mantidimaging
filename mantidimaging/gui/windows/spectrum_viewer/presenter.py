@@ -68,7 +68,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
         self.reset_units_menu()
-        self.model.set_relevant_tof_units()
+        self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
 
@@ -93,7 +93,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.set_stack(self.main_window.get_stack(uuid))
         self.reset_units_menu()
-        self.model.set_relevant_tof_units()
+        self.handle_tof_unit_change()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
             try:
@@ -109,10 +109,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def reset_units_menu(self):
-        if self.model.tof_data is None:
-            self.view.tof_mode_select_group.setEnabled(False)
-        else:
-            self.view.tof_mode_select_group.setEnabled(True)
         self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
@@ -120,6 +116,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     action.setChecked(True)
                 else:
                     action.setChecked(False)
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
 
     def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
