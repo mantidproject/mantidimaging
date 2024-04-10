@@ -28,13 +28,16 @@ cores: int = 1
 pool: Pool | None = None
 
 
-def create_and_start_pool():
-    LOG.info('Creating process pool')
+def create_and_start_pool(process_count: int) -> None:
     t0 = time.monotonic()
     context = get_context('spawn')
     global cores
-    cores = context.cpu_count()
+    if process_count == 0:
+        cores = context.cpu_count()
+    else:
+        cores = process_count
     global pool
+    LOG.info(f'Creating process pool with {cores} processes')
     pool = context.Pool(cores, initializer=worker_setup)
 
     if perf_logger.isEnabledFor(1):

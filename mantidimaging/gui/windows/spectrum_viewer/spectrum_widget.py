@@ -175,9 +175,6 @@ class SpectrumWidget(QWidget):
         for handle in handles:
             handle.setVisible(visible)
         self.roi_dict[name].setVisible(visible)
-        self.roi_dict[name].setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
-        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
-        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
 
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """
@@ -205,7 +202,7 @@ class SpectrumWidget(QWidget):
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()
-        self.roi_dict[name].sigRegionChanged.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigRegionChangeFinished.connect(self.roi_changed.emit)
         self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
@@ -276,7 +273,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.nextRow()
         self._tof_range_label = self.addLabel()
         self.range_control = LinearRegionItem()
-        self.range_control.sigRegionChanged.connect(self._handle_tof_range_changed)
+        self.range_control.sigRegionChangeFinished.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
 
     def get_tof_range(self) -> tuple[int, int]:

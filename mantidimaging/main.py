@@ -9,6 +9,7 @@ import warnings
 import os
 
 import darkdetect
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
 from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
@@ -112,9 +113,12 @@ def main() -> None:
 
     h.initialise_logging(args.log_level)
 
+    settings = QSettings()
+    process_count = settings.value("multiprocessing/process_count", 8, type=int)
+
     from mantidimaging import gui
     try:
-        pm.create_and_start_pool()
+        pm.create_and_start_pool(process_count)
         gui.execute()
         result = q_application.exec_()
     except BaseException as e:
