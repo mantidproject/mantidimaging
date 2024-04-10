@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint, QSettings
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget
@@ -54,8 +54,6 @@ SINO_TEXT = "Sinograms"
 
 LOG = getLogger(__name__)
 perf_logger = getLogger("perf." + __name__)
-
-settings = QSettings('mantidproject', 'Mantid Imaging')
 
 
 class QTreeDatasetWidgetItem(QTreeWidgetItem):

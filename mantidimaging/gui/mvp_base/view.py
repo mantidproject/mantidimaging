@@ -7,7 +7,7 @@ from logging import getLogger
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication
 
 from mantidimaging.gui.utility import compile_ui
 
@@ -29,6 +29,8 @@ class BaseMainWindowView(QMainWindow):
 
         if ui_file is not None:
             compile_ui(ui_file, self)
+
+        QApplication.instance().setStyle(settings.value('theme_selection'))
 
     def closeEvent(self, e):
         LOG.debug('UI window closed')

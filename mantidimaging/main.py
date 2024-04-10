@@ -24,13 +24,6 @@ warnings.formatwarning = lambda message, category, filename, lineno, line=None: 
 
 settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
 
-if settings.contains("theme_selection"):
-    # there is the key in QSettings
-    theme_selection = settings.value('theme_selection')
-else:
-    settings.setValue('theme_selection', 'Fusion')
-    theme_selection = None
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Mantid Imaging GUI")
@@ -67,11 +60,10 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    if theme_selection:
-        q_application.setStyle(settings.value('theme_selection'))
 
     default_font = QFont()
     default_font_info = QFontInfo(default_font)
+
     extra_style_default = {
 
         # Density Scale
@@ -83,6 +75,7 @@ def setup_application() -> QApplication:
     settings.setValue('extra_style_default', extra_style_default)
     if settings.value('extra_style') is None:
         settings.setValue('extra_style', extra_style_default)
+
     settings.setValue('os_theme', darkdetect.theme())
     settings.setValue('default_font_size', str(default_font.pointSize()))
     settings.setValue('default_font_family', str(default_font_info.family()))
