@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -121,7 +121,6 @@ class SpectrumWidget(QWidget):
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-
         self.splitter = QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.image_widget)
         self.splitter.addWidget(self.spectrum_plot_widget)
@@ -269,31 +268,40 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.spectrum = self.addPlot()
+        self.vb = ViewBox()
+        self.spectrum = self.addPlot(viewbox=self.vb)
         self.nextRow()
         self._tof_range_label = self.addLabel()
+        self.nextRow()
+        self._image_index_range_label = self.addLabel()
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChangeFinished.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
 
-    def get_tof_range(self) -> tuple[int, int]:
+    def get_tof_range(self) -> tuple[float, float]:
         r_min, r_max = self.range_control.getRegion()
-        return int(r_min), int(r_max)
+        return r_min, r_max
 
     def _handle_tof_range_changed(self) -> None:
         tof_range = self.get_tof_range()
-        self._set_tof_range_label(tof_range[0], tof_range[1])
+        self.set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
 
-    def add_range(self, range_min: int, range_max: int) -> None:
+    def add_range(self, range_min: int | float, range_max: int | float) -> None:
         with QSignalBlocker(self.range_control):
             self.range_control.setBounds((range_min, range_max))
             self.range_control.setRegion((range_min, range_max))
         self.spectrum.addItem(self.range_control)
-        self._set_tof_range_label(range_min, range_max)
+        self.set_tof_range_label(range_min, range_max)
 
-    def _set_tof_range_label(self, range_min: int, range_max: int) -> None:
-        self._tof_range_label.setText(f'ToF range: {range_min} - {range_max}')
+    def set_tof_range_label(self, range_min: float, range_max: float) -> None:
+        self._tof_range_label.setText(f'ToF range: {range_min:.3f} - {range_max:.3f}')
+
+    def set_image_index_range_label(self, range_min: int, range_max: int) -> None:
+        self._image_index_range_label.setText(f'Image index range: {range_min} - {range_max}')
+
+    def set_tof_axis_label(self, tof_axis_label: str) -> None:
+        self.spectrum.setLabel('bottom', text=tof_axis_label)
 
 
 class SpectrumProjectionWidget(GraphicsLayoutWidget):

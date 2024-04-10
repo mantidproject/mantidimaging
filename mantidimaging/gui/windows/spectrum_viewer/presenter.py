@@ -7,10 +7,15 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from logging import getLogger
+
+import numpy as np
+from PyQt5.QtCore import QSignalBlocker
+
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode
+from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
+    ToFUnitMode
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -62,6 +67,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
+        self.reset_units_menu()
+        self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
 
@@ -81,9 +88,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
+            self.view.tof_mode_select_group.setEnabled(False)
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
+        self.reset_units_menu()
+        self.handle_tof_unit_change()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
             try:
@@ -97,6 +107,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_normalise_error(self.model.normalise_issue())
         self.show_new_sample()
         self.view.on_visibility_change()
+
+    def reset_units_menu(self):
+        self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        for action in self.view.tof_mode_select_group.actions():
+            with QSignalBlocker(action):
+                if action.objectName() == 'Image Index':
+                    action.setChecked(True)
+                else:
+                    action.setChecked(False)
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
 
     def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -135,13 +158,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image)
-        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_range)
+        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
         if self.view.get_roi_properties_spinboxes():
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
-        self.model.tof_range = tof_range
+        self.model.tof_plot_range = tof_range
+        if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
+            self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
+        else:
+            image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
+            image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
+            self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image, autoLevels=False)
@@ -312,3 +344,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
         self.view.on_visibility_change()
+
+    def handle_tof_unit_change(self) -> None:
+        selected_mode = self.view.tof_mode_select_group.checkedAction().text()
+        self.model.tof_mode = self.view.allowed_modes[selected_mode]["mode"]
+        self.model.set_relevant_tof_units()
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(
+            self.view.allowed_modes[selected_mode]["label"])
+        self.view.spectrum_widget.spectrum.clearPlots()
+        self.view.spectrum_widget.spectrum.update()
+        self.view.show_visible_spectrums()
+        self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
+        self.view.auto_range_image()

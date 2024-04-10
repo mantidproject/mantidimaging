@@ -16,6 +16,7 @@ from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.unit_conversion import UnitConversion
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
@@ -30,6 +31,13 @@ class SpecType(Enum):
     SAMPLE = 1
     OPEN = 2
     SAMPLE_NORMED = 3
+
+
+class ToFUnitMode(Enum):
+    IMAGE_NUMBER = 1
+    TOF_US = 2
+    WAVELENGTH = 3
+    ENERGY = 4
 
 
 class ErrorMode(Enum):
@@ -55,13 +63,23 @@ class SpectrumViewerWindowModel:
     _stack: ImageStack | None = None
     _normalise_stack: ImageStack | None = None
     tof_range: tuple[int, int] = (0, 0)
+    tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     _roi_ranges: dict[str, SensibleROI]
+    tof_mode: ToFUnitMode
+    tof_data: np.ndarray | None = None
+    tof_range_full: tuple[int, int] = (0, 0)
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
+
+        self.tof_data = self.get_stack_time_of_flight()
+        if self.tof_data is None:
+            self.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        else:
+            self.tof_mode = ToFUnitMode.WAVELENGTH
 
     def roi_name_generator(self) -> str:
         """
@@ -94,6 +112,8 @@ class SpectrumViewerWindowModel:
             return
         self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
+        self.tof_range_full = self.tof_range
+        self.tof_data = self.get_stack_time_of_flight()
         self.set_new_roi(ROI_ALL)
 
     def set_new_roi(self, name: str) -> None:
@@ -441,3 +461,21 @@ class SpectrumViewerWindowModel:
         Remove all ROIs from the model
         """
         self._roi_ranges = {}
+
+    def set_relevant_tof_units(self) -> None:
+        if self._stack is not None:
+            self.tof_data = self.get_stack_time_of_flight()
+            if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data is None:
+                self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
+                self.tof_range = (0, self._stack.data.shape[0] - 1)
+                self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
+            else:
+                units = UnitConversion(self.tof_data)
+                if self.tof_mode == ToFUnitMode.TOF_US:
+                    self.tof_data = self.tof_data * 1e6
+                elif self.tof_mode == ToFUnitMode.WAVELENGTH:
+                    self.tof_data = units.tof_seconds_to_wavelength()
+                elif self.tof_mode == ToFUnitMode.ENERGY:
+                    self.tof_data = units.tof_seconds_to_energy()
+                self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
+                self.tof_range = (0, self.tof_data.size)
