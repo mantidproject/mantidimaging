@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections import Counter
 
 import pytest
+from PyQt5 import QtCore
+from PyQt5.QtGui import QFont
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
@@ -63,3 +65,20 @@ def leak_test_stats():
 
     # leak_tracker.clear() # Uncomment to clear after each test
     # print(leak_tracker.pretty_print(debug_owners=True)) # uncomment to track leaks
+
+
+@pytest.fixture(autouse=True)
+def setup_QSettings():
+    settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
+    default_font = QFont()
+    extra_style_default = {
+
+        # Density Scale
+        'density_scale': '-5',
+
+        # font
+        'font_size': str(default_font.pointSize()) + 'px',
+    }
+    settings.setValue('extra_style_default', extra_style_default)
+    if settings.value('extra_style') is None:
+        settings.setValue('extra_style', extra_style_default)
