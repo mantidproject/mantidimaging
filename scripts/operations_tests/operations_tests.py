@@ -11,6 +11,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
+from functools import cached_property
 from pathlib import Path
 from statistics import stdev
 from collections.abc import Callable
@@ -26,28 +27,38 @@ except ModuleNotFoundError:
     print("Try: mamba install plotly")
     exit(1)
 
-sys.path.append(str(Path(__file__).parent.parent.parent))
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 
-LOAD_SAMPLE = (Path.home() / "mantidimaging-data" / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" /
-               "IMAT_Flower_Tomo_000000.tif")
 
-if path := os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR"):
-    SAVE_DIR = Path(path)
-else:
-    print("Set MANTIDIMAGING_APPROVAL_TESTS_DIR for output path")
-    exit(1)
-if not SAVE_DIR.exists():
-    print(f"Creating directory: {SAVE_DIR}")
-    SAVE_DIR.mkdir()
+class ConfigManager:
+
+    def __init__(self):
+        self._base_data_dir = Path.home() / "mantidimaging-data"
+
+    @cached_property
+    def save_dir(self):
+        dir_path = Path(os.getenv("MANTIDIMAGING_APPROVAL_TESTS_DIR", self._base_data_dir / "approval_tests"))
+        if not dir_path.exists():
+            print(f"Creating directory: {dir_path}")
+            dir_path.mkdir(parents=True, exist_ok=True)
+        return dir_path
+
+    @cached_property
+    def load_sample(self):
+        return self._base_data_dir / "ISIS" / "IMAT" / "IMAT00010675" / "Tomo" / "IMAT_Flower_Tomo_000000.tif"
+
+
+config_manager = ConfigManager()
 
 FILTERS = {f.filter_name: f for f in load_filter_packages()}
 TEST_CASE_RESULTS: list[TestCase] = []
 GIT_TOKEN = subprocess.check_output(["git", "describe"], encoding="utf_8").strip()
 COMMIT_DATE = subprocess.check_output(["git", "log", "--pretty=format:%ai", "-n1"], encoding="utf_8").strip()
-with open(Path(__file__).parent / "test_cases.json", encoding="UTF-8") as f:
+
+with open(Path(__file__).resolve().parent / "test_cases.json", encoding="UTF-8") as f:
     TEST_CASES = json.load(f)
 
 
@@ -176,11 +187,12 @@ def time_operation(image_stack, op_func, params):
 def run_test(test_case):
     image_stack = load_image_stack()
     test_case.duration, new_image_stack = time_operation(image_stack, test_case.op_func, test_case.params)
+    file_name = config_manager.save_dir / (test_case.test_name + ".npz")
 
-    file_name = SAVE_DIR / (test_case.test_name + ".npz")
     if file_name.is_file():
         baseline_image_stack = load_post_operation_image_stack(file_name)
         compare_image_stacks(baseline_image_stack, new_image_stack.data, test_case)
+
         if test_case.status == "pass":
             print(".", end="")
         elif test_case.status == "fail":
@@ -210,7 +222,7 @@ def load_post_operation_image_stack(filepath):
 
 
 def load_image_stack():
-    filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
+    filename_group = FilenameGroup.from_file(config_manager.load_sample)
     filename_group.find_all_files()
     image_stack = loader.load(filename_group=filename_group)
     return image_stack
