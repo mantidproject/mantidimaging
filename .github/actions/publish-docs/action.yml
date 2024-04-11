@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'Github API Token'
     required: true
+  dir_name:
+    description: 'directory to put versioned docs in'
+    default: '.'
 
 runs:
   using: "composite"
@@ -17,13 +20,18 @@ runs:
       git config --global credential.helper store
       echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
 
+      dir_name=${{ inputs.dir_name }}
+      dir_name=${dir_name/release-/}
+      echo "inputs.dir_name: " ${{ inputs.dir_name }}
+      echo "dir_name: " ${dir_name}
+
       git worktree add --track -b gh-pages gh-pages origin/gh-pages
       cd gh-pages
 
-      git rm -r -q -- [!0-9]* # remove everything apart from versioned directories
-      cp -a ../docs/build/html/* .
+      git rm -r -q -- ${dir_name}/[!0-9]* # remove everything apart from versioned directories
+      cp -a ../docs/build/html/* ${dir_name}
       if [ "$(git status --porcelain | wc -l)" -gt "0" ] ; then
-        git add .
+        git add ${dir_name}
         git commit -m "Update documentation"
         git push
       else
