@@ -21,5 +21,5 @@ runs:
       git config --global user.email mantid-builder@hosting.com
       git config --global credential.helper store
       echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
-      python -m pip install sphinx gitpython
+      python -m pip install gitpython
       python setup.py docs_publish
