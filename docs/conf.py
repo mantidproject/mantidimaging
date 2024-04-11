@@ -46,7 +46,6 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.mathjax',
     'sphinx.ext.autosectionlabel',
-    'sphinx_multiversion',
 ]
 
 # Add custom extensions
@@ -106,7 +105,7 @@ todo_include_todos = True
 # a list of builtin themes.
 html_theme = 'classic'
 
-html_sidebars = {'**': ['localtoc.html', 'relations.html', 'searchbox.html', 'versioning.html']}
+html_sidebars = {'**': ['localtoc.html', 'relations.html', 'searchbox.html']}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -117,9 +116,6 @@ html_theme_options = {}
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-# -- Options for HTMLHelp output ------------------------------------------
-html_css_files = ['extra.css']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'MantidImagingdoc'
@@ -172,12 +168,3 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # Stop sphinx from being a smartypants and merging the -- into a single unicode dash
 html_use_smartypants = False
-
-# sphinx-multiversion
-smv_tag_whitelist = r'^(2.3.0|2.4.0|2.5.0|2.6.0|2.7.0)$'
-smv_branch_whitelist = None  # No branches
-smv_released_pattern = r''
-smv_prebuild_command = (
-    'sphinx-apidoc -f -M -e -T -d 3 mantidimaging **/test **/test_helpers **/eyes_tests -o docs/api/ || '
-    'python setup.py docs_api || '
-    'python setup.py internal_docs_api')
