@@ -16,5 +16,11 @@ runs:
       git config --global user.email mantid-builder@hosting.com
       git config --global credential.helper store
       echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
-      python -m pip install gitpython
-      python setup.py docs_publish
+
+      git worktree add --track -b gh-pages gh-pages origin/gh-pages
+      cd gh-pages
+      git rm -r -- [!0-9]* # remove everything apart from versioned directories
+      cp -av ../docs/build/html/* .
+      git add .
+      git commit -m "Update documentation"
+      git push
