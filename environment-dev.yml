@@ -12,7 +12,6 @@ dependencies:
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
-      - sphinx==7.2.*
       - eyes-images==5.20.*
   - yapf==0.40.*
   - mypy==1.8
@@ -34,4 +33,5 @@ dependencies:
   - make==4.3
   - ruff=0.3.3
   - pre-commit==3.5.*
-
+  - sphinx==7.2.*
+  - pydata-sphinx-theme==0.15.*
