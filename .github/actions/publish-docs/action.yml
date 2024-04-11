@@ -11,12 +11,7 @@ runs:
   steps:
   - name: Publish docs
     shell: bash -l {0}
-    # the doc files are generated inside docker and the owner appears to be root
-    # 0777 allows everyone to read/write/exec so that we can upload them with
-    # the docs_publish action afterwards
     run: |
-      sudo chmod -R 0777 docs/build
-
       git config --global user.name mantid-builder
       git config --global user.email mantid-builder@hosting.com
       git config --global credential.helper store
