@@ -78,4 +78,3 @@ check: ruff yapf mypy test
 build-docs:
 	sphinx-apidoc -f -M -e -T -d 3 mantidimaging **/test **/test_helpers **/eyes_tests -o docs/api/
 	sphinx-build ./docs ./docs/build/html
-	sphinx-multiversion ./docs docs/build/html/
