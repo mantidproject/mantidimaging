@@ -1,0 +1,32 @@
+[
+    {
+        "name": "v2.8.0 (devel)",
+        "version": "2.8.0a1",
+        "url": "/mantidimaging/"
+    },
+    {
+        "name": "v2.7.0 (stable)",
+        "version": "2.7.0",
+        "url": "/mantidimaging/2.7.0"
+    },
+    {
+        "name": "v2.6.0",
+        "version": "2.6.0",
+        "url": "/mantidimaging/2.6.0"
+    },
+    {
+        "name": "v2.5.0",
+        "version": "2.5.0",
+        "url": "/mantidimaging/2.5.0"
+    },
+    {
+        "name": "v2.4.0",
+        "version": "2.4.0",
+        "url": "/mantidimaging/2.4.0"
+    },
+    {
+        "name": "v2.3.0",
+        "version": "2.3.0",
+        "url": "/mantidimaging/2.3.0"
+    }
+]
