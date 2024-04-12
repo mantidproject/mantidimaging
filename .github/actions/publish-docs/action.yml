@@ -22,9 +22,6 @@ runs:
 
       dir_name=${{ inputs.dir_name }}
       dir_name=${dir_name/release-/}
-      echo "inputs.dir_name: " ${{ inputs.dir_name }}
-      echo "dir_name: " ${dir_name}
-
       git worktree add --track -b gh-pages gh-pages origin/gh-pages
       cd gh-pages
 
