@@ -8,10 +8,11 @@ import sys
 import warnings
 import os
 
+import darkdetect
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore
-from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -21,6 +22,8 @@ from mantidimaging.core.utility.command_line_arguments import CommandLineArgumen
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
     message, category, filename, lineno, line="")
+
+settings = QtCore.QSettings('mantidproject', 'Mantid Imaging')
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,7 +61,26 @@ def parse_args() -> argparse.Namespace:
 def setup_application() -> QApplication:
     QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
-    q_application.setStyle('Fusion')
+
+    default_font = QFont()
+    default_font_info = QFontInfo(default_font)
+
+    extra_style_default = {
+
+        # Density Scale
+        'density_scale': '-5',
+
+        # font
+        'font_size': str(default_font.pointSize()) + 'px',
+    }
+    settings.setValue('extra_style_default', extra_style_default)
+    if settings.value('extra_style') is None:
+        settings.setValue('extra_style', extra_style_default)
+
+    settings.setValue('os_theme', darkdetect.theme())
+    settings.setValue('default_font_size', str(default_font.pointSize()))
+    settings.setValue('default_font_family', str(default_font_info.family()))
+
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")

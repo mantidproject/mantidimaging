@@ -10,7 +10,10 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
 import numpy as np
+from PyQt5.QtCore import QSettings, Qt
+from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
+from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
@@ -28,6 +31,8 @@ if TYPE_CHECKING:
     from mantidimaging.gui.dialogs.async_task.task import TaskWorkerThread
 
 RECON_TEXT = "Recon"
+
+settings = QSettings('mantidproject', 'Mantid Imaging')
 
 
 class StackId(NamedTuple):
@@ -828,3 +833,61 @@ class MainWindowPresenter(BasePresenter):
 
     def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
         return self.model.is_dataset_strict(ds_id)
+
+    def do_update_UI(self) -> None:
+        if settings.value('use_os_defaults', defaultValue='True') == 'True':
+            extra_style = settings.value('extra_style_default')
+            theme = 'Fusion'
+            override_os_theme = 'False'
+        else:
+            extra_style = settings.value('extra_style')
+            use_dark_mode = settings.value('use_dark_mode')
+            theme = settings.value('theme_selection')
+            override_os_theme = settings.value('override_os_theme')
+        os_theme = settings.value('os_theme')
+        font = QFont(settings.value('default_font_family'), int(extra_style['font_size'].replace('px', '')))
+        for window in [
+                self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
+                self.view.settings_window
+        ]:
+            if window:
+                QApplication.instance().setFont(font)
+                window.setStyleSheet(theme)
+                if theme == 'Fusion':
+                    if override_os_theme == 'False':
+                        if os_theme == 'Light':
+                            self.use_fusion_light_mode()
+                        elif os_theme == 'Dark':
+                            self.use_fusion_dark_mode()
+                    else:
+                        if use_dark_mode == 'True':
+                            self.use_fusion_dark_mode()
+                        else:
+                            self.use_fusion_light_mode()
+                    QApplication.instance().setFont(font)
+                    window.setStyleSheet(theme)
+                else:
+                    apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
+
+    @staticmethod
+    def use_fusion_dark_mode() -> None:
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ToolTipBase, Qt.black)
+        palette.setColor(QPalette.ToolTipText, Qt.white)
+        palette.setColor(QPalette.Text, Qt.white)
+        palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ButtonText, Qt.white)
+        palette.setColor(QPalette.BrightText, Qt.red)
+        palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.HighlightedText, Qt.black)
+        QApplication.instance().setPalette(palette)
+
+    @staticmethod
+    def use_fusion_light_mode() -> None:
+        palette = QPalette()
+        QApplication.instance().setPalette(palette)

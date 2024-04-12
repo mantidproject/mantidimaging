@@ -37,6 +37,7 @@ from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
+from mantidimaging.gui.windows.settings.view import SettingsWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
@@ -94,12 +95,14 @@ class MainWindowView(BaseMainWindowView):
     actionLoadNeXusFile: QAction
     actionSaveImages: QAction
     actionSaveNeXusFile: QAction
+    actionSettings: QAction
     actionExit: QAction
 
     filters: FiltersWindowView | None = None
     recon: ReconstructWindowView | None = None
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer: LiveViewerWindowView | None = None
+    settings_window: SettingsWindowView | None = None
 
     image_load_dialog: ImageLoadDialog | None = None
     image_save_dialog: ImageSaveDialog | None = None
@@ -107,6 +110,8 @@ class MainWindowView(BaseMainWindowView):
     nexus_save_dialog: NexusSaveDialog | None = None
     add_to_dataset_dialog: AddImagesToDatasetDialog | None = None
     move_stack_dialog: MoveStackDialog | None = None
+
+    default_theme_enabled: int = 1
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
@@ -167,6 +172,8 @@ class MainWindowView(BaseMainWindowView):
 
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
+        self.presenter.do_update_UI()
+
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
@@ -193,6 +200,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionRecon.triggered.connect(self.show_recon_window)
         self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
         self.actionLiveViewer.triggered.connect(self.live_view_choose_directory)
+        self.actionSettings.triggered.connect(self.show_settings_window)
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
@@ -372,6 +380,15 @@ class MainWindowView(BaseMainWindowView):
         self.nexus_save_dialog = NexusSaveDialog(self, self.strict_dataset_list)
         self.nexus_save_dialog.show()
 
+    def show_settings_window(self):
+        if not self.settings_window:
+            self.settings_window = SettingsWindowView(self)
+            self.settings_window.show()
+        else:
+            self.settings_window.activateWindow()
+            self.settings_window.raise_()
+            self.settings_window.show()
+
     def show_recon_window(self):
         if not self.recon:
             self.recon = ReconstructWindowView(self)
@@ -507,6 +524,8 @@ class MainWindowView(BaseMainWindowView):
                 self.spectrum_viewer.close()
             if self.filters:
                 self.filters.close()
+            if self.settings_window:
+                self.settings_window.close()
 
         else:
             # Ignore the close event, keeping window open
