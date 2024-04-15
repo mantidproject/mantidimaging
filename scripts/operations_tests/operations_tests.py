@@ -74,21 +74,115 @@ class TestCase:
     message: str = ""
     status: str = ""
 
-    def __bool__(self):
-        return self.status == "pass"
+    def __post_init__(self):
+        self.run_test()
 
+    def run_test(self):
+        if self in TEST_CASE_RESULTS:
+            return
 
-def process_params(param):
-    """
-    Handle parameter values that cannot be encoded natively in json
-    """
-    if isinstance(param, list):
-        if param[0] == "tuple":
-            return tuple(param[1:])
-    return param
+        image_stack = self.load_image_stack()
+        self.duration, new_image_stack = self.time_operation(image_stack)
+        file_name = config_manager.save_dir / (self.test_name + ".npz")
+
+        if file_name.is_file():
+            baseline_image_stack = self.load_post_operation_image_stack(file_name)
+            self.compare_image_stacks(baseline_image_stack, new_image_stack.data)
+
+            if self.status == "pass":
+                print(".", end="")
+            elif self.status == "fail":
+                print("F", end="")
+            else:
+                print("?", end="")
+                self.status = "unknown"
+        else:
+            print("X", end="")
+            self.status = "new baseline"
+            self.save_image_stack(file_name, new_image_stack)
+        TEST_CASE_RESULTS.append(self)
+
+    @staticmethod
+    def process_params(param):
+        """
+        Handle parameter values that cannot be encoded natively in json
+        """
+        if isinstance(param, list):
+            if param[0] == "tuple":
+                return tuple(param[1:])
+        return param
+
+    def time_operation(self, image_stack):
+        start = time.perf_counter()
+        image_stack = self.run_operation(image_stack)
+        duration = time.perf_counter() - start
+        return duration, image_stack
+
+    def run_operation(self, image_stack):
+        self.op_func(image_stack, **self.params)
+        return image_stack
+
+    def save_image_stack(self, filepath, image_stack):
+        np.savez(filepath, image_stack.data)
+
+    def load_post_operation_image_stack(self, filepath):
+        return np.load(filepath)["arr_0"]
+
+    def load_image_stack(self):
+        filename_group = FilenameGroup.from_file(config_manager.load_sample)
+        filename_group.find_all_files()
+        return loader.load(filename_group=filename_group)
+
+    def compare_image_stacks(self, baseline_image_stack, new_image_stack):
+        if not isinstance(baseline_image_stack, np.ndarray) or not isinstance(new_image_stack, np.ndarray):
+            self.status = "fail"
+            self.message = "new image stack is not an array"
+        elif baseline_image_stack.shape != new_image_stack.shape:
+            self.status = "fail"
+            self.message = "new image stack is different shape to the baseline"
+        elif baseline_image_stack.dtype != new_image_stack.dtype:
+            self.status = "fail"
+            self.message = "new image stack is different dtype to the baseline"
+        elif not np.array_equal(baseline_image_stack, new_image_stack):
+            self.status = "fail"
+            self.message = "arrays are not equal"
+            if args.gui:
+                self.gui_compare_image_stacks(baseline_image_stack, new_image_stack)
+        else:
+            self.status = "pass"
+            self.message = "arrays are equal"
+
+    @staticmethod
+    def gui_compare_image_stacks(baseline_image_stack, new_image_stack):
+        from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout
+        from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
+        app = QApplication([])
+        win = QWidget()
+        win.resize(600, 900)
+        layout = QHBoxLayout()
+        win.setLayout(layout)
+
+        imvs = []
+        for name, data in (("Baseline", baseline_image_stack), ("New", new_image_stack),
+                           ("Diff", new_image_stack - baseline_image_stack)):
+            imv = MIImageView()
+            imv.name = name
+            imv.enable_nan_check(True)
+            imv.setImage(data)
+            layout.addWidget(imv)
+            imvs.append(imv)
+
+        for i in (0, 1):
+            imvs[0].sigTimeChanged.connect(imvs[i + 1].setCurrentIndex)
+
+        win.show()
+        app.exec()
 
 
 def compare_mode():
+    global TEST_CASE_RESULTS
+    TEST_CASE_RESULTS = []
+
     for operation, test_case_info in TEST_CASES.items():
         print(f"Running tests for {operation}:")
         cases = test_case_info["cases"]
@@ -97,12 +191,12 @@ def compare_mode():
             test_name = f"{operation.lower()}_{sub_test_name}"
             if args.match and args.match not in test_name:
                 continue
-            params = test_case_info["params"] | case["params"]
-            params = {k: process_params(v) for k, v in params.items()}
+            params = {**test_case_info["params"], **case["params"]}
+            params = {k: TestCase.process_params(v) for k, v in params.items()}  # Corrected line
             op_class = FILTERS[operation]
             op_func = op_class.filter_func
             test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)
-            run_test(test_case)
+            test_case.run_test()
         print("\n")
 
     print_compare_mode_results()
@@ -135,18 +229,18 @@ def print_compare_mode_results():
 
 def time_mode(runs):
     durations = defaultdict(list)
-    image_stack = load_image_stack()
+    image_stack = TestCase.load_image_stack()
     for operation, test_case_info in TEST_CASES.items():
         print(f"Running tests for {operation}:")
         cases = test_case_info["cases"]
         for case in cases:
             sub_test_name = case["test_name"]
             test_name = f"{operation.lower()}_{sub_test_name}"
-            params = case["params"] | test_case_info["params"]
+            params = {**case["params"], **test_case_info["params"]}
             op_func = FILTERS[operation].filter_func
             for _ in range(runs):
                 image_stack2 = image_stack.copy()
-                duration = time_operation(image_stack2, op_func, params)[0]
+                duration = TestCase.time_operation(image_stack2, op_func, params)[0]
                 durations[test_name].append(duration)
 
     print_time_mode_results(durations)
@@ -175,106 +269,6 @@ def print_time_mode_results(durations):
             writer.writerow(data)
 
     print(f"{'=' * 42}END{'=' * 42}")
-
-
-def time_operation(image_stack, op_func, params):
-    start = time.perf_counter()
-    image_stack = run_operation(image_stack, op_func, params)
-    duration = time.perf_counter() - start
-    return duration, image_stack
-
-
-def run_test(test_case):
-    image_stack = load_image_stack()
-    test_case.duration, new_image_stack = time_operation(image_stack, test_case.op_func, test_case.params)
-    file_name = config_manager.save_dir / (test_case.test_name + ".npz")
-
-    if file_name.is_file():
-        baseline_image_stack = load_post_operation_image_stack(file_name)
-        compare_image_stacks(baseline_image_stack, new_image_stack.data, test_case)
-
-        if test_case.status == "pass":
-            print(".", end="")
-        elif test_case.status == "fail":
-            print("F", end="")
-        else:
-            print("?", end="")
-            test_case.status = "unknown"
-    else:
-        print("X", end="")
-        test_case.status = "new baseline"
-        save_image_stack(file_name, new_image_stack)
-
-    TEST_CASE_RESULTS.append(test_case)
-
-
-def run_operation(image_stack, op_func, params):
-    op_func(image_stack, **params)
-    return image_stack
-
-
-def save_image_stack(filepath, image_stack):
-    np.savez(filepath, image_stack.data)
-
-
-def load_post_operation_image_stack(filepath):
-    return np.load(filepath)["arr_0"]
-
-
-def load_image_stack():
-    filename_group = FilenameGroup.from_file(config_manager.load_sample)
-    filename_group.find_all_files()
-    image_stack = loader.load(filename_group=filename_group)
-    return image_stack
-
-
-def compare_image_stacks(baseline_image_stack, new_image_stack, test_case):
-    if not (isinstance(baseline_image_stack, np.ndarray) and isinstance(new_image_stack, np.ndarray)):
-        test_case.status = "fail"
-        test_case.message = "new image stack is not an array"
-    elif baseline_image_stack.shape != new_image_stack.shape:
-        test_case.status = "fail"
-        test_case.message = "new image stack is different shape to the baseline"
-    elif baseline_image_stack.dtype != new_image_stack.dtype:
-        test_case.status = "fail"
-        test_case.message = "new image stack is different dtype to the baseline"
-    elif not np.array_equal(baseline_image_stack, new_image_stack):
-        test_case.status = "fail"
-        test_case.message = "arrays are not equal"
-        if args.gui:
-            gui_compare_image_stacks(baseline_image_stack, new_image_stack)
-    else:
-        test_case.status = "pass"
-        test_case.message = "arrays are equal"
-
-
-def gui_compare_image_stacks(baseline_image_stack, new_image_stack):
-    from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout
-    from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
-    app = QApplication([])
-    win = QWidget()
-    win.resize(600, 900)
-    layout = QHBoxLayout()
-    win.setLayout(layout)
-
-    imvs = []
-    for name, data in (
-        ("Baseline", baseline_image_stack),
-        ("New", new_image_stack),
-        ("Diff", new_image_stack - baseline_image_stack),
-    ):
-        imv = MIImageView()
-        imv.name = name
-        imv.enable_nan_check(True)
-        imv.setImage(data)
-        layout.addWidget(imv)
-        imvs.append(imv)
-
-    imvs[0].sigTimeChanged.connect(imvs[1].setCurrentIndex)
-    imvs[0].sigTimeChanged.connect(imvs[2].setCurrentIndex)
-
-    win.show()
-    app.exec()
 
 
 def create_plots():
