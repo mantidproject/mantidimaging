@@ -368,7 +368,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
         self.refresh_spectrum_plot()
 
-
     def refresh_spectrum_plot(self) -> None:
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
