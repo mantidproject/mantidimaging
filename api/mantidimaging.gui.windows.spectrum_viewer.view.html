@@ -1,392 +1,427 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../">
+
+<html lang="en" data-content_root="../" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  
     <title>mantidimaging.gui.windows.spectrum_viewer.view module &#8212; MantidImaging 2.8.0a1 documentation</title>
   
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
-    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
-    
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
     <script src="../_static/documentation_options.js?v=120a4a56"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.spectrum_viewer.view';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0a1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="mantidimaging.gui.windows.stack_choice package" href="mantidimaging.gui.windows.stack_choice.html" />
-    <link rel="prev" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="mantidimaging.gui.windows.stack_choice.html" title="mantidimaging.gui.windows.stack_choice package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module"
-             accesskey="P">previous</a> |</li>
+    <link rel="prev" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
   
-        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
   
-          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
-          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
-          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.spectrum_viewer.html" accesskey="U">mantidimaging.gui.windows.spectrum_viewer package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer.view module</a></li> 
-      </ul>
-    </div>  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0a1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../installation.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../developer_guide/index.html">
+                        Developer Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../support.html">
+                        Support
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+                        Troubleshooting
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+                        Code Repository
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+                        Anaconda Package
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
             
-  <section id="module-mantidimaging.gui.windows.spectrum_viewer.view">
-<span id="mantidimaging-gui-windows-spectrum-viewer-view-module"></span><h1>mantidimaging.gui.windows.spectrum_viewer.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer.view" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">AllowedModesTypedDict</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#AllowedModesTypedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label">
-<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode" title="mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><span class="pre">ToFUnitMode</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">SpectrumViewerWindowView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMainWindowView</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row">
-<span class="sig-name descname"><span class="pre">add_roi_table_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.add_roi_table_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row" title="Link to this definition">¶</a></dt>
-<dd><p>Add a new row to the ROI table</p>
-<p>&#64;param name: The name of the ROI
-&#64;param colour: The colour of the ROI</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi">
-<span class="sig-name descname"><span class="pre">adjust_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.adjust_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image">
-<span class="sig-name descname"><span class="pre">auto_range_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.auto_range_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bin_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox">
-<span class="sig-name descname"><span class="pre">bin_size_spinBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QSpinBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bin_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox">
-<span class="sig-name descname"><span class="pre">bin_step_spinBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QSpinBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup">
-<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup" title="Link to this definition">¶</a></dt>
-<dd><p>Runs when the window is closed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois">
-<span class="sig-name descname"><span class="pre">clear_all_rois</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.clear_all_rois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois" title="Link to this definition">¶</a></dt>
-<dd><p>Clear all ROIs from the table view</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dataset_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">UUID</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties">
-<span class="sig-name descname"><span class="pre">disable_roi_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.disable_roi_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error">
-<span class="sig-name descname"><span class="pre">display_normalise_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.display_normalise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton">
-<span class="sig-name descname"><span class="pre">exportButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs">
-<span class="sig-name descname"><span class="pre">exportTabs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTabWidget</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi">
-<span class="sig-name descname"><span class="pre">find_row_for_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.find_row_for_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi" title="Link to this definition">¶</a></dt>
-<dd><p>Returns row index for ROI name, or None if not found.
-&#64;param roi_name: Name ROI find.
-&#64;return: Row index ROI or None.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename">
-<span class="sig-name descname"><span class="pre">get_csv_filename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_csv_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack">
-<span class="sig-name descname"><span class="pre">get_normalise_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UUID</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_normalise_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory">
-<span class="sig-name descname"><span class="pre">get_rits_export_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_rits_export_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory" title="Link to this definition">¶</a></dt>
-<dd><p>Get the path to save the RITS file too</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename">
-<span class="sig-name descname"><span class="pre">get_rits_export_filename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_rits_export_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename" title="Link to this definition">¶</a></dt>
-<dd><p>Get the path to save the RITS file too</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes">
-<span class="sig-name descname"><span class="pre">get_roi_properties_spinboxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_roi_properties_spinboxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click">
-<span class="sig-name descname"><span class="pre">handle_table_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.handle_table_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout">
-<span class="sig-name descname"><span class="pre">imageLayout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QVBoxLayout</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_output_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox">
-<span class="sig-name descname"><span class="pre">image_output_mode_combobox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi">
-<span class="sig-name descname"><span class="pre">last_clicked_roi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled">
-<span class="sig-name descname"><span class="pre">normalisation_enabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.normalisation_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox">
-<span class="sig-name descname"><span class="pre">normaliseCheckBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QCheckBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon">
-<span class="sig-name descname"><span class="pre">normaliseErrorIcon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector">
-<span class="sig-name descname"><span class="pre">normaliseStackSelector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue">
-<span class="sig-name descname"><span class="pre">normalise_error_issue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced">
-<span class="sig-name descname"><span class="pre">number_roi_properties_procced</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change">
-<span class="sig-name descname"><span class="pre">on_visibility_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.on_visibility_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change" title="Link to this definition">¶</a></dt>
-<dd><p>When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi">
-<span class="sig-name descname"><span class="pre">remove_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.remove_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi" title="Link to this definition">¶</a></dt>
-<dd><p>Clear the selected ROI in the table view</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox">
-<span class="sig-name descname"><span class="pre">roiPropertiesGroupBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QGroupBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget">
-<span class="sig-name descname"><span class="pre">roiPropertiesTableWidget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTableWidget</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">roi_table_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel" title="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel"><span class="pre">TableModel</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector">
-<span class="sig-name descname"><span class="pre">sampleStackSelector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility">
-<span class="sig-name descname"><span class="pre">set_binning_visibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_binning_visibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image">
-<span class="sig-name descname"><span class="pre">set_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoLevels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi">
-<span class="sig-name descname"><span class="pre">set_new_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_new_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi" title="Link to this definition">¶</a></dt>
-<dd><p>Set a new ROI on the image</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error">
-<span class="sig-name descname"><span class="pre">set_normalise_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">norm_issue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_normalise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names">
-<span class="sig-name descname"><span class="pre">set_old_table_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_old_table_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha">
-<span class="sig-name descname"><span class="pre">set_roi_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha" title="Link to this definition">¶</a></dt>
-<dd><p>Set the alpha value for the selected ROI and update the spectrum to reflect the change.
-A check is made on the spectrum to see if it exists as it may not have been created yet.</p>
-<p>&#64;param alpha: The alpha value</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties">
-<span class="sig-name descname"><span class="pre">set_roi_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges">
-<span class="sig-name descname"><span class="pre">set_roi_spinbox_ranges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_spinbox_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum">
-<span class="sig-name descname"><span class="pre">set_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum" title="Link to this definition">¶</a></dt>
-<dd><p>Try to set the spectrum data for a given ROI assuming the
-roi may not exist in the spectrum widget yet depending on when method is called</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color">
-<span class="sig-name descname"><span class="pre">set_spectum_roi_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_spectum_roi_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show">
-<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums">
-<span class="sig-name descname"><span class="pre">show_visible_spectrums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.show_visible_spectrums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget">
-<span class="sig-name descname"><span class="pre">spectrum_widget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget"><span class="pre">SpectrumWidget</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView">
-<span class="sig-name descname"><span class="pre">tableView</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.removable_row_table_view.html#mantidimaging.gui.widgets.removable_row_table_view.RemovableRowTableView" title="mantidimaging.gui.widgets.removable_row_table_view.RemovableRowTableView"><span class="pre">RemovableRowTableView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transmission_error_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox">
-<span class="sig-name descname"><span class="pre">transmission_error_mode_combobox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack">
-<span class="sig-name descname"><span class="pre">try_to_select_relevant_normalise_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color">
-<span class="sig-name descname"><span class="pre">update_roi_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.update_roi_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color" title="Link to this definition">¶</a></dt>
-<dd><p>Finds ROI by name in table and updates colour.
-&#64;param roi_name: Name of the ROI to update.
-&#64;param new_color: The new color for the ROI in (R, G, B) format.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-
-
-            <div class="clearer"></div>
-          </div>
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../installation.html">
+                        Installation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../developer_guide/index.html">
+                        Developer Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../support.html">
+                        Support
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
+                    More
+                </button>
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+                        Troubleshooting
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="../api.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+                        Code Repository
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+                        Anaconda Package
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
   <div>
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
@@ -459,7 +494,8 @@ roi may not exist in the spectrum widget yet depending on when method is called<
 </li>
 </ul>
 
-  </div>
+  </div></div>
+        <div class="sidebar-primary-item">
   <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html"
@@ -469,62 +505,574 @@ roi may not exist in the spectrum widget yet depending on when method is called<
     <h4>Next topic</h4>
     <p class="topless"><a href="mantidimaging.gui.windows.stack_choice.html"
                           title="next chapter">mantidimaging.gui.windows.stack_choice package</a></p>
-  </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
+  </div></div>
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
     </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.gui.windows.spectrum_viewer.html" class="nav-link">mantidimaging.gui.windows.spectrum_viewer package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
+  </ul>
+</nav>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-<div class="versions">
-<h3>Versions</h3>
-<ul>
-  <li><a href="../index.html">Latest</a></li>
-  <li><a href="../2.3.0/index.html">2.3.0</a></li>
-  <li><a href="../2.4.0/index.html">2.4.0</a></li>
-  <li><a href="../2.5.0/index.html">2.5.0</a></li>
-  <li><a href="../2.6.0/index.html">2.6.0</a></li>
-  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mantidimaging.gui.windows.spectrum_viewer.view">
+<span id="mantidimaging-gui-windows-spectrum-viewer-view-module"></span><h1>mantidimaging.gui.windows.spectrum_viewer.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer.view" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">AllowedModesTypedDict</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#AllowedModesTypedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode" title="mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><span class="pre">ToFUnitMode</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">SpectrumViewerWindowView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMainWindowView</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row">
+<span class="sig-name descname"><span class="pre">add_roi_table_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.add_roi_table_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row" title="Link to this definition">#</a></dt>
+<dd><p>Add a new row to the ROI table</p>
+<p>&#64;param name: The name of the ROI
+&#64;param colour: The colour of the ROI</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi">
+<span class="sig-name descname"><span class="pre">adjust_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.adjust_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image">
+<span class="sig-name descname"><span class="pre">auto_range_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.auto_range_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bin_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox">
+<span class="sig-name descname"><span class="pre">bin_size_spinBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QSpinBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bin_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox">
+<span class="sig-name descname"><span class="pre">bin_step_spinBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QSpinBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup" title="Link to this definition">#</a></dt>
+<dd><p>Runs when the window is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois">
+<span class="sig-name descname"><span class="pre">clear_all_rois</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.clear_all_rois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois" title="Link to this definition">#</a></dt>
+<dd><p>Clear all ROIs from the table view</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dataset_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">UUID</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties">
+<span class="sig-name descname"><span class="pre">disable_roi_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.disable_roi_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error">
+<span class="sig-name descname"><span class="pre">display_normalise_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.display_normalise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton">
+<span class="sig-name descname"><span class="pre">exportButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs">
+<span class="sig-name descname"><span class="pre">exportTabs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTabWidget</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi">
+<span class="sig-name descname"><span class="pre">find_row_for_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.find_row_for_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi" title="Link to this definition">#</a></dt>
+<dd><p>Returns row index for ROI name, or None if not found.
+&#64;param roi_name: Name ROI find.
+&#64;return: Row index ROI or None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename">
+<span class="sig-name descname"><span class="pre">get_csv_filename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_csv_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack">
+<span class="sig-name descname"><span class="pre">get_normalise_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UUID</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_normalise_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory">
+<span class="sig-name descname"><span class="pre">get_rits_export_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_rits_export_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory" title="Link to this definition">#</a></dt>
+<dd><p>Get the path to save the RITS file too</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename">
+<span class="sig-name descname"><span class="pre">get_rits_export_filename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_rits_export_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename" title="Link to this definition">#</a></dt>
+<dd><p>Get the path to save the RITS file too</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes">
+<span class="sig-name descname"><span class="pre">get_roi_properties_spinboxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.get_roi_properties_spinboxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click">
+<span class="sig-name descname"><span class="pre">handle_table_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.handle_table_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout">
+<span class="sig-name descname"><span class="pre">imageLayout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QVBoxLayout</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_output_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox">
+<span class="sig-name descname"><span class="pre">image_output_mode_combobox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi">
+<span class="sig-name descname"><span class="pre">last_clicked_roi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled">
+<span class="sig-name descname"><span class="pre">normalisation_enabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.normalisation_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox">
+<span class="sig-name descname"><span class="pre">normaliseCheckBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QCheckBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon">
+<span class="sig-name descname"><span class="pre">normaliseErrorIcon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector">
+<span class="sig-name descname"><span class="pre">normaliseStackSelector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue">
+<span class="sig-name descname"><span class="pre">normalise_error_issue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced">
+<span class="sig-name descname"><span class="pre">number_roi_properties_procced</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change">
+<span class="sig-name descname"><span class="pre">on_visibility_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.on_visibility_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change" title="Link to this definition">#</a></dt>
+<dd><p>When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi">
+<span class="sig-name descname"><span class="pre">remove_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.remove_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi" title="Link to this definition">#</a></dt>
+<dd><p>Clear the selected ROI in the table view</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox">
+<span class="sig-name descname"><span class="pre">roiPropertiesGroupBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QGroupBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget">
+<span class="sig-name descname"><span class="pre">roiPropertiesTableWidget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTableWidget</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">roi_table_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel" title="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel"><span class="pre">TableModel</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector">
+<span class="sig-name descname"><span class="pre">sampleStackSelector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility">
+<span class="sig-name descname"><span class="pre">set_binning_visibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_binning_visibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image">
+<span class="sig-name descname"><span class="pre">set_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoLevels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi">
+<span class="sig-name descname"><span class="pre">set_new_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_new_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi" title="Link to this definition">#</a></dt>
+<dd><p>Set a new ROI on the image</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error">
+<span class="sig-name descname"><span class="pre">set_normalise_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">norm_issue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_normalise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names">
+<span class="sig-name descname"><span class="pre">set_old_table_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_old_table_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha">
+<span class="sig-name descname"><span class="pre">set_roi_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha" title="Link to this definition">#</a></dt>
+<dd><p>Set the alpha value for the selected ROI and update the spectrum to reflect the change.
+A check is made on the spectrum to see if it exists as it may not have been created yet.</p>
+<p>&#64;param alpha: The alpha value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties">
+<span class="sig-name descname"><span class="pre">set_roi_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges">
+<span class="sig-name descname"><span class="pre">set_roi_spinbox_ranges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_roi_spinbox_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum">
+<span class="sig-name descname"><span class="pre">set_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum" title="Link to this definition">#</a></dt>
+<dd><p>Try to set the spectrum data for a given ROI assuming the
+roi may not exist in the spectrum widget yet depending on when method is called</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color">
+<span class="sig-name descname"><span class="pre">set_spectum_roi_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.set_spectum_roi_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums">
+<span class="sig-name descname"><span class="pre">show_visible_spectrums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.show_visible_spectrums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget">
+<span class="sig-name descname"><span class="pre">spectrum_widget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget"><span class="pre">SpectrumWidget</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView">
+<span class="sig-name descname"><span class="pre">tableView</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.removable_row_table_view.html#mantidimaging.gui.widgets.removable_row_table_view.RemovableRowTableView" title="mantidimaging.gui.widgets.removable_row_table_view.RemovableRowTableView"><span class="pre">RemovableRowTableView</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transmission_error_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox">
+<span class="sig-name descname"><span class="pre">transmission_error_mode_combobox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack">
+<span class="sig-name descname"><span class="pre">try_to_select_relevant_normalise_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color">
+<span class="sig-name descname"><span class="pre">update_roi_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView.update_roi_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color" title="Link to this definition">#</a></dt>
+<dd><p>Finds ROI by name in table and updates colour.
+&#64;param roi_name: Name of the ROI to update.
+&#64;param new_color: The new color for the ROI in (R, G, B) format.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mantidimaging.gui.windows.stack_choice.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.stack_choice package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
 </ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.add_roi_table_row()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.adjust_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.auto_range_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_size_spinBox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_step</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_step_spinBox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.cleanup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.clear()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.clear_all_rois()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.current_dataset_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.disable_roi_properties()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.display_normalise_error()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.exportButton</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.exportTabs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.find_row_for_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_csv_filename()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_normalise_stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_rits_export_directory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_rits_export_filename()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_roi_properties_spinboxes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.handle_table_click()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.imageLayout</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.image_output_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.image_output_mode_combobox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.last_clicked_roi</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normalisation_enabled()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseCheckBox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseErrorIcon</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseStackSelector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normalise_error_issue</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.number_roi_properties_procced</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.on_visibility_change()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.remove_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roiPropertiesGroupBox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roiPropertiesTableWidget</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roi_table_model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.sampleStackSelector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_binning_visibility()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_new_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_normalise_error()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_old_table_names()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_alpha()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_properties()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_spinbox_ranges()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_spectrum()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_spectum_roi_color()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.show()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.show_visible_spectrums()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.spectrum_widget</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tableView</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode_combobox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.try_to_select_relevant_normalise_stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.update_roi_color()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/mantidimaging.gui.windows.spectrum_viewer.view.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
 </div>
 
-        </div>
-      </div>
-      <div class="clearer"></div>
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="mantidimaging.gui.windows.stack_choice.html" title="mantidimaging.gui.windows.stack_choice package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html" title="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module"
-             >previous</a> |</li>
+  </div>
   
-        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
   
-          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
-          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
-          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.spectrum_viewer.html" >mantidimaging.gui.windows.spectrum_viewer package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer.view module</a></li> 
-      </ul>
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
     </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright 2017-2024, Mantid Project.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
     </div>
+  
+</div>
+
+  </footer>
   </body>
 </html>
