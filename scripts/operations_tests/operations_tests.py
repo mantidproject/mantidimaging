@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import argparse
+import concurrent
 import csv
 import json
 import os
@@ -15,6 +16,7 @@ from functools import cached_property
 from pathlib import Path
 from statistics import stdev
 from collections.abc import Callable
+from typing import List
 
 import numpy as np
 import pandas as pd
@@ -115,6 +117,11 @@ class TestRunner:
         if self.args.graphs:
             self.create_plots()
 
+    def run_tests_parallel(self, test_cases: List[TestCase]):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(test_case.run_test, self) for test_case in test_cases]
+            concurrent.futures.wait(futures)
+
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
         test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
@@ -138,9 +145,10 @@ class TestRunner:
 
         TEST_CASE_RESULTS.append(test_case)
 
-    def compare_mode(self):
+    def compare_mode_parallel(self):
+        test_cases = []
         for operation, test_case_info in TEST_CASES.items():
-            print(f"Running tests for {operation}:")
+            print(f"Preparing tests for {operation}:")
             cases = test_case_info["cases"]
             for test_number, case in enumerate(cases):
                 sub_test_name = case["test_name"]
@@ -148,13 +156,11 @@ class TestRunner:
                 if self.args.match and self.args.match not in test_name:
                     continue
                 params = test_case_info["params"] | case["params"]
-                params = {k: process_params(v) for k, v in params.items()}
+                params = {k: self.process_params(v) for k, v in params.items()}
                 op_class = FILTERS[operation]
                 op_func = op_class.filter_func
-                test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)
-                self.run_test(test_case)
-            print("\n")
-
+                test_cases.append(TestCase(operation, test_name, sub_test_name, test_number, params, op_func))
+        self.run_tests_parallel(test_cases)
         self.print_compare_mode_results()
 
     def print_compare_mode_results(self):
@@ -181,11 +187,10 @@ class TestRunner:
         print(f"{failures} failed\n{passes} passed\n{new_baselines} new baseline(s)")
         print(f"{'=' * 42}END{'=' * 42}")
 
-    def time_mode(self, runs):
-        durations = defaultdict(list)
-        image_stack = self.load_image_stack()
+    def time_mode_parallel(self, runs):
+        test_cases = []
         for operation, test_case_info in TEST_CASES.items():
-            print(f"Running tests for {operation}:")
+            print(f"Preparing tests for {operation}:")
             cases = test_case_info["cases"]
             for case in cases:
                 sub_test_name = case["test_name"]
@@ -193,10 +198,8 @@ class TestRunner:
                 params = case["params"] | test_case_info["params"]
                 op_func = FILTERS[operation].filter_func
                 for _ in range(runs):
-                    image_stack2 = image_stack.copy()
-                    duration = self.time_operation(image_stack2, op_func, params)[0]
-                    durations[test_name].append(duration)
-
+                    test_cases.append(TestCase(operation, test_name, sub_test_name, 0, params, op_func))
+        self.run_tests_parallel(test_cases)
         self.print_time_mode_results(durations)
 
     def print_time_mode_results(self, durations):
