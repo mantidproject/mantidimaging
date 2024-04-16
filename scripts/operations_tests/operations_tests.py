@@ -10,12 +10,16 @@ import sys
 import time
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime
 from functools import cached_property
 from pathlib import Path
 from statistics import stdev
 from collections.abc import Callable
 
 import numpy as np
+import pandas as pd
+from plotly.subplots import make_subplots
+from pygments.lexers import go
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
@@ -111,6 +115,29 @@ class TestRunner:
         if self.args.graphs:
             self.create_plots()
 
+    def run_test(self, test_case):
+        image_stack = self.load_image_stack()
+        test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
+        file_name = config_manager.save_dir / (test_case.test_name + ".npz")
+
+        if file_name.is_file():
+            baseline_image_stack = self.load_post_operation_image_stack(file_name)
+            self.compare_image_stacks(baseline_image_stack, new_image_stack.data, test_case)
+
+            if test_case.status == "pass":
+                print(".", end="")
+            elif test_case.status == "fail":
+                print("F", end="")
+            else:
+                print("?", end="")
+                test_case.status = "unknown"
+        else:
+            print("X", end="")
+            test_case.status = "new baseline"
+            self.save_image_stack(file_name, new_image_stack)
+
+        TEST_CASE_RESULTS.append(test_case)
+
     def compare_mode(self):
         for operation, test_case_info in TEST_CASES.items():
             print(f"Running tests for {operation}:")
@@ -202,29 +229,6 @@ class TestRunner:
         duration = time.perf_counter() - start
         return duration, image_stack
 
-    def run_test(self, test_case):
-        image_stack = self.load_image_stack()
-        test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
-        file_name = config_manager.save_dir / (test_case.test_name + ".npz")
-
-        if file_name.is_file():
-            baseline_image_stack = self.load_post_operation_image_stack(file_name)
-            self.compare_image_stacks(baseline_image_stack, new_image_stack.data, test_case)
-
-            if test_case.status == "pass":
-                print(".", end="")
-            elif test_case.status == "fail":
-                print("F", end="")
-            else:
-                print("?", end="")
-                test_case.status = "unknown"
-        else:
-            print("X", end="")
-            test_case.status = "new baseline"
-            self.save_image_stack(file_name, new_image_stack)
-
-        TEST_CASE_RESULTS.append(test_case)
-
     def run_operation(self, image_stack, op_func, params):
         op_func(image_stack, **params)
         return image_stack
@@ -287,6 +291,46 @@ class TestRunner:
 
         win.show()
         app.exec()
+
+
+def create_plots():
+    df = pd.read_csv("timings.csv", parse_dates=["commit_date"])
+    traces = []
+    test_names = []
+
+    for i, (test_name, group) in enumerate(df.groupby("test_name"), start=1):
+        group.sort_values("commit_date", inplace=True)
+        traces.append((
+            i,
+            go.Scatter(
+                x=group["commit_date"],
+                y=group["avg"],
+                text=group["version"],
+                name=f"{test_name} Average",
+                error_y={
+                    'type': 'data',
+                    'array': group['stdev'],
+                    'visible': True
+                },
+            ),
+        ))
+        traces.append((
+            i,
+            go.Scatter(
+                x=group["commit_date"],
+                y=group["quickest"],
+                text=group["version"],
+                name=f"{test_name} Minimum",
+            ),
+        ))
+        test_names.append(test_name)
+
+    fig = make_subplots(rows=len(traces), cols=1, subplot_titles=test_names)
+    for i, trace in traces:
+        fig.add_trace(trace, row=i, col=1)
+
+    fig.update_layout(legend_tracegroupgap=238)
+    fig.write_html(f"{datetime.today().strftime('%Y-%m-%d')}.html", default_height="1500%")
 
 
 def main():
