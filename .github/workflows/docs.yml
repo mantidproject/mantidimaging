@@ -41,7 +41,7 @@ jobs:
         env:
           CACHE_NUMBER: 0
         with:
-          path: /usr/share/miniconda3/envs/mantidimaging-dev.cache
+          path: ${CONDA}/envs/mantidimaging-dev.cache
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
@@ -60,13 +60,13 @@ jobs:
         run: |
           conda deactivate
           python3 ./setup.py create_dev_env
-          cp -Ta /usr/share/miniconda3/envs/mantidimaging-dev /usr/share/miniconda3/envs/mantidimaging-dev.cache
+          cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
 
       - name: Mantid Imaging developer dependencies - from cache
         if: steps.cache-mambaforge-environment.outputs.cache-hit == 'true'
         shell: bash -l {0}
         run: |
-          cp -Ta /usr/share/miniconda3/envs/mantidimaging-dev.cache /usr/share/miniconda3/envs/mantidimaging-dev
+          cp -Ta ${CONDA}/envs/mantidimaging-dev.cache ${CONDA}/envs/mantidimaging-dev
 
       - name: docs
         shell: bash -l {0}
