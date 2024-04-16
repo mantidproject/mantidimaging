@@ -25,7 +25,7 @@ jobs:
         shell: bash
 
       - name: Cache Mambaforge and Pip packages
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0
         with:
@@ -36,7 +36,7 @@ jobs:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Cache Mambaforge environment
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         id: cache-mambaforge-environment
         env:
           CACHE_NUMBER: 0
