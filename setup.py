@@ -22,43 +22,6 @@ THIS_PATH = os.path.dirname(__file__)
 versions = SourceFileLoader('versions', 'mantidimaging/__init__.py').load_module()
 
 
-class PublishDocsToGitHubPages(Command):
-    description = "Deploy built documentation to GitHub Pages"
-    user_options = [
-        ("repo=", "r", "Repository URL"),
-        ("docs-dir=", "d", "Directory of documentation to publish"),
-        ("commit-msg=", "m", "Commit message"),
-    ]
-
-    def initialize_options(self):
-        self.repo = None
-        self.docs_dir = None
-        self.commit_msg = None
-
-    def finalize_options(self):
-        self.repo = "https://github.com/mantidproject/mantidimaging" if self.repo is None else self.repo
-
-        self.docs_dir = "docs/build/html" if self.docs_dir is None else self.docs_dir
-
-        self.commit_msg = "Publish documentation" if self.commit_msg is None else self.commit_msg
-
-    def run(self):
-        git_dir = os.path.join(self.docs_dir, ".git")
-        if os.path.exists(git_dir):
-            import shutil
-
-            shutil.rmtree(git_dir)
-
-        from git import Git
-
-        g = Git(self.docs_dir)
-        g.init()
-        g.checkout(b="main")
-        g.add(".")
-        g.commit(f"-m {self.commit_msg}")
-        g.push("--force", self.repo, "main:gh-pages")
-
-
 class GenerateReleaseNotes(Command):
     description = "Generate release notes"
     user_options = []
@@ -214,7 +177,6 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     cmdclass={
-        "docs_publish": PublishDocsToGitHubPages,
         "compile_ui": CompilePyQtUiFiles,
         "create_dev_env": CreateDeveloperEnvironment,
         "release_notes": GenerateReleaseNotes,

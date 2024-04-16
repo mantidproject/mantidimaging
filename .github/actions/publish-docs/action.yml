@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'Github API Token'
     required: true
+  dir_name:
+    description: 'directory to put versioned docs in'
+    default: '.'
 
 runs:
   using: "composite"
@@ -11,15 +14,24 @@ runs:
   steps:
   - name: Publish docs
     shell: bash -l {0}
-    # the doc files are generated inside docker and the owner appears to be root
-    # 0777 allows everyone to read/write/exec so that we can upload them with
-    # the docs_publish action afterwards
     run: |
-      sudo chmod -R 0777 docs/build
-
       git config --global user.name mantid-builder
       git config --global user.email mantid-builder@hosting.com
       git config --global credential.helper store
       echo https://mantid-builder:${{ inputs.token }}@github.com > ~/.git-credentials
-      python -m pip install sphinx gitpython
-      python setup.py docs_publish
+
+      dir_name=${{ inputs.dir_name }}
+      dir_name=${dir_name/release-/}
+      git worktree add --track -b gh-pages gh-pages origin/gh-pages
+      cd gh-pages
+
+      git rm -r -q -- ${dir_name}/[!0-9]* # remove everything apart from versioned directories
+      cp -a ../docs/build/html/* ${dir_name}
+      md5sum ${dir_name}/index.html # if no index then there must have been a problem
+      if [ "$(git status --porcelain | wc -l)" -gt "0" ] ; then
+        git add ${dir_name}
+        git commit -m "Update documentation"
+        git push
+      else
+        echo "No changes to publish"
+      fi
