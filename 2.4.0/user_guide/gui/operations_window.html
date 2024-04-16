@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Operations Window - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reconstruction Window" href="recon_window.html" />
+    <link rel="prev" title="Image view" href="image_view.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recon_window.html" title="Reconstruction Window"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="image_view.html" title="Image view"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operations Window</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="operations-window">
+<h1>Operations Window<a class="headerlink" href="#operations-window" title="Link to this heading">¶</a></h1>
+<p>Selecting the <em>Operations</em> option in the <em>Workflow</em> menu opens the operations
+dialog, this is used for applying filters to image stacks.</p>
+<p>Operations may be applied to image stacks of any type (i.e. projection, sinogram,
+reconstruction), they are essentially just image filters and do not directly
+care about the type of image.</p>
+<a class="reference internal image-reference" href="../../_images/operations_window.png"><img alt="Operations dialog" src="../../_images/operations_window.png" style="width: 90%;" /></a>
+<p>Here you can select the type of filter and the image stack you wish to apply it
+to, properties of the selected filter are automatically shown in the <em>Filter
+Properties</em> section.</p>
+<p>The [?] button next to filter selector will open a webpage with an explanation of the filter parameters.</p>
+<p>The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference.
+Below the previews is a slider that can be dragged horizontally to scroll through previews for each slice of the stack.
+At the bottom of the right hand panel, a histogram of pixel values before and after is shown. The image views can be navigated as described in the <a class="reference internal" href="image_view.html#image-view"><span class="std std-ref">Image view</span></a> help page.</p>
+<p>Green pixels in the after preview indicate that a value has changed. Red pixels
+indicate that there are negative values in the result. Note that the negative
+values overlay is placed on top of the image difference overlay, so if a pixel
+has changed and is also negative then it will simply appear as red. The
+negative values overlay may also highlight pixels that were negative <strong>before
+and after</strong> the filter was applied.</p>
+<p>There are several tickboxes to customise the behaviour of the preview area.</p>
+<dl class="simple">
+<dt>Link Images</dt><dd><p>Links the pan and zoom between the before, after and difference views</p>
+</dd>
+<dt>Overlay difference</dt><dd><p>Highlights pixels that have changed in the after image</p>
+</dd>
+<dt>Invert diff image</dt><dd><p>Invert the colours used in the difference view</p>
+</dd>
+<dt>Lock Scale</dt><dd><p>Lock the colour scale when adjusting filter parameters</p>
+</dd>
+<dt>Lock Zoom</dt><dd><p>Lock the pan and zoom when adjusting filter parameters</p>
+</dd>
+</dl>
+<p>The <em>Image</em> control in the <em>Preview</em> section can be used to select the index of
+the image in the stack that is used to generate the preview.</p>
+<p>Previews are automatically updated when parameters are changed. For filters that
+take a long time to apply even on a single image it is worthwhile to disable the
+<em>Auto Update</em> option and trigger preview updates manually using the <em>Update Now</em>
+button.</p>
+<p>For filters that use a region of interest as a parameter (namely Crop
+Coordinates and ROI Normalisation) the ROI is selected using the controls on the
+stack visualiser for the selected image stack (as shown in the screenshot below).</p>
+<a class="reference internal image-reference" href="../../_images/gui_filters_dialog_crop_roi.png"><img alt="Crop coordinates filter with ROI" src="../../_images/gui_filters_dialog_crop_roi.png" style="width: 60%;" /></a>
+<p>Pressing <em>Apply</em> applies the filter to every image in the stack, replacing the
+data in the stack. For some filters it is also possible to <em>Apply to all stacks</em> if required.</p>
+<p>It is normal for this to take a significant amount of time for a large stack of
+images.</p>
+<p>If <em>Safe Apply</em> is enabled then the filter will be applied to a copy of the data and a comparison window will be shown
+to select whether to keep the filtered version. The application of a filter can not be undone.</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="image_view.html"
+                          title="previous chapter">Image view</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="recon_window.html"
+                          title="next chapter">Reconstruction Window</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../index.html">Latest</a></li>
+  <li><a href="../../../2.3.0/user_guide/gui/operations_window.html">2.3.0</a></li>
+  <li><a href="operations_window.html">2.4.0</a></li>
+  <li><a href="../../../2.5.0/user_guide/gui/operations_window.html">2.5.0</a></li>
+  <li><a href="../../../2.6.0/user_guide/gui/operations_window.html">2.6.0</a></li>
+  <li><a href="../../../2.7.0/user_guide/gui/operations_window.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recon_window.html" title="Reconstruction Window"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="image_view.html" title="Image view"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operations Window</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

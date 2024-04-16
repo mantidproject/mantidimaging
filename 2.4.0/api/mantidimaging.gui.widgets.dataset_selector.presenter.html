@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.widgets.dataset_selector.presenter module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.widgets.dataset_selector.view module" href="mantidimaging.gui.widgets.dataset_selector.view.html" />
+    <link rel="prev" title="mantidimaging.gui.widgets.dataset_selector package" href="mantidimaging.gui.widgets.dataset_selector.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.view.html" title="mantidimaging.gui.widgets.dataset_selector.view module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.html" title="mantidimaging.gui.widgets.dataset_selector package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.dataset_selector.html" accesskey="U">mantidimaging.gui.widgets.dataset_selector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.dataset_selector.presenter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.widgets.dataset_selector.presenter">
+<span id="mantidimaging-gui-widgets-dataset-selector-presenter-module"></span><h1>mantidimaging.gui.widgets.dataset_selector.presenter module<a class="headerlink" href="#module-mantidimaging.gui.widgets.dataset_selector.presenter" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.dataset_selector.presenter.</span></span><span class="sig-name descname"><span class="pre">DatasetSelectorWidgetPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_stacks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relevant_dataset_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#DatasetSelectorWidgetPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_reload_datasets">
+<span class="sig-name descname"><span class="pre">do_reload_datasets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#DatasetSelectorWidgetPresenter.do_reload_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_reload_datasets" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_select_eligible_stack">
+<span class="sig-name descname"><span class="pre">do_select_eligible_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#DatasetSelectorWidgetPresenter.do_select_eligible_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_select_eligible_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.handle_selection">
+<span class="sig-name descname"><span class="pre">handle_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#DatasetSelectorWidgetPresenter.handle_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.handle_selection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification" title="mantidimaging.gui.widgets.dataset_selector.presenter.Notification"><span class="pre">Notification</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#DatasetSelectorWidgetPresenter.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.notify" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.show_stacks">
+<span class="sig-name descname"><span class="pre">show_stacks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.show_stacks" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.view">
+<span class="sig-name descname"><span class="pre">view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.view" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.dataset_selector.presenter.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector/presenter.html#Notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.Notification.RELOAD_DATASETS">
+<span class="sig-name descname"><span class="pre">RELOAD_DATASETS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification.RELOAD_DATASETS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.presenter.Notification.SELECT_ELIGIBLE_STACK">
+<span class="sig-name descname"><span class="pre">SELECT_ELIGIBLE_STACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification.SELECT_ELIGIBLE_STACK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.widgets.dataset_selector.presenter module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_reload_datasets"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.do_reload_datasets()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_select_eligible_stack"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.do_select_eligible_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.handle_selection"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.handle_selection()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.notify"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.notify()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.show_stacks"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.show_stacks</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.view"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorWidgetPresenter.view</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification.RELOAD_DATASETS"><code class="docutils literal notranslate"><span class="pre">Notification.RELOAD_DATASETS</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector.presenter.Notification.SELECT_ELIGIBLE_STACK"><code class="docutils literal notranslate"><span class="pre">Notification.SELECT_ELIGIBLE_STACK</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.dataset_selector.html"
+                          title="previous chapter">mantidimaging.gui.widgets.dataset_selector package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.widgets.dataset_selector.view.html"
+                          title="next chapter">mantidimaging.gui.widgets.dataset_selector.view module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.gui.widgets.dataset_selector.presenter.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.view.html" title="mantidimaging.gui.widgets.dataset_selector.view module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.widgets.dataset_selector.html" title="mantidimaging.gui.widgets.dataset_selector package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.widgets.html" >mantidimaging.gui.widgets package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.widgets.dataset_selector.html" >mantidimaging.gui.widgets.dataset_selector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.dataset_selector.presenter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

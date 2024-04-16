@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.io.loader.loader &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.loader.loader</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.io.loader.loader</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
+<span class="kn">from</span> <span class="nn">tifffile</span> <span class="kn">import</span> <span class="n">tifffile</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">InstrumentLog</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader</span> <span class="kn">import</span> <span class="n">img_loader</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">Indices</span><span class="p">,</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.filenames</span> <span class="kn">import</span> <span class="n">FilenameGroup</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DEFAULT_IS_SINOGRAM</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">DEFAULT_PIXEL_SIZE</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">DEFAULT_PIXEL_DEPTH</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span>
+
+
+<div class="viewcode-block" id="ImageParameters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.ImageParameters">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ImageParameters</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataclass to hold info about an image stack that is to be loaded. Used with LoadingParameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_group</span><span class="p">:</span> <span class="n">FilenameGroup</span>
+    <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="LoadingParameters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.LoadingParameters">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LoadingParameters</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataclass to hold info about a dataset that is about to be loaded. Used to transfer information from ImageLoadDialog</span>
+<span class="sd">    to the loading code.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image_stacks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">ImageParameters</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="n">pixel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PIXEL_SIZE</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_PIXEL_DEPTH</span>
+    <span class="n">sinograms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">DEFAULT_IS_SINOGRAM</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_fitsread</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read one image and return it as a 2d numpy array</span>
+
+<span class="sd">    :param filename :: name of the image file, can be relative or absolute path</span>
+<span class="sd">    :param img_format: format of the image (&#39;fits&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load at least one FITS image/table file from: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># get the image data</span>
+    <span class="k">return</span> <span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">_imread</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffFileError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TiffFileError </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+
+<div class="viewcode-block" id="get_loader">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.get_loader">[docs]</a>
+<span class="k">def</span> <span class="nf">get_loader</span><span class="p">(</span><span class="n">in_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">in_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fits&#39;</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">]:</span>
+        <span class="n">load_func</span> <span class="o">=</span> <span class="n">_fitsread</span>
+    <span class="k">elif</span> <span class="n">in_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tiff&#39;</span><span class="p">,</span> <span class="s1">&#39;tif&#39;</span><span class="p">]:</span>
+        <span class="n">load_func</span> <span class="o">=</span> <span class="n">_imread</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Loading not implemented for:&quot;</span><span class="p">,</span> <span class="n">in_format</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_func</span></div>
+
+
+
+<div class="viewcode-block" id="read_image_dimensions">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.read_image_dimensions">[docs]</a>
+<span class="k">def</span> <span class="nf">read_image_dimensions</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">load_func</span> <span class="o">=</span> <span class="n">get_loader</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">load_func</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span></div>
+
+
+
+<div class="viewcode-block" id="load_log">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load_log">[docs]</a>
+<span class="k">def</span> <span class="nf">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InstrumentLog</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">InstrumentLog</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">(),</span> <span class="n">log_file</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_stack_from_group">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load_stack_from_group">[docs]</a>
+<span class="k">def</span> <span class="nf">load_stack_from_group</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">FilenameGroup</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load</span><span class="p">(</span><span class="n">filename_group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_stack_from_image_params">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load_stack_from_image_params">[docs]</a>
+<span class="k">def</span> <span class="nf">load_stack_from_image_params</span><span class="p">(</span><span class="n">image_params</span><span class="p">:</span> <span class="n">ImageParameters</span><span class="p">,</span>
+                                 <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">load</span><span class="p">(</span><span class="n">filename_group</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">file_group</span><span class="p">,</span>
+                <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">indices</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
+                <span class="n">log_file</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">log_file</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load">[docs]</a>
+<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">filename_group</span><span class="p">:</span> <span class="n">FilenameGroup</span><span class="p">,</span>
+         <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+         <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Loads a stack, including sample, white and dark images.</span>
+
+<span class="sd">    :param dtype: Default:np.float32, data type for the input images</span>
+<span class="sd">    :param filename_group: FilenameGroup to provided file names for loading</span>
+<span class="sd">    :param indices: Specify which indices are loaded from the found files.</span>
+<span class="sd">                    This **DOES NOT** check for the number in the image</span>
+<span class="sd">                    filename, but removes all indices from the filenames list</span>
+<span class="sd">                    that are not selected</span>
+<span class="sd">    :param progress: The progress reporting instance</span>
+<span class="sd">    :return: an ImageStack</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">indices</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Indices at this point MUST have 3 elements: [start, stop, step]!&quot;</span><span class="p">)</span>
+
+    <span class="n">file_names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">filename_group</span><span class="o">.</span><span class="n">all_files</span><span class="p">()]</span>
+    <span class="n">in_format</span> <span class="o">=</span> <span class="n">filename_group</span><span class="o">.</span><span class="n">first_file</span><span class="p">()</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">load_func</span> <span class="o">=</span> <span class="n">get_loader</span><span class="p">(</span><span class="n">in_format</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">log_data</span> <span class="o">=</span> <span class="n">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">log_data</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">log_data</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">angle_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">angle_order</span><span class="p">]</span>
+            <span class="n">file_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">angle_order</span><span class="p">]</span>
+
+    <span class="n">image_stack</span> <span class="o">=</span> <span class="n">img_loader</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">load_func</span><span class="p">,</span> <span class="n">file_names</span><span class="p">,</span> <span class="n">in_format</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_stack</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log_data</span>
+        <span class="k">if</span> <span class="n">log_data</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="n">angles</span>
+            <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span>
+
+    <span class="c1"># Search for and load metadata file</span>
+    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">filename_group</span><span class="o">.</span><span class="n">metadata_path</span>
+    <span class="k">if</span> <span class="n">metadata_filename</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metadata_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">image_stack</span><span class="o">.</span><span class="n">load_metadata</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded metadata from: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No metadata file found&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">image_stack</span></div>
+
+
+
+<div class="viewcode-block" id="create_loading_parameters_for_file_path">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path">[docs]</a>
+<span class="k">def</span> <span class="nf">create_loading_parameters_for_file_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">sample_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">loading_parameters</span> <span class="o">=</span> <span class="n">LoadingParameters</span><span class="p">()</span>
+    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
+
+    <span class="n">sample_fg</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
+    <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+    <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
+    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">sample_fg</span><span class="p">,</span> <span class="n">sample_fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ft</span> <span class="k">for</span> <span class="n">ft</span> <span class="ow">in</span> <span class="n">FILE_TYPES</span> <span class="k">if</span> <span class="n">ft</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">]]:</span>
+        <span class="n">fg</span> <span class="o">=</span> <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_related</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">fg</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">file_type</span><span class="o">.</span><span class="n">tname</span> <span class="o">==</span> <span class="s2">&quot;Flat&quot;</span><span class="p">:</span>
+            <span class="n">fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
+        <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">loading_parameters</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.loader.loader</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

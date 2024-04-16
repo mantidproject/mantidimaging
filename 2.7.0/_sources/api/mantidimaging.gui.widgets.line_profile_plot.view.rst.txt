@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.line\_profile\_plot.view module
+=========================================================
+
+.. automodule:: mantidimaging.gui.widgets.line_profile_plot.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+mantidimaging.gui.dialogs.op\_history\_copy.presenter module
+============================================================
+
+.. automodule:: mantidimaging.gui.dialogs.op_history_copy.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

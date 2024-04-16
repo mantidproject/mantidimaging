@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Loading and Saving &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Image view" href="image_view.html" />
+    <link rel="prev" title="Graphical User Interface (GUI)" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="image_view.html" title="Image view"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphical User Interface (GUI)"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Loading and Saving</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="loading-and-saving">
+<h1>Loading and Saving<a class="headerlink" href="#loading-and-saving" title="Link to this heading">¶</a></h1>
+<p>Loading and saving data is performed via the <em>Load</em> and <em>Save</em> options on the <em>File</em> menu.</p>
+<section id="loading">
+<h2>Loading<a class="headerlink" href="#loading" title="Link to this heading">¶</a></h2>
+<section id="load-dataset">
+<h3>Load Dataset<a class="headerlink" href="#load-dataset" title="Link to this heading">¶</a></h3>
+<p>When <em>Load dataset</em> is selected, the following dialog will appear:</p>
+<img alt="Initial Load dialog" src="../../_images/loading_screen.png" />
+<p>This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF
+file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern.
+The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree
+projections and sample logs.</p>
+<p>Once data has been selected, its shape is inspected and the stack index fields
+are populated as shown below:</p>
+<img alt="Load dialog after selecting data" src="../../_images/loading_screen_filled.png" />
+<p>The <em>Start</em> and <em>End</em> fields control the range of images that are loaded and
+<em>Increment</em> defines the interval at which images are selected.</p>
+<p>To quickly load only 10 images from a stack, press the preview button, which will set a large enough <em>Increment</em>.</p>
+<p><em>Pixel Bit Depth</em> is used for the estimated memory size calculation, typically
+images will use 32bit floating point numbers as the pixel format so this can be
+left at the default value of <em>float32</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.</p>
+</div>
+</section>
+<section id="load-images">
+<h3>Load Images<a class="headerlink" href="#load-images" title="Link to this heading">¶</a></h3>
+<p>Load images can be used to load a stack contained in a directory or a single image.</p>
+</section>
+<section id="load-nexus-file">
+<h3>Load NeXus File<a class="headerlink" href="#load-nexus-file" title="Link to this heading">¶</a></h3>
+<p>NeXus Files can be loaded by selecting the “Load NeXus file” on the File menu. This brings up the NeXus Load dialog
+shown below.</p>
+<img alt="NeXus Load Dialog" src="../../_images/nexus_loading_window.png" />
+<p>From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
+<code class="code docutils literal notranslate"><span class="pre">NXtomo</span></code> entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes
+are also displayed so that a user can check that the image key and data field have the same number of elements. The
+“Use?” checkbox can be used to select which images you wish to load.</p>
+<p>If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
+disabled.</p>
+<p>As in the case of loading a dataset, there is also the option to load a subset of the projection data either by manually
+setting an increment or by clicking on the “Preview” button. The “All” button can be used to change the increment so
+that the entire projection data is loaded. There are also options for setting pixel size and pixel bit depth.</p>
+<p>From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
+<code class="code docutils literal notranslate"><span class="pre">title</span></code> field in the NeXus file if one is found, otherwise the images are given the name “NeXus Data.”</p>
+</section>
+</section>
+<section id="load-log-for-stack">
+<h2>Load log for stack<a class="headerlink" href="#load-log-for-stack" title="Link to this heading">¶</a></h2>
+<p>This can be used to load a log file with metadata about the stack. It supports text and CSV files generated by IMAT.</p>
+<p>The expected header for a text file is:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">STAMP</span>&#160; <span class="pre">IMAGE</span> <span class="pre">TYPE</span>&#160;&#160; <span class="pre">IMAGE</span> <span class="pre">COUNTER</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image</span></code></p>
+<p>and for a CSV file</p>
+<p><code class="code docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">STAMP,IMAGE</span> <span class="pre">TYPE,IMAGE</span> <span class="pre">COUNTER,COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image,COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image</span></code></p>
+<p>Note that the log can also be chosen in the <a class="reference internal" href="#load-dataset"><span class="std std-ref">Load Dataset</span></a> dialog.</p>
+</section>
+<section id="load-projection-angles">
+<h2>Load projection angles<a class="headerlink" href="#load-projection-angles" title="Link to this heading">¶</a></h2>
+<p>This can be used to load a file with projection angles. Angles are expected in DEGREES as comma separated values on a
+single line, or a single angle value per line.</p>
+</section>
+<section id="degree-projections">
+<h2>180 Degree Projections<a class="headerlink" href="#degree-projections" title="Link to this heading">¶</a></h2>
+<p>In the case of both tiffs and NeXus files, Mantid Imaging will try to find a 180 projection in the data. If one has not
+been found, then it will try to look for a projection that is &lt;= 1 degree away from 180. Should this fail then you will
+be asked if you wish to use the next closest image. Bear in mind that the absence of a 180 degree projection means that
+the “Correlate 0 and 180” algorithm will not be available for the reconstruction.</p>
+<p>A new 180 projection can be loaded with the <code class="code docutils literal notranslate"><span class="pre">Load</span> <span class="pre">180</span> <span class="pre">degree</span> <span class="pre">projection</span></code> option. This will override any already
+loaded 180 projection. This option will only work correctly with a stack loaded through the <a class="reference internal" href="#load-dataset"><span class="std std-ref">Load Dataset</span></a> method.</p>
+</section>
+<section id="saving">
+<h2>Saving<a class="headerlink" href="#saving" title="Link to this heading">¶</a></h2>
+<p>The <em>Save</em> options are only enabled when at least one stack is loaded.</p>
+<section id="save-as-image-files">
+<h3>Save as Image Files<a class="headerlink" href="#save-as-image-files" title="Link to this heading">¶</a></h3>
+<p>When <em>Save as Image Files</em> is selected the save images dialog appears:</p>
+<img alt="Save dialog" src="../../_images/gui_save_dialog.png" />
+<p>This prompts you to select the image stack you wish to save, the directory in
+which you wish to save it and the name prefix. In the case of TIFF and FITS the
+individual image filenames will be a concatenation of this prefix and the index
+of the image in the stack.</p>
+<p>The <em>Overwrite</em> option removes checking for existing data of the same name. When
+disabled an error will be raised if the specified output directory is not empty
+prior to saving.</p>
+</section>
+<section id="save-as-a-nexus-file">
+<h3>Save as a NeXus File<a class="headerlink" href="#save-as-a-nexus-file" title="Link to this heading">¶</a></h3>
+<p>When <em>Save as NeXus File</em> is selected the save NeXus dialog appears. Only Datasets
+with sample images data can be saved as NeXus files. A sample name and an output
+directory are required before a save can be attempted. The image data (excluding
+recons) can be saved as either float 32 or int 16. Users should be aware that
+there will be data loss when saving as int.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Recon data is currently saved as float16.</p>
+</div>
+</section>
+</section>
+<section id="dataset-tree-view">
+<h2>Dataset Tree View<a class="headerlink" href="#dataset-tree-view" title="Link to this heading">¶</a></h2>
+<p>When a dataset has been successfully loaded, it will be possible to see its elements listed in the dataset tree view.</p>
+<img alt="Dataset tree view" src="../../_images/dataset_tree_view.png" />
+<section id="adding-replacing-data">
+<h3>Adding / Replacing Data<a class="headerlink" href="#adding-replacing-data" title="Link to this heading">¶</a></h3>
+<p>The stacks that comprise an existing dataset can be deleted or – in the case of <em>strict</em> datasets only – replaced.
+This can be done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.</p>
+<img alt="Dataset tree view" src="../../_images/add_to_dataset_dialog.png" />
+<p>As in the case of loading images from the main menu, selecting a single file will cause Mantid Imaging to load all like
+images in the same directory.</p>
+<p>The type of images that you wish to load can be selected from the drop-down menu. If this image type already exists in
+the dataset then the new images will replace it and the previous data will be deleted. If Recon is chosen then the
+images will be added to the dataset’s recons list.</p>
+<p>For “simple” datasets that do not have Projections, Flat Before, etc there is only the option of adding additional
+stacks or recons.</p>
+</section>
+<section id="moving-data">
+<h3>Moving Data<a class="headerlink" href="#moving-data" title="Link to this heading">¶</a></h3>
+<p>Data can also be moved from one dataset to another, or one stack type to another, by right-clicking the stack you wish
+to move and choosing the Move Stack option.</p>
+<img alt="Dataset tree view" src="../../_images/move_stack.png" />
+</section>
+<section id="deleting-data">
+<h3>Deleting Data<a class="headerlink" href="#deleting-data" title="Link to this heading">¶</a></h3>
+<p>Deleting data can also be achieved by right-clicking on the dataset tree view. This can be used to delete individual
+stacks as well as entire datasets.</p>
+<img alt="Deleting data in the tree view" src="../../_images/delete_data.png" />
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Loading and Saving</a><ul>
+<li><a class="reference internal" href="#loading">Loading</a><ul>
+<li><a class="reference internal" href="#load-dataset">Load Dataset</a></li>
+<li><a class="reference internal" href="#load-images">Load Images</a></li>
+<li><a class="reference internal" href="#load-nexus-file">Load NeXus File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load-log-for-stack">Load log for stack</a></li>
+<li><a class="reference internal" href="#load-projection-angles">Load projection angles</a></li>
+<li><a class="reference internal" href="#degree-projections">180 Degree Projections</a></li>
+<li><a class="reference internal" href="#saving">Saving</a><ul>
+<li><a class="reference internal" href="#save-as-image-files">Save as Image Files</a></li>
+<li><a class="reference internal" href="#save-as-a-nexus-file">Save as a NeXus File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dataset-tree-view">Dataset Tree View</a><ul>
+<li><a class="reference internal" href="#adding-replacing-data">Adding / Replacing Data</a></li>
+<li><a class="reference internal" href="#moving-data">Moving Data</a></li>
+<li><a class="reference internal" href="#deleting-data">Deleting Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Graphical User Interface (GUI)</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="image_view.html"
+                          title="next chapter">Image view</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="image_view.html" title="Image view"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphical User Interface (GUI)"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Loading and Saving</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

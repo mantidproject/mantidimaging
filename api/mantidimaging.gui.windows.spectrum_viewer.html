@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.spectrum_viewer package &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.spectrum_viewer.model module" href="mantidimaging.gui.windows.spectrum_viewer.model.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.settings.view module" href="mantidimaging.gui.windows.settings.view.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.spectrum_viewer.model.html" title="mantidimaging.gui.windows.spectrum_viewer.model module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.settings.view.html" title="mantidimaging.gui.windows.settings.view module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" accesskey="U">mantidimaging.gui.windows package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.spectrum_viewer">
+<span id="mantidimaging-gui-windows-spectrum-viewer-package"></span><h1>mantidimaging.gui.windows.spectrum_viewer package<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html">mantidimaging.gui.windows.spectrum_viewer.model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode"><code class="docutils literal notranslate"><span class="pre">ErrorMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.PROPAGATED"><code class="docutils literal notranslate"><span class="pre">ErrorMode.PROPAGATED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.STANDARD_DEVIATION"><code class="docutils literal notranslate"><span class="pre">ErrorMode.STANDARD_DEVIATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.get_by_value"><code class="docutils literal notranslate"><span class="pre">ErrorMode.get_by_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpecType"><code class="docutils literal notranslate"><span class="pre">SpecType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpecType.OPEN"><code class="docutils literal notranslate"><span class="pre">SpecType.OPEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpecType.SAMPLE"><code class="docutils literal notranslate"><span class="pre">SpecType.SAMPLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpecType.SAMPLE_NORMED"><code class="docutils literal notranslate"><span class="pre">SpecType.SAMPLE_NORMED</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.export_spectrum_to_rits"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.export_spectrum_to_rits()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_averaged_image"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_averaged_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_image_shape"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_image_shape()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_list_of_roi_names"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_list_of_roi_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_roi_coords_filename"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_roi_coords_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_spectrum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_stack_spectrum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_spectrum_summed"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_stack_spectrum_summed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_stack_time_of_flight()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_transmission_error_propagated"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_transmission_error_propagated()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_transmission_error_standard_dev"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.get_transmission_error_standard_dev()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.has_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.normalise_issue"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.normalise_issue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.presenter"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.presenter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.remove_all_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.remove_all_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.remove_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.remove_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.rename_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.rename_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.roi_name_generator"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.roi_name_generator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.save_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_images"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.save_rits_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.save_rits_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_roi_coords"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.save_roi_coords()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_single_rits_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.save_single_rits_spectrum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_new_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_new_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_normalise_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_relevant_tof_units"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_relevant_tof_units()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_data"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_plot_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_plot_range</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_range</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_range_full"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_range_full</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.validate_bin_and_step_size"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.validate_bin_and_step_size()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode.ENERGY"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode.ENERGY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode.IMAGE_NUMBER"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode.IMAGE_NUMBER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode.TOF_US"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode.TOF_US</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode.WAVELENGTH"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode.WAVELENGTH</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html">mantidimaging.gui.windows.spectrum_viewer.presenter module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.ExportMode"><code class="docutils literal notranslate"><span class="pre">ExportMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.ExportMode.IMAGE_MODE"><code class="docutils literal notranslate"><span class="pre">ExportMode.IMAGE_MODE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.ExportMode.ROI_MODE"><code class="docutils literal notranslate"><span class="pre">ExportMode.ROI_MODE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.add_rits_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.add_rits_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.auto_find_flat_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.auto_find_flat_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.change_roi_colour"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.change_roi_colour()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.current_norm_stack_uuid"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.current_norm_stack_uuid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.current_stack_uuid"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.current_stack_uuid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.do_add_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.do_add_roi_to_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_remove_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.do_remove_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.export_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.export_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_dataset_id_for_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.get_dataset_id_for_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_roi_names"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.get_roi_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_button_enabled"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_button_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_enable_normalised"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_enable_normalised()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_export_csv"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_export_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_export_tab_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_export_tab_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_normalise_stack_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_normalise_stack_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_range_slide_moved"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_range_slide_moved()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_rits_export"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_rits_export()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_roi_clicked"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_roi_clicked()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_roi_moved"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_roi_moved()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_sample_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_sample_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_stack_changed"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_stack_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.handle_tof_unit_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.model"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_all_rois"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.redraw_all_rois()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.redraw_spectrum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.rename_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.rename_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.reset_units_menu"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.reset_units_menu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_new_sample"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.show_new_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.spectrum_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.spectrum_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.view</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html">mantidimaging.gui.windows.spectrum_viewer.roi_table_model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel"><code class="docutils literal notranslate"><span class="pre">TableModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.appendNewRow"><code class="docutils literal notranslate"><span class="pre">TableModel.appendNewRow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.clear_table"><code class="docutils literal notranslate"><span class="pre">TableModel.clear_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.columnCount"><code class="docutils literal notranslate"><span class="pre">TableModel.columnCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.column_data"><code class="docutils literal notranslate"><span class="pre">TableModel.column_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.data"><code class="docutils literal notranslate"><span class="pre">TableModel.data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.flags"><code class="docutils literal notranslate"><span class="pre">TableModel.flags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.headerData"><code class="docutils literal notranslate"><span class="pre">TableModel.headerData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.remove_row"><code class="docutils literal notranslate"><span class="pre">TableModel.remove_row()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.rename_row"><code class="docutils literal notranslate"><span class="pre">TableModel.rename_row()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.roi_names"><code class="docutils literal notranslate"><span class="pre">TableModel.roi_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.rowCount"><code class="docutils literal notranslate"><span class="pre">TableModel.rowCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.row_data"><code class="docutils literal notranslate"><span class="pre">TableModel.row_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.setData"><code class="docutils literal notranslate"><span class="pre">TableModel.setData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.update_color"><code class="docutils literal notranslate"><span class="pre">TableModel.update_color()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.add_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.add_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.get_tof_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.get_tof_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.range_changed"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.range_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.range_control"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.range_control</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_image_index_range_label"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.set_image_index_range_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_tof_axis_label"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.set_tof_axis_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_tof_range_label"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.set_tof_range_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.spectrum</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumProjectionWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumProjectionWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumProjectionWidget.image"><code class="docutils literal notranslate"><span class="pre">SpectrumProjectionWidget.image</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI"><code class="docutils literal notranslate"><span class="pre">SpectrumROI</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.adjust_spec_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.adjust_spec_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.colour"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.colour</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.contextMenuEnabled"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.contextMenuEnabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.name"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.onChangeColor"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.onChangeColor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.rename_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.rename_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.roi"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.roi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.selected_row"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.selected_row</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.sig_colour_change"><code class="docutils literal notranslate"><span class="pre">SpectrumROI.sig_colour_change</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.add_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.add_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.adjust_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.adjust_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.change_roi_colour"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.change_roi_colour()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.cleanup"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.colour_generator"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.colour_generator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.get_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.get_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.image"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.image</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.image_widget"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.image_widget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.last_clicked_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.last_clicked_roi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.range_changed"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.range_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.range_control"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.range_control</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.remove_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.remove_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.rename_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.rename_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.roiColorChangeRequested"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.roiColorChangeRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.roi_changed"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.roi_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.roi_clicked"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.roi_clicked</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.roi_dict"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.roi_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.set_roi_alpha"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.set_roi_alpha()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.set_roi_visibility_flags"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.set_roi_visibility_flags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.spectrum</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.spectrum_plot_widget"><code class="docutils literal notranslate"><span class="pre">SpectrumWidget.spectrum_plot_widget</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html">mantidimaging.gui.windows.spectrum_viewer.view module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.add_roi_table_row()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.adjust_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.auto_range_image"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.auto_range_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_size_spinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_size_spinBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.bin_step_spinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.bin_step_spinBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.cleanup"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.clear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear_all_rois"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.clear_all_rois()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.current_dataset_id"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.current_dataset_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.disable_roi_properties()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_normalise_error"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.display_normalise_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportButton"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.exportButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.exportTabs"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.exportTabs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.find_row_for_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.find_row_for_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_csv_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_normalise_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_rits_export_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_rits_export_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_roi_properties_spinboxes"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.get_roi_properties_spinboxes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.handle_table_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.imageLayout"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.imageLayout</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.image_output_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.image_output_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.image_output_mode_combobox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.last_clicked_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.last_clicked_roi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normalisation_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseCheckBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseCheckBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseErrorIcon"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseErrorIcon</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normaliseStackSelector"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normaliseStackSelector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalise_error_issue"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.normalise_error_issue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.number_roi_properties_procced"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.number_roi_properties_procced</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.on_visibility_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.remove_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesGroupBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roiPropertiesGroupBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roiPropertiesTableWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roiPropertiesTableWidget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.roi_table_model"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.roi_table_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sampleStackSelector"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.sampleStackSelector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_binning_visibility"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_binning_visibility()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_image"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_new_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_normalise_error"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_normalise_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_old_table_names"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_old_table_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_alpha()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_properties()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_spinbox_ranges"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_roi_spinbox_ranges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_spectrum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectum_roi_color"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.set_spectum_roi_color()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.show()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.show_visible_spectrums()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.spectrum_widget"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.spectrum_widget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tableView</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode_combobox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.try_to_select_relevant_normalise_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_color"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.update_roi_color()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.spectrum_viewer package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.settings.view.html"
+                          title="previous chapter">mantidimaging.gui.windows.settings.view module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.spectrum_viewer.model.html"
+                          title="next chapter">mantidimaging.gui.windows.spectrum_viewer.model module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../index.html">Latest</a></li>
+  <li><a href="../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.spectrum_viewer.model.html" title="mantidimaging.gui.windows.spectrum_viewer.model module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.settings.view.html" title="mantidimaging.gui.windows.settings.view module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.spectrum_viewer package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

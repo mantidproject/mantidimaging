@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.dialogs.op_history_copy.presenter module - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.dialogs.op_history_copy.view module" href="mantidimaging.gui.dialogs.op_history_copy.view.html" />
+    <link rel="prev" title="mantidimaging.gui.dialogs.op_history_copy.model module" href="mantidimaging.gui.dialogs.op_history_copy.model.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.op_history_copy.view.html" title="mantidimaging.gui.dialogs.op_history_copy.view module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.op_history_copy.model.html" title="mantidimaging.gui.dialogs.op_history_copy.model module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.op_history_copy.html" accesskey="U">mantidimaging.gui.dialogs.op_history_copy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.op_history_copy.presenter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.dialogs.op_history_copy.presenter">
+<span id="mantidimaging-gui-dialogs-op-history-copy-presenter-module"></span><h1>mantidimaging.gui.dialogs.op_history_copy.presenter module<a class="headerlink" href="#module-mantidimaging.gui.dialogs.op_history_copy.presenter" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.dialogs.op_history_copy.presenter.</span></span><span class="sig-name descname"><span class="pre">OpHistoryCopyDialogPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.images.html#mantidimaging.core.data.images.Images" title="mantidimaging.core.data.images.Images"><span class="pre">Images</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.display_op_history">
+<span class="sig-name descname"><span class="pre">display_op_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.display_op_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.display_op_history" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_apply_ops">
+<span class="sig-name descname"><span class="pre">do_apply_ops</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.do_apply_ops"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_apply_ops" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_selected_ops_changed">
+<span class="sig-name descname"><span class="pre">do_selected_ops_changed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.do_selected_ops_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_selected_ops_changed" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.history_with_new_ops">
+<span class="sig-name descname"><span class="pre">history_with_new_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">applied_ops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.operation_history.operations.html#mantidimaging.core.operation_history.operations.ImageOperation" title="mantidimaging.core.operation_history.operations.ImageOperation"><span class="pre">ImageOperation</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.history_with_new_ops"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.history_with_new_ops" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.main_window">
+<span class="sig-name descname"><span class="pre">main_window</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></em><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.main_window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.operations">
+<span class="sig-name descname"><span class="pre">operations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.operation_history.operations.html#mantidimaging.core.operation_history.operations.ImageOperation" title="mantidimaging.core.operation_history.operations.ImageOperation"><span class="pre">ImageOperation</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.operations" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_source_stack">
+<span class="sig-name descname"><span class="pre">set_source_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.set_source_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_source_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_target_stack">
+<span class="sig-name descname"><span class="pre">set_target_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/op_history_copy/presenter.html#OpHistoryCopyDialogPresenter.set_target_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_target_stack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.view">
+<span class="sig-name descname"><span class="pre">view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.dialogs.op_history_copy.view.html#mantidimaging.gui.dialogs.op_history_copy.view.OpHistoryCopyDialogView" title="mantidimaging.gui.dialogs.op_history_copy.view.OpHistoryCopyDialogView"><span class="pre">OpHistoryCopyDialogView</span></a></em><a class="headerlink" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.view" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.dialogs.op_history_copy.presenter module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.display_op_history"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.display_op_history()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_apply_ops"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.do_apply_ops()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.do_selected_ops_changed"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.do_selected_ops_changed()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.history_with_new_ops"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.history_with_new_ops()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.main_window"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.main_window</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.operations"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.operations</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_source_stack"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.set_source_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.set_target_stack"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.set_target_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.dialogs.op_history_copy.presenter.OpHistoryCopyDialogPresenter.view"><code class="docutils literal notranslate"><span class="pre">OpHistoryCopyDialogPresenter.view</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.op_history_copy.model.html"
+                          title="previous chapter">mantidimaging.gui.dialogs.op_history_copy.model module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.dialogs.op_history_copy.view.html"
+                          title="next chapter">mantidimaging.gui.dialogs.op_history_copy.view module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="mantidimaging.gui.dialogs.op_history_copy.presenter.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.op_history_copy.view.html" title="mantidimaging.gui.dialogs.op_history_copy.view module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.dialogs.op_history_copy.model.html" title="mantidimaging.gui.dialogs.op_history_copy.model module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.dialogs.html" >mantidimaging.gui.dialogs package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.dialogs.op_history_copy.html" >mantidimaging.gui.dialogs.op_history_copy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.op_history_copy.presenter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

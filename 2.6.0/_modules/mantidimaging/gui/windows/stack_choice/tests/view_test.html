@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.stack_choice.tests.view_test - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.tests.view_test</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.stack_choice.tests.view_test</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">DEFAULT</span><span class="p">,</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">patch</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">sip</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMessageBox</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ViewBox</span>
+
+<span class="kn">import</span> <span class="nn">mantidimaging.test_helpers.unit_test_helper</span> <span class="k">as</span> <span class="nn">th</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.view</span> <span class="kn">import</span> <span class="n">Notification</span><span class="p">,</span> <span class="n">StackChoiceView</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.test_helpers</span> <span class="kn">import</span> <span class="n">start_qapplication</span>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest">[docs]</a>
+<span class="nd">@start_qapplication</span>
+<span class="k">class</span> <span class="nc">StackChoiceViewTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">StackChoiceView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sip</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_toggle_roi_show_true">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_toggle_roi_show_true">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_toggle_roi_show_true</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">roi_shown</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_toggle_roi</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_toggle_roi_show_false">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_toggle_roi_show_false">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_toggle_roi_show_false</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">roi_shown</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_toggle_roi</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">roiClicked</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_setup_stack_for_view">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_setup_stack_for_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_setup_stack_for_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">roiButton</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="n">roi_clicked</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">roiClicked</span> <span class="o">=</span> <span class="n">roi_clicked</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_setup_stack_for_view</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="n">stack</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">setImage</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">menuBtn</span><span class="o">.</span><span class="n">hide</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">hide</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">button_stack_right</span><span class="o">.</span><span class="n">hide</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">button_stack_left</span><span class="o">.</span><span class="n">hide</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">roiButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">roi_clicked</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_sync_roi_plot_for_new_stack_with_old_stack">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_sync_roi_plot_for_new_stack_with_old_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">new_stack</span>
+        <span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_roi_plot_for_old_stack_with_new_stack</span> <span class="o">=</span> <span class="n">uuid</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_roi_plot_for_new_stack_with_old_stack</span><span class="p">()</span>
+
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_sync_roi_plot_for_old_stack_with_new_stack">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_sync_roi_plot_for_old_stack_with_new_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">original_stack</span>
+        <span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_roi_plot_for_new_stack_with_old_stack</span> <span class="o">=</span> <span class="n">uuid</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_roi_plot_for_old_stack_with_new_stack</span><span class="p">()</span>
+
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setPos</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setSize</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_sync_timelines_for_new_stack_with_old_stack">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_sync_timelines_for_new_stack_with_old_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sync_timelines_for_new_stack_with_old_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">new_stack</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_timelines_for_old_stack_with_new_stack</span> <span class="o">=</span> <span class="n">function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_timelines_for_new_stack_with_old_stack</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">new_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_sync_timelines_for_old_stack_with_new_stack">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_sync_timelines_for_old_stack_with_new_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sync_timelines_for_old_stack_with_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">original_stack</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_timelines_for_new_stack_with_old_stack</span> <span class="o">=</span> <span class="n">function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_timelines_for_old_stack_with_new_stack</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">original_stack</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_closeEvent">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_closeEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_closeEvent_message_pop_up_if_choice_not_made_and_notifies_presenter_on_ok">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_closeEvent_message_pop_up_if_choice_not_made_and_notifies_presenter_on_ok">[docs]</a>
+    <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.stack_choice.view.QMessageBox&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_closeEvent_message_pop_up_if_choice_not_made_and_notifies_presenter_on_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_box</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="n">message_box</span><span class="o">.</span><span class="n">warning</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span>
+        <span class="n">message_box</span><span class="o">.</span><span class="n">Ok</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span>
+        <span class="n">mock_event</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">mock_event</span><span class="p">)</span>
+
+        <span class="n">message_box</span><span class="o">.</span><span class="n">warning</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_NEW_DATA</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="n">mock_event</span><span class="o">.</span><span class="n">ignore</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_closeEvent_message_pop_up_if_choice_not_made_and_doesnt_notify_presenter_on_cancel">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_closeEvent_message_pop_up_if_choice_not_made_and_doesnt_notify_presenter_on_cancel">[docs]</a>
+    <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.stack_choice.view.QMessageBox&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_closeEvent_message_pop_up_if_choice_not_made_and_doesnt_notify_presenter_on_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_box</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="n">message_box</span><span class="o">.</span><span class="n">warning</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span>
+        <span class="n">mock_event</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">mock_event</span><span class="p">)</span>
+
+        <span class="n">message_box</span><span class="o">.</span><span class="n">warning</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span>
+        <span class="n">mock_event</span><span class="o">.</span><span class="n">ignore</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_images_are_synced">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_images_are_synced">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_images_are_synced</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="s2">&quot;view&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_sync_both_image_axis</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">linkView</span><span class="o">.</span><span class="n">call_args_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="s2">&quot;view&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">linkView</span><span class="o">.</span><span class="n">call_args_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">linkView</span><span class="o">.</span><span class="n">call_count</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_ensure_range_is_the_same_new_stack_min_original_stack_max">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_ensure_range_is_the_same_new_stack_min_original_stack_max">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_ensure_range_is_the_same_new_stack_min_original_stack_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_ensure_range_is_the_same</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_ensure_range_is_the_same_new_stack_max_original_stack_min">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_ensure_range_is_the_same_new_stack_max_original_stack_min">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_ensure_range_is_the_same_new_stack_max_original_stack_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">_ensure_range_is_the_same</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setRange</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">yRange</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="StackChoiceViewTest.test_connect_histogram_changes">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.test_connect_histogram_changes">[docs]</a>
+    <span class="nd">@patch</span><span class="o">.</span><span class="n">multiple</span><span class="p">(</span><span class="s1">&#39;mantidimaging.gui.windows.stack_choice.view.StackChoiceView&#39;</span><span class="p">,</span>
+                    <span class="n">_set_from_old_to_new</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">,</span>
+                    <span class="n">_set_from_new_to_old</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_connect_histogram_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_set_from_old_to_new</span><span class="p">:</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">_set_from_new_to_old</span><span class="p">:</span> <span class="n">Mock</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">connect_histogram_changes</span><span class="p">()</span>
+
+        <span class="c1"># check this is called once to set the same range on the new histogram as is currently selected on the new one</span>
+        <span class="n">_set_from_old_to_new</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+
+        <span class="n">expected_emit</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+        <span class="n">_set_from_old_to_new</span><span class="o">.</span><span class="n">reset_mock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+        <span class="n">_set_from_old_to_new</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+        <span class="n">_set_from_new_to_old</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+
+        <span class="c1"># reset mocks and disconnect signals</span>
+        <span class="n">_set_from_old_to_new</span><span class="o">.</span><span class="n">reset_mock</span><span class="p">()</span>
+        <span class="n">_set_from_new_to_old</span><span class="o">.</span><span class="n">reset_mock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">disconnect_histogram_changes</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+        <span class="n">_set_from_old_to_new</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">sigLevelsChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">expected_emit</span><span class="p">)</span>
+        <span class="n">_set_from_new_to_old</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="view_test.html">2.6.0</a></li>
+  <li><a href="../../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.tests.view_test</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

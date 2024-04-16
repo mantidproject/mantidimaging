@@ -1,0 +1,61 @@
+Mantid Imaging 2.6
+==================
+
+This release introduces a live viewer that can be used to observe images arriving from an instrument.
+
+It also features more control when reconstructing with SPDHG, toggling ROIs in the spectrum viewer, improvements to the roation operation and performance improvements. There are also several bug fixes and updates to dependencies. For a full list of changes see below.
+
+New Features
+------------
+- #1722 : SPDHG: Allow adjusting the percent of iterations used regularisation
+- #1798 : Allow for toggling of ROI visibility in the table of ROIs within the spectrum viewer.
+- #1828 : Performance improvements for the spectrum viewer
+- #1758 : Use QFileSystemWatcher to watch for changes in the file system.
+- #1859 : Select Sample Log if found when loading a dataset
+- #1871 : Show Cuda enabled reconstruction algorithms in disabled state if no gpu is available
+- #1876 : Display filename of currently displayed image in the live viewer.
+- #1881 : Allow Live Viewer to be launched using cli argument with a specific directory
+- #1904 : Backend architecture for image scroller front-end. All relevant image metadata is now stored in a list accessible to the presenter view.
+- #1916 : Image scroller for live view
+
+Fixes
+-----
+- #1776 : Fix Redrawing of ROIs within Compare Image Stack Window
+- #1777 : More consistent menu and window naming for comparing image stack data.
+- #1778 : Fix ROIs being drawn outside of the sample images within Compare Image Stack Window
+- #1784 : Don't overwrite new metadata when loading old metadata
+- #1833 : Rotate image stack by cardinal or non-cardinal Angle. Image aspect ratio snaps to closest cardinal angle.
+- #1815 : Improve handling of NaN data within Spectrum Viewer, resolving exception error dialog pop-up within Spectrum Viewer if only dataset loaded into Mantid Imaging is removed.
+- #1864 : Add log file normalisation to support older log file formats
+- #1833 : Create dropdown menu of default degrees of rotation within operations rotate stack
+- #1865 : Be less strict when finding flat and dark
+- #1870 : Load all file in the extra digits case
+- #1875 : Additional live viewer error handling for read operations on files and improved handling of slow copies to watched directory
+- #1882 : Additional Logging of file change emit signals and reduction in file change emit signals
+- #1887 : Better error message for corrupt TIFF file
+- #1888 : Don't return files beginning with a dot when finding related
+- #1891 : Fix LiveViewer handling of deleting all files from watched directory.
+- #1894 : Fix for path in PackageWithPyInstaller
+- #1918 : Use initializer to ensure worker pool do setup
+- #1920 : Fix Renaming of ROIs
+- #1922 : Load images into live viewer on initialisation if images already present in selected directory.
+- #1929 : Handle Live Viewer window closure to resolve directory persistence when trying to switch directories.
+- #1937 : Fix adjusting recon line profile from handles
+- #1940 : Fix loading a subset of a sample when there is a log with angles
+
+Developer Changes
+-----------------
+- #962 : Type annotation improvements
+- #1792 : Update python to 3.10
+- #1796 : Add MyPy to pre-commit checks.
+- #1799 : Speed up packaged builds with boa
+- #1803 : Separate files for release notes
+- #1813 : Remove deprecated load_module()
+- #1818 : CIL -> 23.0
+- #1819 : Update yapf->0.33, MyPy->1.3.0, flake8->ruff
+- #1821 : Spectrum screenshot test
+- #1845 : Create Basic Live Viewer Window
+- #1853 : Add performance logger
+- #1889 : Refactor how focus is set for windows launched by cli so they open above the main window.
+- #1901 : Add ExecutionProfiler context manager
+- #1901 : Launch Spectrum Viewer from CLI with additional CLI argument

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Mantid Imaging 2.6 - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.5" href="2.5.html" />
+    <link rel="prev" title="New Features" href="2.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.5.html" title="Mantid Imaging 2.5"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.7.html" title="New Features"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.6</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mantid-imaging-2-6">
+<h1>Mantid Imaging 2.6<a class="headerlink" href="#mantid-imaging-2-6" title="Link to this heading">¶</a></h1>
+<p>This release introduces a live viewer that can be used to observe images arriving from an instrument.</p>
+<p>It also features more control when reconstructing with SPDHG, toggling ROIs in the spectrum viewer, improvements to the roation operation and performance improvements. There are also several bug fixes and updates to dependencies. For a full list of changes see below.</p>
+<section id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1722 : SPDHG: Allow adjusting the percent of iterations used regularisation</p></li>
+<li><p>#1798 : Allow for toggling of ROI visibility in the table of ROIs within the spectrum viewer.</p></li>
+<li><p>#1828 : Performance improvements for the spectrum viewer</p></li>
+<li><p>#1758 : Use QFileSystemWatcher to watch for changes in the file system.</p></li>
+<li><p>#1859 : Select Sample Log if found when loading a dataset</p></li>
+<li><p>#1871 : Show Cuda enabled reconstruction algorithms in disabled state if no gpu is available</p></li>
+<li><p>#1876 : Display filename of currently displayed image in the live viewer.</p></li>
+<li><p>#1881 : Allow Live Viewer to be launched using cli argument with a specific directory</p></li>
+<li><p>#1904 : Backend architecture for image scroller front-end. All relevant image metadata is now stored in a list accessible to the presenter view.</p></li>
+<li><p>#1916 : Image scroller for live view</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1776 : Fix Redrawing of ROIs within Compare Image Stack Window</p></li>
+<li><p>#1777 : More consistent menu and window naming for comparing image stack data.</p></li>
+<li><p>#1778 : Fix ROIs being drawn outside of the sample images within Compare Image Stack Window</p></li>
+<li><p>#1784 : Don’t overwrite new metadata when loading old metadata</p></li>
+<li><p>#1833 : Rotate image stack by cardinal or non-cardinal Angle. Image aspect ratio snaps to closest cardinal angle.</p></li>
+<li><p>#1815 : Improve handling of NaN data within Spectrum Viewer, resolving exception error dialog pop-up within Spectrum Viewer if only dataset loaded into Mantid Imaging is removed.</p></li>
+<li><p>#1864 : Add log file normalisation to support older log file formats</p></li>
+<li><p>#1833 : Create dropdown menu of default degrees of rotation within operations rotate stack</p></li>
+<li><p>#1865 : Be less strict when finding flat and dark</p></li>
+<li><p>#1870 : Load all file in the extra digits case</p></li>
+<li><p>#1875 : Additional live viewer error handling for read operations on files and improved handling of slow copies to watched directory</p></li>
+<li><p>#1882 : Additional Logging of file change emit signals and reduction in file change emit signals</p></li>
+<li><p>#1887 : Better error message for corrupt TIFF file</p></li>
+<li><p>#1888 : Don’t return files beginning with a dot when finding related</p></li>
+<li><p>#1891 : Fix LiveViewer handling of deleting all files from watched directory.</p></li>
+<li><p>#1894 : Fix for path in PackageWithPyInstaller</p></li>
+<li><p>#1918 : Use initializer to ensure worker pool do setup</p></li>
+<li><p>#1920 : Fix Renaming of ROIs</p></li>
+<li><p>#1922 : Load images into live viewer on initialisation if images already present in selected directory.</p></li>
+<li><p>#1929 : Handle Live Viewer window closure to resolve directory persistence when trying to switch directories.</p></li>
+<li><p>#1937 : Fix adjusting recon line profile from handles</p></li>
+<li><p>#1940 : Fix loading a subset of a sample when there is a log with angles</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#962 : Type annotation improvements</p></li>
+<li><p>#1792 : Update python to 3.10</p></li>
+<li><p>#1796 : Add MyPy to pre-commit checks.</p></li>
+<li><p>#1799 : Speed up packaged builds with boa</p></li>
+<li><p>#1803 : Separate files for release notes</p></li>
+<li><p>#1813 : Remove deprecated load_module()</p></li>
+<li><p>#1818 : CIL -&gt; 23.0</p></li>
+<li><p>#1819 : Update yapf-&gt;0.33, MyPy-&gt;1.3.0, flake8-&gt;ruff</p></li>
+<li><p>#1821 : Spectrum screenshot test</p></li>
+<li><p>#1845 : Create Basic Live Viewer Window</p></li>
+<li><p>#1853 : Add performance logger</p></li>
+<li><p>#1889 : Refactor how focus is set for windows launched by cli so they open above the main window.</p></li>
+<li><p>#1901 : Add ExecutionProfiler context manager</p></li>
+<li><p>#1901 : Launch Spectrum Viewer from CLI with additional CLI argument</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mantid Imaging 2.6</a><ul>
+<li><a class="reference internal" href="#new-features">New Features</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#developer-changes">Developer Changes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="2.7.html"
+                          title="previous chapter">New Features</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="2.5.html"
+                          title="next chapter">Mantid Imaging 2.5</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/release_notes/2.6.html">2.6.0</a></li>
+  <li><a href="2.6.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.5.html" title="Mantid Imaging 2.5"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.7.html" title="New Features"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.6</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

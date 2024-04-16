@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Installation - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="_static/extra.css?v=c0834052" />
+    
+    <script src="_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="user_guide/index.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="user_guide/index.html" title="User Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<p>There are several options for installing:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#installing-with-windows-installer"><span class="std std-ref">Installing with Windows installer</span></a> - Simplest method on Windows</p></li>
+<li><p><a class="reference internal" href="#installing-with-mamba-conda"><span class="std std-ref">Installing with Mamba/Conda</span></a> - Linux or Windows. Most flexible. Does not need admin access.</p></li>
+<li><p><a class="reference internal" href="#using-mantid-imaging-on-idaaas"><span class="std std-ref">Using Mantid Imaging on IDAaaS</span></a> - For ISIS users</p></li>
+<li><p>For installation from source see the <a class="reference internal" href="developer_guide/index.html#developer-guide"><span class="std std-ref">Developer Guide</span></a></p></li>
+</ul>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Operating system</dt><dd><ul class="simple">
+<li><p>Linux. Tested on Ubuntu 18.04, 20.04, 22.04 and CentOS 7</p></li>
+<li><p>Windows. Tested on Windows 10</p></li>
+</ul>
+</dd>
+<dt>GPU</dt><dd><p>A CUDA capable GPU is required for some operations. CPU alternatives are provided, so it is possible to perform a tomographic reconstruction on a system without a GPU.</p>
+</dd>
+<dt>RAM</dt><dd><p>A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increased resolution, projection counts and bit depth.</p>
+</dd>
+</dl>
+</section>
+<section id="installing-with-windows-installer">
+<h2>Installing with Windows installer<a class="headerlink" href="#installing-with-windows-installer" title="Link to this heading">¶</a></h2>
+<p>The installer can be downloaded from the <a class="reference external" href="https://github.com/mantidproject/mantidimaging/releases">releases</a> page. For example <code class="code docutils literal notranslate"><span class="pre">MantidImagingSetup_2.5.0.exe</span></code>.</p>
+<p>Once downloaded, double click the setup file to run the installer. The installer is not currently signed so you may need to click to allow it to run.</p>
+<p>Select a directory to install to e.g. <code class="code docutils literal notranslate"><span class="pre">c:Program</span> <span class="pre">FilesMantid</span> <span class="pre">Imaging</span></code> and click Install.</p>
+<a class="reference internal image-reference" href="_images/nsis_installer.png"><img alt="Installer destination selection screen" class="align-center" src="_images/nsis_installer.png" style="width: 60%;" /></a>
+<p>Once Mantid Imaging is installed it will show in the start menu.</p>
+<section id="uninstalling">
+<h3>Uninstalling<a class="headerlink" href="#uninstalling" title="Link to this heading">¶</a></h3>
+<p>If Mantid Imaging has been installed using the Windows Installer, then it can be removed by right clicking the entry in the start menu and selecting <code class="code docutils literal notranslate"><span class="pre">Uninstall</span></code>.</p>
+</section>
+</section>
+<section id="installing-with-mamba-conda">
+<h2>Installing with Mamba/Conda<a class="headerlink" href="#installing-with-mamba-conda" title="Link to this heading">¶</a></h2>
+<p>Mantid Imaging can be installed using the <a class="reference external" href="https://anaconda.org/mantid/mantidimaging/">packages</a> published to Anaconda Cloud, this
+can be done with an existing Conda or Mamba distribution if you already
+have one on your machine.</p>
+<ol class="arabic simple">
+<li><p>Download and install CUDA Runtime version 10.2 - <a class="reference external" href="https://developer.nvidia.com/cuda-10.2-download-archive">https://developer.nvidia.com/cuda-10.2-download-archive</a> before installing the Mantid Imaging environment.</p></li>
+<li><p>Download and install <a class="reference external" href="https://github.com/conda-forge/miniforge">Mambaforge</a> or <a class="reference external" href="https://conda.io/miniconda.html">Miniconda 3</a></p></li>
+<li><p>Make sure <code class="code docutils literal notranslate"><span class="pre">mamba</span></code> or <code class="code docutils literal notranslate"><span class="pre">conda</span></code> is available on your PATH. The steps below assume you are using mamba.</p></li>
+<li><p>Create a mantidimaging conda environment:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>(Specific versions can be installed by using the release url, e.g. <cite>https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml</cite>)</p>
+<ol class="arabic simple" start="5">
+<li><p>This creates an environment called <code class="code docutils literal notranslate"><span class="pre">mantidimaging</span></code> that you can activate via <code class="code docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">mantidimaging</span></code></p></li>
+<li><p><strong>This step is required for Linux users only.</strong> To ensure that MantidImaging can make full use of the memory available on your Linux machine, we need to set the shared memory size to an appropriate value. Please follow the steps below to do this:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Open the etc/fstab file on your computer. You can do this by opening a terminal and running this command (with sudo if needed to allow you to edit the file): <code class="code docutils literal notranslate"><span class="pre">gedit</span> <span class="pre">/etc/fstab</span></code></p></li>
+<li><p>In the open fstab file, try to locate a line like this one: <code class="code docutils literal notranslate"><span class="pre">none</span> <span class="pre">/dev/shm</span> <span class="pre">tmpfs</span> <span class="pre">defaults,size=4G</span> <span class="pre">0</span> <span class="pre">0</span></code>.</p></li>
+<li><p>If the line exists:</p>
+<ul>
+<li><p>Modify the text after <code class="code docutils literal notranslate"><span class="pre">size=</span></code> to replace with <code class="code docutils literal notranslate"><span class="pre">size=90%</span></code>. After you have made the change, the line should look like this: <code class="code docutils literal notranslate"><span class="pre">none</span> <span class="pre">/dev/shm</span> <span class="pre">tmpfs</span> <span class="pre">defaults,size=90%</span> <span class="pre">0</span> <span class="pre">0</span></code></p></li>
+<li><p>Save your changes and exit the text editor.</p></li>
+<li><p>In a terminal, run this command (with sudo if needed): <code class="code docutils literal notranslate"><span class="pre">mount</span> <span class="pre">-o</span> <span class="pre">remount</span> <span class="pre">/dev/shm</span></code></p></li>
+</ul>
+</li>
+<li><p>If the line does NOT exist:</p>
+<ul>
+<li><p>At the end of the file, add this line: <code class="code docutils literal notranslate"><span class="pre">none</span> <span class="pre">/dev/shm</span> <span class="pre">tmpfs</span> <span class="pre">defaults,size=90%</span> <span class="pre">0</span> <span class="pre">0</span></code></p></li>
+<li><p>Save your changes and exit the text editor.</p></li>
+<li><p>In a terminal, run this command (with sudo if needed): <code class="code docutils literal notranslate"><span class="pre">mount</span> <span class="pre">/dev/shm</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>[Optional] If you wish to run <code class="code docutils literal notranslate"><span class="pre">mantidimaging-ipython</span></code>, you will need to have <code class="code docutils literal notranslate"><span class="pre">ipython</span></code> installed. This can be done with the command <code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">install</span> <span class="pre">ipython</span></code>.</p></li>
+</ol>
+<section id="running-the-package">
+<h3>Running the package<a class="headerlink" href="#running-the-package" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Activate the environment created in the installation step: <code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">activate</span> <span class="pre">mantidimaging</span></code></p></li>
+<li><p>Run using one of the following commands:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>GUI: <code class="code docutils literal notranslate"><span class="pre">mantidimaging</span></code></p></li>
+<li><p>IPython: <code class="code docutils literal notranslate"><span class="pre">mantidimaging-ipython</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="nightly-version">
+<h3>Nightly version<a class="headerlink" href="#nightly-version" title="Link to this heading">¶</a></h3>
+<p>The latest nightly version can be installed with</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>This will make a <cite>mantidimaging-nightly</cite> environment.</p>
+</section>
+<section id="updating">
+<h3>Updating<a class="headerlink" href="#updating" title="Link to this heading">¶</a></h3>
+<p>To update to the latest version of Mantid Imaging run:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">mantidimaging</span> <span class="pre">&amp;&amp;</span> <span class="pre">mamba</span> <span class="pre">update</span> <span class="pre">mantidimaging</span></code></p>
+<p>If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.</p>
+</section>
+<section id="reinstalling-the-environment">
+<h3>Reinstalling the environment<a class="headerlink" href="#reinstalling-the-environment" title="Link to this heading">¶</a></h3>
+<p>To completely delete the Mantid Imaging environment follow these steps:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">deactivate</span></code></p>
+<ul>
+<li><p>to exit out of the conda Mantid Imaging environment</p></li>
+</ul>
+</li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">list</span></code></p>
+<ul>
+<li><p>to see which environments you have installed</p></li>
+</ul>
+</li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">remove</span> <span class="pre">-n</span> <span class="pre">mantidimaging</span></code></p>
+<ul>
+<li><p>and press <code class="code docutils literal notranslate"><span class="pre">y</span></code> to confirm. Replace <cite>mantidimaging</cite> with any other environment you wish to remove</p></li>
+</ul>
+</li>
+<li><p>Follow steps 4 and 5 from <a href="#id2"><span class="problematic" id="id3">Installing_</span></a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="using-mantid-imaging-on-idaaas">
+<h2>Using Mantid Imaging on IDAaaS<a class="headerlink" href="#using-mantid-imaging-on-idaaas" title="Link to this heading">¶</a></h2>
+<p>If you are an ISIS user then you may have access to the ISIS Data Analysis as a Service (IDAaaS) system.</p>
+<p>Mantid Imaging is preinstalled in the IMAT Tomography workspaces.</p>
+<p>It can be launched from the menu <code class="code docutils literal notranslate"><span class="pre">Applications</span> <span class="pre">&gt;</span> <span class="pre">Software</span> <span class="pre">&gt;</span> <span class="pre">Manntid</span> <span class="pre">Imaging</span></code>.</p>
+<a class="reference internal image-reference" href="_images/launch_on_idaaas.png"><img alt="Launching Mantid Imaging on IDAaaS" class="align-center" src="_images/launch_on_idaaas.png" style="width: 40%;" /></a>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#installing-with-windows-installer">Installing with Windows installer</a><ul>
+<li><a class="reference internal" href="#uninstalling">Uninstalling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installing-with-mamba-conda">Installing with Mamba/Conda</a><ul>
+<li><a class="reference internal" href="#running-the-package">Running the package</a></li>
+<li><a class="reference internal" href="#nightly-version">Nightly version</a></li>
+<li><a class="reference internal" href="#updating">Updating</a></li>
+<li><a class="reference internal" href="#reinstalling-the-environment">Reinstalling the environment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-mantid-imaging-on-idaaas">Using Mantid Imaging on IDAaaS</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="overview.html"
+                          title="previous chapter">Overview</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="user_guide/index.html"
+                          title="next chapter">User Guide</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href=".././index.html">Latest</a></li>
+  <li><a href="../2.3.0/installation.html">2.3.0</a></li>
+  <li><a href="../2.4.0/installation.html">2.4.0</a></li>
+  <li><a href="installation.html">2.5.0</a></li>
+  <li><a href="../2.6.0/installation.html">2.6.0</a></li>
+  <li><a href="../2.7.0/installation.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="user_guide/index.html" title="User Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

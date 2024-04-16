@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.operations.outliers.outliers module - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.operations.rebin package" href="mantidimaging.core.operations.rebin.html" />
+    <link rel="prev" title="mantidimaging.core.operations.outliers package" href="mantidimaging.core.operations.outliers.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.rebin.html" title="mantidimaging.core.operations.rebin package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.outliers.html" title="mantidimaging.core.operations.outliers package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.outliers.html" accesskey="U">mantidimaging.core.operations.outliers package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.outliers.outliers module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.operations.outliers.outliers">
+<span id="mantidimaging-core-operations-outliers-outliers-module"></span><h1>mantidimaging.core.operations.outliers.outliers module<a class="headerlink" href="#module-mantidimaging.core.operations.outliers.outliers" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.outliers.outliers.</span></span><span class="sig-name descname"><span class="pre">OutliersFilter</span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#OutliersFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter" title="mantidimaging.core.operations.base_filter.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Removes pixel values that are found to be outliers as defined by the given parameters.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: As a pre-processing step to reduce very bright or dead pixels in the data.</p>
+<p>Caution: This should usually be one of the first steps applied to the data, flat and dark
+images, to remove pixels with very large values that will cause issues for flat-fielding.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.execute_wrapper">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#OutliersFilter.execute_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.execute_wrapper" title="Link to this definition">¶</a></dt>
+<dd><p>Should construct a partial call to _filter_func using values taken from the widgets passed to this function
+as kwargs.
+:param kwargs: widgets which contain values required for _filter_func.
+:return: a partial call to _filter_func using parameters taken from the input widgets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_func">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bright'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#OutliersFilter.filter_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_func" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> – Input data</p></li>
+<li><p><strong>diff</strong> – Pixel value difference above which to crop bright pixels</p></li>
+<li><p><strong>radius</strong> – Size of the median filter to apply</p></li>
+<li><p><strong>mode</strong> – Whether to remove bright or dark outliers
+One of [OUTLIERS_BRIGHT, OUTLIERS_DARK]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The processed 3D numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_name">
+<span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Remove</span> <span class="pre">Outliers'</span></em><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.group_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">group_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup" title="mantidimaging.core.operations.base_filter.FilterGroup"><span class="pre">FilterGroup</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#OutliersFilter.group_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.group_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.link_histograms">
+<span class="sig-name descname"><span class="pre">link_histograms</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.link_histograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.OutliersFilter.register_gui">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_gui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#OutliersFilter.register_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.register_gui" title="Link to this definition">¶</a></dt>
+<dd><p>Adds any required input widgets to the given form and returns references to them.</p>
+<p>The return values should be in a dict which can be unpacked as kwargs for a call to
+the operations <cite>execute_wrapper</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>view</strong> – </p></li>
+<li><p><strong>form</strong> – the layout to create input widgets in</p></li>
+<li><p><strong>on_change</strong> – the filter view action to be bound to all created inputs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the widgets bound as kwargs which are needed to call execute_wrapper</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.outliers.outliers.modes">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.outliers.outliers.</span></span><span class="sig-name descname"><span class="pre">modes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/outliers/outliers.html#modes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.outliers.outliers.modes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.operations.outliers.outliers module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter"><code class="docutils literal notranslate"><span class="pre">OutliersFilter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.execute_wrapper()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.filter_func()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.filter_name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.group_name"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.group_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.link_histograms"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.link_histograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.OutliersFilter.register_gui"><code class="docutils literal notranslate"><span class="pre">OutliersFilter.register_gui()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.outliers.outliers.modes"><code class="docutils literal notranslate"><span class="pre">modes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.outliers.html"
+                          title="previous chapter">mantidimaging.core.operations.outliers package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.rebin.html"
+                          title="next chapter">mantidimaging.core.operations.rebin package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="mantidimaging.core.operations.outliers.outliers.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.rebin.html" title="mantidimaging.core.operations.rebin package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.outliers.html" title="mantidimaging.core.operations.outliers package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.outliers.html" >mantidimaging.core.operations.outliers package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.outliers.outliers module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

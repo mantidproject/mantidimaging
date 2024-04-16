@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.widgets.mi_image_view.presenter - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.presenter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.widgets.mi_image_view.presenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="MIImagePresenter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter">[docs]</a>
+<span class="k">class</span> <span class="nc">MIImagePresenter</span><span class="p">:</span>
+<div class="viewcode-block" id="MIImagePresenter.get_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_roi">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_roi</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a ROI based on the current real ROI selected. Clips it to be in-bounds of the</span>
+<span class="sd">        shape of the image, to prevent issues when passed to filters</span>
+<span class="sd">        :param image: The current image that is displayed</span>
+<span class="sd">        :param roi_pos: The top-left position of the ROI</span>
+<span class="sd">        :param roi_size: The size of the ROI in [right, bottom] direction</span>
+<span class="sd">        :return: The corrected position and size to have an in-bounds ROI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Don&#39;t allow negative point coordinates, as they do not</span>
+        <span class="c1"># respond to any real image-data and cause issues in filters</span>
+        <span class="k">if</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Region of Interest starts outside the picture! Clipping to image bounds&quot;</span><span class="p">)</span>
+            <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">image_height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">image_width</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">image_width</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">roi_right</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">roi_bottom</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="c1"># Ensures that we always get a valid ROI that isn&#39;t hanging outside</span>
+        <span class="c1"># of the image, by accounting for the rectangle sticking out the right</span>
+        <span class="c1"># or the bottom side of the image. The ROI is translated to be</span>
+        <span class="c1"># inside the image</span>
+        <span class="k">if</span> <span class="n">roi_right</span> <span class="o">&gt;</span> <span class="n">image_width</span><span class="p">:</span>
+            <span class="n">roi_size</span><span class="o">.</span><span class="n">x</span> <span class="o">-=</span> <span class="n">roi_right</span> <span class="o">-</span> <span class="n">image_width</span>
+        <span class="k">if</span> <span class="n">roi_bottom</span> <span class="o">&gt;</span> <span class="n">image_height</span><span class="p">:</span>
+            <span class="n">roi_size</span><span class="o">.</span><span class="n">y</span> <span class="o">-=</span> <span class="n">roi_bottom</span> <span class="o">-</span> <span class="n">image_height</span>
+        <span class="k">return</span> <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span></div>
+
+
+<div class="viewcode-block" id="MIImagePresenter.get_nearest_timeline_tick">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_nearest_timeline_tick">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_nearest_timeline_tick</span><span class="p">(</span><span class="n">x_pos_clicked</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">view_range</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the closes point to the clicked position on the histogram&#39;s timeline.</span>
+
+<span class="sd">        :param x_pos_clicked: The X position where the mouse clicked on the histogram widget</span>
+<span class="sd">        :param x_axis: The X-axis object that knows pixel sizes of the widget</span>
+<span class="sd">        :param view_range: The view range represented on the histogram</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frac_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_pos_clicked</span> <span class="o">-</span> <span class="n">x_axis</span><span class="o">.</span><span class="n">x</span><span class="p">())</span> <span class="o">/</span> <span class="n">x_axis</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">domain_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">view_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">view_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">frac_pos</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">view_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">domain_pos</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="presenter.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.mi_image_view.presenter</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

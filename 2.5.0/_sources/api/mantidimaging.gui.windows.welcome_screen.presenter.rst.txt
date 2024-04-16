@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.welcome\_screen.presenter module
+==========================================================
+
+.. automodule:: mantidimaging.gui.windows.welcome_screen.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

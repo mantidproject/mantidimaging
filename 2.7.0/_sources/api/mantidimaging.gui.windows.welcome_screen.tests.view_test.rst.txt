@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.welcome\_screen.tests.view\_test module
+=================================================================
+
+.. automodule:: mantidimaging.gui.windows.welcome_screen.tests.view_test
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.move_stack_dialog.view module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.nexus_load_dialog package" href="mantidimaging.gui.windows.nexus_load_dialog.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.move_stack_dialog.presenter module" href="mantidimaging.gui.windows.move_stack_dialog.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.nexus_load_dialog.html" title="mantidimaging.gui.windows.nexus_load_dialog package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.move_stack_dialog.presenter.html" title="mantidimaging.gui.windows.move_stack_dialog.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.move_stack_dialog.html" accesskey="U">mantidimaging.gui.windows.move_stack_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.move_stack_dialog.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.move_stack_dialog.view">
+<span id="mantidimaging-gui-windows-move-stack-dialog-view-module"></span><h1>mantidimaging.gui.windows.move_stack_dialog.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.move_stack_dialog.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.move_stack_dialog.view.</span></span><span class="sig-name descname"><span class="pre">MoveStackDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin_dataset_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin_data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/move_stack_dialog/view.html#MoveStackDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView" title="mantidimaging.gui.mvp_base.view.BaseDialogView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDialogView</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.accept">
+<span class="sig-name descname"><span class="pre">accept</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/move_stack_dialog/view.html#MoveStackDialog.accept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.accept" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destinationTypeComboBox">
+<span class="sig-name descname"><span class="pre">destinationTypeComboBox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destinationTypeComboBox" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_dataset_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">destination_dataset_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_dataset_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_stack_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">destination_stack_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_stack_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDataType">
+<span class="sig-name descname"><span class="pre">originDataType</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDataType" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDatasetName">
+<span class="sig-name descname"><span class="pre">originDatasetName</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QLabel</span></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDatasetName" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.origin_dataset_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin_dataset_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.origin_dataset_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.stack_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.stack_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.move_stack_dialog.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.accept"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.accept()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destinationTypeComboBox"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.destinationTypeComboBox</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_dataset_id"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.destination_dataset_id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.destination_stack_type"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.destination_stack_type</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDataType"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.originDataType</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.originDatasetName"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.originDatasetName</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.origin_dataset_id"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.origin_dataset_id</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.move_stack_dialog.view.MoveStackDialog.stack_id"><code class="docutils literal notranslate"><span class="pre">MoveStackDialog.stack_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.move_stack_dialog.presenter.html"
+                          title="previous chapter">mantidimaging.gui.windows.move_stack_dialog.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.nexus_load_dialog.html"
+                          title="next chapter">mantidimaging.gui.windows.nexus_load_dialog package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.gui.windows.move_stack_dialog.view.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.nexus_load_dialog.html" title="mantidimaging.gui.windows.nexus_load_dialog package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.move_stack_dialog.presenter.html" title="mantidimaging.gui.windows.move_stack_dialog.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.move_stack_dialog.html" >mantidimaging.gui.windows.move_stack_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.move_stack_dialog.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

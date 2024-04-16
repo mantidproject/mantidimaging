@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.auto\_colour\_menu package
+====================================================
+
+.. automodule:: mantidimaging.gui.widgets.auto_colour_menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu

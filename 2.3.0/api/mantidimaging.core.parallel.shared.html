@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.parallel.shared module - MantidImaging 2.3.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.parallel.utility module" href="mantidimaging.core.parallel.utility.html" />
+    <link rel="prev" title="mantidimaging.core.parallel package" href="mantidimaging.core.parallel.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.utility.html" title="mantidimaging.core.parallel.utility module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.html" title="mantidimaging.core.parallel package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.parallel.html" accesskey="U">mantidimaging.core.parallel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel.shared module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.parallel.shared">
+<span id="mantidimaging-core-parallel-shared-module"></span><h1>mantidimaging.core.parallel.shared module<a class="headerlink" href="#module-mantidimaging.core.parallel.shared" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.arithmetic">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">arithmetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#arithmetic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.arithmetic" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.create_partial">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">create_partial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwd_function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#create_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.create_partial" title="Link to this definition">¶</a></dt>
+<dd><p>Create a partial using functools.partial, to forward the kwargs to the
+parallel execution of imap.</p>
+<p>If you seem to be getting nans, check if the correct fwd_function is set!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function that will be executed</p></li>
+<li><p><strong>fwd_function</strong> – The function will be forwarded through function.</p></li>
+<li><p><strong>kwargs</strong> – kwargs to forward to the function func that will be executed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decorated forwarded function, ready for further execution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.execute">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">partial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_operations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Executes a function in parallel with shared memory between the processes.</p>
+<p>The array must have been created using
+parallel.utility.create_shared_array(shape, dtype).</p>
+<p>If the input array IS NOT a shared array, the data will NOT BE CHANGED!</p>
+<p>The reason for that is that the processes don’t work on the data, but on a
+copy.</p>
+<p>When they process it and return the result, THE RESULT IS NOT ASSIGNED BACK
+TO REPLACE THE ORIGINAL, it is discarded.</p>
+<ul class="simple">
+<li><p>imap_unordered gives the images back in random order</p></li>
+<li><p>map and map_async do not improve speed performance</p></li>
+<li><p>imap seems to be the best choice</p></li>
+</ul>
+<p>Using _ in the for _ enumerate is slightly faster, because the tuple
+from enumerate isn’t unpacked, and thus some time is saved.</p>
+<p>From performance tests, the chunksize doesn’t seem to make much of a
+difference, but having larger chunks usually led to slower performance:</p>
+<p>Shape: (50,512,512)
+1 chunk 3.06s
+2 chunks 3.05s
+3 chunks 3.07s
+4 chunks 3.06s
+5 chunks 3.16s
+6 chunks 3.06s
+7 chunks 3.058s
+8 chunks 3.25s
+9 chunks 3.45s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>partial_func</strong> – A function constructed using create_partial</p></li>
+<li><p><strong>num_operations</strong> – The expected number of operations - should match the number of images being processed
+Also used to set the number of progress steps</p></li>
+<li><p><strong>cores</strong> – number of cores that the processing will use</p></li>
+<li><p><strong>progress</strong> – Progress instance to use for progress reporting (optional)</p></li>
+<li><p><strong>msg</strong> – Message to be shown on the progress bar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.inplace1">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">inplace1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#inplace1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.inplace1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.inplace2">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">inplace2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#inplace2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.inplace2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.inplace3">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">inplace3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#inplace3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.inplace3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.inplace_second_2d">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">inplace_second_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#inplace_second_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.inplace_second_2d" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.return_to_second">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">return_to_second</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#return_to_second"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.return_to_second" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.return_to_second_at_i">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">return_to_second_at_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#return_to_second_at_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.return_to_second_at_i" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.parallel.shared.return_to_self">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.parallel.shared.</span></span><span class="sig-name descname"><span class="pre">return_to_self</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/parallel/shared.html#return_to_self"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.parallel.shared.return_to_self" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.parallel.shared module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.arithmetic"><code class="docutils literal notranslate"><span class="pre">arithmetic()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.create_partial"><code class="docutils literal notranslate"><span class="pre">create_partial()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.inplace1"><code class="docutils literal notranslate"><span class="pre">inplace1()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.inplace2"><code class="docutils literal notranslate"><span class="pre">inplace2()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.inplace3"><code class="docutils literal notranslate"><span class="pre">inplace3()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.inplace_second_2d"><code class="docutils literal notranslate"><span class="pre">inplace_second_2d()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.return_to_second"><code class="docutils literal notranslate"><span class="pre">return_to_second()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.return_to_second_at_i"><code class="docutils literal notranslate"><span class="pre">return_to_second_at_i()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.parallel.shared.return_to_self"><code class="docutils literal notranslate"><span class="pre">return_to_self()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.parallel.html"
+                          title="previous chapter">mantidimaging.core.parallel package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.parallel.utility.html"
+                          title="next chapter">mantidimaging.core.parallel.utility module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="mantidimaging.core.parallel.shared.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.utility.html" title="mantidimaging.core.parallel.utility module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.parallel.html" title="mantidimaging.core.parallel package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.3.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.parallel.html" >mantidimaging.core.parallel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.parallel.shared module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

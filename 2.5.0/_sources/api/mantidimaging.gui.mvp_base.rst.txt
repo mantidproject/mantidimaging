@@ -1,0 +1,16 @@
+mantidimaging.gui.mvp\_base package
+===================================
+
+.. automodule:: mantidimaging.gui.mvp_base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.mvp_base.presenter
+   mantidimaging.gui.mvp_base.view

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.dialogs.cor_inspection.model - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.model</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.dialogs.cor_inspection.model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">replace</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct</span> <span class="kn">import</span> <span class="n">get_reconstructor_for</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
+<span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">ImageType</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">INIT_ITERS_CENTRE_VALUE</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">INIT_ITERS_STEP</span> <span class="o">=</span> <span class="mi">50</span>
+
+
+<div class="viewcode-block" id="CORInspectionDialogModel">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel">[docs]</a>
+<span class="k">class</span> <span class="nc">CORInspectionDialogModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
+                 <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">iters_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sino</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
+
+        <span class="c1"># Initial parameters</span>
+        <span class="k">if</span> <span class="n">iters_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">INIT_ITERS_CENTRE_VALUE</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">INIT_ITERS_STEP</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initial_cor</span> <span class="o">=</span> <span class="n">initial_cor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recon_preview</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recon_iters_preview</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_divide_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_divide_iters_step</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">=</span> <span class="n">initial_cor</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">*</span> <span class="mf">0.05</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recon_preview</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recon_cor_preview</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_divide_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_divide_cor_step</span>
+
+        <span class="c1"># Cache projection angles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span> <span class="o">=</span> <span class="n">recon_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_divide_iters_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">_divide_cor_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">/=</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="CORInspectionDialogModel.adjust">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.adjust">[docs]</a>
+    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adjusts the rotation centre/number of iterations and step after an image is selected as the</span>
+<span class="sd">        optimal of an iteration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_divide_step</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CORInspectionDialogModel.cor">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.cor">[docs]</a>
+    <span class="k">def</span> <span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the rotation centre for a given image in the current iteration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_extents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_extents</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CORInspectionDialogModel.iterations">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.iterations">[docs]</a>
+    <span class="k">def</span> <span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span>
+        <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_recon_cor_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="n">cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cor</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="p">,</span> <span class="n">cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_recon_iters_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="n">iters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">new_params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="n">iters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span><span class="p">,</span> <span class="n">new_params</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CORInspectionDialogModel.recon_preview">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.recon_preview">[docs]</a>
+    <span class="k">def</span> <span class="nf">recon_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recon_preview</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cor_extents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="model.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.dialogs.cor_inspection.model</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

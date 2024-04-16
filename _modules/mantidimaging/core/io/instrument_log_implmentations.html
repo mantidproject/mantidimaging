@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.io.instrument_log_implmentations &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log_implmentations</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.io.instrument_log_implmentations</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">locale</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">,</span> <span class="n">LogColumn</span><span class="p">,</span> <span class="n">LogDataType</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.imat_log_file_parser</span> <span class="kn">import</span> <span class="n">IMATLogFile</span><span class="p">,</span> <span class="n">IMATLogColumn</span>
+
+
+<div class="viewcode-block" id="LegacySpectraLogParser">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser">[docs]</a>
+<span class="k">class</span> <span class="nc">LegacySpectraLogParser</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parser for spectra files without a header</span>
+
+<span class="sd">    Tab separated columns of Time of flight [s], Counts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="LegacySpectraLogParser.match">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;spectra.txt&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">delimiter</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="LegacySpectraLogParser.parse">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span> <span class="o">=</span> <span class="p">{</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIME_OF_FLIGHT</span><span class="p">:</span> <span class="p">[],</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">SPECTRUM_COUNTS</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleaned_lines</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIME_OF_FLIGHT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">SPECTRUM_COUNTS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LegacyIMATLogFile">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile">[docs]</a>
+<span class="k">class</span> <span class="nc">LegacyIMATLogFile</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap existing IMATLogFile class&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LegacyIMATLogFile.match">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">has_header</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_header</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_has_imat_header</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="n">has_header</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">has_header</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_has_imat_data_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="LegacyIMATLogFile.parse">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
+        <span class="n">imat_log_file</span> <span class="o">=</span> <span class="n">IMATLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="LegacyIMATLogFile.read_imat_date">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_imat_date</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+        <span class="n">lc</span> <span class="o">=</span> <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%c</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="n">lc</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_has_imat_header</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">HEADERS</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">HEADERS</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_has_imat_data_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">read_imat_date</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">24</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;Projection&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">or</span> <span class="s2">&quot;Radiography&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../index.html">Latest</a></li>
+  <li><a href="../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.instrument_log_implmentations</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

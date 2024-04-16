@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.operations.flat_fielding.flat_fielding module - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.operations.gaussian package" href="mantidimaging.core.operations.gaussian.html" />
+    <link rel="prev" title="mantidimaging.core.operations.flat_fielding package" href="mantidimaging.core.operations.flat_fielding.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.gaussian.html" title="mantidimaging.core.operations.gaussian package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.flat_fielding.html" title="mantidimaging.core.operations.flat_fielding package"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.flat_fielding.html" accesskey="U">mantidimaging.core.operations.flat_fielding package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.flat_fielding.flat_fielding module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.operations.flat_fielding.flat_fielding">
+<span id="mantidimaging-core-operations-flat-fielding-flat-fielding-module"></span><h1>mantidimaging.core.operations.flat_fielding.flat_fielding module<a class="headerlink" href="#module-mantidimaging.core.operations.flat_fielding.flat_fielding" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.flat_fielding.flat_fielding.</span></span><span class="sig-name descname"><span class="pre">FlatFieldFilter</span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter" title="mantidimaging.core.operations.base_filter.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Uses the flat (open beam) and dark images to normalise a stack of images (radiograms, projections),
+and to correct for a beam profile, scintillator imperfections and/or  detector inhomogeneities. This
+operation produces images of transmission values.</p>
+<p>In practice, several open beam and dark images are averaged in the flat-fielding process.</p>
+<p>Intended to be used on: Projections</p>
+<p>When: As one of the first pre-processing steps</p>
+<p>Caution: Make sure the correct stacks are selected for flat and dark.</p>
+<p>Caution: Check that the flat and dark images don’t have any very bright pixels,
+or this will introduce additional noise in the sample. Remove outliers before flat-fielding.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.execute_wrapper">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat_before_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_after_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_before_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_after_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_flat_fielding_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QComboBox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dark_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QCheckBox</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">partial</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter.execute_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.execute_wrapper" title="Link to this definition">¶</a></dt>
+<dd><p>Should construct a partial call to _filter_func using values taken from the widgets passed to this function
+as kwargs.
+:param kwargs: widgets which contain values required for _filter_func.
+:return: a partial call to _filter_func using parameters taken from the input widgets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_func">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_flat_fielding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter.filter_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_func" title="Link to this definition">¶</a></dt>
+<dd><p>Do background correction with flat and dark images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> – Sample data which is to be processed. Expected in radiograms</p></li>
+<li><p><strong>flat_before</strong> – Flat (open beam) image to use in normalization, collected before the sample was imaged</p></li>
+<li><p><strong>flat_after</strong> – Flat (open beam) image to use in normalization, collected after the sample was imaged</p></li>
+<li><p><strong>dark_before</strong> – Dark image to use in normalization, collected before the sample was imaged</p></li>
+<li><p><strong>dark_after</strong> – Dark image to use in normalization, collected after the sample was imaged</p></li>
+<li><p><strong>selected_flat_fielding</strong> – Select which of the flat fielding methods to use, just Before stacks, just After
+stacks or combined.</p></li>
+<li><p><strong>use_dark</strong> – Whether to use dark frame subtraction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered data (stack of images)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_name">
+<span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Flat-fielding'</span></em><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.group_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">group_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup" title="mantidimaging.core.operations.base_filter.FilterGroup"><span class="pre">FilterGroup</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter.group_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.group_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.register_gui">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_gui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter.register_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.register_gui" title="Link to this definition">¶</a></dt>
+<dd><p>Adds any required input widgets to the given form and returns references to them.</p>
+<p>The return values should be in a dict which can be unpacked as kwargs for a call to
+the operations <cite>execute_wrapper</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>view</strong> – </p></li>
+<li><p><strong>form</strong> – the layout to create input widgets in</p></li>
+<li><p><strong>on_change</strong> – the filter view action to be bound to all created inputs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the widgets bound as kwargs which are needed to call execute_wrapper</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.validate_execute_kwargs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_execute_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#FlatFieldFilter.validate_execute_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.validate_execute_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.flat_fielding.flat_fielding.enable_correct_fields_only">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.flat_fielding.flat_fielding.</span></span><span class="sig-name descname"><span class="pre">enable_correct_fields_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selected_flat_fielding_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_before_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_after_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_before_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_after_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dark_frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/flat_fielding/flat_fielding.html#enable_correct_fields_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.enable_correct_fields_only" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.operations.flat_fielding.flat_fielding module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.execute_wrapper()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.filter_func()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.filter_name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.group_name"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.group_name()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.register_gui"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.register_gui()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.validate_execute_kwargs"><code class="docutils literal notranslate"><span class="pre">FlatFieldFilter.validate_execute_kwargs()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.flat_fielding.flat_fielding.enable_correct_fields_only"><code class="docutils literal notranslate"><span class="pre">enable_correct_fields_only()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.flat_fielding.html"
+                          title="previous chapter">mantidimaging.core.operations.flat_fielding package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.operations.gaussian.html"
+                          title="next chapter">mantidimaging.core.operations.gaussian package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="mantidimaging.core.operations.flat_fielding.flat_fielding.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.gaussian.html" title="mantidimaging.core.operations.gaussian package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.operations.flat_fielding.html" title="mantidimaging.core.operations.flat_fielding package"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.operations.html" >mantidimaging.core.operations package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.operations.flat_fielding.html" >mantidimaging.core.operations.flat_fielding package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.flat_fielding.flat_fielding module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

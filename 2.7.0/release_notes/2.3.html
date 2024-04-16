@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Mantid Imaging 2.3 - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.2" href="2.2.html" />
+    <link rel="prev" title="Mantid Imaging 2.4" href="2.4.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.2.html" title="Mantid Imaging 2.2"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.4.html" title="Mantid Imaging 2.4"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.3</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mantid-imaging-2-3">
+<h1>Mantid Imaging 2.3<a class="headerlink" href="#mantid-imaging-2-3" title="Link to this heading">¶</a></h1>
+<p>This release brings some significant new features:</p>
+<dl class="simple">
+<dt>Bad data indicators</dt><dd><p>Show pixel values that can cause issues during reconstruction, NaNs (not a number) caused by missing data or invalid math operations and non-positive values caused by noise or issues with dark frame subtraction.</p>
+</dd>
+<dt>Beam hardening correction</dt><dd><p>Mantid Imaging now implements a linearization correction to compensate for the beam hardening effect.</p>
+</dd>
+<dt>Dataset side-bar</dt><dd><p>The main window now shows a tree-view of loaded datasets and their stacks. Internally Mantid Imaging now has a more structured view of the loaded data, which will allow further user interface improvements.</p>
+</dd>
+<dt>User interface improvements</dt><dd><p>The parameter controls in operations and reconstruction windows now have finer step sizes and better defaults. Auto preview in the reconstruction window can be disabled.</p>
+</dd>
+</dl>
+<p>There have also been many smaller changes and fixes which are listed below.</p>
+<section id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1044 : Command line argument to load a dataset</p></li>
+<li><p>#1023 : Switch from Sarepy to Algotom</p></li>
+<li><p>#1049 : NeXus Loader: 180deg images</p></li>
+<li><p>#1167 : Bad data indicator icons</p></li>
+<li><p>#1185 : Bad data overlays</p></li>
+<li><p>#1168 : Dataset tree view</p></li>
+<li><p>#1202 : NaN Removal filter - replace with median</p></li>
+<li><p>#1205 : Linearisation correction for beam hardening</p></li>
+<li><p>#1197 : Dataset Tree View: Delete image stack</p></li>
+<li><p>#1197 : Dataset Tree View : Show tab from treeview</p></li>
+<li><p>#1200 : Default save option set to float32</p></li>
+<li><p>#1235 : Improvements to input value defaults and spin box step sizes</p></li>
+<li><p>#1230 : Update CIL to 21.3 reducing memory requirements</p></li>
+<li><p>#1191 : Loading 180 should only show datasets</p></li>
+<li><p>#1279 : Add auto update checkbox option to turn off live reconstruction</p></li>
+<li><p>#1273 : Move sinograms into the Dataset</p></li>
+<li><p>#1220 : Make reconstruction window side bar scrollable for smaller screens</p></li>
+<li><p>#1280 : Don’t display full file path for loaded images in the tree view</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1138 : Improve version number handling</p></li>
+<li><p>#1134 : NeXus Loader: OSError</p></li>
+<li><p>#1178 : –operation argument sometimes opens wrong operation</p></li>
+<li><p>#1117 : Median operation preserves NaNs</p></li>
+<li><p>#1151 : IndexError with sinograms and stripe tools</p></li>
+<li><p>#1174 : TypeError in link_before_after_histogram_scales</p></li>
+<li><p>#1161 : Remove run_ring_removal argument from Ring Removal operation and always run filter</p></li>
+<li><p>#1226 : AttributeError when trying to open reconstruction auto colour dialog</p></li>
+<li><p>#1236 : Aspect ratio not preserved in COR inspector or operations window</p></li>
+<li><p>#1162 : Raise exceptions when invalid parameter values are passed to filter functions</p></li>
+<li><p>#1248 : Rebin operations not working for small image dimensions</p></li>
+<li><p>#1190 : Add recon item to right part of tree view</p></li>
+<li><p>#1239 : 180 warning when applying ring removal to recon</p></li>
+<li><p>#1297 : Auto colour dialog not working in compare images</p></li>
+<li><p>#1292 : Attribute error if apply filter after closing and re-opening Operations window</p></li>
+<li><p>#1294 : Dataset Tree View: Allow for deleting recons</p></li>
+<li><p>#1289 : Trigger recon redraws when stack is modified</p></li>
+<li><p>#1299 : CIL: when reconstructing from sinograms use right dimensions and ordering</p></li>
+<li><p>#1305 : Delete recon group from tree view</p></li>
+<li><p>#1285 : Error when load two 180 stacks</p></li>
+<li><p>#1278 : It should not be possible to attempt loading 180 projections to a MixedDataset</p></li>
+<li><p>#1311 : Operation applied to 180 twice</p></li>
+<li><p>#1310 : Disable Auto color menu item when no image shown</p></li>
+<li><p>#1295 : Failed recon still increments recon counter</p></li>
+<li><p>#1313 : Restore metadata when choosing original</p></li>
+<li><p>#1324 : Bad data overlay not showing with large files</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1022 : Switch to use Mambaforge</p></li>
+<li><p>#1085 : Fix rotation of images in GUI tests</p></li>
+<li><p>#1045 : Command line argument to open Operation or Reconstruction windows</p></li>
+<li><p>#1154 : collections.abc is deprecated</p></li>
+<li><p>#1155 : DeprecationWarning an integer is required self.progressBar.setValue</p></li>
+<li><p>#1153 : Remove package_name argument from load_filter_packages</p></li>
+<li><p>#1172 : Add MIMiniImageView widget</p></li>
+<li><p>#1070 : Remove pytest repeat</p></li>
+<li><p>#1182 : Handle exception in _post_filter</p></li>
+<li><p>#1173 : Sometimes tests open many operations windows</p></li>
+<li><p>#860  : Clean up super calls to use python 3 syntax</p></li>
+<li><p>#1181 : Version check update command uses mamba if available</p></li>
+<li><p>#1212 : Model Change: Put everything in datasets</p></li>
+<li><p>#1245 : Remove empty init methods from test classes</p></li>
+<li><p>#1251 : System tests: test_correlate ValueError</p></li>
+<li><p>#1259 : Update license year in code files and add pre-commit check</p></li>
+<li><p>#1243  #1276 : Stack selector based on datasets</p></li>
+<li><p>#1184 : Make more use of QTest in gui testing</p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>2.3.1<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1332 : Load dataset dialog wont accept non standard names</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mantid Imaging 2.3</a><ul>
+<li><a class="reference internal" href="#new-features">New Features</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#developer-changes">Developer Changes</a></li>
+<li><a class="reference internal" href="#id1">2.3.1</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="2.4.html"
+                          title="previous chapter">Mantid Imaging 2.4</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="2.2.html"
+                          title="next chapter">Mantid Imaging 2.2</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/release_notes/2.3.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/release_notes/2.3.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/release_notes/2.3.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/release_notes/2.3.html">2.6.0</a></li>
+  <li><a href="2.3.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.2.html" title="Mantid Imaging 2.2"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.4.html" title="Mantid Imaging 2.4"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.3</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

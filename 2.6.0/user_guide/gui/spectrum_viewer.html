@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Spectrum Viewer - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Operations" href="../operations/index.html" />
+    <link rel="prev" title="Reconstruction Window" href="recon_window.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../operations/index.html" title="Operations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="recon_window.html" title="Reconstruction Window"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" accesskey="U">Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Spectrum Viewer</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="spectrum-viewer">
+<h1>Spectrum Viewer<a class="headerlink" href="#spectrum-viewer" title="Link to this heading">¶</a></h1>
+<p>Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI.
+The spectrum viewer can be used to export the spectrum of each ROI and its respective coordinates to a separate csv file.</p>
+<p>The spectrum viewer can be accessed from the main menu under “Workflow” &gt; “Spectrum Viewer”.</p>
+<p>To try out the spectrum viewer, you find a basic example workflow to follow within <a class="reference external" href="https://mantidproject.github.io/mantidimaging/user_guide/quick_start.html">quick start</a></p>
+<a class="reference internal image-reference" href="../../_images/spectrum_viewer.png"><img alt="Spectrum Viewer" src="../../_images/spectrum_viewer.png" style="width: 90%;" /></a>
+<p>Above you can see that the spectrum viewer consists of a left hand side panel and a right hand side panel.
+The left hand side panel contains the ROI selection tools and the right hand side panel contains the spectrum plot.</p>
+<p>Similar to the image view <a class="reference external" href="https://mantidproject.github.io/mantidimaging/user_guide/gui/image_view.html">image_view</a>, the spectrum viewer has a histogram view to the right of the sample image to control the brightness and contrast of the displayed image.
+To read more about the histogram view see <a class="reference external" href="https://mantidproject.github.io/mantidimaging/user_guide/gui/image_view.html">image_view</a> .</p>
+<p>Below the sample image is the spectrum line plot, which shows the intensity of each ROI as a function of the TOF value.
+You can select the TOF range to be displayed by clicking and dragging the mouse over the vertical bars on the left and right of the plot.</p>
+<section id="rois">
+<h2>ROIs<a class="headerlink" href="#rois" title="Link to this heading">¶</a></h2>
+<p>Using the ROI selection tools, you can add, rename and remove many ROIs to the spectrum viewer and view the spectrum of each ROI.
+When you are happy with the ROIs you have created and positioned over the sample image, you can export the spectrum of each ROI and its respective coordinates to a separate csv file using the “Export spectrum” button.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Spectrum Viewer</a><ul>
+<li><a class="reference internal" href="#rois">ROIs</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="recon_window.html"
+                          title="previous chapter">Reconstruction Window</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../operations/index.html"
+                          title="next chapter">Operations</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../index.html">Latest</a></li>
+  <li><a href="../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../2.5.0/user_guide/gui/spectrum_viewer.html">2.5.0</a></li>
+  <li><a href="spectrum_viewer.html">2.6.0</a></li>
+  <li><a href="../../../2.7.0/user_guide/gui/spectrum_viewer.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../operations/index.html" title="Operations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="recon_window.html" title="Reconstruction Window"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../index.html" >User Guide</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="index.html" >Graphical User Interface (GUI)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Spectrum Viewer</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

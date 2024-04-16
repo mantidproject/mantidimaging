@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.core.operations.nan_removal.nan_removal - MantidImaging 2.6.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.nan_removal.nan_removal</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.core.operations.nan_removal.nan_removal</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">scipy_ndimage</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QWidget</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+
+<div class="viewcode-block" id="enable_correct_fields_only">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.enable_correct_fields_only">[docs]</a>
+<span class="k">def</span> <span class="nf">enable_correct_fields_only</span><span class="p">(</span><span class="n">mode_field</span><span class="p">,</span> <span class="n">replace_value_field</span><span class="p">):</span>
+    <span class="n">replace_value_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">mode_field</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Constant&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="NaNRemovalFilter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter">[docs]</a>
+<span class="k">class</span> <span class="nc">NaNRemovalFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Replaces the NaNs with a specified value or the median of neighbouring pixels.</span>
+
+<span class="sd">    Intended to be used on: Projections</span>
+
+<span class="sd">    When: To remove NaNs before reconstruction.</span>
+
+<span class="sd">    Note that the median method cannot remove continuous blocks of NaNs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;NaN Removal&quot;</span>
+    <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">MODES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;Median&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="NaNRemovalFilter.filter_func">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_func">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">replace_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode_value</span><span class="o">=</span><span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param data: The input data.</span>
+<span class="sd">        :param mode_value: Values to replace NaNs with. One of [&quot;Constant&quot;, &quot;Median&quot;]</span>
+<span class="sd">        :param replace_value: In constant mode, the value to replace NaNs with.</span>
+<span class="sd">        :param progress: The optional Progress object.</span>
+<span class="sd">        :return: The ImageStack object with the NaNs replaced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">&quot;Constant&quot;</span><span class="p">:</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">nan_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+            <span class="n">sample</span><span class="p">[</span><span class="n">nan_idxs</span><span class="p">]</span> <span class="o">=</span> <span class="n">replace_value</span>
+        <span class="k">elif</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">&quot;Median&quot;</span><span class="p">:</span>
+            <span class="n">_execute</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown mode: &#39;</span><span class="si">{</span><span class="n">mode_value</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">Should be one of </span><span class="si">{</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">MODES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="NaNRemovalFilter.register_gui">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.register_gui">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="s1">&#39;QFormLayout&#39;</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="s1">&#39;BaseMainWindowView&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;QWidget&#39;</span><span class="p">]:</span>
+        <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
+
+        <span class="n">value_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">mode_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Replace with&#39;</span><span class="p">,</span>
+                                             <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
+                                             <span class="n">valid_values</span><span class="o">=</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">MODES</span><span class="p">,</span>
+                                             <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                             <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Values used to replace NaNs&quot;</span><span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">replace_value_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Replacement Value&quot;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+                                                      <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
+                                                      <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                                      <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                                      <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The value to replace the NaNs with&quot;</span><span class="p">)</span>
+        <span class="n">replace_value_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+        <span class="n">mode_field</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">enable_correct_fields_only</span><span class="p">(</span><span class="n">mode_field</span><span class="p">,</span> <span class="n">replace_value_field</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mode_field&quot;</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">,</span> <span class="s2">&quot;replace_value_field&quot;</span><span class="p">:</span> <span class="n">replace_value_field</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="NaNRemovalFilter.execute_wrapper">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.execute_wrapper">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">mode_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace_value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">mode_value</span> <span class="o">=</span> <span class="n">mode_field</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">replace_value</span> <span class="o">=</span> <span class="n">replace_value_field</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">replace_value</span><span class="o">=</span><span class="n">replace_value</span><span class="p">,</span> <span class="n">mode_value</span><span class="o">=</span><span class="n">mode_value</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_nan_to_median</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edgemode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">nans</span><span class="p">):</span>
+        <span class="n">median_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nans</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">median_data</span> <span class="o">=</span> <span class="n">scipy_ndimage</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">median_data</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">edgemode</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nans</span><span class="p">,</span> <span class="n">median_data</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+            <span class="c1"># Convert any left over -infs back to NaNs</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">nans</span><span class="p">,</span> <span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">edgemode</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;NaN Removal&#39;</span><span class="p">)</span>
+
+    <span class="c1"># create the partial function to forward the parameters</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">create_partial</span><span class="p">(</span><span class="n">_nan_to_median</span><span class="p">,</span> <span class="n">ps</span><span class="o">.</span><span class="n">return_to_self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">edgemode</span><span class="o">=</span><span class="n">edgemode</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PARALLEL NaN Removal filter, with pixel data type: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
+        <span class="n">ps</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">progress</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;NaN Removal&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">images</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="nan_removal.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.6.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.operations.nan_removal.nan_removal</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

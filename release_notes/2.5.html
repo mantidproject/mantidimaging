@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>Mantid Imaging 2.5 &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.4" href="2.4.html" />
+    <link rel="prev" title="Mantid Imaging 2.6" href="2.6.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.4.html" title="Mantid Imaging 2.4"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.6.html" title="Mantid Imaging 2.6"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.5</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mantid-imaging-2-5">
+<h1>Mantid Imaging 2.5<a class="headerlink" href="#mantid-imaging-2-5" title="Link to this heading">¶</a></h1>
+<p>This release brings some significant new features:</p>
+<dl class="simple">
+<dt>Stochastic PDHG Reconstruction</dt><dd><p>New reconstruction option from CIL. This gives faster convergence and lower memory usage by splitting the input data into subsets.</p>
+</dd>
+<dt>Golden Ratio datasets</dt><dd><p>Datasets recorded using the golden ration method can now be opened correctly, using angle information in the log file.</p>
+</dd>
+<dt>Performance improvements</dt><dd><ul class="simple">
+<li><p>Startup time</p></li>
+<li><p>Arithmetic filter</p></li>
+<li><p>CIL reconstruction</p></li>
+<li><p>TIFF loading</p></li>
+</ul>
+</dd>
+<dt>Spectrum Viewer</dt><dd><p>Complete the base feature set of the Spectrum viewer.</p>
+<ul class="simple">
+<li><p>Multiple ROIs and spectrum plots</p></li>
+<li><p>Output ROI coordinates</p></li>
+</ul>
+</dd>
+<dt>User interface improvements</dt><dd><ul class="simple">
+<li><p>Better stack selection in main window</p></li>
+<li><p>Modifying image stack in a dataset</p></li>
+<li><p>Operations ROI defaults to a sensible size</p></li>
+</ul>
+</dd>
+<dt>Improved Nexus Support</dt><dd><ul class="simple">
+<li><p>Loading reconstructions</p></li>
+<li><p>Better nexus spec conformance</p></li>
+<li><p>Saving data as float32 (for NXtomoproc this is not yet in the official spec)</p></li>
+</ul>
+</dd>
+<dt>Windows Installer</dt><dd><p>See <a class="reference internal" href="../installation.html#installing-with-windows-installer"><span class="std std-ref">Installing with Windows installer</span></a></p>
+</dd>
+</dl>
+<p>There have also been many smaller changes and fixes which are listed below.</p>
+<section id="new-features-and-improvements">
+<h2>New Features and improvements<a class="headerlink" href="#new-features-and-improvements" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1601 : arithmetic filter optimisation</p></li>
+<li><p>#1620 : Add multiple ROI to spectrum viewer</p></li>
+<li><p>#1616 : Change selected stack with single click on tree widget</p></li>
+<li><p>#1625 : Allow adding extra stacks to a dataset</p></li>
+<li><p>#1625 : Load recons to an existing dataset</p></li>
+<li><p>#1625 : Change selection in tree view when switching tabs</p></li>
+<li><p>#1626 : Move stacks between datasets</p></li>
+<li><p>#1622 : Add, Remove and Rename ROIs in spectrum viewer</p></li>
+<li><p>#1464 : NeXus Recon: Add entry/reconstruction/date information</p></li>
+<li><p>#1463 : NeXus Recon: Add entry/SAMPLE/name information</p></li>
+<li><p>#1468 : NeXus Recon: Load recons</p></li>
+<li><p>#1467 : NeXus Recon: Add other entry/data information</p></li>
+<li><p>#1661 : Use <cite>tifffile</cite> for writing and reading tiff files</p></li>
+<li><p>#1512, #1725 : Speedups for CIL setup</p></li>
+<li><p>#1465 : NeXus Recon: Add entry/reconstruction/parameters information</p></li>
+<li><p>#1666 : PyInstaller single file</p></li>
+<li><p>#1665 : PyInstaller exe icon</p></li>
+<li><p>#1680 : Multiple Spectrum Line Plots in Spectrum Viewer</p></li>
+<li><p>#1691 : Remove “Beta” from spectrum viewer</p></li>
+<li><p>#1697 : For NXtomoproc store data in float32</p></li>
+<li><p>#1711 : Update CIL to 22.2.0</p></li>
+<li><p>#1714 : Improve ROI hover behavior within Spectrum Viewer to be more intuitive.</p></li>
+<li><p>#1664 : PyInstaller version at build time</p></li>
+<li><p>#1632 : Add Stochastic PDHG</p></li>
+<li><p>#1696 : Export ROI positional data following Pascal VOC format in separate <cite>.csv</cite> when exporting spectrum data in spectrum view.</p></li>
+<li><p>#1225 : Loading of Golden Ratio datasets</p></li>
+<li><p>#1739 : Load processed NeXus data</p></li>
+<li><p>#1762 : NSIS installer for Windows</p></li>
+<li><p>#1765 : NeXus float/int save option</p></li>
+<li><p>#1588 : Improve application startup time</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1589 : Recommend new update command</p></li>
+<li><p>#1330 : Initial ROI box is sometimes much larger than image for relevant filters</p></li>
+<li><p>#1602 : Prevent multiple ROI selector windows opening from Operations window</p></li>
+<li><p>#1610 : Apply bug fix to disable Spectrum Viewer export button when no data is loaded</p></li>
+<li><p>#1669 : Fix table or ROIs falling out of synchronisation with ROIs visible in the image when changing between samples</p></li>
+<li><p>#1659 : PyInstaller missing cupy files</p></li>
+<li><p>#1657 : PyInstaller: order of operations in menu is not sorted</p></li>
+<li><p>#1712 : Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer</p></li>
+<li><p>#1219 : Fix image_180deg.tiff being included in sample stack</p></li>
+<li><p>#1730 : Allow any characters in filenames</p></li>
+<li><p>#1698 : Store processed (but not reconstructed) data in a different place in the nexus file</p></li>
+<li><p>#1748 : Stop BHC promoting data arrays to float64</p></li>
+<li><p>#1747 : Fix API links in docs</p></li>
+<li><p>#1721 : For SPDHG show projections per subset</p></li>
+<li><p>#1720 : Update memory requirements for SPDHG</p></li>
+<li><p>#1742 : Restore native dialogs on Linux</p></li>
+<li><p>#1761 : Hide float64 loading</p></li>
+<li><p>#1774 : Force numexpr from conda-forge channel</p></li>
+<li><p>#1779 : Saving images with log file loaded</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>#1472 : Investigate issues reported by flake8-bugbear</p></li>
+<li><p>#1607 : Add flake8-bugbear to environment, github actions and precommit</p></li>
+<li><p>#1613 : Refactor Operations window ROI selector to be in its own class</p></li>
+<li><p>#1652 : PEP440 compliant versions for alpha builds</p></li>
+<li><p>#1595 : Store version number in package</p></li>
+<li><p>#1663 : Postponed Evaluation of Annotations</p></li>
+<li><p>#1670 : <cite>tostring()</cite> Deprecation Warning</p></li>
+<li><p>#1673 : Update license year across the repository from 2022 to 2023</p></li>
+<li><p>#1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI <cite>–path</cite> flag</p></li>
+<li><p>#1695 : Use FilenameGroup for Load Images</p></li>
+<li><p>#1693 : Increase test coverage for spectrum widget</p></li>
+<li><p>#1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer</p></li>
+<li><p>#1630 : Update numexpr to 2.8 to resolve dependency deprecation warning</p></li>
+<li><p>#1641 : More robust logging and error handling in automated testing</p></li>
+<li><p>#1643 : Deprecations in GitHub actions</p></li>
+<li><p>#1726, #1728 : Use FilenameGroup for Load Dataset</p></li>
+<li><p>#1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry</p></li>
+<li><p>#1757 : CLI log level only on to mantidimaging</p></li>
+<li><p>#1788 : Switch to separate Windows and Linux conda packages</p></li>
+</ul>
+</section>
+</section>
+<section id="mantid-imaging-2-5-1">
+<h1>Mantid Imaging 2.5.1<a class="headerlink" href="#mantid-imaging-2-5-1" title="Link to this heading">¶</a></h1>
+<p>This release contains backported fixes for the following issues</p>
+<ul class="simple">
+<li><p>#1864 : Add log file normalisation to support older log file formats</p></li>
+<li><p>#1865 : Be less strict when finding flat and dark</p></li>
+<li><p>#1870 : Load all file in the extra digits case</p></li>
+<li><p>#1887 : Better error message for corrupt TIFF file</p></li>
+<li><p>#1888 : Don’t return files beginning with a dot when finding related</p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mantid Imaging 2.5</a><ul>
+<li><a class="reference internal" href="#new-features-and-improvements">New Features and improvements</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#developer-changes">Developer Changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantid-imaging-2-5-1">Mantid Imaging 2.5.1</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="2.6.html"
+                          title="previous chapter">Mantid Imaging 2.6</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="2.4.html"
+                          title="next chapter">Mantid Imaging 2.4</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../index.html">Latest</a></li>
+  <li><a href="../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2.4.html" title="Mantid Imaging 2.4"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.6.html" title="Mantid Imaging 2.6"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="index.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mantid Imaging 2.5</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

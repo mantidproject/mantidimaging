@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.widgets.line_profile_plot.view - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.line_profile_plot.view</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.widgets.line_profile_plot.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QRect</span><span class="p">,</span> <span class="n">QPoint</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">GraphicsLayout</span><span class="p">,</span> <span class="n">LineSegmentROI</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.close_enough_point</span> <span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_image_view.view</span> <span class="kn">import</span> <span class="n">MIImageView</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="LineProfilePlot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.LineProfilePlot">[docs]</a>
+<span class="k">class</span> <span class="nc">LineProfilePlot</span><span class="p">(</span><span class="n">GraphicsLayout</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_view</span><span class="p">:</span> <span class="n">MIMiniImageView</span> <span class="o">|</span> <span class="n">MIImageView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addPlot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span> <span class="o">=</span> <span class="n">ImageViewLineROI</span><span class="p">(</span><span class="n">image_view</span><span class="p">,</span> <span class="n">reset_menu_name</span><span class="o">=</span><span class="s2">&quot;Reset Profile Line&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LineProfilePlot.cleanup">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.LineProfilePlot.cleanup">[docs]</a>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LineProfilePlot.update">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.LineProfilePlot.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span><span class="o">.</span><span class="n">get_image_region</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_region</span><span class="p">,</span> <span class="n">coords</span> <span class="o">=</span> <span class="n">region</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_line_profile</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">image_region</span><span class="p">)</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">([</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">([</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;start x=</span><span class="si">{</span><span class="n">start</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s1">, y=</span><span class="si">{</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s1"> | end x=</span><span class="si">{</span><span class="n">end</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s1">, y=</span><span class="si">{</span><span class="n">end</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s1"> | length=</span><span class="si">{</span><span class="n">image_region</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LineProfilePlot.reset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.LineProfilePlot.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span><span class="o">.</span><span class="n">reset_is_needed</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Even if we don&#39;t need to move the ROI line, we may have new image data to plot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LineProfilePlot.clear_plot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.LineProfilePlot.clear_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Calling self._line_profile.clear() seems to be very slow, so we use this approach instead</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ImageViewLineROI">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI">[docs]</a>
+<span class="k">class</span> <span class="nc">ImageViewLineROI</span><span class="p">(</span><span class="n">LineSegmentROI</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_view</span><span class="p">:</span> <span class="n">MIMiniImageView</span> <span class="o">|</span> <span class="n">MIImageView</span><span class="p">,</span> <span class="n">reset_menu_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">pen</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span> <span class="o">=</span> <span class="n">image_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_reset_menu_option</span><span class="p">(</span><span class="n">reset_menu_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line_is_visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checkpoint_bounds</span><span class="p">:</span> <span class="n">QRect</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># We can&#39;t add the ROI line until we have some image data dimensions to position it</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_data_exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_roi_to_image</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ImageViewLineROI.cleanup">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.cleanup">[docs]</a>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span></div>
+
+
+<div class="viewcode-block" id="ImageViewLineROI.checkPointMove">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.checkPointMove">[docs]</a>
+    <span class="k">def</span> <span class="nf">checkPointMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_handle</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">QPoint</span><span class="p">,</span> <span class="n">_modifiers</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkpoint_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">new_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span><span class="o">.</span><span class="n">mapSceneToView</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkpoint_bounds</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">new_point</span><span class="o">.</span><span class="n">toPoint</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="ImageViewLineROI.get_image_region">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.get_image_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_image_region</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_data_exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line_is_visible</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_roi_to_image</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArrayRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_data</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="p">,</span>
+                                   <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                   <span class="n">returnMappedCoords</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageViewLineROI.reset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_data_exists</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line_is_visible</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_initial_state</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">autoRange</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ImageViewLineROI.reset_is_needed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.reset_is_needed">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_is_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_data_exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line_is_visible</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">image_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">image_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxBounds</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">!=</span> <span class="n">image_width</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxBounds</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">!=</span> <span class="n">image_height</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_image_data_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_set_initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Prevent emitting a RegionChanged signal from setting the state programmatically</span>
+        <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">initial_pos_x</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">initial_pos_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">image_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+            <span class="n">image_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">initial_pos_x</span><span class="p">,</span> <span class="n">initial_pos_y</span><span class="p">),</span> <span class="p">(</span><span class="n">image_width</span><span class="p">,</span> <span class="n">initial_pos_y</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span><span class="p">)</span>
+            <span class="c1"># maxBounds seem to work relative to the initial position of the ROI line rather than defining</span>
+            <span class="c1"># a fixed location, so we need to define a second set of bounds that uses a fixed location for the</span>
+            <span class="c1"># ROI line handles</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxBounds</span> <span class="o">=</span> <span class="n">QRect</span><span class="p">(</span><span class="mi">0</span> <span class="o">-</span> <span class="n">initial_pos_x</span><span class="p">,</span> <span class="mi">0</span> <span class="o">-</span> <span class="n">initial_pos_y</span><span class="p">,</span> <span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checkpoint_bounds</span> <span class="o">=</span> <span class="n">QRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_roi_to_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_initial_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Calling autoRange on the viewbox seems to change the effect of the ROI bounds when you drag the line to the</span>
+        <span class="c1"># very right (before autoRange is called it causes the image to zoom out, but after it&#39;s called the right hand</span>
+        <span class="c1"># side of the line just disappears off the preview).</span>
+        <span class="c1"># We call autoRange here as soon as the line is added so that the behaviour is always consistent.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">autoRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_line_is_visible</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_reset_menu_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reset_menu_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">menu_name</span> <span class="o">=</span> <span class="n">reset_menu_name</span> <span class="k">if</span> <span class="n">reset_menu_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;Reset ROI line&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">menu_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">insertSeparator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reset_option</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_option</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="view.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.widgets.line_profile_plot.view</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

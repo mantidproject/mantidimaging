@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.indicator\_icon package
+=================================================
+
+.. automodule:: mantidimaging.gui.widgets.indicator_icon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.indicator_icon.view

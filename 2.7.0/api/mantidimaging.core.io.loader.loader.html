@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.core.io.loader.loader module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.io.csv_output module" href="mantidimaging.core.io.csv_output.html" />
+    <link rel="prev" title="mantidimaging.core.io.loader.img_loader module" href="mantidimaging.core.io.loader.img_loader.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.csv_output.html" title="mantidimaging.core.io.csv_output module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.loader.img_loader.html" title="mantidimaging.core.io.loader.img_loader module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" >mantidimaging.core.io package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.io.loader.html" accesskey="U">mantidimaging.core.io.loader package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.loader.loader module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.core.io.loader.loader">
+<span id="mantidimaging-core-io-loader-loader-module"></span><h1>mantidimaging.core.io.loader.loader module<a class="headerlink" href="#module-mantidimaging.core.io.loader.loader" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.ImageParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">ImageParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Indices" title="mantidimaging.core.utility.data_containers.Indices"><span class="pre">Indices</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#ImageParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.ImageParameters" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Dataclass to hold info about an image stack that is to be loaded. Used with LoadingParameters</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.ImageParameters.file_group">
+<span class="sig-name descname"><span class="pre">file_group</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.ImageParameters.file_group" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.ImageParameters.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Indices" title="mantidimaging.core.utility.data_containers.Indices"><span class="pre">Indices</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.ImageParameters.indices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.ImageParameters.log_file">
+<span class="sig-name descname"><span class="pre">log_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.ImageParameters.log_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">LoadingParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stacks:</span> <span class="pre">dict[~mantidimaging.core.utility.data_containers.FILE_TYPES</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~mantidimaging.core.io.loader.loader.ImageParameters]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sinograms:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#LoadingParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Dataclass to hold info about a dataset that is about to be loaded. Used to transfer information from ImageLoadDialog
+to the loading code.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'float32'</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters.dtype" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters.image_stacks">
+<span class="sig-name descname"><span class="pre">image_stacks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES" title="mantidimaging.core.utility.data_containers.FILE_TYPES"><span class="pre">FILE_TYPES</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.io.loader.loader.ImageParameters" title="mantidimaging.core.io.loader.loader.ImageParameters"><span class="pre">ImageParameters</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters.image_stacks" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters.pixel_size">
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters.pixel_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.LoadingParameters.sinograms">
+<span class="sig-name descname"><span class="pre">sinograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#mantidimaging.core.io.loader.loader.LoadingParameters.sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">create_loading_parameters_for_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters" title="mantidimaging.core.io.loader.loader.LoadingParameters"><span class="pre">LoadingParameters</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#create_loading_parameters_for_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.get_loader">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">get_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#get_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.get_loader" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.load">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filename_group:</span> <span class="pre">FilenameGroup,</span> <span class="pre">dtype:</span> <span class="pre">npt.DTypeLike</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.float32'&gt;,</span> <span class="pre">indices:</span> <span class="pre">Optional[Union[List[int],</span> <span class="pre">Indices]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">progress:</span> <span class="pre">Optional[Progress]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">log_file:</span> <span class="pre">Optional[Path]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.load" title="Link to this definition">¶</a></dt>
+<dd><p>Loads a stack, including sample, white and dark images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – Default:np.float32, data type for the input images</p></li>
+<li><p><strong>filename_group</strong> – FilenameGroup to provided file names for loading</p></li>
+<li><p><strong>indices</strong> – Specify which indices are loaded from the found files.
+This <strong>DOES NOT</strong> check for the number in the image
+filename, but removes all indices from the filenames list
+that are not selected</p></li>
+<li><p><strong>progress</strong> – The progress reporting instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>an ImageStack</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.load_log">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">load_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog" title="mantidimaging.core.io.instrument_log.InstrumentLog"><span class="pre">InstrumentLog</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#load_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.load_log" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.load_stack_from_group">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">load_stack_from_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup" title="mantidimaging.core.io.filenames.FilenameGroup"><span class="pre">FilenameGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#load_stack_from_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.load_stack_from_group" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.load_stack_from_image_params">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">load_stack_from_image_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_params:</span> <span class="pre">ImageParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress:</span> <span class="pre">Optional[Progress]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype:</span> <span class="pre">npt.DTypeLike</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.float32'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#load_stack_from_image_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.load_stack_from_image_params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mantidimaging.core.io.loader.loader.read_image_dimensions">
+<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.loader.loader.</span></span><span class="sig-name descname"><span class="pre">read_image_dimensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/loader/loader.html#read_image_dimensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.loader.loader.read_image_dimensions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.core.io.loader.loader module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.ImageParameters"><code class="docutils literal notranslate"><span class="pre">ImageParameters</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.ImageParameters.file_group"><code class="docutils literal notranslate"><span class="pre">ImageParameters.file_group</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.ImageParameters.indices"><code class="docutils literal notranslate"><span class="pre">ImageParameters.indices</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.ImageParameters.log_file"><code class="docutils literal notranslate"><span class="pre">ImageParameters.log_file</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters"><code class="docutils literal notranslate"><span class="pre">LoadingParameters</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters.dtype"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.dtype</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters.image_stacks"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.image_stacks</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters.name"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.name</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters.pixel_size"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.pixel_size</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.LoadingParameters.sinograms"><code class="docutils literal notranslate"><span class="pre">LoadingParameters.sinograms</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path"><code class="docutils literal notranslate"><span class="pre">create_loading_parameters_for_file_path()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.get_loader"><code class="docutils literal notranslate"><span class="pre">get_loader()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.load_log"><code class="docutils literal notranslate"><span class="pre">load_log()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.load_stack_from_group"><code class="docutils literal notranslate"><span class="pre">load_stack_from_group()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.load_stack_from_image_params"><code class="docutils literal notranslate"><span class="pre">load_stack_from_image_params()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.loader.loader.read_image_dimensions"><code class="docutils literal notranslate"><span class="pre">read_image_dimensions()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.loader.img_loader.html"
+                          title="previous chapter">mantidimaging.core.io.loader.img_loader module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.core.io.csv_output.html"
+                          title="next chapter">mantidimaging.core.io.csv_output module</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.core.io.loader.loader.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.csv_output.html" title="mantidimaging.core.io.csv_output module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.core.io.loader.img_loader.html" title="mantidimaging.core.io.loader.img_loader module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.core.html" >mantidimaging.core package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.core.io.html" >mantidimaging.core.io package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.core.io.loader.html" >mantidimaging.core.io.loader package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.core.io.loader.loader module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

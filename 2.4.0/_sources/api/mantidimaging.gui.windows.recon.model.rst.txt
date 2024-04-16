@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.recon.model module
+============================================
+
+.. automodule:: mantidimaging.gui.windows.recon.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

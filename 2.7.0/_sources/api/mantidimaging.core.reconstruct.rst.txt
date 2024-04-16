@@ -1,0 +1,18 @@
+mantidimaging.core.reconstruct package
+======================================
+
+.. automodule:: mantidimaging.core.reconstruct
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.reconstruct.astra_recon
+   mantidimaging.core.reconstruct.base_recon
+   mantidimaging.core.reconstruct.cil_recon
+   mantidimaging.core.reconstruct.tomopy_recon

@@ -1,0 +1,32 @@
+Mantid Imaging 2.7
+==================
+
+New Features
+------------
+- #1912 : Support sub-directories in Live viewer
+- #1941 : Spectrum viewer tab for exporting to RITS
+- #1943 : RITS export transmission errors
+- #1945 : Export Binned RITS Formatted Data within Spectrum Viewer.
+- #1957 : ROI support for RITS export
+- #1992 : Spectrum Viewer: Change ROI Colour Through Right Click Dialog Menu
+- #1996 : Added .fits file compatibility for Live Viewer
+- #2026: Time of flight graph in the Spectrum Viewer is now resizable
+- #2027: The Spectrum ROI details display in an adjustable table via spinboxes
+- #2048: Update spectrum documentation to reflect changes made to the Spectrum Viewer.
+
+Fixes
+-----
+- #1873 : fix typeError: qWait(ms: int): argument 1 has unexpected type 'float'
+- #1966: ExecutionTimer unit test fails intermittently for Windows GitHub Action
+- #2002 : Better default values in Remove all stripes
+- #2009 : Improve type annotation in gui.windows.recon
+- #2012 : numpy2 deprication
+- #2031 : Speed up imageview by avoiding unneeded calculation
+
+Developer Changes
+-----------------
+- #1932 : RITS Export Backend
+- #1951 : Various fixes to speedup pytest
+- #1955 : Add InstrumentLog as new log reader
+- #1960 : Update developer tools
+- #2011 : Move to a new conda repo https://anaconda.org/mantidimaging/mantidimaging

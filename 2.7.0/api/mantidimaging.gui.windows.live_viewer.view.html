@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.live_viewer.view module - MantidImaging 2.7.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=a6dc6fbf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.main package" href="mantidimaging.gui.windows.main.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.live_viewer.presenter module" href="mantidimaging.gui.windows.live_viewer.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.main.html" title="mantidimaging.gui.windows.main package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.live_viewer.presenter.html" title="mantidimaging.gui.windows.live_viewer.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.live_viewer.html" accesskey="U">mantidimaging.gui.windows.live_viewer package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.live_viewer.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.live_viewer.view">
+<span id="mantidimaging-gui-windows-live-viewer-view-module"></span><h1>mantidimaging.gui.windows.live_viewer.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.live_viewer.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.live_viewer.view.</span></span><span class="sig-name descname"><span class="pre">LiveViewerWindowView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">live_dir_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMainWindowView</span></code></a></p>
+<p>Live Viewer window view class.
+This class is responsible for handling user interaction with the window.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.closeEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Close the window and remove it from the main window list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.imageLayout">
+<span class="sig-name descname"><span class="pre">imageLayout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QVBoxLayout</span></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.imageLayout" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.remove_image">
+<span class="sig-name descname"><span class="pre">remove_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.remove_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.remove_image" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the image from the view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_index">
+<span class="sig-name descname"><span class="pre">set_image_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.set_image_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_index" title="Link to this definition">¶</a></dt>
+<dd><p>Set the position on the z-slider, triggering valueChanged signal once</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_range">
+<span class="sig-name descname"><span class="pre">set_image_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.set_image_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_range" title="Link to this definition">¶</a></dt>
+<dd><p>Set the range on the z-slider, without triggering valueChanged signal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_rotation_angle">
+<span class="sig-name descname"><span class="pre">set_image_rotation_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.set_image_rotation_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_rotation_angle" title="Link to this definition">¶</a></dt>
+<dd><p>Set the image rotation angle which will be read in by the presenter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show" title="Link to this definition">¶</a></dt>
+<dd><p>Show the window</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show_most_recent_image">
+<span class="sig-name descname"><span class="pre">show_most_recent_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.show_most_recent_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show_most_recent_image" title="Link to this definition">¶</a></dt>
+<dd><p>Show the most recently modified image in the image view.
+&#64;param image: The image to show</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.watch_directory">
+<span class="sig-name descname"><span class="pre">watch_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/view.html#LiveViewerWindowView.watch_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.watch_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Show the most recent image arrived in the selected directory</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.live_viewer.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.closeEvent"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.closeEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.imageLayout"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.imageLayout</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.remove_image"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.remove_image()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_index"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.set_image_index()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_range"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.set_image_range()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_rotation_angle"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.set_image_rotation_angle()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.show()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show_most_recent_image"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.show_most_recent_image()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.watch_directory"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowView.watch_directory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.live_viewer.presenter.html"
+                          title="previous chapter">mantidimaging.gui.windows.live_viewer.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.main.html"
+                          title="next chapter">mantidimaging.gui.windows.main package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="mantidimaging.gui.windows.live_viewer.view.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.main.html" title="mantidimaging.gui.windows.main package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.live_viewer.presenter.html" title="mantidimaging.gui.windows.live_viewer.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.7.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.live_viewer.html" >mantidimaging.gui.windows.live_viewer package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.live_viewer.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

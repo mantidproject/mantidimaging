@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+    <title>mantidimaging.gui.windows.image_load_dialog.view module - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css?v=c0834052" />
+    
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.main package" href="mantidimaging.gui.windows.main.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.image_load_dialog.presenter module" href="mantidimaging.gui.windows.image_load_dialog.presenter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.main.html" title="mantidimaging.gui.windows.main package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.image_load_dialog.presenter.html" title="mantidimaging.gui.windows.image_load_dialog.presenter module"
+             accesskey="P">previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.image_load_dialog.html" accesskey="U">mantidimaging.gui.windows.image_load_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.image_load_dialog.view module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mantidimaging.gui.windows.image_load_dialog.view">
+<span id="mantidimaging-gui-windows-image-load-dialog-view-module"></span><h1>mantidimaging.gui.windows.image_load_dialog.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.image_load_dialog.view" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.image_load_dialog.view.</span></span><span class="sig-name descname"><span class="pre">ImageLoadDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/image_load_dialog/view.html#ImageLoadDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView" title="mantidimaging.gui.mvp_base.view.BaseDialogView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDialogView</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.create_file_input">
+<span class="sig-name descname"><span class="pre">create_file_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES" title="mantidimaging.core.utility.data_containers.FILE_TYPES"><span class="pre">FILE_TYPES</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.gui.windows.image_load_dialog.field.html#mantidimaging.gui.windows.image_load_dialog.field.Field" title="mantidimaging.gui.windows.image_load_dialog.field.Field"><span class="pre">Field</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/image_load_dialog/view.html#ImageLoadDialog.create_file_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.create_file_input" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.enable_preview_all_buttons">
+<span class="sig-name descname"><span class="pre">enable_preview_all_buttons</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/image_load_dialog/view.html#ImageLoadDialog.enable_preview_all_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.enable_preview_all_buttons" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.image_load_dialog.field.html#mantidimaging.gui.windows.image_load_dialog.field.Field" title="mantidimaging.gui.windows.image_load_dialog.field.Field"><span class="pre">Field</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.LoadingParameters" title="mantidimaging.core.io.loader.loader.LoadingParameters"><span class="pre">LoadingParameters</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/image_load_dialog/view.html#ImageLoadDialog.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.get_parameters" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.images_are_sinograms">
+<span class="sig-name descname"><span class="pre">images_are_sinograms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QCheckBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.images_are_sinograms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixelSize">
+<span class="sig-name descname"><span class="pre">pixelSize</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QSpinBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixelSize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixel_bit_depth">
+<span class="sig-name descname"><span class="pre">pixel_bit_depth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixel_bit_depth" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caption</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/image_load_dialog/view.html#ImageLoadDialog.select_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>caption</strong> – Title of the file browser window that will be opened</p></li>
+<li><p><strong>image_file</strong> – Whether or not the file being looked for is an image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Selected file name or None if canceled</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_all">
+<span class="sig-name descname"><span class="pre">step_all</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_all" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_preview">
+<span class="sig-name descname"><span class="pre">step_preview</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_preview" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.tree">
+<span class="sig-name descname"><span class="pre">tree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTreeWidget</span></em><a class="headerlink" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.tree" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.image_load_dialog.view module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.create_file_input"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.create_file_input()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.enable_preview_all_buttons"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.enable_preview_all_buttons()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.fields"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.fields</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.get_parameters"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.get_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.images_are_sinograms"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.images_are_sinograms</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixelSize"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.pixelSize</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.pixel_bit_depth"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.pixel_bit_depth</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.select_file()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_all"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.step_all</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.step_preview"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.step_preview</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.tree"><code class="docutils literal notranslate"><span class="pre">ImageLoadDialog.tree</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.image_load_dialog.presenter.html"
+                          title="previous chapter">mantidimaging.gui.windows.image_load_dialog.presenter module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.main.html"
+                          title="next chapter">mantidimaging.gui.windows.main package</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../index.html">Latest</a></li>
+  <li><a href="../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="mantidimaging.gui.windows.image_load_dialog.view.html">2.5.0</a></li>
+  <li><a href="../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.main.html" title="mantidimaging.gui.windows.main package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mantidimaging.gui.windows.image_load_dialog.presenter.html" title="mantidimaging.gui.windows.image_load_dialog.presenter module"
+             >previous</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="mantidimaging.html" >mantidimaging package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="mantidimaging.gui.html" >mantidimaging.gui package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="mantidimaging.gui.windows.html" >mantidimaging.gui.windows package</a> &#187;</li>
+          <li class="nav-item nav-item-5"><a href="mantidimaging.gui.windows.image_load_dialog.html" >mantidimaging.gui.windows.image_load_dialog package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.image_load_dialog.view module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

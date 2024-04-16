@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.spectrum\_viewer.roi\_table\_model module
+===================================================================
+
+.. automodule:: mantidimaging.gui.windows.spectrum_viewer.roi_table_model
+   :members:
+   :undoc-members:
+   :show-inheritance:

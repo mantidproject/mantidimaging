@@ -1,0 +1,7 @@
+mantidimaging.gui.dialogs.multiple\_stack\_select.view module
+=============================================================
+
+.. automodule:: mantidimaging.gui.dialogs.multiple_stack_select.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

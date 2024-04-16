@@ -1,0 +1,16 @@
+mantidimaging.gui.windows.add\_images\_to\_dataset\_dialog package
+==================================================================
+
+.. automodule:: mantidimaging.gui.windows.add_images_to_dataset_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter
+   mantidimaging.gui.windows.add_images_to_dataset_dialog.view

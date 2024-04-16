@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.stack_choice.tests.presenter_test &#8212; MantidImaging 2.8.0a1 documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../../_static/documentation_options.js?v=120a4a56"></script>
+    <script src="../../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.tests.presenter_test</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.stack_choice.tests.presenter_test</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">DEFAULT</span><span class="p">,</span> <span class="n">MagicMock</span><span class="p">,</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">patch</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">mantidimaging.test_helpers.unit_test_helper</span> <span class="k">as</span> <span class="nn">th</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.presenter</span> <span class="kn">import</span> <span class="n">StackChoicePresenter</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.view</span> <span class="kn">import</span> <span class="n">Notification</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.imagestack</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest">[docs]</a>
+<span class="k">class</span> <span class="nc">StackChoicePresenterTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StackChoicePresenterTest.setUp">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.setUp">[docs]</a>
+    <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op_p</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">StackChoicePresenter</span><span class="p">(</span><span class="n">original_stack</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="p">,</span>
+                                      <span class="n">new_stack</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="p">,</span>
+                                      <span class="n">operations_presenter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">op_p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">view</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_presenter_doesnt_raise_lists_for_original_stack">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_presenter_doesnt_raise_lists_for_original_stack">[docs]</a>
+    <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.stack_choice.presenter.StackChoiceView&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_presenter_doesnt_raise_lists_for_original_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="n">single_stack_uuid</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="n">original_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">(),</span> <span class="n">single_stack_uuid</span><span class="p">),</span> <span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">(),</span> <span class="n">uuid4</span><span class="p">())]</span>
+        <span class="n">StackChoicePresenter</span><span class="p">(</span><span class="n">original_stack</span><span class="p">,</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">(),</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_show_calls_show_in_the_view">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_show_calls_show_in_the_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_show_calls_show_in_the_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">show</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_notify_choose_original">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_notify_choose_original">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_notify_choose_original</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_reapply_original_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_ORIGINAL</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_reapply_original_data</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_notify_handles_exceptions">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_notify_handles_exceptions">[docs]</a>
+    <span class="nd">@patch</span><span class="o">.</span><span class="n">multiple</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter&quot;</span><span class="p">,</span>
+                    <span class="n">do_reapply_original_data</span><span class="o">=</span><span class="n">MagicMock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">),</span>
+                    <span class="n">show_error</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_notify_handles_exceptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_error</span><span class="p">:</span> <span class="n">Mock</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_ORIGINAL</span><span class="p">)</span>
+
+        <span class="n">show_error</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_notify_choose_new_data">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_notify_choose_new_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_notify_choose_new_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_clean_up_original_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_NEW_DATA</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_clean_up_original_data</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_do_reapply_original_data">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_do_reapply_original_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_do_reapply_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="n">img1</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">img1</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="n">img2</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">img2</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">img1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">img2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_reapply_original_data</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">choice_made</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_do_clean_up_original_data">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_do_clean_up_original_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_do_clean_up_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_clean_up_original_data</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">choice_made</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_close_view_calls_close_on_view">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_close_view_calls_close_on_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_close_view_calls_close_on_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_close_view_sets_done_true">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_close_view_sets_done_true">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_close_view_sets_done_true</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">close_view</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">done</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StackChoicePresenterTest.test_do_toggle_lock_histograms">
+<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.stack_choice.tests.presenter_test.html#mantidimaging.gui.windows.stack_choice.tests.presenter_test.StackChoicePresenterTest.test_do_toggle_lock_histograms">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_do_toggle_lock_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">lockHistograms</span><span class="o">.</span><span class="n">isChecked</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">TOGGLE_LOCK_HISTOGRAMS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">connect_histogram_changes</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">lockHistograms</span><span class="o">.</span><span class="n">isChecked</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">TOGGLE_LOCK_HISTOGRAMS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">disconnect_histogram_changes</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../../index.html">MantidImaging 2.8.0a1 documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.stack_choice.tests.presenter_test</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

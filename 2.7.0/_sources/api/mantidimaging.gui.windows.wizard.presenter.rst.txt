@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.wizard.presenter module
+=================================================
+
+.. automodule:: mantidimaging.gui.windows.wizard.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

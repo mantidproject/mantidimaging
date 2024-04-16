@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.operations.filter_previews - MantidImaging 2.5.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.filter_previews</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.operations.filter_previews</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2023 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QPoint</span><span class="p">,</span> <span class="n">QRect</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QResizeEvent</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">LegendItem</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">,</span> <span class="n">InfiniteLine</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph.graphicsItems.GraphicsLayout</span> <span class="kn">import</span> <span class="n">GraphicsLayout</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.histogram</span> <span class="kn">import</span> <span class="n">set_histogram_log_scale</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QGraphicsSceneMouseEvent</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">histogram_axes_labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span> <span class="s1">&#39;Gray value&#39;</span><span class="p">}</span>
+<span class="n">before_pen</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">after_pen</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">diff_pen</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="n">OVERLAY_THRESHOLD</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">OVERLAY_COLOUR_DIFFERENCE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_data_valid_for_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ZSlider">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.ZSlider">[docs]</a>
+<span class="k">class</span> <span class="nc">ZSlider</span><span class="p">(</span><span class="n">PlotItem</span><span class="p">):</span>
+    <span class="n">z_line</span><span class="p">:</span> <span class="n">InfiniteLine</span>
+    <span class="n">valueChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hideAxis</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setXRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMouseEnabled</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hideButtons</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span> <span class="o">=</span> <span class="n">InfiniteLine</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">movable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">setPen</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">sigPositionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_changed</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ZSlider.set_range">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.ZSlider.set_range">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">min</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">max</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">min</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setXRange</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">setBounds</span><span class="p">([</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ZSlider.set_value">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.ZSlider.set_value">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZSlider.value_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.ZSlider.value_changed">[docs]</a>
+    <span class="k">def</span> <span class="nf">value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_line</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="ZSlider.mousePressEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.ZSlider.mousePressEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="s1">&#39;QGraphicsSceneMouseEvent&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">mapSceneToView</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span><span class="o">.</span><span class="n">x</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FilterPreviews">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews">[docs]</a>
+<span class="k">class</span> <span class="nc">FilterPreviews</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
+    <span class="n">histogram</span><span class="p">:</span> <span class="n">PlotItem</span>
+    <span class="n">z_slider</span><span class="p">:</span> <span class="n">ZSlider</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">widget_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">QPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># allow the widget to take up to 80% of the desktop&#39;s height</span>
+        <span class="k">if</span> <span class="n">QGuiApplication</span><span class="o">.</span><span class="n">screenAt</span><span class="p">(</span><span class="n">widget_location</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">screen_height</span> <span class="o">=</span> <span class="n">QGuiApplication</span><span class="o">.</span><span class="n">screenAt</span><span class="p">(</span><span class="n">widget_location</span><span class="p">)</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">screen_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">QGuiApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="mi">600</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unable to detect current screen. Setting screen height to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">screen_height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ALLOWED_HEIGHT</span><span class="p">:</span> <span class="n">QRect</span> <span class="o">=</span> <span class="n">screen_height</span> <span class="o">*</span> <span class="mf">0.8</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">(</span><span class="s2">&quot;Image before&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">(</span><span class="s2">&quot;Image after&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">(</span><span class="s2">&quot;Image difference&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;difference&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_imageviews</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="p">]</span>
+        <span class="n">MIMiniImageView</span><span class="o">.</span><span class="n">set_siblings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_imageviews</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">MIMiniImageView</span><span class="o">.</span><span class="n">set_siblings</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="p">],</span> <span class="n">hist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span> <span class="o">=</span> <span class="n">ImageItem</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setZValue</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="p">)</span>
+
+        <span class="c1"># Ensure images resize equally</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_layout</span><span class="p">:</span> <span class="n">GraphicsLayout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">colspan</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_slider</span> <span class="o">=</span> <span class="n">ZSlider</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_slider</span><span class="p">,</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_histogram</span><span class="p">()</span>
+
+        <span class="c1"># Work around for https://github.com/mantidproject/mantidimaging/issues/565</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="p">()</span><span class="o">.</span><span class="n">contextMenu</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="p">()</span><span class="o">.</span><span class="n">contextMenu</span> <span class="k">if</span> <span class="s2">&quot;export&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">link_sibling_axis</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FilterPreviews.resizeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.resizeEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QResizeEvent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">):</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ALLOWED_HEIGHT</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.clear_items">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.clear_items">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">clear_before</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.init_histogram">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.init_histogram">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotItem</span><span class="p">:</span>
+        <span class="n">histogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addPlot</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">histogram_axes_labels</span><span class="p">,</span> <span class="n">lockAspect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">legend</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">addLegend</span><span class="p">()</span>
+        <span class="n">legend</span><span class="o">.</span><span class="n">setOffset</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">histogram</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.update_histogram_data">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.update_histogram_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_histogram_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Plot any histogram that has data, and add a legend if both exist</span>
+        <span class="n">before_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">getHistogram</span><span class="p">()</span>
+        <span class="n">after_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">getHistogram</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_data_valid_for_histogram</span><span class="p">(</span><span class="n">before_data</span><span class="p">):</span>
+            <span class="n">before_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">before_data</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="n">before_pen</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histogram_legend</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">before_plot</span><span class="p">,</span> <span class="s2">&quot;Before&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_data_valid_for_histogram</span><span class="p">(</span><span class="n">after_data</span><span class="p">):</span>
+            <span class="n">after_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">after_data</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="n">after_pen</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histogram_legend</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">after_plot</span><span class="p">,</span> <span class="s2">&quot;After&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">histogram_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LegendItem</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">legend</span>
+
+<div class="viewcode-block" id="FilterPreviews.link_all_views">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_all_views">[docs]</a>
+    <span class="k">def</span> <span class="nf">link_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">link_sibling_axis</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.unlink_all_views">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.unlink_all_views">[docs]</a>
+    <span class="k">def</span> <span class="nf">unlink_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">unlink_sibling_axis</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.add_difference_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_difference_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">nan_change</span><span class="p">):</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+        <span class="n">diff</span><span class="p">[</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">OVERLAY_THRESHOLD</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">diff</span><span class="p">[</span><span class="n">nan_change</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">OVERLAY_COLOUR_DIFFERENCE</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ubyte</span><span class="p">)</span>
+        <span class="nb">map</span> <span class="o">=</span> <span class="n">ColorMap</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+        <span class="n">lut</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">getLookupTable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setLookupTable</span><span class="p">(</span><span class="n">lut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.add_negative_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_negative_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.hide_difference_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_difference_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">hide_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.hide_negative_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_negative_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">hide_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.auto_range">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.auto_range">[docs]</a>
+    <span class="k">def</span> <span class="nf">auto_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">autoRange</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.record_histogram_regions">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.record_histogram_regions">[docs]</a>
+    <span class="k">def</span> <span class="nf">record_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diff_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram_region</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.restore_histogram_regions">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.restore_histogram_regions">[docs]</a>
+    <span class="k">def</span> <span class="nf">restore_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_region</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.link_before_after_histogram_scales">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_before_after_histogram_scales">[docs]</a>
+    <span class="k">def</span> <span class="nf">link_before_after_histogram_scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_link</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connects or disconnects the scales of the before/after histograms.</span>
+<span class="sd">        :param create_link: Whether the link should be created or removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">create_link</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">link_sibling_histogram</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">unlink_sibling_histogram</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.set_histogram_log_scale">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.set_histogram_log_scale">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the y-values of the before and after histogram plots to a log scale.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram</span><span class="p">)</span>
+        <span class="n">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FilterPreviews.autorange_histograms">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.autorange_histograms">[docs]</a>
+    <span class="k">def</span> <span class="nf">autorange_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="../../../../../../2.4.0/index.html">2.4.0</a></li>
+  <li><a href="filter_previews.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.5.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.filter_previews</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

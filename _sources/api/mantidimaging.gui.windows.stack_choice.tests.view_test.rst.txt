@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.stack\_choice.tests.view\_test module
+===============================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_choice.tests.view_test
+   :members:
+   :undoc-members:
+   :show-inheritance:

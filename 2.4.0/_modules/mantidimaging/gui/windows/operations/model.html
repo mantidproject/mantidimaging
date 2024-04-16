@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>mantidimaging.gui.windows.operations.model - MantidImaging 2.4.0 Documentation</title>
+  
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/extra.css?v=c0834052" />
+    
+    <script src="../../../../../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.model</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mantidimaging.gui.windows.operations.model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2022 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.loader</span> <span class="kn">import</span> <span class="n">load_filter_packages</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.async_task</span> <span class="kn">import</span> <span class="n">start_async_task_view</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QFormLayout</span>  <span class="c1"># noqa: F401  # pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.operations</span> <span class="kn">import</span> <span class="n">FiltersWindowPresenter</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+
+
+<div class="viewcode-block" id="ensure_tuple">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.ensure_tuple">[docs]</a>
+<span class="k">def</span> <span class="nf">ensure_tuple</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FiltersWindowModel">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel">[docs]</a>
+<span class="k">class</span> <span class="nc">FiltersWindowModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">filters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseFilter</span><span class="p">]</span>
+    <span class="n">selected_filter</span><span class="p">:</span> <span class="n">BaseFilter</span>
+    <span class="n">filter_widget_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="s1">&#39;FiltersWindowPresenter&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
+        <span class="c1"># Update the local filter registry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">load_filter_packages</span><span class="p">(</span><span class="n">ignored_packages</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mantidimaging.core.operations.wip&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format_filters</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_image_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Execution info for current filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_widget_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_format_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">value_from_enum</span><span class="p">(</span><span class="n">enum</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">enum</span> <span class="o">==</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Basic</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">enum</span> <span class="o">==</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Advanced</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">filter__</span><span class="p">:</span> <span class="n">value_from_enum</span><span class="p">(</span><span class="n">filter__</span><span class="o">.</span><span class="n">group_name</span><span class="p">()))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filter_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filter_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">no_group_divider_added</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">no_advanced_added</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">group_name</span><span class="p">()</span> <span class="o">==</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">NoGroup</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_group_divider_added</span><span class="p">:</span>
+                <span class="n">filter_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">divider</span><span class="p">)</span>
+                <span class="n">no_group_divider_added</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">filter_</span><span class="o">.</span><span class="n">group_name</span><span class="p">()</span> <span class="o">==</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Advanced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_advanced_added</span><span class="p">:</span>
+                <span class="n">filter_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">divider</span><span class="p">)</span>
+                <span class="n">no_advanced_added</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">filter_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">filter_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filter_names</span>
+
+<div class="viewcode-block" id="FiltersWindowModel.filter_registration_func">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filter_registration_func">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_registration_func</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;QFormLayout&#39;</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">BaseMainWindowView</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the function used to register the GUI of a given filter.</span>
+
+<span class="sd">        :param filter_name: Name of the filter in the registry</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filter_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_filter_index_from_filter_name</span><span class="p">(</span><span class="n">filter_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">filter_idx</span><span class="p">]</span><span class="o">.</span><span class="n">register_gui</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.link_histograms">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.link_histograms">[docs]</a>
+    <span class="k">def</span> <span class="nf">link_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the link histogram status of a filter.</span>
+<span class="sd">        :return: True if the histograms should be linked, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">link_histograms</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.show_negative_overlay">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.show_negative_overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">show_negative_overlay</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">params_needed_from_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">sv_params</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_find_filter_index_from_filter_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">filter_name</span> <span class="o">==</span> <span class="n">filter_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="FiltersWindowModel.setup_filter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.setup_filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">setup_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">,</span> <span class="n">filter_widget_kwargs</span><span class="p">):</span>
+        <span class="n">filter_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_filter_index_from_filter_name</span><span class="p">(</span><span class="n">filter_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">filter_idx</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_widget_kwargs</span> <span class="o">=</span> <span class="n">filter_widget_kwargs</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.apply_to_stacks">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_stacks">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_to_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;ImageStack&#39;</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the selected filter to a given image stack.</span>
+
+<span class="sd">        It gets the image reference out of the StackVisualiserView and forwards</span>
+<span class="sd">        it to the function that actually processes the images.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">stacks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apply_to_images</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.apply_to_images">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_images">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_to_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">input_kwarg_widgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Validate required kwargs are supplied so pre-processing does not happen unnecessarily</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">validate_execute_kwargs</span><span class="p">(</span><span class="n">input_kwarg_widgets</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all required parameters specified&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Run filter</span>
+        <span class="n">exec_func</span><span class="p">:</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">execute_wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">input_kwarg_widgets</span><span class="p">)</span>
+        <span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">progress</span>
+        <span class="n">exec_func</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="c1"># store the executed filter in history if it executed successfully</span>
+        <span class="n">images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">exec_func</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.do_apply_filter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;ImageStack&#39;</span><span class="p">],</span> <span class="n">post_filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the selected filter to the selected stack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No stack selected&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get auto parameters</span>
+        <span class="c1"># Generate sub-stack and run filter</span>
+        <span class="n">apply_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_to_stacks</span><span class="p">,</span> <span class="n">stacks</span><span class="p">)</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="n">apply_func</span><span class="p">,</span> <span class="n">post_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.do_apply_filter_sync">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter_sync">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_apply_filter_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;ImageStack&#39;</span><span class="p">],</span> <span class="n">post_filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the selected filter to the selected stack in a synchronous manner</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No stack selected&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get auto parameters</span>
+        <span class="c1"># Generate sub-stack and run filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_to_stacks</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowModel.get_filter_module_name">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.get_filter_module_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_filter_module_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_idx</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the class name of the filter index passed to it</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">filter_idx</span><span class="p">]</span><span class="o">.</span><span class="vm">__module__</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+<div class="versions">
+<h3>Versions</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Latest</a></li>
+  <li><a href="../../../../../../2.3.0/index.html">2.3.0</a></li>
+  <li><a href="model.html">2.4.0</a></li>
+  <li><a href="../../../../../../2.5.0/index.html">2.5.0</a></li>
+  <li><a href="../../../../../../2.6.0/index.html">2.6.0</a></li>
+  <li><a href="../../../../../../2.7.0/index.html">2.7.0</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MantidImaging 2.4.0 Documentation</a> &#187;</li>
+  
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mantidimaging.gui.windows.operations.model</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2017-2024, Mantid Project.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

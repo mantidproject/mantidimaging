@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.zslider package
+=========================================
+
+.. automodule:: mantidimaging.gui.widgets.zslider
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.zslider.zslider
