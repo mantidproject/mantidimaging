@@ -26,11 +26,10 @@ class BaseMainWindowView(QMainWindow):
         super().__init__(parent)
 
         self._has_shown = False
+        QApplication.instance().setStyle(settings.value('theme_selection'))
 
         if ui_file is not None:
             compile_ui(ui_file, self)
-
-        QApplication.instance().setStyle(settings.value('theme_selection'))
 
     def closeEvent(self, e):
         LOG.debug('UI window closed')
