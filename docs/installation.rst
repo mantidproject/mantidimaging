@@ -61,9 +61,9 @@ a fresh Miniforge3.
 1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
 2. Download and install `Miniforge3 <https://github.com/conda-forge/miniforge#download>`_ (this is the conda distribution that we recommend).
 3. Make sure :code:`mamba` or :code:`conda` is available on your PATH. The steps below assume you are using mamba.
-4. Create a mantidimaging conda environment:
+4. Create a mantidimaging conda environment::
 
-  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
+    mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml
 
 (Specific versions can be installed by using the release url, e.g. `https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml`)
 
@@ -99,9 +99,9 @@ Running the package
 Nightly version
 ~~~~~~~~~~~~~~~
 
-The latest nightly version can be installed with
+The latest nightly version can be installed with::
 
-  - :code:`mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml`
+    mamba env create -f https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml
 
 
 This will make a `mantidimaging-nightly` environment.
@@ -109,9 +109,9 @@ This will make a `mantidimaging-nightly` environment.
 
 Updating
 ~~~~~~~~
-To update to the latest version of Mantid Imaging run:
+To update to the latest version of Mantid Imaging run::
 
-:code:`mamba env update -n mantidimaging -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml`
+    mamba env update -n mantidimaging -f https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml
 
 If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.
 

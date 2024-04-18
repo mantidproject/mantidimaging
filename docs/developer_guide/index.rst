@@ -8,35 +8,35 @@ You will need conda/mamba and CUDA installed, see the :ref:`Installation` instru
 
 *Note that the Python commands given below are for Linux only. To run the commands on Windows, replace* :code:`python3` *with* :code:`python`.
 
-First download the Mantid Imaging source code using Git.
+First download the Mantid Imaging source code using Git::
 
-:code:`git clone https://github.com/mantidproject/mantidimaging.git`
+    git clone https://github.com/mantidproject/mantidimaging.git
 
-If you have a github account you can use ssh access:
+If you have a github account you can use ssh access (See `Github docs <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>`_ for details)::
 
-:code:`git clone git@github.com:mantidproject/mantidimaging.git`
+    git clone git@github.com:mantidproject/mantidimaging.git
 
-To set up a developer environment, from with in the cloned directory run:
+To set up a developer environment, from with in the cloned directory run::
 
-:code:`python3 ./setup.py create_dev_env`
+    python3 ./setup.py create_dev_env
 
 This will create a conda environment containing all the packages needed to run and develop Mantid Imaging. The activate command will activate the environment.
 
-Afterwards the environment can be activated by running:
+Afterwards the environment can be activated by running::
 
-:code:`mamba activate mantidimaging-dev`
+    mamba activate mantidimaging-dev
 
-To check that the set up was successful, try running the tests from the source directory:
+To check that the set up was successful, try running the tests from the source directory::
 
-:code:`python3 -m pytest`
+    python3 -m pytest
 
-Mantid Imaging can be run directly from the checked-out git directory:
+Mantid Imaging can be run directly from the checked-out git directory::
 
-:code:`python3 -m mantidimaging`
+    python3 -m mantidimaging
 
-or to run with additional diagnostics:
+or to run with additional diagnostics::
 
-:code:`python3 -X faulthandler -m mantidimaging --log-level DEBUG`
+    python3 -X faulthandler -m mantidimaging --log-level DEBUG
 
 
 Command Line Arguments
