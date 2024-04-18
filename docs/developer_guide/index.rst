@@ -12,7 +12,7 @@ First download the Mantid Imaging source code using Git::
 
     git clone https://github.com/mantidproject/mantidimaging.git
 
-If you have a github account you can use ssh access::
+If you have a github account you can use ssh access (See `Github docs <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>`_ for details)::
 
     git clone git@github.com:mantidproject/mantidimaging.git
 
