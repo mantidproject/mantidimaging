@@ -503,11 +503,10 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_shown</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;theme_selection&#39;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">ui_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-        <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;theme_selection&#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BaseMainWindowView.closeEvent">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.closeEvent">[docs]</a>
