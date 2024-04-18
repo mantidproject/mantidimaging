@@ -23,7 +23,13 @@ class LogColumn(Enum):
     SPECTRUM_COUNTS = auto()
 
 
+class ShutterCountColumn(Enum):
+    PULSE = auto()
+    SHUTTER_COUNT = auto()
+
+
 LogDataType = dict[LogColumn, list[float | int]]
+ShutterCountType = dict[ShutterCountColumn, list[float | int]]
 
 
 class NoParserFound(RuntimeError):
@@ -34,17 +40,13 @@ class InvalidLog(RuntimeError):
     pass
 
 
-class InstrumentLogParser(ABC):
+class BaseParser(ABC):
     """
     Base class for parsers
     """
 
     def __init__(self, lines: list[str]):
         self.lines = lines
-
-    def __init_subclass__(subcls) -> None:
-        """Automatically register subclasses"""
-        InstrumentLog.register_parser(subcls)
 
     @classmethod
     @abstractmethod
@@ -53,12 +55,36 @@ class InstrumentLogParser(ABC):
         ...
 
     @abstractmethod
-    def parse(self) -> LogDataType:
+    def parse(self):
         """Parse the log file"""
         ...
 
     def cleaned_lines(self) -> list[str]:
         return [line for line in self.lines if line.strip() != ""]
+
+
+class InstrumentLogParser(BaseParser):
+
+    def __init_subclass__(subcls) -> None:
+        """Automatically register subclasses"""
+        InstrumentLog.register_parser(subcls)
+
+    @abstractmethod
+    def parse(self) -> LogDataType:
+        """Parse the log file"""
+        ...
+
+
+class InstrumentShutterCountParser(BaseParser):
+
+    def __init_subclass__(subcls) -> None:
+        """Automatically register subclasses"""
+        ShutterCount.register_parser(subcls)
+
+    @abstractmethod
+    def parse(self) -> ShutterCountType:
+        """Parse the log file"""
+        ...
 
 
 class InstrumentLog:
@@ -67,7 +93,6 @@ class InstrumentLog:
     New parsers can be implemented by subclassing InstrumentLogParser
     """
     parsers: ClassVar[list[Type[InstrumentLogParser]]] = []
-
     parser: Type[InstrumentLogParser]
     data: LogDataType
     length: int
@@ -132,3 +157,51 @@ class InstrumentLog:
         counts_after = np.array(self.get_column(LogColumn.COUNTS_AFTER))
 
         return Counts(counts_after - counts_before)
+
+
+class ShutterCount:
+    """
+    Class to handle the shutter counts
+    """
+    parsers: ClassVar[list[Type[InstrumentShutterCountParser]]] = []
+    parser: Type[InstrumentShutterCountParser]
+    data: ShutterCountType
+    length: int
+
+    def __init__(self, lines: list[str], source_file: Path):
+        self.lines = lines
+        self.source_file = source_file
+
+        self._find_parser()
+        self.parse()
+
+    def _find_parser(self) -> None:
+        for parser in self.parsers:
+            if parser.match(self.lines, self.source_file.name):
+                self.parser = parser
+                return
+        raise NoParserFound
+
+    def parse(self) -> None:
+        self.data = self.parser(self.lines).parse()
+
+        lengths = [len(val) for val in self.data.values()]
+        if len(set(lengths)) != 1:
+            raise InvalidLog(f"Mismatch in column lengths: {lengths}")
+        self.length = lengths[0]
+
+    @classmethod
+    def register_parser(cls, parser: Type[InstrumentShutterCountParser]) -> None:
+        cls.parsers.append(parser)
+
+    def get_column(self, key: ShutterCountColumn) -> list[float | int]:
+        return self.data[key]
+
+    def pulse_per_shutter_range_numbers(self) -> np.array:
+        return np.array(self.get_column(ShutterCountColumn.SHUTTER_COUNT), dtype=np.uint32)
+
+    def has_Pulse(self) -> bool:
+        return ShutterCountColumn.PULSE in self.data
+
+    def raise_if_counts_missing(self):
+        pass

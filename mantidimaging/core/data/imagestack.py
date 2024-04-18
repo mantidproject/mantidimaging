@@ -19,7 +19,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 if TYPE_CHECKING:
-    from mantidimaging.core.io.instrument_log import InstrumentLog
+    from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
 
 
 class ImageStack:
@@ -57,6 +57,7 @@ class ImageStack:
 
         self._proj180deg: Optional[ImageStack] = None
         self._log_file: InstrumentLog | None = None
+        self._shutter_count_file: ShutterCount | None = None
         self._projection_angles: Optional[ProjectionAngles] = None
 
         if name is None:
@@ -297,6 +298,18 @@ class ImageStack:
         elif value is None:
             del self.metadata[const.LOG_FILE]
         self._log_file = value
+
+    @property
+    def shutter_count_file(self) -> ShutterCount | None:
+        return self._shutter_count_file
+
+    @shutter_count_file.setter
+    def shutter_count_file(self, value: ShutterCount | None) -> None:
+        if value is not None:
+            self.metadata[const.SHUTTER_COUNT_FILE] = str(value.source_file)
+        elif value is None:
+            del self.metadata[const.SHUTTER_COUNT_FILE]
+        self._shutter_count_file = value
 
     def set_projection_angles(self, angles: ProjectionAngles) -> None:
         if len(angles.value) != self.num_images:

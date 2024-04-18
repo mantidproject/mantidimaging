@@ -130,6 +130,7 @@ class FilenameGroup:
         self.all_indexes = all_indexes
         self.metadata_path: Optional[Path] = None
         self.log_path: Optional[Path] = None
+        self.shutter_count_path: Optional[Path] = None
 
     @classmethod
     def from_file(cls, path: Union[Path, str]) -> "FilenameGroup":
@@ -204,6 +205,18 @@ class FilenameGroup:
             # choose shortest match
             shortest = min(log_paths, key=lambda p: len(p.name))
             self.log_path = self.directory / shortest
+
+    def find_shutter_count_file(self) -> None:
+        """
+        Find the shutter count file for this directory if it exists. The file must be in the parent directory.
+
+        """
+        parent_directory = self.directory.parent
+        shutter_count_pattern = self.directory.name + "*" + "ShutterCount" + ".txt"
+        shutter_count_paths = list(parent_directory.glob(shutter_count_pattern))
+        if shutter_count_paths:
+            shortest = min(shutter_count_paths, key=lambda p: len(p.name))
+            self.shutter_count_path = self.directory / shortest
 
     def find_related(self, file_type: FILE_TYPES) -> Optional[FilenameGroup]:
         if self.directory.name not in ["Tomo", "tomo"]:
