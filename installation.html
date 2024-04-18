@@ -548,17 +548,16 @@ document.write(`
 <p>Mantid Imaging can be installed using the <a class="reference external" href="https://anaconda.org/mantidimaging/mantidimaging/">packages</a> published to Anaconda Cloud, this can be done with an existing Conda
 or Mamba distribution if you already have one on your machine. However if you have issues you may find it worth installing
 a fresh Miniforge3.</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p>Download and install CUDA Runtime version 10.2 - <a class="reference external" href="https://developer.nvidia.com/cuda-10.2-download-archive">https://developer.nvidia.com/cuda-10.2-download-archive</a> before installing the Mantid Imaging environment.</p></li>
 <li><p>Download and install <a class="reference external" href="https://github.com/conda-forge/miniforge#download">Miniforge3</a> (this is the conda distribution that we recommend).</p></li>
 <li><p>Make sure <code class="code docutils literal notranslate"><span class="pre">mamba</span></code> or <code class="code docutils literal notranslate"><span class="pre">conda</span></code> is available on your PATH. The steps below assume you are using mamba.</p></li>
-<li><p>Create a mantidimaging conda environment:</p></li>
+<li><p>Create a mantidimaging conda environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+</li>
 </ol>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml</span></code></p></li>
-</ul>
-</div></blockquote>
 <p>(Specific versions can be installed by using the release url, e.g. <cite>https://raw.githubusercontent.com/mantidproject/mantidimaging/release-2.2.0/environment.yml</cite>)</p>
 <ol class="arabic simple" start="5">
 <li><p>This creates an environment called <code class="code docutils literal notranslate"><span class="pre">mantidimaging</span></code> that you can activate via <code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">activate</span> <span class="pre">mantidimaging</span></code></p></li>
@@ -602,18 +601,18 @@ a fresh Miniforge3.</p>
 </section>
 <section id="nightly-version">
 <h3>Nightly version<a class="headerlink" href="#nightly-version" title="Link to this heading">#</a></h3>
-<p>The latest nightly version can be installed with</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">https://raw.githubusercontent.com/mantidproject/mantidimaging/main/environment.yml</span></code></p></li>
-</ul>
-</div></blockquote>
+<p>The latest nightly version can be installed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
 <p>This will make a <cite>mantidimaging-nightly</cite> environment.</p>
 </section>
 <section id="updating">
 <h3>Updating<a class="headerlink" href="#updating" title="Link to this heading">#</a></h3>
 <p>To update to the latest version of Mantid Imaging run:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">update</span> <span class="pre">-n</span> <span class="pre">mantidimaging</span> <span class="pre">-f</span> <span class="pre">https://raw.githubusercontent.com/mantidproject/mantidimaging/stable/environment.yml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">env</span> <span class="n">update</span> <span class="o">-</span><span class="n">n</span> <span class="n">mantidimaging</span> <span class="o">-</span><span class="n">f</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
 <p>If you see any issues with package compatibility, the fastest solution is reinstalling the environment - see below.</p>
 </section>
 <section id="reinstalling-the-environment">

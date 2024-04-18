@@ -503,21 +503,35 @@ document.write(`
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
 <p>You will need conda/mamba and CUDA installed, see the <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a> instructions. If you are a Linux user, you will also need to complete step 6 of the installation instructions.</p>
 <p><em>Note that the Python commands given below are for Linux only. To run the commands on Windows, replace</em> <code class="code docutils literal notranslate"><span class="pre">python3</span></code> <em>with</em> <code class="code docutils literal notranslate"><span class="pre">python</span></code>.</p>
-<p>First download the Mantid Imaging source code using Git.</p>
-<p><code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/mantidproject/mantidimaging.git</span></code></p>
-<p>If you have a github account you can use ssh access:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:mantidproject/mantidimaging.git</span></code></p>
+<p>First download the Mantid Imaging source code using Git:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>If you have a github account you can use ssh access (See <a class="reference external" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh">Github docs</a> for details):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
 <p>To set up a developer environment, from with in the cloned directory run:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">./setup.py</span> <span class="pre">create_dev_env</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">./</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">create_dev_env</span>
+</pre></div>
+</div>
 <p>This will create a conda environment containing all the packages needed to run and develop Mantid Imaging. The activate command will activate the environment.</p>
 <p>Afterwards the environment can be activated by running:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">activate</span> <span class="pre">mantidimaging-dev</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">activate</span> <span class="n">mantidimaging</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
 <p>To check that the set up was successful, try running the tests from the source directory:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pytest</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span>
+</pre></div>
+</div>
 <p>Mantid Imaging can be run directly from the checked-out git directory:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">mantidimaging</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">mantidimaging</span>
+</pre></div>
+</div>
 <p>or to run with additional diagnostics:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-X</span> <span class="pre">faulthandler</span> <span class="pre">-m</span> <span class="pre">mantidimaging</span> <span class="pre">--log-level</span> <span class="pre">DEBUG</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">X</span> <span class="n">faulthandler</span> <span class="o">-</span><span class="n">m</span> <span class="n">mantidimaging</span> <span class="o">--</span><span class="n">log</span><span class="o">-</span><span class="n">level</span> <span class="n">DEBUG</span>
+</pre></div>
+</div>
 </section>
 <section id="command-line-arguments">
 <h2>Command Line Arguments<a class="headerlink" href="#command-line-arguments" title="Link to this heading">#</a></h2>
