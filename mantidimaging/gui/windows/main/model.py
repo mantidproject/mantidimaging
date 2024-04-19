@@ -148,6 +148,23 @@ class MainWindowModel(object):
             log.raise_if_angle_missing(images.filenames)
         images.log_file = log
 
+    def add_shutter_counts_to_sample(self, images_id: uuid.UUID, shutter_counts_file: Path) -> None:
+        """
+        Adds the shutter counts file to the sample associated with the given images ID.
+
+        :param images_id (uuid.UUID): The ID of the images.
+        :param shutter_counts_file (Path): The path to the shutter counts file.
+
+        :raises RuntimeError: If the images with the given ID cannot be found.
+
+        :returns None
+        """
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError
+        shutter_counts = loader.load_shutter_counts(shutter_counts_file)
+        images.shutter_count_file = shutter_counts
+
     def _remove_dataset(self, dataset_id: uuid.UUID):
         """
         Removes a dataset and the image stacks it contains from the model.
