@@ -18,7 +18,14 @@ from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
-from plotly.subplots import make_subplots
+try:
+    from plotly import graph_objs as go
+    from plotly.subplots import make_subplots
+except ModuleNotFoundError:
+    print("Approval tests require plotly")
+    print("Try: mamba install plotly")
+    exit(1)
+
 from pygments.lexers import go
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
@@ -346,8 +353,7 @@ def main():
     parser.add_argument("-k", dest="match", type=str, help="only run tests which match the given substring expression")
     parser.add_argument("--gui", dest="gui", action="store_true", help="Show GUI comparison for differences")
 
-    args = parser.parse_args()
-
+    args = None
     runner = TestRunner(args)
     runner.configure()
     runner.run_tests()
