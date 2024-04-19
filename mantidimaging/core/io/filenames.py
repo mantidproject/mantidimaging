@@ -147,8 +147,6 @@ class FilenameGroup:
         index = pattern.get_index(name)
         new_filename_group = cls(directory, pattern, [index])
 
-        new_filename_group.find_all_files()
-
         return new_filename_group
 
     @classmethod

@@ -163,6 +163,7 @@ class LoadPresenter:
             return
 
         file_group = FilenameGroup.from_file(field.path)
+        file_group.find_all_files()
         image_param = ImageParameters(file_group)
 
         if file_type in log_for_file_type:
