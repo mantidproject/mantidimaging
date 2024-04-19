@@ -7,6 +7,7 @@ import uuid
 
 from unittest import mock
 import numpy as np
+from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -54,12 +55,17 @@ class MainWindowModelTest(unittest.TestCase):
         load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
         load_log_mock.assert_not_called()
 
+    @parameterized.expand([("log_file", mock.Mock(), None), ("shutter_count_file", None, mock.Mock()),
+                           ("log_file_and_shutter_count_file", mock.Mock(), mock.Mock()),
+                           ("no_log_file_or_shutter_count_file", None, None)])
     @mock.patch('mantidimaging.core.io.loader.loader.load')
-    def test_do_load_stack_sample_and_sample_log(self, load_mock: mock.Mock):
+    def test_do_load_stack_sample_and_(self, _, log_mock, shutter_mock, load_mock):
+        """
+        Test loading a stack with sample, log, and shutter count files.
+        """
         lp = LoadingParameters()
-        log_file_mock = mock.Mock()
         mock_filename_group = mock.Mock()
-        sample_mock = ImageParameters(mock_filename_group, log_file_mock)
+        sample_mock = ImageParameters(mock_filename_group, log_mock, shutter_mock)
         lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
         lp.dtype = "dtype_test"
         lp.sinograms = False
@@ -72,7 +78,8 @@ class MainWindowModelTest(unittest.TestCase):
                                           progress=progress_mock,
                                           dtype=lp.dtype,
                                           indices=None,
-                                          log_file=log_file_mock)
+                                          log_file=log_mock,
+                                          shutter_count_file=shutter_mock)
 
     @mock.patch('mantidimaging.core.io.loader.loader.load')
     def test_do_load_stack_sample_indicies(self, load_mock: mock.Mock):
@@ -93,7 +100,8 @@ class MainWindowModelTest(unittest.TestCase):
                                           progress=progress_mock,
                                           dtype=lp.dtype,
                                           indices=indices,
-                                          log_file=None)
+                                          log_file=None,
+                                          shutter_count_file=None)
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
     @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
