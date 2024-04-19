@@ -84,7 +84,6 @@ class MainWindowView(BaseMainWindowView):
     actionSpectrumViewer: QAction
     actionLiveViewer: QAction
     actionSampleLoadLog: QAction
-    actionShutterCounts: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
     actionLoadDataset: QAction
