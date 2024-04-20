@@ -26,8 +26,6 @@ except ModuleNotFoundError:
     print("Try: mamba install plotly")
     exit(1)
 
-from pygments.lexers import go
-
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
@@ -91,8 +89,8 @@ def process_params(param):
 
 class TestRunner:
 
-    def __init__(self, args):
-        self.args = args
+    def __init__(self):
+        self.args = None
 
     def configure(self):
         parser = argparse.ArgumentParser()
@@ -341,20 +339,7 @@ def create_plots():
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-m",
-                        "--mode",
-                        type=str,
-                        choices=["compare", "time"],
-                        help="what mode to run in (compare or time)")
-    parser.add_argument("-r", "--runs", type=int, default=5, help="number of times to run each test case")
-    parser.add_argument("-v", "--verbose", action="store_true", help="print verbose output")
-    parser.add_argument("-g", "--graphs", action="store_true", help="print verbose output")
-    parser.add_argument("-k", dest="match", type=str, help="only run tests which match the given substring expression")
-    parser.add_argument("--gui", dest="gui", action="store_true", help="Show GUI comparison for differences")
-
-    args = None
-    runner = TestRunner(args)
+    runner = TestRunner()
     runner.configure()
     runner.run_tests()
 
