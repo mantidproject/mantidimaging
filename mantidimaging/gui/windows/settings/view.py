@@ -64,7 +64,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         if settings.value('use_os_defaults') == 'True' or settings.value('use_os_defaults') is None:
             self.osDefaultsCheckBox.setChecked(True)
         self.processesSpinBox.setMinimum(1)
-        self.processesSpinBox.setMaximum(16)
+        self.processesSpinBox.setMaximum(128)
         self.processesSpinBox.setValue(settings.value("multiprocessing/process_count", 8, type=int))
         self.processesSpinBox.valueChanged.connect(self.presenter.set_processes_value)
 

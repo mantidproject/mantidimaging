@@ -92,5 +92,4 @@ class SettingsWindowPresenter(BasePresenter):
         self.main_window.presenter.do_update_UI()
 
     def set_processes_value(self):
-        print(self.view.current_processes_value)
         settings.setValue('multiprocessing/process_count', self.view.current_processes_value)
