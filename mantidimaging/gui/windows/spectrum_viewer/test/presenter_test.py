@@ -271,3 +271,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi()
         self.assertEqual([], self.presenter.model.get_list_of_roi_names())
+
+    def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self):
+
+    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self):
+
+    def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
+
+    def test_WHEN_tof_delay_changed_THEN_unit_conversion_delay_set(self):
