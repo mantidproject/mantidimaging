@@ -90,3 +90,6 @@ class SettingsWindowPresenter(BasePresenter):
             self.view.darkModeCheckBox.setChecked(dark_mode_checked)
             self.view.darkModeCheckBox.setEnabled(dark_mode_enabled)
         self.main_window.presenter.do_update_UI()
+
+    def set_processes_value(self):
+        settings.setValue('multiprocessing/process_count', self.view.current_processes_value)

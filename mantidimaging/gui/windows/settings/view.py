@@ -5,7 +5,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import QSettings, QSignalBlocker
-from PyQt5.QtWidgets import QTabWidget, QWidget, QComboBox, QLabel, QCheckBox
+from PyQt5.QtWidgets import QTabWidget, QWidget, QComboBox, QLabel, QCheckBox, QSpinBox
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 
@@ -30,6 +30,9 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
     menuFontSizeChoice: QComboBox
     darkModeCheckBox: QCheckBox
     osDefaultsCheckBox: QCheckBox
+
+    processesLabel: QLabel
+    processesSpinBox: QSpinBox
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/settings_window.ui')
@@ -60,6 +63,10 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
 
         if settings.value('use_os_defaults') == 'True' or settings.value('use_os_defaults') is None:
             self.osDefaultsCheckBox.setChecked(True)
+        self.processesSpinBox.setMinimum(1)
+        self.processesSpinBox.setMaximum(128)
+        self.processesSpinBox.setValue(settings.value("multiprocessing/process_count", 8, type=int))
+        self.processesSpinBox.valueChanged.connect(self.presenter.set_processes_value)
 
     @property
     def current_theme(self) -> str:
@@ -68,3 +75,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
     @property
     def current_menu_font_size(self) -> str:
         return self.menuFontSizeChoice.currentText()
+
+    @property
+    def current_processes_value(self) -> int:
+        return self.processesSpinBox.value()

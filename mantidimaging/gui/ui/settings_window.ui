@@ -8,6 +8,8 @@
     <y>0</y>
     <width>454</width>
     <height>444</height>
+    <width>456</width>
+    <height>449</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -131,6 +133,46 @@
           </item>
           <item row="4" column="0" colspan="2">
            <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="performanceTab">
+        <attribute name="title">
+         <string>Performance</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>411</width>
+           <height>361</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="processesLabel">
+            <property name="text">
+             <string>Processes (applies on restart): </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="processesSpinBox"/>
+          </item>
+          <item row="1" column="1">
+           <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
