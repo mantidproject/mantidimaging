@@ -578,6 +578,12 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">darkModeCheckBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">dark_mode_checked</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">darkModeCheckBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">dark_mode_enabled</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_UI</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SettingsWindowPresenter.set_processes_value">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_processes_value">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_processes_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;multiprocessing/process_count&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_processes_value</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
