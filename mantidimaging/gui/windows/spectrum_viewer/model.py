@@ -476,7 +476,7 @@ class SpectrumViewerWindowModel:
                 if self.tof_mode == ToFUnitMode.TOF_US:
                     self.tof_data = self.units.tof_seconds_to_us()
                 elif self.tof_mode == ToFUnitMode.WAVELENGTH:
-                    self.tof_data = self.units.tof_seconds_to_wavelength()
+                    self.tof_data = self.units.tof_seconds_to_wavelength_in_angstroms()
                 elif self.tof_mode == ToFUnitMode.ENERGY:
                     self.tof_data = self.units.tof_seconds_to_energy()
                 self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())

@@ -20,7 +20,7 @@ class UnitConversion:
         if data_to_convert is not None:
             self.set_data_to_convert(data_to_convert)
 
-    def tof_seconds_to_wavelength(self) -> np.ndarray:
+    def tof_seconds_to_wavelength_in_angstroms(self) -> np.ndarray:
         self.check_data()
         wavelength = self.planck_h / (self.neutron_mass * self.velocity)
         wavelength_angstroms = wavelength / self.angstrom
@@ -36,9 +36,6 @@ class UnitConversion:
         self.check_data()
         return (self.tof_data_to_convert + self.data_offset) * 1e6
 
-    def set_target_to_camera_dist(self, target_to_camera_dist: float) -> None:
-        self.target_to_camera_dist = target_to_camera_dist
-
     def set_data_to_convert(self, data_to_convert: np.ndarray) -> None:
         self.tof_data_to_convert = data_to_convert
 
@@ -47,6 +44,3 @@ class UnitConversion:
             raise TypeError("Data is not present")
         else:
             self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
-
-    def set_data_offset(self, data_offset: float) -> None:
-        self.data_offset = data_offset * 1e-6

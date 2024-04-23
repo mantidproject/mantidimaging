@@ -368,12 +368,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.auto_range_image()
 
     def handle_flight_path_change(self) -> None:
-        self.model.units.set_target_to_camera_dist(self.view.flightPathSpinBox.value())
+        self.model.units.target_to_camera_dist = self.view.flightPathSpinBox.value()
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
 
     def handle_time_delay_change(self) -> None:
         self.model.tof_data = self.model.get_stack_time_of_flight()
-        self.model.units.set_data_offset(self.view.timeDelaySpinBox.value())
+        self.model.units.data_offset = self.view.timeDelaySpinBox.value() * 1e-6
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
