@@ -12,7 +12,7 @@ class UnitConversion:
     angstrom: float = 1e-10  # [m]
     mega_electro_volt: float = 1.60217662e-19 / 1e6
     target_to_camera_dist: float = 56  # [m]
-    data_offset: float = 0  # [us]
+    data_offset: float = 0  # [s]
     tof_data_to_convert: np.ndarray
     velocity: np.ndarray
 
