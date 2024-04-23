@@ -81,6 +81,8 @@ class SpectrumViewerWindowModel:
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
 
+        self.units = UnitConversion()
+
     def roi_name_generator(self) -> str:
         """
         Returns a new Unique ID for newly created ROIs
@@ -470,12 +472,12 @@ class SpectrumViewerWindowModel:
                 self.tof_range = (0, self._stack.data.shape[0] - 1)
                 self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
             else:
-                units = UnitConversion(self.tof_data)
+                self.units.set_data_to_convert(self.tof_data)
                 if self.tof_mode == ToFUnitMode.TOF_US:
-                    self.tof_data = self.tof_data * 1e6
+                    self.tof_data = self.units.tof_seconds_to_us()
                 elif self.tof_mode == ToFUnitMode.WAVELENGTH:
-                    self.tof_data = units.tof_seconds_to_wavelength()
+                    self.tof_data = self.units.tof_seconds_to_wavelength_in_angstroms()
                 elif self.tof_mode == ToFUnitMode.ENERGY:
-                    self.tof_data = units.tof_seconds_to_energy()
+                    self.tof_data = self.units.tof_seconds_to_energy()
                 self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
                 self.tof_range = (0, self.tof_data.size)

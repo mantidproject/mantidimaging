@@ -109,6 +109,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def reset_units_menu(self):
+        if self.model.tof_data is None:
+            self.view.tof_mode_select_group.setEnabled(False)
+            self.view.tofPropertiesGroupBox.setEnabled(False)
+        else:
+            self.view.tof_mode_select_group.setEnabled(True)
+            self.view.tofPropertiesGroupBox.setEnabled(True)
         self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
@@ -349,11 +355,25 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         selected_mode = self.view.tof_mode_select_group.checkedAction().text()
         self.model.tof_mode = self.view.allowed_modes[selected_mode]["mode"]
         self.model.set_relevant_tof_units()
-        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(
-            self.view.allowed_modes[selected_mode]["label"])
+        tof_axis_label = self.view.allowed_modes[selected_mode]["label"]
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
+        self.refresh_spectrum_plot()
+
+    def refresh_spectrum_plot(self) -> None:
         self.view.spectrum_widget.spectrum.clearPlots()
         self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
+
+    def handle_flight_path_change(self) -> None:
+        self.model.units.target_to_camera_dist = self.view.flightPathSpinBox.value()
+        self.model.set_relevant_tof_units()
+        self.refresh_spectrum_plot()
+
+    def handle_time_delay_change(self) -> None:
+        self.model.tof_data = self.model.get_stack_time_of_flight()
+        self.model.units.data_offset = self.view.timeDelaySpinBox.value() * 1e-6
+        self.model.set_relevant_tof_units()
+        self.refresh_spectrum_plot()
