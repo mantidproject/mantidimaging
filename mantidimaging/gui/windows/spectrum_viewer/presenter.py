@@ -68,6 +68,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
         self.reset_units_menu()
+        self.model.set_tof_unit_mode_for_stack()
         self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
@@ -93,6 +94,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.set_stack(self.main_window.get_stack(uuid))
         self.reset_units_menu()
+        self.model.set_tof_unit_mode_for_stack()
         self.handle_tof_unit_change()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
@@ -352,12 +354,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def handle_tof_unit_change(self) -> None:
-        selected_mode = self.view.tof_mode_select_group.checkedAction().text()
-        self.model.tof_mode = self.view.allowed_modes[selected_mode]["mode"]
         self.model.set_relevant_tof_units()
-        tof_axis_label = self.view.allowed_modes[selected_mode]["label"]
+        tof_axis_label = self.view.allowed_modes[self.view.tof_units_mode]["label"]
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
         self.refresh_spectrum_plot()
+
+    def handle_tof_unit_change_via_menu(self) -> None:
+        self.model.tof_mode = self.view.allowed_modes[self.view.tof_units_mode]["mode"]
+        self.handle_tof_unit_change()
 
     def refresh_spectrum_plot(self) -> None:
         self.view.spectrum_widget.spectrum.clearPlots()

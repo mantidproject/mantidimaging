@@ -117,7 +117,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             action.setCheckable(True)
             action.setObjectName(mode)
             self.units_menu.addAction(action)
-            action.triggered.connect(self.presenter.handle_tof_unit_change)
+            action.triggered.connect(self.presenter.handle_tof_unit_change_via_menu)
             if mode == "Image Index":
                 action.setChecked(True)
         if self.presenter.model.tof_data is None:
@@ -526,6 +526,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_size_spinBox.setHidden(hide_binning)
         self.bin_step_label.setHidden(hide_binning)
         self.bin_step_spinBox.setHidden(hide_binning)
+
+    @property
+    def tof_units_mode(self) -> str:
+        return self.tof_mode_select_group.checkedAction().text()
 
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:

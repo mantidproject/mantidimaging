@@ -6,13 +6,13 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode
+from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -37,6 +37,25 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
         self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
+
+        self.view.allowed_modes = {
+            "Image Index": {
+                "mode": ToFUnitMode.IMAGE_NUMBER,
+                "label": "Image index"
+            },
+            "Wavelength": {
+                "mode": ToFUnitMode.WAVELENGTH,
+                "label": "Neutron Wavelength (\u212B)"
+            },
+            "Energy": {
+                "mode": ToFUnitMode.ENERGY,
+                "label": "Neutron Energy (MeV)"
+            },
+            "Time of Flight (\u03BCs)": {
+                "mode": ToFUnitMode.TOF_US,
+                "label": "Time of Flight (\u03BCs)"
+            }
+        }
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
         self.assertIsNone(self.presenter.get_dataset_id_for_stack(None))
@@ -273,9 +292,25 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual([], self.presenter.model.get_list_of_roi_names())
 
     def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self):
+        self.view.tof_units_mode = "Wavelength"
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_tof_unit_change_via_menu()
+        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.WAVELENGTH)
 
-    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self):
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
+    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self, get_stack_time_of_flight):
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
+        self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
+        get_stack_time_of_flight.return_value = None
+        self.view.tof_units_mode = "Wavelength"
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_sample_change(uuid.uuid4())
+        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.IMAGE_NUMBER)
+
 
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
+        pass
 
     def test_WHEN_tof_delay_changed_THEN_unit_conversion_delay_set(self):
+        pass

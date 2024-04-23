@@ -76,10 +76,7 @@ class SpectrumViewerWindowModel:
         self.special_roi_list = [ROI_ALL]
 
         self.tof_data = self.get_stack_time_of_flight()
-        if self.tof_data is None:
-            self.tof_mode = ToFUnitMode.IMAGE_NUMBER
-        else:
-            self.tof_mode = ToFUnitMode.WAVELENGTH
+        self.set_tof_unit_mode_for_stack()
 
         self.units = UnitConversion()
 
@@ -481,3 +478,12 @@ class SpectrumViewerWindowModel:
                     self.tof_data = self.units.tof_seconds_to_energy()
                 self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
                 self.tof_range = (0, self.tof_data.size)
+
+    def set_tof_unit_mode_for_stack(self):
+        if self.get_stack_time_of_flight() is None or self.tof_data is None:
+            self.tof_mode = ToFUnitMode.IMAGE_NUMBER
+        elif self.tof_mode is not ToFUnitMode.WAVELENGTH or self.tof_mode is not ToFUnitMode.IMAGE_NUMBER:
+            pass
+        else:
+            self.tof_mode = ToFUnitMode.WAVELENGTH
+
