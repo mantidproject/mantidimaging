@@ -428,11 +428,18 @@ document.write(`
 <li><a class="reference internal" href="#">mantidimaging.core.utility.unit_conversion module</a><ul>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion"><code class="docutils literal notranslate"><span class="pre">UnitConversion</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.angstrom"><code class="docutils literal notranslate"><span class="pre">UnitConversion.angstrom</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.check_data"><code class="docutils literal notranslate"><span class="pre">UnitConversion.check_data()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.data_offset"><code class="docutils literal notranslate"><span class="pre">UnitConversion.data_offset</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.mega_electro_volt"><code class="docutils literal notranslate"><span class="pre">UnitConversion.mega_electro_volt</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.neutron_mass"><code class="docutils literal notranslate"><span class="pre">UnitConversion.neutron_mass</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.planck_h"><code class="docutils literal notranslate"><span class="pre">UnitConversion.planck_h</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_to_convert"><code class="docutils literal notranslate"><span class="pre">UnitConversion.set_data_to_convert()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.target_to_camera_dist"><code class="docutils literal notranslate"><span class="pre">UnitConversion.target_to_camera_dist</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_data_to_convert"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_data_to_convert</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_energy"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_energy()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_wavelength()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_us"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_us()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_wavelength_in_angstroms()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.velocity"><code class="docutils literal notranslate"><span class="pre">UnitConversion.velocity</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -519,11 +526,21 @@ document.write(`
 <span id="mantidimaging-core-utility-unit-conversion-module"></span><h1>mantidimaging.core.utility.unit_conversion module<a class="headerlink" href="#module-mantidimaging.core.utility.unit_conversion" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.unit_conversion.</span></span><span class="sig-name descname"><span class="pre">UnitConversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_to_convert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_to_camera_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">56</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.unit_conversion.</span></span><span class="sig-name descname"><span class="pre">UnitConversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_to_convert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.angstrom">
 <span class="sig-name descname"><span class="pre">angstrom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-10</span></em><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.angstrom" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.check_data">
+<span class="sig-name descname"><span class="pre">check_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.check_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.check_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.data_offset">
+<span class="sig-name descname"><span class="pre">data_offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.data_offset" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -542,13 +559,38 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_to_convert">
+<span class="sig-name descname"><span class="pre">set_data_to_convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_to_convert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.set_data_to_convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_to_convert" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.target_to_camera_dist">
+<span class="sig-name descname"><span class="pre">target_to_camera_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">56</span></em><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.target_to_camera_dist" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.tof_data_to_convert">
+<span class="sig-name descname"><span class="pre">tof_data_to_convert</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_data_to_convert" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_energy">
 <span class="sig-name descname"><span class="pre">tof_seconds_to_energy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.tof_seconds_to_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_energy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength">
-<span class="sig-name descname"><span class="pre">tof_seconds_to_wavelength</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.tof_seconds_to_wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_us">
+<span class="sig-name descname"><span class="pre">tof_seconds_to_us</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.tof_seconds_to_us"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_us" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms">
+<span class="sig-name descname"><span class="pre">tof_seconds_to_wavelength_in_angstroms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/unit_conversion.html#UnitConversion.tof_seconds_to_wavelength_in_angstroms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.unit_conversion.UnitConversion.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.velocity" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -603,11 +645,18 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion"><code class="docutils literal notranslate"><span class="pre">UnitConversion</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.angstrom"><code class="docutils literal notranslate"><span class="pre">UnitConversion.angstrom</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.check_data"><code class="docutils literal notranslate"><span class="pre">UnitConversion.check_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.data_offset"><code class="docutils literal notranslate"><span class="pre">UnitConversion.data_offset</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.mega_electro_volt"><code class="docutils literal notranslate"><span class="pre">UnitConversion.mega_electro_volt</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.neutron_mass"><code class="docutils literal notranslate"><span class="pre">UnitConversion.neutron_mass</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.planck_h"><code class="docutils literal notranslate"><span class="pre">UnitConversion.planck_h</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_to_convert"><code class="docutils literal notranslate"><span class="pre">UnitConversion.set_data_to_convert()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.target_to_camera_dist"><code class="docutils literal notranslate"><span class="pre">UnitConversion.target_to_camera_dist</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_data_to_convert"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_data_to_convert</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_energy"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_energy()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_wavelength()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_us"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_us()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms"><code class="docutils literal notranslate"><span class="pre">UnitConversion.tof_seconds_to_wavelength_in_angstroms()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.unit_conversion.UnitConversion.velocity"><code class="docutils literal notranslate"><span class="pre">UnitConversion.velocity</span></code></a></li>
 </ul>
 </li>
 </ul>
