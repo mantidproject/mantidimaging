@@ -13,7 +13,7 @@ class UnitConversion:
     mega_electro_volt: float = 1.60217662e-19 / 1e6
     target_to_camera_dist: float = 56  # [m]
     data_offset: float = 0  # [s]
-    tof_data_to_convert: np.ndarray
+    tof_data_to_convert: np.ndarray = None
     velocity: np.ndarray
 
     def __init__(self, data_to_convert: np.ndarray | None = None) -> None:

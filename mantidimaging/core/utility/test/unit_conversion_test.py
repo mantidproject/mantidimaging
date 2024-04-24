@@ -30,7 +30,7 @@ class UnitConversionTest(unittest.TestCase):
 
     def test_WHEN_set_target_to_camera_dist_THEN_camera_dist_set(self):
         units = unit_conversion.UnitConversion()
-        units.set_target_to_camera_dist(30)
+        units.target_to_camera_dist = 30
         self.assertEqual(units.target_to_camera_dist, 30)
 
     def test_WHEN_set_data_offset_THEN_data_offset_set(self):
@@ -39,7 +39,7 @@ class UnitConversionTest(unittest.TestCase):
         self.assertEqual(units.data_offset, 100 * 1e-6)
 
     def test_WHEN_tof_converted_to_wavelength_THEN_wavelength_data_returned(self):
-        wavelength_data = unit_conversion.UnitConversion(self.tof_data).tof_seconds_to_wavelength()
+        wavelength_data = unit_conversion.UnitConversion(self.tof_data).tof_seconds_to_wavelength_in_angstroms()
         assert_array_almost_equal(
             wavelength_data,
             np.array([70.64346392, 141.28692784, 211.93039176, 353.2173196, 565.14771137, 635.79117529]))
