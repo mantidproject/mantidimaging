@@ -171,4 +171,3 @@ class SpectrumWidgetTest(unittest.TestCase):
     def test_WHEN_tof_axis_label_changed_THEN_axis_label_set(self):
         self.spectrum_plot_widget.set_tof_axis_label("test")
         self.assertEqual(self.spectrum_plot_widget.spectrum.getAxis('bottom').labelText, "test")
-

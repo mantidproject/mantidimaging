@@ -486,4 +486,3 @@ class SpectrumViewerWindowModel:
             pass
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
-

@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -291,11 +291,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.do_remove_roi()
         self.assertEqual([], self.presenter.model.get_list_of_roi_names())
 
-    def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self):
-        self.view.tof_units_mode = "Wavelength"
+    @parameterized.expand([("Image Index", ToFUnitMode.IMAGE_NUMBER), ("Wavelength", ToFUnitMode.WAVELENGTH),
+                           ("Energy", ToFUnitMode.ENERGY), ("Time of Flight (\u03BCs)", ToFUnitMode.TOF_US)])
+    def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self, mode_text, expected_mode):
+        self.view.tof_units_mode = mode_text
         self.presenter.refresh_spectrum_plot = mock.Mock()
         self.presenter.handle_tof_unit_change_via_menu()
-        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.WAVELENGTH)
+        self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
     def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self, get_stack_time_of_flight):
@@ -308,9 +310,16 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_sample_change(uuid.uuid4())
         self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.IMAGE_NUMBER)
 
-
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
-        pass
+        self.view.flightPathSpinBox = mock.Mock()
+        self.view.flightPathSpinBox.value.return_value = 10
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_flight_path_change()
+        self.assertEqual(self.presenter.model.units.target_to_camera_dist, 10)
 
     def test_WHEN_tof_delay_changed_THEN_unit_conversion_delay_set(self):
-        pass
+        self.view.timeDelaySpinBox = mock.Mock()
+        self.view.timeDelaySpinBox.value.return_value = 400
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_time_delay_change()
+        self.assertEqual(self.presenter.model.units.data_offset, 400 * 1e-6)

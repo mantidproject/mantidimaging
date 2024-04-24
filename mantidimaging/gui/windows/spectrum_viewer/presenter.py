@@ -377,7 +377,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.refresh_spectrum_plot()
 
     def handle_time_delay_change(self) -> None:
-        self.model.tof_data = self.model.get_stack_time_of_flight()
         self.model.units.data_offset = self.view.timeDelaySpinBox.value() * 1e-6
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
