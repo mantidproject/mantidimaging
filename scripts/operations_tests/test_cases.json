@@ -221,22 +221,23 @@
     ]
   },
   "Ring Removal": {
-    "params": {
-      "center_mode": "image center"
-    },
-    "source_data": "flower128",
-    "cases": [
-      {
-        "test_name": "30k_1k",
-        "params": {
-          "thresh": 300,
-          "thresh_max": 30000,
-          "thresh_min": 1000,
-          "theta_min": 30,
-          "rwidth": 30
+      "params": {
+        "center_mode": "image center"
+      },
+      "source_data": "flower128",
+      "cases": [
+        {
+          "test_name": "30k_1k",
+          "params": {
+            "thresh": 300,
+            "thresh_max": 30000,
+            "thresh_min": 1000,
+            "theta_min": 30,
+            "rwidth": 30
+          },
+          "known_failure": "Unreliable output, see https://github.com/tomopy/tomopy/issues/618"
         }
-      }
-    ]
+      ]
   },
   "Clip Values": {
     "params": {},

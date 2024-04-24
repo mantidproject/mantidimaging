@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import os
 import subprocess
 import sys
@@ -30,6 +31,20 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
+
+script_dir = Path(__file__).resolve().parent
+log_directory = script_dir / "logs"
+os.makedirs(log_directory, exist_ok=True)
+log_file_name = f"test_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+log_file_path = log_directory / log_file_name
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.FileHandler(log_file_path, mode='a'),
+                              logging.StreamHandler()])
+
+console_logger = logging.getLogger()
+console_logger.handlers[1].setLevel(logging.ERROR)
 
 
 class ConfigManager:
