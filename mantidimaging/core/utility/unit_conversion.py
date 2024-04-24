@@ -13,7 +13,7 @@ class UnitConversion:
     mega_electro_volt: float = 1.60217662e-19 / 1e6
     target_to_camera_dist: float = 56  # [m]
     data_offset: float = 0  # [s]
-    tof_data_to_convert: np.ndarray = None
+    tof_data_to_convert: np.ndarray
     velocity: np.ndarray
 
     def __init__(self, data_to_convert: np.ndarray | None = None) -> None:
@@ -43,7 +43,7 @@ class UnitConversion:
     def check_data(self) -> None:
         try:
             self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
-        except TypeError as exc:
+        except AttributeError as exc:
             raise TypeError("No data to convert") from exc
 
     def set_data_offset(self, data_offset: float) -> None:
