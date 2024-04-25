@@ -108,7 +108,7 @@ class CILRecon(BaseRecon):
         f3 = MixedL21Norm()
 
         if recon_params.stochastic:
-
+            raise ValueError("TGV reconstruction does not yet support stochastic mode")
             # now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer
             fs = []
             for i, _ in enumerate(acquisition_data.geometry):
