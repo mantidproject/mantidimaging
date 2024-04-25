@@ -268,11 +268,17 @@ class CustomViewBox(ViewBox):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Control:
             self.setMouseMode(self.RectMode)
+            for child in self.allChildren():
+                if isinstance(child, LinearRegionItem):
+                    child.setMovable(False)
 
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key_Control:
             self.rbScaleBox.hide()
             self.setMouseMode(self.PanMode)
+            for child in self.allChildren():
+                if isinstance(child, LinearRegionItem):
+                    child.setMovable(True)
 
     ## reimplement right-click to zoom out
     def mouseClickEvent(self, ev):
@@ -302,13 +308,14 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.spectrum_viewbox = CustomViewBox(enableMenu=False)
+        self.spectrum_viewbox = CustomViewBox(enableMenu=True)
         self.spectrum = self.addPlot(viewBox=self.spectrum_viewbox)
         self.nextRow()
         self._tof_range_label = self.addLabel()
         self.nextRow()
         self._image_index_range_label = self.addLabel()
         self.range_control = LinearRegionItem()
+        self.range_control.setMovable(False)
         self.range_control.sigRegionChangeFinished.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
 

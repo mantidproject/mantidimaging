@@ -90,7 +90,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
-        self.spectrum_right_click_menu = self.spectrum_widget.spectrum_plot_widget.spectrum.vb.menu
+        self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu
         self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
         self.tof_mode_select_group = QActionGroup(self)
 
