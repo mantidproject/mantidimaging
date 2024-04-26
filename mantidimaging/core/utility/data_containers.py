@@ -129,6 +129,9 @@ Indices = NamedTuple("Indices", [("start", int), ("end", int), ("step", int)])
 
 
 class FILE_TYPES(Enum):
+    """
+    Order must match order of files in load dialog menu
+    """
     SAMPLE = ("Sample", "", "sample")
     FLAT_BEFORE = ("Flat", "Before", "images")
     FLAT_AFTER = ("Flat", "After", "images")
@@ -138,6 +141,9 @@ class FILE_TYPES(Enum):
     SAMPLE_LOG = ("Sample Log", "", "log")
     FLAT_BEFORE_LOG = ("Flat Before Log", "", "log")
     FLAT_AFTER_LOG = ("Flat After Log", "", "log")
+    SHUTTER_COUNTS = ("Sample Shutter Counts", "", "ShutterCount")
+    FLAT_BEFORE_SHUTTER_COUNTS = ("Flat Before Shutter Counts", "", "ShutterCount")
+    FLAT_AFTER_SHUTTER_COUNTS = ("Flat After Shutter Counts", "", "ShutterCount")
 
     def __init__(self, tname: str, suffix: str, mode: str) -> None:
         self.tname = tname
@@ -153,4 +159,10 @@ log_for_file_type = {
     FILE_TYPES.SAMPLE: FILE_TYPES.SAMPLE_LOG,
     FILE_TYPES.FLAT_BEFORE: FILE_TYPES.FLAT_BEFORE_LOG,
     FILE_TYPES.FLAT_AFTER: FILE_TYPES.FLAT_AFTER_LOG,
+}
+
+shuttercounts_for_file_type = {
+    FILE_TYPES.SAMPLE: FILE_TYPES.SHUTTER_COUNTS,
+    FILE_TYPES.FLAT_BEFORE: FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS,
+    FILE_TYPES.FLAT_AFTER: FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS,
 }
