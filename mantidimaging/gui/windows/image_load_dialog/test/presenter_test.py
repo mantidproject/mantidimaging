@@ -53,6 +53,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_log_path = mock.Mock()
         mock_file_group.all_files.return_value = file_list
         mock_file_group.log_path = file_log_path
+        mock_file_group.shutter_count_path = file_log_path
 
         mock_field_path = mock.PropertyMock()
         type(self.fields["Sample Log"]).path = mock_field_path
@@ -132,7 +133,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "file_name"
         field = mock.MagicMock(file_info=FILE_TYPES.PROJ_180)
 
-        self.p.do_update_single_file(field, file_name)
+        self.p._update_field_action(field, file_name)
 
         self.assertEqual(field.path, Path(file_name))
 
@@ -140,7 +141,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "file_name"
         field = mock.MagicMock(file_info=FILE_TYPES.PROJ_180)
 
-        self.p.do_update_single_file(field, None)
+        self.p._update_field_action(field, None)
 
         self.assertNotEqual(field.path, file_name)
 
