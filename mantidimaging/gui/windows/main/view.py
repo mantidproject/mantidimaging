@@ -306,6 +306,29 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
                                 f"{stack_to_add_log_to}.")
 
+    def load_shuttercounts_dialog(self):
+        stack_selector = DatasetSelectorDialog(main_window=self,
+                                               title="Stack Selector",
+                                               message="Which stack is the shutter count file being loaded for?",
+                                               show_stacks=True)
+        # Was closed without accepting (e.g. via x button or ESC)
+        if QDialog.DialogCode.Accepted != stack_selector.exec():
+            return
+        stack_to_add_shuttercounts_to = stack_selector.selected_id
+
+        # Open file dialog
+        selected_file = self._get_file_name("Shutter count file to be loaded", "Shutter count File (*.txt *.csv)")
+
+        # Cancel/Close was clicked
+        if selected_file == "":
+            return
+
+        self.presenter.add_shuttercounts_to_sample(stack_id=stack_to_add_shuttercounts_to,
+                                                   shuttercount_file=Path(selected_file))
+        QMessageBox.information(
+            self, "Load complete", f"{selected_file} was loaded as a shutter count file into "
+            f"{stack_to_add_shuttercounts_to}.")
+
     def load_180_deg_dialog(self):
         dataset_selector = DatasetSelectorDialog(main_window=self,
                                                  title="Dataset Selector",

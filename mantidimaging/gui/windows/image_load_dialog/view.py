@@ -39,6 +39,8 @@ class ImageLoadDialog(BaseDialogView):
         self.tree.setTabKeyNavigation(True)
 
         for n, file_info in enumerate(FILE_TYPES):
+            if file_info.fname in ["Sample Shutter Counts", "Flat Before Shutter Counts", "Flat After Shutter Counts"]:
+                continue
             self.fields[file_info.fname] = self.create_file_input(n, file_info)
 
         self.sample = self.fields["Sample"]

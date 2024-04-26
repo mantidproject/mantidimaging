@@ -35,7 +35,7 @@ class LoadPresenter:
         Does nothing if the select file dialog is canceled.
         """
         name = field.file_info.fname
-        is_image_file = field.file_info.mode != "log" and field.file_info.mode != "ShutterCount"
+        is_image_file = field.file_info.mode not in ["log", "ShutterCount"]
         selected_file = self.view.select_file(name, is_image_file)
         if selected_file is None:  # When select file is canceled
             return
@@ -143,11 +143,11 @@ class LoadPresenter:
         loading_param.sinograms = self.view.images_are_sinograms.isChecked()
         return loading_param
 
-    def _update_loading_param(self, file_type, loading_param):
+    def _update_loading_param(self, file_type: FILE_TYPES, loading_param: LoadingParameters):
         """
         Update the loading parameters for a specific file type.
-        :param  file_type (str): The type of the file being loaded.
-        :param  loading_param (LoadingParameters): The loading parameters object.
+        :param  file_type: The type of the file being loaded.
+        :param  loading_param: The loading parameters object.
         :return None
         """
         if file_type.mode in ["log", "ShutterCount"]:
@@ -164,20 +164,22 @@ class LoadPresenter:
         if file_type in log_for_file_type:
             self._update_image_param(file_type, image_param, log_for_file_type, 'log_file')
         if file_type in shuttercounts_for_file_type:
-            self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
+            # self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
+            pass
 
         if file_type == FILE_TYPES.SAMPLE:
             image_param.indices = field.indices
 
         loading_param.image_stacks[file_type] = image_param
 
-    def _update_image_param(self, file_type, image_param, file_type_dict, attr_name):
+    def _update_image_param(self, file_type: FILE_TYPES, image_param: ImageParameters, file_type_dict: dict,
+                            attr_name: str) -> None:
         """
         Update the image parameter based on the selected file type.
-        :param  file_type (str): The selected file type.
+        :param  file_type: The selected file type.
         :param  image_param (ImageParam): The image parameter object to update.
-        :param  file_type_dict (dict): A dictionary mapping file types to their corresponding attributes.
-        :param  attr_name (str): The name of the attribute to update in the image parameter.
+        :param  file_type_dict: A dictionary mapping file types to their corresponding attributes.
+        :param  attr_name: The name of the attribute to update in the image parameter.
         :return None
         """
         field = self.view.fields[file_type_dict[file_type].fname]
