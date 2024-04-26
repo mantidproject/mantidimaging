@@ -12,7 +12,7 @@ import numpy as np
 import astropy.io.fits as fits
 from tifffile import tifffile
 
-from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
 from mantidimaging.core.io.loader import img_loader
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES, ProjectionAngles
@@ -37,6 +37,7 @@ class ImageParameters:
     """
     file_group: FilenameGroup
     log_file: Path | None = None
+    shutter_count_file: Path | None = None
     indices: Indices | None = None
 
 
@@ -98,6 +99,11 @@ def load_log(log_file: Path) -> InstrumentLog:
         return InstrumentLog(f.readlines(), log_file)
 
 
+def load_shutter_counts(shutter_count_file: Path) -> ShutterCount:
+    with open(shutter_count_file, encoding='utf-8') as f:
+        return ShutterCount(f.readlines(), shutter_count_file)
+
+
 def load_stack_from_group(group: FilenameGroup, progress: Progress | None = None) -> ImageStack:
     return load(filename_group=group, progress=progress)
 
@@ -109,14 +115,16 @@ def load_stack_from_image_params(image_params: ImageParameters,
                 progress=progress,
                 dtype=dtype,
                 indices=image_params.indices,
-                log_file=image_params.log_file)
+                log_file=image_params.log_file,
+                shutter_count_file=image_params.shutter_count_file)
 
 
 def load(filename_group: FilenameGroup,
          dtype: npt.DTypeLike = np.float32,
          indices: list[int] | Indices | None = None,
          progress: Progress | None = None,
-         log_file: Path | None = None) -> ImageStack:
+         log_file: Path | None = None,
+         shutter_count_file: Path | None = None) -> ImageStack:
     """
 
     Loads a stack, including sample, white and dark images.
@@ -144,6 +152,8 @@ def load(filename_group: FilenameGroup,
             angle_order = np.argsort(angles)
             angles = angles[angle_order]
             file_names = [file_names[i] for i in angle_order]
+    # if shutter_count_file is not None:
+    #     load_shutter_counts(shutter_count_file)
 
     image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
 
@@ -152,6 +162,9 @@ def load(filename_group: FilenameGroup,
         if log_data.has_projection_angles():
             angles = angles[indices[0]:indices[1]:indices[2]] if indices else angles
             image_stack.set_projection_angles(ProjectionAngles(angles))
+
+    if shutter_count_file is not None:
+        image_stack.shutter_count_file = load_shutter_counts(shutter_count_file)
 
     # Search for and load metadata file
     metadata_filename = filename_group.metadata_path
@@ -175,8 +188,10 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
 
     sample_fg = FilenameGroup.from_file(sample_file)
     sample_fg.find_all_files()
+    sample_fg.find_shutter_count_file()
     sample_fg.find_log_file()
-    loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = ImageParameters(sample_fg, sample_fg.log_path)
+    loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = ImageParameters(sample_fg, sample_fg.log_path,
+                                                                         sample_fg.shutter_count_path)
 
     for file_type in [ft for ft in FILE_TYPES if ft.mode in ["images", "180"]]:
         fg = sample_fg.find_related(file_type)
@@ -186,6 +201,6 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
         fg.find_all_files()
         if file_type.tname == "Flat":
             fg.find_log_file()
-        loading_parameters.image_stacks[file_type] = ImageParameters(fg, fg.log_path)
+        loading_parameters.image_stacks[file_type] = ImageParameters(fg, fg.log_path, fg.shutter_count_path)
 
     return loading_parameters
