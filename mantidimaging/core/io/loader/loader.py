@@ -152,8 +152,6 @@ def load(filename_group: FilenameGroup,
             angle_order = np.argsort(angles)
             angles = angles[angle_order]
             file_names = [file_names[i] for i in angle_order]
-    # if shutter_count_file is not None:
-    #     load_shutter_counts(shutter_count_file)
 
     image_stack = img_loader.execute(load_func, file_names, in_format, dtype, indices, progress)
 
