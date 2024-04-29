@@ -496,6 +496,7 @@ document.write(`
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">data_to_convert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_data_to_convert</span><span class="p">(</span><span class="n">data_to_convert</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UnitConversion.tof_seconds_to_wavelength_in_angstroms">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms">[docs]</a>
@@ -531,10 +532,16 @@ document.write(`
 <div class="viewcode-block" id="UnitConversion.check_data">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.check_data">[docs]</a>
     <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Data is not present&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_to_camera_dist</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_to_camera_dist</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No data to convert&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+
+
+<div class="viewcode-block" id="UnitConversion.set_data_offset">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_offset">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_data_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span> <span class="o">=</span> <span class="n">data_offset</span> <span class="o">*</span> <span class="mf">1e-6</span></div>
 </div>
 
 </pre></div>
