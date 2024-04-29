@@ -19,6 +19,7 @@ class UnitConversion:
     def __init__(self, data_to_convert: np.ndarray | None = None) -> None:
         if data_to_convert is not None:
             self.set_data_to_convert(data_to_convert)
+            self.check_data()
 
     def tof_seconds_to_wavelength_in_angstroms(self) -> np.ndarray:
         self.check_data()
@@ -40,7 +41,10 @@ class UnitConversion:
         self.tof_data_to_convert = data_to_convert
 
     def check_data(self) -> None:
-        if self.tof_data_to_convert is None:
-            raise TypeError("Data is not present")
-        else:
+        try:
             self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
+        except AttributeError as exc:
+            raise TypeError("No data to convert") from exc
+
+    def set_data_offset(self, data_offset: float) -> None:
+        self.data_offset = data_offset * 1e-6
