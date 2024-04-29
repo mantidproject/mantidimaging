@@ -273,7 +273,7 @@ class CILRecon(BaseRecon):
                                         msg=f'CIL: Iteration {iter + 1} of {num_iter}'
                                         f': Objective {algo.get_last_objective():.2f}',
                                         force_continue=False)
-                    algo.next()
+                    next(algo)
             finally:
                 if progress:
                     progress.mark_complete()
@@ -403,7 +403,7 @@ class CILRecon(BaseRecon):
                                         msg=f'CIL: Iteration {iter + 1} of {num_iter}'
                                         f': Objective {algo.get_last_objective():.2f}',
                                         force_continue=False)
-                    algo.next()
+                    next(algo)
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
