@@ -25,7 +25,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.view = mock.create_autospec(SpectrumViewerWindowView)
         self.view.current_dataset_id = uuid.uuid4()
         self.view.parent = mock.create_autospec(SpectrumViewerWindowPresenter)
-        self.spectrum_widget = SpectrumWidget()
+        self.spectrum_widget = SpectrumWidget(self.main_window)
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.sensible_roi = SensibleROI.from_list([0, 0, 0, 0])
 
