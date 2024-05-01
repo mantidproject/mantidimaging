@@ -488,9 +488,12 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">cil.framework</span> <span class="kn">import</span> <span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span>
+<span class="kn">from</span> <span class="nn">cil.framework</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span>
+                           <span class="n">BlockDataContainer</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">cil.optimisation.algorithms</span> <span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span>
 <span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">GradientOperator</span><span class="p">,</span> <span class="n">BlockOperator</span>
+<span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">,</span> <span class="n">ZeroOperator</span><span class="p">,</span> <span class="n">IdentityOperator</span>
+
 <span class="kn">from</span> <span class="nn">cil.optimisation.functions</span> <span class="kn">import</span> <span class="n">MixedL21Norm</span><span class="p">,</span> <span class="n">L2NormSquared</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">ZeroFunction</span><span class="p">,</span> <span class="n">IndicatorBox</span><span class="p">,</span> <span class="n">Function</span>
 <span class="kn">from</span> <span class="nn">cil.plugins.astra.operators</span> <span class="kn">import</span> <span class="n">ProjectionOperator</span>
 
@@ -558,6 +561,70 @@ document.write(`
 
         <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">non_negative</span><span class="p">:</span>
             <span class="n">G</span> <span class="o">=</span> <span class="n">IndicatorBox</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Define Function G simply as zero</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">ZeroFunction</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CILRecon.set_up_TGV_regularisation">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.set_up_TGV_regularisation">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_up_TGV_regularisation</span><span class="p">(</span>
+            <span class="n">image_geometry</span><span class="p">:</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="p">:</span> <span class="n">AcquisitionData</span><span class="p">,</span>
+            <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BlockOperator</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">]:</span>
+
+        <span class="c1"># Forward operator</span>
+        <span class="n">A2d</span> <span class="o">=</span> <span class="n">ProjectionOperator</span><span class="p">(</span><span class="n">image_geometry</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="s1">&#39;gpu&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">stochastic</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">partition_geometry</span><span class="p">,</span> <span class="n">partition_operator</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">acquisition_data</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">A2d</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_approx_norm</span><span class="p">(</span><span class="n">partition_operator</span><span class="p">,</span> <span class="n">partition_geometry</span><span class="p">,</span> <span class="n">image_geometry</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_approx_norm</span><span class="p">(</span><span class="n">A2d</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">image_geometry</span><span class="p">)</span>
+
+        <span class="c1"># Define Gradient Operator and BlockOperator</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">alpha</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">gamma</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">gamma</span>
+
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">MixedL21Norm</span><span class="p">()</span>
+        <span class="n">f3</span> <span class="o">=</span> <span class="n">MixedL21Norm</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">stochastic</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;TGV reconstruction does not yet support stochastic mode&quot;</span><span class="p">)</span>
+            <span class="c1"># now, A2d is a BlockOperator as acquisition_data is a BlockDataContainer</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">acquisition_data</span><span class="o">.</span><span class="n">geometry</span><span class="p">):</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L2NormSquared</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">acquisition_data</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+
+            <span class="n">F</span> <span class="o">=</span> <span class="n">BlockFunction</span><span class="p">(</span><span class="o">*</span><span class="n">fs</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Define BlockFunction F using the MixedL21Norm() and the L2NormSquared()</span>
+            <span class="c1"># mathematicians like to multiply 1/2 in front of L2NormSquared. This is not necessary</span>
+            <span class="c1"># it will mean that the regularisation parameter alpha is doubled</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="n">L2NormSquared</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">acquisition_data</span><span class="p">)</span>
+
+            <span class="n">F</span> <span class="o">=</span> <span class="n">BlockFunction</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">)</span>
+
+        <span class="c1"># Define BlockOperator K</span>
+
+        <span class="c1"># Set up the 3 operator A, Grad and Symmetrised Gradient</span>
+        <span class="n">K11</span> <span class="o">=</span> <span class="n">A2d</span>
+        <span class="n">K21</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">GradientOperator</span><span class="p">(</span><span class="n">K11</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+        <span class="n">K32</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">(</span><span class="n">K21</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+        <span class="c1"># these define the domain and range of the other operators</span>
+        <span class="n">K12</span> <span class="o">=</span> <span class="n">ZeroOperator</span><span class="p">(</span><span class="n">K32</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">K11</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+        <span class="n">K22</span> <span class="o">=</span> <span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">IdentityOperator</span><span class="p">(</span><span class="n">domain_geometry</span><span class="o">=</span><span class="n">K21</span><span class="o">.</span><span class="n">range</span><span class="p">,</span> <span class="n">range_geometry</span><span class="o">=</span><span class="n">K32</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+        <span class="n">K31</span> <span class="o">=</span> <span class="n">ZeroOperator</span><span class="p">(</span><span class="n">K11</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">K32</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+
+        <span class="n">K</span> <span class="o">=</span> <span class="n">BlockOperator</span><span class="p">(</span><span class="n">K11</span><span class="p">,</span> <span class="n">K12</span><span class="p">,</span> <span class="n">K21</span><span class="p">,</span> <span class="n">K22</span><span class="p">,</span> <span class="n">K31</span><span class="p">,</span> <span class="n">K32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">non_negative</span><span class="p">:</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">BlockFunction</span><span class="p">(</span><span class="n">IndicatorBox</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">ZeroFunction</span><span class="p">())</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Define Function G simply as zero</span>
             <span class="n">G</span> <span class="o">=</span> <span class="n">ZeroFunction</span><span class="p">()</span>
@@ -663,7 +730,12 @@ document.write(`
 
             <span class="n">ig</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
 
-            <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span> <span class="o">==</span> <span class="s1">&#39;TV&#39;</span><span class="p">:</span>
+                <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span> <span class="o">==</span> <span class="s1">&#39;TGV&#39;</span><span class="p">:</span>
+                <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TGV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regulariser must be one of &#39;TV&#39;, &#39;TGV&#39;. Received &#39;</span><span class="si">{</span><span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
             <span class="n">max_iteration</span> <span class="o">=</span> <span class="mi">100000</span>
             <span class="c1"># this should set to a sensible number as evaluating the objective is costly</span>
@@ -704,6 +776,11 @@ document.write(`
                     <span class="n">progress</span><span class="o">.</span><span class="n">mark_complete</span><span class="p">()</span>
             <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;single_sino time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="si">}</span><span class="s2">s for shape </span><span class="si">{</span><span class="n">sino</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">,</span> <span class="n">BlockDataContainer</span><span class="p">):</span>
+                <span class="c1"># TGV case</span>
+                <span class="k">return</span> <span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+
             <span class="k">return</span> <span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span></div>
 
 
@@ -785,7 +862,13 @@ document.write(`
                                      <span class="n">num_subsets</span><span class="p">)</span>
 
             <span class="n">ig</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
-            <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span> <span class="o">==</span> <span class="s1">&#39;TV&#39;</span><span class="p">:</span>
+                <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span> <span class="o">==</span> <span class="s1">&#39;TGV&#39;</span><span class="p">:</span>
+                <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">set_up_TGV_regularisation</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regulariser must be one of &#39;TV&#39;, &#39;TGV&#39;. Received &#39;</span><span class="si">{</span><span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
             <span class="n">max_iteration</span> <span class="o">=</span> <span class="mi">100000</span>
             <span class="c1"># this should set to a sensible number as evaluating the objective is costly</span>
@@ -822,7 +905,11 @@ document.write(`
                                         <span class="n">force_continue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="n">algo</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
-                <span class="n">volume</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">,</span> <span class="n">BlockDataContainer</span><span class="p">):</span>
+                    <span class="c1"># TGV case</span>
+                    <span class="n">volume</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">volume</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reconstructed 3D volume with shape: </span><span class="si">{</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;full reconstruction time: </span><span class="si">{</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="si">}</span><span class="s2">s for shape </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
