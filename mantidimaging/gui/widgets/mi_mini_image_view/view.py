@@ -45,6 +45,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.vb.addItem(self.im)
         self.hist = HistogramLUTItem(self.im)
         graveyard.append(self.vb)
+        graveyard.append(self.hist.vb)
 
         # Sub-layout prevents resizing issues when details text changes
         image_layout = self.addLayout(colspan=2)
