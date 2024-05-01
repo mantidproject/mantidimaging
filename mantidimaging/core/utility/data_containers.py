@@ -103,12 +103,14 @@ class ReconstructionParameters:
     tilt: Degrees | None = None
     pixel_size: float = 0.0
     alpha: float = 0.0
+    gamma: float = 1.0
     non_negative: bool = False
     max_projection_angle: float = 360.0
     beam_hardening_coefs: list[float] | None = None
     stochastic: bool = False
     projections_per_subset: int = 50
     regularisation_percent: int = 30
+    regulariser: str = ""
 
     def to_dict(self) -> dict:
         return {
@@ -119,9 +121,11 @@ class ReconstructionParameters:
             'tilt': str(self.tilt),
             'pixel_size': self.pixel_size,
             'alpha': self.alpha,
+            'gamma': self.gamma,
             'stochastic': self.stochastic,
             'projections_per_subset': self.projections_per_subset,
             'regularisation_percent': self.regularisation_percent,
+            'regulariser': self.regulariser,
         }
 
 
