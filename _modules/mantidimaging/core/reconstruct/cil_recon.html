@@ -490,11 +490,12 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">cil.framework</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span>
                            <span class="n">BlockDataContainer</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">cil.optimisation.algorithms</span> <span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span>
+<span class="kn">from</span> <span class="nn">cil.optimisation.algorithms</span> <span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span><span class="p">,</span> <span class="n">Algorithm</span>
 <span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">GradientOperator</span><span class="p">,</span> <span class="n">BlockOperator</span>
 <span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">,</span> <span class="n">ZeroOperator</span><span class="p">,</span> <span class="n">IdentityOperator</span>
 
 <span class="kn">from</span> <span class="nn">cil.optimisation.functions</span> <span class="kn">import</span> <span class="n">MixedL21Norm</span><span class="p">,</span> <span class="n">L2NormSquared</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">ZeroFunction</span><span class="p">,</span> <span class="n">IndicatorBox</span><span class="p">,</span> <span class="n">Function</span>
+<span class="kn">from</span> <span class="nn">cil.optimisation.utilities.callbacks</span> <span class="kn">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">cil.plugins.astra.operators</span> <span class="kn">import</span> <span class="n">ProjectionOperator</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
@@ -510,6 +511,25 @@ document.write(`
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span>
 <span class="n">cil_mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="MIProgressCallback">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.MIProgressCallback">[docs]</a>
+<span class="k">class</span> <span class="nc">MIProgressCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;CIL: Iteration </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span><span class="w"> </span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span><span class="si">}</span><span class="s1">&#39;</span>
+                                 <span class="sa">f</span><span class="s1">&#39;: Objective </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">get_last_objective</span><span class="p">()</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                 <span class="n">force_continue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
 
 
 <div class="viewcode-block" id="CILRecon">
@@ -737,18 +757,12 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regulariser must be one of &#39;TV&#39;, &#39;TGV&#39;. Received &#39;</span><span class="si">{</span><span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-            <span class="n">max_iteration</span> <span class="o">=</span> <span class="mi">100000</span>
             <span class="c1"># this should set to a sensible number as evaluating the objective is costly</span>
             <span class="n">update_objective_interval</span> <span class="o">=</span> <span class="mi">10</span>
             <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">stochastic</span><span class="p">:</span>
                 <span class="n">reg_percent</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regularisation_percent</span>
                 <span class="n">probs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">reg_percent</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_subsets</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_subsets</span> <span class="o">+</span> <span class="p">[</span><span class="n">reg_percent</span> <span class="o">/</span> <span class="mi">100</span><span class="p">]</span>
-                <span class="n">algo</span> <span class="o">=</span> <span class="n">SPDHG</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">F</span><span class="p">,</span>
-                             <span class="n">g</span><span class="o">=</span><span class="n">G</span><span class="p">,</span>
-                             <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
-                             <span class="n">prob</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span>
-                             <span class="n">max_iteration</span><span class="o">=</span><span class="n">max_iteration</span><span class="p">,</span>
-                             <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
+                <span class="n">algo</span> <span class="o">=</span> <span class="n">SPDHG</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">G</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span> <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">normK</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
                 <span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
@@ -758,19 +772,14 @@ document.write(`
                             <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
                             <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
                             <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
-                            <span class="n">max_iteration</span><span class="o">=</span><span class="n">max_iteration</span><span class="p">,</span>
                             <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># this may be confusing for the user in case of SPDHG, because they will</span>
                 <span class="c1"># input num_iter and they will run num_iter * num_subsets</span>
-                <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">progress</span><span class="p">:</span>
-                        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;CIL: Iteration </span><span class="si">{</span><span class="nb">iter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">num_iter</span><span class="si">}</span><span class="s1">&#39;</span>
-                                        <span class="sa">f</span><span class="s1">&#39;: Objective </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">get_last_objective</span><span class="p">()</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                                        <span class="n">force_continue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="n">algo</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span> <span class="o">=</span> <span class="n">num_iter</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)])</span>
+
             <span class="k">finally</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">progress</span><span class="p">:</span>
                     <span class="n">progress</span><span class="o">.</span><span class="n">mark_complete</span><span class="p">()</span>
@@ -870,18 +879,12 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regulariser must be one of &#39;TV&#39;, &#39;TGV&#39;. Received &#39;</span><span class="si">{</span><span class="n">recon_params</span><span class="o">.</span><span class="n">regulariser</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-            <span class="n">max_iteration</span> <span class="o">=</span> <span class="mi">100000</span>
             <span class="c1"># this should set to a sensible number as evaluating the objective is costly</span>
             <span class="n">update_objective_interval</span> <span class="o">=</span> <span class="mi">10</span>
             <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">stochastic</span><span class="p">:</span>
                 <span class="n">reg_percent</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">regularisation_percent</span>
                 <span class="n">probs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">reg_percent</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_subsets</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_subsets</span> <span class="o">+</span> <span class="p">[</span><span class="n">reg_percent</span> <span class="o">/</span> <span class="mi">100</span><span class="p">]</span>
-                <span class="n">algo</span> <span class="o">=</span> <span class="n">SPDHG</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">F</span><span class="p">,</span>
-                             <span class="n">g</span><span class="o">=</span><span class="n">G</span><span class="p">,</span>
-                             <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
-                             <span class="n">prob</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span>
-                             <span class="n">max_iteration</span><span class="o">=</span><span class="n">max_iteration</span><span class="p">,</span>
-                             <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
+                <span class="n">algo</span> <span class="o">=</span> <span class="n">SPDHG</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">G</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span> <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">normK</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
                 <span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
@@ -891,19 +894,13 @@ document.write(`
                             <span class="n">operator</span><span class="o">=</span><span class="n">K</span><span class="p">,</span>
                             <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
                             <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
-                            <span class="n">max_iteration</span><span class="o">=</span><span class="n">max_iteration</span><span class="p">,</span>
                             <span class="n">update_objective_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
                 <span class="c1"># this may be confusing for the user in case of SPDHG, because they will</span>
                 <span class="c1"># input num_iter and they will run num_iter * num_subsets</span>
-                <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">progress</span><span class="p">:</span>
-                        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;CIL: Iteration </span><span class="si">{</span><span class="nb">iter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">num_iter</span><span class="si">}</span><span class="s1">&#39;</span>
-                                        <span class="sa">f</span><span class="s1">&#39;: Objective </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">get_last_objective</span><span class="p">()</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                                        <span class="n">force_continue</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="n">algo</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span> <span class="o">=</span> <span class="n">num_iter</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)])</span>
 
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">,</span> <span class="n">BlockDataContainer</span><span class="p">):</span>
                     <span class="c1"># TGV case</span>
