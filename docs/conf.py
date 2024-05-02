@@ -45,7 +45,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.mathjax',
-    'sphinx.ext.autosectionlabel',
 ]
 
 # Add custom extensions
