@@ -55,7 +55,7 @@ Mantid Imaging offers several reconstruction algorithms
 * gridrec
 
 Spectrum Viewer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI. 
 The spectrum viewer can be used to export the spectrum of each ROI and its respective coordinates to a separate csv file.

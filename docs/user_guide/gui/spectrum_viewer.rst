@@ -1,5 +1,5 @@
 Spectrum Viewer
-=================
+===============
 
 
 The Spectrum Viewer is a tool for viewing the spectrum of each region of interest (ROI) in time of flight (TOF) data.
