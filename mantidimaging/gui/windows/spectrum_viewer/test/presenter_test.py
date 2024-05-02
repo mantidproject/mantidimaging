@@ -38,25 +38,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
-        self.view.allowed_modes = {
-            "Image Index": {
-                "mode": ToFUnitMode.IMAGE_NUMBER,
-                "label": "Image index"
-            },
-            "Wavelength": {
-                "mode": ToFUnitMode.WAVELENGTH,
-                "label": "Neutron Wavelength (\u212B)"
-            },
-            "Energy": {
-                "mode": ToFUnitMode.ENERGY,
-                "label": "Neutron Energy (MeV)"
-            },
-            "Time of Flight (\u03BCs)": {
-                "mode": ToFUnitMode.TOF_US,
-                "label": "Time of Flight (\u03BCs)"
-            }
-        }
-
     def test_get_dataset_id_for_stack_no_stack_id(self):
         self.assertIsNone(self.presenter.get_dataset_id_for_stack(None))
 
@@ -192,6 +173,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         image_stack = generate_images([30, 11, 12])
         new_tof_range = (10, 20)
         self.presenter.model.set_stack(image_stack)
+        self.presenter.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
         self.presenter.handle_range_slide_moved(new_tof_range)
 
         self.assertEqual(self.presenter.model.tof_range, new_tof_range)
