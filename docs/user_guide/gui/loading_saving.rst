@@ -1,3 +1,5 @@
+.. _loading-saving:
+
 Loading and Saving
 ==================
 
@@ -5,6 +7,8 @@ Loading and saving data is performed via the *Load* and *Save* options on the *F
 
 Loading
 -------
+
+.. _load-dataset:
 
 Load Dataset
 ************
@@ -79,7 +83,7 @@ and for a CSV file
 
 :code:`TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image`
 
-Note that the log can also be chosen in the :ref:`Load Dataset` dialog.
+Note that the log can also be chosen in the :ref:`load-dataset` dialog.
 
 Load projection angles
 ----------------------
@@ -96,7 +100,7 @@ be asked if you wish to use the next closest image. Bear in mind that the absenc
 the "Correlate 0 and 180" algorithm will not be available for the reconstruction.
 
 A new 180 projection can be loaded with the :code:`Load 180 degree projection` option. This will override any already
-loaded 180 projection. This option will only work correctly with a stack loaded through the :ref:`Load dataset` method.
+loaded 180 projection. This option will only work correctly with a stack loaded through the :ref:`load-dataset` method.
 
 Saving
 ------
