@@ -18,11 +18,11 @@ requirements:
     - python=3.10.*
     - pip
     - astropy=5.0.*
-    - scipy=1.7.*
+    - scipy=1.8.*
     - scikit-image=0.19.*
     - tifffile=2023.7.18
     - imagecodecs=2023.1.23
-    - numpy=1.21.*
+    - numpy=1.23.*
     - numexpr=2.8.*
     - algotom=1.0.*
     - tomopy=1.12.*
@@ -32,7 +32,7 @@ requirements:
     - requests=2.27.*
     - h5py=3.6.*
     - psutil=5.9.*
-    - cil=23.0.*
+    - cil=24.0.*
     - ccpi-regulariser
     - jenkspy=0.2.0
     - pyqt=5.15.*

@@ -12,11 +12,12 @@ import numpy as np
 
 from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry,
                            BlockDataContainer)
-from cil.optimisation.algorithms import PDHG, SPDHG
+from cil.optimisation.algorithms import PDHG, SPDHG, Algorithm
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
 
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
+from cil.optimisation.utilities.callbacks import Callback
 from cil.plugins.astra.operators import ProjectionOperator
 
 from mantidimaging.core.data import ImageStack
@@ -32,6 +33,22 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
 cil_mutex = Lock()
+
+
+class MIProgressCallback(Callback):
+
+    def __init__(self, verbose=1, progress: Progress | None = None) -> None:
+        super().__init__(verbose)
+        self.progress = progress
+        self.iteration_count = 1
+
+    def __call__(self, algo: Algorithm) -> None:
+        if self.progress:
+            self.progress.update(steps=1,
+                                 msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
+                                 f': Objective {algo.get_last_objective():.2f}',
+                                 force_continue=False)
+            self.iteration_count += 1
 
 
 class CILRecon(BaseRecon):
@@ -240,18 +257,12 @@ class CILRecon(BaseRecon):
             else:
                 raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
-            max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
                 reg_percent = recon_params.regularisation_percent
                 probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
-                algo = SPDHG(f=F,
-                             g=G,
-                             operator=K,
-                             prob=probs,
-                             max_iteration=max_iteration,
-                             update_objective_interval=update_objective_interval)
+                algo = SPDHG(f=F, g=G, operator=K, prob=probs, update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
@@ -261,19 +272,14 @@ class CILRecon(BaseRecon):
                             operator=K,
                             tau=tau,
                             sigma=sigma,
-                            max_iteration=max_iteration,
                             update_objective_interval=update_objective_interval)
 
             try:
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
-                for iter in range(num_iter):
-                    if progress:
-                        progress.update(steps=1,
-                                        msg=f'CIL: Iteration {iter + 1} of {num_iter}'
-                                        f': Objective {algo.get_last_objective():.2f}',
-                                        force_continue=False)
-                    algo.next()
+                algo.max_iteration = num_iter
+                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+
             finally:
                 if progress:
                     progress.mark_complete()
@@ -370,18 +376,12 @@ class CILRecon(BaseRecon):
             else:
                 raise ValueError(f"Regulariser must be one of 'TV', 'TGV'. Received '{recon_params.regulariser}'")
 
-            max_iteration = 100000
             # this should set to a sensible number as evaluating the objective is costly
             update_objective_interval = 10
             if recon_params.stochastic:
                 reg_percent = recon_params.regularisation_percent
                 probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
-                algo = SPDHG(f=F,
-                             g=G,
-                             operator=K,
-                             prob=probs,
-                             max_iteration=max_iteration,
-                             update_objective_interval=update_objective_interval)
+                algo = SPDHG(f=F, g=G, operator=K, prob=probs, update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
@@ -391,19 +391,13 @@ class CILRecon(BaseRecon):
                             operator=K,
                             tau=tau,
                             sigma=sigma,
-                            max_iteration=max_iteration,
                             update_objective_interval=update_objective_interval)
 
             with progress:
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
-                for iter in range(num_iter):
-                    if progress:
-                        progress.update(steps=1,
-                                        msg=f'CIL: Iteration {iter + 1} of {num_iter}'
-                                        f': Objective {algo.get_last_objective():.2f}',
-                                        force_continue=False)
-                    algo.next()
+                algo.max_iteration = num_iter
+                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
