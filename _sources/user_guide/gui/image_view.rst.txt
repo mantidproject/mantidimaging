@@ -1,3 +1,5 @@
+.. _image-view:
+
 Image view
 ==========
 

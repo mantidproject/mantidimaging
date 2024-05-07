@@ -7,7 +7,7 @@ Mantid Imaging makes use of a range of algorithms, some from external tools incl
 
 Mantid Imaging is written in Python and requires a CUDA capable GPU for full functionality. It runs on Linux and Windows. See :ref:`Installation` for more details.
 
-See the :ref:`User Guide` for an example taking data from a set of images to full reconstruction.
+See the :ref:`user-guide` for an example taking data from a set of images to full reconstruction.
 
 Features
 --------
@@ -41,7 +41,7 @@ The Operations Window provides a selection of tools and filters to process and e
 * Remove stripes with filtering
 * Remove stripes with sorting and fitting
 
-More details on using these are available in the :ref:`API Reference` and :ref:`User Guide`.
+More details on using these are available in the :ref:`api-reference` and :ref:`user-guide`.
 
 
 Reconstruction
@@ -55,7 +55,7 @@ Mantid Imaging offers several reconstruction algorithms
 * gridrec
 
 Spectrum Viewer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 Mantid Imaging offers a spectrum viewer where users can select many regions of interest (ROI) for time of flight (TOF) data and view the spectrum of each ROI. 
 The spectrum viewer can be used to export the spectrum of each ROI and its respective coordinates to a separate csv file.

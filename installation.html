@@ -512,9 +512,9 @@ document.write(`
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
 <p>There are several options for installing:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#installing-with-windows-installer"><span class="std std-ref">Installing with Windows installer</span></a> - Simplest method on Windows</p></li>
-<li><p><a class="reference internal" href="#installing-with-mamba-conda"><span class="std std-ref">Installing with Mamba/Conda</span></a> - Linux or Windows. Most flexible. Does not need admin access.</p></li>
-<li><p><a class="reference internal" href="#using-mantid-imaging-on-idaaas"><span class="std std-ref">Using Mantid Imaging on IDAaaS</span></a> - For ISIS users</p></li>
+<li><p><a class="reference internal" href="#installing-windows"><span class="std std-ref">Installing with Windows installer</span></a> - Simplest method on Windows</p></li>
+<li><p><a class="reference internal" href="#installing-mamba"><span class="std std-ref">Installing with Mamba/Conda</span></a>- Linux or Windows. Most flexible. Does not need admin access.</p></li>
+<li><p><a class="reference internal" href="#installing-idaaas"><span class="std std-ref">Using Mantid Imaging on IDAaaS</span></a> - For ISIS users</p></li>
 <li><p>For installation from source see the <a class="reference internal" href="developer_guide/index.html#developer-guide"><span class="std std-ref">Developer Guide</span></a></p></li>
 </ul>
 <section id="requirements">
@@ -532,7 +532,7 @@ document.write(`
 </dl>
 </section>
 <section id="installing-with-windows-installer">
-<h2>Installing with Windows installer<a class="headerlink" href="#installing-with-windows-installer" title="Link to this heading">#</a></h2>
+<span id="installing-windows"></span><h2>Installing with Windows installer<a class="headerlink" href="#installing-with-windows-installer" title="Link to this heading">#</a></h2>
 <p>The installer can be downloaded from the <a class="reference external" href="https://github.com/mantidproject/mantidimaging/releases">releases</a> page. For example <code class="code docutils literal notranslate"><span class="pre">MantidImagingSetup_2.5.0.exe</span></code>.</p>
 <p>Once downloaded, double click the setup file to run the installer. The installer is not currently signed so you may need to click to allow it to run.</p>
 <p>Select a directory to install to e.g. <code class="code docutils literal notranslate"><span class="pre">c:Program</span> <span class="pre">FilesMantid</span> <span class="pre">Imaging</span></code> and click Install.</p>
@@ -544,7 +544,7 @@ document.write(`
 </section>
 </section>
 <section id="installing-with-mamba-conda">
-<h2>Installing with Mamba/Conda<a class="headerlink" href="#installing-with-mamba-conda" title="Link to this heading">#</a></h2>
+<span id="installing-mamba"></span><h2>Installing with Mamba/Conda<a class="headerlink" href="#installing-with-mamba-conda" title="Link to this heading">#</a></h2>
 <p>Mantid Imaging can be installed using the <a class="reference external" href="https://anaconda.org/mantidimaging/mantidimaging/">packages</a> published to Anaconda Cloud, this can be done with an existing Conda
 or Mamba distribution if you already have one on your machine. However if you have issues you may find it worth installing
 a fresh Miniforge3.</p>
@@ -634,12 +634,12 @@ a fresh Miniforge3.</p>
 <li><p>and press <code class="code docutils literal notranslate"><span class="pre">y</span></code> to confirm. Replace <cite>mantidimaging</cite> with any other environment you wish to remove</p></li>
 </ul>
 </li>
-<li><p>Follow steps 4 and 5 from <a href="#id2"><span class="problematic" id="id3">Installing_</span></a>.</p></li>
+<li><p>Follow steps 4 and 5 from <a class="reference internal" href="#installing-mamba"><span class="std std-ref">Installing with Mamba/Conda</span></a>.</p></li>
 </ul>
 </section>
 </section>
 <section id="using-mantid-imaging-on-idaaas">
-<h2>Using Mantid Imaging on IDAaaS<a class="headerlink" href="#using-mantid-imaging-on-idaaas" title="Link to this heading">#</a></h2>
+<span id="installing-idaaas"></span><h2>Using Mantid Imaging on IDAaaS<a class="headerlink" href="#using-mantid-imaging-on-idaaas" title="Link to this heading">#</a></h2>
 <p>If you are an ISIS user then you may have access to the ISIS Data Analysis as a Service (IDAaaS) system.</p>
 <p>Mantid Imaging is preinstalled in the IMAT Tomography workspaces.</p>
 <p>It can be launched from the menu <code class="code docutils literal notranslate"><span class="pre">Applications</span> <span class="pre">&gt;</span> <span class="pre">Software</span> <span class="pre">&gt;</span> <span class="pre">Manntid</span> <span class="pre">Imaging</span></code>.</p>

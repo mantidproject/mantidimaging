@@ -5,13 +5,13 @@ Installation
 
 There are several options for installing:
 
-- :ref:`Installing with Windows installer` - Simplest method on Windows
+- :ref:`installing-windows` - Simplest method on Windows
 
-- :ref:`Installing with Mamba/Conda` - Linux or Windows. Most flexible. Does not need admin access.
+- :ref:`installing-mamba`- Linux or Windows. Most flexible. Does not need admin access.
 
-- :ref:`Using Mantid Imaging on IDAaaS` - For ISIS users
+- :ref:`installing-idaaas` - For ISIS users
 
-- For installation from source see the :ref:`Developer Guide`
+- For installation from source see the :ref:`developer_guide`
 
 Requirements
 ------------
@@ -25,6 +25,8 @@ GPU
 
 RAM
    A large amount of RAM is needed to hold a dataset in memory. A 2k x 2k resolution with 1k projections held as 32 bit floats uses 16 GB of RAM. To perform safe (undoable) operations the requirement is doubled. Requirements scale with increased resolution, projection counts and bit depth.
+
+.. _installing-windows:
 
 Installing with Windows installer
 ---------------------------------
@@ -48,6 +50,8 @@ Uninstalling
 ~~~~~~~~~~~~
 
 If Mantid Imaging has been installed using the Windows Installer, then it can be removed by right clicking the entry in the start menu and selecting :code:`Uninstall`.
+
+.. _installing-mamba:
 
 Installing with Mamba/Conda
 ---------------------------
@@ -131,8 +135,9 @@ To completely delete the Mantid Imaging environment follow these steps:
 
   - and press :code:`y` to confirm. Replace `mantidimaging` with any other environment you wish to remove
 
-- Follow steps 4 and 5 from Installing_.
+- Follow steps 4 and 5 from :ref:`installing-mamba`.
 
+.. _installing-idaaas:
 
 Using Mantid Imaging on IDAaaS
 ------------------------------
@@ -148,4 +153,3 @@ It can be launched from the menu :code:`Applications > Software > Manntid Imagin
     :alt: Launching Mantid Imaging on IDAaaS
     :width: 40%
     :align: center
-

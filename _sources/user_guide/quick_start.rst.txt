@@ -1,3 +1,5 @@
+.. _quick-start:
+
 Quick start: Example Reconstruction
 -----------------------------------
 
@@ -32,7 +34,7 @@ At this stage there is also the option to:
 #. Select the pixel size of the detector used in microns. This can also be changed at a later stage.
 #. Untick a category of files to not load. For example, if both "Dark Before" and "Dark After" images have been found this can be adjusted to only one.
 
-Read more about loading in :ref:`Loading and Saving`.
+Read more about loading in :ref:`loading-saving`.
 
 Project Window
 ##############
@@ -44,7 +46,7 @@ Project Window
 
 The main window allows you to view the currently loaded image stacks and gives access to operations and reconstruction tools.
 
-Read more about using and navigating in the :ref:`Image view`.
+Read more about using and navigating in the :ref:`image-view`.
 
 Operations
 ##########
@@ -75,7 +77,7 @@ Next let's take the sample we loaded and let's tidy it up with operations. To op
    :align: center
    :width: 70%
 
-At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page and for more details on the GUI see :ref:`Operations Window`.
+At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the :ref:`Operations` help page and for more details on the GUI see :ref:`operations-window`.
 
 
 Reconstruction
@@ -113,7 +115,7 @@ There are many filter options. Experiment with the filters by looking at the sli
 
 Then click "Reconstruct Volume" to complete the reconstruction. This should take about 5 minutes.
 
-For more details on the reconstruction GUI see :ref:`reconstruction window`
+For more details on the reconstruction GUI see :ref:`recon-window`
 
 Post-reconstruction
 ###################

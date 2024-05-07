@@ -505,7 +505,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="quick-start-example-reconstruction">
-<h1>Quick start: Example Reconstruction<a class="headerlink" href="#quick-start-example-reconstruction" title="Link to this heading">#</a></h1>
+<span id="quick-start"></span><h1>Quick start: Example Reconstruction<a class="headerlink" href="#quick-start-example-reconstruction" title="Link to this heading">#</a></h1>
 <p>Written: November 2020</p>
 <p>Author: Arianna Wintle (STFC)</p>
 <p>Example data that can be used for this tutorial can be downloaded from <a class="reference external" href="https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/main.zip">github.com/mantidproject/mantidimaging-data</a></p>
@@ -527,7 +527,7 @@ If they are missed or stored in a different location, the above steps can be rep
 <li><p>Select the pixel size of the detector used in microns. This can also be changed at a later stage.</p></li>
 <li><p>Untick a category of files to not load. For example, if both “Dark Before” and “Dark After” images have been found this can be adjusted to only one.</p></li>
 </ol>
-<p>Read more about loading in <a class="reference internal" href="gui/loading_saving.html#loading-and-saving"><span class="std std-ref">Loading and Saving</span></a>.</p>
+<p>Read more about loading in <a class="reference internal" href="gui/loading_saving.html#loading-saving"><span class="std std-ref">Loading and Saving</span></a>.</p>
 </section>
 <section id="project-window">
 <h2>Project Window<a class="headerlink" href="#project-window" title="Link to this heading">#</a></h2>
@@ -562,7 +562,7 @@ If they are missed or stored in a different location, the above steps can be rep
 <li><p><strong>Crop Coordinates</strong> Next we will crop the stack to contain the sample only by selecting a ROI as in the following.</p></li>
 </ol>
 <a class="reference internal image-reference" href="../_images/Crop.png"><img alt="ROI that needs to be selected for the crop" class="align-center" src="../_images/Crop.png" style="width: 70%;" /></a>
-<p>At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the <a class="reference internal" href="#operations"><span class="std std-ref">Operations</span></a> help page and for more details on the GUI see <a class="reference internal" href="gui/operations_window.html#operations-window"><span class="std std-ref">Operations Window</span></a>.</p>
+<p>At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the <a class="reference internal" href="operations/index.html#operations"><span class="std std-ref">Operations</span></a> help page and for more details on the GUI see <a class="reference internal" href="gui/operations_window.html#operations-window"><span class="std std-ref">Operations Window</span></a>.</p>
 </section>
 <section id="reconstruction">
 <h2>Reconstruction<a class="headerlink" href="#reconstruction" title="Link to this heading">#</a></h2>
@@ -592,7 +592,7 @@ If they are missed or stored in a different location, the above steps can be rep
 </ul>
 <p>There are many filter options. Experiment with the filters by looking at the slice preview and the corresponding histogram next to it. Filters like “hann” will strongly filter out higher frequency components. In contrast “ram-lak” preserves these higher frequency components resulting in a visibly less smooth histogram.</p>
 <p>Then click “Reconstruct Volume” to complete the reconstruction. This should take about 5 minutes.</p>
-<p>For more details on the reconstruction GUI see <a class="reference internal" href="gui/recon_window.html#reconstruction-window"><span class="std std-ref">Reconstruction Window</span></a></p>
+<p>For more details on the reconstruction GUI see <a class="reference internal" href="gui/recon_window.html#recon-window"><span class="std std-ref">Reconstruction Window</span></a></p>
 </section>
 <section id="post-reconstruction">
 <h2>Post-reconstruction<a class="headerlink" href="#post-reconstruction" title="Link to this heading">#</a></h2>
