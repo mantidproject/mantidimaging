@@ -2,19 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
 
+import numpy as np
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
-
-if TYPE_CHECKING:
-    import numpy as np
 
 
 class SpectrumROI(ROI):
