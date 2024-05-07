@@ -213,12 +213,6 @@ class SpectrumWidget(QWidget):
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
     def calculate_roi_data(self, roi_object: ROI) -> np.ndarray:
-        """
-        Calculate ROI data based on the provided ROI object.
-
-        @param roi_object: The ROI object.
-        @return: ROI data as a numpy array.
-        """
         pos = roi_object.pos()
         size = roi_object.size()
         roi_data = np.array([pos.x(), pos.y(), size.x(), size.y()])
@@ -251,7 +245,7 @@ class SpectrumWidget(QWidget):
         ])
         return difference
 
-    def clear_cache_on_image_stack_modification(self):
+    def clear_cache(self):
         self.roi_cache.clear()
 
     def get_roi(self, roi_name: str) -> SensibleROI:
@@ -281,6 +275,7 @@ class SpectrumWidget(QWidget):
         if roi_name in self.roi_dict.keys() and roi_name != "all":
             self.image.vb.removeItem(self.roi_dict[roi_name])
             del self.roi_dict[roi_name]
+            del self.roi_cache[roi_name]
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
