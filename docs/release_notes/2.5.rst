@@ -32,7 +32,7 @@ Improved Nexus Support
    - Saving data as float32 (for NXtomoproc this is not yet in the official spec)
 
 Windows Installer
-   See :ref:`Installing with Windows installer`
+   See :ref:`installing-windows`
 
 There have also been many smaller changes and fixes which are listed below.
 

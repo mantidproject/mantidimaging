@@ -1,3 +1,5 @@
+.. _user-guide:
+
 User Guide
 ==========
 
@@ -6,7 +8,7 @@ Getting started
 
 See :ref:`installation`
 
-New users may want to :ref:`Quick start: Example Reconstruction`
+New users may want to :ref:`quick-start`
 
 .. toctree::
    :maxdepth: 2

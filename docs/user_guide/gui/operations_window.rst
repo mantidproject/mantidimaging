@@ -1,3 +1,5 @@
+.. _operations-window:
+
 Operations Window
 =================
 
@@ -20,7 +22,7 @@ The [?] button next to filter selector will open a webpage with an explanation o
 
 The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference.
 Below the previews is a slider that can be dragged horizontally to scroll through previews for each slice of the stack.
-At the bottom of the right hand panel, a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`Image View` help page.
+At the bottom of the right hand panel, a histogram of pixel values before and after is shown. The image views can be navigated as described in the :ref:`image-view` help page.
 
 Green pixels in the after preview indicate that a value has changed. Red pixels
 indicate that there are negative values in the result. Note that the negative

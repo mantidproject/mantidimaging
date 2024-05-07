@@ -1,3 +1,5 @@
+.. _recon-window:
+
 Reconstruction Window
 =====================
 
