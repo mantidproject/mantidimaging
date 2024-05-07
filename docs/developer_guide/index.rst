@@ -62,6 +62,7 @@ The following command line arguments will only work if a valid path containing i
 
    documentation
    developer_conventions
+   debugging
    conda_packaging_and_docker_image
    release
    testing
