@@ -7,7 +7,8 @@ import locale
 from datetime import datetime
 from pathlib import Path
 
-from mantidimaging.core.io.instrument_log import (InstrumentLogParser, LogColumn, LogDataType)
+from mantidimaging.core.io.instrument_log import (InstrumentLogParser, InstrumentShutterCountParser, LogColumn,
+                                                  ShutterCountColumn, LogDataType, ShutterCountType)
 from mantidimaging.core.utility.imat_log_file_parser import IMATLogFile, IMATLogColumn
 
 
@@ -34,6 +35,31 @@ class LegacySpectraLogParser(InstrumentLogParser):
         for row in csv.reader(self.cleaned_lines(), delimiter=self.delimiter):
             data[LogColumn.TIME_OF_FLIGHT].append(float(row[0]))
             data[LogColumn.SPECTRUM_COUNTS].append(int(row[1]))
+        return data
+
+
+class LegacyShutterCountLogParser(InstrumentShutterCountParser):
+    """
+    Parser for shutter count files without a header searching for files ending in "ShutterCount.txt"
+    Tab separated columns of Pulse number, Shutter count
+    """
+    delimiter = '\t'
+
+    @classmethod
+    def match(cls, lines: list[str], filename: str) -> bool:
+        if not filename.lower().endswith("shuttercount.txt"):
+            return False
+        for line in lines[:2]:
+            parts = line.split(cls.delimiter)
+            if len(parts) != 2:
+                return False
+        return True
+
+    def parse(self) -> ShutterCountType:
+        data: ShutterCountType = {ShutterCountColumn.PULSE: [], ShutterCountColumn.SHUTTER_COUNT: []}
+        for row in csv.reader(self.cleaned_lines(), delimiter=self.delimiter):
+            data[ShutterCountColumn.PULSE].append(int(row[0]))
+            data[ShutterCountColumn.SHUTTER_COUNT].append(int(row[1]))
         return data
 
 

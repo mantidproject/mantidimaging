@@ -128,6 +128,9 @@ class MainWindowPresenter(BasePresenter):
     def add_log_to_sample(self, stack_id: uuid.UUID, log_file: Path) -> None:
         self.model.add_log_to_sample(stack_id, log_file)
 
+    def add_shuttercounts_to_sample(self, stack_id: uuid.UUID, shuttercount_file: Path) -> None:
+        self.model.add_shutter_counts_to_sample(stack_id, shuttercount_file)
+
     def _do_rename_stack(self, current_name: str, new_name: str) -> None:
         dock = self._get_stack_visualiser_by_name(current_name)
         if dock is not None:
