@@ -822,6 +822,32 @@ document.write(`
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_to_add_log_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="MainWindowView.load_shuttercounts_dialog">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_shuttercounts_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_shuttercounts_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stack_selector</span> <span class="o">=</span> <span class="n">DatasetSelectorDialog</span><span class="p">(</span><span class="n">main_window</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                               <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stack Selector&quot;</span><span class="p">,</span>
+                                               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Which stack is the shutter count file being loaded for?&quot;</span><span class="p">,</span>
+                                               <span class="n">show_stacks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Was closed without accepting (e.g. via x button or ESC)</span>
+        <span class="k">if</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span> <span class="o">!=</span> <span class="n">stack_selector</span><span class="o">.</span><span class="n">exec</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="n">stack_to_add_shuttercounts_to</span> <span class="o">=</span> <span class="n">stack_selector</span><span class="o">.</span><span class="n">selected_id</span>
+
+        <span class="c1"># Open file dialog</span>
+        <span class="n">selected_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_name</span><span class="p">(</span><span class="s2">&quot;Shutter count file to be loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;Shutter count File (*.txt *.csv)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Cancel/Close was clicked</span>
+        <span class="k">if</span> <span class="n">selected_file</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_shuttercounts_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="o">=</span><span class="n">stack_to_add_shuttercounts_to</span><span class="p">,</span>
+                                                   <span class="n">shuttercount_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Load complete&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selected_file</span><span class="si">}</span><span class="s2"> was loaded as a shutter count file into &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_to_add_shuttercounts_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="MainWindowView.load_180_deg_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_180_deg_dialog">[docs]</a>
     <span class="k">def</span> <span class="nf">load_180_deg_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -646,6 +646,9 @@ document.write(`
 <div class="viewcode-block" id="FILE_TYPES">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES">[docs]</a>
 <span class="k">class</span> <span class="nc">FILE_TYPES</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Order must match order of files in load dialog menu</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">SAMPLE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;sample&quot;</span><span class="p">)</span>
     <span class="n">FLAT_BEFORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">,</span> <span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
     <span class="n">FLAT_AFTER</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">,</span> <span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
@@ -655,6 +658,9 @@ document.write(`
     <span class="n">SAMPLE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
     <span class="n">FLAT_BEFORE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat Before Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
     <span class="n">FLAT_AFTER_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat After Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="n">SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
+    <span class="n">FLAT_BEFORE_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat Before Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
+    <span class="n">FLAT_AFTER_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat After Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tname</span> <span class="o">=</span> <span class="n">tname</span>
@@ -671,6 +677,12 @@ document.write(`
     <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE_LOG</span><span class="p">,</span>
     <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_BEFORE</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_BEFORE_LOG</span><span class="p">,</span>
     <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_AFTER</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_AFTER_LOG</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">shuttercounts_for_file_type</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SHUTTER_COUNTS</span><span class="p">,</span>
+    <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_BEFORE</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_BEFORE_SHUTTER_COUNTS</span><span class="p">,</span>
+    <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_AFTER</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_AFTER_SHUTTER_COUNTS</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 

@@ -482,7 +482,8 @@ document.write(`
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">,</span> <span class="n">LogColumn</span><span class="p">,</span> <span class="n">LogDataType</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">,</span> <span class="n">InstrumentShutterCountParser</span><span class="p">,</span> <span class="n">LogColumn</span><span class="p">,</span>
+                                                  <span class="n">ShutterCountColumn</span><span class="p">,</span> <span class="n">LogDataType</span><span class="p">,</span> <span class="n">ShutterCountType</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.imat_log_file_parser</span> <span class="kn">import</span> <span class="n">IMATLogFile</span><span class="p">,</span> <span class="n">IMATLogColumn</span>
 
 
@@ -516,6 +517,40 @@ document.write(`
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleaned_lines</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIME_OF_FLIGHT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">SPECTRUM_COUNTS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LegacyShutterCountLogParser">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser">[docs]</a>
+<span class="k">class</span> <span class="nc">LegacyShutterCountLogParser</span><span class="p">(</span><span class="n">InstrumentShutterCountParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parser for shutter count files without a header searching for files ending in &quot;ShutterCount.txt&quot;</span>
+<span class="sd">    Tab separated columns of Pulse number, Shutter count</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="LegacyShutterCountLogParser.match">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.match">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;shuttercount.txt&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="LegacyShutterCountLogParser.parse">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">ShutterCountType</span> <span class="o">=</span> <span class="p">{</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">PULSE</span><span class="p">:</span> <span class="p">[],</span> <span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">SHUTTER_COUNT</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleaned_lines</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">PULSE</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">SHUTTER_COUNT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">data</span></div>
 </div>
 

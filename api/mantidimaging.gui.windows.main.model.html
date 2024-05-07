@@ -432,6 +432,7 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_log_to_sample()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_projection_angles_to_sample()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_recon_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_recon_to_dataset()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_shutter_counts_to_sample()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_images_saving()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_load_dataset()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_nexus_saving()</span></code></a></li>
@@ -568,6 +569,16 @@ document.write(`
 :param recon_data: The recon data.
 :param stack_id: The ID of one of the member stacks.
 :return: The ID of the parent dataset if found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample">
+<span class="sig-name descname"><span class="pre">add_shutter_counts_to_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.12)"><span class="pre">UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutter_counts_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/model.html#MainWindowModel.add_shutter_counts_to_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample" title="Link to this definition">#</a></dt>
+<dd><p>Adds the shutter counts file to the sample associated with the given images ID.
+:param images_id (uuid.UUID): The ID of the images.
+:param shutter_counts_file (Path): The path to the shutter counts file.
+:raises RuntimeError: If the images with the given ID cannot be found.
+:returns None</p>
 </dd></dl>
 
 <dl class="py method">
@@ -731,6 +742,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_log_to_sample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_projection_angles_to_sample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_recon_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_recon_to_dataset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_shutter_counts_to_sample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_images_saving()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_load_dataset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_nexus_saving()</span></code></a></li>

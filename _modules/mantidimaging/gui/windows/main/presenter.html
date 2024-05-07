@@ -623,6 +623,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="MainWindowPresenter.add_shuttercounts_to_sample">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_shuttercounts_to_sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_shuttercounts_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">shuttercount_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_shutter_counts_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">shuttercount_file</span><span class="p">)</span></div>
+
+
     <span class="k">def</span> <span class="nf">_do_rename_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stack_visualiser_by_name</span><span class="p">(</span><span class="n">current_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

@@ -494,7 +494,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.leak_tracker</span> <span class="kn">import</span> <span class="n">leak_tracker</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">InstrumentLog</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">InstrumentLog</span><span class="p">,</span> <span class="n">ShutterCount</span>
     <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
 
@@ -535,6 +535,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_proj180deg</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">:</span> <span class="n">InstrumentLog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shutter_count_file</span><span class="p">:</span> <span class="n">ShutterCount</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -814,6 +815,18 @@ document.write(`
         <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">LOG_FILE</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shutter_count_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCount</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shutter_count_file</span>
+
+    <span class="nd">@shutter_count_file</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">shutter_count_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ShutterCount</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SHUTTER_COUNT_FILE</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">source_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SHUTTER_COUNT_FILE</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shutter_count_file</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ImageStack.set_projection_angles">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles">[docs]</a>

@@ -439,11 +439,14 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.DARK_BEFORE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.DARK_BEFORE</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER_LOG</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE_LOG</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.PROJ_180"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.PROJ_180</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SAMPLE</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SAMPLE_LOG</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SHUTTER_COUNTS</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.fname"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.fname</span></code></a></li>
 </ul>
 </li>
@@ -611,7 +614,7 @@ while they’re both Float underneath and the value can be used, it just will pr
 <dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.data_containers.</span></span><span class="sig-name descname"><span class="pre">FILE_TYPES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/data_containers.html#FILE_TYPES"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
-<p>An enumeration.</p>
+<p>Order must match order of files in load dialog menu</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.DARK_AFTER">
 <span class="sig-name descname"><span class="pre">DARK_AFTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Dark',</span> <span class="pre">'After',</span> <span class="pre">'images')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.DARK_AFTER" title="Link to this definition">#</a></dt>
@@ -633,6 +636,11 @@ while they’re both Float underneath and the value can be used, it just will pr
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS">
+<span class="sig-name descname"><span class="pre">FLAT_AFTER_SHUTTER_COUNTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Flat</span> <span class="pre">After</span> <span class="pre">Shutter</span> <span class="pre">Counts',</span> <span class="pre">'',</span> <span class="pre">'ShutterCount')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE">
 <span class="sig-name descname"><span class="pre">FLAT_BEFORE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Flat',</span> <span class="pre">'Before',</span> <span class="pre">'images')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -640,6 +648,11 @@ while they’re both Float underneath and the value can be used, it just will pr
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_LOG">
 <span class="sig-name descname"><span class="pre">FLAT_BEFORE_LOG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Flat</span> <span class="pre">Before</span> <span class="pre">Log',</span> <span class="pre">'',</span> <span class="pre">'log')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_LOG" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS">
+<span class="sig-name descname"><span class="pre">FLAT_BEFORE_SHUTTER_COUNTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Flat</span> <span class="pre">Before</span> <span class="pre">Shutter</span> <span class="pre">Counts',</span> <span class="pre">'',</span> <span class="pre">'ShutterCount')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -655,6 +668,11 @@ while they’re both Float underneath and the value can be used, it just will pr
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE_LOG">
 <span class="sig-name descname"><span class="pre">SAMPLE_LOG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Sample</span> <span class="pre">Log',</span> <span class="pre">'',</span> <span class="pre">'log')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE_LOG" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.data_containers.FILE_TYPES.SHUTTER_COUNTS">
+<span class="sig-name descname"><span class="pre">SHUTTER_COUNTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Sample</span> <span class="pre">Shutter</span> <span class="pre">Counts',</span> <span class="pre">'',</span> <span class="pre">'ShutterCount')</span></em><a class="headerlink" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SHUTTER_COUNTS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -911,11 +929,14 @@ while they’re both Float underneath and the value can be used, it just will pr
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.DARK_BEFORE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.DARK_BEFORE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER_LOG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_AFTER_SHUTTER_COUNTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE_LOG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.FLAT_BEFORE_SHUTTER_COUNTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.PROJ_180"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.PROJ_180</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SAMPLE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SAMPLE_LOG"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SAMPLE_LOG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.SHUTTER_COUNTS"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.SHUTTER_COUNTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.data_containers.FILE_TYPES.fname"><code class="docutils literal notranslate"><span class="pre">FILE_TYPES.fname</span></code></a></li>
 </ul>
 </li>

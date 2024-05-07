@@ -543,6 +543,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.find_all_files"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_all_files()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.find_log_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_log_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.find_related"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_related()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.find_shutter_count_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.find_shutter_count_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.first_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.first_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.from_directory"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.from_directory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html#mantidimaging.core.io.filenames.FilenameGroup.from_file"><code class="docutils literal notranslate"><span class="pre">FilenameGroup.from_file()</span></code></a></li>
@@ -576,6 +577,12 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html">mantidimaging.core.io.instrument_log module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser"><code class="docutils literal notranslate"><span class="pre">BaseParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">BaseParser.cleaned_lines()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.match"><code class="docutils literal notranslate"><span class="pre">BaseParser.match()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.parse"><code class="docutils literal notranslate"><span class="pre">BaseParser.parse()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog"><code class="docutils literal notranslate"><span class="pre">InstrumentLog</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.counts"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.counts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.data"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.data</span></code></a></li>
@@ -592,9 +599,11 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.cleaned_lines()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.match"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.match()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser.parse()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InvalidLog"><code class="docutils literal notranslate"><span class="pre">InvalidLog</span></code></a></li>
@@ -610,6 +619,24 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.NoParserFound"><code class="docutils literal notranslate"><span class="pre">NoParserFound</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount"><code class="docutils literal notranslate"><span class="pre">ShutterCount</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.data"><code class="docutils literal notranslate"><span class="pre">ShutterCount.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.get_column"><code class="docutils literal notranslate"><span class="pre">ShutterCount.get_column()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.has_Pulse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.length"><code class="docutils literal notranslate"><span class="pre">ShutterCount.length</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.parse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parser</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.parsers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parsers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.pulse_per_shutter_range_numbers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.raise_if_counts_missing"><code class="docutils literal notranslate"><span class="pre">ShutterCount.raise_if_counts_missing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.register_parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.register_parser()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCountColumn"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCountColumn.PULSE"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.PULSE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCountColumn.SHUTTER_COUNT"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.SHUTTER_COUNT</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html">mantidimaging.core.io.instrument_log_implmentations module</a><ul>
@@ -617,6 +644,12 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.match()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.parse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date"><code class="docutils literal notranslate"><span class="pre">LegacyIMATLogFile.read_imat_date()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser"><code class="docutils literal notranslate"><span class="pre">LegacyShutterCountLogParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.delimiter"><code class="docutils literal notranslate"><span class="pre">LegacyShutterCountLogParser.delimiter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.match"><code class="docutils literal notranslate"><span class="pre">LegacyShutterCountLogParser.match()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.parse"><code class="docutils literal notranslate"><span class="pre">LegacyShutterCountLogParser.parse()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser"><code class="docutils literal notranslate"><span class="pre">LegacySpectraLogParser</span></code></a><ul>

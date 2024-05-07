@@ -426,6 +426,12 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.core.io.instrument_log module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser"><code class="docutils literal notranslate"><span class="pre">BaseParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">BaseParser.cleaned_lines()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser.match"><code class="docutils literal notranslate"><span class="pre">BaseParser.match()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser.parse"><code class="docutils literal notranslate"><span class="pre">BaseParser.parse()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog"><code class="docutils literal notranslate"><span class="pre">InstrumentLog</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.counts"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.counts()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLog.data"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.data</span></code></a></li>
@@ -442,9 +448,11 @@ document.write(`
 </ul>
 </li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a><ul>
-<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.cleaned_lines()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.match"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.match()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser.parse()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InvalidLog"><code class="docutils literal notranslate"><span class="pre">InvalidLog</span></code></a></li>
@@ -460,6 +468,24 @@ document.write(`
 </ul>
 </li>
 <li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.NoParserFound"><code class="docutils literal notranslate"><span class="pre">NoParserFound</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount"><code class="docutils literal notranslate"><span class="pre">ShutterCount</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.data"><code class="docutils literal notranslate"><span class="pre">ShutterCount.data</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.get_column"><code class="docutils literal notranslate"><span class="pre">ShutterCount.get_column()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.has_Pulse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.length"><code class="docutils literal notranslate"><span class="pre">ShutterCount.length</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.parse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parse()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parser</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.parsers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parsers</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.pulse_per_shutter_range_numbers()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.raise_if_counts_missing"><code class="docutils literal notranslate"><span class="pre">ShutterCount.raise_if_counts_missing()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCount.register_parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.register_parser()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.PULSE"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.PULSE</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.SHUTTER_COUNT"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.SHUTTER_COUNT</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -543,6 +569,30 @@ document.write(`
   <section id="module-mantidimaging.core.io.instrument_log">
 <span id="mantidimaging-core-io-instrument-log-module"></span><h1>mantidimaging.core.io.instrument_log module<a class="headerlink" href="#module-mantidimaging.core.io.instrument_log" title="Link to this heading">#</a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.BaseParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">BaseParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#BaseParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.BaseParser" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base class for parsers</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines">
+<span class="sig-name descname"><span class="pre">cleaned_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#BaseParser.cleaned_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.BaseParser.match">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#BaseParser.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.BaseParser.match" title="Link to this definition">#</a></dt>
+<dd><p>Check if the name and content of the file is likely to be readable by this parser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.BaseParser.parse">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#BaseParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.BaseParser.parse" title="Link to this definition">#</a></dt>
+<dd><p>Parse the log file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLog">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InstrumentLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLog" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
@@ -613,23 +663,41 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InstrumentLogParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
-<p>Base class for parsers</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines">
-<span class="sig-name descname"><span class="pre">cleaned_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.cleaned_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.match">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.match" title="Link to this definition">#</a></dt>
-<dd><p>Check if the name and content of the file is likely to be readable by this parser.</p>
-</dd></dl>
-
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser" title="mantidimaging.core.io.instrument_log.BaseParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseParser</span></code></a></p>
+<p>A base class for parsing instrument log files.</p>
+<p>This class provides a template for parsing instrument log files. Subclasses should
+implement the <cite>parse</cite> method to define the specific parsing logic.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>None</p>
+</dd>
+<dt>Methods:</dt><dd><p>parse: Parse the log file and return the parsed data.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentLogParser.parse">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.LogColumn" title="mantidimaging.core.io.instrument_log.LogColumn"><span class="pre">LogColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentLogParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse" title="Link to this definition">#</a></dt>
 <dd><p>Parse the log file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentShutterCountParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">InstrumentShutterCountParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentShutterCountParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mantidimaging.core.io.instrument_log.BaseParser" title="mantidimaging.core.io.instrument_log.BaseParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseParser</span></code></a></p>
+<p>A parser for instrument shutter count logs.</p>
+<p>This class is responsible for parsing instrument shutter count log files
+and returning the parsed shutter count data.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>None</p>
+</dd>
+<dt>Methods:</dt><dd><p>parse: Parse the log file and return the shutter count data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn" title="mantidimaging.core.io.instrument_log.ShutterCountColumn"><span class="pre">ShutterCountColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#InstrumentShutterCountParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse" title="Link to this definition">#</a></dt>
+<dd><p>Parse the log file and return the shutter count data</p>
 </dd></dl>
 
 </dd></dl>
@@ -693,6 +761,96 @@ document.write(`
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">ShutterCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Represents a shutter count log.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>parsers (ClassVar[list[type[InstrumentShutterCountParser]]]): List of registered parsers.
+parser (type[InstrumentShutterCountParser]): The parser used to parse the log.
+data (ShutterCountType): The parsed data from the log.
+length (int): The length of the log data.</p>
+</dd>
+<dt>Methods:</dt><dd><p>__init__(self, lines: list[str], source_file: Path): Initializes a new instance of the ShutterCount class.
+_find_parser(self) -&gt; None: Finds the appropriate parser for the log.
+parse(self) -&gt; None: Parses the log using the selected parser.
+register_parser(cls, parser: type[InstrumentShutterCountParser]) -&gt; None: Registers a parser for the log.
+get_column(self, key: ShutterCountColumn) -&gt; list[float | int]: Returns the specified column from the log data.
+pulse_per_shutter_range_numbers(self) -&gt; np.array: Returns an array of pulse per shutter range numbers.
+has_Pulse(self) -&gt; bool: Checks if the log contains the ‘PULSE’ column.
+raise_if_counts_missing(self): Raises an exception if the counts are missing in the log.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn" title="mantidimaging.core.io.instrument_log.ShutterCountColumn"><span class="pre">ShutterCountColumn</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.get_column">
+<span class="sig-name descname"><span class="pre">get_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn" title="mantidimaging.core.io.instrument_log.ShutterCountColumn"><span class="pre">ShutterCountColumn</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.get_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.get_column" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse">
+<span class="sig-name descname"><span class="pre">has_Pulse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.has_Pulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.length">
+<span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.length" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser" title="mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><span class="pre">InstrumentShutterCountParser</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.parser" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.parsers">
+<span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.12)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser" title="mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><span class="pre">InstrumentShutterCountParser</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser'&gt;]</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.parsers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers">
+<span class="sig-name descname"><span class="pre">pulse_per_shutter_range_numbers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.pulse_per_shutter_range_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.raise_if_counts_missing">
+<span class="sig-name descname"><span class="pre">raise_if_counts_missing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.raise_if_counts_missing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.raise_if_counts_missing" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCount.register_parser">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser" title="mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><span class="pre">InstrumentShutterCountParser</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCount.register_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCount.register_parser" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCountColumn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.io.instrument_log.</span></span><span class="sig-name descname"><span class="pre">ShutterCountColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/io/instrument_log.html#ShutterCountColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCountColumn.PULSE">
+<span class="sig-name descname"><span class="pre">PULSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.PULSE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.io.instrument_log.ShutterCountColumn.SHUTTER_COUNT">
+<span class="sig-name descname"><span class="pre">SHUTTER_COUNT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.SHUTTER_COUNT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -741,6 +899,12 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.BaseParser"><code class="docutils literal notranslate"><span class="pre">BaseParser</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">BaseParser.cleaned_lines()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.BaseParser.match"><code class="docutils literal notranslate"><span class="pre">BaseParser.match()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.BaseParser.parse"><code class="docutils literal notranslate"><span class="pre">BaseParser.parse()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLog"><code class="docutils literal notranslate"><span class="pre">InstrumentLog</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLog.counts"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.counts()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLog.data"><code class="docutils literal notranslate"><span class="pre">InstrumentLog.data</span></code></a></li>
@@ -757,9 +921,11 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.cleaned_lines"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.cleaned_lines()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.match"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.match()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentLogParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse"><code class="docutils literal notranslate"><span class="pre">InstrumentShutterCountParser.parse()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.InvalidLog"><code class="docutils literal notranslate"><span class="pre">InvalidLog</span></code></a></li>
@@ -775,6 +941,24 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.NoParserFound"><code class="docutils literal notranslate"><span class="pre">NoParserFound</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount"><code class="docutils literal notranslate"><span class="pre">ShutterCount</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.data"><code class="docutils literal notranslate"><span class="pre">ShutterCount.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.get_column"><code class="docutils literal notranslate"><span class="pre">ShutterCount.get_column()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.has_Pulse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.length"><code class="docutils literal notranslate"><span class="pre">ShutterCount.length</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.parse"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parser</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.parsers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.parsers</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers"><code class="docutils literal notranslate"><span class="pre">ShutterCount.pulse_per_shutter_range_numbers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.raise_if_counts_missing"><code class="docutils literal notranslate"><span class="pre">ShutterCount.raise_if_counts_missing()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCount.register_parser"><code class="docutils literal notranslate"><span class="pre">ShutterCount.register_parser()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.PULSE"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.PULSE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.io.instrument_log.ShutterCountColumn.SHUTTER_COUNT"><code class="docutils literal notranslate"><span class="pre">ShutterCountColumn.SHUTTER_COUNT</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

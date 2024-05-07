@@ -487,7 +487,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
 <span class="kn">from</span> <span class="nn">tifffile</span> <span class="kn">import</span> <span class="n">tifffile</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">InstrumentLog</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">InstrumentLog</span><span class="p">,</span> <span class="n">ShutterCount</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader</span> <span class="kn">import</span> <span class="n">img_loader</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">Indices</span><span class="p">,</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
@@ -514,6 +514,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_group</span><span class="p">:</span> <span class="n">FilenameGroup</span>
     <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">shutter_count_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">indices</span><span class="p">:</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
@@ -588,6 +589,14 @@ document.write(`
 
 
 
+<div class="viewcode-block" id="load_shutter_counts">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load_shutter_counts">[docs]</a>
+<span class="k">def</span> <span class="nf">load_shutter_counts</span><span class="p">(</span><span class="n">shutter_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCount</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">shutter_count_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ShutterCount</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">(),</span> <span class="n">shutter_count_file</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="load_stack_from_group">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load_stack_from_group">[docs]</a>
 <span class="k">def</span> <span class="nf">load_stack_from_group</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">FilenameGroup</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
@@ -604,7 +613,8 @@ document.write(`
                 <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="n">indices</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span>
-                <span class="n">log_file</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">log_file</span><span class="p">)</span></div>
+                <span class="n">log_file</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
+                <span class="n">shutter_count_file</span><span class="o">=</span><span class="n">image_params</span><span class="o">.</span><span class="n">shutter_count_file</span><span class="p">)</span></div>
 
 
 
@@ -614,7 +624,8 @@ document.write(`
          <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
          <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
          <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-         <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+         <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">shutter_count_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Loads a stack, including sample, white and dark images.</span>
@@ -651,6 +662,9 @@ document.write(`
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="n">angles</span>
             <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span>
 
+    <span class="k">if</span> <span class="n">shutter_count_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_stack</span><span class="o">.</span><span class="n">shutter_count_file</span> <span class="o">=</span> <span class="n">load_shutter_counts</span><span class="p">(</span><span class="n">shutter_count_file</span><span class="p">)</span>
+
     <span class="c1"># Search for and load metadata file</span>
     <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">filename_group</span><span class="o">.</span><span class="n">metadata_path</span>
     <span class="k">if</span> <span class="n">metadata_filename</span><span class="p">:</span>
@@ -676,8 +690,10 @@ document.write(`
 
     <span class="n">sample_fg</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
     <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+    <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_shutter_count_file</span><span class="p">()</span>
     <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
-    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">sample_fg</span><span class="p">,</span> <span class="n">sample_fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">)</span>
+    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">sample_fg</span><span class="p">,</span> <span class="n">sample_fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">,</span>
+                                                                         <span class="n">sample_fg</span><span class="o">.</span><span class="n">shutter_count_path</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ft</span> <span class="k">for</span> <span class="n">ft</span> <span class="ow">in</span> <span class="n">FILE_TYPES</span> <span class="k">if</span> <span class="n">ft</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">]]:</span>
         <span class="n">fg</span> <span class="o">=</span> <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_related</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
@@ -687,7 +703,7 @@ document.write(`
         <span class="n">fg</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">file_type</span><span class="o">.</span><span class="n">tname</span> <span class="o">==</span> <span class="s2">&quot;Flat&quot;</span><span class="p">:</span>
             <span class="n">fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
-        <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">)</span>
+        <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">shutter_count_path</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">loading_parameters</span></div>
 
