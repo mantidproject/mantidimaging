@@ -114,19 +114,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def reset_units_menu(self):
-        print(f"self.model.tof_data: {self.model.tof_data}")
         if self.model.tof_data is None:
-            print(f"here 1 {self.model.tof_mode}")
             self.view.tof_mode_select_group.setEnabled(False)
             self.view.tofPropertiesGroupBox.setEnabled(False)
             self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
             self.change_selected_menu_option("Image Index")
             self.view.tof_mode_select_group.setEnabled(False)
         else:
-            print(f"here 2 {self.model.tof_mode}")
             self.view.tof_mode_select_group.setEnabled(True)
             self.view.tofPropertiesGroupBox.setEnabled(True)
-        print(f"here 3 {self.model.tof_mode}")
 
     def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -172,7 +168,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.set_roi_properties()
 
     def handle_range_slide_moved(self, tof_range) -> None:
-        print(f"self.model.tof_mode: {self.model.tof_mode}")
         self.model.tof_plot_range = tof_range
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
