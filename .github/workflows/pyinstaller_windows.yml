@@ -63,17 +63,13 @@ jobs:
         uses: Jimver/cuda-toolkit@v0.2.15
         with:
           cuda: '10.2.89'
-      - run:
-          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
-
-      - run:
-          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
-
-      - run: nvcc -V
 
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
+          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
+          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+          nvcc -V
           conda activate mantidimaging-dev
           echo "Cuda path: $CUDA_PATH"
           echo "path: $PATH"
