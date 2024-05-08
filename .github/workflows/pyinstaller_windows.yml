@@ -66,18 +66,16 @@ jobs:
 
       - name: PyInstaller Build
         shell: bash -l {0}
+        env:
+          CUDA_PATH: ${{env.CONDA}}/envs/mantidimaging-dev"
         run: |
           nvcc -V
           conda activate mantidimaging-dev
-          echo "Cuda path 1: $CUDA_PATH"
-          echo "::save-state name={CUDA_PATH}::{${{env.CONDA}}/envs/mantidimaging-dev}"
-          echo "Cuda path 2: $CUDA_PATH"
+          echo "Cuda path: $CUDA_PATH"
           echo "path: $PATH"
           echo "dev env path: ${{env.CONDA}}/envs/mantidimaging-dev"
           cd packaging
           python PackageWithPyInstaller.py
-          conda install nsis
-          makensis nsis_settings.nsi 
 
       - name: Archive PyInstalled File
         uses: actions/upload-artifact@v3
