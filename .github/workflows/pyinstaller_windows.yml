@@ -60,15 +60,24 @@ jobs:
           python ./setup.py create_dev_env
 
       - name: cuda-toolkit
-        uses: Jimver/cuda-toolkit@v0.2.8
+        uses: Jimver/cuda-toolkit@v0.2.15
         with:
           cuda: '10.2.89'
+      - run:
+          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
+
+      - run:
+          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+
+      - run: nvcc -V
 
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
           conda activate mantidimaging-dev
           echo "Cuda path: $CUDA_PATH"
+          echo "path: $PATH"
+          echo "dev env path: ${{env.CONDA}}/envs/mantidimaging-dev"
           cd packaging
           python PackageWithPyInstaller.py
           conda install nsis
