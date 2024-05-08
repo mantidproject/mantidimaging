@@ -271,6 +271,8 @@ class CustomViewBox(ViewBox):
             for child in self.allChildren():
                 if isinstance(child, LinearRegionItem):
                     child.setMovable(False)
+                elif isinstance(child, SpectrumROI):
+                    child.translatable = False
 
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key_Control:
@@ -279,6 +281,8 @@ class CustomViewBox(ViewBox):
             for child in self.allChildren():
                 if isinstance(child, LinearRegionItem):
                     child.setMovable(True)
+                elif isinstance(child, SpectrumROI):
+                    child.translatable = True
 
     ## reimplement right-click to zoom out
     def mouseClickEvent(self, ev):
@@ -315,7 +319,6 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.nextRow()
         self._image_index_range_label = self.addLabel()
         self.range_control = LinearRegionItem()
-        self.range_control.setMovable(False)
         self.range_control.sigRegionChangeFinished.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
 
@@ -350,7 +353,6 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
 
     def __init__(self) -> None:
         super().__init__()
-        self.spectrum_projection_viewbox = CustomViewBox(enableMenu=True)
-        self.image = MIMiniImageView(name="Projection", view_box=self.spectrum_projection_viewbox)
+        self.image = MIMiniImageView(name="Projection", view_box_type=CustomViewBox)
         self.addItem(self.image, 0, 0)
         self.ci.layout.setRowStretchFactor(0, 3)

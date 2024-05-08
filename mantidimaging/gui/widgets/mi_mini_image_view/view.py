@@ -40,18 +40,12 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
                  name: str = "MIMiniImageView",
                  parent: QWidget | None = None,
                  recon_mode: bool = False,
-                 view_box: ViewBox | None = None):
+                 view_box_type: type[ViewBox] = ViewBox):
         super().__init__()
 
         self.name = name.title()
         self.im = ImageItem()
-        if view_box is None:
-            self.vb = ViewBox(invertY=True, lockAspect=True, name=name)
-        else:
-            self.vb = view_box
-            self.vb.invertY(True)
-            self.vb.setAspectLocked(True)
-            self.vb.register(name)
+        self.vb = view_box_type(invertY=True, lockAspect=True, name=name)
         self.vb.addItem(self.im)
         self.hist = HistogramLUTItem(self.im)
         graveyard.append(self.vb)
