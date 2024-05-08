@@ -58,6 +58,8 @@ jobs:
         run: |
           conda deactivate
           python ./setup.py create_dev_env
+          pip freeze
+          python -c "import cupy; print(cupy.__version__)"
 
       - name: cuda-toolkit
         uses: Jimver/cuda-toolkit@v0.2.15
