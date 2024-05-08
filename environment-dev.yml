@@ -35,3 +35,4 @@ dependencies:
   - pre-commit==3.5.*
   - sphinx==7.2.*
   - pydata-sphinx-theme==0.15.*
+  - sphinx-copybutton==0.5.*
