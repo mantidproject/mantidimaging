@@ -66,3 +66,13 @@ In the case of unreliable test failures, it can be useful to repeat part of the 
         timeout-minutes: 30
 
 See `Status check functions <https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions>`_ for details.
+
+Trigger a Debug Function When Running
+-------------------------------------
+
+It can sometimes be useful to a piece of code that can be triggered from a keyboard short cut, for example to output some values or state. This can be done by adding a `QShortcut <https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QShortcut.html>`_ and connecting to a function. For example in the constructor of the view part of a window, e.g. for the spectrum viewer it would be in :code:`SpectrumViewerWindowView.__init__()`. Add the following::
+
+  self.shortcut_debug = QShortcut(QKeySequence('Ctrl+D'), self)
+  self.shortcut_debug.activated.connect(self.presenter.output_debug_info)
+
+And then add a :code:`output_debug_info` with the output that you need. It will be run every time Ctrl+D is pressed.
