@@ -67,11 +67,11 @@ jobs:
       - name: PyInstaller Build
         shell: bash -l {0}
         run: |
-          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
-          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
           nvcc -V
           conda activate mantidimaging-dev
-          echo "Cuda path: $CUDA_PATH"
+          echo "Cuda path 1: $CUDA_PATH"
+          echo "::save-state name={CUDA_PATH}::{${{env.CONDA}}/envs/mantidimaging-dev}"
+          echo "Cuda path 2: $CUDA_PATH"
           echo "path: $PATH"
           echo "dev env path: ${{env.CONDA}}/envs/mantidimaging-dev"
           cd packaging
