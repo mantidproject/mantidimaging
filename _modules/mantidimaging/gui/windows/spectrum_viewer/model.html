@@ -482,7 +482,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypedDict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
@@ -542,6 +542,34 @@ document.write(`
 
 
 
+<div class="viewcode-block" id="AllowedModesTypedDict">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict">[docs]</a>
+<span class="k">class</span> <span class="nc">AllowedModesTypedDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">ToFUnitMode</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<span class="n">allowed_modes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AllowedModesTypedDict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">IMAGE_NUMBER</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Image index&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;Wavelength&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Neutron Wavelength (</span><span class="se">\u212B</span><span class="s2">)&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;Energy&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">ENERGY</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Neutron Energy (MeV)&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;Time of Flight (</span><span class="se">\u03BC</span><span class="s2">s)&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">TOF_US</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Time of Flight (</span><span class="se">\u03BC</span><span class="s2">s)&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowModel">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel">[docs]</a>
 <span class="k">class</span> <span class="nc">SpectrumViewerWindowModel</span><span class="p">:</span>
@@ -566,12 +594,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">special_roi_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ROI_ALL</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">IMAGE_NUMBER</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">WAVELENGTH</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">UnitConversion</span><span class="p">()</span>
 
@@ -1059,6 +1081,21 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">tof_seconds_to_energy</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tof_plot_range</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.set_tof_unit_mode_for_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_tof_unit_mode_for_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_tof_unit_mode_for_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">IMAGE_NUMBER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">change_selected_menu_option</span><span class="p">(</span><span class="s2">&quot;Image Index&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">==</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">ENERGY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">change_selected_menu_option</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">==</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">TOF_US</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">change_selected_menu_option</span><span class="p">(</span><span class="s2">&quot;Time of Flight (</span><span class="se">\u03BC</span><span class="s2">s)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">WAVELENGTH</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">change_selected_menu_option</span><span class="p">(</span><span class="s2">&quot;Wavelength&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

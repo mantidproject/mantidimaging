@@ -429,6 +429,11 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.gui.windows.spectrum_viewer.model module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode"><code class="docutils literal notranslate"><span class="pre">ErrorMode</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.PROPAGATED"><code class="docutils literal notranslate"><span class="pre">ErrorMode.PROPAGATED</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.STANDARD_DEVIATION"><code class="docutils literal notranslate"><span class="pre">ErrorMode.STANDARD_DEVIATION</span></code></a></li>
@@ -471,6 +476,7 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_relevant_tof_units"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_relevant_tof_units()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_roi()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_stack()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_tof_unit_mode_for_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_tof_unit_mode_for_stack()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_data"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_data</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_mode</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_plot_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_plot_range</span></code></a></li>
@@ -568,6 +574,22 @@ document.write(`
                   
   <section id="module-mantidimaging.gui.windows.spectrum_viewer.model">
 <span id="mantidimaging-gui-windows-spectrum-viewer-model-module"></span><h1>mantidimaging.gui.windows.spectrum_viewer.model module<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer.model" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.model.</span></span><span class="sig-name descname"><span class="pre">AllowedModesTypedDict</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/model.html#AllowedModesTypedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode" title="mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><span class="pre">ToFUnitMode</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.model.</span></span><span class="sig-name descname"><span class="pre">ErrorMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/model.html#ErrorMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode" title="Link to this definition">#</a></dt>
@@ -849,6 +871,11 @@ and additional ROIs excluding default ROIs will be removed</p>
 <p>&#64;param stack: The new stack to be used by the model</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_tof_unit_mode_for_stack">
+<span class="sig-name descname"><span class="pre">set_tof_unit_mode_for_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/model.html#SpectrumViewerWindowModel.set_tof_unit_mode_for_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_tof_unit_mode_for_stack" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_data">
 <span class="sig-name descname"><span class="pre">tof_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_data" title="Link to this definition">#</a></dt>
@@ -972,6 +999,11 @@ step_size (int): The size of the steps to be validated.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode"><code class="docutils literal notranslate"><span class="pre">ErrorMode</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.PROPAGATED"><code class="docutils literal notranslate"><span class="pre">ErrorMode.PROPAGATED</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.STANDARD_DEVIATION"><code class="docutils literal notranslate"><span class="pre">ErrorMode.STANDARD_DEVIATION</span></code></a></li>
@@ -1014,6 +1046,7 @@ step_size (int): The size of the steps to be validated.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_relevant_tof_units"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_relevant_tof_units()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_roi()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_tof_unit_mode_for_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.set_tof_unit_mode_for_stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_data"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_data</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_plot_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_plot_range</span></code></a></li>

@@ -429,11 +429,6 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.gui.windows.spectrum_viewer.view module</a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.add_roi_table_row()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.adjust_roi()</span></code></a></li>
@@ -490,6 +485,7 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tableView</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.timeDelaySpinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.timeDelaySpinBox</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tofPropertiesGroupBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tofPropertiesGroupBox</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tof_units_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tof_units_mode</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode_combobox</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.try_to_select_relevant_normalise_stack()</span></code></a></li>
@@ -578,22 +574,6 @@ document.write(`
                   
   <section id="module-mantidimaging.gui.windows.spectrum_viewer.view">
 <span id="mantidimaging-gui-windows-spectrum-viewer-view-module"></span><h1>mantidimaging.gui.windows.spectrum_viewer.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer.view" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">AllowedModesTypedDict</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#AllowedModesTypedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label">
-<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode" title="mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><span class="pre">ToFUnitMode</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.view.</span></span><span class="sig-name descname"><span class="pre">SpectrumViewerWindowView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#SpectrumViewerWindowView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView" title="Link to this definition">#</a></dt>
@@ -892,6 +872,11 @@ roi may not exist in the spectrum widget yet depending on when method is called<
 <dd></dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tof_units_mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tof_units_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tof_units_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transmission_error_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -964,11 +949,6 @@ roi may not exist in the spectrum widget yet depending on when method is called<
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.label"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.label</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict.mode"><code class="docutils literal notranslate"><span class="pre">AllowedModesTypedDict.mode</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.add_roi_table_row()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.adjust_roi()</span></code></a></li>
@@ -1025,6 +1005,7 @@ roi may not exist in the spectrum widget yet depending on when method is called<
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tableView"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tableView</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.timeDelaySpinBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.timeDelaySpinBox</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tofPropertiesGroupBox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tofPropertiesGroupBox</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.tof_units_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.tof_units_mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.transmission_error_mode_combobox"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.transmission_error_mode_combobox</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.try_to_select_relevant_normalise_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.try_to_select_relevant_normalise_stack()</span></code></a></li>

@@ -481,7 +481,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QAbstractItemView</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> \
@@ -491,7 +491,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
-<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">ToFUnitMode</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">allowed_modes</span>
 <span class="kn">from</span> <span class="nn">.presenter</span> <span class="kn">import</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">,</span> <span class="n">ExportMode</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets</span> <span class="kn">import</span> <span class="n">RemovableRowTableView</span>
 <span class="kn">from</span> <span class="nn">.spectrum_widget</span> <span class="kn">import</span> <span class="n">SpectrumWidget</span>
@@ -503,14 +503,6 @@ document.write(`
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main</span> <span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># noqa:F401  # pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
-
-
-<div class="viewcode-block" id="AllowedModesTypedDict">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.AllowedModesTypedDict">[docs]</a>
-<span class="k">class</span> <span class="nc">AllowedModesTypedDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="n">ToFUnitMode</span>
-    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span></div>
-
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView">
@@ -577,30 +569,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_right_click_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Units&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_modes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AllowedModesTypedDict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">IMAGE_NUMBER</span><span class="p">,</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Image index&quot;</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Wavelength&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">,</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Neutron Wavelength (</span><span class="se">\u212B</span><span class="s2">)&quot;</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Energy&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">ENERGY</span><span class="p">,</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Neutron Energy (MeV)&quot;</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Time of Flight (</span><span class="se">\u03BC</span><span class="s2">s)&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">TOF_US</span><span class="p">,</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Time of Flight (</span><span class="se">\u03BC</span><span class="s2">s)&quot;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">allowed_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1087,6 +1061,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_step_label</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">hide_binning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_step_spinBox</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">hide_binning</span><span class="p">)</span></div>
 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tof_units_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_roi_properties">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties">[docs]</a>
