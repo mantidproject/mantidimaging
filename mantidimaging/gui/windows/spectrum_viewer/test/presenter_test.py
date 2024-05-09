@@ -12,7 +12,7 @@ from parameterized import parameterized
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode
+from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -173,6 +173,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         image_stack = generate_images([30, 11, 12])
         new_tof_range = (10, 20)
         self.presenter.model.set_stack(image_stack)
+        self.presenter.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
         self.presenter.handle_range_slide_moved(new_tof_range)
 
         self.assertEqual(self.presenter.model.tof_range, new_tof_range)
@@ -271,3 +272,36 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi()
         self.assertEqual([], self.presenter.model.get_list_of_roi_names())
+
+    @parameterized.expand([("Image Index", ToFUnitMode.IMAGE_NUMBER), ("Wavelength", ToFUnitMode.WAVELENGTH),
+                           ("Energy", ToFUnitMode.ENERGY), ("Time of Flight (\u03BCs)", ToFUnitMode.TOF_US)])
+    def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self, mode_text, expected_mode):
+        self.view.tof_units_mode = mode_text
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_tof_unit_change_via_menu()
+        self.assertEqual(self.presenter.model.tof_mode, expected_mode)
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
+    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self, get_stack_time_of_flight):
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
+        self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
+        get_stack_time_of_flight.return_value = None
+        self.view.tof_units_mode = "Wavelength"
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_sample_change(uuid.uuid4())
+        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.IMAGE_NUMBER)
+
+    def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
+        self.view.flightPathSpinBox = mock.Mock()
+        self.view.flightPathSpinBox.value.return_value = 10
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_flight_path_change()
+        self.assertEqual(self.presenter.model.units.target_to_camera_dist, 10)
+
+    def test_WHEN_tof_delay_changed_THEN_unit_conversion_delay_set(self):
+        self.view.timeDelaySpinBox = mock.Mock()
+        self.view.timeDelaySpinBox.value.return_value = 400
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_time_delay_change()
+        self.assertEqual(self.presenter.model.units.data_offset, 400 * 1e-6)

@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 import numpy as np
 from math import ceil
@@ -52,6 +52,31 @@ class ErrorMode(Enum):
         raise ValueError(f"Unknown error mode: {value}")
 
 
+class AllowedModesTypedDict(TypedDict):
+    mode: ToFUnitMode
+    label: str
+
+
+allowed_modes: dict[str, AllowedModesTypedDict] = {
+    "Image Index": {
+        "mode": ToFUnitMode.IMAGE_NUMBER,
+        "label": "Image index"
+    },
+    "Wavelength": {
+        "mode": ToFUnitMode.WAVELENGTH,
+        "label": "Neutron Wavelength (\u212B)"
+    },
+    "Energy": {
+        "mode": ToFUnitMode.ENERGY,
+        "label": "Neutron Energy (MeV)"
+    },
+    "Time of Flight (\u03BCs)": {
+        "mode": ToFUnitMode.TOF_US,
+        "label": "Time of Flight (\u03BCs)"
+    }
+}
+
+
 class SpectrumViewerWindowModel:
     """
     The model for the spectrum viewer window.
@@ -74,12 +99,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
-
-        self.tof_data = self.get_stack_time_of_flight()
-        if self.tof_data is None:
-            self.tof_mode = ToFUnitMode.IMAGE_NUMBER
-        else:
-            self.tof_mode = ToFUnitMode.WAVELENGTH
 
         self.units = UnitConversion()
 
@@ -481,3 +500,15 @@ class SpectrumViewerWindowModel:
                     self.tof_data = self.units.tof_seconds_to_energy()
                 self.tof_plot_range = (self.tof_data.min(), self.tof_data.max())
                 self.tof_range = (0, self.tof_data.size)
+
+    def set_tof_unit_mode_for_stack(self) -> None:
+        if self.get_stack_time_of_flight() is None or self.tof_data is None:
+            self.tof_mode = ToFUnitMode.IMAGE_NUMBER
+            self.presenter.change_selected_menu_option("Image Index")
+        elif self.tof_mode == ToFUnitMode.ENERGY:
+            self.presenter.change_selected_menu_option("Energy")
+        elif self.tof_mode == ToFUnitMode.TOF_US:
+            self.presenter.change_selected_menu_option("Time of Flight (\u03BCs)")
+        else:
+            self.tof_mode = ToFUnitMode.WAVELENGTH
+            self.presenter.change_selected_menu_option("Wavelength")

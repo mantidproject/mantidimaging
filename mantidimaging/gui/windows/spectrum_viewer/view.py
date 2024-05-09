@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
@@ -13,7 +13,7 @@ from PyQt5.QtCore import QSignalBlocker, Qt
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .model import ROI_RITS, ToFUnitMode
+from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -25,11 +25,6 @@ import numpy as np
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
-
-
-class AllowedModesTypedDict(TypedDict):
-    mode: ToFUnitMode
-    label: str
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -94,30 +89,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
         self.tof_mode_select_group = QActionGroup(self)
 
-        self.allowed_modes: dict[str, AllowedModesTypedDict] = {
-            "Image Index": {
-                "mode": ToFUnitMode.IMAGE_NUMBER,
-                "label": "Image index"
-            },
-            "Wavelength": {
-                "mode": ToFUnitMode.WAVELENGTH,
-                "label": "Neutron Wavelength (\u212B)"
-            },
-            "Energy": {
-                "mode": ToFUnitMode.ENERGY,
-                "label": "Neutron Energy (MeV)"
-            },
-            "Time of Flight (\u03BCs)": {
-                "mode": ToFUnitMode.TOF_US,
-                "label": "Time of Flight (\u03BCs)"
-            }
-        }
-        for mode in self.allowed_modes.keys():
+        for mode in allowed_modes.keys():
             action = QAction(mode, self.tof_mode_select_group)
             action.setCheckable(True)
             action.setObjectName(mode)
             self.units_menu.addAction(action)
-            action.triggered.connect(self.presenter.handle_tof_unit_change)
+            action.triggered.connect(self.presenter.handle_tof_unit_change_via_menu)
             if mode == "Image Index":
                 action.setChecked(True)
         if self.presenter.model.tof_data is None:
@@ -526,6 +503,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.bin_size_spinBox.setHidden(hide_binning)
         self.bin_step_label.setHidden(hide_binning)
         self.bin_step_spinBox.setHidden(hide_binning)
+
+    @property
+    def tof_units_mode(self) -> str:
+        return self.tof_mode_select_group.checkedAction().text()
 
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:

@@ -167,3 +167,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertIn("roi_1", self.spectrum_widget.roi_dict.keys())
         self.spectrum_widget.rename_roi("roi_1", "roi")
         self.assertIn("roi_1", self.spectrum_widget.roi_dict)
+
+    def test_WHEN_tof_axis_label_changed_THEN_axis_label_set(self):
+        self.spectrum_plot_widget.set_tof_axis_label("test")
+        self.assertEqual(self.spectrum_plot_widget.spectrum.getAxis('bottom').labelText, "test")
