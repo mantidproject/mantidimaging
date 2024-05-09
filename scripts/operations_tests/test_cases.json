@@ -510,27 +510,37 @@
     ]
   },
   "NaN Removal": {
-    "params": {
-      "mode_value": "Constant",
-      "replace_value": null
-    },
-    "source_data": "flower128",
-    "cases": [
-      {
-        "test_name": "replace_with_constant",
-        "params": {
-          "mode_value": "Constant",
-          "replace_value": 0
-        }
+      "params": {
+        "mode_value": "Constant",
+        "replace_value": 0
       },
-      {
-        "test_name": "replace_with_median",
-        "params": {
-          "mode_value": "Median"
+      "source_data": "flower128",
+      "cases": [
+        {
+          "pre_run_step": "add_nan",
+          "test_name": "nan_removal_constant_default",
+          "params": {
+            "mode_value": "Constant",
+            "replace_value": 0
+          }
+        },
+        {
+          "pre_run_step": "add_nan",
+          "test_name": "nan_removal_median",
+          "params": {
+            "mode_value": "Median"
+          }
+        },
+        {
+          "pre_run_step": "add_nan",
+          "test_name": "nan_removal_constant_specific",
+          "params": {
+            "mode_value": "Constant",
+            "replace_value": 100
+          }
         }
-      }
-    ]
-  },
+      ]
+    },
   "Rebin": {
     "params": {
       "rebin_param": 0.5,
@@ -628,35 +638,6 @@
         "test_name": "rotate_custom_degrees",
         "params": {
           "angle": 45
-        }
-      }
-    ]
-  },
-  "NaN Removal": {
-    "params": {
-      "mode_value": "Constant",
-      "replace_value": 0
-    },
-    "source_data": "flower128",
-    "cases": [
-      {
-        "test_name": "nan_removal_constant_default",
-        "params": {
-          "mode_value": "Constant",
-          "replace_value": 0
-        }
-      },
-      {
-        "test_name": "nan_removal_median",
-        "params": {
-          "mode_value": "Median"
-        }
-      },
-      {
-        "test_name": "nan_removal_constant_specific",
-        "params": {
-          "mode_value": "Constant",
-          "replace_value": 100
         }
       }
     ]

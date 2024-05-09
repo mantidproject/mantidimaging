@@ -83,6 +83,7 @@ class TestCase:
     sub_test_name: str
     test_number: int
     params: dict
+    pre_run_step: str
     op_func: Callable
     duration: float = 0.0
     message: str = ""
@@ -137,6 +138,10 @@ class TestRunner:
 
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
+
+        if test_case.pre_run_step == 'add_nan':
+            self.image_stack = self.add_nan(image_stack, fraction=0.1)
+
         test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
         file_name = config_manager.save_dir / (test_case.test_name + ".npz")
 
@@ -158,6 +163,15 @@ class TestRunner:
 
         TEST_CASE_RESULTS.append(test_case)
 
+    def add_nan(self, image_stack, fraction=0.001):
+        data = image_stack.data
+        total_elements = data.size
+        num_nans = int(total_elements * fraction)
+        step_size = total_elements // num_nans
+        nan_indices = np.arange(0, total_elements, step_size)[:num_nans]
+        data.ravel()[nan_indices] = np.nan
+        return image_stack
+
     def compare_mode(self):
         for operation, test_case_info in TEST_CASES.items():
             print(f"Running tests for {operation}:")
@@ -171,7 +185,14 @@ class TestRunner:
                 params = {k: process_params(v) for k, v in params.items()}
                 op_class = FILTERS[operation]
                 op_func = op_class.filter_func
-                test_case = TestCase(operation, test_name, sub_test_name, test_number, params, op_func)
+                pre_run_step = case.get("pre_run_step", {})
+                test_case = TestCase(operation=operation,
+                                     test_name=test_name,
+                                     sub_test_name=sub_test_name,
+                                     test_number=test_number,
+                                     params=params,
+                                     pre_run_step=pre_run_step,
+                                     op_func=op_func)
                 self.run_test(test_case)
             print("\n")
 
