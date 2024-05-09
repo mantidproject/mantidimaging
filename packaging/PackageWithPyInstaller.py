@@ -100,5 +100,5 @@ if __name__ == "__main__":
     # The default limit is 1000, meaning a recursion error would occur at around 115 nested imports.
     # A limit of 5000 means the error should occur at about 660 nested imports.
     sys.setrecursionlimit(sys.getrecursionlimit() * 5)
-
-    PyInstaller.__main__.run(create_run_options())
+    print(f"create_run_options() : {create_run_options()}")
+    # PyInstaller.__main__.run(create_run_options())
