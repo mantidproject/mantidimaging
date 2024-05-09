@@ -73,13 +73,13 @@ jobs:
       - name: PyInstaller Build
         shell: bash -l {0}
         env:
-          CUDA_PATH: ${{env.CONDA}}/envs/mantidimaging-dev"
+          CUDA_PATH: '${{env.CONDA}}/envs/mantidimaging-dev'
         run: |
           nvcc -V
           conda activate mantidimaging-dev
           echo "Cuda path: $CUDA_PATH"
           echo "path: $PATH"
-          echo "dev env path: ${{env.CONDA}}/envs/mantidimaging-dev"
+          echo "dev env path: '${{env.CONDA}}/envs/mantidimaging-dev'"
           cd packaging
           python PackageWithPyInstaller.py
 
