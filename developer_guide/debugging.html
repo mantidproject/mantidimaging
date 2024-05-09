@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Conda Packaging and Docker images &#8212; MantidImaging 2.8.0a1 documentation</title>
+    <title>Debugging &#8212; MantidImaging 2.8.0a1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/conda_packaging_and_docker_image';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/debugging';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -50,8 +50,8 @@
         </script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating a Release" href="release.html" />
-    <link rel="prev" title="Debugging" href="debugging.html" />
+    <link rel="next" title="Conda Packaging and Docker images" href="conda_packaging_and_docker_image.html" />
+    <link rel="prev" title="Developer Conventions" href="developer_conventions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -426,14 +426,27 @@ document.write(`
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
   <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Debugging</a><ul>
+<li><a class="reference internal" href="#getting-debug-output">Getting Debug Output</a></li>
+<li><a class="reference internal" href="#debugging-github-actions">Debugging Github Actions</a></li>
+<li><a class="reference internal" href="#trigger-a-debug-function-when-running">Trigger a Debug Function When Running</a></li>
+</ul>
+</li>
+</ul>
+
+  </div></div>
+        <div class="sidebar-primary-item">
+  <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="debugging.html"
-                          title="previous chapter">Debugging</a></p>
+    <p class="topless"><a href="developer_conventions.html"
+                          title="previous chapter">Developer Conventions</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="release.html"
-                          title="next chapter">Creating a Release</a></p>
+    <p class="topless"><a href="conda_packaging_and_docker_image.html"
+                          title="next chapter">Conda Packaging and Docker images</a></p>
   </div></div>
         <div class="sidebar-primary-item">
 <div id="searchbox"></div></div>
@@ -474,7 +487,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Conda...</li>
+    <li class="breadcrumb-item active" aria-current="page">Debugging</li>
   </ul>
 </nav>
 </div>
@@ -491,11 +504,76 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="conda-packaging-and-docker-images">
-<span id="id1"></span><h1>Conda Packaging and Docker images<a class="headerlink" href="#conda-packaging-and-docker-images" title="Link to this heading">#</a></h1>
-<p>Mantid Imaging is distributed as a Conda package and a Windows installer.</p>
-<p>All packaging is handled in the Github Actions. Please look at the
-Action scripts for the up-to-date reference of the actual steps.</p>
+  <section id="debugging">
+<h1>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">#</a></h1>
+<p>This pages contains some Mantid Imaging specific debugging tips.</p>
+<section id="getting-debug-output">
+<h2>Getting Debug Output<a class="headerlink" href="#getting-debug-output" title="Link to this heading">#</a></h2>
+<p>There are several options that can be used so that Mantid Imaging outputs more information as it runs, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">X</span> <span class="n">faulthandler</span> <span class="o">-</span><span class="n">W</span> <span class="n">default</span> <span class="o">-</span><span class="n">m</span> <span class="n">mantidimaging</span> <span class="o">--</span><span class="n">log</span><span class="o">-</span><span class="n">level</span> <span class="n">DEBUG</span>
+</pre></div>
+</div>
+<p>These options:</p>
+<ul class="simple">
+<li><p>Enable the <a class="reference external" href="https://docs.python.org/3/library/faulthandler.html#module-faulthandler" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">faulthandler</span></code></a> to dump a traceback in the event of python crash.</p></li>
+<li><p>Cause python <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> to be printed.</p></li>
+<li><p>Set the Mantid Imaging <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">log</span> <span class="pre">level</span></code></a> to DEBUG.</p></li>
+</ul>
+<p>Logs are written using the Python <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module. Mantid Imaging files should access the logger using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="o">...</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then output using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded metadata from: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To avoid large amounts of output, logging messages should only be merged if they are likely to be useful for general debugging.</p>
+</section>
+<section id="debugging-github-actions">
+<h2>Debugging Github Actions<a class="headerlink" href="#debugging-github-actions" title="Link to this heading">#</a></h2>
+<p>When errors happen on Github actions it is best to try to reproduce them locally. When that is not possible it may be required to debug them by creating runs by adding commits to a test pull request. In messy cases, it can be best to create a clone of the mantid imaging repository into your Github user account. If you are doing this on the main repository, put <code class="code docutils literal notranslate"><span class="pre">DONTMERGE</span></code> in the PR title and commit messages to prevent any accidental merging.</p>
+<p>It is usually useful to disable any actions that are not relevant to your issue. On your branch you can delete any un-needed workflows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">rm</span> <span class="o">.</span><span class="n">github</span><span class="o">/</span><span class="n">workflows</span><span class="o">/</span><span class="n">windows</span><span class="o">.</span><span class="n">yml</span> <span class="o">...</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;DONTMERGE: disable workflows&quot;</span>
+</pre></div>
+</div>
+<p>If the failure is in a specific test, pytest can be told to only run those by adding a <code class="code docutils literal notranslate"><span class="pre">-k</span></code> option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">pytest</span>
+<span class="n">timeout</span><span class="o">-</span><span class="n">minutes</span><span class="p">:</span> <span class="mi">10</span>
+<span class="n">shell</span><span class="p">:</span> <span class="n">bash</span> <span class="o">-</span><span class="n">l</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+<span class="n">run</span><span class="p">:</span> <span class="o">|</span>
+  <span class="n">xvfb</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">servernum</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">--</span><span class="n">cov</span> <span class="o">--</span><span class="n">cov</span><span class="o">-</span><span class="n">report</span><span class="o">=</span><span class="n">xml</span> <span class="o">-</span><span class="n">n</span> <span class="n">auto</span> <span class="o">-</span><span class="n">o</span> <span class="n">log_cli</span><span class="o">=</span><span class="n">true</span> <span class="o">--</span><span class="n">ignore</span><span class="o">=</span><span class="n">mantidimaging</span><span class="o">/</span><span class="n">eyes_tests</span> <span class="o">--</span><span class="n">durations</span><span class="o">=</span><span class="mi">10</span> <span class="o">-</span><span class="n">k</span> <span class="n">test_parse_metadata_file</span>
+</pre></div>
+</div>
+<p>In the case of unreliable test failures, it can be useful to repeat part of the workflow. The <code class="code docutils literal notranslate"><span class="pre">if:</span> <span class="pre">success()</span> <span class="pre">||</span> <span class="pre">failure()</span></code> means that each step will run even if previous ones have failed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">GUI</span> <span class="n">Tests</span> <span class="n">System</span> <span class="mi">1</span>
+  <span class="k">if</span><span class="p">:</span> <span class="n">success</span><span class="p">()</span> <span class="o">||</span> <span class="n">failure</span><span class="p">()</span>
+  <span class="n">shell</span><span class="p">:</span> <span class="n">bash</span> <span class="o">-</span><span class="n">l</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+  <span class="n">run</span><span class="p">:</span> <span class="o">|</span>
+    <span class="n">xvfb</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">servernum</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">time</span> <span class="o">-</span><span class="n">v</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">vs</span> <span class="o">-</span><span class="n">rs</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">xdist</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">randomly</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">repeat</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">cov</span> <span class="o">-</span><span class="n">o</span> <span class="n">log_cli</span><span class="o">=</span><span class="n">true</span> <span class="o">--</span><span class="n">run</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">tests</span> <span class="o">--</span><span class="n">durations</span><span class="o">=</span><span class="mi">10</span>
+  <span class="n">timeout</span><span class="o">-</span><span class="n">minutes</span><span class="p">:</span> <span class="mi">30</span>
+
+<span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">GUI</span> <span class="n">Tests</span> <span class="n">System</span> <span class="mi">2</span>
+  <span class="k">if</span><span class="p">:</span> <span class="n">success</span><span class="p">()</span> <span class="o">||</span> <span class="n">failure</span><span class="p">()</span>
+  <span class="n">shell</span><span class="p">:</span> <span class="n">bash</span> <span class="o">-</span><span class="n">l</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>
+  <span class="n">run</span><span class="p">:</span> <span class="o">|</span>
+    <span class="n">xvfb</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">auto</span><span class="o">-</span><span class="n">servernum</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">time</span> <span class="o">-</span><span class="n">v</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">vs</span> <span class="o">-</span><span class="n">rs</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">xdist</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">randomly</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">repeat</span> <span class="o">-</span><span class="n">p</span> <span class="n">no</span><span class="p">:</span><span class="n">cov</span> <span class="o">-</span><span class="n">o</span> <span class="n">log_cli</span><span class="o">=</span><span class="n">true</span> <span class="o">--</span><span class="n">run</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">tests</span> <span class="o">--</span><span class="n">durations</span><span class="o">=</span><span class="mi">10</span>
+  <span class="n">timeout</span><span class="o">-</span><span class="n">minutes</span><span class="p">:</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions">Status check functions</a> for details.</p>
+</section>
+<section id="trigger-a-debug-function-when-running">
+<h2>Trigger a Debug Function When Running<a class="headerlink" href="#trigger-a-debug-function-when-running" title="Link to this heading">#</a></h2>
+<p>It can sometimes be useful to a piece of code that can be triggered from a keyboard short cut, for example to output some values or state. This can be done by adding a <a class="reference external" href="https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QShortcut.html">QShortcut</a> and connecting to a function. For example in the constructor of the view part of a window, e.g. for the spectrum viewer it would be in <code class="code docutils literal notranslate"><span class="pre">SpectrumViewerWindowView.__init__()</span></code>. Add the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">shortcut_debug</span> <span class="o">=</span> <span class="n">QShortcut</span><span class="p">(</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s1">&#39;Ctrl+D&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">shortcut_debug</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">output_debug_info</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And then add a <code class="code docutils literal notranslate"><span class="pre">output_debug_info</span></code> with the output that you need. It will be run every time Ctrl+D is pressed.</p>
+</section>
 </section>
 
 
@@ -509,20 +587,20 @@ Action scripts for the up-to-date reference of the actual steps.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="debugging.html"
+       href="developer_conventions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Debugging</p>
+        <p class="prev-next-title">Developer Conventions</p>
       </div>
     </a>
     <a class="right-next"
-       href="release.html"
+       href="conda_packaging_and_docker_image.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating a Release</p>
+        <p class="prev-next-title">Conda Packaging and Docker images</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -537,9 +615,23 @@ Action scripts for the up-to-date reference of the actual steps.</p>
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-debug-output">Getting Debug Output</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-github-actions">Debugging Github Actions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trigger-a-debug-function-when-running">Trigger a Debug Function When Running</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/developer_guide/conda_packaging_and_docker_image.rst.txt">
+    <a href="../_sources/developer_guide/debugging.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
