@@ -429,6 +429,13 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module</a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox"><code class="docutils literal notranslate"><span class="pre">CustomViewBox</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.keyPressEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyReleaseEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.keyReleaseEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseClickEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.mouseClickEvent()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseDragEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.mouseDragEvent()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.add_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.add_range()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.get_tof_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.get_tof_range()</span></code></a></li>
@@ -562,6 +569,38 @@ document.write(`
                   
   <section id="module-mantidimaging.gui.windows.spectrum_viewer.spectrum_widget">
 <span id="mantidimaging-gui-windows-spectrum-viewer-spectrum-widget-module"></span><h1>mantidimaging.gui.windows.spectrum_viewer.spectrum_widget module<a class="headerlink" href="#module-mantidimaging.gui.windows.spectrum_viewer.spectrum_widget" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.</span></span><span class="sig-name descname"><span class="pre">CustomViewBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#CustomViewBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ViewBox</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#CustomViewBox.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyPressEvent" title="Link to this definition">#</a></dt>
+<dd><p>This routine should capture key presses in the current view box.
+Key presses are used only when mouse mode is RectMode
+The following events are implemented:
+ctrl-A : zooms out to the default “full” view of the plot
+ctrl-+ : moves forward in the zooming stack (if it exists)
+ctrl– : moves backward in the zooming stack (if it exists)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyReleaseEvent">
+<span class="sig-name descname"><span class="pre">keyReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QKeyEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#CustomViewBox.keyReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyReleaseEvent" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseClickEvent">
+<span class="sig-name descname"><span class="pre">mouseClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ev</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#CustomViewBox.mouseClickEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseClickEvent" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseDragEvent">
+<span class="sig-name descname"><span class="pre">mouseDragEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#CustomViewBox.mouseDragEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseDragEvent" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.</span></span><span class="sig-name descname"><span class="pre">SpectrumPlotWidget</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/spectrum_widget.html#SpectrumPlotWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget" title="Link to this definition">#</a></dt>
@@ -926,6 +965,13 @@ the ROI dictionary, sending a signal to the main window.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox"><code class="docutils literal notranslate"><span class="pre">CustomViewBox</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.keyPressEvent()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.keyReleaseEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.keyReleaseEvent()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseClickEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.mouseClickEvent()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.CustomViewBox.mouseDragEvent"><code class="docutils literal notranslate"><span class="pre">CustomViewBox.mouseDragEvent()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.add_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.add_range()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.get_tof_range"><code class="docutils literal notranslate"><span class="pre">SpectrumPlotWidget.get_tof_range()</span></code></a></li>
