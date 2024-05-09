@@ -36,12 +36,16 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
     bright_levels: None | list[int] = None
     levels: list[float]
 
-    def __init__(self, name: str = "MIMiniImageView", parent: QWidget | None = None, recon_mode: bool = False):
+    def __init__(self,
+                 name: str = "MIMiniImageView",
+                 parent: QWidget | None = None,
+                 recon_mode: bool = False,
+                 view_box_type: type[ViewBox] = ViewBox):
         super().__init__()
 
         self.name = name.title()
         self.im = ImageItem()
-        self.vb = ViewBox(invertY=True, lockAspect=True, name=name)
+        self.vb = view_box_type(invertY=True, lockAspect=True, name=name)
         self.vb.addItem(self.im)
         self.hist = HistogramLUTItem(self.im)
         graveyard.append(self.vb)
