@@ -138,11 +138,12 @@ class TestRunner:
 
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
-        test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
-        file_name = config_manager.save_dir / (test_case.test_name + ".npz")
 
         if test_case.pre_run_step == 'add_nan':
             self.image_stack = self.add_nan(image_stack, fraction=0.1)
+
+        test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
+        file_name = config_manager.save_dir / (test_case.test_name + ".npz")
 
         if file_name.is_file():
             baseline_image_stack = self.load_post_operation_image_stack(file_name)
@@ -162,17 +163,13 @@ class TestRunner:
 
         TEST_CASE_RESULTS.append(test_case)
 
-    def add_nan(self, image_stack, fraction=0.1):
+    def add_nan(self, image_stack, fraction=0.001):
         data = image_stack.data
         total_elements = data.size
         num_nans = int(total_elements * fraction)
-
-        rng = np.random.default_rng(0)
-
-        nan_indices = rng.choice(total_elements, num_nans, replace=False)
-
+        step_size = total_elements // num_nans
+        nan_indices = np.arange(0, total_elements, step_size)[:num_nans]
         data.ravel()[nan_indices] = np.nan
-
         return image_stack
 
     def compare_mode(self):
