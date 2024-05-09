@@ -143,11 +143,11 @@ class FILE_TYPES(Enum):
     DARK_AFTER = ("Dark", "After", "images")
     PROJ_180 = ("180 degree", "", "180")
     SAMPLE_LOG = ("Sample Log", "", "log")
-    FLAT_BEFORE_LOG = ("Flat Before Log", "", "log")
-    FLAT_AFTER_LOG = ("Flat After Log", "", "log")
     SHUTTER_COUNTS = ("Sample Shutter Counts", "", "ShutterCount")
     FLAT_BEFORE_SHUTTER_COUNTS = ("Flat Before Shutter Counts", "", "ShutterCount")
     FLAT_AFTER_SHUTTER_COUNTS = ("Flat After Shutter Counts", "", "ShutterCount")
+    FLAT_BEFORE_LOG = ("Flat Before Log", "", "log")
+    FLAT_AFTER_LOG = ("Flat After Log", "", "log")
 
     def __init__(self, tname: str, suffix: str, mode: str) -> None:
         self.tname = tname
