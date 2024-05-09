@@ -164,8 +164,7 @@ class LoadPresenter:
         if file_type in log_for_file_type:
             self._update_image_param(file_type, image_param, log_for_file_type, 'log_file')
         if file_type in shuttercounts_for_file_type:
-            # self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
-            pass
+            self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
 
         if file_type == FILE_TYPES.SAMPLE:
             image_param.indices = field.indices
