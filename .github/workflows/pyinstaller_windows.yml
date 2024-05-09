@@ -80,7 +80,7 @@ jobs:
       - name: Archive PyInstalled File
         uses: actions/upload-artifact@v3
         with:
-          name: MantidImaging
+          name: MantidImagingSpec
           path: packaging/MantidImaging.spec
 
       - name: Archive PyInstalled File
