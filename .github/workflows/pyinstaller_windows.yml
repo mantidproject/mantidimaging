@@ -73,7 +73,7 @@ jobs:
       - name: PyInstaller Build
         shell: bash -l {0}
         env:
-          CONDA_CUPY_CUDA_PATH: %CUDA_PATH%
+          CONDA_CUPY_CUDA_PATH: ${{env.CUDA_PATH}}
         run: |
           conda activate mantidimaging-dev
           set
