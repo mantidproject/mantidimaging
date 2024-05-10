@@ -65,6 +65,11 @@ jobs:
           conda env list
           python --version; conda list ; pip list
 
+      - name: cuda-toolkit
+        uses: Jimver/cuda-toolkit@v0.2.15
+        with:
+          cuda: '10.2.89'
+
       - name: PyInstaller Build
         shell: bash -l {0}
         env:
