@@ -17,6 +17,11 @@ jobs:
           # Needed to get tags so that git describe works during package build
           fetch-depth: "0"
 
+      - name: cuda-toolkit
+        uses: Jimver/cuda-toolkit@v0.2.15
+        with:
+          cuda: '10.2.89'
+
       - name: Get Date
         id: get-date
         run: |
@@ -64,11 +69,6 @@ jobs:
         run: |
           conda env list
           python --version; conda list ; pip list
-
-      - name: cuda-toolkit
-        uses: Jimver/cuda-toolkit@v0.2.15
-        with:
-          cuda: '10.2.89'
 
       - name: PyInstaller Build
         shell: bash -l {0}
