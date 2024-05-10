@@ -12,7 +12,6 @@ dependencies:
   - pip
   - pip:
       - eyes-images==5.20.*
-      - cupy-cuda102
   - yapf==0.40.*
   - mypy==1.8
   - types-requests
