@@ -76,7 +76,7 @@ def image_save(images: ImageStack,
                name_postfix: str = DEFAULT_NAME_POSTFIX,
                indices: list[int] | Indices | None = None,
                pixel_depth: str | None = None,
-               progress: Progress | None = None) -> str | list[str]:
+               progress: Progress | None = None) -> list[str]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
     The Z axis in the script is the ndarray.shape[0].
@@ -144,7 +144,7 @@ def image_save(images: ImageStack,
     if out_format in ['nxs']:
         filename = os.path.join(output_dir, name_prefix + name_postfix)
         write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
-        return filename
+        return [filename]
     else:
         if out_format in ['fit', 'fits']:
             write_func: Callable[[np.ndarray, str, bool, str | None], None] = write_fits

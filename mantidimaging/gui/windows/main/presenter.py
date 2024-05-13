@@ -150,7 +150,7 @@ class MainWindowPresenter(BasePresenter):
         self._add_strict_dataset_to_view(dataset)
         self.view.model_changed.emit()
 
-    def save_nexus_file(self):
+    def save_nexus_file(self) -> None:
         assert self.view.nexus_save_dialog is not None
         dataset_id = self.view.nexus_save_dialog.selected_dataset
         start_async_task_view(self.view,
@@ -202,7 +202,7 @@ class MainWindowPresenter(BasePresenter):
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
-    def _add_strict_dataset_to_view(self, dataset: StrictDataset):
+    def _add_strict_dataset_to_view(self, dataset: StrictDataset) -> None:
         """
         Takes a loaded dataset and tries to find a substitute 180 projection (if required) then creates the stack window
         and dataset tree view items.
@@ -236,7 +236,7 @@ class MainWindowPresenter(BasePresenter):
     def get_all_180_projections(self) -> list[ImageStack]:
         return self.model.proj180s
 
-    def add_alternative_180_if_required(self, dataset: StrictDataset):
+    def add_alternative_180_if_required(self, dataset: StrictDataset) -> None:
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
@@ -322,7 +322,7 @@ class MainWindowPresenter(BasePresenter):
         self._focus_on_newest_stack_tab()
         return stack_vis
 
-    def _create_lone_stack_window(self, images: ImageStack):
+    def _create_lone_stack_window(self, images: ImageStack) -> StackVisualiserView:
         """
         Creates a stack window and adds it to the stack list without tabifying.
         :param images: The ImageStack array for the stack window to display.
@@ -332,7 +332,9 @@ class MainWindowPresenter(BasePresenter):
         self.stack_visualisers[stack_vis.id] = stack_vis
         return stack_vis
 
-    def _tabify_stack_window(self, stack_window: StackVisualiserView, tabify_stack: StackVisualiserView | None = None):
+    def _tabify_stack_window(self,
+                             stack_window: StackVisualiserView,
+                             tabify_stack: StackVisualiserView | None = None) -> None:
         """
         Places the newly created stack window into a tab.
         :param stack_window: The new stack window.
@@ -347,10 +349,10 @@ class MainWindowPresenter(BasePresenter):
         if tabify_stack is not None:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 
-    def _on_tab_clicked(self, stack: StackVisualiserView):
+    def _on_tab_clicked(self, stack: StackVisualiserView) -> None:
         self._set_tree_view_selection_with_id(stack.id)
 
-    def create_strict_dataset_tree_view_items(self, dataset: StrictDataset):
+    def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
         """
         Creates the tree view items for a strict dataset.
         :param dataset: The loaded dataset.
@@ -376,7 +378,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.add_item_to_tree_view(dataset_tree_item)
 
-    def create_mixed_dataset_tree_view_items(self, dataset: MixedDataset):
+    def create_mixed_dataset_tree_view_items(self, dataset: MixedDataset) -> None:
         """
         Creates the tree view items for a mixed dataset.
         :param dataset: The loaded dataset.
@@ -469,7 +471,7 @@ class MainWindowPresenter(BasePresenter):
                 return sv
         raise RuntimeError(f"Did not find stack {images} in stacks! Stacks: {self.stack_visualisers.items()}")
 
-    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str):
+    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> None:
         """
         Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.
         :param dataset_id: The ID of the dataset to update.
@@ -488,7 +490,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.model_changed.emit()
 
-    def replace_child_item_id(self, dataset_id: uuid.UUID, prev_id: uuid.UUID, new_id: uuid.UUID):
+    def replace_child_item_id(self, dataset_id: uuid.UUID, prev_id: uuid.UUID, new_id: uuid.UUID) -> None:
         """
         Replaces the ID in an existing child item.
         :param dataset_id: The ID of the parent dataset.
@@ -548,7 +550,7 @@ class MainWindowPresenter(BasePresenter):
                             top_level_item.takeChild(j)
                         return
 
-    def _set_tree_view_selection_with_id(self, uuid_select: uuid.UUID):
+    def _set_tree_view_selection_with_id(self, uuid_select: uuid.UUID) -> None:
         """
         Selects an item on the tree view using the given ID.
         :param uuid_select: The ID of the item to select.
@@ -571,7 +573,7 @@ class MainWindowPresenter(BasePresenter):
                             self._select_tree_widget_item(recon_item)
                             return
 
-    def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem):
+    def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem) -> None:
         """
         Clears the existing selection on the dataset tree view and selects a given item.
         :param tree_widget_item: The item to select.
@@ -595,7 +597,7 @@ class MainWindowPresenter(BasePresenter):
                 return True
         return False
 
-    def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str):
+    def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str) -> None:
         """
         Adds a child item to the tree view.
         :param parent_id: The ID of the parent dataset.
@@ -605,7 +607,7 @@ class MainWindowPresenter(BasePresenter):
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
-    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, name: str):
+    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, name: str) -> None:
         """
         Adds a recon item to the tree view.
         :param parent_id: The ID of the parent dataset.
@@ -678,7 +680,7 @@ class MainWindowPresenter(BasePresenter):
         self.add_recon_item_to_tree_view(parent_id, recon_data.id, recon_data.name)
         self.view.model_changed.emit()
 
-    def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID):
+    def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID) -> None:
         """
         Adds sinograms to a dataset or replaces an existing one.
         :param sino_stack: The sinogram stack.
@@ -693,7 +695,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_single_tabbed_images_stack(sino_stack)
         self.view.model_changed.emit()
 
-    def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID):
+    def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID) -> None:
         """
         Adds a sinograms item to the tree view or updates the id of an existing one.
         :param parent_id: The ID of the parent dataset.
@@ -706,7 +708,7 @@ class MainWindowPresenter(BasePresenter):
         else:
             sinograms_item._id = sino_id
 
-    def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID):
+    def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID) -> None:
         """
         Asks the user to add a stack to a given dataset.
         :param container_id: The ID of the dataset or stack.
@@ -716,7 +718,7 @@ class MainWindowPresenter(BasePresenter):
             container_id = self.get_dataset_id_for_stack(container_id)
         self.view.show_add_stack_to_existing_dataset_dialog(container_id)
 
-    def _show_move_stack_dialog(self, stack_id: uuid.UUID):
+    def _show_move_stack_dialog(self, stack_id: uuid.UUID) -> None:
         """
         Shows the move stack dialog.
         :param stack_id: The ID of the stack to move.
@@ -728,7 +730,7 @@ class MainWindowPresenter(BasePresenter):
         stack_data_type = _get_stack_data_type(stack_id, dataset)
         self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type)
 
-    def _add_images_to_existing_dataset(self):
+    def _add_images_to_existing_dataset(self) -> None:
         """
         Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if
         necessary.
@@ -737,6 +739,7 @@ class MainWindowPresenter(BasePresenter):
 
         dataset_id = self.view.add_to_dataset_dialog.dataset_id
         dataset = self.get_dataset(dataset_id)
+        assert dataset is not None
 
         new_images = self.view.add_to_dataset_dialog.presenter.images
 
@@ -751,7 +754,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
 
-    def _add_recon_to_dataset_and_tree_view(self, dataset: MixedDataset | StrictDataset, recon: ImageStack):
+    def _add_recon_to_dataset_and_tree_view(self, dataset: MixedDataset | StrictDataset, recon: ImageStack) -> None:
         """
         Adds a recon to the dataset and updates the tree view.
         :param dataset: The dataset.
@@ -760,7 +763,7 @@ class MainWindowPresenter(BasePresenter):
         dataset.add_recon(recon)
         self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
 
-    def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack):
+    def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack) -> None:
         """
         Updates the stack list in the mixed dataset and updates the tree view.
         :param dataset: The MixedDataset to update.
@@ -769,7 +772,8 @@ class MainWindowPresenter(BasePresenter):
         dataset.add_stack(new_images)
         self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
-    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack, stack_type: str):
+    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack,
+                                               stack_type: str) -> None:
         """
         Adds or replaces images in a StrictDataset and updates the tree view if required.
         :param dataset: The StrictDataset to change.
@@ -791,7 +795,7 @@ class MainWindowPresenter(BasePresenter):
         setattr(dataset, image_attr, new_images)
 
     def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
-                    destination_dataset_id: uuid.UUID):
+                    destination_dataset_id: uuid.UUID) -> None:
         """
         Moves a stack from one dataset to another.
         :param origin_dataset_id: The ID of the origin dataset.

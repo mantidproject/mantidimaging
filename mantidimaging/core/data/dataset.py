@@ -15,7 +15,7 @@ def _delete_stack_error_message(images_id: uuid.UUID) -> str:
     return f"Unable to delete stack: ImageStack with ID {images_id} not present in dataset."
 
 
-def _image_key_list(key: int, n_images: int):
+def _image_key_list(key: int, n_images: int) -> list[int]:
     return [key for _ in range(n_images)]
 
 
@@ -36,7 +36,7 @@ class BaseDataset:
         return self._name
 
     @name.setter
-    def name(self, arg: str):
+    def name(self, arg: str) -> None:
         self._name = arg
 
     @property
@@ -44,14 +44,14 @@ class BaseDataset:
         return self._sinograms
 
     @sinograms.setter
-    def sinograms(self, sino: ImageStack | None):
+    def sinograms(self, sino: ImageStack | None) -> None:
         self._sinograms = sino
 
     @property
-    def all(self):
+    def all(self) -> list[ImageStack]:
         raise NotImplementedError()
 
-    def delete_stack(self, images_id: uuid.UUID):
+    def delete_stack(self, images_id: uuid.UUID) -> None:
         raise NotImplementedError()
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
@@ -61,10 +61,10 @@ class BaseDataset:
     def all_image_ids(self) -> list[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
-    def add_recon(self, recon: ImageStack):
+    def add_recon(self, recon: ImageStack) -> None:
         self.recons.append(recon)
 
-    def delete_recons(self):
+    def delete_recons(self) -> None:
         self.recons.clear()
 
 
@@ -75,7 +75,7 @@ class MixedDataset(BaseDataset):
         stacks = [] if stacks is None else stacks
         self._stacks = stacks
 
-    def add_stack(self, stack: ImageStack):
+    def add_stack(self, stack: ImageStack) -> None:
         self._stacks.append(stack)
 
     @property
@@ -85,7 +85,7 @@ class MixedDataset(BaseDataset):
             return all_images
         return all_images + [self.sinograms]
 
-    def delete_stack(self, images_id: uuid.UUID):
+    def delete_stack(self, images_id: uuid.UUID) -> None:
         for image in self._stacks:
             if image.id == images_id:
                 self._stacks.remove(image)
@@ -167,17 +167,17 @@ class StrictDataset(BaseDataset):
         return image_keys
 
     @property
-    def proj180deg(self):
+    def proj180deg(self) -> ImageStack | None:
         if self.sample is not None:
             return self.sample.proj180deg
         else:
             return None
 
     @proj180deg.setter
-    def proj180deg(self, _180_deg: ImageStack):
-        self.sample.proj180deg = _180_deg
+    def proj180deg(self, proj180deg: ImageStack | None) -> None:
+        self.sample.proj180deg = proj180deg
 
-    def delete_stack(self, images_id: uuid.UUID):
+    def delete_stack(self, images_id: uuid.UUID) -> None:
         if isinstance(self.sample, ImageStack) and self.sample.id == images_id:
             self.sample = None  # type: ignore
         elif isinstance(self.flat_before, ImageStack) and self.flat_before.id == images_id:
@@ -199,7 +199,7 @@ class StrictDataset(BaseDataset):
         else:
             raise KeyError(_delete_stack_error_message(images_id))
 
-    def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack):
+    def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack) -> None:
         attr_name = file_type.fname.lower().replace(" ", "_")
         if file_type == FILE_TYPES.PROJ_180:
             attr_name = "proj180deg"

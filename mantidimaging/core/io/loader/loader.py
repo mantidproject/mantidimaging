@@ -110,7 +110,7 @@ def load_stack_from_group(group: FilenameGroup, progress: Progress | None = None
 
 def load_stack_from_image_params(image_params: ImageParameters,
                                  progress: Progress | None = None,
-                                 dtype: npt.DTypeLike = np.float32):
+                                 dtype: npt.DTypeLike = np.float32) -> ImageStack:
     return load(filename_group=image_params.file_group,
                 progress=progress,
                 dtype=dtype,

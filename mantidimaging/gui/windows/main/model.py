@@ -10,7 +10,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader.loader import LoadingParameters
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
@@ -38,7 +38,7 @@ class MainWindowModel:
 
     def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
 
-        def load(im_param):
+        def load(im_param: ImageParameters) -> ImageStack:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
         sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE])
@@ -68,7 +68,8 @@ class MainWindowModel:
         self.datasets[sd.id] = sd
         return sd
 
-    def do_images_saving(self, images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth, progress):
+    def do_images_saving(self, images_id: uuid.UUID, output_dir: str, name_prefix: str, image_format: str,
+                         overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
@@ -82,9 +83,10 @@ class MainWindowModel:
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool | None:
-        if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
-            saver.nexus_save(self.datasets[dataset_id], path, sample_name, save_as_float)  # type: ignore
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
+        dataset = self.datasets.get(dataset_id)
+        if isinstance(dataset, StrictDataset):
+            saver.nexus_save(dataset, path, sample_name, save_as_float)
             return True
         else:
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
@@ -95,13 +97,12 @@ class MainWindowModel:
         :param dataset_id: The Dataset ID.
         :return: The 180 ID if found, None otherwise.
         """
-        if dataset_id in self.datasets and isinstance(self.datasets[dataset_id], StrictDataset):
-            dataset = self.datasets[dataset_id]
-        else:
+        dataset = self.datasets.get(dataset_id)
+        if not isinstance(dataset, StrictDataset):
             raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
 
-        if isinstance(dataset.proj180deg, ImageStack):  # type: ignore
-            return dataset.proj180deg.id  # type: ignore
+        if isinstance(dataset.proj180deg, ImageStack):
+            return dataset.proj180deg.id
         return None
 
     def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> ImageStack:
@@ -123,7 +124,7 @@ class MainWindowModel:
         dataset.proj180deg = _180_deg
         return _180_deg
 
-    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles):
+    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
@@ -160,7 +161,7 @@ class MainWindowModel:
             raise RuntimeError
         images.shutter_count_file = loader.load_shutter_counts(shutter_counts_file)
 
-    def _remove_dataset(self, dataset_id: uuid.UUID):
+    def _remove_dataset(self, dataset_id: uuid.UUID) -> None:
         """
         Removes a dataset and the image stacks it contains from the model.
         :param dataset_id: The dataset ID.
@@ -244,7 +245,7 @@ class MainWindowModel:
         self.raise_error_when_parent_strict_dataset_not_found(stack_id)
 
     @property
-    def recon_list_ids(self):
+    def recon_list_ids(self) -> list[uuid.UUID]:
         return [dataset.recons.id for dataset in self.datasets.values()]
 
     def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
