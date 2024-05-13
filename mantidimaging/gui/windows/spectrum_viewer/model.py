@@ -5,6 +5,7 @@ import csv
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
+from functools import lru_cache
 
 import numpy as np
 from math import ceil
@@ -189,6 +190,7 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
+    @lru_cache(maxsize=10)
     def get_spectrum(self, roi: str | SensibleROI, mode: SpecType) -> np.ndarray:
         if self._stack is None:
             return np.array([])

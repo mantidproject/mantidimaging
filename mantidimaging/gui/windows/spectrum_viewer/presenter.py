@@ -189,10 +189,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Handle changes to any ROI position and size.
         """
         for name in self.model.get_list_of_roi_names():
-            roi = self.view.spectrum_widget.get_roi(name)
-            if force_new_spectrums or roi != self.model.get_roi(name):
-                self.model.set_roi(name, roi)
-                self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
+            new_roi = self.view.spectrum_widget.get_roi(name)
+            current_roi = self.model.get_roi(name)
+
+            if force_new_spectrums or new_roi != current_roi:
+                self.model.set_roi(name, new_roi)
+                spectrum = self.model.get_spectrum(new_roi, self.model.spectrum_mode)
+                self.view.set_spectrum(name, spectrum)
+
+    def clear_cache(self):
+        self.model.get_spectrum.cache_clear()  # Clear the spectrum cache
+        self.update_all_spectra()
+
+    def update_all_spectra(self):
+        for name in self.model.get_list_of_roi_names():
+            roi = self.model.get_roi(name)
+            spectrum = self.model.get_spectrum(roi, self.model.spectrum_mode)
+            self.view.set_spectrum(name, spectrum)
 
     def handle_roi_clicked(self, roi) -> None:
         if not roi.name == ROI_RITS:
