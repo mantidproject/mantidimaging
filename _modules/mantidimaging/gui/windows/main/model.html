@@ -488,7 +488,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">MixedDataset</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io</span> <span class="kn">import</span> <span class="n">loader</span><span class="p">,</span> <span class="n">saver</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.filenames</span> <span class="kn">import</span> <span class="n">FilenameGroup</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">LoadingParameters</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">ImageParameters</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">FILE_TYPES</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -523,7 +523,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset">[docs]</a>
     <span class="k">def</span> <span class="nf">do_load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrictDataset</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">im_param</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">im_param</span><span class="p">:</span> <span class="n">ImageParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_image_params</span><span class="p">(</span><span class="n">im_param</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="n">sample</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">])</span>
@@ -559,7 +559,8 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowModel.do_images_saving">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_images_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">name_prefix</span><span class="p">,</span> <span class="n">image_format</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">,</span> <span class="n">pixel_depth</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_images_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">pixel_depth</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_images_not_found</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
@@ -576,9 +577,10 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowModel.do_nexus_saving">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_nexus_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">],</span> <span class="n">StrictDataset</span><span class="p">):</span>
-            <span class="n">saver</span><span class="o">.</span><span class="n">nexus_save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">],</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">do_nexus_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">):</span>
+            <span class="n">saver</span><span class="o">.</span><span class="n">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get StrictDataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
@@ -592,13 +594,12 @@ document.write(`
 <span class="sd">        :param dataset_id: The Dataset ID.</span>
 <span class="sd">        :return: The 180 ID if found, None otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">],</span> <span class="n">StrictDataset</span><span class="p">):</span>
-            <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get StrictDataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-            <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -626,7 +627,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowModel.add_projection_angles_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_images_not_found</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
@@ -679,7 +680,7 @@ document.write(`
         <span class="n">images</span><span class="o">.</span><span class="n">shutter_count_file</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_shutter_counts</span><span class="p">(</span><span class="n">shutter_counts_file</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_remove_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Removes a dataset and the image stacks it contains from the model.</span>
 <span class="sd">        :param dataset_id: The dataset ID.</span>
@@ -775,7 +776,7 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">recon_list_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">recon_list_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
 <div class="viewcode-block" id="MainWindowModel.get_recon_list_id">
