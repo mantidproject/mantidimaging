@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader import load_log, load_shutter_counts
+from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, read_image_dimensions
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type, shuttercounts_for_file_type
 from mantidimaging.gui.windows.image_load_dialog.field import Field
@@ -111,15 +111,11 @@ class LoadPresenter:
         filename_group.find_shutter_count_file()
         field.set_images(list(filename_group.all_files()))
         self._update_field_action(field, selected_file)
-        shuttercount_names = [p.name for p in filename_group.all_files()]
-        self.ensure_sample_shuttercount_consistency(field, selected_file, shuttercount_names)
+        self.ensure_sample_shuttercount_consistency(field, selected_file)
 
-    def ensure_sample_shuttercount_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
+    def ensure_sample_shuttercount_consistency(self, field: Field, file_name: str) -> None:
         if file_name is None or file_name == "":
             return
-
-        shutter_count = load_shutter_counts(Path(file_name))
-        shutter_count.raise_if_counts_missing()
         self._update_field_action(field, file_name)
 
     def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
