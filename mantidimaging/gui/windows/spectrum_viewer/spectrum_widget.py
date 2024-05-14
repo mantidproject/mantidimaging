@@ -111,9 +111,6 @@ class SpectrumWidget(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.roi_cache: dict[str, np.ndarray] = {}
-        self.adjustment_threshold = 2
-
         self.vbox = QVBoxLayout(self)
 
         self.image_widget = SpectrumProjectionWidget()
@@ -195,8 +192,6 @@ class SpectrumWidget(QWidget):
         @param name: The name of the ROI.
         """
         roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
-        roi_data = self.calculate_roi_data(roi_object)
-        self.roi_cache[name] = roi_data
 
         roi_object.colour = self.colour_generator()
         roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
@@ -208,12 +203,6 @@ class SpectrumWidget(QWidget):
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
-    def calculate_roi_data(self, roi_object: ROI) -> np.ndarray:
-        pos = roi_object.pos()
-        size = roi_object.size()
-        roi_data = np.array([pos.x(), pos.y(), size.x(), size.y()])
-        return roi_data
-
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str):
         """
         Adjust the existing ROI with the given name.
@@ -221,28 +210,6 @@ class SpectrumWidget(QWidget):
         @param roi_name: The name of the existing ROI.
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
-        if roi_name not in self.roi_dict:
-            return
-        old_roi = self.get_roi(roi_name)
-        if self.is_adjustment_significant(new_roi, old_roi):
-            difference = self.calculate_roi_difference(old_roi, new_roi)
-            self.roi_cache[roi_name] += difference
-
-    def is_adjustment_significant(self, new_roi: SensibleROI, old_roi: SensibleROI) -> bool:
-        return (abs(new_roi.left - old_roi.left) > self.adjustment_threshold
-                or abs(new_roi.top - old_roi.top) > self.adjustment_threshold
-                or abs(new_roi.width - old_roi.width) > self.adjustment_threshold
-                or abs(new_roi.height - old_roi.height) > self.adjustment_threshold)
-
-    def calculate_roi_difference(self, old_roi: SensibleROI, new_roi: SensibleROI) -> np.ndarray:
-        difference = np.array([
-            new_roi.left - old_roi.left, new_roi.top - old_roi.top, new_roi.width - old_roi.width,
-            new_roi.height - old_roi.height
-        ])
-        return difference
-
-    def clear_cache(self):
-        self.roi_cache.clear()
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
@@ -271,7 +238,6 @@ class SpectrumWidget(QWidget):
         if roi_name in self.roi_dict.keys() and roi_name != "all":
             self.image.vb.removeItem(self.roi_dict[roi_name])
             del self.roi_dict[roi_name]
-            del self.roi_cache[roi_name]
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
