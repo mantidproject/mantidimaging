@@ -39,6 +39,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         @param image: The image to show
         """
         self.image.setImage(image)
+        print("Show image called with")
 
     def handle_deleted(self) -> None:
         """

@@ -78,6 +78,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not self.model.images:
             return
         self.selected_image = self.model.images[index]
+        print(f"Selected image: {self.selected_image.image_name}")
         self.view.label_active_filename.setText(self.selected_image.image_name)
 
         self.display_image(self.selected_image.image_path)

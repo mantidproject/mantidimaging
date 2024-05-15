@@ -215,7 +215,10 @@ class ImageWatcher(QObject):
         :param images: list of image objects to sort by modified time
         :return: sorted list of images
         """
-        return sorted(images, key=lambda x: x.image_modified_time)
+
+        sorted_images = sorted(images, key=lambda x: x.image_modified_time)
+        print(f"Newset_image name is: {sorted_images[-1].image_name}")
+        return sorted_images
 
     def _handle_directory_change(self, directory: str) -> None:
         """
@@ -246,6 +249,8 @@ class ImageWatcher(QObject):
 
             if len(images) > 0:
                 break
+
+        print(f"Found {len(images)} images with filename: {images[0].image_name}")
 
         images = self.sort_images_by_modified_time(images)
         self.update_recent_watcher(images[-1:])
