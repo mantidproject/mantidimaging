@@ -289,7 +289,10 @@ class ReconstructWindowPresenter(BasePresenter):
             slice_idx = self._get_slice_index(None)
             if images is not None:
                 assert self.model.images is not None
-                images.name = "Recon"
+                filter_name = self.view.recon_params().filter_name
+                algorithm_name = self.view.recon_params().algorithm
+                images.name = f"Recon_Slice{algorithm_name}"
+                images.name = f"{images.name}_{filter_name}" if filter_name else images.name
                 self._replace_inf_nan(images)  # pyqtgraph workaround
                 self.view.show_recon_volume(images, self.model.stack_id)
                 images.record_operation('AstraRecon.single_sino',
