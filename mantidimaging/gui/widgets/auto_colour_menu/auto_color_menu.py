@@ -12,8 +12,6 @@ if TYPE_CHECKING:
     import numpy as np
     from PyQt5.QtWidgets import QWidget
 
-DEFAULT_MENU_POSITION = 12
-
 
 class AutoColorMenu:
     """
@@ -38,12 +36,13 @@ class AutoColorMenu:
     def add_auto_color_menu_action(self,
                                    parent: QWidget | None,
                                    recon_mode: bool = False,
-                                   index: int = DEFAULT_MENU_POSITION,
                                    set_enabled: bool = True) -> QAction:
         self.auto_color_parent = parent
         self.auto_color_recon_mode = recon_mode
         self.auto_color_action = QAction("Auto")
-        place = self.histogram.gradient.menu.actions()[index]
+
+        index_of_rgb_item = [action.text() for action in self.histogram.gradient.menu.actions()].index("RGB")
+        place = self.histogram.gradient.menu.actions()[index_of_rgb_item - 1]
 
         self.histogram.gradient.menu.insertAction(place, self.auto_color_action)
         self.histogram.gradient.menu.insertSeparator(self.auto_color_action)
