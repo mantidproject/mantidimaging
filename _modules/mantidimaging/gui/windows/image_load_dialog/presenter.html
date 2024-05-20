@@ -601,7 +601,16 @@ document.write(`
         <span class="n">filename_group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
         <span class="n">filename_group</span><span class="o">.</span><span class="n">find_shutter_count_file</span><span class="p">()</span>
         <span class="n">field</span><span class="o">.</span><span class="n">set_images</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">filename_group</span><span class="o">.</span><span class="n">all_files</span><span class="p">()))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_sample_shuttercount_consistency</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.ensure_sample_shuttercount_consistency">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_shuttercount_consistency">[docs]</a>
+    <span class="k">def</span> <span class="nf">ensure_sample_shuttercount_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LoadPresenter.do_update_flat_or_dark">
@@ -662,8 +671,7 @@ document.write(`
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">log_for_file_type</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_image_param</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">image_param</span><span class="p">,</span> <span class="n">log_for_file_type</span><span class="p">,</span> <span class="s1">&#39;log_file&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">shuttercounts_for_file_type</span><span class="p">:</span>
-            <span class="c1"># self._update_image_param(file_type, image_param, shuttercounts_for_file_type, &#39;shutter_count_file&#39;)</span>
-            <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_image_param</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">image_param</span><span class="p">,</span> <span class="n">shuttercounts_for_file_type</span><span class="p">,</span> <span class="s1">&#39;shutter_count_file&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
             <span class="n">image_param</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">indices</span>
