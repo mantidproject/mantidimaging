@@ -246,6 +246,3 @@ class ShutterCount:
 
     def has_Pulse(self) -> bool:
         return ShutterCountColumn.PULSE in self.data
-
-    def raise_if_counts_missing(self):
-        pass

@@ -88,6 +88,7 @@ class MainWindowView(BaseMainWindowView):
     actionSpectrumViewer: QAction
     actionLiveViewer: QAction
     actionSampleLoadLog: QAction
+    actionShutterCounts: QAction
     actionLoadProjectionAngles: QAction
     actionLoad180deg: QAction
     actionLoadDataset: QAction
@@ -184,6 +185,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionLoadNeXusFile.triggered.connect(self.show_nexus_load_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
+        self.actionShutterCounts.triggered.connect(self.load_shuttercounts_dialog)
         self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSaveImages.triggered.connect(self.show_image_save_dialog)
@@ -227,6 +229,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionSaveImages.setEnabled(has_datasets)
         self.actionSaveNeXusFile.setEnabled(has_strict_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
+        self.actionShutterCounts.setEnabled(has_datasets)
         self.actionLoad180deg.setEnabled(has_strict_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)

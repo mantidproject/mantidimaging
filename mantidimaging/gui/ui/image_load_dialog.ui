@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>690</width>
-    <height>497</height>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,24 +129,30 @@
       </property>
      </item>
      <item>
-      <property name="text">
-       <string>Flat Before Log</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
+        <property name="text">
+            <string>Sample Shutter Counts</string>
+        </property>
      </item>
      <item>
-      <property name="text">
-       <string>Flat After Log</string>
-      </property>
+        <property name="text">
+            <string>Flat Before Shutter Counts</string>
+        </property>
+    </item>
+     <item>
+        <property name="text">
+            <string>Flat After Shutter Counts</string>
+        </property>
      </item>
+     <item>
+    <property name="text">
+            <string>Flat Before Log</string>
+      </property>
+    </item>
+    <item>
+        <property name="text">
+            <string>Flat After Log</string>
+        </property>
+    </item>
     </widget>
    </item>
    <item>

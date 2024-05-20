@@ -111,6 +111,12 @@ class LoadPresenter:
         filename_group.find_shutter_count_file()
         field.set_images(list(filename_group.all_files()))
         self._update_field_action(field, selected_file)
+        self.ensure_sample_shuttercount_consistency(field, selected_file)
+
+    def ensure_sample_shuttercount_consistency(self, field: Field, file_name: str) -> None:
+        if file_name is None or file_name == "":
+            return
+        self._update_field_action(field, file_name)
 
     def do_update_flat_or_dark(self, field: Field, selected_file: str) -> None:
         """
@@ -164,8 +170,7 @@ class LoadPresenter:
         if file_type in log_for_file_type:
             self._update_image_param(file_type, image_param, log_for_file_type, 'log_file')
         if file_type in shuttercounts_for_file_type:
-            # self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
-            pass
+            self._update_image_param(file_type, image_param, shuttercounts_for_file_type, 'shutter_count_file')
 
         if file_type == FILE_TYPES.SAMPLE:
             image_param.indices = field.indices
