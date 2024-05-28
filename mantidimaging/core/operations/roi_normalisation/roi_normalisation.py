@@ -87,18 +87,19 @@ class RoiNormalisationFilter(BaseFilter):
     @staticmethod
     def calculate_global(images, region_of_interest, normalisation_mode, flat_field):
         global_params = {}
+        air_means = np.array([
+            RoiNormalisationFilter._calc_mean(images.data[i], region_of_interest.left, region_of_interest.top,
+                                              region_of_interest.right, region_of_interest.bottom)
+            for i in range(images.data.shape[0])
+        ])
         if normalisation_mode == 'Stack Average':
-            air_means = np.array([
-                RoiNormalisationFilter._calc_mean(images.data[i], region_of_interest.left, region_of_interest.top,
-                                                  region_of_interest.right, region_of_interest.bottom)
-                for i in range(images.data.shape[0])
-            ])
-            global_params['global_mean'] = np.mean(air_means)
+            normed_air_means = air_means / air_means.mean()
+            global_params['normalisation_factors'] = normed_air_means
         elif normalisation_mode == 'Flat Field' and flat_field is not None:
-            flat_field_mean = RoiNormalisationFilter._calc_mean(flat_field.data, region_of_interest.left,
-                                                                region_of_interest.top, region_of_interest.right,
-                                                                region_of_interest.bottom)
-            global_params['flat_field_mean'] = flat_field_mean
+            flat_means = flat_field.data[:, region_of_interest.top:region_of_interest.bottom,
+                                         region_of_interest.left:region_of_interest.right].mean(axis=(1, 2))
+            normed_air_means = air_means / flat_means.mean()
+            global_params['normalisation_factors'] = normed_air_means
         else:
             raise ValueError(f"Unknown normalisation_mode: {normalisation_mode}")
 
@@ -108,25 +109,10 @@ class RoiNormalisationFilter(BaseFilter):
 
     @staticmethod
     def compute_function(i: int, array: np.ndarray, params):
-        region_of_interest = params['region_of_interest']
-        normalisation_mode = params['normalisation_mode']
-        global_params = params['global_params']
-
-        air_mean = RoiNormalisationFilter._calc_mean(array[i], region_of_interest.left, region_of_interest.top,
-                                                     region_of_interest.right, region_of_interest.bottom)
-
-        print(f"Image {i} Air Mean: {air_mean}")
-
-        if normalisation_mode == 'Stack Average':
-            normalization_factor = global_params['global_mean'] / air_mean
-            print(f"Image {i} Stack Average Normalization Factor: {normalization_factor}")
-            array[i] *= normalization_factor
-        elif normalisation_mode == 'Flat Field':
-            normalization_factor = global_params['flat_field_mean'] / air_mean
-            print(f"Image {i} Flat Field Normalization Factor: {normalization_factor}")
-            array[i] *= normalization_factor
-        else:
-            raise ValueError(f"Unknown normalisation_mode: {normalisation_mode}")
+        normalisation_factors = params['global_params']['normalisation_factors']
+        normalization_factor = normalisation_factors[i]
+        print(f"Image {i} Normalization Factor: {normalization_factor}")
+        array[i] /= normalization_factor
 
     @staticmethod
     def _calc_mean(data, air_left=None, air_top=None, air_right=None, air_bottom=None):
