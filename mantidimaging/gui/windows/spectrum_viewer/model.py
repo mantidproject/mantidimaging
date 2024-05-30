@@ -13,7 +13,7 @@ from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
-from mantidimaging.core.io.instrument_log import LogColumn
+from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.unit_conversion import UnitConversion
@@ -228,12 +228,32 @@ class SpectrumViewerWindowModel:
                 return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
-        return np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
+        average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
+        normalized_spectrum = np.divide(roi_spectrum,
+                                        roi_norm_spectrum,
+                                        out=np.zeros_like(roi_spectrum),
+                                        where=roi_norm_spectrum != 0)
+        final_spectrum = normalized_spectrum / average_shuttercount
+        return final_spectrum
 
-    def get_transmission_error_standard_dev(self, roi: SensibleROI) -> np.ndarray:
+    def get_shuttercount_normalised_correction_parameter(self, apply_normalisation: bool = True) -> float:
+        """
+        Normalize ShutterCount values and return only the initial normalized value.
+        We normalise all values as to future proof against normalizing against all available ShutterCount
+        values should we find the initial value is not sufficient.
+        """
+        sample_shuttercount = self.get_stack_shuttercounts(self._stack)
+        open_shuttercount = self.get_stack_shuttercounts(self._normalise_stack)
+        if sample_shuttercount is None or open_shuttercount is None or not apply_normalisation:
+            return 1.0  # No shutter count data available so no correction needed
+        normalised_shuttercounts = sample_shuttercount / open_shuttercount
+        return normalised_shuttercounts[0]
+
+    def get_transmission_error_standard_dev(self, roi: SensibleROI, normalised: bool = True) -> np.ndarray:
         """
         Get the transmission error standard deviation for a given roi
         @param: roi_name The roi name
+        @param: normalised Default is True. If False, the normalization is not applied
         @return: a numpy array representing the standard deviation of the transmission
         """
         if self._stack is None or self._normalise_stack is None:
@@ -241,20 +261,24 @@ class SpectrumViewerWindowModel:
         left, top, right, bottom = roi
         sample = self._stack.data[:, top:bottom, left:right]
         open_beam = self._normalise_stack.data[:, top:bottom, left:right]
-        safe_divide = np.divide(sample, open_beam, out=np.zeros_like(sample), where=open_beam != 0)
+        average_shuttercount = self.get_shuttercount_normalised_correction_parameter(normalised)
+        safe_divide = np.divide(sample, open_beam, out=np.zeros_like(sample), where=open_beam
+                                != 0) / average_shuttercount
         return np.std(safe_divide, axis=(1, 2))
 
-    def get_transmission_error_propagated(self, roi: SensibleROI) -> np.ndarray:
+    def get_transmission_error_propagated(self, roi: SensibleROI, normalised: bool = True) -> np.ndarray:
         """
         Get the transmission error using propagation of sqrt(n) error for a given roi
         @param: roi_name The roi name
+        @param: normalised Default is True. If False, the normalization is not applied
         @return: a numpy array representing the error of the transmission
         """
         if self._stack is None or self._normalise_stack is None:
             raise RuntimeError("Sample and open beam must be selected")
         sample = self.get_stack_spectrum_summed(self._stack, roi)
         open_beam = self.get_stack_spectrum_summed(self._normalise_stack, roi)
-        error = np.sqrt(sample / open_beam**2 + sample**2 / open_beam**3)
+        average_shuttercount = self.get_shuttercount_normalised_correction_parameter(normalised)
+        error = np.sqrt(sample / open_beam**2 + sample**2 / open_beam**3) / average_shuttercount
         return error
 
     def get_image_shape(self) -> tuple[int, int]:
@@ -419,6 +443,15 @@ class SpectrumViewerWindowModel:
         except KeyError:
             return None
         return np.array(time_of_flights)
+
+    def get_stack_shuttercounts(self, stack: ImageStack | None) -> np.ndarray | None:
+        if stack is None or stack.shutter_count_file is None:
+            return None
+        try:
+            shutter_counts = stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
+        except KeyError:
+            return None
+        return np.array(shutter_counts)
 
     def get_roi_coords_filename(self, path: Path) -> Path:
         """
