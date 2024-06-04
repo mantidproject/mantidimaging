@@ -10,11 +10,10 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
 import numpy as np
-from PyQt5.QtCore import QSettings, Qt, QCoreApplication
+from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QFont, QPalette, QColor
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QStyle
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
-import qdarkstyle
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
@@ -855,27 +854,23 @@ class MainWindowPresenter(BasePresenter):
         os_theme = settings.value('os_theme')
         font = QFont(settings.value('default_font_family'), int(extra_style['font_size'].replace('px', '')))
         app = QApplication.instance()
-        app.setStyle(theme)
+
         app.setFont(font)
-        for window in [
-                self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
-                self.view.settings_window
-        ]:
-            if window:
-                if theme == 'Fusion':
-                    app.setStyleSheet('')
-                    if override_os_theme == 'False':
-                        if os_theme == 'Light':
-                            self.use_fusion_light_mode()
-                        elif os_theme == 'Dark':
-                            self.use_fusion_dark_mode()
-                    else:
-                        if use_dark_mode == 'True':
-                            self.use_fusion_dark_mode()
-                        else:
-                            self.use_fusion_light_mode()
+        if theme == 'Fusion':
+            if override_os_theme == 'False':
+                if os_theme == 'Light':
+                    self.use_fusion_light_mode()
+                elif os_theme == 'Dark':
+                    self.use_fusion_dark_mode()
+            else:
+                if use_dark_mode == 'True':
+                    self.use_fusion_dark_mode()
                 else:
-                    apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
+                    self.use_fusion_light_mode()
+            app.setStyle(theme)
+            app.setStyleSheet('')
+        else:
+            apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
 
     @staticmethod
     def use_fusion_dark_mode() -> None:
