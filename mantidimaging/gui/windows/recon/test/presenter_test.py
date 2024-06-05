@@ -346,8 +346,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
         test_data = ImageStack(np.ndarray(shape=(200, 250), dtype=np.float32))
         test_data.record_operation = mock.Mock()
         task_mock = mock.Mock(result=test_data, error=None)
+        recon_params = ReconstructionParameters("gridrec", "ram-lak", 10)
+        self.view.recon_params.return_value = recon_params
         self.presenter._get_slice_index = mock.Mock(return_value=7)
-
         self.presenter._on_stack_reconstruct_slice_done(task_mock)
 
         self.view.show_recon_volume.assert_called_once()
@@ -416,6 +417,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task = mock.Mock()
         task.error = None
         task.result.data = np.array([np.inf, -np.inf])
+        recon_params = ReconstructionParameters("gridrec", "ram-lak", 10)
+        self.view.recon_params.return_value = recon_params
 
         self.presenter._on_volume_recon_done(task)
         assert not np.isinf(self.view.show_recon_volume.call_args[0][0].data).any()
@@ -424,6 +427,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task = mock.Mock()
         task.error = None
         task.result.data = np.array([np.inf, -np.inf])
+        recon_params = ReconstructionParameters("gridrec", "ram-lak", 10)
+        self.view.recon_params.return_value = recon_params
 
         self.presenter._on_stack_reconstruct_slice_done(task)
         assert not np.isinf(self.view.show_recon_volume.call_args[0][0].data).any()
@@ -433,6 +438,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task = mock.Mock()
         task.error = error
         task.result.data = np.ones((5, 10, 10))
+        recon_params = ReconstructionParameters("gridrec", "ram-lak", 10)
+        self.view.recon_params.return_value = recon_params
 
         self.presenter._on_volume_recon_done(task)
         self.view.set_recon_buttons_enabled.assert_called_once_with(True)

@@ -289,7 +289,7 @@ class ReconstructWindowPresenter(BasePresenter):
             slice_idx = self._get_slice_index(None)
             if images is not None:
                 assert self.model.images is not None
-                images.name = "Recon"
+                images.name = self.create_recon_output_filename("Recon_Slice")
                 self._replace_inf_nan(images)  # pyqtgraph workaround
                 self.view.show_recon_volume(images, self.model.stack_id)
                 images.record_operation('AstraRecon.single_sino',
@@ -349,7 +349,7 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             self._replace_inf_nan(task.result)  # pyqtgraph workaround
             assert self.model.images is not None
-            task.result.name = "Recon"
+            task.result.name = self.create_recon_output_filename("Recon_Vol")
             self.view.show_recon_volume(task.result, self.model.stack_id)
         finally:
             self.view.set_recon_buttons_enabled(True)
@@ -468,3 +468,18 @@ class ReconstructWindowPresenter(BasePresenter):
         :param images: The ImageStack object.
         """
         images.data[np.isinf(images.data)] = np.nan
+
+    def create_recon_output_filename(self, prefix: str) -> str:
+        """
+        Takes a naming prefix and creates a descriptive recon output
+        filename based on algorithm and filter if filter kwargs used in recon
+
+        :param prefix: The filename prefix to add more detail about format
+        :return: The formatted filename
+        """
+        recon_name = self.view.recon_params().algorithm
+        filter_name = self.view.recon_params().filter_name \
+            if "filter_name" in self.allowed_recon_kwargs[recon_name] else None
+
+        algorithm_name = f"{prefix}_{recon_name}"
+        return f"{algorithm_name}_{filter_name}" if filter_name else algorithm_name
