@@ -902,10 +902,7 @@ document.write(`
 </section>
 <section id="roi-normalisation">
 <h3>ROI Normalisation<a class="headerlink" href="#roi-normalisation" title="Link to this heading">#</a></h3>
-<p>Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the image. This scaling operation allows to account for beam fluctuations and different exposure times of projections.</p>
-<p>Intended to be used on: Projections</p>
-<p>When: Always, to ensure that any fluctuations in beam intensity are normalised.</p>
-<p>Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are brighter/darker than the neighbours. This can be fixed with this operation.</p>
+<p>Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the image. This scaling operation allows to account for beam fluctuations and different exposure times of projections. Intended to be used on: Projections When: Always, to ensure that any fluctuations in beam intensity are normalised. Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are brighter/darker than the neighbours. This can be fixed with this operation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">param region_of_interest<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The order is - Left Top Right Bottom. The air region for which grey values are summed up and used for normalisation/scaling.</p>

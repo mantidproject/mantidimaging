@@ -426,6 +426,8 @@ document.write(`
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.core.operations.roi_normalisation.roi_normalisation module</a><ul>
 <li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter</span></code></a><ul>
+<li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.calculate_global"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.calculate_global()</span></code></a></li>
+<li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.compute_function"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.compute_function()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.execute_wrapper()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.filter_func()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.filter_name</span></code></a></li>
@@ -524,11 +526,21 @@ document.write(`
 <dd><p>Bases: <a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter" title="mantidimaging.core.operations.base_filter.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
 <p>Normalises the image data by using the average value in a no-sample (air) region of interest (ROI) of the
 image. This scaling operation allows to account for beam fluctuations and different exposure times of
-projections.</p>
-<p>Intended to be used on: Projections</p>
-<p>When: Always, to ensure that any fluctuations in beam intensity are normalised.</p>
-<p>Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are
+projections.
+Intended to be used on: Projections
+When: Always, to ensure that any fluctuations in beam intensity are normalised.
+Note: Beam fluctuations are visible by horizontal lines in the sinograms, as  some projections are
 brighter/darker than the neighbours. This can be fixed with this operation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.calculate_global">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_of_interest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalisation_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/roi_normalisation/roi_normalisation.html#RoiNormalisationFilter.calculate_global"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.calculate_global" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.compute_function">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/roi_normalisation/roi_normalisation.html#RoiNormalisationFilter.compute_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.compute_function" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.execute_wrapper">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/roi_normalisation/roi_normalisation.html#RoiNormalisationFilter.execute_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.execute_wrapper" title="Link to this definition">#</a></dt>
@@ -541,30 +553,25 @@ as kwargs.
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_func">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_of_interest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalisation_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Stack</span> <span class="pre">Average'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/roi_normalisation/roi_normalisation.html#RoiNormalisationFilter.filter_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_func" title="Link to this definition">#</a></dt>
-<dd><p>Normalise by beam intensity.</p>
-<p>This does NOT do any checks if the Air Region is out of bounds!
+<dd><p>Normalise by beam intensity.
+This does NOT do any checks if the Air Region is out of bounds!
 If the Air Region is out of bounds, the crop will fail at runtime.
 If the Air Region is in bounds, but has overlapping coordinates
-the crop give back a 0 shape of the coordinates that were wrong.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>images</strong> – Sample data which is to be processed. Expected in radiograms</p></li>
-<li><p><strong>region_of_interest</strong> – The order is - Left Top Right Bottom. The air</p></li>
-</ul>
-</dd>
-</dl>
-<p>region for which grey values are summed up and used for normalisation/scaling.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>normalisation_mode</strong> – <p>Controls what the ROI counts are normalised to.
-‘Stack Average’ : The mean value of the air region across all projections is preserved.
+the crop give back a 0 shape of the coordinates that were wrong.
+:param images: Sample data which is to be processed. Expected in radiograms
+:param region_of_interest: The order is - Left Top Right Bottom. The air
+region for which grey values are summed up and used for normalisation/scaling.
+:param normalisation_mode: Controls what the ROI counts are normalised to.</p>
+<blockquote>
+<div><p>‘Stack Average’ : The mean value of the air region across all projections is preserved.
 ‘Flat Field’ : The mean value of the air regions in the projections is made equal to the mean value of the</p>
 <blockquote>
 <div><p>air region in the flat field image.</p>
 </div></blockquote>
-</p></li>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>flat_field</strong> – Flat field to use if ‘Flat Field’ mode is enabled.</p></li>
 <li><p><strong>progress</strong> – Reference to a progress bar object</p></li>
 </ul>
@@ -671,6 +678,8 @@ the operations <cite>execute_wrapper</cite>.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.calculate_global"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.calculate_global()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.compute_function"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.compute_function()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.execute_wrapper()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.filter_func()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.roi_normalisation.roi_normalisation.RoiNormalisationFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">RoiNormalisationFilter.filter_name</span></code></a></li>
