@@ -116,12 +116,12 @@ class SpectrumWidget(QWidget):
     spectrum_plot_widget: SpectrumPlotWidget
     image_widget: SpectrumProjectionWidget
 
-    def __init__(self, parent: MainWindowView) -> None:
+    def __init__(self, main_window: MainWindowView) -> None:
         super().__init__()
 
         self.vbox = QVBoxLayout(self)
 
-        self.image_widget = SpectrumProjectionWidget(parent)
+        self.image_widget = SpectrumProjectionWidget(main_window)
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
