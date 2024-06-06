@@ -30,11 +30,11 @@ class SpectrumROI(ROI):
     sig_colour_change = pyqtSignal(str, tuple)
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
+        kwargs["pos"] = sensible_roi.left, sensible_roi.top
+        kwargs["size"] = sensible_roi.width, sensible_roi.height
         super().__init__(*args, **kwargs)
         self._name = name
         self._colour = (0, 0, 0, 255)
-        self.setPos((sensible_roi.left, sensible_roi.top))
-        self.setSize((sensible_roi.width, sensible_roi.height))
         self.maxBounds = self.parentBounds()
         self.addScaleHandle([1, 1], [0, 0])
         self.addScaleHandle([1, 0], [0, 1])

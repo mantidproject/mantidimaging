@@ -7,12 +7,24 @@ import numpy as np
 from unittest import mock
 from parameterized import parameterized
 
+from pyqtgraph import Point
+
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
+
+
+@start_qapplication
+class SpectrumROITest(unittest.TestCase):
+
+    def test_WHEN_initialise_THEN_pos_and_size_correct(self):
+        roi = SensibleROI(10, 20, 30, 40)
+        spectrum_roi = SpectrumROI("", roi)
+        self.assertEqual(spectrum_roi.getState()["pos"], Point(10, 20))
+        self.assertEqual(spectrum_roi.getState()["size"], Point(20, 20))
 
 
 @mock_versions
