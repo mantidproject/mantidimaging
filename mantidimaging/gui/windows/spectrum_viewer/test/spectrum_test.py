@@ -58,12 +58,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertEqual(len(colour_list), len({tuple(c) for c in colour_list}))
 
     def test_WHEN_change_roi_colour_called_THEN_roi_colour_changed(self):
-        spectrum_roi = SpectrumROI("roi",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI("roi", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi"] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict["roi"] = np.array([0, 0, 0, 0])
         roi_colour = self.spectrum_widget.roi_dict["roi"].pen.color().getRgb()
@@ -73,12 +68,7 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     @parameterized.expand([("Visible", "visible_roi", 1), ("Invisible", "invisible_roi", 0)])
     def test_WHEN_set_roi_visibility_flags_called_THEN_roi_Visibility_flags_toggled(self, _, name, alpha):
-        spectrum_roi = SpectrumROI(name,
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict[name] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict[name] = np.array([0, 0, 0, 0])
         self.spectrum_widget.set_roi_visibility_flags(name, alpha)
@@ -86,12 +76,7 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     @parameterized.expand([("Visible", "visible_roi", 1), ("Invisible", "invisible_roi", 0)])
     def test_WHEN_set_roi_alpha_called_THEN_roi_alpha_updated(self, _, name, alpha):
-        spectrum_roi = SpectrumROI(name,
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict[name] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict[name] = np.array([0, 0, 0, 0])
         self.spectrum_widget.set_roi_alpha(name, alpha)
@@ -100,12 +85,7 @@ class SpectrumWidgetTest(unittest.TestCase):
 
     @parameterized.expand([("Visible", "visible_roi", 1), ("Invisible", "invisible_roi", 0)])
     def test_WHEN_set_roi_alpha_called_THEN_set_roi_visibility_flags_called(self, _, name, alpha):
-        spectrum_roi = SpectrumROI(name,
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict[name] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict[name] = np.array([0, 0, 0, 0])
         with mock.patch.object(SpectrumWidget, "set_roi_visibility_flags") as mock_set_roi_visibility_flags:
@@ -120,12 +100,7 @@ class SpectrumWidgetTest(unittest.TestCase):
                          f"ToF range: {range_min:.3f} - {range_max:.3f}")
 
     def test_WHEN_get_roi_called_THEN_SensibleROI_returned(self):
-        spectrum_roi = SpectrumROI("roi",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI("roi", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi"] = spectrum_roi
         roi = self.spectrum_widget.get_roi("roi")
         self.assertIsInstance(type(roi), type(SensibleROI))
@@ -136,12 +111,7 @@ class SpectrumWidgetTest(unittest.TestCase):
             self.spectrum_widget.get_roi("invalid_roi")
 
     def test_WHEN_remove_roi_called_THEN_roi_removed_from_roi_dict(self):
-        spectrum_roi = SpectrumROI("roi_1",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI("roi_1", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi_1"] = spectrum_roi
         self.assertIn("roi_1", self.spectrum_widget.roi_dict)
         self.spectrum_widget.remove_roi("roi_1")
@@ -153,12 +123,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertEqual(self.spectrum_plot_widget._tof_range_label.text, "ToF range: 0.000 - 100.000")
 
     def test_WHEN_rename_roi_called_THEN_roi_renamed(self):
-        spectrum_roi = SpectrumROI("roi_1",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI("roi_1", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi_1"] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict["roi_1"] = np.array([0, 0, 0, 0])
         self.assertIn("roi_1", self.spectrum_widget.roi_dict.keys())
@@ -167,12 +132,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertIn("roi_2", self.spectrum_widget.roi_dict)
 
     def test_WHEN_rename_roi_called_with_default_roi_THEN_roi_name_not_changed(self):
-        spectrum_roi = SpectrumROI("roi_1",
-                                   self.sensible_roi,
-                                   pos=(0, 0),
-                                   rotatable=False,
-                                   scaleSnap=True,
-                                   translateSnap=True)
+        spectrum_roi = SpectrumROI("roi_1", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi"] = spectrum_roi
         self.spectrum_widget.roi_dict["roi_1"] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict["roi_1"] = np.array([0, 0, 0, 0])

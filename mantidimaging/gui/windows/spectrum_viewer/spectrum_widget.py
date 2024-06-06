@@ -196,7 +196,7 @@ class SpectrumWidget(QWidget):
         @param roi: The ROI to add.
         @param name: The name of the ROI.
         """
-        roi_object = SpectrumROI(name, roi, pos=(0, 0), rotatable=False, scaleSnap=True, translateSnap=True)
+        roi_object = SpectrumROI(name, roi, rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
         roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
 
