@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
 
 def _divide_by_counts(data=None, counts=None):
+    if counts.ndim == 1:
+        counts = counts.reshape(1, 1, -1)
     data[:] = np.true_divide(data, counts)
 
 
@@ -38,25 +40,22 @@ class MonitorNormalisation(BaseFilter):
         :return: The ImageStack object which has been normalised.
         """
         if images.num_projections == 1:
-            # we can't really compute the preview as the image stack copy
-            # passed in doesn't have the logfile in it
             raise RuntimeError("No logfile available for this stack.")
 
         counts = images.counts()
-
         if counts is None:
             raise RuntimeError("No loaded log values for this stack.")
 
         normalization_factor = counts.value / counts.value[0]
         params = {'normalization_factor': normalization_factor}
+
         ps.run_compute_func(MonitorNormalisation.compute_function, images.data.shape[0], images.shared_array, params,
                             progress)
         return images
 
     @staticmethod
     def compute_function(i: int, array: np.ndarray, params: dict[str, np.ndarray]):
-        normalization_factor = params['normalization_factor']
-        array[i] /= normalization_factor
+        array[i] /= params['normalization_factor'][i]
 
     @staticmethod
     def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
