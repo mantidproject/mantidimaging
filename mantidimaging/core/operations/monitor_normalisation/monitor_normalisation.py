@@ -3,7 +3,7 @@
 from __future__ import annotations
 from functools import partial
 from typing import Any, TYPE_CHECKING
-from collections.abc import Callable  # Example of how to import from collections.abc
+from collections.abc import Callable
 
 import numpy as np
 
