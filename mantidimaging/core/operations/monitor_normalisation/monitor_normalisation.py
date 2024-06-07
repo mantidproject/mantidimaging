@@ -3,13 +3,12 @@
 from __future__ import annotations
 from functools import partial
 from typing import Any, TYPE_CHECKING
-from collections.abc import Callable
+from collections.abc import Callable  # Example of how to import from collections.abc
 
 import numpy as np
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
-from mantidimaging.core.parallel import utility as pu
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -48,11 +47,16 @@ class MonitorNormalisation(BaseFilter):
         if counts is None:
             raise RuntimeError("No loaded log values for this stack.")
 
-        counts_val = pu.copy_into_shared_memory(counts.value / counts.value[0])
-        do_division = ps.create_partial(_divide_by_counts, fwd_function=ps.inplace2)
-        arrays = [images.shared_array, counts_val]
-        ps.execute(do_division, arrays, images.num_projections, progress)
+        normalization_factor = counts.value / counts.value[0]
+        params = {'normalization_factor': normalization_factor}
+        ps.run_compute_func(MonitorNormalisation.compute_function, images.data.shape[0], images.shared_array, params,
+                            progress)
         return images
+
+    @staticmethod
+    def compute_function(i: int, array: np.ndarray, params: dict[str, np.ndarray]):
+        normalization_factor = params['normalization_factor']
+        array[i] /= normalization_factor
 
     @staticmethod
     def register_gui(form: QFormLayout, on_change: Callable, view: BaseMainWindowView) -> dict[str, QWidget]:
