@@ -494,6 +494,7 @@ document.write(`
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.spectrum_viewer.view</span> <span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.view</span> <span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span> <span class="kn">import</span> <span class="n">SpectrumROI</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
     <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
 
@@ -699,7 +700,7 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_roi_clicked">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_roi_clicked">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_roi_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">handle_roi_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SpectrumROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">ROI_RITS</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_roi</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span>
