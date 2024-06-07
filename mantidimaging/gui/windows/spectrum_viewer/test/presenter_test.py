@@ -10,10 +10,11 @@ from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
+from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -239,6 +240,21 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
         self.presenter.do_remove_roi("roi_1")
         self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+
+    def test_WHEN_roi_clicked_THEN_roi_updated(self):
+        roi = SpectrumROI("themightyroi", SensibleROI())
+        self.presenter.handle_roi_clicked(roi)
+        self.assertEqual(self.view.current_roi, "themightyroi")
+        self.assertEqual(self.view.last_clicked_roi, "themightyroi")
+        self.view.set_roi_properties.assert_called_once()
+
+    def test_WHEN_rits_roi_clicked_THEN_rois_not_updated(self):
+        self.view.current_roi = self.view.last_clicked_roi = "NOT_RITS_ROI"
+        roi = SpectrumROI(ROI_RITS, SensibleROI())
+        self.presenter.handle_roi_clicked(roi)
+        self.assertEqual(self.view.current_roi, "NOT_RITS_ROI")
+        self.assertEqual(self.view.last_clicked_roi, "NOT_RITS_ROI")
+        self.view.set_roi_properties.assert_not_called()
 
     def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
         self.presenter.model.set_stack(generate_images())

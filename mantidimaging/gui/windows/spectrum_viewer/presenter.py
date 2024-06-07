@@ -20,6 +20,7 @@ from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindow
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
+    from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
 
@@ -191,7 +192,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.set_roi(name, roi)
                 self.view.set_spectrum(name, self.model.get_spectrum(name, self.spectrum_mode))
 
-    def handle_roi_clicked(self, roi) -> None:
+    def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
             self.view.current_roi = roi.name
             self.view.last_clicked_roi = roi.name
