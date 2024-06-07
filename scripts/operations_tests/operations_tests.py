@@ -144,8 +144,6 @@ class TestRunner:
         # Handling various pre-run steps
         if test_case.pre_run_step == 'add_nan':
             image_stack = self.add_nan(image_stack, fraction=0.1)
-        elif test_case.pre_run_step == 'add_flats_and_darks':
-            self.add_flats_and_darks(test_case.params)
         elif test_case.pre_run_step == 'load_monitor_log':
             log_data = self.load_monitor_log()
             image_stack.log_file = log_data
