@@ -550,7 +550,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span> <span class="o">=</span> <span class="n">SpectrumWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span> <span class="o">=</span> <span class="n">SpectrumWidget</span><span class="p">(</span><span class="n">main_window</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_plot_widget</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imageLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="p">)</span>
