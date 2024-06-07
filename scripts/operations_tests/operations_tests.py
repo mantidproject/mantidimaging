@@ -19,6 +19,7 @@ from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
+
 try:
     from plotly import graph_objs as go
     from plotly.subplots import make_subplots
@@ -31,6 +32,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
+from mantidimaging.core.io.instrument_log import InstrumentLog
 
 script_dir = Path(__file__).resolve().parent
 log_directory = script_dir / "logs"
@@ -139,11 +141,17 @@ class TestRunner:
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
 
+        # Handling various pre-run steps
         if test_case.pre_run_step == 'add_nan':
-            self.image_stack = self.add_nan(image_stack, fraction=0.1)
+            image_stack = self.add_nan(image_stack, fraction=0.1)
+        elif test_case.pre_run_step == 'add_flats_and_darks':
+            self.add_flats_and_darks(test_case.params)
+        elif test_case.pre_run_step == 'load_monitor_log':
+            log_data = self.load_monitor_log()
+            image_stack.log_file = log_data
 
         test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
-        file_name = config_manager.save_dir / (test_case.test_name + ".npz")
+        file_name = config_manager.save_dir / f"{test_case.test_name}.npz"
 
         if file_name.is_file():
             baseline_image_stack = self.load_post_operation_image_stack(file_name)
@@ -162,6 +170,18 @@ class TestRunner:
             self.save_image_stack(file_name, new_image_stack)
 
         TEST_CASE_RESULTS.append(test_case)
+
+    def load_monitor_log(self):
+        filename_group = FilenameGroup.from_file(config_manager.load_sample)
+        filename_group.find_log_file()
+        log_file_path = filename_group.log_path
+
+        if log_file_path is None:
+            raise ValueError("Log file path could not be determined.")
+
+        with open(log_file_path) as file:
+            log_lines = file.readlines()
+            return InstrumentLog(log_lines, Path(log_file_path))
 
     def add_nan(self, image_stack, fraction=0.001):
         data = image_stack.data
