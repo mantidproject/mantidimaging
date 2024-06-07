@@ -678,5 +678,17 @@
         }
       }
     ]
+  },
+  "Monitor Normalisation": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_normalisation",
+        "pre_run_step": "load_monitor_log",
+        "params": {
+        }
+      }
+    ]
   }
 }
