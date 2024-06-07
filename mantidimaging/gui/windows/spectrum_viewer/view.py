@@ -74,7 +74,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
-        self.spectrum_widget = SpectrumWidget()
+        self.spectrum_widget = SpectrumWidget(main_window)
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
 
         self.imageLayout.addWidget(self.spectrum_widget)

@@ -15,6 +15,9 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
+    from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
+
+if TYPE_CHECKING:
     import numpy as np
 
 
@@ -113,12 +116,12 @@ class SpectrumWidget(QWidget):
     spectrum_plot_widget: SpectrumPlotWidget
     image_widget: SpectrumProjectionWidget
 
-    def __init__(self) -> None:
+    def __init__(self, main_window: MainWindowView) -> None:
         super().__init__()
 
         self.vbox = QVBoxLayout(self)
 
-        self.image_widget = SpectrumProjectionWidget()
+        self.image_widget = SpectrumProjectionWidget(main_window)
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
@@ -351,8 +354,13 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
 class SpectrumProjectionWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, parent: MainWindowView) -> None:
+        super().__init__(parent)
+        self._main_window = parent
         self.image = MIMiniImageView(name="Projection", view_box_type=CustomViewBox)
         self.addItem(self.image, 0, 0)
         self.ci.layout.setRowStretchFactor(0, 3)
+
+        nan_check_menu = [("Crop Coordinates", lambda: self._main_window.presenter.show_operation("Crop Coordinates")),
+                          ("NaN Removal", lambda: self._main_window.presenter.show_operation("NaN Removal"))]
+        self.image.enable_nan_check(actions=nan_check_menu)
