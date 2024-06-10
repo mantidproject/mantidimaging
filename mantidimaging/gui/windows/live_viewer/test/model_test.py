@@ -97,7 +97,8 @@ class ImageWatcherTest(FakeFSTestCase):
         file_list = self._make_simple_dir(self.top_path)
         self.mock_signal_image.emit.assert_not_called()
 
-        self.watcher._handle_directory_change(self.top_path)
+        self.watcher.changed_directory = self.top_path
+        self.watcher._handle_directory_change()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
@@ -110,7 +111,8 @@ class ImageWatcherTest(FakeFSTestCase):
         os.utime(self.top_path / "empty", [10, 2000])
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'empty').stat().st_mtime)
 
-        self.watcher._handle_directory_change(self.top_path / "empty")
+        self.watcher.changed_directory = self.top_path / "empty"
+        self.watcher._handle_directory_change()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
@@ -123,7 +125,8 @@ class ImageWatcherTest(FakeFSTestCase):
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'more').stat().st_mtime)
         self.assertLess((self.top_path / 'more').stat().st_mtime, time.time())
 
-        self.watcher._handle_directory_change(self.top_path)
+        self.watcher.changed_directory = self.top_path
+        self.watcher._handle_directory_change()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
@@ -135,7 +138,8 @@ class ImageWatcherTest(FakeFSTestCase):
         file_list2 = self._make_simple_dir(self.top_path / "more", t0=2000)
         self.assertLess(self.top_path.stat().st_mtime, (self.top_path / 'more').stat().st_mtime)
 
-        self.watcher._handle_directory_change(self.top_path / "more")
+        self.watcher.changed_directory = self.top_path / "more"
+        self.watcher._handle_directory_change()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list2)
