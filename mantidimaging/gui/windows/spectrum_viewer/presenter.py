@@ -10,6 +10,7 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
+from PyQt5.QtWidgets import QAction
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -382,9 +383,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
                 if action.objectName() == opt:
-                    action.setChecked(True)
+                    self.check_action(action, True)
                 else:
-                    action.setChecked(False)
+                    self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
@@ -410,3 +411,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if old_current_roi_name != ROI_RITS:
                 self.view.last_clicked_roi = old_current_roi_name
 
+    @staticmethod
+    def check_action(action: QAction, param: bool):
+        action.setChecked(param)

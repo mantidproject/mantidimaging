@@ -18,7 +18,6 @@ from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 import numpy as np
 
@@ -524,8 +523,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         for _, label in self.roiPropertiesLabels.items():
             label.setText("0")
 
-    def get_roi_properties_spinboxes(self):
+    def get_roi_properties_spinboxes(self) -> dict[str, QSpinBox]:
         return self.roiPropertiesSpinBoxes
+
+    def get_checked_menu_option(self) -> QAction:
+        return self.tof_mode_select_group.checkedAction()
 
     def set_old_table_names(self):
         self.old_table_names = self.presenter.get_roi_names()

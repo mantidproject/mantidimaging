@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -321,3 +321,20 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.refresh_spectrum_plot = mock.Mock()
         self.presenter.handle_time_delay_change()
         self.assertEqual(self.presenter.model.units.data_offset, 400 * 1e-6)
+
+    def test_WHEN_menu_option_selected_THEN_menu_option_changed(self):
+        menu_options = [QAction("opt1"), QAction("opt2"), QAction("opt3"), QAction("opt4")]
+        menu_options[0].setObjectName("opt1")
+        menu_options[1].setObjectName("opt2")
+        menu_options[2].setObjectName("opt3")
+        menu_options[3].setObjectName("opt4")
+        self.presenter.check_action = mock.Mock()
+        self.view.tof_mode_select_group.actions = mock.Mock(return_value=menu_options)
+        self.presenter.change_selected_menu_option("opt2")
+        calls = [
+            mock.call(menu_options[0], False),
+            mock.call(menu_options[1], True),
+            mock.call(menu_options[2], False),
+            mock.call(menu_options[3], False)
+        ]
+        self.presenter.check_action.assert_has_calls(calls)
