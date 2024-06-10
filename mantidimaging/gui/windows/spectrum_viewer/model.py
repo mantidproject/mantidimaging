@@ -282,15 +282,21 @@ class SpectrumViewerWindowModel:
             raise ValueError("No stack selected")
 
         csv_output = CSVOutput()
-        csv_output.add_column("tof_index", np.arange(self._stack.data.shape[0]))
+        csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
+        self.tof_data = self.get_stack_time_of_flight()
+        if self.tof_data is not None:
+            self.units.set_data_to_convert(self.tof_data)
+            csv_output.add_column("Wavelength", self.units.tof_seconds_to_wavelength_in_angstroms(), "Angstrom")
+            csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
+            csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
         for roi_name in self.get_list_of_roi_names():
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE))
+            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE), "Counts")
             if normalized:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN))
-                csv_output.add_column(roi_name + "_norm", self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED))
+                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
+                csv_output.add_column(roi_name + "_norm", self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED), "Counts")
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
