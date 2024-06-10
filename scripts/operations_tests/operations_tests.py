@@ -33,6 +33,7 @@ from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
 from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.utility.data_containers import FILE_TYPES
 
 script_dir = Path(__file__).resolve().parent
 log_directory = script_dir / "logs"
@@ -144,6 +145,8 @@ class TestRunner:
         # Handling various pre-run steps
         if test_case.pre_run_step == 'add_nan':
             image_stack = self.add_nan(image_stack, fraction=0.1)
+        elif test_case.pre_run_step == 'add_flats_and_darks':
+            self.add_flats_and_darks(test_case.params)
         elif test_case.pre_run_step == 'load_monitor_log':
             log_data = self.load_monitor_log()
             image_stack.log_file = log_data
@@ -168,6 +171,23 @@ class TestRunner:
             self.save_image_stack(file_name, new_image_stack)
 
         TEST_CASE_RESULTS.append(test_case)
+
+    def add_flats_and_darks(self, params):
+        for frame_type in ['flat_before', 'flat_after', 'dark_before', 'dark_after']:
+            if frame_type not in params:
+                continue
+            try:
+                filename_group = FilenameGroup.from_file(config_manager.load_sample)
+                related_filename_group = filename_group.find_related(getattr(FILE_TYPES, params[frame_type]))
+                if not related_filename_group:
+                    raise ValueError(f"Related files not found for {frame_type}")
+                related_filename_group.find_all_files()
+                image_stack = loader.load(filename_group=related_filename_group)  # Corrected this line
+                if image_stack is None or not hasattr(image_stack, 'data'):
+                    raise ValueError(f"Failed to load or invalid image stack for {frame_type}")
+                params[frame_type] = image_stack
+            except Exception as e:
+                print(f"Error with {frame_type}: {e}")
 
     def load_monitor_log(self):
         filename_group = FilenameGroup.from_file(config_manager.load_sample)

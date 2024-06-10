@@ -690,5 +690,56 @@
         }
       }
     ]
+  },
+  "Flat-fielding": {
+    "params": {
+      "use_dark": true,
+      "selected_flat_fielding": "Both, concatenated"
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "default_settings",
+        "pre_run_step": "add_flats_and_darks",
+        "params": {
+          "use_dark": true,
+          "selected_flat_fielding": "Both, concatenated",
+          "flat_before": "FLAT_BEFORE",
+          "dark_before": "DARK_BEFORE",
+          "flat_after": "FLAT_AFTER",
+          "dark_after": "DARK_BEFORE"
+        }
+      },
+      {
+        "test_name": "use_only_before",
+        "pre_run_step": "add_flats_and_darks",
+        "params": {
+          "use_dark": true,
+          "selected_flat_fielding": "Only Before",
+          "flat_before": "FLAT_BEFORE",
+          "dark_before": "DARK_BEFORE"
+        }
+      },
+      {
+        "test_name": "use_only_after",
+        "pre_run_step": "add_flats_and_darks",
+        "params": {
+          "use_dark": true,
+          "selected_flat_fielding": "Only After",
+          "flat_after": "FLAT_AFTER",
+          "dark_after": "DARK_BEFORE"
+        }
+      },
+      {
+        "test_name": "no_dark_frames",
+        "pre_run_step": "add_flats_and_darks",
+        "params": {
+          "use_dark": false,
+          "selected_flat_fielding": "Both, concatenated",
+          "flat_before": "FLAT_BEFORE",
+          "flat_after": "FLAT_AFTER"
+        }
+      }
+    ]
   }
 }
