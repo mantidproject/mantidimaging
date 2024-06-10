@@ -88,32 +88,50 @@ class FlatFieldFilter(BaseFilter):
         """
         h.check_data_stack(images)
 
-        if selected_flat_fielding == "Both, concatenated" and flat_after is not None and flat_before is not None \
-                and dark_after is not None and dark_before is not None:
+        if selected_flat_fielding not in ["Both, concatenated", "Only Before", "Only After"]:
+            raise ValueError(f"Invalid flat fielding method: {selected_flat_fielding}")
+
+        dark_avg = None
+
+        if selected_flat_fielding == "Both, concatenated":
+            if flat_before is None:
+                raise ValueError("Missing stack: flat_before is required for 'Both, concatenated'")
+            if flat_after is None:
+                raise ValueError("Missing stack: flat_after is required for 'Both, concatenated'")
             flat_avg = (flat_before.data.mean(axis=0) + flat_after.data.mean(axis=0)) / 2.0
             if use_dark:
+                if dark_before is None or dark_after is None:
+                    raise ValueError("Missing stack: dark_before and dark_after are required for 'Both, concatenated'")
                 dark_avg = (dark_before.data.mean(axis=0) + dark_after.data.mean(axis=0)) / 2.0
-        elif selected_flat_fielding == "Only Before" and flat_before is not None and dark_before is not None:
-            flat_avg = flat_before.data.mean(axis=0)
-            if use_dark:
-                dark_avg = dark_before.data.mean(axis=0)
-        elif selected_flat_fielding == "Only After" and flat_after is not None and dark_after is not None:
+
+        elif selected_flat_fielding == "Only After":
+            if flat_after is None:
+                raise ValueError("Missing stack: flat_after is required for 'Only After'")
             flat_avg = flat_after.data.mean(axis=0)
             if use_dark:
+                if dark_after is None:
+                    raise ValueError("Missing stack: dark_after is required for 'Only After'")
                 dark_avg = dark_after.data.mean(axis=0)
-        else:
-            raise ValueError("selected_flat_fielding not in:", valid_methods)
 
-        if not use_dark:
+        elif selected_flat_fielding == "Only Before":
+            if flat_before is None:
+                raise ValueError("Missing stack: flat_before is required for 'Only Before'")
+            flat_avg = flat_before.data.mean(axis=0)
+            if use_dark:
+                if dark_before is None:
+                    raise ValueError("Missing stack: dark_before is required for 'Only Before'")
+                dark_avg = dark_before.data.mean(axis=0)
+
+        if dark_avg is None:
             dark_avg = np.zeros_like(flat_avg)
 
         if flat_avg is not None and dark_avg is not None:
-            if 2 != flat_avg.ndim or 2 != dark_avg.ndim:
+            if flat_avg.ndim != 2 or dark_avg.ndim != 2:
                 raise ValueError(
-                    f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) \
-                    which should match the shape of the sample images ({images.data.shape})")
+                    f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) "
+                    f"which should match the shape of the sample images ({images.data.shape[1:]})")
 
-            if not images.data.shape[1:] == flat_avg.shape == dark_avg.shape:
+            if not (images.data.shape[1:] == flat_avg.shape == dark_avg.shape):
                 raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
@@ -275,22 +293,6 @@ def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
 
 
 def _execute(images: ImageStack, flat=None, dark=None, progress=None):
-    """A benchmark justifying the current implementation, performed on
-    500x2048x2048 images.
-
-    #1 Separate runs
-    Subtract (sequential with np.subtract(data, dark, out=data)) - 13s
-    Divide (par) - 1.15s
-
-    #2 Separate parallel runs
-    Subtract (par) - 5.5s
-    Divide (par) - 1.15s
-
-    #3 Added subtract into _divide so that it is:
-                np.true_divide(
-                    np.subtract(data, dark, out=data), norm_divide, out=data)
-    Subtract then divide (par) - 55s
-    """
     with progress:
         progress.update(msg="Applying background correction")
 
