@@ -14,6 +14,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS
+from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -338,3 +339,37 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             mock.call(menu_options[3], False)
         ]
         self.presenter.check_action.assert_has_calls(calls)
+
+    def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
+        self.presenter.view.roiPropertiesSpinBoxes = mock.Mock()
+        self.presenter.convert_spinbox_roi_to_SpectrumROI = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
+        self.view.current_roi_name = "roi_1"
+        self.presenter.do_adjust_roi()
+        self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
+
+    def test_WHEN_changed_to_RITS_tab_THEN_current_roi_stored(self):
+        self.view.old_table_names = ["roi_1", "roi_2", "roi_3"]
+        self.view.current_roi_name = "roi_2"
+        self.view.last_clicked_roi = "roi_2"
+        self.presenter.export_mode = ExportMode.IMAGE_MODE
+        self.presenter.handle_storing_current_roi_name_on_tab_change()
+        self.assertEqual(self.view.current_roi_name, "roi_2")
+        self.assertEqual(self.view.last_clicked_roi, "roi_2")
+
+    def test_WHEN_delete_current_roi_and_changed_to_RITS_tab_THEN_last_clicked_roi_corrected(self):
+        self.view.old_table_names = ["roi_1", "roi_2", "roi_3"]
+        self.view.current_roi_name = "roi_3"
+        self.view.last_clicked_roi = "roi_2"
+        self.presenter.export_mode = ExportMode.IMAGE_MODE
+        self.presenter.handle_storing_current_roi_name_on_tab_change()
+        self.assertEqual(self.view.current_roi_name, "roi_3")
+        self.assertEqual(self.view.last_clicked_roi, "roi_3")
+
+    def test_WHEN_changed_to_ROI_tab_THEN_current_roi_restored_to_last_clicked_roi(self):
+        self.view.old_table_names = ["roi_1", "roi_2", "roi_3"]
+        self.view.current_roi_name = ROI_RITS
+        self.view.last_clicked_roi = "roi_2"
+        self.presenter.export_mode = ExportMode.ROI_MODE
+        self.presenter.handle_storing_current_roi_name_on_tab_change()
+        self.assertEqual(self.view.current_roi_name, "roi_2")
+        self.assertEqual(self.view.last_clicked_roi, "roi_2")

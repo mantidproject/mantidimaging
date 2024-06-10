@@ -10,7 +10,7 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QSpinBox
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -18,6 +18,7 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWork
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
     ToFUnitMode, allowed_modes
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -388,9 +389,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
-        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
-        new_points = [self.view.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
-        new_roi = SensibleROI().from_list(new_points)
+        new_roi = self.convert_spinbox_roi_to_SpectrumROI(self.view.roiPropertiesSpinBoxes)
         self.model.set_roi(self.view.current_roi_name, new_roi)
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
@@ -408,9 +407,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             else:
                 self.view.last_clicked_roi = old_current_roi_name
         elif self.export_mode == ExportMode.IMAGE_MODE:
-            if old_current_roi_name != ROI_RITS:
+            if (old_current_roi_name != ROI_RITS and old_current_roi_name in old_table_names
+                    and old_last_clicked_roi in old_table_names):
                 self.view.last_clicked_roi = old_current_roi_name
 
     @staticmethod
     def check_action(action: QAction, param: bool):
         action.setChecked(param)
+
+    def convert_spinbox_roi_to_SpectrumROI(self, spinboxes: dict[str, QSpinBox]) -> SpectrumROI:
+        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
+        new_points = [spinboxes[prop].value() for prop in roi_iter_order]
+        return SensibleROI().from_list(new_points)
