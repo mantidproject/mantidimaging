@@ -17,8 +17,6 @@ if TYPE_CHECKING:
 
 
 def _divide_by_counts(data=None, counts=None):
-    if counts.ndim == 1:
-        counts = counts.reshape(1, 1, -1)
     data[:] = np.true_divide(data, counts)
 
 
@@ -40,6 +38,8 @@ class MonitorNormalisation(BaseFilter):
         :return: The ImageStack object which has been normalised.
         """
         if images.num_projections == 1:
+            # we can't really compute the preview as the image stack copy
+            # passed in doesn't have the logfile in it
             raise RuntimeError("No logfile available for this stack.")
 
         counts = images.counts()
