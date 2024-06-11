@@ -1451,28 +1451,24 @@ document.write(`
             <span class="n">override_os_theme</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;override_os_theme&#39;</span><span class="p">)</span>
         <span class="n">os_theme</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;os_theme&#39;</span><span class="p">)</span>
         <span class="n">font</span> <span class="o">=</span> <span class="n">QFont</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;default_font_family&#39;</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">extra_style</span><span class="p">[</span><span class="s1">&#39;font_size&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;px&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
-        <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filters</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">settings_window</span>
-        <span class="p">]:</span>
-            <span class="k">if</span> <span class="n">window</span><span class="p">:</span>
-                <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
-                <span class="n">window</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">theme</span> <span class="o">==</span> <span class="s1">&#39;Fusion&#39;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">override_os_theme</span> <span class="o">==</span> <span class="s1">&#39;False&#39;</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">os_theme</span> <span class="o">==</span> <span class="s1">&#39;Light&#39;</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_light_mode</span><span class="p">()</span>
-                        <span class="k">elif</span> <span class="n">os_theme</span> <span class="o">==</span> <span class="s1">&#39;Dark&#39;</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_dark_mode</span><span class="p">()</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">use_dark_mode</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_dark_mode</span><span class="p">()</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_light_mode</span><span class="p">()</span>
-                    <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
-                    <span class="n">window</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">theme</span> <span class="o">==</span> <span class="s1">&#39;Fusion&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">override_os_theme</span> <span class="o">==</span> <span class="s1">&#39;False&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os_theme</span> <span class="o">==</span> <span class="s1">&#39;Light&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_light_mode</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">os_theme</span> <span class="o">==</span> <span class="s1">&#39;Dark&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_dark_mode</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">use_dark_mode</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_dark_mode</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">apply_stylesheet</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">invert_secondary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">extra_style</span><span class="p">)</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">use_fusion_light_mode</span><span class="p">()</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">apply_stylesheet</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">invert_secondary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">extra_style</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.use_fusion_dark_mode">
