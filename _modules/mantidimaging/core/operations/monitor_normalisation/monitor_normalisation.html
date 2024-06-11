@@ -483,7 +483,6 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
@@ -522,15 +521,22 @@ document.write(`
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No logfile available for this stack.&quot;</span><span class="p">)</span>
 
         <span class="n">counts</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">counts</span><span class="p">()</span>
-
         <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No loaded log values for this stack.&quot;</span><span class="p">)</span>
 
-        <span class="n">counts_val</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">copy_into_shared_memory</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">do_division</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">create_partial</span><span class="p">(</span><span class="n">_divide_by_counts</span><span class="p">,</span> <span class="n">fwd_function</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="n">inplace2</span><span class="p">)</span>
-        <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">counts_val</span><span class="p">]</span>
-        <span class="n">ps</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">do_division</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">num_projections</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="n">normalization_factor</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;normalization_factor&#39;</span><span class="p">:</span> <span class="n">normalization_factor</span><span class="p">}</span>
+
+        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">MonitorNormalisation</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span>
+                            <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="MonitorNormalisation.compute_function">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.html#mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.MonitorNormalisation.compute_function">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;normalization_factor&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="MonitorNormalisation.register_gui">
