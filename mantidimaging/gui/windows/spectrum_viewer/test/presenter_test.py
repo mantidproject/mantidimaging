@@ -357,7 +357,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.view.last_clicked_roi, "roi_2")
 
     def test_WHEN_delete_current_roi_and_changed_to_RITS_tab_THEN_last_clicked_roi_corrected(self):
-        self.view.old_table_names = ["roi_1", "roi_2", "roi_3"]
+        self.view.old_table_names = ["roi_1", "roi_3"]
         self.view.current_roi_name = "roi_3"
         self.view.last_clicked_roi = "roi_2"
         self.presenter.export_mode = ExportMode.IMAGE_MODE

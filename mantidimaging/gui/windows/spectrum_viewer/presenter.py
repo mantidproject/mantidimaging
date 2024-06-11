@@ -393,26 +393,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_roi(self.view.current_roi_name, new_roi)
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
-    def handle_storing_current_roi_name_on_tab_change(self):
+    def handle_storing_current_roi_name_on_tab_change(self) -> None:
         old_table_names = self.view.old_table_names
         old_current_roi_name = self.view.current_roi_name
         old_last_clicked_roi = self.view.last_clicked_roi
         if self.export_mode == ExportMode.ROI_MODE:
-            if old_current_roi_name in old_table_names and old_last_clicked_roi in old_table_names:
-                pass
-            elif old_current_roi_name == ROI_RITS and old_last_clicked_roi in old_table_names:
+            if old_current_roi_name == ROI_RITS and old_last_clicked_roi in old_table_names:
                 self.view.current_roi_name = old_last_clicked_roi
-            elif old_current_roi_name == ROI_RITS and old_last_clicked_roi not in old_table_names:
-                self.view.current_roi_name = self.view.roi_table_model.row_data(self.view.selected_row)[0]
             else:
                 self.view.last_clicked_roi = old_current_roi_name
         elif self.export_mode == ExportMode.IMAGE_MODE:
             if (old_current_roi_name != ROI_RITS and old_current_roi_name in old_table_names
-                    and old_last_clicked_roi in old_table_names):
+                    and old_last_clicked_roi != old_current_roi_name):
                 self.view.last_clicked_roi = old_current_roi_name
 
     @staticmethod
-    def check_action(action: QAction, param: bool):
+    def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
 
     def convert_spinbox_roi_to_SpectrumROI(self, spinboxes: dict[str, QSpinBox]) -> SpectrumROI:
