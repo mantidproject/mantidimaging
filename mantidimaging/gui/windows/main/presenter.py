@@ -853,28 +853,24 @@ class MainWindowPresenter(BasePresenter):
             override_os_theme = settings.value('override_os_theme')
         os_theme = settings.value('os_theme')
         font = QFont(settings.value('default_font_family'), int(extra_style['font_size'].replace('px', '')))
-        for window in [
-                self.view, self.view.recon, self.view.live_viewer, self.view.spectrum_viewer, self.view.filters,
-                self.view.settings_window
-        ]:
-            if window:
-                QApplication.instance().setFont(font)
-                window.setStyleSheet(theme)
-                if theme == 'Fusion':
-                    if override_os_theme == 'False':
-                        if os_theme == 'Light':
-                            self.use_fusion_light_mode()
-                        elif os_theme == 'Dark':
-                            self.use_fusion_dark_mode()
-                    else:
-                        if use_dark_mode == 'True':
-                            self.use_fusion_dark_mode()
-                        else:
-                            self.use_fusion_light_mode()
-                    QApplication.instance().setFont(font)
-                    window.setStyleSheet(theme)
+        app = QApplication.instance()
+
+        app.setFont(font)
+        if theme == 'Fusion':
+            if override_os_theme == 'False':
+                if os_theme == 'Light':
+                    self.use_fusion_light_mode()
+                elif os_theme == 'Dark':
+                    self.use_fusion_dark_mode()
+            else:
+                if use_dark_mode == 'True':
+                    self.use_fusion_dark_mode()
                 else:
-                    apply_stylesheet(window, theme=theme, invert_secondary=False, extra=extra_style)
+                    self.use_fusion_light_mode()
+            app.setStyle(theme)
+            app.setStyleSheet('')
+        else:
+            apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
 
     @staticmethod
     def use_fusion_dark_mode() -> None:
