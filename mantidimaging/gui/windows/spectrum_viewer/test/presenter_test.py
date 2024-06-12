@@ -383,3 +383,24 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.spectrum_plot_widget.add_range.assert_called_once_with(23, 45)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label.assert_called_once_with(1, 80)
         self.view.auto_range_image.assert_called_once()
+
+    def test_WHEN_redraw_all_rois_THEN_rois_set_correctly(self):
+
+        def spec_roi_mock(name):
+            if name == "all":
+                return SensibleROI(0, 0, 10, 8)
+            elif name == "roi":
+                return SensibleROI(1, 4, 3, 2)
+
+        self.view.spectrum_widget.get_roi = mock.Mock(side_effect=spec_roi_mock)
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi()
+        self.presenter.model.get_spectrum = mock.Mock()
+        self.presenter.redraw_all_rois()
+        self.assertEqual(self.presenter.model.get_roi("all"), SensibleROI(0, 0, 10, 8))
+        self.assertEqual(self.presenter.model.get_roi("roi"), SensibleROI(1, 4, 3, 2))
+        calls = [
+            mock.call("all", mock.ANY),
+            mock.call("roi", mock.ANY),
+        ]
+        self.view.set_spectrum.assert_has_calls(calls)
