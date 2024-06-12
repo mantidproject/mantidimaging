@@ -404,3 +404,23 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             mock.call("roi", mock.ANY),
         ]
         self.view.set_spectrum.assert_has_calls(calls)
+
+    def test_WHEN_roi_clicked_THEN_current_and_last_clicked_roi_updated(self):
+        self.view.current_roi_name = ""
+        self.view.last_clicked_roi = ""
+        self.presenter.handle_roi_clicked(SpectrumROI("roi_clicked", SensibleROI(), pos=(0, 0)))
+        self.assertEqual(self.view.current_roi_name, "roi_clicked")
+        self.assertEqual(self.view.last_clicked_roi, "roi_clicked")
+
+    def test_WHEN_roi_rits_clicked_THEN_current_and_last_clicked_roi_not_updated(self):
+        self.view.current_roi_name = "roi"
+        self.view.last_clicked_roi = "roi"
+        self.presenter.handle_roi_clicked(SpectrumROI(ROI_RITS, SensibleROI(), pos=(0, 0)))
+        self.assertEqual(self.view.current_roi_name, "roi")
+        self.assertEqual(self.view.last_clicked_roi, "roi")
+
+    def test_WHEN_roi_clicked_THEN_roi_properties_set(self):
+        self.view.current_roi_name = ""
+        self.view.last_clicked_roi = ""
+        self.presenter.handle_roi_clicked(SpectrumROI("roi_clicked", SensibleROI(), pos=(0, 0)))
+        self.view.set_roi_properties.assert_called_once()
