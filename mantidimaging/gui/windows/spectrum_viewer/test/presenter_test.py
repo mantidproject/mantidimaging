@@ -373,3 +373,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_storing_current_roi_name_on_tab_change()
         self.assertEqual(self.view.current_roi_name, "roi_2")
         self.assertEqual(self.view.last_clicked_roi, "roi_2")
+
+    def test_WHEN_refresh_spectrum_plot_THEN_spectrum_plot_refreshed(self):
+        self.view.spectrum_widget.spectrum = mock.MagicMock()
+        self.presenter.model.tof_plot_range = (23, 45)
+        self.presenter.model.tof_range = (1, 80)
+        self.presenter.refresh_spectrum_plot()
+        self.view.show_visible_spectrums.assert_called_once()
+        self.view.spectrum_widget.spectrum_plot_widget.add_range.assert_called_once_with(23, 45)
+        self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label.assert_called_once_with(1, 80)
+        self.view.auto_range_image.assert_called_once()
