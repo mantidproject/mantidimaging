@@ -245,15 +245,15 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
         self.presenter.handle_roi_clicked(roi)
-        self.assertEqual(self.view.current_roi, "themightyroi")
+        self.assertEqual(self.view.current_roi_name, "themightyroi")
         self.assertEqual(self.view.last_clicked_roi, "themightyroi")
         self.view.set_roi_properties.assert_called_once()
 
     def test_WHEN_rits_roi_clicked_THEN_rois_not_updated(self):
-        self.view.current_roi = self.view.last_clicked_roi = "NOT_RITS_ROI"
+        self.view.current_roi_name = self.view.last_clicked_roi = "NOT_RITS_ROI"
         roi = SpectrumROI(ROI_RITS, SensibleROI())
         self.presenter.handle_roi_clicked(roi)
-        self.assertEqual(self.view.current_roi, "NOT_RITS_ROI")
+        self.assertEqual(self.view.current_roi_name, "NOT_RITS_ROI")
         self.assertEqual(self.view.last_clicked_roi, "NOT_RITS_ROI")
         self.view.set_roi_properties.assert_not_called()
 
