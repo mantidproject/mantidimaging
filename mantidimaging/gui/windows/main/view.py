@@ -183,12 +183,30 @@ class MainWindowView(BaseMainWindowView):
     def keyPressEvent(self, e):
         # print(e.key(), e.modifiers())
         if e.modifiers() & Qt.ControlModifier:
-            if e.key() == Qt.Key_F1:
+            if e.key() == Qt.Key_1:
+                id = self.get_all_stacks()[0].id
+                self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=id)
+            if e.key() == Qt.Key_2:
+                id = self.get_all_stacks()[1].id
+                self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=id)
+            if e.key() == Qt.Key_3:
+                id = self.get_all_stacks()[2].id
+                self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=id)
+
+            if e.key() == Qt.Key_4:
                 #print("move CCW")
                 self.rotate(1)
-            if e.key() == Qt.Key_F2:
+            if e.key() == Qt.Key_5:
                 #print("move CW")
                 self.rotate(-1)
+
+            if e.key() == Qt.Key_6:
+                self.presenter.load_image_stack(
+                    "/data/imaging/harwell_open_week/Projections/Raw/Pikachu_Raw_idx_0000.tiff")
+            if e.key() == Qt.Key_7:
+                self.presenter.load_image_stack("/data/imaging/sam/sam_lego_preprocd/lego_000000.tif")
+            if e.key() == Qt.Key_8:
+                self.presenter.load_image_stack("/data/imaging/IMAT00010675_512/Tomo/IMAT_Flower_Tomo_000000.tif")
 
     def rotate(self, steps: int):
         ws = self.findChildren(QDockWidget)
