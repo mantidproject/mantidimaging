@@ -10,7 +10,6 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QAction, QSpinBox
 
 from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -18,7 +17,6 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWork
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
     ToFUnitMode, allowed_modes
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -26,6 +24,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
+    from PyQt5.QtWidgets import QAction, QSpinBox
 
 LOG = getLogger(__name__)
 
