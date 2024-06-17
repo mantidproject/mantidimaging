@@ -12,6 +12,7 @@ import numpy as np
 from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
@@ -23,6 +24,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
+    from PyQt5.QtWidgets import QAction, QSpinBox
 
 LOG = getLogger(__name__)
 
@@ -194,7 +196,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
-            self.view.current_roi = roi.name
+            self.view.current_roi_name = roi.name
             self.view.last_clicked_roi = roi.name
             self.view.set_roi_properties()
 
@@ -381,6 +383,34 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
                 if action.objectName() == opt:
-                    action.setChecked(True)
+                    self.check_action(action, True)
                 else:
-                    action.setChecked(False)
+                    self.check_action(action, False)
+
+    def do_adjust_roi(self) -> None:
+        new_roi = self.convert_spinbox_roi_to_SpectrumROI(self.view.roiPropertiesSpinBoxes)
+        self.model.set_roi(self.view.current_roi_name, new_roi)
+        self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
+
+    def handle_storing_current_roi_name_on_tab_change(self) -> None:
+        old_table_names = self.view.old_table_names
+        old_current_roi_name = self.view.current_roi_name
+        old_last_clicked_roi = self.view.last_clicked_roi
+        if self.export_mode == ExportMode.ROI_MODE:
+            if old_current_roi_name == ROI_RITS and old_last_clicked_roi in old_table_names:
+                self.view.current_roi_name = old_last_clicked_roi
+            else:
+                self.view.last_clicked_roi = old_current_roi_name
+        elif self.export_mode == ExportMode.IMAGE_MODE:
+            if (old_current_roi_name != ROI_RITS and old_current_roi_name in old_table_names
+                    and old_last_clicked_roi != old_current_roi_name):
+                self.view.last_clicked_roi = old_current_roi_name
+
+    @staticmethod
+    def check_action(action: QAction, param: bool) -> None:
+        action.setChecked(param)
+
+    def convert_spinbox_roi_to_SpectrumROI(self, spinboxes: dict[str, QSpinBox]) -> SpectrumROI:
+        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
+        new_points = [spinboxes[prop].value() for prop in roi_iter_order]
+        return SensibleROI().from_list(new_points)
