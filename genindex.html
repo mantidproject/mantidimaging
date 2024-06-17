@@ -639,11 +639,7 @@ document.write(`
       <li><a href="api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.adjust">adjust() (mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.adjust_roi">adjust_roi() (mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget method)</a>
-
-      <ul>
-        <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.adjust_roi">(mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
 </li>
-      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.adjust_spec_roi">adjust_spec_roi() (mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI method)</a>
 </li>
       <li><a href="api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup.Advanced">Advanced (mantidimaging.core.operations.base_filter.FilterGroup attribute)</a>
@@ -877,6 +873,8 @@ document.write(`
       <li><a href="api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.change_window_name_clicked">change_window_name_clicked() (mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.changeColourPaletteButton">changeColourPaletteButton (mantidimaging.gui.windows.recon.view.ReconstructWindowView attribute)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.check_action">check_action() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter static method)</a>
 </li>
       <li><a href="api/mantidimaging.core.utility.optional_imports.html#mantidimaging.core.utility.optional_imports.check_availability">check_availability() (in module mantidimaging.core.utility.optional_imports)</a>
 </li>
@@ -1131,6 +1129,8 @@ document.write(`
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.contextMenuEnabled">contextMenuEnabled() (mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.convert_image_to_imagestack">convert_image_to_imagestack() (mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.convert_spinbox_roi_to_SpectrumROI">convert_spinbox_roi_to_SpectrumROI() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.copy">copy() (mantidimaging.core.data.imagestack.ImageStack method)</a>
 </li>
@@ -1403,6 +1403,8 @@ document.write(`
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi">do_add_roi() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table">do_add_roi_to_table() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_adjust_roi">do_adjust_roi() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_algorithm_changed">do_algorithm_changed() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
 </li>
@@ -1986,6 +1988,8 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode.get_by_value">get_by_value() (mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode class method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_checked_menu_option">get_checked_menu_option() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
+</li>
       <li><a href="api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.get_column">get_column() (mantidimaging.core.io.instrument_log.InstrumentLog method)</a>
 
       <ul>
@@ -2266,12 +2270,14 @@ document.write(`
         <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_stack_changed">(mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
       </ul></li>
-      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click">handle_table_click() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_storing_current_roi_name_on_tab_change">handle_storing_current_roi_name_on_tab_change() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_time_delay_change">handle_time_delay_change() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click">handle_table_click() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_time_delay_change">handle_time_delay_change() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change">handle_tof_unit_change() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change_via_menu">handle_tof_unit_change_via_menu() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
@@ -6250,6 +6256,8 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.setup_overlay">setup_overlay() (mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.setup_roi_properties_spinboxes">setup_roi_properties_spinboxes() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.setup_shortcuts">setup_shortcuts() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.stack_choice.tests.view_test.html#mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest.setUpClass">setUpClass() (mantidimaging.gui.windows.stack_choice.tests.view_test.StackChoiceViewTest class method)</a>
@@ -6290,10 +6298,10 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.SHOW_ADD_STACK_DIALOG">SHOW_ADD_STACK_DIALOG (mantidimaging.gui.windows.main.presenter.Notification attribute)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_add_stack_to_existing_dataset_dialog">show_add_stack_to_existing_dataset_dialog() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_add_stack_to_existing_dataset_dialog">show_add_stack_to_existing_dataset_dialog() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_at_start_changed">show_at_start_changed() (mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_at_start_enabled">show_at_start_enabled() (mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter static method)</a>
