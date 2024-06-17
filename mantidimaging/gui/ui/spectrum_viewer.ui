@@ -407,58 +407,36 @@
           <property name="title">
            <string>Time of Flight Properties</string>
           </property>
-          <widget class="QLabel" name="label_3">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>31</y>
-             <width>101</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Flight path:</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_4">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>91</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Time delay: </string>
-           </property>
-          </widget>
-          <widget class="QDoubleSpinBox" name="flightPathSpinBox">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>30</y>
-             <width>211</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QDoubleSpinBox" name="timeDelaySpinBox">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>50</y>
-             <width>211</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-          </widget>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Flight path:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="flightPathSpinBox">
+             <property name="suffix">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Time delay: </string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="timeDelaySpinBox">
+             <property name="suffix">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
