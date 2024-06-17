@@ -6,7 +6,7 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
-from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal
+from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 if TYPE_CHECKING:
     from os import stat_result
@@ -109,7 +109,7 @@ class LiveViewerWindowModel:
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
-        self.image_watcher._handle_directory_change(str(path))
+        self.image_watcher._handle_notified_of_directry_change(str(path))
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -171,7 +171,11 @@ class ImageWatcher(QObject):
         super().__init__()
         self.directory = directory
         self.watcher = QFileSystemWatcher()
-        self.watcher.directoryChanged.connect(self._handle_directory_change)
+        self.watcher.directoryChanged.connect(self._handle_notified_of_directry_change)
+        self.handle_change_timer = QTimer(self)
+        self.handle_change_timer.setSingleShot(True)
+        self.handle_change_timer.timeout.connect(self._handle_directory_change)
+        self.changed_directory = directory
 
         self.recent_file_watcher = QFileSystemWatcher()
         self.recent_file_watcher.fileChanged.connect(self.handle_image_modified)
@@ -217,15 +221,23 @@ class ImageWatcher(QObject):
         """
         return sorted(images, key=lambda x: x.image_modified_time)
 
-    def _handle_directory_change(self, directory: str) -> None:
+    def _handle_notified_of_directry_change(self, directory: str) -> None:
+        """
+        Quickly handle the notification event for a change, and start the timer if needed. If files are arriving faster
+        than _handle_directory_change() can process them, we don't end up with a queue of work to do. The timeout is set
+        small so that we can pull multiple notification off the queue and then run _handle_directory_change() once.
+        """
+        self.changed_directory = Path(directory)
+        if not self.handle_change_timer.isActive():
+            self.handle_change_timer.start(10)
+
+    def _handle_directory_change(self) -> None:
         """
         Handle a directory change event. Update the list of images
         to reflect directory changes and emit the image_changed signal
         with the sorted image list.
-
-        :param directory: directory that has changed
         """
-        directory_path = Path(directory)
+        directory_path = self.changed_directory
 
         # Force the modification time of signal directory, because file changes may not update
         # parent dir mtime
