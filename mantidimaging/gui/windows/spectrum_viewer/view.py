@@ -32,6 +32,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseStackSelector: DatasetSelectorWidgetView
 
     normaliseCheckBox: QCheckBox
+    normalise_ShutterCount_CheckBox: QCheckBox
     imageLayout: QVBoxLayout
     exportButton: QPushButton
     exportTabs: QTabWidget
@@ -350,6 +351,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def normalisation_enabled(self):
         return self.normaliseCheckBox.isChecked()
+
+    def shuttercount_norm_enabled(self) -> bool:
+        return self.normalise_ShutterCount_CheckBox.isChecked()
 
     def set_new_roi(self) -> None:
         """

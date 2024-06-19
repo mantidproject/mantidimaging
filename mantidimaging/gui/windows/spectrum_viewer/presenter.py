@@ -234,7 +234,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if path.suffix != ".csv":
             path = path.with_suffix(".csv")
 
-        self.model.save_csv(path, self.spectrum_mode == SpecType.SAMPLE_NORMED)
+        self.model.save_csv(path, self.spectrum_mode == SpecType.SAMPLE_NORMED, self.view.shuttercount_norm_enabled())
 
     def handle_rits_export(self) -> None:
         """
@@ -247,8 +247,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
-            run_function = partial(self.model.save_rits_images, path, error_mode, self.view.bin_size,
-                                   self.view.bin_step)
+            run_function = partial(self.model.save_rits_images,
+                                   path,
+                                   error_mode,
+                                   self.view.bin_size,
+                                   self.view.bin_step,
+                                   normalise=self.view.shuttercount_norm_enabled())
 
             start_async_task_view(self.view, run_function, self._async_save_done)
 
