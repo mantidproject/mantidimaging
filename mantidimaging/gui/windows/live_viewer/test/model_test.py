@@ -6,7 +6,6 @@ import os
 import time
 from pathlib import Path
 from unittest import mock
-import pytest
 
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
@@ -91,7 +90,6 @@ class ImageWatcherTest(FakeFSTestCase):
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, [])
 
-    @pytest.mark.xfail(reason="Issue 2219")
     def test_WHEN_missing_dir_THEN_useful_error(self):
         self.fs.rmdir(self.top_path)
         self.watcher.changed_directory = self.top_path
