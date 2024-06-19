@@ -487,7 +487,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.csv_output</span> <span class="kn">import</span> <span class="n">CSVOutput</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io</span> <span class="kn">import</span> <span class="n">saver</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">LogColumn</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="n">LogColumn</span><span class="p">,</span> <span class="n">ShutterCountColumn</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.unit_conversion</span> <span class="kn">import</span> <span class="n">UnitConversion</span>
@@ -734,7 +734,10 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_spectrum">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">roi</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                     <span class="n">mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">,</span>
+                     <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 
@@ -754,15 +757,53 @@ document.write(`
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
             <span class="n">roi_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
             <span class="n">roi_norm_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">,</span> <span class="n">roi_norm_spectrum</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">roi_norm_spectrum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span></div>
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">,</span>
+                             <span class="n">roi_norm_spectrum</span><span class="p">,</span>
+                             <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">),</span>
+                             <span class="n">where</span><span class="o">=</span><span class="n">roi_norm_spectrum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span>
+            <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
+        <span class="k">return</span> <span class="n">spectrum</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.get_shuttercount_normalised_correction_parameter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_shuttercount_normalised_correction_parameter">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_shuttercount_normalised_correction_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalize ShutterCount values and return only the initial normalized value.</span>
+<span class="sd">        We normalise all values to future proof against normalizing against all available ShutterCount</span>
+<span class="sd">        values should we find the initial value is not sufficient.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_shuttercounts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">)</span>
+        <span class="n">open_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_shuttercounts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sample_shuttercount</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">open_shuttercount</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>  <span class="c1"># No shutter count data available so no correction needed</span>
+        <span class="n">normalised_shuttercounts</span> <span class="o">=</span> <span class="n">sample_shuttercount</span> <span class="o">/</span> <span class="n">open_shuttercount</span>
+        <span class="k">return</span> <span class="n">normalised_shuttercounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.get_stack_shuttercounts">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_shuttercounts">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stack_shuttercounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">stack</span><span class="o">.</span><span class="n">shutter_count_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shutter_counts</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">shutter_count_file</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">SHUTTER_COUNT</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shutter_counts</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_transmission_error_standard_dev">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_transmission_error_standard_dev">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_transmission_error_standard_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_transmission_error_standard_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                            <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                                            <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the transmission error standard deviation for a given roi</span>
 <span class="sd">        @param: roi_name The roi name</span>
+<span class="sd">        @param: normalised Default is True. If False, the normalization is not applied</span>
 <span class="sd">        @return: a numpy array representing the standard deviation of the transmission</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -771,15 +812,22 @@ document.write(`
         <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
         <span class="n">open_beam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
         <span class="n">safe_divide</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">open_beam</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">open_beam</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span>
+            <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
+            <span class="n">safe_divide</span> <span class="o">=</span> <span class="n">safe_divide</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
+
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">safe_divide</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_transmission_error_propagated">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_transmission_error_propagated">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_transmission_error_propagated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_transmission_error_propagated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                          <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                                          <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the transmission error using propagation of sqrt(n) error for a given roi</span>
 <span class="sd">        @param: roi_name The roi name</span>
+<span class="sd">        @param: normalised Default is True. If False, the normalization is not applied</span>
 <span class="sd">        @return: a numpy array representing the error of the transmission</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -787,6 +835,10 @@ document.write(`
         <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum_summed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
         <span class="n">open_beam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum_summed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
         <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sample</span> <span class="o">/</span> <span class="n">open_beam</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sample</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">open_beam</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span>
+            <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">error</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
         <span class="k">return</span> <span class="n">error</span></div>
 
 
@@ -812,7 +864,7 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_csv">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">normalized</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">save_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterates over all ROIs and saves the spectrum for each one to a CSV file.</span>
 
@@ -832,8 +884,9 @@ document.write(`
             <span class="n">csv_output</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">tof_seconds_to_energy</span><span class="p">(),</span> <span class="s2">&quot;MeV&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list_of_roi_names</span><span class="p">():</span>
-            <span class="n">csv_output</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">),</span> <span class="s2">&quot;Counts&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="n">csv_output</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">),</span>
+                                  <span class="s2">&quot;Counts&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No normalisation stack selected&quot;</span><span class="p">)</span>
                 <span class="n">csv_output</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">roi_name</span> <span class="o">+</span> <span class="s2">&quot;_open&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">OPEN</span><span class="p">),</span> <span class="s2">&quot;Counts&quot;</span><span class="p">)</span>
@@ -859,7 +912,7 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_rits_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_rits_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">save_rits_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the spectrum for one ROI to a RITS file.</span>
 
@@ -876,12 +929,12 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No Time of Flights for sample. Make sure spectra log has been loaded&quot;</span><span class="p">)</span>
 
         <span class="n">tof</span> <span class="o">*=</span> <span class="mf">1e6</span>  <span class="c1"># RITS expects ToF in μs</span>
-        <span class="n">transmission</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">)</span>
+        <span class="n">transmission</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">,</span> <span class="n">normalise</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">error_mode</span> <span class="o">==</span> <span class="n">ErrorMode</span><span class="o">.</span><span class="n">STANDARD_DEVIATION</span><span class="p">:</span>
-            <span class="n">transmission_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transmission_error_standard_dev</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+            <span class="n">transmission_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transmission_error_standard_dev</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">normalise</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">error_mode</span> <span class="o">==</span> <span class="n">ErrorMode</span><span class="o">.</span><span class="n">PROPAGATED</span><span class="p">:</span>
-            <span class="n">transmission_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transmission_error_propagated</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+            <span class="n">transmission_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transmission_error_propagated</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">normalise</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid error_mode given&quot;</span><span class="p">)</span>
 
@@ -920,6 +973,7 @@ document.write(`
                          <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span>
                          <span class="n">bin_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                          <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves multiple Region of Interest (ROI) images to RITS files.</span>
@@ -957,7 +1011,7 @@ document.write(`
                 <span class="n">sub_right</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sub_left</span> <span class="o">+</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
                 <span class="n">sub_roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="n">sub_left</span><span class="p">,</span> <span class="n">sub_top</span><span class="p">,</span> <span class="n">sub_right</span><span class="p">,</span> <span class="n">sub_bottom</span><span class="p">])</span>
                 <span class="n">path</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;rits_image_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">.dat&quot;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save_rits_roi</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="n">sub_roi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_rits_roi</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="n">sub_roi</span><span class="p">,</span> <span class="n">normalise</span><span class="p">)</span>
                 <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">sub_right</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
                     <span class="k">break</span>

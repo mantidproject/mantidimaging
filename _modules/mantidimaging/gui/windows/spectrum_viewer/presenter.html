@@ -754,7 +754,7 @@ document.write(`
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.csv&quot;</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_rits_export">
@@ -770,8 +770,12 @@ document.write(`
             <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No path selected, aborting export&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
-            <span class="n">run_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_rits_images</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_size</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_step</span><span class="p">)</span>
+            <span class="n">run_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_rits_images</span><span class="p">,</span>
+                                   <span class="n">path</span><span class="p">,</span>
+                                   <span class="n">error_mode</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_size</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_step</span><span class="p">,</span>
+                                   <span class="n">normalise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">())</span>
 
             <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="n">run_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_save_done</span><span class="p">)</span>
 
