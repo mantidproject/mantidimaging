@@ -6,6 +6,7 @@ import os
 import time
 from pathlib import Path
 from unittest import mock
+import pytest
 
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
@@ -82,6 +83,23 @@ class ImageWatcherTest(FakeFSTestCase):
 
         images = [image.image_path for image in images_datas]
         self._file_list_count_equal(images, file_list[1:])
+
+    def test_WHEN_empty_dir_THEN_no_files(self):
+        self.watcher.changed_directory = self.top_path
+        self.watcher._handle_directory_change()
+
+        emitted_images = self._get_recent_emitted_files()
+        self._file_list_count_equal(emitted_images, [])
+
+    @pytest.mark.xfail(reason="Issue 2219")
+    def test_WHEN_missing_dir_THEN_useful_error(self):
+        self.fs.rmdir(self.top_path)
+        self.watcher.changed_directory = self.top_path
+
+        with self.assertRaises(FileNotFoundError) as context_manager:
+            self.watcher._handle_directory_change()
+        self.assertIn("Live directory not found", str(context_manager.exception))
+        self.assertIn(str(self.top_path), str(context_manager.exception))
 
     def test_WHEN_find_sub_directories_called_THEN_finds_subdirs(self):
         self._file_in_sequence(self.top_path, self.watcher.sub_directories.keys())
