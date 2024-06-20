@@ -1,7 +1,6 @@
 name: mantidimaging-dev
 channels:
   - mantidimaging/label/unstable
-  - dtasev
   - astra-toolbox
   - conda-forge
   - ccpi
@@ -29,7 +28,6 @@ dependencies:
   - pyfakefs==5.3.*
   - parameterized==0.9.*
   - pyinstaller==6.1.*
-  - sarepy=2020.07 # For building old docs
   - make==4.3
   - ruff=0.3.3
   - pre-commit==3.5.*
