@@ -10,8 +10,7 @@ import numpy as np
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
-from mantidimaging.core.parallel import utility as pu, shared as ps
-from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
@@ -75,7 +74,6 @@ class FlatFieldFilter(BaseFilter):
                     use_dark: bool = True,
                     progress=None) -> ImageStack:
         """Do background correction with flat and dark images.
-
         :param images: Sample data which is to be processed. Expected in radiograms
         :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
         :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged
@@ -87,7 +85,6 @@ class FlatFieldFilter(BaseFilter):
         :return: Filtered data (stack of images)
         """
         h.check_data_stack(images)
-
         if selected_flat_fielding not in ["Both, concatenated", "Only Before", "Only After"]:
             raise ValueError(f"Invalid flat fielding method: {selected_flat_fielding}")
 
@@ -130,18 +127,25 @@ class FlatFieldFilter(BaseFilter):
                 raise ValueError(
                     f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) "
                     f"which should match the shape of the sample images ({images.data.shape[1:]})")
-
             if not (images.data.shape[1:] == flat_avg.shape == dark_avg.shape):
                 raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
-            progress = Progress.ensure_instance(progress,
-                                                num_steps=images.data.shape[0],
-                                                task_name='Background Correction')
-            _execute(images, flat_avg, dark_avg, progress)
+        params = {'flat_avg': flat_avg, 'dark_avg': dark_avg}
+        ps.run_compute_func(FlatFieldFilter._compute_flat_field, len(images.data), [images.shared_array], params)
 
         h.check_data_stack(images)
         return images
+
+    @staticmethod
+    def _compute_flat_field(index: int, array: np.ndarray, params: dict):
+        flat_avg = params['flat_avg']
+        dark_avg = params['dark_avg']
+
+        norm_divide = flat_avg - dark_avg
+        norm_divide[norm_divide == 0] = MINIMUM_PIXEL_VALUE
+        array[index] -= dark_avg
+        array[index] /= norm_divide
 
     @staticmethod
     def register_gui(form, on_change, view) -> dict[str, Any]:
@@ -276,44 +280,3 @@ class FlatFieldFilter(BaseFilter):
     @staticmethod
     def group_name() -> FilterGroup:
         return FilterGroup.Basic
-
-
-def _divide(data, norm_divide):
-    np.true_divide(data, norm_divide, out=data)
-
-
-def _subtract(data, dark=None):
-    # specify out to do in place, otherwise the data is copied
-    np.subtract(data, dark, out=data)
-
-
-def _norm_divide(flat: np.ndarray, dark: np.ndarray) -> np.ndarray:
-    # subtract dark from flat
-    return np.subtract(flat, dark)
-
-
-def _execute(images: ImageStack, flat=None, dark=None, progress=None):
-    with progress:
-        progress.update(msg="Applying background correction")
-
-        if images.uses_shared_memory:
-            shared_dark = pu.copy_into_shared_memory(dark)
-            norm_divide = pu.copy_into_shared_memory(_norm_divide(flat, dark))
-        else:
-            shared_dark = pu.SharedArray(dark, None)
-            norm_divide = pu.SharedArray(_norm_divide(flat, dark), None)
-
-        # prevent divide-by-zero issues, and negative pixels make no sense
-        norm_divide.array[norm_divide.array == 0] = MINIMUM_PIXEL_VALUE
-
-        # subtract the dark from all images
-        do_subtract = ps.create_partial(_subtract, fwd_function=ps.inplace_second_2d)
-        arrays = [images.shared_array, shared_dark]
-        ps.execute(do_subtract, arrays, images.data.shape[0], progress)
-
-        # divide the data by (flat - dark)
-        do_divide = ps.create_partial(_divide, fwd_function=ps.inplace_second_2d)
-        arrays = [images.shared_array, norm_divide]
-        ps.execute(do_divide, arrays, images.data.shape[0], progress)
-
-    return images
