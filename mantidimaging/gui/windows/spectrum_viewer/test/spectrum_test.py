@@ -5,6 +5,8 @@ import unittest
 import uuid
 import numpy as np
 from unittest import mock
+
+from PyQt5.QtGui import QColor
 from parameterized import parameterized
 
 from pyqtgraph import Point
@@ -20,11 +22,27 @@ from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumRO
 @start_qapplication
 class SpectrumROITest(unittest.TestCase):
 
+    def setUp(self) -> None:
+        self.roi = SensibleROI(10, 20, 30, 40)
+        self.spectrum_roi = SpectrumROI("test_roi", self.roi)
+
     def test_WHEN_initialise_THEN_pos_and_size_correct(self):
-        roi = SensibleROI(10, 20, 30, 40)
-        spectrum_roi = SpectrumROI("", roi)
-        self.assertEqual(spectrum_roi.getState()["pos"], Point(10, 20))
-        self.assertEqual(spectrum_roi.getState()["size"], Point(20, 20))
+        self.assertEqual(self.spectrum_roi.getState()["pos"], Point(10, 20))
+        self.assertEqual(self.spectrum_roi.getState()["size"], Point(20, 20))
+
+    def test_WHEN_colour_changed_THEN_roi_colour_is_set(self):
+        self._colour = (1, 2, 58, 255)
+        self.spectrum_roi.openColorDialog = mock.Mock(return_value=QColor(*self._colour))
+        self.spectrum_roi.check_color_valid = mock.Mock(return_value=True)
+        self.spectrum_roi.onChangeColor()
+        self.assertEqual(self.spectrum_roi.colour, self._colour)
+
+    def test_WHEN_colour_is_not_valid_THEN_roi_colour_is_unchanged(self):
+        self._colour = (10, 20, 48, 255)
+        self.spectrum_roi.openColorDialog = mock.Mock(return_value=QColor(*self._colour))
+        self.spectrum_roi.check_color_valid = mock.Mock(return_value=False)
+        self.spectrum_roi.onChangeColor()
+        self.assertEqual(self.spectrum_roi.colour, (0, 0, 0, 255))
 
 
 @mock_versions
