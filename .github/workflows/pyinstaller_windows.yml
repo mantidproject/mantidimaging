@@ -1,0 +1,98 @@
+name: PyInstaller Windows Build
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+  release:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Needed to get tags so that git describe works during package build
+          fetch-depth: "0"
+
+      - name: cuda-toolkit
+        uses: Jimver/cuda-toolkit@v0.2.15
+        with:
+          cuda: '10.2.89'
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Miniforge and Pip packages
+        uses: actions/cache@v4
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: |
+            ~/conda_pkgs_dir
+            ~/.cache/pip
+          key:
+            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+          use-only-tar-bz2: true
+
+      - name: Setup Miniforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          activate-environment: mantidimaging-dev
+          auto-activate-base: false
+          use-mamba: false
+
+      - name: Cache Miniforge environment
+        uses: actions/cache@v4
+        id: cache-miniforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ${{env.CONDA}}/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+          use-only-tar-bz2: true
+
+      - name: Mantid Imaging developer dependencies
+        if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
+        shell: bash -l {0}
+        run: |
+          conda deactivate
+          python ./setup.py create_dev_env
+
+      - name: List versions
+        shell: bash -l {0}
+        run: |
+          conda env list
+          python --version; conda list ; pip list
+
+      - name: PyInstaller Build
+        shell: bash -l {0}
+        env:
+          CONDA_CUPY_CUDA_PATH: ${{env.CUDA_PATH}}
+        run: |
+          conda activate mantidimaging-dev
+          set
+          echo "Cuda path: $CUDA_PATH"
+          echo "path: $PATH"
+          echo "dev env path: '${{env.CONDA}}/envs/mantidimaging-dev'"
+          cd packaging
+          python PackageWithPyInstaller.py
+
+      - name: Archive PyInstalled File
+        uses: actions/upload-artifact@v3
+        with:
+          name: MantidImagingSpec
+          path: packaging/MantidImaging.spec
+
+      - name: Archive PyInstalled File
+        uses: actions/upload-artifact@v3
+        with:
+          name: MantidImaging
+          path: packaging/dist
