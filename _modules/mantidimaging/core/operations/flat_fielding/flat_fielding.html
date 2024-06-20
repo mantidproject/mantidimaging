@@ -484,8 +484,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span><span class="p">,</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
@@ -556,7 +555,6 @@ document.write(`
                     <span class="n">use_dark</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Do background correction with flat and dark images.</span>
-
 <span class="sd">        :param images: Sample data which is to be processed. Expected in radiograms</span>
 <span class="sd">        :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged</span>
 <span class="sd">        :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged</span>
@@ -568,7 +566,6 @@ document.write(`
 <span class="sd">        :return: Filtered data (stack of images)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">selected_flat_fielding</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Both, concatenated&quot;</span><span class="p">,</span> <span class="s2">&quot;Only Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Only After&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid flat fielding method: </span><span class="si">{</span><span class="n">selected_flat_fielding</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -611,19 +608,26 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Incorrect shape of the flat image (</span><span class="si">{</span><span class="n">flat_avg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) or dark image (</span><span class="si">{</span><span class="n">dark_avg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;which should match the shape of the sample images (</span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">flat_avg</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">dark_avg</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not all images are the expected shape: </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">, instead &quot;</span>
                                  <span class="sa">f</span><span class="s2">&quot;flat had shape: </span><span class="si">{</span><span class="n">flat_avg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, and dark had shape: </span><span class="si">{</span><span class="n">dark_avg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span>
-                                                <span class="n">num_steps</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                                <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Background Correction&#39;</span><span class="p">)</span>
-            <span class="n">_execute</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">flat_avg</span><span class="p">,</span> <span class="n">dark_avg</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;flat_avg&#39;</span><span class="p">:</span> <span class="n">flat_avg</span><span class="p">,</span> <span class="s1">&#39;dark_avg&#39;</span><span class="p">:</span> <span class="n">dark_avg</span><span class="p">}</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">FlatFieldFilter</span><span class="o">.</span><span class="n">_compute_flat_field</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">],</span> <span class="n">params</span><span class="p">)</span>
 
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
 
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_compute_flat_field</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">flat_avg</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;flat_avg&#39;</span><span class="p">]</span>
+        <span class="n">dark_avg</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;dark_avg&#39;</span><span class="p">]</span>
+
+        <span class="n">norm_divide</span> <span class="o">=</span> <span class="n">flat_avg</span> <span class="o">-</span> <span class="n">dark_avg</span>
+        <span class="n">norm_divide</span><span class="p">[</span><span class="n">norm_divide</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">MINIMUM_PIXEL_VALUE</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dark_avg</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm_divide</span>
 
 <div class="viewcode-block" id="FlatFieldFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.flat_fielding.flat_fielding.html#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.register_gui">[docs]</a>
@@ -771,47 +775,6 @@ document.write(`
         <span class="k">return</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Basic</span></div>
 </div>
 
-
-
-<span class="k">def</span> <span class="nf">_divide</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">norm_divide</span><span class="p">):</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">true_divide</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">norm_divide</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_subtract</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="c1"># specify out to do in place, otherwise the data is copied</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dark</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_norm_divide</span><span class="p">(</span><span class="n">flat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dark</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="c1"># subtract dark from flat</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dark</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
-        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Applying background correction&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">uses_shared_memory</span><span class="p">:</span>
-            <span class="n">shared_dark</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">copy_into_shared_memory</span><span class="p">(</span><span class="n">dark</span><span class="p">)</span>
-            <span class="n">norm_divide</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">copy_into_shared_memory</span><span class="p">(</span><span class="n">_norm_divide</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dark</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">shared_dark</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">(</span><span class="n">dark</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">norm_divide</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">(</span><span class="n">_norm_divide</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dark</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="c1"># prevent divide-by-zero issues, and negative pixels make no sense</span>
-        <span class="n">norm_divide</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">norm_divide</span><span class="o">.</span><span class="n">array</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">MINIMUM_PIXEL_VALUE</span>
-
-        <span class="c1"># subtract the dark from all images</span>
-        <span class="n">do_subtract</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">create_partial</span><span class="p">(</span><span class="n">_subtract</span><span class="p">,</span> <span class="n">fwd_function</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="n">inplace_second_2d</span><span class="p">)</span>
-        <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">shared_dark</span><span class="p">]</span>
-        <span class="n">ps</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">do_subtract</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">progress</span><span class="p">)</span>
-
-        <span class="c1"># divide the data by (flat - dark)</span>
-        <span class="n">do_divide</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">create_partial</span><span class="p">(</span><span class="n">_divide</span><span class="p">,</span> <span class="n">fwd_function</span><span class="o">=</span><span class="n">ps</span><span class="o">.</span><span class="n">inplace_second_2d</span><span class="p">)</span>
-        <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">norm_divide</span><span class="p">]</span>
-        <span class="n">ps</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">do_divide</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">progress</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">images</span>
 </pre></div>
 
                 </article>
