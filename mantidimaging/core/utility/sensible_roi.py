@@ -53,3 +53,41 @@ class SensibleROI(Iterable):
     @property
     def height(self) -> int:
         return self.bottom - self.top
+
+    @property
+    def area(self) -> int:
+        """
+        Calculate the area of the ROI.
+        """
+        return self.width * self.height
+
+    def intersection(self, other: SensibleROI) -> SensibleROI:
+        """
+        Calculate the intersection of two ROIs.
+        """
+        intersection_left = max(self.left, other.left)
+        intersection_top = max(self.top, other.top)
+        intersection_right = min(self.right, other.right)
+        intersection_bottom = min(self.bottom, other.bottom)
+
+        if intersection_right > intersection_left and intersection_bottom > intersection_top:
+            return SensibleROI(intersection_left, intersection_top, intersection_right, intersection_bottom)
+        else:
+            return SensibleROI(0, 0, 0, 0)  # No intersection
+
+    @property
+    def intersection_area(self, other: SensibleROI) -> int:
+        """
+        Calculate the area of the intersection with another ROI.
+        """
+        intersection = self.intersection(other)
+        return intersection.area
+
+    def overlap_percentage(self, other: SensibleROI) -> float:
+        """
+        Calculate the percentage of overlap with another ROI.
+        """
+        intersection_area = self.intersection_area(other)
+        if self.area == 0:
+            return 0
+        return intersection_area / self.area
