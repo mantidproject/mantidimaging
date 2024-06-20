@@ -64,6 +64,46 @@ class SensibleROITestCase(unittest.TestCase):
         roi = SensibleROI(1, 2, 4, 6)
         self.assertEqual(roi.height, 4)
 
+    def test_area(self):
+        roi = SensibleROI(1, 2, 4, 6)
+        self.assertEqual(roi.area, 12)
 
+    def test_overlap(self):
+        roi1 = SensibleROI(0, 0, 5, 5)
+        roi2 = SensibleROI(3, 3, 7, 7)
+        self.assertEqual(roi1.overlap(roi2), 4)
+        self.assertEqual(roi2.overlap(roi1), 4)
+
+    def test_no_overlap(self):
+        roi1 = SensibleROI(0, 0, 2, 2)
+        roi2 = SensibleROI(3, 3, 5, 5)
+        self.assertEqual(roi1.overlap(roi2), 0)
+        self.assertEqual(roi2.overlap(roi1), 0)
+
+    def test_has_significant_overlap(self):
+        roi1 = SensibleROI(0, 0, 10, 10)
+        roi2 = SensibleROI(5, 5, 15, 15)
+        self.assertTrue(roi1.has_significant_overlap(roi2, threshold=0.2))
+        self.assertFalse(roi1.has_significant_overlap(roi2, threshold=0.5))
+
+    def test_intersection(self):
+        roi1 = SensibleROI(0, 0, 5, 5)
+        roi2 = SensibleROI(3, 3, 7, 7)
+        intersection = roi1.intersection(roi2)
+        self.assertEqual(intersection.left, 3)
+        self.assertEqual(intersection.top, 3)
+        self.assertEqual(intersection.right, 5)
+        self.assertEqual(intersection.bottom, 5)
+        self.assertEqual(intersection.area, 4)
+
+    def test_no_intersection(self):
+        roi1 = SensibleROI(0, 0, 2, 2)
+        roi2 = SensibleROI(3, 3, 5, 5)
+        intersection = roi1.intersection(roi2)
+        self.assertEqual(intersection.left, 0)
+        self.assertEqual(intersection.top, 0)
+        self.assertEqual(intersection.right, 0)
+        self.assertEqual(intersection.bottom, 0)
+        self.assertEqual(intersection.area, 0)
 if __name__ == '__main__':
     unittest.main()

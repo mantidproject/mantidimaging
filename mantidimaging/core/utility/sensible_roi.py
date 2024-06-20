@@ -61,9 +61,35 @@ class SensibleROI(Iterable):
         """
         return self.width * self.height
 
+    def overlap(self, other: SensibleROI) -> int:
+        """
+        Calculate the area of overlap between this ROI and another ROI.
+        :param other: The other ROI to calculate overlap with.
+        :return: The area of overlap.
+        """
+        intersection_left = max(self.left, other.left)
+        intersection_top = max(self.top, other.top)
+        intersection_right = min(self.right, other.right)
+        intersection_bottom = min(self.bottom, other.bottom)
+
+        if intersection_right > intersection_left and intersection_bottom > intersection_top:
+            return (intersection_right - intersection_left) * (intersection_bottom - intersection_top)
+        return 0
+
+    def has_significant_overlap(self, other: SensibleROI, threshold: float = 0.5) -> bool:
+        """
+        Check if the overlap area between this ROI and another ROI is significant.
+        :param other: The other ROI to check overlap with.
+        :param threshold: The minimum ratio of overlap area to this ROI's area to be considered significant.
+        :return: True if the overlap is significant, False otherwise.
+        """
+        overlap_area = self.overlap(other)
+        return overlap_area >= threshold * self.area
     def intersection(self, other: SensibleROI) -> SensibleROI:
         """
         Calculate the intersection of two ROIs.
+        :param other: The other ROI to calculate the intersection with.
+        :return: A new SensibleROI representing the intersection.
         """
         intersection_left = max(self.left, other.left)
         intersection_top = max(self.top, other.top)
@@ -73,21 +99,4 @@ class SensibleROI(Iterable):
         if intersection_right > intersection_left and intersection_bottom > intersection_top:
             return SensibleROI(intersection_left, intersection_top, intersection_right, intersection_bottom)
         else:
-            return SensibleROI(0, 0, 0, 0)  # No intersection
-
-    @property
-    def intersection_area(self, other: SensibleROI) -> int:
-        """
-        Calculate the area of the intersection with another ROI.
-        """
-        intersection = self.intersection(other)
-        return intersection.area
-
-    def overlap_percentage(self, other: SensibleROI) -> float:
-        """
-        Calculate the percentage of overlap with another ROI.
-        """
-        intersection_area = self.intersection_area(other)
-        if self.area == 0:
-            return 0
-        return intersection_area / self.area
+            return SensibleROI()  # Return an ROI with zero area

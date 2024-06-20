@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from math import ceil
+import dask.array as da
+from dask import delayed
 
 from logging import getLogger
 from mantidimaging.core.data import ImageStack
@@ -86,6 +88,7 @@ class SpectrumViewerWindowModel:
 
         self.units = UnitConversion()
 
+
     def roi_name_generator(self) -> str:
         """
         Returns a new Unique ID for newly created ROIs
@@ -159,28 +162,16 @@ class SpectrumViewerWindowModel:
 
     @staticmethod
     def get_stack_spectrum(stack: ImageStack | None, roi: SensibleROI):
-        """
-        Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
-        If the image stack is None, an empty numpy array is returned.
-        Parameters:
-            stack (Optional[ImageStack]): The image stack to compute the spectrum from.
-                It can be None, in which case an empty array is returned.
-            roi (SensibleROI): The region of interest within the image stack.
-                It is a tuple or list of four integers specifying the left, top, right, and bottom coordinates.
-        Returns:
-            numpy.ndarray: The mean spectrum of the image stack within the ROI.
-                It is a 1D array where each element is the mean of the corresponding layer of the stack within the ROI.
-        """
         if stack is None:
-            return np.array([])
+            return da.array([])
         left, top, right, bottom = roi
-        roi_data = stack.data[:, top:bottom, left:right]
+        roi_data = da.from_array(stack.data[:, top:bottom, left:right], chunks='auto')
         return roi_data.mean(axis=(1, 2))
 
     @staticmethod
     def get_stack_spectrum_summed(stack: ImageStack, roi: SensibleROI):
         left, top, right, bottom = roi
-        roi_data = stack.data[:, top:bottom, left:right]
+        roi_data = da.from_array(stack.data[:, top:bottom, left:right], chunks='auto')
         return roi_data.sum(axis=(1, 2))
 
     def normalise_issue(self) -> str:
@@ -206,25 +197,37 @@ class SpectrumViewerWindowModel:
             roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
-            spectrum = self.get_stack_spectrum(self._stack, roi)
+            spectrum = self.get_stack_spectrum(self._stack, roi).compute()
         elif mode == SpecType.OPEN:
             if self._normalise_stack is None:
                 return np.array([])
-            spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
+            spectrum = self.get_stack_spectrum(self._normalise_stack, roi).compute()
         elif mode == SpecType.SAMPLE_NORMED:
             if self._normalise_stack is None or self.normalise_issue():
                 return np.array([])
-            roi_spectrum = self.get_stack_spectrum(self._stack, roi)
-            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
-            spectrum = np.divide(roi_spectrum,
-                                 roi_norm_spectrum,
-                                 out=np.zeros_like(roi_spectrum),
+            roi_spectrum = self.get_stack_spectrum(self._stack, roi).compute()
+            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi).compute()
+            spectrum = np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum),
                                  where=roi_norm_spectrum != 0)
         else:
             raise ValueError(f"Unsupported mode: {mode}")
 
         self._cache[cache_key] = spectrum
-        return spectrum
+        return np.asarray(spectrum)
+
+    def redraw_spectrum(self, roi):
+        spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
+        tof_data = self.model.tof_data
+
+        if spectrum.size == 0 or tof_data.size == 0:
+            return
+
+        # Ensure both tof_data and spectrum are arrays
+        tof_data = np.asarray(tof_data)
+        spectrum = np.asarray(spectrum)
+
+        self.view.set_spectrum(roi, spectrum)
+        self.view.spectrum_widget.spectrum.plot(tof_data, spectrum)
 
     def _roi_to_key(self, roi: str | SensibleROI) -> tuple:
         """
@@ -238,156 +241,89 @@ class SpectrumViewerWindowModel:
         self._cache.clear()
 
     def can_incrementally_update(self, old_roi: SensibleROI, new_roi: SensibleROI) -> bool:
-        """
-        Determines update by comparing the old and new ROI.
-        Possible if the new ROI is a resize along one edge or a shift
-        that retains a significant portion of the old ROI.
-        old_roi: Tuple[int, int, int, int] - (x1, y1, x2, y2) of the old ROI
-        new_roi: Tuple[int, int, int, int] - (x1, y1, x2, y2) of the new ROI
-
-        Returns:
-        bool: True if update is possible, False otherwise.
-        """
-
         x_shift = abs(new_roi.left - old_roi.left)
         y_shift = abs(new_roi.top - old_roi.top)
         width_change = abs((new_roi.right - new_roi.left) - (old_roi.right - old_roi.left))
         height_change = abs((new_roi.bottom - old_roi.top) - (old_roi.bottom - old_roi.top))
 
-        # Define threshold for how much shift.
         max_shift_allowed = 10
 
-        # Change conditions:
-        # 1. Small shifts within the allowed threshold.
-        # 2. Small or no changes in dimensions.
-        # 3. The intersection of the old and new ROI should be significant to reuse the data.
         if (x_shift <= max_shift_allowed and y_shift <= max_shift_allowed and width_change <= max_shift_allowed
                 and height_change <= max_shift_allowed):
-            intersection_left = max(old_roi.left, new_roi.left)
-            intersection_top = max(old_roi.top, new_roi.top)
-            intersection_right = min(old_roi.right, new_roi.right)
-            intersection_bottom = min(old_roi.bottom, new_roi.bottom)
-
-            if intersection_right > intersection_left and intersection_bottom > intersection_top:
-                old_area = (old_roi.right - old_roi.left) * (old_roi.bottom - old_roi.top)
-                intersection_area = (intersection_right - intersection_left) * (intersection_bottom - intersection_top)
-                return intersection_area >= 0.5 * old_area
+            return old_roi.has_significant_overlap(new_roi, threshold=0.5)
         return False
 
-    def update_spectrum(self, old_roi, new_roi):
-
+    def update_spectrum(self, old_roi: SensibleROI, new_roi: SensibleROI):
         removed_data = self.calculate_removed_data(old_roi, new_roi)
         added_data = self.calculate_added_data(old_roi, new_roi)
-        return self.update_cached_data(removed_data, added_data)
 
-    def calculate_removed_data(self, old_roi, new_roi):
-        """
-        Calculates data removed from the spectrum calculation based on the changes from old_roi to new_roi.
-        old_roi The previous ROI in format (x1, y1, x2, y2)
-        new_roi: The new ROI in format (x1, y1, x2, y2)
+        # Retrieve current cached value and count
+        roi_key = self._roi_to_key(old_roi)
+        current_cached_value, current_count = self._cache.get((roi_key, "SPECTRUM"), (0, 0))
 
-        @return:
-        np.ndarray: The data that is no longer within the new ROI.
-        """
-        # Calculate the intersection of the old and new ROI determines old ROI
-        intersection_x1 = max(old_roi[0], new_roi[0])
-        intersection_y1 = max(old_roi[1], new_roi[1])
-        intersection_x2 = min(old_roi[2], new_roi[2])
-        intersection_y2 = min(old_roi[3], new_roi[3])
+        # Update the cached data
+        new_cached_value, new_count = self.update_cached_data(removed_data, added_data, current_cached_value,
+                                                              current_count)
 
-        # Mask for old ROI
-        removed_data_mask = np.ones((old_roi[2] - old_roi[0], old_roi[3] - old_roi[1]), dtype=bool)
+        # Store updated values back in cache
+        self._cache[(roi_key, "SPECTRUM")] = (new_cached_value, new_count)
 
-        # Calculate offsets
-        offset_x1 = intersection_x1 - old_roi[0]
-        offset_y1 = intersection_y1 - old_roi[1]
-        offset_x2 = intersection_x2 - old_roi[0]
-        offset_y2 = intersection_y2 - old_roi[1]
-        # offsets are within the array bounds
-        if offset_x1 < 0 or offset_y1 < 0 or offset_x2 > removed_data_mask.shape[1] or offset_y2 > \
-                removed_data_mask.shape[0]:
-            return np.array([])
+        return new_cached_value
 
-        removed_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = False
+    def calculate_removed_data(self, old_roi: SensibleROI, new_roi: SensibleROI):
+        intersection = old_roi.intersection(new_roi)
+        removed_data_mask = np.ones((old_roi.height, old_roi.width), dtype=bool)
 
-        if self._stack is None:
-            return np.array([])
-        # Using mask to fetch data to remove
-        # Assume self._stack is a 3D array
-        actual_removed_data = self._stack[old_roi[1]:old_roi[3], old_roi[0]:old_roi[2]][removed_data_mask]
+        if not self._stack:
+            return da.array([])
 
-        return actual_removed_data
+        if intersection:
+            offset_x1, offset_y1 = max(0, intersection.left - old_roi.left), max(0, intersection.top - old_roi.top)
+            offset_x2, offset_y2 = min(old_roi.width, intersection.right - old_roi.left), min(old_roi.height,
+                                                                                              intersection.bottom - old_roi.top)
 
-    def calculate_added_data(self, old_roi, new_roi):
-        """
-        Calculates the data added to the spectrum based on the changes from old_roi to new_roi.
-        old_roi: previous ROI (x1, y1, x2, y2)
-        new_roi: new ROI (x1, y1, x2, y2)
+            if 0 <= offset_x1 < removed_data_mask.shape[1] and 0 <= offset_y1 < removed_data_mask.shape[0]:
+                removed_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = False
 
-        @return:
-        np.ndarray: The data  of new ROI.
-        """
+            removed_data = da.from_array(self._stack.data[:, old_roi.top:old_roi.bottom, old_roi.left:old_roi.right],
+                                         chunks='auto')
+            mask_expanded = da.broadcast_to(removed_data_mask, removed_data.shape)
+            return removed_data[mask_expanded].compute()
 
-        # Calculate the intersection of the old and new ROI determines new ROI
-        intersection_x1 = max(old_roi[0], new_roi[0])
-        intersection_y1 = max(old_roi[1], new_roi[1])
-        intersection_x2 = min(old_roi[2], new_roi[2])
-        intersection_y2 = min(old_roi[3], new_roi[3])
+        return da.array([])
 
-        # Mask for new ROI
-        added_data_mask = np.zeros((new_roi[2] - new_roi[0], new_roi[3] - new_roi[1]), dtype=bool)
+    def calculate_added_data(self, old_roi: SensibleROI, new_roi: SensibleROI):
+        intersection = old_roi.intersection(new_roi)
+        added_data_mask = np.zeros((new_roi.height, new_roi.width), dtype=bool)
 
-        # Calculate offsets
-        offset_x1 = intersection_x1 - new_roi[0]
-        offset_y1 = intersection_y1 - new_roi[1]
-        offset_x2 = intersection_x2 - new_roi[0]
-        offset_y2 = intersection_y2 - new_roi[1]
+        if not self._stack:
+            return da.array([])
 
-        #offsets are within the array bounds
-        if offset_x1 < 0 or offset_y1 < 0 or offset_x2 > added_data_mask.shape[1] or offset_y2 > added_data_mask.shape[
-                0]:
-            return np.array([])
+        if intersection:
+            offset_x1, offset_y1 = max(0, intersection.left - new_roi.left), max(0, intersection.top - new_roi.top)
+            offset_x2, offset_y2 = min(new_roi.width, intersection.right - new_roi.left), min(new_roi.height,
+                                                                                              intersection.bottom - new_roi.top)
 
-        added_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = True
+            if 0 <= offset_x1 < added_data_mask.shape[1] and 0 <= offset_y1 < added_data_mask.shape[0]:
+                added_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = True
 
-        # Using mask fetch data to add
-        if self._stack is None:
-            return np.array([])
+            added_data = da.from_array(self._stack.data[:, new_roi.top:new_roi.bottom, new_roi.left:new_roi.right],
+                                       chunks='auto')
+            mask_expanded = da.broadcast_to(added_data_mask, added_data.shape)
+            return added_data[mask_expanded].compute()
 
-        actual_added_data = self._stack[new_roi[1]:new_roi[3], new_roi[0]:new_roi[2]][added_data_mask]
-
-        return actual_added_data
+        return da.array([])
 
     def update_cached_data(self, removed_data, added_data, current_cached_value, current_count):
-        """
-        Updates the cached data (mean) by sum of removed and added data.
-        removed_data: Data in previous ROI but not new ROI
-        added_data: Data new ROI but not previous.
-        current_cached_value: current cached mean before update.
-        current_count: number of data points the current mean is averaging over.
+        sum_removed = da.from_array(removed_data).sum().compute() if removed_data.size > 0 else 0
+        sum_added = da.from_array(added_data).sum().compute() if added_data.size > 0 else 0
 
-        Return
-        tuple: cached value and count of data points.
-        """
-
-        # Calculate total from mean and count
         total_current_sum = current_cached_value * current_count
-
-        # sum of the removed and added data
-        sum_removed = np.sum(removed_data)
-        sum_added = np.sum(added_data)
-
-        # Update total by subtracting sum removed data and adding sum new data
         new_total_sum = total_current_sum - sum_removed + sum_added
-        # Update count
         new_count = current_count - removed_data.size + added_data.size
 
-        # Compute the new mean
-        if new_count > 0:
-            new_cached_value = new_total_sum / new_count
-        else:
-            new_cached_value = 0
-        return (new_cached_value, new_count)
+        new_cached_value = new_total_sum / new_count if new_count > 0 else 0
+        return new_cached_value, new_count
 
     def get_transmission_error_standard_dev(self, roi: SensibleROI) -> np.ndarray:
         """
