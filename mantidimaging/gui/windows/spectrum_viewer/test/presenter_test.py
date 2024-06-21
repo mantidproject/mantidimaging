@@ -6,6 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
+import numpy as np
 from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
 from parameterized import parameterized
 
@@ -299,16 +300,54 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_tof_unit_change_via_menu()
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
+    @parameterized.expand([
+        (None, ToFUnitMode.IMAGE_NUMBER),
+        (np.arange(1, 10), ToFUnitMode.WAVELENGTH),
+    ])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
-    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self, get_stack_time_of_flight):
+    def test_WHEN_data_loaded_THEN_relevant_mode_set(self, tof_data, expected_tof_mode, get_stack_time_of_flight):
         self.presenter.model.set_stack(generate_images())
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
-        get_stack_time_of_flight.return_value = None
+        get_stack_time_of_flight.return_value = tof_data
         self.view.tof_units_mode = "Wavelength"
         self.presenter.refresh_spectrum_plot = mock.Mock()
         self.presenter.handle_sample_change(uuid.uuid4())
-        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.IMAGE_NUMBER)
+        self.assertEqual(self.presenter.model.tof_mode, expected_tof_mode)
+
+    @parameterized.expand([
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [mock.call(False),
+                                                                           mock.call(True)], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, None, [mock.call(True),
+                                                                        mock.call(False)], ToFUnitMode.IMAGE_NUMBER),
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, None, [mock.call(False),
+                                                               mock.call(False)], ToFUnitMode.IMAGE_NUMBER),
+        (np.arange(1,
+                   10), "Wavelength", ToFUnitMode.WAVELENGTH, np.arange(2,
+                                                                        20), [mock.call(True),
+                                                                              mock.call(True)], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Energy", ToFUnitMode.ENERGY, np.arange(2, 20), [mock.call(True),
+                                                                            mock.call(True)], ToFUnitMode.ENERGY),
+        (np.arange(1, 10), "Time of Flight (\u03BCs)", ToFUnitMode.TOF_US, np.arange(2, 20),
+         [mock.call(True), mock.call(True)], ToFUnitMode.TOF_US)
+    ])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
+    def test_WHEN_switch_between_no_spectra_to_spectra_files_THEN_tof_modes_availability_set(
+            self, tof_data_before, tof_mode_text_before, tof_mode_before, tof_data_after, expected_calls, expected_mode,
+            get_stack_time_of_flight):
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
+        self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
+        get_stack_time_of_flight.return_value = tof_data_before
+        self.presenter.model.tof_mode = tof_mode_before
+        self.view.tof_units_mode = tof_mode_text_before
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_sample_change(uuid.uuid4())
+
+        get_stack_time_of_flight.return_value = tof_data_after
+        self.presenter.handle_sample_change(uuid.uuid4())
+        self.view.tofPropertiesGroupBox.setEnabled.assert_has_calls(expected_calls)
+        self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
         self.view.flightPathSpinBox = mock.Mock()
