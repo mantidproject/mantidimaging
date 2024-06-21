@@ -110,8 +110,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normaliseCheckBox.stateChanged.connect(self.normaliseStackSelector.setEnabled)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
-        self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.normalise_ShutterCount_CheckBox.setDisabled)
-        self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_enable_shuttercount_correction)
+        self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
         self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
@@ -362,7 +361,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.display_shuttercount_error()
 
     def handle_shuttercount_change(self):
-        self.presenter.handle_enable_shuttercount_correction(self.normalise_ShutterCount_CheckBox.isChecked())
+        self.presenter.set_shuttercount_error(self.normalise_ShutterCount_CheckBox.isChecked())
         self.normalise_ShutterCount_CheckBox.setEnabled(self.shuttercount_error_issue == "")
 
     def display_shuttercount_error(self):
