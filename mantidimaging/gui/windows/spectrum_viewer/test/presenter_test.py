@@ -346,8 +346,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         get_stack_time_of_flight.return_value = tof_data_after
         self.presenter.handle_sample_change(uuid.uuid4())
+        self.view.tof_mode_select_group.setEnabled.assert_has_calls(expected_calls)
         self.view.tofPropertiesGroupBox.setEnabled.assert_has_calls(expected_calls)
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
+
+    def test_WHEN_no_stack_available_THEN_units_menu_disabled(self):
+        self.presenter.current_stack_uuid = uuid.uuid4()
+        self.presenter.handle_sample_change(None)
+        self.view.tof_mode_select_group.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
         self.view.flightPathSpinBox = mock.Mock()
