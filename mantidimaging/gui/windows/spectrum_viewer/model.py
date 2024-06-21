@@ -208,6 +208,17 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
+    def shuttercount_issue(self) -> str:
+        """
+        Return an error message if there is an issue with the shutter count data.
+        """
+        assert self._stack and self._normalise_stack
+        if not self._stack.shutter_count_file or not self._normalise_stack.shutter_count_file:
+            return "Need 2 selected ShutterCount stacks"
+        if self._stack.shutter_count_file.data == self._normalise_stack.shutter_count_file.data:
+            return "Need 2 different ShutterCount stacks"
+        return ""
+
     def get_spectrum(self,
                      roi: str | SensibleROI,
                      mode: SpecType,
@@ -250,7 +261,10 @@ class SpectrumViewerWindowModel:
         open_shuttercount = self.get_stack_shuttercounts(self._normalise_stack)
         if sample_shuttercount is None or open_shuttercount is None:
             return 1.0  # No shutter count data available so no correction needed
-        normalised_shuttercounts = sample_shuttercount / open_shuttercount
+        normalised_shuttercounts = np.divide(sample_shuttercount.astype(np.float32),
+                                             open_shuttercount.astype(np.float32),
+                                             out=np.ones_like(sample_shuttercount, dtype=np.float32),
+                                             where=open_shuttercount != 0)
         return normalised_shuttercounts[0]
 
     def get_stack_shuttercounts(self, stack: ImageStack | None) -> np.ndarray | None:
