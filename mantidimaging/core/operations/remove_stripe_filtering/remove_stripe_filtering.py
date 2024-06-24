@@ -46,7 +46,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
         :param window_dim: Whether to perform the median on 1D or 2D view of the
                            data.
         :param filtering_dim: Whether to use a 1D or 2D low-pass filter. This
-                              uses different Sarepy methods.
+                              uses different Algotom methods.
 
         :return: The ImageStack object with the stripes removed using the
                  filtering and sorting technique.
@@ -119,7 +119,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
                                                 form=form,
                                                 on_change=on_change,
                                                 tooltip="Whether to use a 1D or 2D low-pass filter. "
-                                                "This uses different Sarepy methods")
+                                                "This uses different Algotom methods")
         return {'sigma': sigma, 'size': size, 'window_dim': window_dim, 'filtering_dim': filtering_dim}
 
     @staticmethod
