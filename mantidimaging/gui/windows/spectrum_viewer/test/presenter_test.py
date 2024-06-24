@@ -6,6 +6,7 @@ import uuid
 from pathlib import Path
 from unittest import mock
 
+import numpy as np
 from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
 from parameterized import parameterized
 
@@ -299,16 +300,55 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_tof_unit_change_via_menu()
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
+    @parameterized.expand([
+        (None, ToFUnitMode.IMAGE_NUMBER),
+        (np.arange(1, 10), ToFUnitMode.WAVELENGTH),
+    ])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
-    def test_WHEN_no_spectrum_data_THEN_mode_is_image_index(self, get_stack_time_of_flight):
+    def test_WHEN_data_loaded_THEN_relevant_mode_set(self, tof_data, expected_tof_mode, get_stack_time_of_flight):
         self.presenter.model.set_stack(generate_images())
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
-        get_stack_time_of_flight.return_value = None
+        get_stack_time_of_flight.return_value = tof_data
         self.view.tof_units_mode = "Wavelength"
         self.presenter.refresh_spectrum_plot = mock.Mock()
         self.presenter.handle_sample_change(uuid.uuid4())
-        self.assertEqual(self.presenter.model.tof_mode, ToFUnitMode.IMAGE_NUMBER)
+        self.assertEqual(self.presenter.model.tof_mode, expected_tof_mode)
+
+    @parameterized.expand([
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [False, True], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, None, [True, False], ToFUnitMode.IMAGE_NUMBER),
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, None, [False, False], ToFUnitMode.IMAGE_NUMBER),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, np.arange(2, 20), [True,
+                                                                                    True], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Energy", ToFUnitMode.ENERGY, np.arange(2, 20), [True, True], ToFUnitMode.ENERGY),
+        (np.arange(1, 10), "Time of Flight (\u03BCs)", ToFUnitMode.TOF_US, np.arange(2, 20), [True,
+                                                                                              True], ToFUnitMode.TOF_US)
+    ])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
+    def test_WHEN_switch_between_no_spectra_to_spectra_files_THEN_tof_modes_availability_set(
+            self, tof_data_before, tof_mode_text_before, tof_mode_before, tof_data_after, expected_calls, expected_mode,
+            get_stack_time_of_flight):
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
+        self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
+        get_stack_time_of_flight.return_value = tof_data_before
+        self.presenter.model.tof_mode = tof_mode_before
+        self.view.tof_units_mode = tof_mode_text_before
+        self.presenter.refresh_spectrum_plot = mock.Mock()
+        self.presenter.handle_sample_change(uuid.uuid4())
+
+        get_stack_time_of_flight.return_value = tof_data_after
+        self.presenter.handle_sample_change(uuid.uuid4())
+        expected_calls = [mock.call(b) for b in expected_calls]
+        self.view.tof_mode_select_group.setEnabled.assert_has_calls(expected_calls)
+        self.view.tofPropertiesGroupBox.setEnabled.assert_has_calls(expected_calls)
+        self.assertEqual(self.presenter.model.tof_mode, expected_mode)
+
+    def test_WHEN_no_stack_available_THEN_units_menu_disabled(self):
+        self.presenter.current_stack_uuid = uuid.uuid4()
+        self.presenter.handle_sample_change(None)
+        self.view.tof_mode_select_group.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
         self.view.flightPathSpinBox = mock.Mock()
@@ -333,12 +373,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.check_action = mock.Mock()
         self.view.tof_mode_select_group.actions = mock.Mock(return_value=menu_options)
         self.presenter.change_selected_menu_option("opt2")
-        calls = [
-            mock.call(menu_options[0], False),
-            mock.call(menu_options[1], True),
-            mock.call(menu_options[2], False),
-            mock.call(menu_options[3], False)
-        ]
+        calls = [mock.call(menu_options[a], b) for a, b in [(0, False), (1, True), (2, False), (3, False)]]
         self.presenter.check_action.assert_has_calls(calls)
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
@@ -386,10 +421,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.redraw_all_rois()
         self.assertEqual(self.presenter.model.get_roi("all"), SensibleROI(0, 0, 10, 8))
         self.assertEqual(self.presenter.model.get_roi("roi"), SensibleROI(1, 4, 3, 2))
-        calls = [
-            mock.call("all", mock.ANY),
-            mock.call("roi", mock.ANY),
-        ]
+        calls = [mock.call(a, b) for a, b in [("all", mock.ANY), ("roi", mock.ANY)]]
         self.view.set_spectrum.assert_has_calls(calls)
 
     @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])
