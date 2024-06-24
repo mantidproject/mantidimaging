@@ -316,20 +316,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.tof_mode, expected_tof_mode)
 
     @parameterized.expand([
-        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [mock.call(False),
-                                                                           mock.call(True)], ToFUnitMode.WAVELENGTH),
-        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, None, [mock.call(True),
-                                                                        mock.call(False)], ToFUnitMode.IMAGE_NUMBER),
-        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, None, [mock.call(False),
-                                                               mock.call(False)], ToFUnitMode.IMAGE_NUMBER),
-        (np.arange(1,
-                   10), "Wavelength", ToFUnitMode.WAVELENGTH, np.arange(2,
-                                                                        20), [mock.call(True),
-                                                                              mock.call(True)], ToFUnitMode.WAVELENGTH),
-        (np.arange(1, 10), "Energy", ToFUnitMode.ENERGY, np.arange(2, 20), [mock.call(True),
-                                                                            mock.call(True)], ToFUnitMode.ENERGY),
-        (np.arange(1, 10), "Time of Flight (\u03BCs)", ToFUnitMode.TOF_US, np.arange(2, 20),
-         [mock.call(True), mock.call(True)], ToFUnitMode.TOF_US)
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [False, True], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, None, [True, False], ToFUnitMode.IMAGE_NUMBER),
+        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, None, [False, False], ToFUnitMode.IMAGE_NUMBER),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, np.arange(2, 20), [True,
+                                                                                    True], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Energy", ToFUnitMode.ENERGY, np.arange(2, 20), [True, True], ToFUnitMode.ENERGY),
+        (np.arange(1, 10), "Time of Flight (\u03BCs)", ToFUnitMode.TOF_US, np.arange(2, 20), [True,
+                                                                                              True], ToFUnitMode.TOF_US)
     ])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
     def test_WHEN_switch_between_no_spectra_to_spectra_files_THEN_tof_modes_availability_set(
@@ -346,6 +340,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         get_stack_time_of_flight.return_value = tof_data_after
         self.presenter.handle_sample_change(uuid.uuid4())
+        expected_calls = [mock.call(b) for b in expected_calls]
         self.view.tof_mode_select_group.setEnabled.assert_has_calls(expected_calls)
         self.view.tofPropertiesGroupBox.setEnabled.assert_has_calls(expected_calls)
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
@@ -378,12 +373,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.check_action = mock.Mock()
         self.view.tof_mode_select_group.actions = mock.Mock(return_value=menu_options)
         self.presenter.change_selected_menu_option("opt2")
-        calls = [
-            mock.call(menu_options[0], False),
-            mock.call(menu_options[1], True),
-            mock.call(menu_options[2], False),
-            mock.call(menu_options[3], False)
-        ]
+        calls = [mock.call(menu_options[a], b) for a, b in [(0, False), (1, True), (2, False), (3, False)]]
         self.presenter.check_action.assert_has_calls(calls)
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
@@ -431,10 +421,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.redraw_all_rois()
         self.assertEqual(self.presenter.model.get_roi("all"), SensibleROI(0, 0, 10, 8))
         self.assertEqual(self.presenter.model.get_roi("roi"), SensibleROI(1, 4, 3, 2))
-        calls = [
-            mock.call("all", mock.ANY),
-            mock.call("roi", mock.ANY),
-        ]
+        calls = [mock.call(a, b) for a, b in [("all", mock.ANY), ("roi", mock.ANY)]]
         self.view.set_spectrum.assert_has_calls(calls)
 
     @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])
