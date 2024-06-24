@@ -247,6 +247,9 @@ class ImageWatcher(QObject):
             self.add_sub_directory(this_dir)
 
         self.clear_deleted_sub_directories(directory_path)
+        if not self.sub_directories:
+            raise FileNotFoundError(f"Live directory not found: {self.directory}"
+                                    "\nHas it been deleted?")
         self.find_sub_directories(directory_path)
         self.sort_sub_directory_by_modified_time()
 
