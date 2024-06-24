@@ -531,11 +531,24 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.onChangeColor">[docs]</a>
     <span class="k">def</span> <span class="nf">onChangeColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">current_color</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_colour</span><span class="p">)</span>
-        <span class="n">selected_color</span> <span class="o">=</span> <span class="n">QColorDialog</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">current_color</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+        <span class="n">selected_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openColorDialog</span><span class="p">(</span><span class="n">current_color</span><span class="p">)</span>
+        <span class="n">color_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_color_valid</span><span class="p">(</span><span class="n">selected_color</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">color_valid</span><span class="p">:</span>
             <span class="n">new_color</span> <span class="o">=</span> <span class="p">(</span><span class="n">selected_color</span><span class="o">.</span><span class="n">red</span><span class="p">(),</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">green</span><span class="p">(),</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">blue</span><span class="p">(),</span> <span class="mi">255</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_colour</span> <span class="o">=</span> <span class="n">new_color</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sig_colour_change</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">new_color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumROI.openColorDialog">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.openColorDialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">openColorDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_color</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QColor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QColorDialog</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">current_color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumROI.check_color_valid">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.check_color_valid">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_color_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_colour</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_colour</span><span class="o">.</span><span class="n">isValid</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SpectrumROI.contextMenuEnabled">
