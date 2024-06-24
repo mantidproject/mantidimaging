@@ -750,6 +750,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">add_sub_directory</span><span class="p">(</span><span class="n">this_dir</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_deleted_sub_directories</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Live directory not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Has it been deleted?&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_directories</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sort_sub_directory_by_modified_time</span><span class="p">()</span>
 
