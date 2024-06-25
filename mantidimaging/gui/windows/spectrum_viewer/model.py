@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, TypedDict, Final
 
 import numpy as np
 from math import ceil
@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 
 LOG = getLogger(__name__)
 
-ROI_ALL = "all"
-ROI_RITS = "rits_roi"
+ROI_ALL: Final = "all"
+ROI_RITS: Final = "rits_roi"
 
 
 class SpecType(Enum):
@@ -149,7 +149,7 @@ class SpectrumViewerWindowModel:
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
 
-    def set_roi(self, roi_name: str, roi: SensibleROI):
+    def set_roi(self, roi_name: str, roi: SensibleROI) -> None:
         self._roi_ranges[roi_name] = roi
 
     def get_roi(self, roi_name: str) -> SensibleROI:
@@ -174,7 +174,7 @@ class SpectrumViewerWindowModel:
         return None
 
     @staticmethod
-    def get_stack_spectrum(stack: ImageStack | None, roi: SensibleROI):
+    def get_stack_spectrum(stack: ImageStack | None, roi: SensibleROI) -> np.ndarray:
         """
         Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
         If the image stack is None, an empty numpy array is returned.
@@ -194,7 +194,7 @@ class SpectrumViewerWindowModel:
         return roi_data.mean(axis=(1, 2))
 
     @staticmethod
-    def get_stack_spectrum_summed(stack: ImageStack, roi: SensibleROI):
+    def get_stack_spectrum_summed(stack: ImageStack, roi: SensibleROI) -> np.ndarray:
         left, top, right, bottom = roi
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.sum(axis=(1, 2))
@@ -401,7 +401,7 @@ class SpectrumViewerWindowModel:
 
         self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
 
-    def validate_bin_and_step_size(self, roi, bin_size: int, step_size: int) -> None:
+    def validate_bin_and_step_size(self, roi: SensibleROI, bin_size: int, step_size: int) -> None:
         """
         Validates the bin size and step size for saving RITS images.
         This method checks the following conditions:
@@ -508,14 +508,15 @@ class SpectrumViewerWindowModel:
                     "Y Max": coords.bottom
                 })
 
-    def export_spectrum_to_rits(self, path: Path, tof, transmission, absorption) -> None:
+    def export_spectrum_to_rits(self, path: Path, tof: np.ndarray, transmission: np.ndarray,
+                                absorption: np.ndarray) -> None:
         """
         Export spectrum to RITS format
         """
         rits_data = saver.create_rits_format(tof, transmission, absorption)
         saver.export_to_dat_rits_format(rits_data, path)
 
-    def remove_roi(self, roi_name) -> None:
+    def remove_roi(self, roi_name: str) -> None:
         """
         Remove the selected ROI from the model
 

@@ -413,7 +413,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
 
-    def change_selected_menu_option(self, opt):
+    def change_selected_menu_option(self, opt: str) -> None:
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
                 if action.objectName() == opt:

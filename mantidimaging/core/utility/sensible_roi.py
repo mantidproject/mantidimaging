@@ -30,7 +30,7 @@ class SensibleROI(Iterable):
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
 
     @staticmethod
-    def from_list(roi: list[int] | list[float]):
+    def from_list(roi: list[int] | list[float]) -> SensibleROI:
         return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
 
     def __iter__(self) -> Iterator[int]:
