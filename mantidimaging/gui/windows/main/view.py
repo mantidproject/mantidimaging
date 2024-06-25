@@ -331,6 +331,8 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(
             self, "Load complete", f"{selected_file} was loaded as a shutter count file into "
             f"{stack_to_add_shuttercounts_to}.")
+        if self.spectrum_viewer:
+            self.spectrum_viewer.handle_shuttercount_change()
 
     def load_180_deg_dialog(self):
         dataset_selector = DatasetSelectorDialog(main_window=self,

@@ -37,8 +37,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportButton: QPushButton
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
+    shuttercountErrorIcon: QLabel
     _current_dataset_id: UUID | None
     normalise_error_issue: str = ""
+    shuttercount_error_issue: str = ""
     image_output_mode_combobox: QComboBox
     transmission_error_mode_combobox: QComboBox
     bin_size_spinBox: QSpinBox
@@ -108,6 +110,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normaliseCheckBox.stateChanged.connect(self.normaliseStackSelector.setEnabled)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_enable_normalised)
         self.normaliseCheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
+        self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
+        self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
         self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
         self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
@@ -351,6 +355,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def normalisation_enabled(self):
         return self.normaliseCheckBox.isChecked()
+
+    def set_shuttercount_error(self, shuttercount_issue: str):
+        self.shuttercount_error_issue = shuttercount_issue
+        self.display_shuttercount_error()
+
+    def handle_shuttercount_change(self):
+        self.presenter.set_shuttercount_error(self.normalise_ShutterCount_CheckBox.isChecked())
+        self.normalise_ShutterCount_CheckBox.setEnabled(self.shuttercount_error_issue == "")
+
+    def display_shuttercount_error(self):
+        if (self.shuttercount_error_issue and self.normalisation_enabled() and self.shuttercount_norm_enabled()
+                and self.normalise_error_issue == ""):
+            self.shuttercountErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
+            self.shuttercountErrorIcon.setToolTip(self.shuttercount_error_issue)
+        else:
+            self.shuttercountErrorIcon.setPixmap(QPixmap())
+            self.shuttercountErrorIcon.setToolTip("")
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()

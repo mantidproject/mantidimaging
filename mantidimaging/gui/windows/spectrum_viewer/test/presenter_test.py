@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -36,6 +36,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                                                                               roi_dict=mock_spectrum_roi_dict)
         self.view.exportButton = mock.create_autospec(QPushButton)
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
+        self.view.normalise_ShutterCount_CheckBox = mock.create_autospec(QCheckBox)
         self.view.addBtn = mock.create_autospec(QPushButton)
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
         self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
@@ -134,6 +135,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButton.setEnabled.assert_called_once_with(False)
         self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
         self.view.addBtn.setEnabled.assert_called_once_with(False)
+        self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
     def test_WHEN_has_stack_no_norm_THEN_buttons_set(self, has_stack):
@@ -143,17 +145,21 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButton.setEnabled.assert_called_once_with(True)
         self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)  # RITS export needs norm
         self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)  # Shuttercount needs norm
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.normalise_issue")
-    def test_WHEN_has_stack_has_good_norm_THEN_buttons_set(self, normalise_issue, has_stack):
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.shuttercount_issue")
+    def test_WHEN_has_stack_has_good_norm_THEN_buttons_set(self, shuttercount_issue, normalise_issue, has_stack):
         has_stack.return_value = True
         normalise_issue.return_value = ""
+        shuttercount_issue.return_value = ""
         self.view.normalisation_enabled.return_value = True
         self.presenter.handle_button_enabled()
         self.view.exportButton.setEnabled.assert_called_once_with(True)
         self.view.exportButtonRITS.setEnabled.assert_called_once_with(True)
         self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(True)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.normalise_issue")
@@ -165,6 +171,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButton.setEnabled.assert_called_once_with(False)
         self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
         self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
         self.presenter.model.set_stack(generate_images([10, 5, 5]))
@@ -191,10 +198,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         mock_save_csv.assert_not_called()
 
     @parameterized.expand(["/fake/path", "/fake/path.csv"])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.shuttercount_issue")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
-    def test_handle_export_csv(self, path_name: str, mock_save_csv: mock.Mock):
+    def test_handle_export_csv(self, path_name: str, mock_save_csv: mock.Mock, mock_shuttercount_issue):
         self.view.get_csv_filename = mock.Mock(return_value=Path(path_name))
         self.view.shuttercount_norm_enabled.return_value = False
+        mock_shuttercount_issue.return_value = "Something wrong"
 
         self.presenter.model.set_stack(generate_images())
 
