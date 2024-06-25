@@ -513,8 +513,10 @@ document.write(`
     <span class="n">exportButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">exportTabs</span><span class="p">:</span> <span class="n">QTabWidget</span>
     <span class="n">normaliseErrorIcon</span><span class="p">:</span> <span class="n">QLabel</span>
+    <span class="n">shuttercountErrorIcon</span><span class="p">:</span> <span class="n">QLabel</span>
     <span class="n">_current_dataset_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">normalise_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">shuttercount_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">image_output_mode_combobox</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">transmission_error_mode_combobox</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">bin_size_spinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
@@ -584,6 +586,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">normaliseCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normaliseStackSelector</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normaliseCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_enable_normalised</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normaliseCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_button_enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_button_enabled</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">exportTabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_export_tab_change</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_output_mode_combobox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_binning_visibility</span><span class="p">)</span>
@@ -871,6 +875,32 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.normalisation_enabled">[docs]</a>
     <span class="k">def</span> <span class="nf">normalisation_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normaliseCheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.set_shuttercount_error">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_shuttercount_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shuttercount_issue</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="o">=</span> <span class="n">shuttercount_issue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_shuttercount_error</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.handle_shuttercount_change">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_shuttercount_change">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_shuttercount_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.display_shuttercount_error">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_shuttercount_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_issue</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_icon_pixmap</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.shuttercount_norm_enabled">

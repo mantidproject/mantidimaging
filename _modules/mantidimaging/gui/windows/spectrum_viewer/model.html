@@ -732,6 +732,20 @@ document.write(`
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
 
+<div class="viewcode-block" id="SpectrumViewerWindowModel.shuttercount_issue">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.shuttercount_issue">[docs]</a>
+    <span class="k">def</span> <span class="nf">shuttercount_issue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an error message if there is an issue with the shutter count data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">shutter_count_file</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="o">.</span><span class="n">shutter_count_file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Need 2 selected ShutterCount stacks&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">shutter_count_file</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="o">.</span><span class="n">shutter_count_file</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Need 2 different ShutterCount stacks&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_spectrum">[docs]</a>
     <span class="k">def</span> <span class="nf">get_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -779,7 +793,10 @@ document.write(`
         <span class="n">open_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_shuttercounts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sample_shuttercount</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">open_shuttercount</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.0</span>  <span class="c1"># No shutter count data available so no correction needed</span>
-        <span class="n">normalised_shuttercounts</span> <span class="o">=</span> <span class="n">sample_shuttercount</span> <span class="o">/</span> <span class="n">open_shuttercount</span>
+        <span class="n">normalised_shuttercounts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">sample_shuttercount</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                             <span class="n">open_shuttercount</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                             <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">sample_shuttercount</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                                             <span class="n">where</span><span class="o">=</span><span class="n">open_shuttercount</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">normalised_shuttercounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 

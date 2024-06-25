@@ -597,6 +597,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">do_add_roi</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_rits_roi</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_normalise_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_new_sample</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">on_visibility_change</span><span class="p">()</span></div>
 
@@ -628,6 +629,7 @@ document.write(`
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_normalise_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">normalise_uuid</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_normalise_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">redraw_all_rois</span><span class="p">()</span></div>
 
@@ -697,7 +699,11 @@ document.write(`
             <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">force_new_spectrums</span> <span class="ow">or</span> <span class="n">roi</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_roi</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
+                                            <span class="n">normalise_with_shuttercount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_roi_clicked">
@@ -715,7 +721,11 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Redraw the spectrum with the given name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
+                                    <span class="n">normalise_with_shuttercount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.redraw_all_rois">
@@ -726,7 +736,11 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_list_of_roi_names</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_roi</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
+                                        <span class="n">normalise_with_shuttercount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_button_enabled">
@@ -741,7 +755,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_stack</span> <span class="ow">and</span> <span class="n">normalisation_no_error</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportButtonRITS</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_stack</span> <span class="ow">and</span> <span class="n">normalisation_on</span> <span class="ow">and</span> <span class="n">normalisation_no_error</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">addBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_stack</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">addBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_stack</span> <span class="ow">and</span> <span class="n">normalisation_on</span> <span class="ow">and</span> <span class="n">normalisation_no_error</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_export_csv">
@@ -804,6 +821,19 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">display_normalise_error</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.set_shuttercount_error">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.set_shuttercount_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set ShutterCount error message when a valid normalisation stack has been selected and</span>
+<span class="sd">        shuttercount correction has been toggled on and redraw all ROIs to ensure the spectrum</span>
+<span class="sd">        is updated when ShutterCount correction is toggled between enabled and disabled states.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span> <span class="ow">is</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">shuttercount_issue</span><span class="p">()</span> <span class="k">if</span> <span class="n">enabled</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redraw_all_rois</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.get_roi_names">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_roi_names">[docs]</a>
     <span class="k">def</span> <span class="nf">get_roi_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
@@ -824,7 +854,8 @@ document.write(`
         <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi_name_generator</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_new_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">),</span> <span class="n">roi_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+            <span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">auto_range_image</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_add_roi_to_table</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span></div>
 
@@ -850,7 +881,8 @@ document.write(`
         <span class="n">roi_name</span> <span class="o">=</span> <span class="n">ROI_RITS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_new_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">),</span> <span class="n">roi_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+            <span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">)</span></div>
 
 
@@ -895,7 +927,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_all_roi</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">remove_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span>
+                <span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span></div>
 
 

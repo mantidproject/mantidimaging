@@ -847,7 +847,9 @@ document.write(`
                                                    <span class="n">shuttercount_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
         <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Load complete&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selected_file</span><span class="si">}</span><span class="s2"> was loaded as a shutter count file into &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_to_add_shuttercounts_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_to_add_shuttercounts_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">handle_shuttercount_change</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.load_180_deg_dialog">
