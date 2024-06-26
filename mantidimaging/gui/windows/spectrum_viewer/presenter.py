@@ -117,7 +117,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_new_sample()
         self.view.on_visibility_change()
 
-    def reset_units_menu(self):
+    def reset_units_menu(self) -> None:
         if self.model.tof_data is None:
             self.view.tof_mode_select_group.setEnabled(False)
             self.view.tofPropertiesGroupBox.setEnabled(False)
@@ -143,7 +143,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.view.normalisation_enabled():
             self.redraw_all_rois()
 
-    def auto_find_flat_stack(self, new_dataset_id):
+    def auto_find_flat_stack(self, new_dataset_id: UUID) -> None:
         if self.view.current_dataset_id != new_dataset_id:
             self.view.current_dataset_id = new_dataset_id
 
@@ -172,11 +172,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.view.get_roi_properties_spinboxes():
             self.view.set_roi_properties()
 
-    def handle_range_slide_moved(self, tof_range) -> None:
+    def handle_range_slide_moved(self, tof_range: tuple[float, float] | tuple[int, int]) -> None:
         self.model.tof_plot_range = tof_range
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
+            assert self.model.tof_data is not None  # otherwise tof_mode would be IMAGE_NUMBER
             image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
             image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
             self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
@@ -304,7 +305,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.set_shuttercount_error(self.model.shuttercount_issue() if enabled else "")
             self.redraw_all_rois()
 
-    def get_roi_names(self) -> list:
+    def get_roi_names(self) -> list[str]:
         """
         Return a list of ROI names
 
@@ -324,7 +325,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
 
-    def change_roi_colour(self, roi_name: str, new_colour: tuple) -> None:
+    def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int]) -> None:
         """
         Change the colour of a given ROI in both the spectrum widget and the table.
 

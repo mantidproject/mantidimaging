@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker
+from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
 
@@ -32,7 +32,7 @@ class SpectrumROI(ROI):
     """
     sig_colour_change = pyqtSignal(str, tuple)
 
-    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs):
+    def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs) -> None:
         kwargs["pos"] = sensible_roi.left, sensible_roi.top
         kwargs["size"] = sensible_roi.width, sensible_roi.height
         super().__init__(*args, **kwargs)
@@ -51,7 +51,7 @@ class SpectrumROI(ROI):
         self.change_color_action.triggered.connect(self.onChangeColor)
         self.menu.addAction(self.change_color_action)
 
-    def onChangeColor(self):
+    def onChangeColor(self) -> None:
         current_color = QColor(*self._colour)
         selected_color = self.openColorDialog(current_color)
         color_valid = self.check_color_valid(selected_color)
@@ -60,13 +60,13 @@ class SpectrumROI(ROI):
             self._colour = new_color
             self.sig_colour_change.emit(self._name, new_color)
 
-    def openColorDialog(self, current_color) -> QColor:
+    def openColorDialog(self, current_color: QColor) -> QColor:
         return QColorDialog.getColor(current_color)
 
-    def check_color_valid(self, get_colour) -> bool:
+    def check_color_valid(self, get_colour: QColor) -> bool:
         return get_colour.isValid()
 
-    def contextMenuEnabled(self):
+    def contextMenuEnabled(self) -> bool:
         return True
 
     @property
@@ -112,7 +112,7 @@ class SpectrumWidget(QWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[str | None, ROI]
+    roi_dict: dict[str, ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
@@ -141,10 +141,10 @@ class SpectrumWidget(QWidget):
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
 
-        self.roi_dict: dict[str | None, ROI] = {}
+        self.roi_dict: dict[str, ROI] = {}
         self.colour_index = 0
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.image.cleanup()
 
     def colour_generator(self) -> tuple[int, int, int, int]:
@@ -217,7 +217,7 @@ class SpectrumWidget(QWidget):
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
-    def adjust_roi(self, new_roi: SensibleROI, roi_name: str):
+    def adjust_roi(self, new_roi: SensibleROI, roi_name: str) -> None:
         """
         Adjust the existing ROI with the given name.
         @param new_roi: The new SpectrumROI to replace the existing SpectrumROI
@@ -270,12 +270,12 @@ class SpectrumWidget(QWidget):
 
 class CustomViewBox(ViewBox):
 
-    def __init__(self, *args, **kwds):
+    def __init__(self, *args, **kwds) -> None:
         #kwds['enableMenu'] = False
         ViewBox.__init__(self, *args, **kwds)
         self.setMouseMode(self.PanMode)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QEvent) -> None:
         if event.key() == Qt.Key_Control:
             self.setMouseMode(self.RectMode)
             for child in self.allChildren():
@@ -284,7 +284,7 @@ class CustomViewBox(ViewBox):
                 elif isinstance(child, SpectrumROI):
                     child.translatable = False
 
-    def keyReleaseEvent(self, event):
+    def keyReleaseEvent(self, event: QEvent) -> None:
         if event.key() == Qt.Key_Control:
             self.rbScaleBox.hide()
             self.setMouseMode(self.PanMode)
@@ -295,14 +295,14 @@ class CustomViewBox(ViewBox):
                     child.translatable = True
 
     ## reimplement right-click to zoom out
-    def mouseClickEvent(self, ev):
+    def mouseClickEvent(self, ev: QEvent) -> None:
         if ev.button() == Qt.MouseButton.RightButton and not self.menuEnabled():
             self.autoRange()
         else:
             ViewBox.mouseClickEvent(self, ev)
 
     ## reimplement mouseDragEvent to disable continuous axis zoom
-    def mouseDragEvent(self, ev, axis=None):
+    def mouseDragEvent(self, ev: QEvent, axis: int | None = None) -> None:
         if axis is not None and ev.button() == Qt.MouseButton.RightButton:
             ev.ignore()
         elif ev.button() == Qt.MouseButton.LeftButton:
@@ -314,9 +314,7 @@ class CustomViewBox(ViewBox):
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
     spectrum: PlotItem
-
     range_control: LinearRegionItem
-
     range_changed = pyqtSignal(object)
 
     def __init__(self) -> None:
