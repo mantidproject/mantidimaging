@@ -2,12 +2,17 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from typing import cast, overload, Literal
+
 # Contains ROI table model class which will be used to store ROI information
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt
+from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt5.QtGui import QColor, QBrush
+
+ElementType = str | tuple[int, int, int] | bool
+RowType = list[ElementType]
 
 
 class TableModel(QAbstractTableModel):
@@ -17,11 +22,11 @@ class TableModel(QAbstractTableModel):
     user to select which ROIs to plot.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self._data = []
+        self._data: list[RowType] = []
 
-    def rowCount(self, *args, **kwargs):
+    def rowCount(self, *args, **kwargs) -> int:
         """
         Return number of rows in table
 
@@ -29,7 +34,7 @@ class TableModel(QAbstractTableModel):
         """
         return len(self._data)
 
-    def columnCount(self, *args, **kwargs):
+    def columnCount(self, *args, **kwargs) -> int:
         """
         Return number of columns in table
 
@@ -37,7 +42,7 @@ class TableModel(QAbstractTableModel):
         """
         return 3
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: Qt.ItemDataRole):
         """
         Set data in table roi name and colour - str and Tuple(int,int,int)
         and set background colour of colour column
@@ -61,13 +66,13 @@ class TableModel(QAbstractTableModel):
                     return Qt.Checked
                 return Qt.Unchecked
 
-    def update_color(self, row, new_color):
+    def update_color(self, row: int, new_color: tuple[int, int, int]) -> None:
         if 0 <= row < len(self._data):
             self._data[row][1] = new_color
             index = self.index(row, 1)
             self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.BackgroundRole])
 
-    def setData(self, index, value, role):
+    def setData(self, index: QModelIndex, value: ElementType, role: Qt.ItemDataRole) -> bool:
         """
         Set data in table
 
@@ -87,8 +92,9 @@ class TableModel(QAbstractTableModel):
                 return True
             self.dataChanged.emit(index, index)
             return False
+        return False
 
-    def row_data(self, row: int) -> list:
+    def row_data(self, row: int) -> RowType:
         """
         Return data from selected row
 
@@ -97,10 +103,28 @@ class TableModel(QAbstractTableModel):
         """
         return self._data[row]
 
-    def __getitem__(self, item: int) -> list:
+    def __getitem__(self, item: int) -> RowType:
         return self.row_data(item)
 
-    def column_data(self, column: int) -> list:
+    @overload
+    def get_element(self, row: int, column: Literal[0]) -> str:
+        ...
+
+    @overload
+    def get_element(self, row: int, column: Literal[1]) -> tuple[int, int, int]:
+        ...
+
+    @overload
+    def get_element(self, row: int, column: Literal[2]) -> bool:
+        ...
+
+    def get_element(self, row: int, column: int) -> ElementType:
+        return self.row_data(row)[column]
+
+    def set_element(self, row: int, column: int, value: ElementType) -> None:
+        self.row_data(row)[column] = value
+
+    def column_data(self, column: int) -> list[ElementType]:
         """
         Return data from selected column
 
@@ -109,18 +133,18 @@ class TableModel(QAbstractTableModel):
         """
         return [row[column] for row in self._data]
 
-    def appendNewRow(self, roi_name: str, roi_colour: tuple, visible: bool):
+    def appendNewRow(self, roi_name: str, roi_colour: tuple[int, int, int], visible: bool) -> None:
         """
         Append new row to table
 
         @param roi_name: ROI name
         @param roi_colour: ROI colour
         """
-        item_list = [roi_name, roi_colour, visible]
+        item_list: RowType = [roi_name, roi_colour, visible]
         self._data.append(item_list)
         self.layoutChanged.emit()
 
-    def headerData(self, section, orientation, role):
+    def headerData(self, section: int, orientation: Qt.Orientation, role: Qt.ItemDataRole) -> str | None:
         """
         Set horizontal colum header names to ROI and Colour
 
@@ -137,6 +161,7 @@ class TableModel(QAbstractTableModel):
                     return "Colour"
                 if section == 2:
                     return ""
+        return None
 
     def clear_table(self) -> None:
         """
@@ -170,7 +195,7 @@ class TableModel(QAbstractTableModel):
             self._data[row][0] = new_name
             self.layoutChanged.emit()
 
-    def flags(self, index):
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """
         Handle selection of table rows to disable selection of ROI colour column
         if index is equal to roi, item not editable
@@ -185,10 +210,10 @@ class TableModel(QAbstractTableModel):
         else:
             return Qt.ItemIsEnabled
 
-    def roi_names(self) -> list:
+    def roi_names(self) -> list[str]:
         """
         Return list of ROI names
 
         @return: list of ROI names
         """
-        return [x[0] for x in self._data]
+        return [cast(str, x[0]) for x in self._data]

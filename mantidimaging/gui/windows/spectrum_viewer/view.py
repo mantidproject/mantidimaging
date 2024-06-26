@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
     QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction, QDoubleSpinBox
-from PyQt5.QtCore import QSignalBlocker, Qt
+from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -185,16 +185,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.flightPathSpinBox.valueChanged.connect(self.presenter.handle_flight_path_change)
         self.timeDelaySpinBox.valueChanged.connect(self.presenter.handle_time_delay_change)
 
-        def on_row_change(item, _) -> None:
+        def on_row_change(item: QModelIndex, _: Any) -> None:
             """
             Handle cell change in table view and update selected ROI and
             toggle visibility of action buttons
 
             @param item: item in table
             """
-            selected_row_data = self.roi_table_model.row_data(item.row())
             self.selected_row = item.row()
-            self.current_roi_name = selected_row_data[0]
+            self.current_roi_name = self.roi_table_model.get_element(item.row(), 0)
             self.set_roi_properties()
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
@@ -205,19 +204,20 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name has changed, update the ROI name in the spectrum widget.
             If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
             """
-            selected_row_data = self.roi_table_model.row_data(self.selected_row)
-            if selected_row_data[0].lower() not in ["", " ", "all"] and selected_row_data[0] != self.current_roi_name:
-                if selected_row_data[0] in self.presenter.get_roi_names():
-                    selected_row_data[0] = self.old_table_names[self.selected_row]
-                    self.current_roi_name = selected_row_data[0]
+            entered_name = self.roi_table_model.get_element(self.selected_row, 0)
+            if entered_name.lower() not in ["", " ", "all"] and entered_name != self.current_roi_name:
+                if entered_name in self.presenter.get_roi_names():
+                    entered_name = self.old_table_names[self.selected_row]
+                    self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
+                    self.current_roi_name = entered_name
                     self.last_clicked_roi = self.current_roi_name
                 else:
-                    self.presenter.rename_roi(self.current_roi_name, selected_row_data[0])
-                    self.current_roi_name = selected_row_data[0]
+                    self.presenter.rename_roi(self.current_roi_name, entered_name)
+                    self.current_roi_name = entered_name
                     self.last_clicked_roi = self.current_roi_name
                     self.set_roi_properties()
             else:
-                selected_row_data[0] = self.old_table_names[self.selected_row]
+                self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
 
             self.set_old_table_names()
             self.on_visibility_change()
@@ -458,11 +458,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear the selected ROI in the table view
         """
         selected_row = self.roi_table_model.row_data(self.selected_row)
+        roi_name = self.roi_table_model.get_element(self.selected_row, 0)
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
-            self.presenter.do_remove_roi(selected_row[0])
-            self.spectrum_widget.spectrum_data_dict.pop(selected_row[0])
-            self.spectrum_widget.spectrum.removeItem(selected_row[0])
+            self.presenter.do_remove_roi(roi_name)
+            self.spectrum_widget.spectrum_data_dict.pop(roi_name)
+            self.spectrum_widget.spectrum.removeItem(roi_name)
             self.presenter.handle_roi_moved()
             self.selected_row = 0
             self.tableView.selectRow(0)
@@ -472,7 +473,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.disable_roi_properties()
         else:
             self.set_old_table_names()
-            self.current_roi_name = self.roi_table_model.row_data(self.selected_row)[0]
+            self.current_roi_name = self.roi_table_model.get_element(self.selected_row, 0)
             self.set_roi_properties()
 
     def clear_all_rois(self) -> None:
