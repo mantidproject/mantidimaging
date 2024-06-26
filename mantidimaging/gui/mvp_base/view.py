@@ -36,21 +36,21 @@ class BaseMainWindowView(QMainWindow):
         self.cleanup()
         super().closeEvent(e)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """
         Runs when the window is closed.
         """
         pass
 
-    def show_error_dialog(self, msg: str):
+    def show_error_dialog(self, msg: str) -> None:
         LOG.error(f"show_error_dialog(): {msg}")
         QMessageBox.critical(self, "Error", str(msg))
 
-    def show_info_dialog(self, msg: str):
+    def show_info_dialog(self, msg: str) -> None:
         LOG.info(f"show_info_dialog(): {msg}")
         QMessageBox.information(self, "Information", str(msg))
 
-    def show_warning_dialog(self, msg: str):
+    def show_warning_dialog(self, msg: str) -> None:
         LOG.warning(f"show_warning_dialog(): {msg}")
         QMessageBox.warning(self, "Warning", str(msg))
 
