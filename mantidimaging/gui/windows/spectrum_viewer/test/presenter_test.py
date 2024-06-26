@@ -387,7 +387,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
         self.presenter.view.roiPropertiesSpinBoxes = mock.Mock()
-        self.presenter.convert_spinbox_roi_to_SpectrumROI = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
+        self.presenter.convert_spinbox_roi_to_SensibleROI = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         self.view.current_roi_name = "roi_1"
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")

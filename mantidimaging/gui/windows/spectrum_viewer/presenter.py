@@ -413,7 +413,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
 
-    def change_selected_menu_option(self, opt):
+    def change_selected_menu_option(self, opt: str) -> None:
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
                 if action.objectName() == opt:
@@ -422,7 +422,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
-        new_roi = self.convert_spinbox_roi_to_SpectrumROI(self.view.roiPropertiesSpinBoxes)
+        new_roi = self.convert_spinbox_roi_to_SensibleROI(self.view.roiPropertiesSpinBoxes)
         self.model.set_roi(self.view.current_roi_name, new_roi)
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
@@ -444,7 +444,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
 
-    def convert_spinbox_roi_to_SpectrumROI(self, spinboxes: dict[str, QSpinBox]) -> SpectrumROI:
+    def convert_spinbox_roi_to_SensibleROI(self, spinboxes: dict[str, QSpinBox]) -> SensibleROI:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         new_points = [spinboxes[prop].value() for prop in roi_iter_order]
-        return SensibleROI().from_list(new_points)
+        return SensibleROI.from_list(new_points)
