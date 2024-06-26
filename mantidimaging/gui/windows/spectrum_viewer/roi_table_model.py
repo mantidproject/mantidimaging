@@ -42,7 +42,7 @@ class TableModel(QAbstractTableModel):
         """
         return 3
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: Qt.ItemDataRole):
         """
         Set data in table roi name and colour - str and Tuple(int,int,int)
         and set background colour of colour column
@@ -66,13 +66,13 @@ class TableModel(QAbstractTableModel):
                     return Qt.Checked
                 return Qt.Unchecked
 
-    def update_color(self, row, new_color) -> None:
+    def update_color(self, row: int, new_color: tuple[int, int, int]) -> None:
         if 0 <= row < len(self._data):
             self._data[row][1] = new_color
             index = self.index(row, 1)
             self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.BackgroundRole])
 
-    def setData(self, index, value, role):
+    def setData(self, index: QModelIndex, value: ElementType, role: Qt.ItemDataRole) -> bool:
         """
         Set data in table
 
@@ -92,6 +92,7 @@ class TableModel(QAbstractTableModel):
                 return True
             self.dataChanged.emit(index, index)
             return False
+        return False
 
     def row_data(self, row: int) -> RowType:
         """
