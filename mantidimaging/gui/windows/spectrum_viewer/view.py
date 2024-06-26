@@ -69,10 +69,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.selected_row: int = 0
         self.current_roi_name: str = ""
-        self.selected_row_data: list | None = None
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
-        self.old_table_names: list = []
+        self.old_table_names: list[str] = []
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -229,11 +228,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
-    def show(self):
+    def show(self) -> None:
         super().show()
         self.activateWindow()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
         self.main_window.spectrum_viewer = None
@@ -319,10 +318,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def set_image(self, image_data: np.ndarray, autoLevels: bool = True):
+    def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
 
-    def set_spectrum(self, name: str, spectrum_data: np.ndarray):
+    def set_spectrum(self, name: str, spectrum_data: np.ndarray) -> None:
         """
         Try to set the spectrum data for a given ROI assuming the
         roi may not exist in the spectrum widget yet depending on when method is called
@@ -337,15 +336,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.image.setImage(np.zeros((1, 1)))
         self.spectrum_widget.spectrum.clearPlots()
 
-    def auto_range_image(self):
+    def auto_range_image(self) -> None:
         self.spectrum_widget.image.vb.autoRange()
 
-    def set_normalise_error(self, norm_issue: str):
+    def set_normalise_error(self, norm_issue: str) -> None:
         self.normalise_error_issue = norm_issue
 
         self.display_normalise_error()
 
-    def display_normalise_error(self):
+    def display_normalise_error(self) -> None:
         if self.normalise_error_issue and self.normalisation_enabled():
             self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
             self.normaliseErrorIcon.setToolTip(self.normalise_error_issue)
@@ -353,18 +352,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
 
-    def normalisation_enabled(self):
+    def normalisation_enabled(self) -> bool:
         return self.normaliseCheckBox.isChecked()
 
-    def set_shuttercount_error(self, shuttercount_issue: str):
+    def set_shuttercount_error(self, shuttercount_issue: str) -> None:
         self.shuttercount_error_issue = shuttercount_issue
         self.display_shuttercount_error()
 
-    def handle_shuttercount_change(self):
+    def handle_shuttercount_change(self) -> None:
         self.presenter.set_shuttercount_error(self.normalise_ShutterCount_CheckBox.isChecked())
         self.normalise_ShutterCount_CheckBox.setEnabled(self.shuttercount_error_issue == "")
 
-    def display_shuttercount_error(self):
+    def display_shuttercount_error(self) -> None:
         if (self.shuttercount_error_issue and self.normalisation_enabled() and self.shuttercount_norm_enabled()
                 and self.normalise_error_issue == ""):
             self.shuttercountErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
@@ -386,7 +385,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spinbox.setEnabled(True)
         self.set_roi_properties()
 
-    def handle_table_click(self, index):
+    def handle_table_click(self, index: QModelIndex) -> None:
         if index.isValid() and index.column() == 1:
             roi_name = self.roi_table_model.index(index.row(), 0).data()
             self.set_spectum_roi_color(roi_name)
@@ -395,7 +394,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         spectrum_roi = self.spectrum_widget.roi_dict[roi_name]
         spectrum_roi.change_color_action.trigger()
 
-    def update_roi_color(self, roi_name: str, new_color: tuple) -> None:
+    def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int]) -> None:
         """
         Finds ROI by name in table and updates colour.
         @param roi_name: Name of the ROI to update.
@@ -431,7 +430,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
 
-    def show_visible_spectrums(self):
+    def show_visible_spectrums(self) -> None:
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
                 self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
@@ -439,7 +438,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                    name=key,
                                                    pen=self.spectrum_widget.roi_dict[key].colour)
 
-    def add_roi_table_row(self, name: str, colour: tuple[int, int, int]):
+    def add_roi_table_row(self, name: str, colour: tuple[int, int, int]) -> None:
         """
         Add a new row to the ROI table
 
@@ -532,13 +531,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         for spinbox in self.roiPropertiesSpinBoxes.values():
             spinbox.setEnabled(True)
 
-    def set_roi_spinbox_ranges(self):
+    def set_roi_spinbox_ranges(self) -> None:
         self.roiPropertiesSpinBoxes["Left"].setMaximum(self.roiPropertiesSpinBoxes["Right"].value() - 1)
         self.roiPropertiesSpinBoxes["Right"].setMinimum(self.roiPropertiesSpinBoxes["Left"].value() + 1)
         self.roiPropertiesSpinBoxes["Top"].setMaximum(self.roiPropertiesSpinBoxes["Bottom"].value() - 1)
         self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
 
-    def disable_roi_properties(self):
+    def disable_roi_properties(self) -> None:
         self.roiPropertiesGroupBox.setTitle("Roi Properties: None selected")
         self.last_clicked_roi = "roi"
         for _, spinbox in self.roiPropertiesSpinBoxes.items():
@@ -555,14 +554,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def get_checked_menu_option(self) -> QAction:
         return self.tof_mode_select_group.checkedAction()
 
-    def set_old_table_names(self):
+    def set_old_table_names(self) -> None:
         self.old_table_names = self.presenter.get_roi_names()
         if 'all' in self.old_table_names:
             self.old_table_names.remove('all')
         if 'rits_roi' in self.old_table_names:
             self.old_table_names.remove('rits_roi')
 
-    def setup_roi_properties_spinboxes(self):
+    def setup_roi_properties_spinboxes(self) -> None:
         for prop in self.roi_table_properties:
             spin_box = QSpinBox()
             if prop == "Top" or prop == "Bottom":
