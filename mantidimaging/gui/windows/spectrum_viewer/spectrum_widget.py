@@ -349,7 +349,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.set_tof_range_label(range_min, range_max)
 
     def set_tof_range_label(self, range_min: float, range_max: float) -> None:
-        self._tof_range_label.setText(f'ToF range: {range_min:.3f} - {range_max:.3f}')
+        self._tof_range_label.setText(f'Range: {range_min:.3f} - {range_max:.3f}')
 
     def set_image_index_range_label(self, range_min: int, range_max: int) -> None:
         self._image_index_range_label.setText(f'Image index range: {range_min} - {range_max}')
