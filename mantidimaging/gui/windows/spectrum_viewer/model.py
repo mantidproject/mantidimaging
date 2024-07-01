@@ -357,7 +357,9 @@ class SpectrumViewerWindowModel:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
                 csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
-                csv_output.add_column(roi_name + "_norm", self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED), "Counts")
+                csv_output.add_column(roi_name + "_norm",
+                                      self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
+                                      "Counts")
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
