@@ -23,10 +23,11 @@ class _Worker:
         self.params = params
 
     def __call__(self, index: int):
-        ndarrays = [sa.array for sa in self.arrays]
+        # Ensure sa is a SharedArray before accessing the array attribute
+        ndarrays = [sa.array for sa in self.arrays if isinstance(sa, pu.SharedArray)]
         if len(ndarrays) == 1:
-            ndarrays = ndarrays[0]  # type: ignore[assignment]
-        self.func(index, ndarrays, self.params)  # type: ignore[arg-type]
+            ndarrays = ndarrays[0]
+        self.func(index, ndarrays, self.params)
 
 
 def run_compute_func(func: ComputeFuncType,

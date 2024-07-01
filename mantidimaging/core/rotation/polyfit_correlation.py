@@ -61,11 +61,9 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
 
     par = np.polyfit(slices, shift.array, deg=1)
     m = par[0]
-    q = par[1]
-    LOG.debug(f"m={m}, q={q}")
-    theta = Degrees(np.rad2deg(np.arctan(0.5 * m)))
-    offset = np.round(m * images.height * 0.5 + q) * 0.5
-    LOG.info(f"found offset: {-offset} and tilt {theta}")
+    offset = m * images.h_middle
+
+    theta = Degrees(np.rad2deg(np.arctan(m)))
     return ScalarCoR(images.h_middle + -offset), theta
 
 
