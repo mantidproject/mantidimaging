@@ -38,7 +38,7 @@ Reinstalling CUDA on Linux can be quickly done with this script
 
 
 Specific Errors
-===============
+---------------
 
 
 SystemError: <built-in function connectSlotsByName> returned a result with an error set
