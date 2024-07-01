@@ -146,19 +146,26 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
 
 class SharedArray:
 
-    def __init__(self, array: np.ndarray, shared_memory: SharedMemory | None, free_mem_on_del: bool = True):
+    def __init__(self,
+                 array: np.ndarray,
+                 shared_memory: shared_memory.SharedMemory | None,
+                 free_mem_on_del: bool = True):
         self.array = array
         self._shared_memory = shared_memory
         self._free_mem_on_del = free_mem_on_del
+        LOG.debug(f"SharedArray initialized with shape {array.shape} and dtype {array.dtype}")
 
     def __del__(self):
+        LOG.debug("Deleting SharedArray instance")
         if self.has_shared_memory:
+            LOG.debug("Closing shared memory")
             self._shared_memory.close()
             if self._free_mem_on_del:
                 try:
+                    LOG.debug("Unlinking shared memory")
                     self._shared_memory.unlink()
                 except FileNotFoundError:
-                    # Do nothing, memory has already been freed
+                    LOG.debug("Shared memory already unlinked")
                     pass
 
     @property
@@ -178,10 +185,15 @@ class SharedArrayProxy:
         self._shape = shape
         self._dtype = dtype
         self._shared_array: SharedArray | None = None
+        LOG.debug(f"SharedArrayProxy initialized with mem_name {mem_name}, shape {shape}, dtype {dtype}")
 
     @property
     def array(self) -> np.ndarray:
         if self._shared_array is None:
-            mem = shared_memory.SharedMemory(name=self._mem_name)
-            self._shared_array = _read_array_from_shared_memory(self._shape, self._dtype, mem, False)
+            if self._mem_name is not None:
+                LOG.debug(f"Attaching to shared memory: {self._mem_name}")
+                mem = shared_memory.SharedMemory(name=self._mem_name)
+                self._shared_array = _read_array_from_shared_memory(self._shape, self._dtype, mem, False)
+            else:
+                raise ValueError("Shared memory name is None. Cannot attach to shared memory.")
         return self._shared_array.array
