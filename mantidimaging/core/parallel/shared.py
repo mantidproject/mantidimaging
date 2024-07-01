@@ -3,46 +3,22 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import Any, TYPE_CHECKING
+from typing import Any
 from collections.abc import Callable
+from numpy import ndarray
 
 from mantidimaging.core.parallel import utility as pu
-
-if TYPE_CHECKING:
-    from numpy import ndarray
 
 
 def inplace3(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
     func(data[0].array[i], data[1].array[i], data[2].array, **kwargs)
 
 
-def inplace2(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
-    func(data[0].array[i], data[1].array[i], **kwargs)
-
-
-def inplace1(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
-    func(data[0].array[i], **kwargs)
-
-
-def return_to_self(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
-    data[0].array[i] = func(data[0].array[i], **kwargs)
-
-
-def inplace_second_2d(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
-    func(data[0].array[i], data[1].array, **kwargs)
-
-
-def return_to_second_at_i(func, data: list[pu.SharedArray] | list[pu.SharedArrayProxy], i, **kwargs):
-    data[1].array[i] = func(data[0].array[i], **kwargs)
-
-
 def create_partial(func, fwd_function, **kwargs):
     """
     Create a partial using functools.partial, to forward the kwargs to the
     parallel execution of imap.
-
     If you seem to be getting nans, check if the correct fwd_function is set!
-
     :param func: Function that will be executed
     :param fwd_function: The function will be forwarded through function.
     :param kwargs: kwargs to forward to the function func that will be executed
@@ -58,11 +34,9 @@ def execute(partial_func: partial,
             msg: str = '') -> None:
     """
     Executes a function a given number of times using the provided list of SharedArray objects.
-
     If all the arrays in the list use shared memory then the execution is done in parallel, with each process
     accessing the data in shared memory.
     If any arrays in the list do not use shared memory then the execution will be performed synchronously.
-
     :param partial_func: A function constructed using create_partial
     :param arrays: The list of SharedArray objects that the operations should be performed on
     :param num_operations: The expected number of operations - should match the number of images being processed
