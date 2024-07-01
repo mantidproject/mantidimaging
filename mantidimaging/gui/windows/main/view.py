@@ -114,6 +114,9 @@ class MainWindowView(BaseMainWindowView):
 
     default_theme_enabled: int = 1
 
+    welcome_window: WelcomeScreenPresenter | None = None
+    wizard: WizardPresenter | None = None
+
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
 
@@ -180,7 +183,7 @@ class MainWindowView(BaseMainWindowView):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
         super()._window_ready()
 
-    def setup_shortcuts(self):
+    def setup_shortcuts(self) -> None:
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
         self.actionLoadImages.triggered.connect(self.load_image_stack)
         self.actionLoadNeXusFile.triggered.connect(self.show_nexus_load_dialog)
@@ -208,7 +211,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.model_changed.connect(self.update_shortcuts)
 
-    def populate_image_menu(self):
+    def populate_image_menu(self) -> None:
         self.menuImage.clear()
         current_stack = self.current_showing_stack()
         if current_stack is None:
@@ -222,9 +225,10 @@ class MainWindowView(BaseMainWindowView):
                 return stack
         return None
 
-    def update_shortcuts(self):
-        has_datasets = len(self.presenter.datasets) > 0
-        has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in self.presenter.datasets)
+    def update_shortcuts(self) -> None:
+        datasets = list(self.presenter.datasets)
+        has_datasets = len(datasets) > 0
+        has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in datasets)
 
         self.actionSaveImages.setEnabled(has_datasets)
         self.actionSaveNeXusFile.setEnabled(has_strict_datasets)
@@ -236,15 +240,15 @@ class MainWindowView(BaseMainWindowView):
         self.menuImage.setEnabled(has_datasets)
 
     @staticmethod
-    def open_online_documentation():
+    def open_online_documentation() -> None:
         url = QUrl("https://mantidproject.github.io/mantidimaging/")
         QDesktopServices.openUrl(url)
 
-    def show_about(self):
+    def show_about(self) -> None:
         self.welcome_window = WelcomeScreenPresenter(self)
         self.welcome_window.show()
 
-    def show_image_load_dialog(self):
+    def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
 
@@ -259,11 +263,11 @@ class MainWindowView(BaseMainWindowView):
             self.image_load_dialog.show()
         return sample_file is not None
 
-    def show_nexus_load_dialog(self):
+    def show_nexus_load_dialog(self) -> None:
         self.nexus_load_dialog = NexusLoadDialog(self)
         self.nexus_load_dialog.show()
 
-    def show_wizard(self):
+    def show_wizard(self) -> None:
         if self.wizard is None:
             self.wizard = WizardPresenter(self)
         self.wizard.show()
@@ -277,7 +281,7 @@ class MainWindowView(BaseMainWindowView):
         selected_file, _ = QFileDialog.getOpenFileName(caption=caption, filter=full_filter, initialFilter=file_filter)
         return selected_file
 
-    def load_image_stack(self):
+    def load_image_stack(self) -> None:
         # Open file dialog
         selected_file = self._get_file_name("Image", "Image File (*.tif *.tiff)")
 
@@ -287,7 +291,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.load_image_stack(selected_file)
 
-    def load_sample_log_dialog(self):
+    def load_sample_log_dialog(self) -> None:
         stack_selector = DatasetSelectorDialog(main_window=self,
                                                title="Stack Selector",
                                                message="Which stack is the log being loaded for?",
@@ -295,7 +299,12 @@ class MainWindowView(BaseMainWindowView):
         # Was closed without accepting (e.g. via x button or ESC)
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
+
         stack_to_add_log_to = stack_selector.selected_id
+
+        if stack_to_add_log_to is None:
+            QMessageBox.critical(self, "Error", "No stack selected.")
+            return
 
         # Open file dialog
         selected_file = self._get_file_name("Log to be loaded", "Log File (*.txt *.log *.csv)")
@@ -306,10 +315,10 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=Path(selected_file))
 
-        QMessageBox.information(self, "Load complete", f"{selected_file} was loaded as a log into "
-                                f"{stack_to_add_log_to}.")
+        QMessageBox.information(self, "Load complete",
+                                f"{selected_file} was loaded as a log into {stack_to_add_log_to}.")
 
-    def load_shuttercounts_dialog(self):
+    def load_shuttercounts_dialog(self) -> None:
         stack_selector = DatasetSelectorDialog(main_window=self,
                                                title="Stack Selector",
                                                message="Which stack is the shutter count file being loaded for?",
@@ -318,6 +327,10 @@ class MainWindowView(BaseMainWindowView):
         if QDialog.DialogCode.Accepted != stack_selector.exec():
             return
         stack_to_add_shuttercounts_to = stack_selector.selected_id
+
+        if stack_to_add_shuttercounts_to is None:
+            QMessageBox.critical(self, "Error", "No stack selected.")
+            return
 
         # Open file dialog
         selected_file = self._get_file_name("Shutter count file to be loaded", "Shutter count File (*.txt *.csv)")
@@ -329,12 +342,12 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_shuttercounts_to_sample(stack_id=stack_to_add_shuttercounts_to,
                                                    shuttercount_file=Path(selected_file))
         QMessageBox.information(
-            self, "Load complete", f"{selected_file} was loaded as a shutter count file into "
-            f"{stack_to_add_shuttercounts_to}.")
+            self, "Load complete",
+            f"{selected_file} was loaded as a shutter count file into {stack_to_add_shuttercounts_to}.")
         if self.spectrum_viewer:
             self.spectrum_viewer.handle_shuttercount_change()
 
-    def load_180_deg_dialog(self):
+    def load_180_deg_dialog(self) -> None:
         dataset_selector = DatasetSelectorDialog(main_window=self,
                                                  title="Dataset Selector",
                                                  message="Which dataset is the 180 projection being loaded for?")
@@ -342,6 +355,10 @@ class MainWindowView(BaseMainWindowView):
         if QDialog.DialogCode.Accepted != dataset_selector.exec():
             return
         dataset_to_add_180_deg_to = dataset_selector.selected_id
+
+        if dataset_to_add_180_deg_to is None:
+            QMessageBox.critical(self, "Error", "No dataset selected.")
+            return
 
         # Open file dialog
         selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
@@ -355,7 +372,7 @@ class MainWindowView(BaseMainWindowView):
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"
 
-    def load_projection_angles(self):
+    def load_projection_angles(self) -> None:
         stack_selector = DatasetSelectorDialog(main_window=self,
                                                title="Stack Selector",
                                                message=self.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE,
@@ -366,6 +383,10 @@ class MainWindowView(BaseMainWindowView):
 
         stack_id = stack_selector.selected_id
 
+        if stack_id is None:
+            QMessageBox.critical(self, "Error", "No stack selected.")
+            return
+
         selected_file = self._get_file_name(self.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION)
         if selected_file == "":
             return
@@ -374,41 +395,41 @@ class MainWindowView(BaseMainWindowView):
         projection_angles = pafp.get_projection_angles()
 
         self.presenter.add_projection_angles_to_sample(stack_id, projection_angles)
-        QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into into "
+        QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into "
                                 f"{stack_id}.")
 
-    def execute_image_file_save(self):
+    def execute_image_file_save(self) -> None:
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
 
-    def execute_image_file_load(self):
+    def execute_image_file_load(self) -> None:
         self.presenter.notify(PresNotification.IMAGE_FILE_LOAD)
 
-    def execute_nexus_load(self):
+    def execute_nexus_load(self) -> None:
         self.presenter.notify(PresNotification.NEXUS_LOAD)
 
-    def execute_nexus_save(self):
+    def execute_nexus_save(self) -> None:
         self.presenter.notify(PresNotification.NEXUS_SAVE)
 
-    def execute_add_to_dataset(self):
+    def execute_add_to_dataset(self) -> None:
         self.presenter.notify(PresNotification.DATASET_ADD)
 
     def execute_move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
-                           destination_dataset_id: uuid.UUID):
+                           destination_dataset_id: uuid.UUID) -> None:
         self.presenter.notify(PresNotification.MOVE_STACK,
                               origin_dataset_id=origin_dataset_id,
                               stack_id=stack_id,
                               destination_stack_type=destination_stack_type,
                               destination_dataset_id=destination_dataset_id)
 
-    def show_image_save_dialog(self):
+    def show_image_save_dialog(self) -> None:
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
         self.image_save_dialog.show()
 
-    def show_nexus_save_dialog(self):
+    def show_nexus_save_dialog(self) -> None:
         self.nexus_save_dialog = NexusSaveDialog(self, self.strict_dataset_list)
         self.nexus_save_dialog.show()
 
-    def show_settings_window(self):
+    def show_settings_window(self) -> None:
         if not self.settings_window:
             self.settings_window = SettingsWindowView(self)
             self.settings_window.show()
@@ -417,7 +438,7 @@ class MainWindowView(BaseMainWindowView):
             self.settings_window.raise_()
             self.settings_window.show()
 
-    def show_recon_window(self):
+    def show_recon_window(self) -> None:
         if not self.recon:
             self.recon = ReconstructWindowView(self)
             self.recon.show()
@@ -426,7 +447,7 @@ class MainWindowView(BaseMainWindowView):
             self.recon.raise_()
             self.recon.show()
 
-    def show_filters_window(self):
+    def show_filters_window(self) -> None:
         if not self.filters:
             self.filters = FiltersWindowView(self)
             self.filters.filter_applied.connect(self.stack_changed.emit)
@@ -435,7 +456,7 @@ class MainWindowView(BaseMainWindowView):
             self.filters.activateWindow()
             self.filters.raise_()
 
-    def show_spectrum_viewer_window(self):
+    def show_spectrum_viewer_window(self) -> None:
         if not self.spectrum_viewer:
             self.spectrum_viewer = SpectrumViewerWindowView(self)
             self.spectrum_viewer.show()
@@ -462,18 +483,18 @@ class MainWindowView(BaseMainWindowView):
             self.live_viewer.show()
 
     @property
-    def stack_list(self):
+    def stack_list(self) -> list[StackVisualiserView]:
         return self.presenter.stack_visualiser_list
 
     @property
-    def strict_dataset_list(self):
+    def strict_dataset_list(self) -> list[StrictDataset]:
         return self.presenter.strict_dataset_list
 
     @property
-    def stack_names(self):
+    def stack_names(self) -> list[str]:
         return self.presenter.stack_visualiser_names
 
-    def get_stack_visualiser(self, stack_uuid):
+    def get_stack_visualiser(self, stack_uuid) -> StackVisualiserView:
         return self.presenter.get_stack_visualiser(stack_uuid)
 
     def get_stack(self, stack_uuid: uuid.UUID) -> ImageStack:
@@ -491,13 +512,13 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stacks(self) -> list[ImageStack]:
         return self.presenter.get_all_stacks()
 
-    def get_all_180_projections(self):
+    def get_all_180_projections(self) -> list[ImageStack]:
         return self.presenter.get_all_180_projections()
 
-    def get_stack_history(self, stack_uuid):
+    def get_stack_history(self, stack_uuid) -> list[str]:
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 
-    def create_new_stack(self, images: ImageStack):
+    def create_new_stack(self, images: ImageStack) -> None:
         self.presenter.create_single_tabbed_images_stack(images)
 
     def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:
@@ -522,10 +543,10 @@ class MainWindowView(BaseMainWindowView):
         self.presenter.add_stack_to_dictionary(stack_vis)
         return stack_vis
 
-    def rename_stack(self, current_name: str, new_name: str):
+    def rename_stack(self, current_name: str, new_name: str) -> None:
         self.presenter.notify(PresNotification.RENAME_STACK, current_name=current_name, new_name=new_name)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event) -> None:
         """
         Handles a request to quit the application from the user.
         """
@@ -559,31 +580,36 @@ class MainWindowView(BaseMainWindowView):
             # Ignore the close event, keeping window open
             event.ignore()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         # Release shared memory from loaded stacks
         for stack in self.get_all_stacks():
-            stack.shared_array = None
+            stack.clear_shared_array()
 
     def uncaught_exception(self, user_error_msg: str, log_error_msg: str) -> None:
         getLogger(__name__).error(log_error_msg)
         self.show_error_dialog(f"Uncaught exception {user_error_msg}")
 
-    def show_stack_select_dialog(self):
+    def show_stack_select_dialog(self) -> None:
         dialog = MultipleStackSelect(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            one = self.presenter.get_stack(dialog.stack_one.current())
-            two = self.presenter.get_stack(dialog.stack_two.current())
+            stack_one_id = dialog.stack_one.current()
+            stack_two_id = dialog.stack_two.current()
+
+            if stack_one_id is None or stack_two_id is None:
+                QMessageBox.critical(self, "Error", "Please select valid stacks.")
+                return
+
+            one = self.presenter.get_stack(stack_one_id)
+            two = self.presenter.get_stack(stack_two_id)
 
             stack_choice = StackComparePresenter(one, two, self)
             stack_choice.show()
 
-            return stack_choice
-
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
             if not os.path.exists(file_path):
@@ -600,7 +626,7 @@ class MainWindowView(BaseMainWindowView):
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
                 return
 
-    def ask_to_use_closest_to_180(self, diff_rad: float):
+    def ask_to_use_closest_to_180(self, diff_rad: float) -> bool:
         """
         Asks the user if they want to use the projection that is closest to 180 degrees as the 180deg.
         :param diff_rad: The difference from the closest projection to 180 in radians.
@@ -618,7 +644,7 @@ class MainWindowView(BaseMainWindowView):
         return dataset_tree_item
 
     @staticmethod
-    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str):
+    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str) -> None:
         child = QTreeDatasetWidgetItem(parent, dataset_id)
         child.setText(0, name)
         parent.addChild(child)
@@ -635,11 +661,11 @@ class MainWindowView(BaseMainWindowView):
                 return child
         return None
 
-    def add_item_to_tree_view(self, item: QTreeWidgetItem):
+    def add_item_to_tree_view(self, item: QTreeWidgetItem) -> None:
         self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
         item.setExpanded(True)
 
-    def _open_tree_menu(self, position: QPoint):
+    def _open_tree_menu(self, position: QPoint) -> None:
         """
         Opens the tree view menu.
         :param position: The position of the cursor when the menu was opened relative to the main window.
@@ -658,32 +684,32 @@ class MainWindowView(BaseMainWindowView):
 
         self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
-    def _delete_container(self):
+    def _delete_container(self) -> None:
         """
         Sends the signal to the presenter to delete data corresponding with an item on the dataset tree view.
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.REMOVE_STACK, container_id=container_id)
 
-    def _add_images_to_existing_dataset(self):
+    def _add_images_to_existing_dataset(self) -> None:
         """
         Notifies presenter to add image stack of dataset of the selected item.
         """
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=container_id)
 
-    def _move_stack(self):
+    def _move_stack(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)
 
-    def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem):
+    def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem) -> None:
         """
         Sends the signal to the presenter to bring a make a stack tab visible and bring it to the front.
         :param item: The QTreeDatasetWidgetItem that was clicked.
         """
         self.presenter.notify(PresNotification.FOCUS_TAB, stack_id=item.id)
 
-    def add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID):
+    def add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID) -> None:
         self.presenter.notify(PresNotification.ADD_RECON, recon_data=recon_data, stack_id=stack_id)
 
     @staticmethod
@@ -731,7 +757,7 @@ class MainWindowView(BaseMainWindowView):
         """
         return SINO_TEXT
 
-    def show_add_stack_to_existing_dataset_dialog(self, dataset_id: uuid.UUID):
+    def show_add_stack_to_existing_dataset_dialog(self, dataset_id: uuid.UUID) -> None:
         """
         Displays the dialog for adding an image stack to an existing dataset.
         :param dataset_id: The ID of the dataset to update.
@@ -743,11 +769,11 @@ class MainWindowView(BaseMainWindowView):
                                                               dataset.name)
         self.add_to_dataset_dialog.show()
 
-    def _on_tab_bar_clicked(self, stack: StackVisualiserView):
+    def _on_tab_bar_clicked(self, stack: StackVisualiserView) -> None:
         self.presenter.notify(Notification.TAB_CLICKED, stack=stack)
 
     def show_move_stack_dialog(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
-                               stack_data_type: str):
+                               stack_data_type: str) -> None:
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
         self.move_stack_dialog.show()
