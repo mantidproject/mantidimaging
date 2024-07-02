@@ -318,6 +318,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Add a new ROI to the spectrum
         """
         roi_name = self.model.roi_name_generator()
+        if roi_name in self.view.spectrum_widget.roi_dict:
+            raise ValueError(f"ROI name already exists: {roi_name}")
         self.model.set_new_roi(roi_name)
         self.view.spectrum_widget.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.set_spectrum(
