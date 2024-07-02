@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import logging
 import os
 from logging import getLogger
 from multiprocessing import shared_memory
@@ -144,22 +145,33 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
     progress.mark_complete()
 
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
+
 class SharedArray:
 
-    def __init__(self, array: np.ndarray, shared_memory: SharedMemory | None, free_mem_on_del: bool = True):
+    def __init__(self,
+                 array: np.ndarray,
+                 shared_memory: shared_memory.SharedMemory | None = None,
+                 free_mem_on_del: bool = True):
         self.array = array
         self._shared_memory = shared_memory
         self._free_mem_on_del = free_mem_on_del
 
-    def __del__(self):
-        if self.has_shared_memory:
-            self._shared_memory.close()
-            if self._free_mem_on_del:
-                try:
-                    self._shared_memory.unlink()
-                except FileNotFoundError:
-                    # Do nothing, memory has already been freed
-                    pass
+        if shared_memory is None:
+            self._initialize_shared_memory(array.shape, array.dtype)
+        logger.debug(f"SharedArray initialized with shape {array.shape} and dtype {array.dtype}")
+
+    def _initialize_shared_memory(self, shape: tuple[int, ...], dtype: npt.DTypeLike):
+        try:
+            self._shared_memory = shared_memory.SharedMemory(create=True,
+                                                             size=np.prod(shape) * np.dtype(dtype).itemsize)
+            self.array = np.ndarray(shape, dtype=dtype, buffer=self._shared_memory.buf)
+            logger.debug(f"Shared memory created with name {self._shared_memory.name}")
+        except Exception as e:
+            logger.error(f"Error initializing shared memory: {e}")
+            raise
 
     @property
     def has_shared_memory(self) -> bool:
@@ -170,6 +182,22 @@ class SharedArray:
         mem_name = self._shared_memory.name if self._shared_memory else None
         return SharedArrayProxy(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
 
+    def __del__(self):
+        try:
+            if self.has_shared_memory:
+                logger.debug(f"Closing shared memory {self._shared_memory.name}")
+                self._shared_memory.close()
+                if self._free_mem_on_del:
+                    try:
+                        logger.debug(f"Unlinking shared memory {self._shared_memory.name}")
+                        self._shared_memory.unlink()
+                    except FileNotFoundError:
+                        logger.debug("Shared memory already unlinked")
+                    except Exception as e:
+                        logger.error(f"Error unlinking shared memory: {e}")
+        except Exception as e:
+            logger.error(f"Error during SharedArray cleanup: {e}")
+
 
 class SharedArrayProxy:
 
@@ -179,9 +207,15 @@ class SharedArrayProxy:
         self._dtype = dtype
         self._shared_array: SharedArray | None = None
 
-    @property
-    def array(self) -> np.ndarray:
-        if self._shared_array is None:
-            mem = shared_memory.SharedMemory(name=self._mem_name)
-            self._shared_array = _read_array_from_shared_memory(self._shape, self._dtype, mem, False)
+    def connect(self) -> np.ndarray:
+        if self._shared_array is None and self._mem_name is not None:
+            try:
+                shm = shared_memory.SharedMemory(name=self._mem_name)
+                array = np.ndarray(self._shape, dtype=self._dtype, buffer=shm.buf)
+                self._shared_array = SharedArray(array=array, shared_memory=shm, free_mem_on_del=False)
+                logger.debug(f"Connected to shared memory {self._mem_name}")
+            except Exception as e:
+                logger.error(f"Error connecting to shared memory: {e}")
+                raise
+        assert self._shared_array is not None, "SharedArray is not initialized"
         return self._shared_array.array

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -26,65 +26,71 @@ def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_18
 
 
 def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degrees]:
-    # assume the ROI is the full image, i.e. the slices are ALL rows of the image
+    if images is None or images.proj180deg is None:
+        raise ValueError("images and images.proj180deg cannot be None")
+    # Assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
-    shift = pu.create_array((images.height, ))
+    shift = pu.create_array((images.height, ), dtype=np.float32)
 
     search_range = get_search_range(images.width)
-    min_correlation_error = pu.create_array((len(search_range), images.height))
-    shared_search_range = pu.create_array((len(search_range), ), dtype=np.int32)
-    shared_search_range.array[:] = np.asarray(search_range, dtype=np.int32)
-    _calculate_correlation_error(images, shared_search_range, min_correlation_error, progress)
+    search_range_list = list(search_range)
+    min_correlation_error = pu.create_array((len(search_range), images.height), dtype=np.float32)
+    shared_search_range = pu.create_array((len(search_range_list), ), dtype=np.int32)
+    shared_search_range.array[:] = np.asarray(search_range_list, dtype=np.int32)
 
+    # Copy projections to shared memory
+    shared_projections = pu.create_array((2, images.height, images.width), dtype=np.float32)
+    shared_projections.array[0][:] = images.projection(0)
+    shared_projections.array[1][:] = np.fliplr(images.proj180deg.data[0])
+
+    # Run compute function parallel
+    params = {
+        'shared_projections': shared_projections,
+        'shared_search_range': shared_search_range,
+        'image_width': images.width,
+    }
+    ps.run_compute_func(compute_correlation_error,
+                        len(search_range_list), [min_correlation_error],
+                        params,
+                        progress=progress)
     # Originally the output of do_search is stored in dimensions
     # corresponding to (search_range, square sum). This is awkward to navigate
     # we transpose store to make the array hold (square sum, search range)
     # so that each store[row] accesses the information for the row's square sum across all search ranges
-    _find_shift(images, search_range, min_correlation_error.array, shift.array)
+    _find_shift(images, search_range_list, min_correlation_error.array, shift.array)
 
     par = np.polyfit(slices, shift.array, deg=1)
     m = par[0]
-    q = par[1]
-    LOG.debug(f"m={m}, q={q}")
-    theta = Degrees(np.rad2deg(np.arctan(0.5 * m)))
-    offset = np.round(m * images.height * 0.5 + q) * 0.5
-    LOG.info(f"found offset: {-offset} and tilt {theta}")
+    offset = m * images.h_middle
+
+    theta = Degrees(np.rad2deg(np.arctan(m)))
     return ScalarCoR(images.h_middle + -offset), theta
 
 
-def _calculate_correlation_error(images, shared_search_range, min_correlation_error, progress):
-    # if the projections are passed in the partial they are copied to every process on every iteration
-    # this makes the multiprocessing significantly slower
-    # so they are copied into a shared array to avoid that copying
-    shared_projections = pu.create_array((2, images.height, images.width))
-    shared_projections.array[0][:] = images.projection(0)
-    shared_projections.array[1][:] = np.fliplr(images.proj180deg.data[0])
+def compute_correlation_error(index: int, min_correlation_error: np.ndarray, params: dict[str, Any]):
+    shared_projections = params['shared_projections'].array
+    shared_search_range = params['shared_search_range'].array
+    image_width = params['image_width']
 
-    do_search_partial = ps.create_partial(do_calculate_correlation_err, ps.inplace3, image_width=images.width)
-
-    arrays = [min_correlation_error, shared_search_range, shared_projections]
-    ps.execute(do_search_partial,
-               arrays,
-               num_operations=min_correlation_error.array.shape[0],
-               progress=progress,
-               msg="Finding correlation on row")
+    search_index = shared_search_range[index]
+    do_calculate_correlation_err(min_correlation_error[index], search_index,
+                                 (shared_projections[0], shared_projections[1]), image_width)
 
 
-def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray, shift: np.ndarray):
+def _find_shift(images: ImageStack, search_range: list[int], min_correlation_error: np.ndarray, shift: np.ndarray):
+    # Then we just find the index of the minimum one (minimum error)
     min_correlation_error = np.transpose(min_correlation_error)
+    # argmin returns a list of where the minimum argument is found
+    # just in case that happens - get the first minimum one, should be close enough
     for row in range(images.height):
-        # then we just find the index of the minimum one (minimum error)
         min_arg_positions = min_correlation_error[row].argmin()
-        # argmin returns a list of where the minimum argument is found
-        # just in case that happens - get the first minimum one, should be close enough
         min_arg = min_arg_positions if isinstance(min_arg_positions, np.int64) else min_arg_positions[0]
-        # and we get which search range is at that index
+        # And we get which search range is at that index
         # that is the number that we then pass into polyfit
         shift[row] = search_range[min_arg]
 
 
-def get_search_range(width):
+def get_search_range(width: int) -> range:
     tmin = -width // 2
     tmax = width - width // 2
-    search_range = range(tmin, tmax + 1)
-    return search_range
+    return range(tmin, tmax + 1)
