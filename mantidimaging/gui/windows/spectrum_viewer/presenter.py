@@ -56,9 +56,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
-        self.main_window.stack_changed.connect(self.handle_stack_changed)
+        self.main_window.stack_changed.connect(self.handle_stack_modified)
 
-    def handle_stack_changed(self) -> None:
+    def handle_stack_modified(self) -> None:
+        """
+        Called when an image stack is modified somewhere else in MI, for example in the operations window
+        """
         if self.current_stack_uuid:
             self.model.set_stack(self.main_window.get_stack(self.current_stack_uuid))
         else:
@@ -79,6 +82,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.redraw_all_rois()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
+        """
+        Called when the stack has been changed in the stack selector.
+        """
         if uuid == self.current_stack_uuid:
             return
         else:
@@ -318,6 +324,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Add a new ROI to the spectrum
         """
         roi_name = self.model.roi_name_generator()
+        if roi_name in self.view.spectrum_widget.roi_dict:
+            raise ValueError(f"ROI name already exists: {roi_name}")
         self.model.set_new_roi(roi_name)
         self.view.spectrum_widget.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.set_spectrum(

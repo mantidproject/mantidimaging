@@ -131,7 +131,6 @@ class SpectrumViewerWindowModel:
         self._stack = stack
         if stack is None:
             return
-        self._roi_id_counter = 0
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.tof_range_full = self.tof_range
         self.tof_data = self.get_stack_time_of_flight()
@@ -552,6 +551,7 @@ class SpectrumViewerWindowModel:
         """
         Remove all ROIs from the model
         """
+        self._roi_id_counter = 0
         self._roi_ranges = {}
 
     def set_relevant_tof_units(self) -> None:

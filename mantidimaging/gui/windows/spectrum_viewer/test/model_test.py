@@ -366,6 +366,15 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertEqual(self.model.roi_name_generator(), "roi_2")
         self.assertEqual(self.model.roi_name_generator(), "roi_3")
 
+    def test_WHEN_rois_deleted_THEN_name_generator_is_reset(self):
+        self.assertEqual(self.model.roi_name_generator(), "roi")
+        self.assertEqual(self.model.roi_name_generator(), "roi_1")
+        self.assertEqual(self.model.roi_name_generator(), "roi_2")
+        self.model.remove_all_roi()
+        self.assertEqual(self.model.roi_name_generator(), "roi")
+        self.assertEqual(self.model.roi_name_generator(), "roi_1")
+        self.assertEqual(self.model.roi_name_generator(), "roi_2")
+
     def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
         self.model.set_stack(generate_images())
         self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
