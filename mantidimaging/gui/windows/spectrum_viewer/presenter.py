@@ -59,6 +59,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window.stack_changed.connect(self.handle_stack_changed)
 
     def handle_stack_changed(self) -> None:
+        """
+        Called when an image stack is modified somewhere else in MI, for example in the operations window
+        """
         if self.current_stack_uuid:
             self.model.set_stack(self.main_window.get_stack(self.current_stack_uuid))
         else:
@@ -79,6 +82,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.redraw_all_rois()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
+        """
+        Called when the stack has been changed in the stack selector.
+        """
         if uuid == self.current_stack_uuid:
             return
         else:
