@@ -56,9 +56,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
-        self.main_window.stack_changed.connect(self.handle_stack_changed)
+        self.main_window.stack_changed.connect(self.handle_stack_modified)
 
-    def handle_stack_changed(self) -> None:
+    def handle_stack_modified(self) -> None:
         """
         Called when an image stack is modified somewhere else in MI, for example in the operations window
         """
