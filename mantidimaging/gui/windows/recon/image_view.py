@@ -51,7 +51,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.enable_nonpositive_check()
         self.imageview_sinogram.enable_nonpositive_check()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.imageview_projection.cleanup()
         self.imageview_sinogram.cleanup()
         self.imageview_recon.cleanup()
@@ -60,10 +60,10 @@ class ReconImagesView(GraphicsLayoutWidget):
         del self.imageview_sinogram
         del self.imageview_recon
 
-    def slice_line_moved(self):
+    def slice_line_moved(self) -> None:
         self.slice_changed(int(self.slice_line.value()))
 
-    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Degrees | None):
+    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Degrees | None) -> None:
         self.imageview_projection.clear()
         self.imageview_projection.setImage(image_data)
         self.imageview_projection.histogram.imageChanged(autoLevel=True, autoRange=True)
@@ -75,13 +75,13 @@ class ReconImagesView(GraphicsLayoutWidget):
             self.hide_tilt()
         set_histogram_log_scale(self.imageview_projection.histogram)
 
-    def update_sinogram(self, image):
+    def update_sinogram(self, image) -> None:
         self.imageview_sinogram.clear()
         self.imageview_sinogram.setImage(image)
         self.imageview_sinogram.histogram.imageChanged(autoLevel=True, autoRange=True)
         set_histogram_log_scale(self.imageview_sinogram.histogram)
 
-    def update_recon(self, image_data, reset_roi: bool = False):
+    def update_recon(self, image_data, reset_roi: bool = False) -> None:
         self.imageview_recon.clear()
         self.imageview_recon.setImage(image_data, autoLevels=False)
         set_histogram_log_scale(self.imageview_recon.histogram)
@@ -90,34 +90,34 @@ class ReconImagesView(GraphicsLayoutWidget):
         else:
             self.recon_line_profile.update()
 
-    def update_recon_hist(self):
+    def update_recon_hist(self) -> None:
         self.imageview_recon.histogram.imageChanged(autoLevel=True, autoRange=True)
 
-    def mouse_click(self, ev, line: InfiniteLine):
+    def mouse_click(self, ev, line: InfiniteLine) -> None:
         line.setPos(ev.pos())
         self.slice_changed(CloseEnoughPoint(ev.pos()).y)
 
-    def slice_changed(self, slice_index):
+    def slice_changed(self, slice_index) -> None:
         self.parent.presenter.do_preview_reconstruct_slice(slice_idx=slice_index)
         self.sigSliceIndexChanged.emit(slice_index)
 
-    def clear_recon(self):
+    def clear_recon(self) -> None:
         self.imageview_recon.clear()
 
-    def clear_recon_line_profile(self):
+    def clear_recon_line_profile(self) -> None:
         self.recon_line_profile.clear_plot()
 
-    def clear_sinogram(self):
+    def clear_sinogram(self) -> None:
         self.imageview_sinogram.clear()
 
-    def clear_projection(self):
+    def clear_projection(self) -> None:
         self.imageview_projection.clear()
 
-    def reset_slice_and_tilt(self, slice_index):
+    def reset_slice_and_tilt(self, slice_index) -> None:
         self.slice_line.setPos(slice_index)
         self.hide_tilt()
 
-    def hide_tilt(self):
+    def hide_tilt(self) -> None:
         """
         Hides the tilt line. This stops infinite zooming out loop that messes up the image view
         (the line likes to be unbound when the degree isn't a multiple o 90 - and the tilt never is)
@@ -126,7 +126,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         if self.tilt_line.scene() is not None:
             self.imageview_projection.viewbox.removeItem(self.tilt_line)
 
-    def set_tilt(self, tilt: Degrees, pos: int | None = None):
+    def set_tilt(self, tilt: Degrees, pos: int | None = None) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
             if pos is not None:
                 self.tilt_line.setAngle(90)
@@ -134,5 +134,5 @@ class ReconImagesView(GraphicsLayoutWidget):
             self.tilt_line.setAngle(90 + tilt.value)
         self.imageview_projection.viewbox.addItem(self.tilt_line)
 
-    def reset_recon_histogram(self):
+    def reset_recon_histogram(self) -> None:
         self.imageview_recon.histogram.autoHistogramRange()

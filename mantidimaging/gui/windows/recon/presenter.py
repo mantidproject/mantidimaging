@@ -251,7 +251,7 @@ class ReconstructWindowPresenter(BasePresenter):
                                      cor=None,
                                      slice_idx: int | None = None,
                                      force_update: bool = False,
-                                     reset_roi: bool = False):
+                                     reset_roi: bool = False) -> None:
         if self.model.images is None:
             self.view.reset_recon_and_sino_previews()
             return
@@ -262,7 +262,7 @@ class ReconstructWindowPresenter(BasePresenter):
             on_preview_complete = partial(self._on_preview_reconstruct_slice_done, reset_roi=reset_roi)
             self._get_reconstruct_slice(cor, slice_idx, on_preview_complete)
 
-    def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread, reset_roi: bool = False):
+    def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread, reset_roi: bool = False) -> None:
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
@@ -273,12 +273,12 @@ class ReconstructWindowPresenter(BasePresenter):
             # will still be available after this function ends
             self.view.update_recon_preview(np.copy(images.data[0]), reset_roi)
 
-    def do_stack_reconstruct_slice(self, cor=None, slice_idx: int | None = None):
+    def do_stack_reconstruct_slice(self, cor=None, slice_idx: int | None = None) -> None:
         self.view.set_recon_buttons_enabled(False)
         slice_idx = self._get_slice_index(slice_idx)
         self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)
 
-    def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread):
+    def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             self.view.set_recon_buttons_enabled(True)
@@ -291,7 +291,14 @@ class ReconstructWindowPresenter(BasePresenter):
                 assert self.model.images is not None
                 images.name = self.create_recon_output_filename("Recon_Slice")
                 self._replace_inf_nan(images)  # pyqtgraph workaround
-                self.view.show_recon_volume(images, self.model.stack_id)
+
+                stack_id = self.model.stack_id  # This might be a UUID or None
+                if stack_id is None:
+                    self.view.show_error_dialog("Stack ID is missing. Cannot display reconstruction.")
+                    return
+
+                self.view.show_recon_volume(images, stack_id)
+
                 images.record_operation('AstraRecon.single_sino',
                                         'Slice Reconstruction',
                                         slice_idx=slice_idx,
@@ -299,7 +306,7 @@ class ReconstructWindowPresenter(BasePresenter):
         finally:
             self.view.set_recon_buttons_enabled(True)
 
-    def _do_refine_selected_cor(self):
+    def _do_refine_selected_cor(self) -> None:
         selected_rows = self.view.get_cor_table_selected_rows()
         if len(selected_rows):
             slice_idx = self.model.slices[selected_rows[0]]
@@ -339,7 +346,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
 
-    def _on_volume_recon_done(self, task) -> None:
+    def _on_volume_recon_done(self, task: TaskWorkerThread) -> None:
         self.recon_is_running = False
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
@@ -354,22 +361,22 @@ class ReconstructWindowPresenter(BasePresenter):
         finally:
             self.view.set_recon_buttons_enabled(True)
 
-    def do_clear_all_cors(self):
+    def do_clear_all_cors(self) -> None:
         self.view.clear_cor_table()
         self.model.reset_selected_row()
 
-    def do_remove_selected_cor(self):
+    def do_remove_selected_cor(self) -> None:
         self.view.remove_selected_cor()
 
-    def set_last_cor(self, cor):
+    def set_last_cor(self, cor: ScalarCoR) -> None:
         self.model.last_cor = ScalarCoR(cor)
 
-    def do_calculate_cors_from_manual_tilt(self):
+    def do_calculate_cors_from_manual_tilt(self) -> None:
         cor = ScalarCoR(self.view.rotation_centre)
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
-    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees):
+    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)
         self.view.set_results(*self.model.get_results())
         for idx, point in enumerate(self.model.data_model.iter_points()):
@@ -385,7 +392,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         self.recon_is_running = True
 
-        def completed(task: TaskWorkerThread):
+        def completed(task: TaskWorkerThread) -> None:
             if task.result is None and task.error is not None:
                 selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
                 self.view.show_error_dialog(
@@ -439,7 +446,7 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def proj_180_degree_shape_matches_images(self, images) -> bool:
+    def proj_180_degree_shape_matches_images(self, images) -> None:
         return self.model.proj_180_degree_shape_matches_images(images)
 
     def _do_nan_zero_negative_check(self) -> None:

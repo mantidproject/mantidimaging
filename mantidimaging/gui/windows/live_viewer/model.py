@@ -277,7 +277,7 @@ class ImageWatcher(QObject):
         image_extensions = ('tif', 'tiff', 'fits')
         return file_name.rpartition(".")[2].lower() in image_extensions
 
-    def remove_path(self):
+    def remove_path(self) -> None:
         """
         Remove the currently set path
         """
@@ -292,22 +292,22 @@ class ImageWatcher(QObject):
         self.recent_file_watcher.removePaths(self.recent_file_watcher.files())
         self.recent_file_watcher.addPaths([str(image.image_path) for image in images])
 
-    def handle_image_modified(self, file_path):
+    def handle_image_modified(self, file_path) -> None:
         self.recent_image_changed.emit(Path(file_path))
 
-    def add_sub_directory(self, sub_dir: SubDirectory):
+    def add_sub_directory(self, sub_dir: SubDirectory) -> None:
         if sub_dir.path not in self.sub_directories:
             self.watcher.addPath(str(sub_dir.path))
 
         self.sub_directories[sub_dir.path] = sub_dir
 
-    def remove_sub_directory(self, sub_dir: Path):
+    def remove_sub_directory(self, sub_dir: Path) -> None:
         if sub_dir in self.sub_directories:
             self.watcher.removePath(str(sub_dir))
 
         del self.sub_directories[sub_dir]
 
-    def clear_deleted_sub_directories(self, directory: Path):
+    def clear_deleted_sub_directories(self, directory: Path) -> None:
         for sub_dir in list(self.sub_directories):
             if sub_dir.is_relative_to(directory) and not sub_dir.exists():
                 self.remove_sub_directory(sub_dir)
