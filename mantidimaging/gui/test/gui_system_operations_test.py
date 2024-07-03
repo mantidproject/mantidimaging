@@ -46,6 +46,12 @@ OP_LIST = [
     ("Rotate Stack", []),
 ]
 
+ALLOWED_ERRORS = [
+    'Negative values found in result preview for slice 0.',
+    'Flat-fielding completed. Slices containing negative values in IMAT_Flower_Tomo_000000: all slices.',
+    'Error applying filter for preview: could not broadcast input array from shape (1,80,80) into shape (1,90,90)'
+]
+
 
 @start_multiprocessing_pool
 class TestGuiSystemOperations(GuiSystemBase):
@@ -96,7 +102,8 @@ class TestGuiSystemOperations(GuiSystemBase):
         raise ValueError(f"Could not find '{button_name}' in form")
 
     @parameterized.expand(OP_LIST)
-    def test_run_operation_stack(self, op_name, params):
+    @mock.patch("mantidimaging.gui.windows.operations.FiltersWindowView.show_error_dialog")
+    def test_run_operation_stack(self, op_name, params, mock_error_dialog):
         QTest.qWait(SHOW_DELAY)
         index = self.op_window.filterSelector.findText(op_name)
         self.assertGreaterEqual(index, 0, f'Operation "{op_name}" not found in filterSelector')
@@ -114,6 +121,12 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.mouseClick(self.op_window.applyButton, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
+
+        caught_errors = mock_error_dialog.call_args_list
+        for caught_args in caught_errors:
+            caught_error = caught_args[0][0]
+            if caught_error not in ALLOWED_ERRORS:
+                raise AssertionError(f"Operation gave error: {caught_error}")
 
     @parameterized.expand(product(OP_LIST[:3], ["new", "original"]))
     def test_run_operation_stack_safe(self, op_info, keep_stack):
