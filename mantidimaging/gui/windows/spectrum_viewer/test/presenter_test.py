@@ -234,6 +234,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.do_add_roi()
         self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
 
+    def test_WHEN_do_add_roi_given_dupelicate_THEN_exception_raised(self):
+        self.presenter.model.set_stack(generate_images())
+        with (mock.patch.object(self.presenter.model, "roi_name_generator") as
+              mocked_generator, mock.patch.object(self.view, "spectrum_widget") as mocked_spectrum_widget):
+            mocked_generator.return_value = "roi"
+            mocked_spectrum_widget.roi_dict = {"all": mock.Mock, "roi": mock.Mock}
+            self.assertRaises(ValueError, self.presenter.do_add_roi)
+
     def test_WHEN_do_add_roi_to_table_called_THEN_roi_added_to_table(self):
         self.presenter.model.set_stack(generate_images())
         self.presenter.do_add_roi()
