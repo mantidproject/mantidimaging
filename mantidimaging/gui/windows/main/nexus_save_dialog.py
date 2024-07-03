@@ -6,8 +6,8 @@ import uuid
 
 from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.windows.main.presenter import DatasetId
 
 NXS_EXT = ".nxs"
 
@@ -18,7 +18,7 @@ class NexusSaveDialog(BaseDialogView):
     floatRadioButton: QRadioButton
     intRadioButton: QRadioButton
 
-    def __init__(self, parent, dataset_list: list[StrictDataset]):
+    def __init__(self, parent, dataset_list: list[DatasetId]):
         super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
 
         self.browseButton.clicked.connect(self._set_save_path)

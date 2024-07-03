@@ -7,7 +7,7 @@ import uuid
 from logging import getLogger
 from pathlib import Path
 import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 import numpy as np
@@ -30,7 +30,7 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification, DatasetId, StackId
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
@@ -483,11 +483,11 @@ class MainWindowView(BaseMainWindowView):
             self.live_viewer.show()
 
     @property
-    def stack_list(self) -> list[StackVisualiserView]:
+    def stack_list(self) -> list[StackId]:
         return self.presenter.stack_visualiser_list
 
     @property
-    def strict_dataset_list(self) -> list[StrictDataset]:
+    def strict_dataset_list(self) -> list[DatasetId]:
         return self.presenter.strict_dataset_list
 
     @property
@@ -515,7 +515,7 @@ class MainWindowView(BaseMainWindowView):
     def get_all_180_projections(self) -> list[ImageStack]:
         return self.presenter.get_all_180_projections()
 
-    def get_stack_history(self, stack_uuid) -> list[str]:
+    def get_stack_history(self, stack_uuid) -> dict[str, Any]:
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 
     def create_new_stack(self, images: ImageStack) -> None:
@@ -583,7 +583,7 @@ class MainWindowView(BaseMainWindowView):
     def cleanup(self) -> None:
         # Release shared memory from loaded stacks
         for stack in self.get_all_stacks():
-            stack.clear_shared_array()
+            stack.shared_array = None  # type: ignore # Only happens when cleaning up
 
     def uncaught_exception(self, user_error_msg: str, log_error_msg: str) -> None:
         getLogger(__name__).error(log_error_msg)
