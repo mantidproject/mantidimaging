@@ -29,13 +29,13 @@ class WelcomeScreenPresenter(BasePresenter):
 
         self.do_set_up()
 
-    def do_set_up(self):
+    def do_set_up(self) -> None:
         self.view.set_version_label(f"Mantid Imaging {versions.get_version()}")
         self.set_up_links()
         self.set_up_show_at_start()
         self.check_issues()
 
-    def show(self):
+    def show(self) -> None:
         self.view.show()
 
     @staticmethod
@@ -55,26 +55,26 @@ class WelcomeScreenPresenter(BasePresenter):
         else:
             return show_at_start
 
-    def set_up_links(self):
+    def set_up_links(self) -> None:
         for link_name, url in WELCOME_LINKS:
             self.add_link(link_name, url)
 
-    def add_link(self, link_name, url):
+    def add_link(self, link_name, url) -> None:
         rich_text = f'<a href="{url}">{link_name}</a>'
         self.view.add_link(rich_text, self.link_count)
         self.link_count += 1
 
-    def set_up_show_at_start(self):
+    def set_up_show_at_start(self) -> None:
         show_at_start = WelcomeScreenPresenter.show_at_start_enabled()
         self.view.set_show_at_start(show_at_start)
         self.show_at_start_changed()
 
-    def show_at_start_changed(self):
+    def show_at_start_changed(self) -> None:
         show_at_start = self.view.get_show_at_start()
         self.settings.setValue("welcome_screen/show_at_start", show_at_start)
         self.settings.setValue("welcome_screen/last_run_version", versions.get_version())
 
-    def check_issues(self):
+    def check_issues(self) -> None:
         issues = []
         if versions.needs_update():
             msg, detailed = versions.conda_update_message()

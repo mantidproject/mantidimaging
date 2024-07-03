@@ -32,16 +32,16 @@ class WizardPresenter(BasePresenter):
         self.handle_stack_change()
         self.show()
 
-    def show(self):
+    def show(self) -> None:
         self.view.show()
 
-    def populate(self):
+    def populate(self) -> None:
         for stage in self.wizard_data["stages"]:
             self.view.add_stage(stage["name"])
             for step in stage["steps"]:
                 self.view.add_step(stage["name"], step)
 
-    def run_action(self, action: str):
+    def run_action(self, action: str) -> None:
         if action == "load":
             self.main_window_presenter.wizard_action_load()
 

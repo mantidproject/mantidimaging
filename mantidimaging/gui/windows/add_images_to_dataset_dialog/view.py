@@ -33,10 +33,10 @@ class AddImagesToDatasetDialog(BaseDialogView):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.accepted.connect(self._on_accepted)
 
-    def _on_accepted(self):
+    def _on_accepted(self) -> None:
         self.presenter.notify(Notification.IMAGE_FILE_SELECTED)
 
-    def choose_file_path(self):
+    def choose_file_path(self) -> None:
         """
         Select a file in the stack path that we wish to add/replace in the dataset.
         """

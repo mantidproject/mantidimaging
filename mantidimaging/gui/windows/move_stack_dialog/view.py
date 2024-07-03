@@ -36,7 +36,7 @@ class MoveStackDialog(BaseDialogView):
         self.datasetSelector.subscribe_to_main_window(parent)
         self._on_destination_dataset_changed()
 
-    def accept(self):
+    def accept(self) -> None:
         self.presenter.notify(Notification.ACCEPTED)
         self.close()
 

@@ -74,7 +74,7 @@ class LoadPresenter:
                 if related_group:
                     self.update_field_with_filegroup(file_info, related_group)
 
-    def update_field_with_filegroup(self, file_info: FILE_TYPES, file_group: FilenameGroup):
+    def update_field_with_filegroup(self, file_info: FILE_TYPES, file_group: FilenameGroup) -> None:
         """
         Update the field with the given file group by finding all files in the group and setting them in the field.
 
