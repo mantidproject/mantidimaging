@@ -6,7 +6,7 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
@@ -88,7 +88,7 @@ class StackChoiceView(BaseMainWindowView):
         self.choice_made = False
         self.roi_shown = False
 
-    def _ensure_range_is_the_same(self):
+    def _ensure_range_is_the_same(self) -> None:
         new_range = self.new_stack.ui.histogram.getLevels()
         original_range = self.original_stack.ui.histogram.getLevels()
 
@@ -108,7 +108,7 @@ class StackChoiceView(BaseMainWindowView):
         self.original_stack.roi.maxBounds = self.original_stack.roi.parentBounds()
         self.new_stack.roi.maxBounds = self.new_stack.roi.parentBounds()
 
-    def _toggle_roi(self):
+    def _toggle_roi(self) -> None:
         if self.roi_shown:
             self.roi_shown = False
             self.original_stack.ui.roiBtn.setChecked(False)
@@ -122,7 +122,7 @@ class StackChoiceView(BaseMainWindowView):
             self.original_stack.roiClicked()
             self.new_stack.roiClicked()
 
-    def _setup_stack_for_view(self, stack: MIImageView, data: np.ndarray):
+    def _setup_stack_for_view(self, stack: MIImageView, data: np.ndarray) -> None:
         stack.setContentsMargins(4, 4, 4, 4)
         stack.setImage(data)
         stack.ui.menuBtn.hide()
@@ -134,33 +134,33 @@ class StackChoiceView(BaseMainWindowView):
         stack.details.setSizePolicy(details_size_policy)
         self.roiButton.clicked.connect(stack.roiClicked)
 
-    def _sync_roi_plot_for_new_stack_with_old_stack(self):
+    def _sync_roi_plot_for_new_stack_with_old_stack(self) -> None:
         self.new_stack.roi.sigRegionChanged.disconnect(self._sync_roi_plot_for_old_stack_with_new_stack)
         self.new_stack.roi.setPos(self.original_stack.roi.pos())
         self.new_stack.roi.setSize(self.original_stack.roi.size())
         self.new_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_old_stack_with_new_stack)
 
-    def _sync_roi_plot_for_old_stack_with_new_stack(self):
+    def _sync_roi_plot_for_old_stack_with_new_stack(self) -> None:
         self.original_stack.roi.sigRegionChanged.disconnect(self._sync_roi_plot_for_new_stack_with_old_stack)
         self.original_stack.roi.setPos(self.new_stack.roi.pos())
         self.original_stack.roi.setSize(self.new_stack.roi.size())
         self.original_stack.roi.sigRegionChanged.connect(self._sync_roi_plot_for_new_stack_with_old_stack)
 
-    def _sync_timelines_for_new_stack_with_old_stack(self, index, _):
+    def _sync_timelines_for_new_stack_with_old_stack(self, index, _) -> None:
         self.new_stack.sigTimeChanged.disconnect(self._sync_timelines_for_old_stack_with_new_stack)
         self.new_stack.setCurrentIndex(index)
         self.new_stack.sigTimeChanged.connect(self._sync_timelines_for_old_stack_with_new_stack)
 
-    def _sync_timelines_for_old_stack_with_new_stack(self, index, _):
+    def _sync_timelines_for_old_stack_with_new_stack(self, index, _) -> None:
         self.original_stack.sigTimeChanged.disconnect(self._sync_timelines_for_new_stack_with_old_stack)
         self.original_stack.setCurrentIndex(index)
         self.original_stack.sigTimeChanged.connect(self._sync_timelines_for_new_stack_with_old_stack)
 
-    def _sync_both_image_axis(self):
+    def _sync_both_image_axis(self) -> None:
         self.original_stack.view.linkView(ViewBox.XAxis, self.new_stack.view)
         self.original_stack.view.linkView(ViewBox.YAxis, self.new_stack.view)
 
-    def closeEvent(self, e):
+    def closeEvent(self, e: QEvent) -> None:
         # Confirm exit is actually wanted as it will lead to data loss
         if not self.choice_made:
             response = QMessageBox.warning(self, "Data Loss! Are you sure?",
@@ -190,7 +190,7 @@ class StackChoiceView(BaseMainWindowView):
         levels: tuple[float, float] = self.new_stack.ui.histogram.getLevels()
         self.original_stack.ui.histogram.setLevels(*levels)
 
-    def connect_histogram_changes(self):
+    def connect_histogram_changes(self) -> None:
         self._set_from_old_to_new()
 
         self.original_stack.ui.histogram.sigLevelsChanged.connect(self._set_from_old_to_new)
@@ -199,7 +199,7 @@ class StackChoiceView(BaseMainWindowView):
         self.new_stack.ui.histogram.vb.linkView(ViewBox.YAxis, self.original_stack.ui.histogram.vb)
         self.new_stack.ui.histogram.vb.linkView(ViewBox.XAxis, self.original_stack.ui.histogram.vb)
 
-    def disconnect_histogram_changes(self):
+    def disconnect_histogram_changes(self) -> None:
         self.original_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_old_to_new)
         self.new_stack.ui.histogram.sigLevelsChanged.disconnect(self._set_from_new_to_old)
 

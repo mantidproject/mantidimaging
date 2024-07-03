@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import typing
+
 import numpy as np
 import traceback
 from enum import IntEnum, auto
@@ -51,7 +53,7 @@ class StackVisualiserPresenter(BasePresenter):
         self.image_mode: SVImageMode = SVImageMode.NORMAL
         self.summed_image = None
 
-    def notify(self, signal):
+    def notify(self, signal: SVNotification) -> None:
         try:
             if signal == SVNotification.REFRESH_IMAGE:
                 self.refresh_image()
@@ -67,18 +69,18 @@ class StackVisualiserPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def delete_data(self):
+    def delete_data(self) -> None:
         self.images = None
         self.view.cleanup()
         self.view = None
 
-    def refresh_image(self):
+    def refresh_image(self) -> None:
         if self.image_mode is SVImageMode.SUMMED:
             self.view.image = self.summed_image
         else:
             self.view.set_image(self.images)
 
-    def get_parameter_value(self, parameter: SVParameters):
+    def get_parameter_value(self, parameter: SVParameters) -> typing.Any:
         """
         Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).
         :param parameter: The parameter value to be retrieved
@@ -89,7 +91,7 @@ class StackVisualiserPresenter(BasePresenter):
             raise ValueError("Invalid parameter name has been requested from the Stack "
                              f"Visualiser, parameter: {parameter}")
 
-    def toggle_image_mode(self):
+    def toggle_image_mode(self) -> None:
         if self.image_mode is SVImageMode.NORMAL:
             self.image_mode = SVImageMode.SUMMED
         else:
@@ -101,7 +103,7 @@ class StackVisualiserPresenter(BasePresenter):
             self.summed_image = self.model.sum_images(self.images.data)
         self.refresh_image()
 
-    def create_swapped_axis_stack(self):
+    def create_swapped_axis_stack(self) -> None:
         with operation_in_progress("Creating sinograms, copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_stack = self.images.copy(flip_axes=True)
@@ -109,21 +111,21 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
             self.add_sinograms_to_model_and_update_view(new_stack)
 
-    def dupe_stack(self):
+    def dupe_stack(self) -> None:
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy(flip_axes=False)
             new_images.name = self.images.name
             self.add_mixed_dataset_to_model_and_update_view(new_images)
 
-    def dupe_stack_roi(self):
+    def dupe_stack_roi(self) -> None:
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             new_images.name = self.images.name
             self.add_mixed_dataset_to_model_and_update_view(new_images)
 
-    def add_mixed_dataset_to_model_and_update_view(self, images: ImageStack):
+    def add_mixed_dataset_to_model_and_update_view(self, images: ImageStack) -> None:
         dataset = MixedDataset([images], images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.create_mixed_dataset_tree_view_items(dataset)
@@ -140,5 +142,5 @@ class StackVisualiserPresenter(BasePresenter):
                 return index
         return len(self.images.projection_angles().value)
 
-    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack):
+    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack) -> None:
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)

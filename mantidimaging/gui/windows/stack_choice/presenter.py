@@ -25,10 +25,10 @@ class StackChoicePresenter(StackChoicePresenterMixin):
         self.done = False
         self.use_new_data = False
 
-    def show(self):
+    def show(self) -> None:
         self.view.show()
 
-    def notify(self, signal):
+    def notify(self, signal: Notification) -> None:
         try:
             if signal == Notification.CHOOSE_ORIGINAL:
                 self.do_reapply_original_data()
@@ -40,21 +40,21 @@ class StackChoicePresenter(StackChoicePresenterMixin):
         except Exception as e:
             self.show_error(e, traceback.format_exc())
 
-    def do_reapply_original_data(self):
+    def do_reapply_original_data(self) -> None:
         self.new_stack.shared_array = self.original_stack.shared_array
         self.new_stack.metadata = self.original_stack.metadata
         self.view.choice_made = True
         self.close_view()
 
-    def do_clean_up_original_data(self):
+    def do_clean_up_original_data(self) -> None:
         self.view.choice_made = True
         self.close_view()
 
-    def close_view(self):
+    def close_view(self) -> None:
         self.view.close()
         self.original_stack = None
         self.done = True
 
-    def enable_nonpositive_check(self):
+    def enable_nonpositive_check(self) -> None:
         self.view.original_stack.enable_nonpositive_check()
         self.view.new_stack.enable_nonpositive_check()

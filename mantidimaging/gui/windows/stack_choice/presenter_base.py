@@ -13,11 +13,11 @@ class StackChoicePresenterMixin(BasePresenter):
     to be mixed into another presenter that extends it
     """
 
-    def notify(self, signal: Notification):
+    def notify(self, signal: Notification) -> None:
         if signal == Notification.TOGGLE_LOCK_HISTOGRAMS:
             self.do_toggle_lock_histograms()
 
-    def do_toggle_lock_histograms(self):
+    def do_toggle_lock_histograms(self) -> None:
         # The state of the button changes before this signal is triggered
         # so on first click you get isChecked = True
         histograms_should_lock = self.view.lockHistograms.isChecked()

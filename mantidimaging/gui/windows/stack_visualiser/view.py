@@ -2,14 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import uuid
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QGuiApplication, QCloseEvent
 from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import (SensibleROI)
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
 
@@ -81,11 +82,11 @@ class StackVisualiserView(QDockWidget):
             lambda: self.presenter.notify(SVNotification.REFRESH_IMAGE))
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.windowTitle()
 
     @name.setter
-    def name(self, name: str):
+    def name(self, name: str) -> None:
         self.setWindowTitle(name)
 
     @property
@@ -93,11 +94,11 @@ class StackVisualiserView(QDockWidget):
         return SensibleROI.from_points(*self.image_view.get_roi())
 
     @property
-    def image(self):
+    def image(self) -> np.ndarray:
         return self.image_view.imageItem
 
     @image.setter
-    def image(self, to_display: np.ndarray):
+    def image(self, to_display: np.ndarray) -> None:
         self.image_view.setImage(to_display)
 
     def set_image(self, image_stack: ImageStack):
@@ -109,23 +110,23 @@ class StackVisualiserView(QDockWidget):
         return self._main_window
 
     @property
-    def context_actions(self):
+    def context_actions(self) -> list[QAction]:
         return self._context_actions
 
     @property
-    def actions(self):
+    def actions(self) -> list[tuple[str, callable]]:
         return self._actions
 
     @property
-    def id(self):
+    def id(self) -> uuid.UUID:
         return self.presenter.images.id
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         self.setFloating(False)
         self.hide()
         super().closeEvent(event)
 
-    def roi_changed_callback(self, roi: SensibleROI):
+    def roi_changed_callback(self, roi: SensibleROI) -> None:
         self.roi_updated.emit(roi)
 
     def build_context_menu(self) -> QMenu:
@@ -133,7 +134,7 @@ class StackVisualiserView(QDockWidget):
         populate_menu(menu, self.actions)
         return menu
 
-    def goto_projection(self):
+    def goto_projection(self) -> None:
         projection_to_goto, accepted = QInputDialog.getInt(
             self,
             "Enter Projection",
@@ -145,7 +146,7 @@ class StackVisualiserView(QDockWidget):
         if accepted:
             self.image_view.set_selected_image(projection_to_goto)
 
-    def goto_angle(self):
+    def goto_angle(self) -> None:
         projection_to_goto, accepted = QInputDialog.getDouble(
             self,
             "Enter Angle",
@@ -158,7 +159,7 @@ class StackVisualiserView(QDockWidget):
         if accepted:
             self.image_view.set_selected_image(self.presenter.find_image_from_angle(projection_to_goto))
 
-    def set_roi(self):
+    def set_roi(self) -> None:
         roi, accepted = QInputDialog.getText(
             self,
             "Manual ROI",
@@ -170,11 +171,11 @@ class StackVisualiserView(QDockWidget):
             self.image_view.set_roi(roi)
             self.image_view.roi.show()
 
-    def copy_roi_to_clipboard(self):
+    def copy_roi_to_clipboard(self) -> None:
         pos, size = self.image_view.get_roi()
         QGuiApplication.clipboard().setText(f"{pos.x}, {pos.y}, {pos.x + size.x}, {pos.y + size.y}")
 
-    def change_window_name_clicked(self):
+    def change_window_name_clicked(self) -> None:
         new_window_name, ok = QInputDialog().getText(self,
                                                      "Change window name",
                                                      "Name:",
@@ -189,11 +190,11 @@ class StackVisualiserView(QDockWidget):
                 error.setText(f"There is already a window named {new_window_name}")
                 error.exec()
 
-    def show_image_metadata(self):
+    def show_image_metadata(self) -> None:
         dialog = MetadataDialog(self, self.presenter.images)
         dialog.show()
 
-    def mark_as_sinograms(self):
+    def mark_as_sinograms(self) -> None:
         # 1 is position of sinograms, 0 is projections
         current = 1 if self.presenter.images._is_sinograms else 0
         item, accepted = QInputDialog.getItem(self,
@@ -205,10 +206,10 @@ class StackVisualiserView(QDockWidget):
             self.presenter.images._is_sinograms = False if item == "projections" else True
             self._main_window.stack_changed.emit()
 
-    def ask_confirmation(self, msg: str):
+    def ask_confirmation(self, msg: str) -> bool:
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self._main_window.stack_changed.disconnect(self.connection_stack_changed)
         self.presenter = None
