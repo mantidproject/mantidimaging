@@ -90,9 +90,9 @@ class MedianFilter(BaseFilter):
         if size is None or size <= 1:
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
-        params = {'mode': mode, 'size': size, 'force_cpu': force_cpu, 'progress': progress}
+        params = {'mode': mode, 'size': size, 'force_cpu': force_cpu}
         if force_cpu:
-            ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params)
+            ps.run_compute_func(MedianFilter.compute_function, data.data.shape[0], data.shared_array, params, progress)
         else:
             _execute_gpu(data.data, size, mode, progress=None)
         return data
