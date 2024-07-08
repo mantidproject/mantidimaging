@@ -1,0 +1,1 @@
+#2242: In the Spectrum Viewer, the Export Tabs now disable when no image stacks are available to prevent a KeyError
