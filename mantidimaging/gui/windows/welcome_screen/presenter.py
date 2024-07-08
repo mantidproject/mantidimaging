@@ -59,7 +59,7 @@ class WelcomeScreenPresenter(BasePresenter):
         for link_name, url in WELCOME_LINKS:
             self.add_link(link_name, url)
 
-    def add_link(self, link_name, url) -> None:
+    def add_link(self, link_name: str, url: str) -> None:
         rich_text = f'<a href="{url}">{link_name}</a>'
         self.view.add_link(rich_text, self.link_count)
         self.link_count += 1
