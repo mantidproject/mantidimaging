@@ -589,21 +589,23 @@ class MainWindowView(BaseMainWindowView):
         getLogger(__name__).error(log_error_msg)
         self.show_error_dialog(f"Uncaught exception {user_error_msg}")
 
-    def show_stack_select_dialog(self) -> None:
+    from uuid import UUID
+
+    def show_stack_select_dialog(self) -> StackComparePresenter | None:
         dialog = MultipleStackSelect(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            stack_one_id = dialog.stack_one.current()
-            stack_two_id = dialog.stack_two.current()
+            stack_one_id: UUID | None = dialog.stack_one.current()
+            stack_two_id: UUID | None = dialog.stack_two.current()
 
-            if stack_one_id is None or stack_two_id is None:
-                QMessageBox.critical(self, "Error", "Please select valid stacks.")
-                return
+            if stack_one_id is not None and stack_two_id is not None:
+                one = self.presenter.get_stack(stack_one_id)
+                two = self.presenter.get_stack(stack_two_id)
 
-            one = self.presenter.get_stack(stack_one_id)
-            two = self.presenter.get_stack(stack_two_id)
+                stack_choice: StackComparePresenter = StackComparePresenter(one, two, self)
+                stack_choice.show()
 
-            stack_choice = StackComparePresenter(one, two, self)
-            stack_choice.show()
+                return stack_choice
+        return None
 
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
