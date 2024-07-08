@@ -137,7 +137,7 @@ class ReconstructWindowModel:
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
 
-    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ReconstructedObject:
+    def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
         if images is None:
@@ -146,7 +146,6 @@ class ReconstructWindowModel:
         # get the image height based on the current ROI
         recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
                                    progress)
-
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
 

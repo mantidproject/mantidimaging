@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 

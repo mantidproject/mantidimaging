@@ -368,7 +368,7 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_remove_selected_cor(self) -> None:
         self.view.remove_selected_cor()
 
-    def set_last_cor(self, cor: ScalarCoR) -> None:
+    def set_last_cor(self, cor) -> None:
         self.model.last_cor = ScalarCoR(cor)
 
     def do_calculate_cors_from_manual_tilt(self) -> None:
