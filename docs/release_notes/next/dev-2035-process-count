@@ -1,1 +1,0 @@
-#2035: Add setting for number of processes to start in multiprocessing pool (default to 8)
