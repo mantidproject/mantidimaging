@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
@@ -38,6 +38,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.exportButtonRITS = mock.create_autospec(QPushButton)
         self.view.normalise_ShutterCount_CheckBox = mock.create_autospec(QCheckBox)
         self.view.addBtn = mock.create_autospec(QPushButton)
+        self.view.exportTabs = mock.create_autospec(QTabWidget)
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
         self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)

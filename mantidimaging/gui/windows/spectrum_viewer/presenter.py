@@ -85,7 +85,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Called when the stack has been changed in the stack selector.
         """
-        print("handle_sample_change")
         if len(self.main_window.presenter.model.datasets) == 0:
             self.view.exportTabs.setDisabled(True)
         else:
