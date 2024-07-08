@@ -150,7 +150,12 @@ class ReconstructWindowModel:
         return recon
 
     @staticmethod
-    def _apply_pixel_size(recon, recon_params: ReconstructionParameters, progress=None) -> ImageStack | None:
+    def _apply_pixel_size(recon: ImageStack | None,
+                          recon_params: ReconstructionParameters,
+                          progress: Progress | None = None) -> ImageStack | None:
+        if recon is None:
+            return None
+
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division

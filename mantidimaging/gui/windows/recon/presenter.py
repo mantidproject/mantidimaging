@@ -356,6 +356,7 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             self._replace_inf_nan(task.result)  # pyqtgraph workaround
             assert self.model.images is not None
+            assert self.model.stack_id is not None
             task.result.name = self.create_recon_output_filename("Recon_Vol")
             self.view.show_recon_volume(task.result, self.model.stack_id)
         finally:
@@ -446,8 +447,12 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def proj_180_degree_shape_matches_images(self, images) -> None:
-        return self.model.proj_180_degree_shape_matches_images(images)
+    def proj_180_degree_shape_matches_images(self, images: ImageStack) -> bool:
+        result = self.model.proj_180_degree_shape_matches_images(images)
+        if isinstance(result, bool):
+            return result
+        else:
+            raise ValueError("Expected a boolean from proj_180_degree_shape_matches_images")
 
     def _do_nan_zero_negative_check(self) -> None:
         """
