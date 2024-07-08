@@ -1,1 +1,0 @@
-#2250: A bug where a lock object was trying to be pickled has not been fixed, the median filter is now functional.
