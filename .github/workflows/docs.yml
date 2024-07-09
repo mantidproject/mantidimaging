@@ -77,13 +77,13 @@ jobs:
           make build-docs
 
       - name: publish docs
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: publish docs release
-        if: startsWith(github.ref, 'refs/heads/release')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release')
         uses: ./.github/actions/publish-docs
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
