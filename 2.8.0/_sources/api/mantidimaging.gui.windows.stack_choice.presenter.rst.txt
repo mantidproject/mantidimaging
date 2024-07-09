@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.stack\_choice.presenter module
+========================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_choice.presenter
+   :members:
+   :undoc-members:
+   :show-inheritance:

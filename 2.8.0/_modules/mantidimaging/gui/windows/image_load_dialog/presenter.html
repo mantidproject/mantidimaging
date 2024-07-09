@@ -1,0 +1,794 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mantidimaging.gui.windows.image_load_dialog.presenter &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mantidimaging/gui/windows/image_load_dialog/presenter';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mantidimaging.gui.windows.image_load_dialog.presenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.filenames</span> <span class="kn">import</span> <span class="n">FilenameGroup</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader</span> <span class="kn">import</span> <span class="n">load_log</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">ImageParameters</span><span class="p">,</span> <span class="n">read_image_dimensions</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">log_for_file_type</span><span class="p">,</span> <span class="n">shuttercounts_for_file_type</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.image_load_dialog.field</span> <span class="kn">import</span> <span class="n">Field</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.image_load_dialog</span> <span class="kn">import</span> <span class="n">ImageLoadDialog</span>  <span class="c1"># pragma: no cover</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LoadPresenter">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter">[docs]</a>
+<span class="k">class</span> <span class="nc">LoadPresenter</span><span class="p">:</span>
+    <span class="n">view</span><span class="p">:</span> <span class="n">ImageLoadDialog</span>
+    <span class="n">sample_fg</span><span class="p">:</span> <span class="n">FilenameGroup</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">ImageLoadDialog</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_format</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_mem</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;32&#39;</span>
+
+<div class="viewcode-block" id="LoadPresenter.do_update_field">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_field">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_update_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when user clicks select button.</span>
+
+<span class="sd">        Does nothing if the select file dialog is canceled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">fname</span>
+        <span class="n">is_image_file</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">]</span>
+        <span class="n">selected_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">select_file</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">is_image_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">selected_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># When select file is canceled</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_sample</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;images&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_flat_or_dark</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">fname</span> <span class="o">==</span> <span class="s2">&quot;Sample Log&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_sample_log</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Sample Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_shutter_counts</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.do_update_sample">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_update_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the memory usage and the indices in the dialog.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span> <span class="o">=</span> <span class="n">sample</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_field_with_filegroup</span><span class="p">(</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+
+        <span class="n">sample_field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sample_shape</span> <span class="o">=</span> <span class="n">read_image_dimensions</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">update_indices</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">all_indexes</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">update_shape</span><span class="p">(</span><span class="n">sample_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">enable_preview_all_buttons</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="n">FILE_TYPES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">]:</span>
+                <span class="n">related_group</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">find_related</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">related_group</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_field_with_filegroup</span><span class="p">(</span><span class="n">file_info</span><span class="p">,</span> <span class="n">related_group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.update_field_with_filegroup">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.update_field_with_filegroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_field_with_filegroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_info</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">file_group</span><span class="p">:</span> <span class="n">FilenameGroup</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the field with the given file group by finding all files in the group and setting them in the field.</span>
+
+<span class="sd">        :param file_info (FILE_TYPES): The file information.</span>
+<span class="sd">        :param file_group (FilenameGroup): The file group containing the files.</span>
+
+<span class="sd">        :return None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_group</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>  <span class="c1"># find all files in the group to register related file parsers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">file_info</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span><span class="o">.</span><span class="n">set_images</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">file_group</span><span class="o">.</span><span class="n">all_files</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field</span><span class="p">(</span><span class="n">file_info</span><span class="p">,</span> <span class="n">file_group</span><span class="p">,</span> <span class="n">log_for_file_type</span><span class="p">,</span> <span class="s1">&#39;find_log_file&#39;</span><span class="p">,</span> <span class="s1">&#39;log_path&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field</span><span class="p">(</span><span class="n">file_info</span><span class="p">,</span> <span class="n">file_group</span><span class="p">,</span> <span class="n">shuttercounts_for_file_type</span><span class="p">,</span> <span class="s1">&#39;find_shutter_count_file&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;shutter_count_path&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_info</span><span class="p">,</span> <span class="n">file_group</span><span class="p">,</span> <span class="n">file_type_dict</span><span class="p">,</span> <span class="n">find_file_method</span><span class="p">,</span> <span class="n">file_path_attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="n">file_type_dict</span><span class="p">:</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">file_group</span><span class="p">,</span> <span class="n">find_file_method</span><span class="p">)()</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file_group</span><span class="p">,</span> <span class="n">file_path_attr</span><span class="p">):</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">file_type_dict</span><span class="p">[</span><span class="n">file_info</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file_group</span><span class="p">,</span> <span class="n">file_path_attr</span><span class="p">)</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">use</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="LoadPresenter.do_update_shutter_counts">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_shutter_counts">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_update_shutter_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the shutter counts for the selected file.</span>
+
+<span class="sd">        :param  field (Field): The field to update with the shutter counts.</span>
+<span class="sd">        :param  selected_file (str): The path of the selected file.</span>
+
+<span class="sd">        :return None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename_group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
+        <span class="n">filename_group</span><span class="o">.</span><span class="n">find_shutter_count_file</span><span class="p">()</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">set_images</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">filename_group</span><span class="o">.</span><span class="n">all_files</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_sample_shuttercount_consistency</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.ensure_sample_shuttercount_consistency">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_shuttercount_consistency">[docs]</a>
+    <span class="k">def</span> <span class="nf">ensure_sample_shuttercount_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.do_update_flat_or_dark">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_update_flat_or_dark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the field with the images from the selected file.</span>
+<span class="sd">        :param  field (Field): The field to update.</span>
+<span class="sd">        :param  selected_file (str): The path of the selected file.</span>
+<span class="sd">        :return None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename_group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
+        <span class="n">filename_group</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">set_images</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">filename_group</span><span class="o">.</span><span class="n">all_files</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.get_parameters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.get_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the loading parameters for the selected sample.</span>
+<span class="sd">        :return LoadingParameters: The loading parameters for the selected sample.</span>
+<span class="sd">        :raises  RuntimeError: If no sample is selected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sample_field</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No sample selected&quot;</span><span class="p">)</span>
+
+        <span class="n">loading_param</span> <span class="o">=</span> <span class="n">LoadingParameters</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">FILE_TYPES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_loading_param</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">loading_param</span><span class="p">)</span>
+
+        <span class="n">loading_param</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sample_field</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">loading_param</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">pixelSize</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">loading_param</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">pixel_bit_depth</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">loading_param</span><span class="o">.</span><span class="n">sinograms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">images_are_sinograms</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">loading_param</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_update_loading_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">loading_param</span><span class="p">:</span> <span class="n">LoadingParameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the loading parameters for a specific file type.</span>
+<span class="sd">        :param  file_type: The type of the file being loaded.</span>
+<span class="sd">        :param  loading_param: The loading parameters object.</span>
+<span class="sd">        :return None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">file_type</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">]:</span>
+            <span class="k">return</span>
+
+        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">file_type</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">use</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="n">field</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">file_group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">file_group</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+        <span class="n">image_param</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">file_group</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">log_for_file_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_image_param</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">image_param</span><span class="p">,</span> <span class="n">log_for_file_type</span><span class="p">,</span> <span class="s1">&#39;log_file&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">shuttercounts_for_file_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_image_param</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">image_param</span><span class="p">,</span> <span class="n">shuttercounts_for_file_type</span><span class="p">,</span> <span class="s1">&#39;shutter_count_file&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
+            <span class="n">image_param</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">indices</span>
+
+        <span class="n">loading_param</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_param</span>
+
+    <span class="k">def</span> <span class="nf">_update_image_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">image_param</span><span class="p">:</span> <span class="n">ImageParameters</span><span class="p">,</span> <span class="n">file_type_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                            <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the image parameter based on the selected file type.</span>
+<span class="sd">        :param  file_type: The selected file type.</span>
+<span class="sd">        :param  image_param (ImageParam): The image parameter object to update.</span>
+<span class="sd">        :param  file_type_dict: A dictionary mapping file types to their corresponding attributes.</span>
+<span class="sd">        :param  attr_name: The name of the attribute to update in the image parameter.</span>
+<span class="sd">        :return None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">file_type_dict</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">use</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">image_param</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_field_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">use</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: ignore</span>
+
+<div class="viewcode-block" id="LoadPresenter.do_update_sample_log">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_sample_log">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_update_sample_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the sample log if a sample is set. Also check log is consistent with sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please select sample data to be loaded first!&quot;</span><span class="p">)</span>
+
+        <span class="n">sample_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span><span class="o">.</span><span class="n">all_files</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_sample_log_consistency</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">sample_names</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoadPresenter.ensure_sample_log_consistency">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency">[docs]</a>
+    <span class="k">def</span> <span class="nf">ensure_sample_log_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">log</span> <span class="o">=</span> <span class="n">load_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">(</span><span class="n">image_filenames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

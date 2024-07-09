@@ -1,0 +1,785 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mantidimaging.gui.widgets.mi_mini_image_view.view &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mantidimaging/gui/widgets/mi_mini_image_view/view';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mantidimaging.gui.widgets.mi_mini_image_view.view</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
+<span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">tee</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">WeakSet</span>
+
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ViewBox</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph.graphicsItems.GraphicsLayout</span> <span class="kn">import</span> <span class="n">GraphicsLayout</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph.graphicsItems.HistogramLUTItem</span> <span class="kn">import</span> <span class="n">HistogramLUTItem</span>
+
+<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.close_enough_point</span> <span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu</span> <span class="kn">import</span> <span class="n">AutoColorMenu</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</span> <span class="kn">import</span> <span class="n">BadDataOverlay</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span>
+
+<span class="n">graveyard</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="c1"># https://docs.python.org/3/library/itertools.html?highlight=itertools#itertools.pairwise</span>
+<span class="c1"># COMPAT python &lt; 3.10</span>
+<div class="viewcode-block" id="pairwise">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.pairwise">[docs]</a>
+<span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="c1"># pairwise(&#39;ABCDEFG&#39;) --&gt; AB BC CD DE EF FG</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MIMiniImageView">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView">[docs]</a>
+<span class="k">class</span> <span class="nc">MIMiniImageView</span><span class="p">(</span><span class="n">GraphicsLayout</span><span class="p">,</span> <span class="n">BadDataOverlay</span><span class="p">,</span> <span class="n">AutoColorMenu</span><span class="p">):</span>
+    <span class="n">bright_levels</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">levels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MIMiniImageView&quot;</span><span class="p">,</span>
+                 <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">recon_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">view_box_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ViewBox</span><span class="p">]</span> <span class="o">=</span> <span class="n">ViewBox</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">ImageItem</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="n">view_box_type</span><span class="p">(</span><span class="n">invertY</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lockAspect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist</span> <span class="o">=</span> <span class="n">HistogramLUTItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">graveyard</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+        <span class="n">graveyard</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+
+        <span class="c1"># Sub-layout prevents resizing issues when details text changes</span>
+        <span class="n">image_layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">image_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+        <span class="n">image_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>  <span class="c1"># HistogramLUTItem used pixel sizes</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">hoverEvent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ev</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">:</span> <span class="n">WeakSet</span><span class="p">[</span><span class="n">MIMiniImageView</span><span class="p">]</span> <span class="o">=</span> <span class="n">WeakSet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">:</span> <span class="n">WeakSet</span><span class="p">[</span><span class="n">MIMiniImageView</span><span class="p">]</span> <span class="o">=</span> <span class="n">WeakSet</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_auto_color_menu_action</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">recon_mode</span><span class="o">=</span><span class="n">recon_mode</span><span class="p">,</span> <span class="n">set_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistogramLUTItem</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
+
+    <span class="nd">@histogram_region</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_region</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">new_region</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">other_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">HistogramLUTItem</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">axis</span><span class="o">.</span><span class="n">hist</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vb</span>
+
+<div class="viewcode-block" id="MIMiniImageView.clear">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.clear">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_auto_color_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_overlays</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.cleanup">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.cleanup">[docs]</a>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare for deletion when no longer needed&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">hoverEvent</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.setImage">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.setImage">[docs]</a>
+    <span class="k">def</span> <span class="nf">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">levels</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_for_bad_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_auto_color_enabled</span><span class="p">(</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.set_siblings">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.set_siblings">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_siblings</span><span class="p">(</span><span class="n">sibling_views</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MIMiniImageView</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">view1</span> <span class="ow">in</span> <span class="n">sibling_views</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">view2</span> <span class="ow">in</span> <span class="n">sibling_views</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">view2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">view1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
+                        <span class="n">view1</span><span class="o">.</span><span class="n">add_axis_sibling</span><span class="p">(</span><span class="n">view2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">hist</span><span class="p">:</span>
+                        <span class="n">view1</span><span class="o">.</span><span class="n">add_hist_sibling</span><span class="p">(</span><span class="n">view2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.add_axis_sibling">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.add_axis_sibling">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_axis_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sibling</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.add_hist_sibling">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.add_hist_sibling">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_hist_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sibling</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.mouse_over">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.mouse_over">[docs]</a>
+    <span class="k">def</span> <span class="nf">mouse_over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+        <span class="c1"># Ignore events triggered by leaving window or right clicking</span>
+        <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">exit</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_details</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">:</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">show_details</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.show_details">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.show_details">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">image</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">pixel_value</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">]</span>
+            <span class="n">value_string</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%.6f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">pixel_value</span><span class="p">)[:</span><span class="mi">8</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x=</span><span class="si">{</span><span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, y=</span><span class="si">{</span><span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">, value=</span><span class="si">{</span><span class="n">value_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.link_sibling_axis">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.link_sibling_axis">[docs]</a>
+    <span class="k">def</span> <span class="nf">link_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Linking multiple viewboxes with locked aspect ratios causes</span>
+        <span class="c1"># odd resizing behaviour. Use workaround from</span>
+        <span class="c1"># https://github.com/pyqtgraph/pyqtgraph/issues/1348</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setAspectLocked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">view1</span><span class="p">,</span> <span class="n">view2</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">)):</span>
+            <span class="n">view2</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="n">view1</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+            <span class="n">view2</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="n">view1</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+            <span class="n">view2</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setAspectLocked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.unlink_sibling_axis">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.unlink_sibling_axis">[docs]</a>
+    <span class="k">def</span> <span class="nf">unlink_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">):</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">setAspectLocked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.link_sibling_histogram">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.link_sibling_histogram">[docs]</a>
+    <span class="k">def</span> <span class="nf">link_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">view1</span><span class="p">,</span> <span class="n">view2</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">)):</span>
+            <span class="n">view1</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="n">view2</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">):</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">sigLevelChangeFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">img_view</span><span class="o">.</span><span class="n">update_sibling_histograms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.unlink_sibling_histogram">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.unlink_sibling_histogram">[docs]</a>
+    <span class="k">def</span> <span class="nf">unlink_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">):</span>
+            <span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">sigLevelChangeFinished</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># This is expected if there are slots currently connected</span>
+                <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.update_sibling_histograms">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.update_sibling_histograms">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_sibling_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">hist_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">(</span><span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="p">):</span>
+                <span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="o">*</span><span class="n">hist_range</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIMiniImageView.set_brightness_percentiles">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.set_brightness_percentiles">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_brightness_percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent_low</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">percent_high</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">percent_low</span><span class="p">,</span> <span class="n">percent_high</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

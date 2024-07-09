@@ -1,0 +1,764 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mantidimaging.gui.windows.operations package &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.operations';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.operations.filter_previews module" href="mantidimaging.gui.windows.operations.filter_previews.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.nexus_load_dialog.view module" href="mantidimaging.gui.windows.nexus_load_dialog.view.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.operations package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  </div></div>
+        <div class="sidebar-primary-item">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.nexus_load_dialog.view.html"
+                          title="previous chapter">mantidimaging.gui.windows.nexus_load_dialog.view module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.operations.filter_previews.html"
+                          title="next chapter">mantidimaging.gui.windows.operations.filter_previews module</a></p>
+  </div></div>
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.gui.windows.html" class="nav-link">mantidimaging.gui.windows package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mantidimaging.gui.windows.operations">
+<span id="mantidimaging-gui-windows-operations-package"></span><h1>mantidimaging.gui.windows.operations package<a class="headerlink" href="#module-mantidimaging.gui.windows.operations" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html">mantidimaging.gui.windows.operations.filter_previews module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews"><code class="docutils literal notranslate"><span class="pre">FilterPreviews</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_difference_overlay"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.add_difference_overlay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_negative_overlay"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.add_negative_overlay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.auto_range"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.auto_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.autorange_histograms"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.autorange_histograms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.cleanup"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.clear_items"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.clear_items()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_difference_overlay"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.hide_difference_overlay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_negative_overlay"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.hide_negative_overlay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.histogram"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.histogram</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.histogram_legend"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.histogram_legend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.init_histogram"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.init_histogram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_all_views"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.link_all_views()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_before_after_histogram_scales"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.link_before_after_histogram_scales()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.record_histogram_regions"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.record_histogram_regions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.resizeEvent"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.resizeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.restore_histogram_regions"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.restore_histogram_regions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.set_histogram_log_scale"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.set_histogram_log_scale()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.unlink_all_views"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.unlink_all_views()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.update_histogram_data"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.update_histogram_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.z_slider"><code class="docutils literal notranslate"><span class="pre">FilterPreviews.z_slider</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html">mantidimaging.gui.windows.operations.model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_images"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.apply_to_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_stacks"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.apply_to_stacks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.do_apply_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter_sync"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.do_apply_filter_sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filter_names"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.filter_names</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filter_registration_func"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.filter_registration_func()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filter_widget_kwargs"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.filter_widget_kwargs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filters"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.filters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.get_filter_module_name"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.get_filter_module_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.link_histograms"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.link_histograms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.params_needed_from_stack"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.params_needed_from_stack</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.selected_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.selected_filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.setup_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.setup_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.show_negative_overlay"><code class="docutils literal notranslate"><span class="pre">FiltersWindowModel.show_negative_overlay()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html">mantidimaging.gui.windows.operations.presenter module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.divider"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.divider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_apply_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_all"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_apply_filter_to_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_register_active_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_register_active_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_scroll_preview"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_scroll_preview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.do_update_previews()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.filter_uses_parameter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.get_filter_module_name"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.get_filter_module_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.init_roi_field()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.is_a_proj180deg"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.is_a_proj180deg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.main_window"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.main_window</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.max_preview_image_idx"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.max_preview_image_idx</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.notify"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.notify()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_filter_by_name"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_filter_by_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_preview_image_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.set_stack_uuid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.stack"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.stack</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">FiltersWindowPresenter.view</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER"><code class="docutils literal notranslate"><span class="pre">Notification.APPLY_FILTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.APPLY_FILTER_TO_ALL"><code class="docutils literal notranslate"><span class="pre">Notification.APPLY_FILTER_TO_ALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.REGISTER_ACTIVE_FILTER"><code class="docutils literal notranslate"><span class="pre">Notification.REGISTER_ACTIVE_FILTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_DOWN"><code class="docutils literal notranslate"><span class="pre">Notification.SCROLL_PREVIEW_DOWN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.SCROLL_PREVIEW_UP"><code class="docutils literal notranslate"><span class="pre">Notification.SCROLL_PREVIEW_UP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification.UPDATE_PREVIEWS"><code class="docutils literal notranslate"><span class="pre">Notification.UPDATE_PREVIEWS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.sub"><code class="docutils literal notranslate"><span class="pre">sub()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html">mantidimaging.gui.windows.operations.view module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.applyButton"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.applyButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.applyToAllButton"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.applyToAllButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.ask_confirmation"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.ask_confirmation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.auto_update_triggered"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.auto_update_triggered</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.cleanup"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.clear_notification_dialog"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.clear_notification_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.clear_previews"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.clear_previews()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.closeEvent"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.closeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.collapseToggleButton"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.collapseToggleButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.filterSelector"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.filterSelector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.filter_applied"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.filter_applied</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.get_selected_filter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.get_selected_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.handle_auto_update_preview_selection"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.handle_auto_update_preview_selection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.handle_filter_selection"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.handle_filter_selection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.invertDifference"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.invertDifference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.linkImages"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.linkImages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.link_images_changed"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.link_images_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.lockScaleCheckBox"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.lockScaleCheckBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.lockZoomCheckBox"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.lockZoomCheckBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.lock_scale_changed"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.lock_scale_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.lock_zoom_changed"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.lock_zoom_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.notification_icon"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.notification_icon</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.notification_text"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.notification_text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.on_auto_update_triggered"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.on_auto_update_triggered()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.open_help_webpage"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.open_help_webpage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.overlayDifference"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.overlayDifference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.presenter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.presenter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.preview_image_after"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.preview_image_after</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.preview_image_before"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.preview_image_before</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.preview_image_difference"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.preview_image_difference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.previews"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.previews</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.previewsLayout"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.previewsLayout</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.roi_visualiser"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.roi_visualiser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.show"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.show()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.show_error_dialog"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.show_error_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.show_operation_cancelled"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.show_operation_cancelled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.show_operation_completed"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.show_operation_completed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.splitter"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.splitter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.stackSelector"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.stackSelector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.toggle_filters_section"><code class="docutils literal notranslate"><span class="pre">FiltersWindowView.toggle_filters_section()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mantidimaging.gui.windows.nexus_load_dialog.view.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.nexus_load_dialog.view module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mantidimaging.gui.windows.operations.filter_previews.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.operations.filter_previews module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/mantidimaging.gui.windows.operations.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

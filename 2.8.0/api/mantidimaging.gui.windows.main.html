@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mantidimaging.gui.windows.main package &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.main';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.gui.windows.main.image_save_dialog module" href="mantidimaging.gui.windows.main.image_save_dialog.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.live_viewer.view module" href="mantidimaging.gui.windows.live_viewer.view.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mantidimaging.gui.windows.main package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+
+  </div></div>
+        <div class="sidebar-primary-item">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.live_viewer.view.html"
+                          title="previous chapter">mantidimaging.gui.windows.live_viewer.view module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mantidimaging.gui.windows.main.image_save_dialog.html"
+                          title="next chapter">mantidimaging.gui.windows.main.image_save_dialog module</a></p>
+  </div></div>
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.gui.windows.html" class="nav-link">mantidimaging.gui.windows package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mantidimaging.gui.windows.main">
+<span id="mantidimaging-gui-windows-main-package"></span><h1>mantidimaging.gui.windows.main package<a class="headerlink" href="#module-mantidimaging.gui.windows.main" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html">mantidimaging.gui.windows.main.image_save_dialog module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.image_format"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.image_format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.name_prefix"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.name_prefix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.overwrite"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.overwrite()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.pixel_depth"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.pixel_depth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.save_all"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.save_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.save_path"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.save_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.selected_stack"><code class="docutils literal notranslate"><span class="pre">ImageSaveDialog.selected_stack</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.sort_by_tomo_and_recon"><code class="docutils literal notranslate"><span class="pre">sort_by_tomo_and_recon()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html">mantidimaging.gui.windows.main.model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel"><code class="docutils literal notranslate"><span class="pre">MainWindowModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_180_deg_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_180_deg_to_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_dataset_to_model"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_dataset_to_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_log_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_projection_angles_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_recon_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_recon_to_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_shutter_counts_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_images_saving()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_load_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_nexus_saving()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_existing_180_id"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.get_existing_180_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_images_by_uuid"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.get_images_by_uuid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_parent_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.get_parent_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_recon_list_id"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.get_recon_list_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.image_ids"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.image_ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.images"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.images</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.is_dataset_strict"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.is_dataset_strict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.load_images_into_mixed_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.load_images_into_mixed_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.proj180s"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.proj180s</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_images_not_found"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.raise_error_when_images_not_found()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_parent_dataset_not_found"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.raise_error_when_parent_dataset_not_found()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_parent_strict_dataset_not_found"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.raise_error_when_parent_strict_dataset_not_found()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.recon_list_ids"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.recon_list_ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.remove_container"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.remove_container()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html">mantidimaging.gui.windows.main.nexus_save_dialog module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.accept"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.accept()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.enable_save"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.enable_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.floatRadioButton"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.floatRadioButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.intRadioButton"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.intRadioButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.sample_name"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.sample_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.save_as_float"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.save_as_float</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.save_path"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.save_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.selected_dataset"><code class="docutils literal notranslate"><span class="pre">NexusSaveDialog.selected_dataset</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html">mantidimaging.gui.windows.main.presenter module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.DatasetId"><code class="docutils literal notranslate"><span class="pre">DatasetId</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.DatasetId.id"><code class="docutils literal notranslate"><span class="pre">DatasetId.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.DatasetId.name"><code class="docutils literal notranslate"><span class="pre">DatasetId.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.LOAD_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.LOAD_ERROR_STRING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.SAVE_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.SAVE_ERROR_STRING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.active_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.active_stacks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_180_deg_file_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_180_deg_file_to_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_alternative_180_if_required()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_child_item_to_tree_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_log_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_log_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_projection_angles_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_projection_angles_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_recon_item_to_tree_view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_recon_item_to_tree_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_shuttercounts_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_shuttercounts_to_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_sinograms_to_dataset_and_update_view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_sinograms_to_dataset_and_update_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_stack_to_dictionary"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.add_stack_to_dictionary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.all_dataset_ids"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.all_dataset_ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.all_stack_ids"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.all_stack_ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_stack_windows"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.create_mixed_dataset_stack_windows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.create_mixed_dataset_tree_view_items()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_single_tabbed_images_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.create_single_tabbed_images_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_strict_dataset_stack_windows"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.create_strict_dataset_stack_windows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_strict_dataset_tree_view_items"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.create_strict_dataset_tree_view_items()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.datasets"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.datasets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.do_update_UI"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.do_update_UI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_active_stack_visualisers"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_active_stack_visualisers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_all_180_projections"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_all_180_projections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_all_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_all_stacks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_dataset_id_for_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_dataset_id_for_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_id_by_name"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_id_by_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_visualiser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser_history"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_visualiser_history()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_with_images"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_with_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.have_active_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.have_active_stacks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.is_dataset_strict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_nexus_file"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_nexus_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_stacks_from_folder"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_stacks_from_folder()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.notify"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.notify()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.remove_item_from_tree_view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.remove_item_from_tree_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.replace_child_item_id"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.replace_child_item_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.save_image_files"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.save_image_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.save_nexus_file"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.save_nexus_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.show_operation"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.show_operation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_names"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_names</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.strict_dataset_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.strict_dataset_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_dark_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_dark_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_light_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_light_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.view</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.wizard_action_load"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.wizard_action_load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.wizard_action_show_reconstruction"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.wizard_action_show_reconstruction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.ADD_RECON"><code class="docutils literal notranslate"><span class="pre">Notification.ADD_RECON</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.DATASET_ADD"><code class="docutils literal notranslate"><span class="pre">Notification.DATASET_ADD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.FOCUS_TAB"><code class="docutils literal notranslate"><span class="pre">Notification.FOCUS_TAB</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.IMAGE_FILE_LOAD"><code class="docutils literal notranslate"><span class="pre">Notification.IMAGE_FILE_LOAD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.IMAGE_FILE_SAVE"><code class="docutils literal notranslate"><span class="pre">Notification.IMAGE_FILE_SAVE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.MOVE_STACK"><code class="docutils literal notranslate"><span class="pre">Notification.MOVE_STACK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.NEXUS_LOAD"><code class="docutils literal notranslate"><span class="pre">Notification.NEXUS_LOAD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.NEXUS_SAVE"><code class="docutils literal notranslate"><span class="pre">Notification.NEXUS_SAVE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.REMOVE_STACK"><code class="docutils literal notranslate"><span class="pre">Notification.REMOVE_STACK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.RENAME_STACK"><code class="docutils literal notranslate"><span class="pre">Notification.RENAME_STACK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.SHOW_ADD_STACK_DIALOG"><code class="docutils literal notranslate"><span class="pre">Notification.SHOW_ADD_STACK_DIALOG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.SHOW_MOVE_STACK_DIALOG"><code class="docutils literal notranslate"><span class="pre">Notification.SHOW_MOVE_STACK_DIALOG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.Notification.TAB_CLICKED"><code class="docutils literal notranslate"><span class="pre">Notification.TAB_CLICKED</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId"><code class="docutils literal notranslate"><span class="pre">StackId</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId.id"><code class="docutils literal notranslate"><span class="pre">StackId.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId.name"><code class="docutils literal notranslate"><span class="pre">StackId.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html">mantidimaging.gui.windows.main.view module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView"><code class="docutils literal notranslate"><span class="pre">MainWindowView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE"><code class="docutils literal notranslate"><span class="pre">MainWindowView.LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION"><code class="docutils literal notranslate"><span class="pre">MainWindowView.LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.NOT_THE_LATEST_VERSION"><code class="docutils literal notranslate"><span class="pre">MainWindowView.NOT_THE_LATEST_VERSION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionCompareImages"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionCompareImages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionExit"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionExit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionFilters"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionFilters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLiveViewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLiveViewer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLoad180deg"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLoad180deg</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLoadDataset"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLoadDataset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLoadImages"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLoadImages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLoadNeXusFile"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLoadNeXusFile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionLoadProjectionAngles"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLoadProjectionAngles</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionRecon"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionRecon</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionSampleLoadLog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionSampleLoadLog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionSaveImages"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionSaveImages</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionSaveNeXusFile"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionSaveNeXusFile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionSettings"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionSettings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionShutterCounts"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionShutterCounts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionSpectrumViewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionSpectrumViewer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_item_to_tree_view"><code class="docutils literal notranslate"><span class="pre">MainWindowView.add_item_to_tree_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_recon_group"><code class="docutils literal notranslate"><span class="pre">MainWindowView.add_recon_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_recon_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowView.add_recon_to_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_to_dataset_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.add_to_dataset_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.ask_to_use_closest_to_180"><code class="docutils literal notranslate"><span class="pre">MainWindowView.ask_to_use_closest_to_180()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.backend_message"><code class="docutils literal notranslate"><span class="pre">MainWindowView.backend_message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.cleanup"><code class="docutils literal notranslate"><span class="pre">MainWindowView.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.closeEvent"><code class="docutils literal notranslate"><span class="pre">MainWindowView.closeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_child_tree_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.create_child_tree_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_dataset_tree_widget_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.create_dataset_tree_widget_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_new_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.create_new_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_stack_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.create_stack_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.current_showing_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.current_showing_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.default_theme_enabled"><code class="docutils literal notranslate"><span class="pre">MainWindowView.default_theme_enabled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.dragEnterEvent"><code class="docutils literal notranslate"><span class="pre">MainWindowView.dragEnterEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.dropEvent"><code class="docutils literal notranslate"><span class="pre">MainWindowView.dropEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_add_to_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_add_to_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_image_file_load"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_image_file_load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_image_file_save"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_image_file_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_move_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_move_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_load"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_nexus_load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_save"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_nexus_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.filters"><code class="docutils literal notranslate"><span class="pre">MainWindowView.filters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_all_180_projections"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_all_180_projections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_all_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_all_stacks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_id_from_stack_uuid"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset_id_from_stack_uuid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_tree_view_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset_tree_view_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_images_from_stack_uuid"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_images_from_stack_uuid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_recon_group"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_recon_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_sinograms_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_sinograms_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_history"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_stack_history()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_visualiser"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_stack_visualiser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_with_images"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_stack_with_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.image_load_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.image_load_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.image_save_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.image_save_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.is_dataset_strict"><code class="docutils literal notranslate"><span class="pre">MainWindowView.is_dataset_strict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.live_view_choose_directory"><code class="docutils literal notranslate"><span class="pre">MainWindowView.live_view_choose_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.live_viewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.live_viewer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_180_deg_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.load_180_deg_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_image_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.load_image_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_projection_angles"><code class="docutils literal notranslate"><span class="pre">MainWindowView.load_projection_angles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_sample_log_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.load_sample_log_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_shuttercounts_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.load_shuttercounts_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.menuFile"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuFile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.menuHelp"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuHelp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.menuImage"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuImage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.menuTreeView"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuTreeView</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.menuWorkflow"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuWorkflow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.model_changed"><code class="docutils literal notranslate"><span class="pre">MainWindowView.model_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.move_stack_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.move_stack_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.nexus_load_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.nexus_load_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.nexus_save_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.nexus_save_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.open_online_documentation"><code class="docutils literal notranslate"><span class="pre">MainWindowView.open_online_documentation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.populate_image_menu"><code class="docutils literal notranslate"><span class="pre">MainWindowView.populate_image_menu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.recon"><code class="docutils literal notranslate"><span class="pre">MainWindowView.recon</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.rename_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.rename_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.settings_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.settings_window</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.setup_shortcuts"><code class="docutils literal notranslate"><span class="pre">MainWindowView.setup_shortcuts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_about"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_about()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_add_stack_to_existing_dataset_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_add_stack_to_existing_dataset_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_filters_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_filters_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_load_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog_with_path"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_load_dialog_with_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_save_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_save_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_live_viewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_live_viewer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_move_stack_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_move_stack_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_nexus_load_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_nexus_load_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_nexus_save_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_nexus_save_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_recon_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_recon_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_settings_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_settings_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_spectrum_viewer_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_spectrum_viewer_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_stack_select_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_stack_select_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_wizard"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_wizard()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.sino_text"><code class="docutils literal notranslate"><span class="pre">MainWindowView.sino_text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.spectrum_viewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.spectrum_viewer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_changed"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_list"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_names"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_names</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.strict_dataset_list"><code class="docutils literal notranslate"><span class="pre">MainWindowView.strict_dataset_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.uncaught_exception"><code class="docutils literal notranslate"><span class="pre">MainWindowView.uncaught_exception()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.update_shortcuts"><code class="docutils literal notranslate"><span class="pre">MainWindowView.update_shortcuts()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.QTreeDatasetWidgetItem"><code class="docutils literal notranslate"><span class="pre">QTreeDatasetWidgetItem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.QTreeDatasetWidgetItem.id"><code class="docutils literal notranslate"><span class="pre">QTreeDatasetWidgetItem.id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mantidimaging.gui.windows.live_viewer.view.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.live_viewer.view module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mantidimaging.gui.windows.main.image_save_dialog.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.main.image_save_dialog module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/mantidimaging.gui.windows.main.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,752 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick start: Example Reconstruction &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/quick_start';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Guide" href="../developer_guide/index.html" />
+    <link rel="prev" title="Reconstruction Filters" href="reconstructions/filters.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Quick start: Example Reconstruction</a><ul>
+<li><a class="reference internal" href="#loading-sample-stack">Loading Sample Stack</a></li>
+<li><a class="reference internal" href="#project-window">Project Window</a></li>
+<li><a class="reference internal" href="#operations">Operations</a></li>
+<li><a class="reference internal" href="#reconstruction">Reconstruction</a></li>
+<li><a class="reference internal" href="#post-reconstruction">Post-reconstruction</a></li>
+<li><a class="reference internal" href="#spectrum-viewer">Spectrum Viewer</a></li>
+</ul>
+</li>
+</ul>
+
+  </div></div>
+        <div class="sidebar-primary-item">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="reconstructions/filters.html"
+                          title="previous chapter">Reconstruction Filters</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../developer_guide/index.html"
+                          title="next chapter">Developer Guide</a></p>
+  </div></div>
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Quick...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="quick-start-example-reconstruction">
+<span id="quick-start"></span><h1>Quick start: Example Reconstruction<a class="headerlink" href="#quick-start-example-reconstruction" title="Link to this heading">#</a></h1>
+<p>Written: November 2020</p>
+<p>Author: Arianna Wintle (STFC)</p>
+<p>Example data that can be used for this tutorial can be downloaded from <a class="reference external" href="https://github.com/mantidproject/mantidimaging-data/archive/refs/heads/main.zip">github.com/mantidproject/mantidimaging-data</a></p>
+<section id="loading-sample-stack">
+<h2>Loading Sample Stack<a class="headerlink" href="#loading-sample-stack" title="Link to this heading">#</a></h2>
+<p>Firstly, let’s load our projections. Go to “File” then “Load Dataset” or alternatively use the shortcut “Ctrl”+”o”. This brings up the following loading screen:</p>
+<a class="reference internal image-reference" href="../_images/loading_screen.png"><img alt="Loading screen" class="align-center" src="../_images/loading_screen.png" style="width: 70%;" /></a>
+<ol class="arabic simple">
+<li><p>Click select on the sample row and go to the directory you want to load. We’ll be working with the “IMAT00010675” flower data set which can be found in the ISIS/IMAT directory in the above download.</p></li>
+<li><p>Open one of the images with the prefix “Tomo”.</p></li>
+<li><p>All images with the prefix “Tomo” in the same directory will be loaded</p></li>
+</ol>
+<p>Mantid Imaging will search the directory for all the files with prefixes like “Flat” and “Dark” and put them in the correct category.
+Another location that is checked is the parent directory - it will search for folders names “Flat” and “Dark” there, and use those images for each one, respectively.
+If they are missed or stored in a different location, the above steps can be repeated to find and load these.</p>
+<p>At this stage there is also the option to:</p>
+<ol class="arabic simple">
+<li><p>Open only a portion of the sample images. This can be done by manually selecting the file increment or by using the “Preview” Button.</p></li>
+<li><p>Select the pixel size of the detector used in microns. This can also be changed at a later stage.</p></li>
+<li><p>Untick a category of files to not load. For example, if both “Dark Before” and “Dark After” images have been found this can be adjusted to only one.</p></li>
+</ol>
+<p>Read more about loading in <a class="reference internal" href="gui/loading_saving.html#loading-saving"><span class="std std-ref">Loading and Saving</span></a>.</p>
+</section>
+<section id="project-window">
+<h2>Project Window<a class="headerlink" href="#project-window" title="Link to this heading">#</a></h2>
+<img alt="View of the application window" class="align-center" src="../_images/gui_main_window.png" />
+<p>The main window allows you to view the currently loaded image stacks and gives access to operations and reconstruction tools.</p>
+<p>Read more about using and navigating in the <a class="reference internal" href="gui/image_view.html#image-view"><span class="std std-ref">Image view</span></a>.</p>
+</section>
+<section id="operations">
+<h2>Operations<a class="headerlink" href="#operations" title="Link to this heading">#</a></h2>
+<p>Next let’s take the sample we loaded and let’s tidy it up with operations. To open the operations go to “Workflow” then “Operations”.</p>
+<img alt="View of the application window" class="align-center" src="../_images/operations_window.png" />
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt><strong>Remove Outliers</strong> will be the first operation we will apply. This has to be completed in 2 modes “Bright” and “Dark”. We’ll complete this for both modes with difference set to 500 and median kernel set to size 3. Apply this to all stacks.</dt><dd><ul class="simple">
+<li><p>The difference value is used to find outliers, and will have to be adjusted depending on the values in your data, and how aggressive you want the filter to be.</p></li>
+<li><p>Safe Apply is enabled by default and it will show a window containing the original data and the processed data. This allows us to see the result of the operation before applying it. Choose the new data to proceed.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>ROI Normalisation</strong> After going to this operation we’re able to click “Select ROI” and set our ROI to a space free of any sample. This operation will result in a much greater consistency between projections visible in the ROI viewer.</p></li>
+<li><dl class="simple">
+<dt><strong>Flat Fielding</strong> As we only have one set of flat and dark images we will set the flat fielding method to “Only Before”. With safe apply checked running this operation opens the following window:</dt><dd><ul class="simple">
+<li><p>Safe Apply window showing before flat fielding on the left and after flat fielding on the right. Next select “Choose New Data” to apply operation.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<img alt="Flat fielding with Safe Apply option turned on" class="align-center" src="../_images/flat_fielding.png" />
+<ol class="arabic simple" start="4">
+<li><p><strong>Crop Coordinates</strong> Next we will crop the stack to contain the sample only by selecting a ROI as in the following.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/Crop.png"><img alt="ROI that needs to be selected for the crop" class="align-center" src="../_images/Crop.png" style="width: 70%;" /></a>
+<p>At this point we have a sample ready to reconstruct. Note: operations such as a Median Filter could be used here, but in an effort to conserve grey value as accurately as possible it was avoided. To see the list of available operations go to the <a class="reference internal" href="operations/index.html#operations"><span class="std std-ref">Operations</span></a> help page and for more details on the GUI see <a class="reference internal" href="gui/operations_window.html#operations-window"><span class="std std-ref">Operations Window</span></a>.</p>
+</section>
+<section id="reconstruction">
+<h2>Reconstruction<a class="headerlink" href="#reconstruction" title="Link to this heading">#</a></h2>
+<p>To open the reconstruction window, go to “Workflow” then “Reconstruct”. This should open onto the “COR and Tilt” tab. The reconstruction window provides 2 automatic methods COR/Tilt finding, read more about them here: <a class="reference internal" href="reconstructions/center_of_rotation.html#center-of-rotation"><span class="std std-ref">Center of Rotation and Tilt</span></a>.</p>
+<p>For this reconstruction we will be manually finding the COR and tilt values. The best way to do this is to use the <strong>COR Table</strong>.</p>
+<ol class="arabic simple">
+<li><p>First select a slice index close to the top of the sample by clicking on the projection image (the top left image from the 3 visible in the window), or dragging the yellow line.</p>
+<ul class="simple">
+<li><p>Alternatively you can use the Preview box at the bottom of the reconstruction window.</p></li>
+</ul>
+</li>
+<li><p>Then press the “Add” button at the bottom of the screen. This should add your slice to the table.</p></li>
+<li><p>Press the “Refine” button whilst selecting this slice. This brings up the following window:</p></li>
+</ol>
+<img alt="Loading screen" class="align-center" src="../_images/refine_window.png" />
+<ol class="arabic simple" start="4">
+<li><p>Continue by selecting which image shows the most accurate depiction of the sample. Mantid Imaging will highlight the image it feels is best in green. This can be inaccurate for very noisy samples, but should be accurate for this dataset.</p></li>
+<li><p>Select another slice at the bottom of the sample, “Add” it to the table.  As soon as you add the 2nd slice it will perform a fit for the COR and tilt. This will not be accurate - select the newly added row and repeat the refine.</p></li>
+<li><p>Once you find a good COR and confirmed with “Finish”, the fit should be automatically performed to the new COR you found.</p></li>
+</ol>
+<p>Now move to the “Reconstruct” tab. At this stage there should several different settings to use. For this sample use the following settings.</p>
+<ul class="simple">
+<li><p>Maximum Projection Angle: 360.00</p></li>
+<li><p>Algorithm: FBP-CUDA</p></li>
+<li><p>Reconstruction filter: hann</p></li>
+<li><p>Pixel size (microns): 103</p></li>
+</ul>
+<p>There are many filter options. Experiment with the filters by looking at the slice preview and the corresponding histogram next to it. Filters like “hann” will strongly filter out higher frequency components. In contrast “ram-lak” preserves these higher frequency components resulting in a visibly less smooth histogram.</p>
+<p>Then click “Reconstruct Volume” to complete the reconstruction. This should take about 5 minutes.</p>
+<p>For more details on the reconstruction GUI see <a class="reference internal" href="gui/recon_window.html#recon-window"><span class="std std-ref">Reconstruction Window</span></a></p>
+</section>
+<section id="post-reconstruction">
+<h2>Post-reconstruction<a class="headerlink" href="#post-reconstruction" title="Link to this heading">#</a></h2>
+<p>Once the reconstruction is finished, the data will be automatically divided by the pixel size, so the resulting images will contain the attenuation values. At this point
+you can apply some post-processing operations (such as circular mask), or just save out the stack with File &gt; Save (or CTRL+S), in order to visualise it as a 3D volume in another software.</p>
+</section>
+<section id="spectrum-viewer">
+<h2>Spectrum Viewer<a class="headerlink" href="#spectrum-viewer" title="Link to this heading">#</a></h2>
+<img alt="Spectrum Viewer Window" class="align-center" src="../_images/spectrum_viewer.png" />
+<p>The spectrum viewer is a tool that allows you to view spectrum data within a Time of flight (TOF) image stack. To open the spectrum viewer go to Workflow &gt; Spectrum Viewer.</p>
+<p><strong>Export Spectrum Data</strong>:</p>
+<ol class="arabic simple">
+<li><p>Resize the ROI to just cover the size of the sample within your data or a particular area of interest within your sample. This will allow you to see the spectrum within the ROI which you will be able to see in the spectrum line plot at the bottom of the window.</p></li>
+<li><p>Click the “Add” button on the left to add another ROI which you can position over a particular detail of your choosing on the sample.</p></li>
+<li><p>Within the ROI Table, double click “roi_1” to rename to something more descriptive of what the ROI is covering.</p></li>
+<li><p>To remove an ROI, you can select the ROI you would like to remove within the ROI Table and click the “Remove” button on the left.</p></li>
+<li><p>To export spectrum data, you can click the “Export spectrum” button and select a location and filename. Two files will be saved to this location &lt;filename&gt;.csv and &lt;filename&gt;_roi_coords.csv. &lt;filename&gt;.csv contains the spectrum data for each ROI. &lt;filename&gt;_roi_coords.csv contains the coordinates of the ROIs in the image stack.</p></li>
+<li><p>If you have a TOF dataset loaded where you would like to normalise to the open beam, you can do so by toggling the “Normalise to open beam” checkbox. This will normalise the spectrum to the open beam spectrum. The greyed out drop down menu will become available and you can select which dataset you would like to use as the open beam.</p></li>
+</ol>
+<p><strong>Export Single or Binned Spectrum Data in RITS Format</strong></p>
+<ol class="arabic">
+<li><p>To enter IMAGE mode to export single or binned spectrum data in RITS format, you can click the “IMAGE” tab at the top of the table of ROIs.</p></li>
+<li><p>Resize the ROI in the same way as before for exporting regular spectrum data to cover an area of the sample you would like to acquire the spectrum for.</p></li>
+<li><p>Select the output mode from the top drop down menu on the left which replaces the table of ROIs, either “Single Spectrum” or 2D Binned” depending on what you would like to export. 2D binned will bin within the ROI and export the binned data as multi-spectrum data.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>If you choose to export as a “2D Binned”, you can choose the size of your bin in pixels squared from the drop down menu on the left. You can also select the step size of the bin from the drop down menu. If the step size if the same as the bin size, the binned data will be non-overlapping tiled binning. If the step size is smaller than the bin size, the binned data will be overlapping which will achieve a rolling average.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Choose between “Propagated” and “Standard Deviation” from the “Error Mode” drop down box. Propagated will calculate the error from the propagated error of the counts in the spectrum. Standard Deviation will calculate the error from the standard deviation of the counts in the spectrum. The mode you choose will depend on the data you are working with. Optionally, you could export to both modes separately to compare the results.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="reconstructions/filters.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Reconstruction Filters</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../developer_guide/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Developer Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-sample-stack">Loading Sample Stack</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-window">Project Window</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operations">Operations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstruction">Reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-reconstruction">Post-reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spectrum-viewer">Spectrum Viewer</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/user_guide/quick_start.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

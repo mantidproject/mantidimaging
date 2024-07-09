@@ -1,0 +1,791 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Loading and Saving &#8212; MantidImaging 2.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/gui/loading_saving';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Image view" href="image_view.html" />
+    <link rel="prev" title="Graphical User Interface (GUI)" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.8.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../support.html">
+    Support
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Loading and Saving</a><ul>
+<li><a class="reference internal" href="#loading">Loading</a><ul>
+<li><a class="reference internal" href="#load-dataset">Load Dataset</a></li>
+<li><a class="reference internal" href="#load-images">Load Images</a></li>
+<li><a class="reference internal" href="#load-nexus-file">Load NeXus File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load-log-for-stack">Load log for stack</a></li>
+<li><a class="reference internal" href="#load-projection-angles">Load projection angles</a></li>
+<li><a class="reference internal" href="#degree-projections">180 Degree Projections</a></li>
+<li><a class="reference internal" href="#saving">Saving</a><ul>
+<li><a class="reference internal" href="#save-as-image-files">Save as Image Files</a></li>
+<li><a class="reference internal" href="#save-as-a-nexus-file">Save as a NeXus File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dataset-tree-view">Dataset Tree View</a><ul>
+<li><a class="reference internal" href="#adding-replacing-data">Adding / Replacing Data</a></li>
+<li><a class="reference internal" href="#moving-data">Moving Data</a></li>
+<li><a class="reference internal" href="#deleting-data">Deleting Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div></div>
+        <div class="sidebar-primary-item">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Graphical User Interface (GUI)</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="image_view.html"
+                          title="next chapter">Image view</a></p>
+  </div></div>
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Graphical User Interface (GUI)</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Loading and Saving</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="loading-and-saving">
+<span id="loading-saving"></span><h1>Loading and Saving<a class="headerlink" href="#loading-and-saving" title="Link to this heading">#</a></h1>
+<p>Loading and saving data is performed via the <em>Load</em> and <em>Save</em> options on the <em>File</em> menu.</p>
+<section id="loading">
+<h2>Loading<a class="headerlink" href="#loading" title="Link to this heading">#</a></h2>
+<section id="load-dataset">
+<span id="id1"></span><h3>Load Dataset<a class="headerlink" href="#load-dataset" title="Link to this heading">#</a></h3>
+<p>When <em>Load dataset</em> is selected, the following dialog will appear:</p>
+<img alt="Initial Load dialog" src="../../_images/loading_screen.png" />
+<p>This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF
+file, the remaining TIFF files in the directory will be automatically detected if their filename matches the pattern.
+The loading dialog will try to automatically find associated files including flat fields, dark frames, 180 degree
+projections and sample logs.</p>
+<p>Once data has been selected, its shape is inspected and the stack index fields
+are populated as shown below:</p>
+<img alt="Load dialog after selecting data" src="../../_images/loading_screen_filled.png" />
+<p>The <em>Start</em> and <em>End</em> fields control the range of images that are loaded and
+<em>Increment</em> defines the interval at which images are selected.</p>
+<p>To quickly load only 10 images from a stack, press the preview button, which will set a large enough <em>Increment</em>.</p>
+<p><em>Pixel Bit Depth</em> is used for the estimated memory size calculation, typically
+images will use 32bit floating point numbers as the pixel format so this can be
+left at the default value of <em>float32</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.</p>
+</div>
+</section>
+<section id="load-images">
+<h3>Load Images<a class="headerlink" href="#load-images" title="Link to this heading">#</a></h3>
+<p>Load images can be used to load a stack contained in a directory or a single image.</p>
+</section>
+<section id="load-nexus-file">
+<h3>Load NeXus File<a class="headerlink" href="#load-nexus-file" title="Link to this heading">#</a></h3>
+<p>NeXus Files can be loaded by selecting the “Load NeXus file” on the File menu. This brings up the NeXus Load dialog
+shown below.</p>
+<img alt="NeXus Load Dialog" src="../../_images/nexus_loading_window.png" />
+<p>From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a
+<code class="code docutils literal notranslate"><span class="pre">NXtomo</span></code> entry. If an entry is found, information about the file will be displayed in the dialog. The data sizes
+are also displayed so that a user can check that the image key and data field have the same number of elements. The
+“Use?” checkbox can be used to select which images you wish to load.</p>
+<p>If the required information could be found in the file, then the OK button will be enabled. Otherwise the button will be
+disabled.</p>
+<p>As in the case of loading a dataset, there is also the option to load a subset of the projection data either by manually
+setting an increment or by clicking on the “Preview” button. The “All” button can be used to change the increment so
+that the entire projection data is loaded. There are also options for setting pixel size and pixel bit depth.</p>
+<p>From here, you can press OK to load the file as a dataset. The name given to the images will be taken from the
+<code class="code docutils literal notranslate"><span class="pre">title</span></code> field in the NeXus file if one is found, otherwise the images are given the name “NeXus Data.”</p>
+</section>
+</section>
+<section id="load-log-for-stack">
+<h2>Load log for stack<a class="headerlink" href="#load-log-for-stack" title="Link to this heading">#</a></h2>
+<p>This can be used to load a log file with metadata about the stack. It supports text and CSV files generated by IMAT.</p>
+<p>The expected header for a text file is:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">STAMP</span>&#160; <span class="pre">IMAGE</span> <span class="pre">TYPE</span>&#160;&#160; <span class="pre">IMAGE</span> <span class="pre">COUNTER</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image</span>&#160;&#160; <span class="pre">COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image</span></code></p>
+<p>and for a CSV file</p>
+<p><code class="code docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">STAMP,IMAGE</span> <span class="pre">TYPE,IMAGE</span> <span class="pre">COUNTER,COUNTS</span> <span class="pre">BM3</span> <span class="pre">before</span> <span class="pre">image,COUNTS</span> <span class="pre">BM3</span> <span class="pre">after</span> <span class="pre">image</span></code></p>
+<p>Note that the log can also be chosen in the <a class="reference internal" href="#load-dataset"><span class="std std-ref">Load Dataset</span></a> dialog.</p>
+</section>
+<section id="load-projection-angles">
+<h2>Load projection angles<a class="headerlink" href="#load-projection-angles" title="Link to this heading">#</a></h2>
+<p>This can be used to load a file with projection angles. Angles are expected in DEGREES as comma separated values on a
+single line, or a single angle value per line.</p>
+</section>
+<section id="degree-projections">
+<h2>180 Degree Projections<a class="headerlink" href="#degree-projections" title="Link to this heading">#</a></h2>
+<p>In the case of both tiffs and NeXus files, Mantid Imaging will try to find a 180 projection in the data. If one has not
+been found, then it will try to look for a projection that is &lt;= 1 degree away from 180. Should this fail then you will
+be asked if you wish to use the next closest image. Bear in mind that the absence of a 180 degree projection means that
+the “Correlate 0 and 180” algorithm will not be available for the reconstruction.</p>
+<p>A new 180 projection can be loaded with the <code class="code docutils literal notranslate"><span class="pre">Load</span> <span class="pre">180</span> <span class="pre">degree</span> <span class="pre">projection</span></code> option. This will override any already
+loaded 180 projection. This option will only work correctly with a stack loaded through the <a class="reference internal" href="#load-dataset"><span class="std std-ref">Load Dataset</span></a> method.</p>
+</section>
+<section id="saving">
+<h2>Saving<a class="headerlink" href="#saving" title="Link to this heading">#</a></h2>
+<p>The <em>Save</em> options are only enabled when at least one stack is loaded.</p>
+<section id="save-as-image-files">
+<h3>Save as Image Files<a class="headerlink" href="#save-as-image-files" title="Link to this heading">#</a></h3>
+<p>When <em>Save as Image Files</em> is selected the save images dialog appears:</p>
+<img alt="Save dialog" src="../../_images/gui_save_dialog.png" />
+<p>This prompts you to select the image stack you wish to save, the directory in
+which you wish to save it and the name prefix. In the case of TIFF and FITS the
+individual image filenames will be a concatenation of this prefix and the index
+of the image in the stack.</p>
+<p>The <em>Overwrite</em> option removes checking for existing data of the same name. When
+disabled an error will be raised if the specified output directory is not empty
+prior to saving.</p>
+</section>
+<section id="save-as-a-nexus-file">
+<h3>Save as a NeXus File<a class="headerlink" href="#save-as-a-nexus-file" title="Link to this heading">#</a></h3>
+<p>When <em>Save as NeXus File</em> is selected the save NeXus dialog appears. Only Datasets
+with sample images data can be saved as NeXus files. A sample name and an output
+directory are required before a save can be attempted. The image data (excluding
+recons) can be saved as either float 32 or int 16. Users should be aware that
+there will be data loss when saving as int.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Recon data is currently saved as float16.</p>
+</div>
+</section>
+</section>
+<section id="dataset-tree-view">
+<h2>Dataset Tree View<a class="headerlink" href="#dataset-tree-view" title="Link to this heading">#</a></h2>
+<p>When a dataset has been successfully loaded, it will be possible to see its elements listed in the dataset tree view.</p>
+<img alt="Dataset tree view" src="../../_images/dataset_tree_view.png" />
+<section id="adding-replacing-data">
+<h3>Adding / Replacing Data<a class="headerlink" href="#adding-replacing-data" title="Link to this heading">#</a></h3>
+<p>The stacks that comprise an existing dataset can be deleted or – in the case of <em>strict</em> datasets only – replaced.
+This can be done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.</p>
+<img alt="Dataset tree view" src="../../_images/add_to_dataset_dialog.png" />
+<p>As in the case of loading images from the main menu, selecting a single file will cause Mantid Imaging to load all like
+images in the same directory.</p>
+<p>The type of images that you wish to load can be selected from the drop-down menu. If this image type already exists in
+the dataset then the new images will replace it and the previous data will be deleted. If Recon is chosen then the
+images will be added to the dataset’s recons list.</p>
+<p>For “simple” datasets that do not have Projections, Flat Before, etc there is only the option of adding additional
+stacks or recons.</p>
+</section>
+<section id="moving-data">
+<h3>Moving Data<a class="headerlink" href="#moving-data" title="Link to this heading">#</a></h3>
+<p>Data can also be moved from one dataset to another, or one stack type to another, by right-clicking the stack you wish
+to move and choosing the Move Stack option.</p>
+<img alt="Dataset tree view" src="../../_images/move_stack.png" />
+</section>
+<section id="deleting-data">
+<h3>Deleting Data<a class="headerlink" href="#deleting-data" title="Link to this heading">#</a></h3>
+<p>Deleting data can also be achieved by right-clicking on the dataset tree view. This can be used to delete individual
+stacks as well as entire datasets.</p>
+<img alt="Deleting data in the tree view" src="../../_images/delete_data.png" />
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Graphical User Interface (GUI)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="image_view.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Image view</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loading">Loading</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset">Load Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-images">Load Images</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-nexus-file">Load NeXus File</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-log-for-stack">Load log for stack</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-projection-angles">Load projection angles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#degree-projections">180 Degree Projections</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saving">Saving</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#save-as-image-files">Save as Image Files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#save-as-a-nexus-file">Save as a NeXus File</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-tree-view">Dataset Tree View</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-replacing-data">Adding / Replacing Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-data">Moving Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deleting-data">Deleting Data</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/user_guide/gui/loading_saving.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

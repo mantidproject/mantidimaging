@@ -1,0 +1,7 @@
+mantidimaging.core.operations.nan\_removal.nan\_removal module
+==============================================================
+
+.. automodule:: mantidimaging.core.operations.nan_removal.nan_removal
+   :members:
+   :undoc-members:
+   :show-inheritance:

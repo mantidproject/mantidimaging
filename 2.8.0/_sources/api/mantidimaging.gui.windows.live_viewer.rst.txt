@@ -1,0 +1,18 @@
+mantidimaging.gui.windows.live\_viewer package
+==============================================
+
+.. automodule:: mantidimaging.gui.windows.live_viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.live_viewer.live_view_widget
+   mantidimaging.gui.windows.live_viewer.model
+   mantidimaging.gui.windows.live_viewer.presenter
+   mantidimaging.gui.windows.live_viewer.view

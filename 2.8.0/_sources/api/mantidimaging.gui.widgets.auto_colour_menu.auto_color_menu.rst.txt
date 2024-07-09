@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.auto\_colour\_menu.auto\_color\_menu module
+=====================================================================
+
+.. automodule:: mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu
+   :members:
+   :undoc-members:
+   :show-inheritance:

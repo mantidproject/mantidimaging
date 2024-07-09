@@ -1,0 +1,24 @@
+mantidimaging.gui.windows.welcome\_screen package
+=================================================
+
+.. automodule:: mantidimaging.gui.windows.welcome_screen
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.welcome_screen.tests
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.welcome_screen.presenter
+   mantidimaging.gui.windows.welcome_screen.view

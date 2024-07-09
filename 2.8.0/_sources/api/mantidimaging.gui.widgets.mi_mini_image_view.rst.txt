@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.mi\_mini\_image\_view package
+=======================================================
+
+.. automodule:: mantidimaging.gui.widgets.mi_mini_image_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.mi_mini_image_view.view

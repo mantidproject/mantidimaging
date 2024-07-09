@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.bad\_data\_overlay package
+====================================================
+
+.. automodule:: mantidimaging.gui.widgets.bad_data_overlay
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay

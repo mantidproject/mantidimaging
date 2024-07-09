@@ -1,0 +1,79 @@
+Mantid Imaging 2.2
+==================
+
+This release brings some new features and bug fixes.
+
+The key new features of 2.2 are NeXuS import and a new reconstruction algorithm, Primal-Dual Hybrid Gradient from the `Core Imaging Library (CIL) <https://www.ccpi.ac.uk/cil>`_.
+
+New features
+------------
+
+- #927 : ROI norm: use averaged view in ROI selector
+- #925 : Jenks / Otsu everywhere
+- #926 : Manual arithmetic filter
+- #988 : Use averaged view in ROI selector for crop
+- #964 : Open NeXus files
+- #1010 : Write slope and offset into int tiffs
+- #987 : Allow Flat-fielding without dark subtraction
+- #1011 : Pixel size should allow setting decimal places
+- #1013 : NeXus Loading Window
+- #904 : Default to using image center for ring removal COR
+- #1025 : Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL
+- #1027 : Flat field warning if output has negative values
+- #1027 : NeXus Loader: Message when loading large files
+- #1026 : Recon warn if input has NaNs
+- #816 : NaN Removal Filter
+- #1035 : NeXus Loader: Select every Nth image
+- #1035 : List of bad slices in error message could be compressed
+
+Fixes
+-----
+
+- #939 : median: NameError: name 'cp' is not defined
+- #957 : Crop Coordinates ROI not changing
+- #961 : Test failure: ImportError: libcuda.so.1
+- #959 : Median GPU does not work with even values
+- #990 : Remove combine histogram checkbox
+- #989 : Remove legend checkbox
+- #1001 : Exception when selecting Log in Load Dataset dialog
+- #991 : Handle longer running previews better
+- #1021 : Prevent simultaneous Astra calls
+- #1036 : Exception in ReconstructWindowView.show_recon_volume prevents recon closing
+- #1046 : Can't rotate NeXus images
+- #1048 : NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace
+- #1055: Arithmetic operation breaks flat-fielding
+- #898: Improve user documentation for operations
+- #1059: Crash in recon Minimise Error with CIL
+- #1032: Crash in RingRemovalFilter
+- #1057: Fix crash when refining COR
+- #1056: Cannot set range [nan, nan] in ROI normalisation
+- #1019: ERROR: Presenter error: Error applying filter for preview - when closing stacks
+- #1068: Don't show misleading success message when operation cancelled
+- #1082: CIL show memory warning
+- #1014: KeyError when closing stacks
+- #1029: Segmentation fault in image_in_vb
+- #1081: Error if pressing preview button before selecting a dataset
+- #940: Ops window, pixel value not updating for part of image
+- #1093: TIFF output blank if NaN in stack
+- #1095: AttributeError loading 180 deg projection
+- #1110: Segmentation fault COR table refine
+- #1115: Copy everything from metadata dialog
+- #1112: Minimise Error, number of slices input should have minimum of 2
+- #1067: Failed to load stack "log file is not recognised"
+- #1121: FF when negative values in output, no completed message
+
+Developer Changes
+-----------------
+
+- #917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf
+- #980 : Use pre-commit
+- #978 : Update Qt API usage
+- #998 : setup.py command to install current developer requirements
+- #969 : Improve mypy coverage in core.io
+- #1007 : Change applitools check level to content
+- #1086 : GUI system tests
+
+Dependency updates
+------------------
+
+- pyqtgraph 0.12, scikit-image 0.18, tomopy 1.9, numpy 1.18
