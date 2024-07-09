@@ -50,7 +50,7 @@
         </script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mantid Imaging 2.7" href="2.7.html" />
+    <link rel="next" title="Mantid Imaging 2.8" href="2.8.html" />
     <link rel="prev" title="Release Notes" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -443,8 +443,8 @@ document.write(`
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="2.7.html"
-                          title="next chapter">Mantid Imaging 2.7</a></p>
+    <p class="topless"><a href="2.8.html"
+                          title="next chapter">Mantid Imaging 2.8</a></p>
   </div></div>
         <div class="sidebar-primary-item">
 <div id="searchbox"></div></div>
@@ -507,59 +507,12 @@ document.write(`
 <p>This contains changes for the next not yet released Mantid Imaging versions.</p>
 <section id="new-features">
 <h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>#2046 : Enhancement: Implement Click Dialog for Changing ROI Colors in Table</p></li>
-<li><p>#2051: Move operations to compute_function style</p></li>
-<li><p>#2067 : Add ConfigurationManager Class to operations_tests.py</p></li>
-<li><p>#2094: Front-end for loading ShutterCount files into Mantid Imaging.</p></li>
-<li><p>#2094: Add ShutterCount File type.</p></li>
-<li><p>#2094: Apply ShutterCount Normalisation within Spectrum Viewer</p></li>
-<li><p>#2133: The Spectrum plot in the Spectrum Viewer can be zoomed via a click and drag zoom-box</p></li>
-<li><p>#2144: MI UI theme can be changed in runtime via a settings menu</p></li>
-<li><p>#2151: Neutron wavelength, energy and tof units can be selected in the Spectrum Viewer</p></li>
-<li><p>#2151: Time of Flight user properties can be set in the Spectrum Viewer</p></li>
-<li><p>#2206: Improve output naming for reconstructed slices and volumes</p></li>
-<li><p>#2216: Add Wavelength, ToF and Energy unit conversions to Spectrum Viewer CSV Output</p></li>
-<li><p>#2230: Create checkbox that can be toggled on or off to apply ShutterCount correction to ToF data within the spectrum viewer window</p></li>
-</ul>
 </section>
 <section id="fixes">
 <h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>#2053: Fix unreliable tests due to viewbox</p></li>
-<li><p>#2076: ROI speed up</p></li>
-<li><p>#2113: Spectrum Viewer stacks now update with Main Window after operation applied</p></li>
-<li><p>#2129 : fix menu position for new pyqtgraph</p></li>
-<li><p>#2129 : fix: Pytest failure AttributeError: ‘ImageStack’ object has no attribute ‘shape</p></li>
-<li><p>#2167: The Spectrum Viewer no longer produces in different sizes</p></li>
-<li><p>#2185: NaN warning icon now appears in the Spectrum Viewer when NaN are in averaged image</p></li>
-<li><p>#2204: Live viewer, handle notification quickly and defer slow work</p></li>
-<li><p>#2209: Mantid Imaging now switches between Fusion and qt-material themes correctly</p></li>
-<li><p>#2219: Live viewer: informative error if live directory deleted</p></li>
-<li><p>#2246: Don’t duplicate ROI names after stack modification</p></li>
-<li><p>#2250: A bug where a lock object was trying to be pickled has not been fixed, the median filter is now functional.</p></li>
-</ul>
 </section>
 <section id="developer-changes">
 <h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>#1985 : Backend work for TGV reconstruction</p></li>
-<li><p>#2008: Update mypy, remove –no-site-packages, fix issues</p></li>
-<li><p>#2035: Add setting for number of processes to start in multiprocessing pool (default to 8)</p></li>
-<li><p>#2080: Switch to pydata documentation theme</p></li>
-<li><p>#2082: Normal, System, and Screenshot test are now explicitly separated in the Makefile</p></li>
-<li><p>#2107: Fix operation test param defaults</p></li>
-<li><p>#2109: Allow tuple params in operation test cases</p></li>
-<li><p>#2114: Update ruff and fix some new warnings</p></li>
-<li><p>#2116 : Don’t run test suite when only doc changes</p></li>
-<li><p>#2139 : Doc extensions: use StringList instead of ViewList</p></li>
-<li><p>#2172: Unit tests for the UnitConversion class</p></li>
-<li><p>#2177: Added unit tests for the Time of Flight user properties in the Spectrum Viewer</p></li>
-<li><p>#2183 : Update CIL to 24.0, numpy 1.23, scipy 1.8</p></li>
-<li><p>#2196 : Cancel in progress test runs when new commit pushed</p></li>
-<li><p>#2213 : unit tests have been added to check that the Time of Flight modes behave correctly when switching between stacks</p></li>
-<li><p>#2250 : Make systems tests stricter to catch operations errors</p></li>
-</ul>
 </section>
 </section>
 
@@ -583,11 +536,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="2.7.html"
+       href="2.8.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Mantid Imaging 2.7</p>
+        <p class="prev-next-title">Mantid Imaging 2.8</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
