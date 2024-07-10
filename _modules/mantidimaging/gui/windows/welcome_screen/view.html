@@ -505,25 +505,25 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenView.get_show_at_start">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.get_show_at_start">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.set_show_at_start">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.set_show_at_start">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checked</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">checked</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.set_version_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.set_version_label">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_version_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_version_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">version_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.add_link">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.add_link">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">link_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="n">link_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link_box_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">link_label</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
@@ -531,7 +531,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenView.add_issues">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.add_issues">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">issue_box</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">issues_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
         <span class="n">issues_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>

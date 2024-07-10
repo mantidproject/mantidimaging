@@ -512,13 +512,13 @@ document.write(`
 
 <div class="viewcode-block" id="WizardPresenter.show">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.wizard.presenter.html#mantidimaging.gui.windows.wizard.presenter.WizardPresenter.show">[docs]</a>
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WizardPresenter.populate">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.wizard.presenter.html#mantidimaging.gui.windows.wizard.presenter.WizardPresenter.populate">[docs]</a>
-    <span class="k">def</span> <span class="nf">populate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">populate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wizard_data</span><span class="p">[</span><span class="s2">&quot;stages&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_stage</span><span class="p">(</span><span class="n">stage</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">stage</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]:</span>
@@ -527,7 +527,7 @@ document.write(`
 
 <div class="viewcode-block" id="WizardPresenter.run_action">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.wizard.presenter.html#mantidimaging.gui.windows.wizard.presenter.WizardPresenter.run_action">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;load&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">main_window_presenter</span><span class="o">.</span><span class="n">wizard_action_load</span><span class="p">()</span>
 

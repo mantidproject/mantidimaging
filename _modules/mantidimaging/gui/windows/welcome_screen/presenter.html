@@ -509,7 +509,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.do_set_up">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_set_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_set_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_version_label</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging </span><span class="si">{</span><span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_up_links</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_up_show_at_start</span><span class="p">()</span>
@@ -518,7 +518,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.show">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show">[docs]</a>
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
@@ -547,14 +547,14 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.set_up_links">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.set_up_links">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_up_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_up_links</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">WELCOME_LINKS</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.add_link">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.add_link">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rich_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">link_name</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">rich_text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">link_count</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
@@ -562,7 +562,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.set_up_show_at_start">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.set_up_show_at_start">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">show_at_start</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_show_at_start</span><span class="p">(</span><span class="n">show_at_start</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start_changed</span><span class="p">()</span></div>
@@ -570,7 +570,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.show_at_start_changed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.show_at_start_changed">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_at_start_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">show_at_start_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">show_at_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_show_at_start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="n">show_at_start</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">())</span></div>
@@ -578,7 +578,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenter.check_issues">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.check_issues">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">versions</span><span class="o">.</span><span class="n">needs_update</span><span class="p">():</span>
             <span class="n">msg</span><span class="p">,</span> <span class="n">detailed</span> <span class="o">=</span> <span class="n">versions</span><span class="o">.</span><span class="n">conda_update_message</span><span class="p">()</span>

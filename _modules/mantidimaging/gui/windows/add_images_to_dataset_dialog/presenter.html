@@ -506,7 +506,7 @@ document.write(`
 
 <div class="viewcode-block" id="AddImagesToDatasetPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html#mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.AddImagesToDatasetPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">IMAGE_FILE_SELECTED</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">load_images</span><span class="p">()</span>
@@ -516,7 +516,7 @@ document.write(`
 
 <div class="viewcode-block" id="AddImagesToDatasetPresenter.load_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.html#mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter.AddImagesToDatasetPresenter.load_images">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">load_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads the images from the file path provided by the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -524,7 +524,7 @@ document.write(`
                               <span class="bp">self</span><span class="o">.</span><span class="n">_on_images_load_done</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;file_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">path</span><span class="p">})</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_on_images_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_images_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks if loading images was successful and then triggers the necessary updates.</span>
 <span class="sd">        :param task: The file loading task.</span>

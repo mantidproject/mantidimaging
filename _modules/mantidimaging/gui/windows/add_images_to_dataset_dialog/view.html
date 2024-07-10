@@ -511,12 +511,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_accepted</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">IMAGE_FILE_SELECTED</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AddImagesToDatasetDialog.choose_file_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.add_images_to_dataset_dialog.view.html#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.choose_file_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">choose_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">choose_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select a file in the stack path that we wish to add/replace in the dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
