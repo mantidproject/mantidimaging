@@ -1,3 +1,5 @@
+# Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
