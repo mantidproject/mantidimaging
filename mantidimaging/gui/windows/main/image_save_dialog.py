@@ -53,7 +53,7 @@ class ImageSaveDialog(BaseDialogView):
 
         self.selected_stack = None
 
-    def save_all(self):
+    def save_all(self) -> None:
         self.selected_stack = self.stack_uuids[self.stackNames.currentIndex()]
         self.parent().execute_image_file_save()
 

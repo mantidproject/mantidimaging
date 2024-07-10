@@ -6,8 +6,8 @@ import uuid
 
 from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.windows.main.presenter import DatasetId
 
 NXS_EXT = ".nxs"
 
@@ -18,7 +18,7 @@ class NexusSaveDialog(BaseDialogView):
     floatRadioButton: QRadioButton
     intRadioButton: QRadioButton
 
-    def __init__(self, parent, dataset_list: list[StrictDataset]):
+    def __init__(self, parent, dataset_list: list[DatasetId]):
         super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
 
         self.browseButton.clicked.connect(self._set_save_path)
@@ -51,16 +51,16 @@ class NexusSaveDialog(BaseDialogView):
     def sample_name(self) -> str:
         return str(self.sampleNameLineEdit.text())
 
-    def enable_save(self):
+    def enable_save(self) -> None:
         self.buttonBox.button(QDialogButtonBox.StandardButton.Save).setEnabled(self.save_path().strip() != ""
                                                                                and self.sample_name().strip() != "")
 
-    def _set_save_path(self):
+    def _set_save_path(self) -> None:
         path = QFileDialog.getSaveFileName(self, "Save NeXus file", "", f"NeXus (*{NXS_EXT})")[0]
         self.savePath.setText(path)
         self._check_extension()
 
-    def _check_extension(self):
+    def _check_extension(self) -> None:
         path = self.save_path()
         if os.path.splitext(path)[1] != NXS_EXT:
             self.savePath.setText(path + NXS_EXT)
