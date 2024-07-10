@@ -23,21 +23,21 @@ class AddImagesToDatasetPresenter(BasePresenter):
         super().__init__(view)
         self._images = None
 
-    def notify(self, n: Notification):
+    def notify(self, n: Notification) -> None:
         try:
             if n == Notification.IMAGE_FILE_SELECTED:
                 self.load_images()
         except RuntimeError as err:
             self.view.show_exception(str(err), traceback.format_exc())
 
-    def load_images(self):
+    def load_images(self) -> None:
         """
         Loads the images from the file path provided by the user.
         """
         start_async_task_view(self.view, self.view.parent_view.presenter.model.load_image_stack,
                               self._on_images_load_done, {'file_path': self.view.path})
 
-    def _on_images_load_done(self, task: TaskWorkerThread):
+    def _on_images_load_done(self, task: TaskWorkerThread) -> None:
         """
         Checks if loading images was successful and then triggers the necessary updates.
         :param task: The file loading task.

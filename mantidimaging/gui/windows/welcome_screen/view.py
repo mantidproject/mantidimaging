@@ -25,21 +25,21 @@ class WelcomeScreenView(BaseDialogView):
         self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
         self.ok_button.clicked.connect(self.close)
 
-    def get_show_at_start(self):
+    def get_show_at_start(self) -> None:
         return self.show_at_start.isChecked()
 
-    def set_show_at_start(self, checked):
+    def set_show_at_start(self, checked: bool) -> None:
         self.show_at_start.setChecked(checked)
 
-    def set_version_label(self, contents):
+    def set_version_label(self, contents: str) -> None:
         self.version_label.setText(contents)
 
-    def add_link(self, label, row):
+    def add_link(self, label: str, row: int) -> None:
         link_label = QLabel(label)
         link_label.setOpenExternalLinks(True)
         self.link_box_layout.addWidget(link_label, row, 0)
 
-    def add_issues(self, contents):
+    def add_issues(self, contents: str) -> None:
         self.issue_box.setVisible(True)
         issues_label = QLabel(contents)
         issues_label.setOpenExternalLinks(True)
