@@ -34,5 +34,12 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
-    def test_spectrum_window_opens_with_data(self):
-        QTest.qWait(SHOW_DELAY * 5)
+    def test_spectrum_window_opens_with_data_in_default_state(self) -> None:
+        self.assertFalse(self.spectrum_window.normaliseCheckBox.isChecked())
+        self.assertFalse(self.spectrum_window.normalise_ShutterCount_CheckBox.isEnabled())
+        self.assertEqual(self.spectrum_window.roi_table_model.rowCount(), 1)
+        self.assertEqual(self.spectrum_window.roi_table_model.columnCount(), 3)
+        self.assertTrue(self.spectrum_window.addBtn.isEnabled())
+        self.assertTrue(self.spectrum_window.removeBtn.isEnabled())
+        self.assertTrue(self.spectrum_window.exportButton.isEnabled())
+        QTest.qWait(SHOW_DELAY)
