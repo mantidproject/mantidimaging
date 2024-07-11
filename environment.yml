@@ -5,7 +5,8 @@ channels:
   - conda-forge
   - ccpi
   - algotom
-  - intel
+  # https://github.com/mantidproject/mantidimaging/issues/2272
+  - samtygier-stfc/label/mirror
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
   - mantidimaging>=2.5.0
