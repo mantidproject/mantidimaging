@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from unittest import mock
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 
-from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY
+from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
@@ -42,4 +43,16 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertTrue(self.spectrum_window.addBtn.isEnabled())
         self.assertTrue(self.spectrum_window.removeBtn.isEnabled())
         self.assertTrue(self.spectrum_window.exportButton.isEnabled())
+        self.assertIn('roi', self.spectrum_window.roi_table_model.roi_names())
+        self.assertIn('roi', self.spectrum_window.spectrum_widget.roi_dict)
         QTest.qWait(SHOW_DELAY)
+
+    def test_add_roi(self) -> None:
+        for i in range(1, 4):
+            initial_roi_count = self.spectrum_window.roi_table_model.rowCount()
+            QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+            QTest.qWait(SHORT_DELAY)
+            final_roi_count = self.spectrum_window.roi_table_model.rowCount()
+            self.assertEqual(final_roi_count, initial_roi_count + 1)
+            self.assertIn(f'roi_{i}', self.spectrum_window.roi_table_model.roi_names())
+            self.assertIn(f'roi_{i}', self.spectrum_window.spectrum_widget.roi_dict)
