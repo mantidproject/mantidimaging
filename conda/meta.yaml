@@ -24,7 +24,7 @@ requirements:
     - imagecodecs=2023.1.23
     - numpy=1.26.*
     - numexpr=2.8.*
-    - algotom=1.0.*
+    - algotom=1.6.*
     - tomopy=1.12.*
     - cudatoolkit=11.8.*
     - cupy=10.2.*
