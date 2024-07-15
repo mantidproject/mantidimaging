@@ -477,9 +477,8 @@ document.write(`
 <span></span><span class="c1"># Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-
 <span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -507,15 +506,30 @@ document.write(`
 <div class="viewcode-block" id="find_center">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.rotation.polyfit_correlation.html#mantidimaging.core.rotation.polyfit_correlation.find_center">[docs]</a>
 <span class="k">def</span> <span class="nf">find_center</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">]:</span>
-    <span class="c1"># assume the ROI is the full image, i.e. the slices are ALL rows of the image</span>
-    <span class="n">slices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
-    <span class="n">shift</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="p">))</span>
+    <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images and images.proj180deg cannot be None&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Assume the ROI is the full image, i.e. the slices are ALL rows of the image</span>
+    <span class="n">slices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">search_range</span> <span class="o">=</span> <span class="n">get_search_range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
-    <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">search_range</span><span class="p">),</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+    <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">search_range</span><span class="p">),</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">shared_search_range</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">search_range</span><span class="p">),</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="n">shared_search_range</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">search_range</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">_calculate_correlation_error</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">shared_search_range</span><span class="p">,</span> <span class="n">min_correlation_error</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+
+    <span class="c1"># Copy projections to shared memory</span>
+    <span class="n">shared_projections</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">shared_projections</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">shared_projections</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Prepare parameters for the compute function</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;image_width&#39;</span><span class="p">:</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">compute_correlation_error</span><span class="p">,</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">search_range</span><span class="p">),</span> <span class="p">[</span><span class="n">min_correlation_error</span><span class="p">,</span> <span class="n">shared_projections</span><span class="p">,</span> <span class="n">shared_search_range</span><span class="p">],</span>
+                        <span class="n">params</span><span class="p">,</span>
+                        <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
 
     <span class="c1"># Originally the output of do_search is stored in dimensions</span>
     <span class="c1"># corresponding to (search_range, square sum). This is awkward to navigate</span>
@@ -527,47 +541,47 @@ document.write(`
     <span class="n">m</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;m=</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="n">theta</span> <span class="o">=</span> <span class="n">Degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">m</span><span class="p">)))</span>
     <span class="n">offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;found offset: </span><span class="si">{</span><span class="o">-</span><span class="n">offset</span><span class="si">}</span><span class="s2"> and tilt </span><span class="si">{</span><span class="n">theta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">h_middle</span> <span class="o">+</span> <span class="o">-</span><span class="n">offset</span><span class="p">),</span> <span class="n">theta</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">_calculate_correlation_error</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">shared_search_range</span><span class="p">,</span> <span class="n">min_correlation_error</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
-    <span class="c1"># if the projections are passed in the partial they are copied to every process on every iteration</span>
-    <span class="c1"># this makes the multiprocessing significantly slower</span>
-    <span class="c1"># so they are copied into a shared array to avoid that copying</span>
-    <span class="n">shared_projections</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
-    <span class="n">shared_projections</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">shared_projections</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="viewcode-block" id="compute_correlation_error">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.rotation.polyfit_correlation.html#mantidimaging.core.rotation.polyfit_correlation.compute_correlation_error">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_correlation_error</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">shared_projections</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shared_search_range</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">image_width</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;image_width&#39;</span><span class="p">]</span>
 
-    <span class="n">do_search_partial</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">create_partial</span><span class="p">(</span><span class="n">do_calculate_correlation_err</span><span class="p">,</span> <span class="n">ps</span><span class="o">.</span><span class="n">inplace3</span><span class="p">,</span> <span class="n">image_width</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+    <span class="n">search_index</span> <span class="o">=</span> <span class="n">shared_search_range</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">do_calculate_correlation_err</span><span class="p">(</span><span class="n">min_correlation_error</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">search_index</span><span class="p">,</span>
+                                 <span class="p">(</span><span class="n">shared_projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shared_projections</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">image_width</span><span class="p">)</span></div>
 
-    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_correlation_error</span><span class="p">,</span> <span class="n">shared_search_range</span><span class="p">,</span> <span class="n">shared_projections</span><span class="p">]</span>
-    <span class="n">ps</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">do_search_partial</span><span class="p">,</span>
-               <span class="n">arrays</span><span class="p">,</span>
-               <span class="n">num_operations</span><span class="o">=</span><span class="n">min_correlation_error</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-               <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span>
-               <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Finding correlation on row&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_find_shift</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">search_range</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">min_correlation_error</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="c1"># Then we just find the index of the minimum one (minimum error)</span>
     <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">min_correlation_error</span><span class="p">)</span>
+    <span class="c1"># argmin returns a list of where the minimum argument is found</span>
+    <span class="c1"># just in case that happens - get the first minimum one, should be close enough</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
-        <span class="c1"># then we just find the index of the minimum one (minimum error)</span>
         <span class="n">min_arg_positions</span> <span class="o">=</span> <span class="n">min_correlation_error</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
-        <span class="c1"># argmin returns a list of where the minimum argument is found</span>
-        <span class="c1"># just in case that happens - get the first minimum one, should be close enough</span>
         <span class="n">min_arg</span> <span class="o">=</span> <span class="n">min_arg_positions</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_arg_positions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="k">else</span> <span class="n">min_arg_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># and we get which search range is at that index</span>
+        <span class="c1"># And we get which search range is at that index</span>
         <span class="c1"># that is the number that we then pass into polyfit</span>
         <span class="n">shift</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="n">search_range</span><span class="p">[</span><span class="n">min_arg</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">shift</span>
 
 
 <div class="viewcode-block" id="get_search_range">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.rotation.polyfit_correlation.html#mantidimaging.core.rotation.polyfit_correlation.get_search_range">[docs]</a>
-<span class="k">def</span> <span class="nf">get_search_range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_search_range</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">range</span><span class="p">:</span>
     <span class="n">tmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">tmax</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">search_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
