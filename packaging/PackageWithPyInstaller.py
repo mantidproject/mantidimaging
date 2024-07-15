@@ -47,6 +47,8 @@ def add_hidden_imports(run_options):
     run_options.extend(add_conda_dynamic_libs('tomopy', 'tomo'))
     run_options.extend(add_conda_dynamic_libs('mkl', 'mkl'))
     run_options.extend(add_conda_dynamic_libs('cupy', 'nvrtc'))
+    run_options.extend(add_conda_dynamic_libs('curl', 'ssl'))
+    run_options.extend(add_conda_dynamic_libs('curl', 'crypto'))
 
 
 def add_missing_submodules(run_options):
