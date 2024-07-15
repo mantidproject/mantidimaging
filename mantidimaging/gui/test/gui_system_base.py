@@ -119,6 +119,9 @@ class GuiSystemBase(unittest.TestCase):
     def _open_reconstruction(self):
         self.main_window.actionRecon.trigger()
 
+    def _open_spectrum_viewer(self):
+        self.main_window.actionSpectrumViewer.trigger()
+
     def _close_image_stacks(self):
         while self.main_window.dataset_tree_widget.topLevelItemCount():
             self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
