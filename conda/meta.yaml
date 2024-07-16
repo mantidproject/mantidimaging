@@ -27,14 +27,14 @@ requirements:
     - algotom=1.6.*
     - tomopy=1.12.*
     - cudatoolkit=11.8.*
-    - cupy=10.2.*
-    - astra-toolbox=2.0.*
+    - cupy=12.3.*
+    - astra-toolbox=2.0.0
     - requests=2.27.*
     - h5py=3.7.*
     - psutil=5.9.*
     - cil=24.0.*
     - ccpi-regulariser
-    - jenkspy=0.2.0
+    - jenkspy=0.4.*
     - pyqt=5.15.*
     - pyqtgraph=0.13.7
     - qt-material=2.14
