@@ -2,11 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from collections.abc import Callable
-from numpy import ndarray  # Import ndarray type from numpy
 
 from mantidimaging.core.parallel import utility as pu
+
+if TYPE_CHECKING:
+    from numpy import ndarray
 
 ComputeFuncType = (Callable[[int, list['ndarray'], dict[str, Any]], None]
                    | Callable[[int, 'ndarray', dict[str, Any]], None])
