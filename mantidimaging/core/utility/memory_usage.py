@@ -2,8 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from logging import getLogger
-
 # Percent memory of the system total to AVOID being allocated by Mantid Imaging shared arrays.
 # Our Linux installation steps request 90% of RAM for shared memory and taking up nearly all of that makes it more
 # likely to get hit by SIGBUS by the OS. Even if the allocation is permitted, it could slow the
@@ -69,16 +67,3 @@ def get_memory_usage_linux_str():
         memory_string += f". Memory change: {delta_memory} MB"
 
     return memory_string
-
-
-def debug_log_memory_usage_linux(message=""):
-    try:
-        # Windows doesn't seem to have resource package, so this will
-        # silently fail
-        import resource as res
-        log = getLogger(__name__)
-        max_rss = res.getrusage(res.RUSAGE_SELF).ru_maxrss
-        log.info(f"Memory usage {max_rss} KB, {int(max_rss) / 1024} MB")
-        log.info(message)
-    except ImportError:
-        log.warning('Resource monitoring is not available on Windows')
