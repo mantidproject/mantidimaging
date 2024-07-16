@@ -134,7 +134,9 @@ class ReconstructWindowModel:
                                                   images.projection_angles(recon_params.max_projection_angle),
                                                   recon_params,
                                                   progress=progress)
-        recon = self._apply_pixel_size(recon, recon_params)
+
+        recon = self._apply_pixel_size(recon, recon_params)  # type: ignore
+
         return recon
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
@@ -146,7 +148,7 @@ class ReconstructWindowModel:
         # get the image height based on the current ROI
         recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
                                    progress)
-        recon = self._apply_pixel_size(recon, recon_params, progress)
+        recon = self._apply_pixel_size(recon, recon_params, progress)  # type: ignore
         return recon
 
     @staticmethod
