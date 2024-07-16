@@ -33,7 +33,7 @@ def run_compute_func(func: ComputeFuncType,
                      num_operations: int,
                      arrays: list[pu.SharedArray] | pu.SharedArray,
                      params: dict[str, Any],
-                     progress=None):
+                     progress=None) -> None:
     if isinstance(arrays, pu.SharedArray):
         arrays = [arrays]
     all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)

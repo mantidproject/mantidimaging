@@ -36,17 +36,20 @@ INT16_SIZE = 65536
 package_version = CheckVersion().get_version()
 
 
-def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = ""):
+def write_fits(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = "") -> None:
     hdu = fits.PrimaryHDU(data)
     hdulist = fits.HDUList([hdu])
     hdulist.writeto(filename, overwrite=overwrite)
 
 
-def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = ""):
+def write_img(data: np.ndarray, filename: str, overwrite: bool = False, description: str | None = "") -> None:
     tifffile.imwrite(filename, data, description=description, metadata=None, software="Mantid Imaging")
 
 
-def write_nxs(data: np.ndarray, filename: str, projection_angles: np.ndarray | None = None, overwrite: bool = False):
+def write_nxs(data: np.ndarray,
+              filename: str,
+              projection_angles: np.ndarray | None = None,
+              overwrite: bool = False) -> None:
     import h5py
     nxs = h5py.File(filename, 'w')
 
@@ -177,7 +180,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_float: bool):
+def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_float: bool) -> None:
     """
     Uses information from a StrictDataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
@@ -199,7 +202,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_floa
     nexus_file.close()
 
 
-def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str, save_as_float: bool):
+def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str, save_as_float: bool) -> None:
     """
     Takes a NeXus file and writes the StrictDataset information to it.
     :param nexus_file: The NeXus file.
@@ -252,7 +255,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str,
 
 
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Dataset,
-                                  image_key: h5py.Dataset, save_as_float: bool):
+                                  image_key: h5py.Dataset, save_as_float: bool) -> None:
     data = nexus_file.create_group(NEXUS_PROCESSED_DATA_PATH)
     data["rotation_angle"] = rotation_angle
     data["image_key"] = image_key
@@ -266,7 +269,7 @@ def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset,
     process.create_dataset("version", data=np.bytes_(package_version))
 
 
-def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool):
+def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool) -> None:
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
 
     index = 0
@@ -305,7 +308,7 @@ def _convert_float_to_int(arrays: list[np.ndarray]) -> tuple[list[np.ndarray], l
     return converted, factors
 
 
-def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str):
+def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: str) -> None:
     """
     Saves a recon to a NeXus file.
     :param nexus_file: The NeXus file.
@@ -369,7 +372,7 @@ def _create_pixel_size_arrays(recon: ImageStack) -> tuple[np.ndarray, np.ndarray
     return x_arr, y_arr, z_arr
 
 
-def _set_nx_class(group: h5py.Group, class_name: str):
+def _set_nx_class(group: h5py.Group, class_name: str) -> None:
     """
     Sets the NX_class attribute of data in a NeXus file.
     :param group: The h5py group.

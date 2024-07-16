@@ -36,7 +36,7 @@ class TomopyRecon(BaseRecon):
                     cor: ScalarCoR,
                     proj_angles: ProjectionAngles,
                     recon_params: ReconstructionParameters,
-                    progress: Progress | None = None):
+                    progress: Progress | None = None) -> np.ndarray:
         sino = BaseRecon.prepare_sinogram(sino, recon_params)
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
@@ -51,7 +51,7 @@ class TomopyRecon(BaseRecon):
     def full(images: ImageStack,
              cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Progress | None = None):
+             progress: Progress | None = None) -> np.ndarray:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 

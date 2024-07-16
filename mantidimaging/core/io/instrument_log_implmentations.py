@@ -100,7 +100,7 @@ class LegacyIMATLogFile(InstrumentLogParser):
             locale.setlocale(locale.LC_TIME, lc)
 
     @staticmethod
-    def _has_imat_header(line: str):
+    def _has_imat_header(line: str) -> bool:
         HEADERS = [
             "TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image",
             "TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image",
@@ -108,7 +108,7 @@ class LegacyIMATLogFile(InstrumentLogParser):
         return line.strip() in HEADERS
 
     @classmethod
-    def _has_imat_data_line(cls, line: str):
+    def _has_imat_data_line(cls, line: str) -> bool:
         try:
             _ = cls.read_imat_date(line[:24])
         except ValueError:
