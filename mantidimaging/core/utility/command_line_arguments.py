@@ -9,11 +9,11 @@ from mantidimaging.core.operations.loader import load_filter_packages
 logger = getLogger(__name__)
 
 
-def _get_filter_names():
+def _get_filter_names() -> dict[str, str]:
     return {package.filter_name.replace(" ", "-").lower(): package.filter_name for package in load_filter_packages()}
 
 
-def _log_and_exit(msg: str):
+def _log_and_exit(msg: str) -> None:
     """
     Log an error message and exit.
     :param msg: The log message.

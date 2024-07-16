@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 DEFAULT_NUM_BINS = 2048
 
 
-def set_histogram_log_scale(histogram: HistogramLUTItem):
+def set_histogram_log_scale(histogram: HistogramLUTItem) -> None:
     """
     Sets the y-values of a histogram to use a log scale.
     :param histogram: The HistogramLUTItem of an image.
@@ -20,7 +20,7 @@ def set_histogram_log_scale(histogram: HistogramLUTItem):
     histogram.plot.setData(x_data, np.log(y_data + 1))
 
 
-def generate_histogram_from_image(image_data, num_bins=DEFAULT_NUM_BINS):
+def generate_histogram_from_image(image_data: np.ndarray, num_bins: int = DEFAULT_NUM_BINS) -> tuple:
     histogram, bins = np.histogram(image_data.flatten(), num_bins)
     center = (bins[:-1] + bins[1:]) / 2
     return center, histogram, bins

@@ -35,21 +35,21 @@ class ExecutionTimer:
         self.time_start: float | None = None
         self.time_end: float | None = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         prefix = f'{self.msg}: ' if self.msg else ''
         sec = self.total_seconds
         return f'{prefix}{sec if sec else "unknown"} seconds'
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         self.time_start = time.monotonic()
         self.time_end = None
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         self.time_end = time.monotonic()
         self.logger.info(str(self))
 
     @property
-    def total_seconds(self):
+    def total_seconds(self) -> float | None:
         """
         Gets the total number of seconds the timer was running for, returns
         None if the timer has not been run or is still running.
@@ -77,7 +77,7 @@ class ExecutionProfiler:
 
         self.pr = cProfile.Profile()
 
-    def __str__(self):
+    def __str__(self) -> str:
         out = StringIO()
         out.write(f'{self.msg}: \n' if self.msg else '')
 
@@ -85,10 +85,10 @@ class ExecutionProfiler:
         ps.print_stats()
         return out.getvalue()
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         self.pr.enable()
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         self.pr.disable()
         if perf_logger.isEnabledFor(1):
             for line in str(self).split("\n")[:self.max_lines]:

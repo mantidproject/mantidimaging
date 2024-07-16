@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 
 
-def execute(data_length, slice_ids, cors_for_sinograms):
+def execute(data_length: int, slice_ids: np.ndarray, cors_for_sinograms: np.ndarray) -> np.ndarray:
     """
     Interpolates the Centers of Rotation for the sinograms that are not
     provided.
