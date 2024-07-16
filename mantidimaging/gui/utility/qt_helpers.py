@@ -59,13 +59,14 @@ def select_directory(field: QWidget, caption: str) -> None:
     field.setText(QFileDialog.getExistingDirectory(caption=caption))
 
 
-def get_value_from_qwidget(widget: QWidget) -> Any:
+def get_value_from_qwidget(widget: QWidget) -> str | float | bool | None:
     if isinstance(widget, QLineEdit):
         return widget.text()
     elif isinstance(widget, QSpinBox) or isinstance(widget, QDoubleSpinBox):
         return widget.value()
     elif isinstance(widget, QCheckBox):
         return widget.isChecked()
+    return None
 
 
 class Type(IntEnum):
