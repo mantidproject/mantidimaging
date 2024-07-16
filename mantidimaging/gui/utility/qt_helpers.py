@@ -46,12 +46,12 @@ class BlockQtSignals:
             obj.blockSignals(prev)
 
 
-def compile_ui(ui_file, qt_obj=None):
+def compile_ui(ui_file: str, qt_obj=None) -> QWidget:
     base_path = finder.ROOT_PATH
     return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
 
 
-def select_directory(field, caption):
+def select_directory(field: QWidget, caption: str) -> None:
     assert isinstance(field, QLineEdit), (f"The passed object is of type {type(field)}. This function only works with "
                                           "QLineEdit")
 
@@ -59,7 +59,7 @@ def select_directory(field, caption):
     field.setText(QFileDialog.getExistingDirectory(caption=caption))
 
 
-def get_value_from_qwidget(widget: QWidget):
+def get_value_from_qwidget(widget: QWidget) -> Any:
     if isinstance(widget, QLineEdit):
         return widget.text()
     elif isinstance(widget, QSpinBox) or isinstance(widget, QDoubleSpinBox):
@@ -82,7 +82,7 @@ class Type(IntEnum):
     BUTTON = auto()
 
 
-def on_change_and_disable(widget: QWidget, on_change: Callable):
+def on_change_and_disable(widget: QWidget, on_change: Callable) -> None:
     """
     Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that
     continue increasing when generating a preview image is computationally intensive.
@@ -129,7 +129,7 @@ def add_property_to_form(label: str,
     if isinstance(default_value, str) and default_value.lower() == "none":
         default_value = None
 
-    def set_spin_box(box, cast_func):
+    def set_spin_box(box: QSpinBox | QDoubleSpinBox, cast_func: Callable[[str], Any]) -> None:
         """
         Helper function to set default options on a spin box.
         """
@@ -237,7 +237,7 @@ def add_property_to_form(label: str,
     return left_widget, right_widget
 
 
-def delete_all_widgets_from_layout(lo):
+def delete_all_widgets_from_layout(lo: QLayout) -> None:
     """
     Removes and deletes all child widgets form a layout.
 
@@ -257,7 +257,7 @@ def delete_all_widgets_from_layout(lo):
             item.widget().setParent(None)
 
 
-def populate_menu(menu: QMenu, actions_list: list[QAction]):
+def populate_menu(menu: QMenu, actions_list: list[QAction]) -> None:
     for (menu_text, func) in actions_list:
         if func is None:
             menu.addSeparator()

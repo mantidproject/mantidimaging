@@ -46,7 +46,7 @@ class CORInspectionDialogPresenter(BasePresenter):
 
         self.model = CORInspectionDialogModel(images, slice_index, initial_cor, recon_params, iters_mode)
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         try:
             if signal == Notification.IMAGE_CLICKED_LESS:
                 self.on_select_image(ImageType.LESS)
@@ -65,11 +65,11 @@ class CORInspectionDialogPresenter(BasePresenter):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def on_load(self):
+    def on_load(self) -> None:
         self.view.set_maximum_cor(self.model.cor_extents[1])
         self.notify(Notification.FULL_UPDATE)
 
-    def on_select_image(self, img):
+    def on_select_image(self, img) -> None:
         LOG.debug(f'Image selected: {img}')
 
         # Adjust COR/iterations step
@@ -108,5 +108,5 @@ class CORInspectionDialogPresenter(BasePresenter):
         return ScalarCoR(self.model.centre_value)
 
     @property
-    def optimal_iterations(self):
-        return self.model.centre_value
+    def optimal_iterations(self) -> int:
+        return int(self.model.centre_value)

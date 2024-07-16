@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import replace
 from logging import getLogger
 
+import numpy as np
+
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -26,7 +28,7 @@ class CORInspectionDialogModel:
         # Initial parameters
         if iters_mode:
             self.centre_value: int | float = INIT_ITERS_CENTRE_VALUE
-            self.step = INIT_ITERS_STEP
+            self.step: float = INIT_ITERS_STEP
             self.initial_cor = initial_cor
             self._recon_preview = self._recon_iters_preview
             self._divide_step = self._divide_iters_step
@@ -41,13 +43,13 @@ class CORInspectionDialogModel:
         self.recon_params = recon_params
         self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 
-    def _divide_iters_step(self):
+    def _divide_iters_step(self) -> None:
         self.step = self.step // 2
 
-    def _divide_cor_step(self):
+    def _divide_cor_step(self) -> None:
         self.step /= 2
 
-    def adjust(self, image):
+    def adjust(self, image: ImageType) -> None:
         """
         Adjusts the rotation centre/number of iterations and step after an image is selected as the
         optimal of an iteration.
@@ -59,7 +61,7 @@ class CORInspectionDialogModel:
         elif image == ImageType.CURRENT:
             self._divide_step()
 
-    def cor(self, image):
+    def cor(self, image: ImageType) -> float:
         """
         Gets the rotation centre for a given image in the current iteration.
         """
@@ -70,7 +72,7 @@ class CORInspectionDialogModel:
         elif image == ImageType.MORE:
             return min(self.cor_extents[1], self.centre_value + self.step)
 
-    def iterations(self, image):
+    def iterations(self, image: ImageType) -> float:
         if image == ImageType.LESS:
             return max(1, self.centre_value - self.step)
         elif image == ImageType.CURRENT:
@@ -78,18 +80,18 @@ class CORInspectionDialogModel:
         elif image == ImageType.MORE:
             return self.centre_value + self.step
 
-    def _recon_cor_preview(self, image):
+    def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
         cor = ScalarCoR(self.cor(image))
         return self.reconstructor.single_sino(self.sino, cor, self.proj_angles, self.recon_params)
 
-    def _recon_iters_preview(self, image):
+    def _recon_iters_preview(self, image: ImageType) -> np.ndarray:
         iters = self.iterations(image)
-        new_params = replace(self.recon_params, num_iter=iters)
+        new_params = replace(self.recon_params, num_iter=int(iters))
         return self.reconstructor.single_sino(self.sino, self.initial_cor, self.proj_angles, new_params)
 
-    def recon_preview(self, image):
+    def recon_preview(self, image: ImageType) -> np.ndarray:
         return self._recon_preview(image)
 
     @property
-    def cor_extents(self):
+    def cor_extents(self) -> tuple[int, int]:
         return 0, self.sino.shape[1] - 1

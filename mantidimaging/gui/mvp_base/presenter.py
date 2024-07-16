@@ -15,14 +15,14 @@ class BasePresenter:
     def __init__(self, view: BaseMainWindowView):
         self.view = view
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         raise NotImplementedError("Presenter must implement the notify() method")
 
-    def show_error(self, error, traceback):
+    def show_error(self, error, traceback) -> None:
         getLogger(__name__).exception(f'Presenter error: {error}\n{traceback}')
         if hasattr(self.view, 'show_error_dialog'):
             # If the view knows how to handle an error message
             self.view.show_error_dialog(str(error))
 
-    def show_information(self, info):
+    def show_information(self, info) -> None:
         self.view.show_info_dialog(info)

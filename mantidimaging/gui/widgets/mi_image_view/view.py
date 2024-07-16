@@ -144,7 +144,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         return self._angles
 
     @angles.setter
-    def angles(self, angles: ProjectionAngles | None):
+    def angles(self, angles: ProjectionAngles | None) -> None:
         self._angles = angles
         self._update_message(self._last_mouse_hover_location)
 
@@ -162,7 +162,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             self.set_roi(self.default_roi())
         self.angles = None
 
-    def toggle_jumping_frame(self, images_to_jump_by=None):
+    def toggle_jumping_frame(self, images_to_jump_by=None) -> None:
         if not self.shifting_through_images and images_to_jump_by is not None:
             self.shifting_through_images = True
         else:
@@ -172,7 +172,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             sleep(0.02)
             QApplication.processEvents()
 
-    def _refresh_message(self):
+    def _refresh_message(self) -> None:
         try:
             self._update_message(self._last_mouse_hover_location)
         except IndexError:
@@ -180,7 +180,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             # is outside of the new bounds. To prevent this happening again just reset back to 0, 0
             self._last_mouse_hover_location = CloseEnoughPoint([0, 0])
 
-    def roiChanged(self):
+    def roiChanged(self) -> None:
         """
         Re-implements the roiChanged function to expect only 3D data,
         and uses a faster mean calculation on the ROI view of the data,
@@ -223,14 +223,14 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         else:
             return None
 
-    def roiClicked(self):
+    def roiClicked(self) -> None:
         # When ROI area is hidden with the button, clear the message
         if not self.ui.roiBtn.isChecked() and hasattr(self, "_last_mouse_hover_location"):
             self.roiString = None
             self._refresh_message()
         super().roiClicked()
 
-    def extend_roi_plot_mouse_press_handler(self):
+    def extend_roi_plot_mouse_press_handler(self) -> None:
         original_handler = self.ui.roiPlot.mousePressEvent
 
         def extended_handler(ev):
@@ -245,14 +245,14 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
                                       roi_pos=CloseEnoughPoint(self.roi.pos()),
                                       roi_size=CloseEnoughPoint(self.roi.size()))
 
-    def image_hover_event(self, event: HoverEvent):
+    def image_hover_event(self, event: HoverEvent) -> None:
         if event.exit:
             return
         pt = CloseEnoughPoint(event.pos())
         self._last_mouse_hover_location = pt
         self._update_message(pt)
 
-    def _update_message(self, pt):
+    def _update_message(self, pt) -> None:
         # event holds the coordinates in column-major coordinate
         # while the data is in row-major coordinate, hence why
         # the data access below is [y, x]
@@ -274,23 +274,25 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
             msg += f" | roi = {self.roiString}"
         self.details.setText(msg)
 
-    def set_timeline_to_tick_nearest(self, x_pos_clicked):
+    def set_timeline_to_tick_nearest(self, x_pos_clicked) -> None:
         x_axis = self.getRoiPlot().getAxis('bottom')
         view_range = self.getRoiPlot().viewRange()[0]
         nearest = self.presenter.get_nearest_timeline_tick(x_pos_clicked, x_axis, view_range)
         self.timeLine.setValue(nearest)
 
-    def set_selected_image(self, image_index: int):
+    def set_selected_image(self, image_index: int) -> None:
         self.timeLine.setValue(image_index)
 
-    def set_log_scale(self):
+    def set_log_scale(self) -> None:
         set_histogram_log_scale(self.getHistogramWidget().item)
 
-    def close(self):
+    def close(self) -> None:
         self.roi_changed_callback = None
         super().close()
 
-    def set_roi(self, coords: list[int]):
+    def set_roi(self, coords: list[int] | None) -> None:
+        if coords is None:
+            return
         roi = SensibleROI.from_list(coords)
         self.roi.setPos(roi.left, roi.top, update=False)
         # Keep default update=True for setSize otherwise the scale handle can become detached from the ROI box
@@ -298,7 +300,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.roiChanged()
         self._refresh_message()
 
-    def default_roi(self):
+    def default_roi(self) -> None | list[int]:
         # Recommend an ROI that covers the top left quadrant
         # However set min dimensions to avoid an ROI that is so small it's difficult to work with
         min_size = 20

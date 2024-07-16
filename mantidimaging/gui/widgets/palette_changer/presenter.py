@@ -31,10 +31,10 @@ class PaletteChangerPresenter(BasePresenter):
         else:
             self.flattened_image = self.rng.choice(image.flatten(), min(SAMPLE_SIZE, image.size))
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         pass
 
-    def change_colour_palette(self):
+    def change_colour_palette(self) -> None:
         """
         Change the colour palette and add ticks based on the output of the Jenks or Otsu algorithms.
         """
@@ -48,7 +48,7 @@ class PaletteChangerPresenter(BasePresenter):
         self._remove_old_ticks()
         self._update_ticks()
 
-    def _record_old_tick_points(self):
+    def _record_old_tick_points(self) -> None:
         """
         Records the default tick points for the recon histogram that are inserted when a new colour map is loaded.
         This means they can be easily removed once the new ticks have been added to the histogram. This step is
@@ -57,7 +57,7 @@ class PaletteChangerPresenter(BasePresenter):
         """
         self.old_ticks = list(self.main_hist.gradient.ticks.keys())
 
-    def _insert_new_ticks(self, tick_points: list[float]):
+    def _insert_new_ticks(self, tick_points: list[float]) -> None:
         """
         Adds new ticks to the recon histogram.
         """
@@ -66,7 +66,7 @@ class PaletteChangerPresenter(BasePresenter):
         for i in range(n_tick_points):
             self.main_hist.gradient.addTick(tick_points[i], color=colours[i], finish=False)
 
-    def _change_colour_map(self):
+    def _change_colour_map(self) -> None:
         """
         Changes the colour map of all three histograms.
         """
@@ -99,14 +99,14 @@ class PaletteChangerPresenter(BasePresenter):
         breaks = [min_val] + breaks + [max_val]
         return [(break_x - min_val) / val_range for break_x in breaks]
 
-    def _remove_old_ticks(self):
+    def _remove_old_ticks(self) -> None:
         """
         Remove the default recon histogram ticks from the image.
         """
         for t in self.old_ticks:
             self.main_hist.gradient.removeTick(t, finish=False)
 
-    def _update_ticks(self):
+    def _update_ticks(self) -> None:
         """
         Tell the recon histogram ticks to update at the end of a change.
         """
@@ -123,7 +123,7 @@ class PaletteChangerPresenter(BasePresenter):
         norms = np.linspace(0, 1, num_ticks)
         return [self.main_hist.gradient.getColor(norm) for norm in norms]
 
-    def _get_sample_pixels(self, image: np.ndarray, count: int, width: float = 0.9):
+    def _get_sample_pixels(self, image: np.ndarray, count: int, width: float = 0.9) -> np.ndarray:
         """
         Sample from a circle of the image to avoid recon artefacts at edges
         """

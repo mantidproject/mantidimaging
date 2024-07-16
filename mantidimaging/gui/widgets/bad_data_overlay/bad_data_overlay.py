@@ -27,7 +27,7 @@ class BadDataCheck:
         self.setup_overlay()
         self.indicator.connected_overlay = self.overlay
 
-    def do_check(self, data):
+    def do_check(self, data) -> None:
         bad_data = self.check_function(data)
         any_bad = bad_data.any()
         # cast any_bad to python bool to prevent DeprecationWarning
@@ -35,7 +35,7 @@ class BadDataCheck:
 
         self.overlay.setImage(bad_data, autoLevels=False)
 
-    def setup_overlay(self):
+    def setup_overlay(self) -> None:
         color = np.array([[0, 0, 0, 0], self.color], dtype=np.ubyte)
         color_map = ColorMap([0, 1], color)
         self.overlay.setVisible(False)
@@ -44,12 +44,12 @@ class BadDataCheck:
         self.overlay.setZValue(11)
         self.overlay.setLevels([0, 1])
 
-    def remove(self):
+    def remove(self) -> None:
         self.overlay.getViewBox().removeItem(self.indicator)
         self.overlay.getViewBox().removeItem(self.overlay)
         self.overlay.clear()
 
-    def clear(self):
+    def clear(self) -> None:
         self.indicator.setVisible(False)
         self.overlay.clear()
 
@@ -76,13 +76,13 @@ class BadDataOverlay:
     def viewbox(self) -> ViewBox:
         raise NotImplementedError
 
-    def enable_nan_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None):
+    def enable_nan_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
         if enable:
             self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan, "Invalid values: Not a number", actions)
         else:
             self.disable_check("nan")
 
-    def enable_nonpositive_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None):
+    def enable_nonpositive_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
         if enable:
 
             def is_non_positive(data):
@@ -93,7 +93,7 @@ class BadDataOverlay:
             self.disable_check("nonpos")
 
     def enable_check(self, name: str, color: list[int], pos: int, func: Callable, message: str,
-                     actions: list[tuple[str, Callable]] | None):
+                     actions: list[tuple[str, Callable]] | None) -> None:
         if name not in self.enabled_checks:
             icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
             indicator = IndicatorIconView(self.viewbox, icon_path, pos, color, message)
@@ -106,7 +106,7 @@ class BadDataOverlay:
             self.enabled_checks[name] = check
             self.check_for_bad_data()
 
-    def disable_check(self, name: str):
+    def disable_check(self, name: str) -> None:
         if name in self.enabled_checks:
             self.enabled_checks[name].remove()
             self.enabled_checks.pop(name, None)
@@ -115,17 +115,17 @@ class BadDataOverlay:
         data = self.image_item.image
         return data
 
-    def check_for_bad_data(self):
+    def check_for_bad_data(self) -> None:
         current_slice = self._get_current_slice()
         if current_slice is not None:
             for test in self.enabled_checks.values():
                 test.do_check(current_slice)
 
-    def clear_overlays(self):
+    def clear_overlays(self) -> None:
         for check in self.enabled_checks.values():
             check.clear()
 
-    def enable_message(self, enable: bool = True):
+    def enable_message(self, enable: bool = True) -> None:
         if enable:
             icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
             self.message_indicator = IndicatorIconView(self.viewbox, icon_path, 0, OVERLAY_COLOUR_MESSAGE, "")
