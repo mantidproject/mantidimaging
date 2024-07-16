@@ -29,7 +29,6 @@ Submodules
    mantidimaging.core.utility.finder
    mantidimaging.core.utility.func_call
    mantidimaging.core.utility.histogram
-   mantidimaging.core.utility.histogram_test
    mantidimaging.core.utility.imat_log_file_parser
    mantidimaging.core.utility.leak_tracker
    mantidimaging.core.utility.memory_usage

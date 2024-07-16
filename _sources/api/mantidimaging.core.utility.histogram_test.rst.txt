@@ -1,7 +1,0 @@
-mantidimaging.core.utility.histogram\_test module
-=================================================
-
-.. automodule:: mantidimaging.core.utility.histogram_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
