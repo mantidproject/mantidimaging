@@ -4,7 +4,10 @@ from __future__ import annotations
 from dataclasses import replace
 from logging import getLogger
 
-import numpy as np
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct import get_reconstructor_for
