@@ -22,5 +22,5 @@ class DatasetTest(unittest.TestCase):
         [ds.add_recon(r) for r in recons]
 
         for recon in recons:
-            self.assertIn(recon, ds.recons)
+            self.assertIn(recon, ds.all)
         self.assertEqual(3, len(ds.recons))

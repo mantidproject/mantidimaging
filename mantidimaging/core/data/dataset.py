@@ -19,6 +19,10 @@ def _image_key_list(key: int, n_images: int) -> list[int]:
     return [key for _ in range(n_images)]
 
 
+def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
+    return [image_stack for image_stack in image_stacks if image_stack is not None]
+
+
 class BaseDataset:
 
     def __init__(self, name: str = ""):
@@ -49,7 +53,7 @@ class BaseDataset:
 
     @property
     def all(self) -> list[ImageStack]:
-        raise NotImplementedError()
+        return self.recons.stacks + remove_nones([self._sinograms])
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
         raise NotImplementedError()
@@ -135,7 +139,7 @@ class StrictDataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
+        return remove_nones(image_stacks) + self.recons.stacks
 
     @property
     def _nexus_stack_order(self) -> list[ImageStack]:
