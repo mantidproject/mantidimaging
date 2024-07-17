@@ -23,7 +23,7 @@ class BaseDataset:
 
     def __init__(self, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
-        self.recons = ReconList()
+        self._recons = ReconList()
         self._name = name
         self._sinograms: ImageStack | None = None
 
@@ -60,6 +60,10 @@ class BaseDataset:
     @property
     def all_image_ids(self) -> list[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
+
+    @property
+    def recons(self) -> ReconList:
+        return self._recons
 
     def add_recon(self, recon: ImageStack) -> None:
         self.recons.append(recon)
