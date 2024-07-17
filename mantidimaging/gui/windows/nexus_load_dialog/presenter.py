@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 
 import h5py
 import numpy as np
-from mantidimaging.core.data.reconlist import ReconList
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset
@@ -310,9 +309,7 @@ class NexusLoadPresenter:
                                                                       ImageKeys.DarkField.value),
                            name=self.title)
 
-        if self.recon_data:
-            recon_list = self._create_recon_list()
-            ds.recons = recon_list
+        self._add_recons_to_dataset(ds)
 
         return ds, self.title
 
@@ -367,12 +364,6 @@ class NexusLoadPresenter:
                 image_stack.set_projection_angles(ProjectionAngles(projection_angles))
         return image_stack
 
-    def _create_recon_list(self) -> ReconList:
-        """
-        Uses the array of recon data extracted from the NeXus file to create a ReconList object.
-        :return: The ReconList object containing recons from the NeXus file.
-        """
-        recon_list = ReconList()
+    def _add_recons_to_dataset(self, ds: StrictDataset) -> None:
         for recon_array in self.recon_data:
-            recon_list.append(ImageStack(recon_array))
-        return recon_list
+            ds.add_recon(ImageStack(recon_array))
