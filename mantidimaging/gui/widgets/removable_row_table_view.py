@@ -8,14 +8,14 @@ from PyQt5.QtWidgets import QTableView
 
 class RemovableRowTableView(QTableView):
 
-    def keyPressEvent(self, e):
+    def keyPressEvent(self, e) -> None:
         super().keyPressEvent(e)
 
         # Handle deletion of a row from the table by pressing the [Delete] key
         if e.key() == Qt.Key.Key_Delete:
             self.removeSelectedRows()
 
-    def removeSelectedRows(self):
+    def removeSelectedRows(self) -> None:
         """
         Removes all selected rows from the table.
         """

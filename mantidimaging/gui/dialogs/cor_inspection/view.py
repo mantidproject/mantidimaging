@@ -54,21 +54,21 @@ class CORInspectionDialogView(BaseDialogView):
 
         self.presenter.do_refresh()
 
-    def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
+    def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str) -> None:
         self.image_canvas.set_image(image_type, recon_data, title)
 
-    def set_maximum_cor(self, cor):
+    def set_maximum_cor(self, cor) -> None:
         """
         Set the maximum valid rotation centre.
         """
         self.stepCOR.setMaximum(cor)
 
     @property
-    def step_size(self):
+    def step_size(self) -> None:
         return self.spin_box.value()
 
     @step_size.setter
-    def step_size(self, value):
+    def step_size(self, value) -> None:
         with BlockQtSignals([self.spin_box]):
             self.spin_box.setValue(value)
 

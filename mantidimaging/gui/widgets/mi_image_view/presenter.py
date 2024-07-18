@@ -10,7 +10,7 @@ import numpy as np
 class MIImagePresenter:
 
     @staticmethod
-    def get_roi(image, roi_pos, roi_size):
+    def get_roi(image: np.ndarray, roi_pos, roi_size) -> tuple:
         """
         Get a ROI based on the current real ROI selected. Clips it to be in-bounds of the
         shape of the image, to prevent issues when passed to filters
@@ -47,7 +47,7 @@ class MIImagePresenter:
         return roi_pos, roi_size
 
     @staticmethod
-    def get_nearest_timeline_tick(x_pos_clicked: float, x_axis, view_range: list[int]):
+    def get_nearest_timeline_tick(x_pos_clicked: float, x_axis, view_range: list[int]) -> int:
         """
         Calculate the closes point to the clicked position on the histogram's timeline.
 
