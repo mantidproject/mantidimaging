@@ -24,3 +24,35 @@ class DatasetTest(unittest.TestCase):
         for recon in recons:
             self.assertIn(recon, ds.all)
         self.assertEqual(3, len(ds.recons))
+
+    def test_delete_recon(self):
+        ds = BaseDataset()
+        recons = [generate_images() for _ in range(3)]
+        [ds.add_recon(r) for r in recons]
+
+        id_to_remove = recons[-1].id
+        ds.delete_stack(id_to_remove)
+        self.assertNotIn(recons[-1], ds.all)
+
+    def test_delete_failure(self):
+        ds = BaseDataset()
+        with self.assertRaises(KeyError):
+            ds.delete_stack("nonexistent-id")
+
+    def test_delete_all_recons(self):
+        ds = BaseDataset()
+        recons = [generate_images() for _ in range(3)]
+        [ds.add_recon(r) for r in recons]
+        ds.delete_recons()
+        self.assertListEqual(ds.recons.stacks, [])
+
+    def test_sinograms(self):
+        ds = BaseDataset()
+        ds.sinograms = sinograms = generate_images()
+        self.assertIs(ds.sinograms, sinograms)
+
+    def test_delete_sinograms(self):
+        ds = BaseDataset()
+        ds.sinograms = sinograms = generate_images()
+        ds.delete_stack(sinograms.id)
+        self.assertIsNone(ds.sinograms)
