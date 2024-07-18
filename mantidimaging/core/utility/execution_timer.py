@@ -49,13 +49,13 @@ class ExecutionTimer:
         self.logger.info(str(self))
 
     @property
-    def total_seconds(self) -> float | None:
+    def total_seconds(self) -> float:
         """
         Gets the total number of seconds the timer was running for, returns
         None if the timer has not been run or is still running.
         """
         return self.time_end - self.time_start if \
-            self.time_start and self.time_end else None
+            self.time_start and self.time_end else 0
 
 
 class ExecutionProfiler:
