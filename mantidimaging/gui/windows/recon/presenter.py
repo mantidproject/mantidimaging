@@ -278,12 +278,11 @@ class ReconstructWindowPresenter(BasePresenter):
         slice_idx = self._get_slice_index(slice_idx)
         self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)
 
-    def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread) -> None:
+    def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread):
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             self.view.set_recon_buttons_enabled(True)
             return
-
         try:
             images: ImageStack = task.result
             slice_idx = self._get_slice_index(None)
@@ -291,14 +290,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 assert self.model.images is not None
                 images.name = self.create_recon_output_filename("Recon_Slice")
                 self._replace_inf_nan(images)  # pyqtgraph workaround
-
-                stack_id = self.model.stack_id  # This might be a UUID or None
-                if stack_id is None:
-                    self.view.show_error_dialog("Stack ID is missing. Cannot display reconstruction.")
-                    return
-
-                self.view.show_recon_volume(images, stack_id)
-
+                self.view.show_recon_volume(images, self.model.stack_id)
                 images.record_operation('AstraRecon.single_sino',
                                         'Slice Reconstruction',
                                         slice_idx=slice_idx,

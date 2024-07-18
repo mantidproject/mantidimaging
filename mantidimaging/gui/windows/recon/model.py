@@ -152,12 +152,7 @@ class ReconstructWindowModel:
         return recon
 
     @staticmethod
-    def _apply_pixel_size(recon: ImageStack | None,
-                          recon_params: ReconstructionParameters,
-                          progress: Progress | None = None) -> ImageStack | None:
-        if recon is None:
-            return None
-
+    def _apply_pixel_size(recon: ImageStack, recon_params: ReconstructionParameters, progress=None) -> ImageStack:
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division
@@ -261,7 +256,7 @@ class ReconstructWindowModel:
         return find_center(self.images, progress)
 
     @staticmethod
-    def proj_180_degree_shape_matches_images(images) -> None:
+    def proj_180_degree_shape_matches_images(images) -> bool:
         return images.has_proj180deg() and images.height == images.proj180deg.height \
                and images.width == images.proj180deg.width
 
