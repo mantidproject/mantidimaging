@@ -37,6 +37,11 @@ class MonitorNormalisation(BaseFilter):
         """
         :return: The ImageStack object which has been normalised.
         """
+        if '180deg' in images.name.lower():
+            if progress:
+                progress("Skipping normalization for the 180-degree stack, no logfile.")
+            return images
+
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
             # passed in doesn't have the logfile in it
