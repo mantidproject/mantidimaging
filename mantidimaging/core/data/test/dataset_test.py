@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 import uuid
 
 from mantidimaging.core.data.dataset import BaseDataset
@@ -15,6 +16,13 @@ class DatasetTest(unittest.TestCase):
         ds = BaseDataset()
         self.assertIsInstance(ds.id, uuid.UUID)
         self.assertEqual(ds.name, "")
+
+    def test_prevent_positional_parameters(self):
+        self.assertRaises(TypeError, BaseDataset, mock.Mock())
+
+    def test_dataset_name(self):
+        ds = BaseDataset(name="a_dataset")
+        self.assertEqual(ds.name, "a_dataset")
 
     def test_add_recon(self):
         ds = BaseDataset()
