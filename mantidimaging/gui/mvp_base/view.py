@@ -31,7 +31,7 @@ class BaseMainWindowView(QMainWindow):
         if ui_file is not None:
             compile_ui(ui_file, self)
 
-    def closeEvent(self, e):
+    def closeEvent(self, e) -> None:
         LOG.debug('UI window closed')
         self.cleanup()
         super().closeEvent(e)
@@ -76,7 +76,7 @@ class BaseDialogView(QDialog):
         if ui_file is not None:
             compile_ui(ui_file, self)
 
-    def show_error_dialog(self, msg=""):
+    def show_error_dialog(self, msg="") -> None:
         """
         Shows an error message.
 

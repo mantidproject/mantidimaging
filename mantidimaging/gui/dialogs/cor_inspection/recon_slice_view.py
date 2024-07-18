@@ -47,7 +47,7 @@ class CompareSlicesView(GraphicsLayoutWidget):
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
 
-    def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str):
+    def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str) -> None:
         sumsq = np.sum(recon_data**2)
         if image_type == ImageType.LESS:
             self.imageview_less.clear()

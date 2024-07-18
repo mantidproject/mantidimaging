@@ -54,6 +54,6 @@ class DatasetSelectorDialog(BaseDialogView):
         self.button_layout.addWidget(self.ok_button)
         self.vertical_layout.addLayout(self.button_layout)
 
-    def on_ok_clicked(self):
+    def on_ok_clicked(self) -> None:
         self.selected_id = self.dataset_selector_widget.current()
         self.done(QDialog.DialogCode.Accepted)

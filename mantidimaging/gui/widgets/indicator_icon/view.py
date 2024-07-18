@@ -112,11 +112,11 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
 
             qm.exec(event.screenPos().toQPoint())
 
-    def set_message(self, message):
+    def set_message(self, message) -> None:
         self.label.setText(message)
         self.position_icon()
 
-    def setVisible(self, visible: bool):
+    def setVisible(self, visible: bool) -> None:
         if not visible:
             self.label.setVisible(False)
         super().setVisible(visible)

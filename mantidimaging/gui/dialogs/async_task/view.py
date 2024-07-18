@@ -33,7 +33,7 @@ class AsyncTaskDialogView(BaseDialogView):
             raise RuntimeError("Presenter accessed after handle_completion")
         return self._presenter
 
-    def handle_completion(self, successful: bool):
+    def handle_completion(self, successful: bool) -> None:
         """
         Updates the UI after the task has been completed.
 
@@ -61,11 +61,11 @@ class AsyncTaskDialogView(BaseDialogView):
         # Update progress bar
         self.progressBar.setValue(int(progress * 1000))
 
-    def show_delayed(self, timeout):
+    def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)
         self.show_timer.start()
 
-    def show_from_timer(self):
+    def show_from_timer(self) -> None:
         # Might not run until after handle_completion
         if self._presenter is not None and self.presenter.task_is_running:
             self.show()

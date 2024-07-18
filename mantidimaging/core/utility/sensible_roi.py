@@ -40,7 +40,7 @@ class SensibleROI(Iterable):
         """
         return iter((self.left, self.top, self.right, self.bottom))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Left: {self.left}, Top: {self.top}, Right: {self.right}, Bottom: {self.bottom}"
 
     def to_list_string(self) -> str:

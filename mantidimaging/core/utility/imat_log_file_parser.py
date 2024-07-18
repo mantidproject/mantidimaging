@@ -10,6 +10,7 @@ from logging import getLogger
 from typing import TYPE_CHECKING
 
 import numpy
+import numpy as np
 
 from mantidimaging.core.utility.data_containers import Counts, ProjectionAngles
 
@@ -210,7 +211,7 @@ class IMATLogFile:
     def source_file(self) -> Path:
         return self._source_file
 
-    def projection_numbers(self):
+    def projection_numbers(self) -> np.ndarray:
         proj_nums = numpy.zeros(len(self._data[IMATLogColumn.PROJECTION_NUMBER]), dtype=numpy.uint32)
         proj_nums[:] = self._data[IMATLogColumn.PROJECTION_NUMBER]
         return proj_nums

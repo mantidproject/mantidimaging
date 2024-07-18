@@ -39,7 +39,7 @@ class CudaChecker:
     _instance = None
     _cuda_is_present = False
 
-    def __new__(cls):
+    def __new__(cls) -> CudaChecker:
         """
         Creates a singleton for storing the result of the Cuda check.
         """
@@ -56,7 +56,7 @@ class CudaChecker:
         return cls._cuda_is_present
 
     @classmethod
-    def clear_instance(cls):
+    def clear_instance(cls) -> None:
         """
         Resets the instance. Used for making sure mocks don't leak in tests.
         """

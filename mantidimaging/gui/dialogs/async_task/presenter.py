@@ -30,7 +30,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         try:
             if signal == Notification.START:
                 self.do_start_processing()
@@ -39,19 +39,19 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
             self.show_error(e, traceback.format_exc())
             getLogger(__name__).exception("Notification handler failed")
 
-    def set_task(self, f: Callable):
+    def set_task(self, f: Callable) -> None:
         self.model.task.task_function = f
 
-    def set_parameters(self, **kwargs):
+    def set_parameters(self, **kwargs) -> None:
         self.model.task.kwargs = kwargs
 
-    def set_on_complete(self, f: Callable):
+    def set_on_complete(self, f: Callable) -> None:
         self.model.on_complete_function = f
 
-    def set_tracker(self, tracker: set):
+    def set_tracker(self, tracker: set) -> None:
         self.model.set_tracker(tracker)
 
-    def do_start_processing(self):
+    def do_start_processing(self) -> None:
         """
         Starts async task execution and shows GUI.
         """
@@ -59,9 +59,9 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.view.show_delayed(1000)
 
     @property
-    def task_is_running(self):
+    def task_is_running(self) -> None:
         return self.model.task_is_running
 
-    def progress_update(self):
+    def progress_update(self) -> None:
         msg = self.progress.last_status_message()
         self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
