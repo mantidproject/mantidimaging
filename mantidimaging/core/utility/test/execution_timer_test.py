@@ -12,11 +12,11 @@ class ExecutionTimerTest(unittest.TestCase):
 
     def test_execute(self):
         t = ExecutionTimer()
-        self.assertEqual(t.total_seconds, None)
+        self.assertEqual(t.total_seconds, 0.0)
         self.assertEqual(str(t), 'Elapsed time: unknown seconds')
 
         with t:
-            self.assertEqual(t.total_seconds, None)
+            self.assertEqual(t.total_seconds, 0.0)
 
             time.sleep(0.1)
 
