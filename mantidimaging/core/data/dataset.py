@@ -25,23 +25,15 @@ def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
 
 class BaseDataset:
 
-    def __init__(self, name: str = ""):
+    def __init__(self, *, name: str = ""):
         self._id: uuid.UUID = uuid.uuid4()
         self._recons = ReconList()
-        self._name = name
+        self.name = name
         self._sinograms: ImageStack | None = None
 
     @property
     def id(self) -> uuid.UUID:
         return self._id
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, arg: str) -> None:
-        self._name = arg
 
     @property
     def sinograms(self) -> ImageStack | None:
@@ -138,7 +130,7 @@ class StrictDataset(BaseDataset):
         self.dark_after = dark_after
 
         if self.name == "":
-            self._name = sample.name
+            self.name = sample.name
 
     @property
     def all(self) -> list[ImageStack]:

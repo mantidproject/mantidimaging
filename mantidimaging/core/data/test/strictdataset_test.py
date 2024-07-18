@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 
 import numpy as np
 
@@ -119,6 +120,12 @@ class StrictDatasetTest(unittest.TestCase):
     def test_name(self):
         self.strict_dataset.name = dataset_name = "name"
         self.assertEqual(self.strict_dataset.name, dataset_name)
+
+    def test_default_name_from_image(self):
+        mock_sample = mock.create_autospec(ImageStack)
+        mock_sample.name = "image_name"
+        ds = StrictDataset(sample=mock_sample)
+        self.assertEqual(ds.name, "image_name")
 
     def test_set_180(self):
         _180 = generate_images((1, 200, 200))
