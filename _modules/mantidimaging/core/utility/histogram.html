@@ -489,7 +489,7 @@ document.write(`
 
 <div class="viewcode-block" id="set_histogram_log_scale">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.histogram.html#mantidimaging.core.utility.histogram.set_histogram_log_scale">[docs]</a>
-<span class="k">def</span> <span class="nf">set_histogram_log_scale</span><span class="p">(</span><span class="n">histogram</span><span class="p">:</span> <span class="n">HistogramLUTItem</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">set_histogram_log_scale</span><span class="p">(</span><span class="n">histogram</span><span class="p">:</span> <span class="n">HistogramLUTItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the y-values of a histogram to use a log scale.</span>
 <span class="sd">    :param histogram: The HistogramLUTItem of an image.</span>
@@ -501,7 +501,7 @@ document.write(`
 
 <div class="viewcode-block" id="generate_histogram_from_image">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.histogram.html#mantidimaging.core.utility.histogram.generate_histogram_from_image">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_histogram_from_image</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="n">DEFAULT_NUM_BINS</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">generate_histogram_from_image</span><span class="p">(</span><span class="n">image_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_NUM_BINS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
     <span class="n">histogram</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">image_data</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">num_bins</span><span class="p">)</span>
     <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">center</span><span class="p">,</span> <span class="n">histogram</span><span class="p">,</span> <span class="n">bins</span></div>

@@ -552,11 +552,11 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
 
     <span class="nd">@histogram_region</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_region</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="nf">histogram_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_region</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">new_region</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -594,7 +594,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.setImage">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.setImage">[docs]</a>
-    <span class="k">def</span> <span class="nf">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">levels</span><span class="p">)</span>
@@ -607,7 +607,7 @@ document.write(`
 <div class="viewcode-block" id="MIMiniImageView.set_siblings">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.set_siblings">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_siblings</span><span class="p">(</span><span class="n">sibling_views</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MIMiniImageView</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_siblings</span><span class="p">(</span><span class="n">sibling_views</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MIMiniImageView</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hist</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">view1</span> <span class="ow">in</span> <span class="n">sibling_views</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">view2</span> <span class="ow">in</span> <span class="n">sibling_views</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">view2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">view1</span><span class="p">:</span>
@@ -619,19 +619,19 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.add_axis_sibling">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.add_axis_sibling">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_axis_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_axis_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sibling</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MIMiniImageView.add_hist_sibling">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.add_hist_sibling">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_hist_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_hist_sibling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibling</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sibling</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MIMiniImageView.mouse_over">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.mouse_over">[docs]</a>
-    <span class="k">def</span> <span class="nf">mouse_over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mouse_over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Ignore events triggered by leaving window or right clicking</span>
         <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">exit</span><span class="p">:</span>
             <span class="k">return</span>
@@ -644,7 +644,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.show_details">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.show_details">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">show_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">image</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">pixel_value</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">]</span>
@@ -654,7 +654,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.link_sibling_axis">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.link_sibling_axis">[docs]</a>
-    <span class="k">def</span> <span class="nf">link_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">link_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Linking multiple viewboxes with locked aspect ratios causes</span>
         <span class="c1"># odd resizing behaviour. Use workaround from</span>
         <span class="c1"># https://github.com/pyqtgraph/pyqtgraph/issues/1348</span>
@@ -667,7 +667,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.unlink_sibling_axis">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.unlink_sibling_axis">[docs]</a>
-    <span class="k">def</span> <span class="nf">unlink_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unlink_sibling_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_siblings</span><span class="p">):</span>
             <span class="n">img_view</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">XAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">img_view</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -676,7 +676,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.link_sibling_histogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.link_sibling_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">link_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">link_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">view1</span><span class="p">,</span> <span class="n">view2</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">)):</span>
             <span class="n">view1</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="n">view2</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">):</span>
@@ -685,7 +685,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.unlink_sibling_histogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.unlink_sibling_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">unlink_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unlink_sibling_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">):</span>
             <span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">linkView</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -697,7 +697,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.update_sibling_histograms">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.update_sibling_histograms">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_sibling_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_sibling_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">hist_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">img_view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram_siblings</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">(</span><span class="n">img_view</span><span class="o">.</span><span class="n">hist</span><span class="p">):</span>
@@ -706,7 +706,7 @@ document.write(`
 
 <div class="viewcode-block" id="MIMiniImageView.set_brightness_percentiles">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_mini_image_view.view.html#mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView.set_brightness_percentiles">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_brightness_percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent_low</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">percent_high</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_brightness_percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent_low</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">percent_high</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bright_levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">percent_low</span><span class="p">,</span> <span class="n">percent_high</span><span class="p">]</span></div>
 </div>
 

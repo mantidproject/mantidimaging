@@ -516,14 +516,14 @@ document.write(`
 
 <div class="viewcode-block" id="check_availability">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.optional_imports.html#mantidimaging.core.utility.optional_imports.check_availability">[docs]</a>
-<span class="k">def</span> <span class="nf">check_availability</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">check_availability</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">safe_import</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
 
 <div class="viewcode-block" id="tomopy_available">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.optional_imports.html#mantidimaging.core.utility.optional_imports.tomopy_available">[docs]</a>
-<span class="k">def</span> <span class="nf">tomopy_available</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">tomopy_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">check_availability</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span></div>
 
 </pre></div>

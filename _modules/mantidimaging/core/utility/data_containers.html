@@ -531,7 +531,7 @@ document.write(`
 
 <div class="viewcode-block" id="ScalarCoR.to_vec">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR.to_vec">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_width</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorCoR</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">VectorCoR</span><span class="p">(</span><span class="n">detector_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 </div>
 
@@ -546,7 +546,7 @@ document.write(`
 
 <div class="viewcode-block" id="VectorCoR.to_scalar">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.VectorCoR.to_scalar">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_width</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">detector_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 </div>
 

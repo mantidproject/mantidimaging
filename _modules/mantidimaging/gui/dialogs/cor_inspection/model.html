@@ -479,6 +479,10 @@ document.write(`
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">replace</span>
 <span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct</span> <span class="kn">import</span> <span class="n">get_reconstructor_for</span>
@@ -504,7 +508,7 @@ document.write(`
         <span class="c1"># Initial parameters</span>
         <span class="k">if</span> <span class="n">iters_mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">INIT_ITERS_CENTRE_VALUE</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">INIT_ITERS_STEP</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">INIT_ITERS_STEP</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initial_cor</span> <span class="o">=</span> <span class="n">initial_cor</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_recon_preview</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recon_iters_preview</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_divide_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_divide_iters_step</span>
@@ -519,15 +523,15 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span> <span class="o">=</span> <span class="n">recon_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_divide_iters_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_divide_iters_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">//</span> <span class="mi">2</span>
 
-    <span class="k">def</span> <span class="nf">_divide_cor_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_divide_cor_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">/=</span> <span class="mi">2</span>
 
 <div class="viewcode-block" id="CORInspectionDialogModel.adjust">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.adjust">[docs]</a>
-    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adjusts the rotation centre/number of iterations and step after an image is selected as the</span>
 <span class="sd">        optimal of an iteration.</span>
@@ -542,7 +546,7 @@ document.write(`
 
 <div class="viewcode-block" id="CORInspectionDialogModel.cor">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.cor">[docs]</a>
-    <span class="k">def</span> <span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the rotation centre for a given image in the current iteration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -556,7 +560,7 @@ document.write(`
 
 <div class="viewcode-block" id="CORInspectionDialogModel.iterations">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.iterations">[docs]</a>
-    <span class="k">def</span> <span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
@@ -565,23 +569,23 @@ document.write(`
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_recon_cor_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_recon_cor_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cor</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="p">,</span> <span class="n">cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_recon_iters_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_recon_iters_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">iters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-        <span class="n">new_params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="n">iters</span><span class="p">)</span>
+        <span class="n">new_params</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recon_params</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">iters</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span><span class="p">,</span> <span class="n">new_params</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CORInspectionDialogModel.recon_preview">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.recon_preview">[docs]</a>
-    <span class="k">def</span> <span class="nf">recon_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">recon_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recon_preview</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cor_extents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cor_extents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sino</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span></div>
 
 </pre></div>

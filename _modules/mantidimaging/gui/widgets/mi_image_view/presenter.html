@@ -490,7 +490,7 @@ document.write(`
 <div class="viewcode-block" id="MIImagePresenter.get_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_roi">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_roi</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_roi</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a ROI based on the current real ROI selected. Clips it to be in-bounds of the</span>
 <span class="sd">        shape of the image, to prevent issues when passed to filters</span>
@@ -530,7 +530,7 @@ document.write(`
 <div class="viewcode-block" id="MIImagePresenter.get_nearest_timeline_tick">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_nearest_timeline_tick">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_nearest_timeline_tick</span><span class="p">(</span><span class="n">x_pos_clicked</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">view_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">get_nearest_timeline_tick</span><span class="p">(</span><span class="n">x_pos_clicked</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">view_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the closes point to the clicked position on the histogram&#39;s timeline.</span>
 

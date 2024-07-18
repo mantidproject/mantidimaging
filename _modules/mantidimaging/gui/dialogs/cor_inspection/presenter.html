@@ -529,7 +529,7 @@ document.write(`
 
 <div class="viewcode-block" id="CORInspectionDialogPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.presenter.html#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">IMAGE_CLICKED_LESS</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">)</span>
@@ -551,14 +551,14 @@ document.write(`
 
 <div class="viewcode-block" id="CORInspectionDialogPresenter.on_load">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.presenter.html#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_load">[docs]</a>
-    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_maximum_cor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">cor_extents</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">FULL_UPDATE</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CORInspectionDialogPresenter.on_select_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.presenter.html#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_select_image">[docs]</a>
-    <span class="k">def</span> <span class="nf">on_select_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_select_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Image selected: </span><span class="si">{</span><span class="n">img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># Adjust COR/iterations step</span>

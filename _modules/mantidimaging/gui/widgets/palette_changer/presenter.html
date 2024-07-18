@@ -511,13 +511,13 @@ document.write(`
 
 <div class="viewcode-block" id="PaletteChangerPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.presenter.html#mantidimaging.gui.widgets.palette_changer.presenter.PaletteChangerPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="PaletteChangerPresenter.change_colour_palette">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.presenter.html#mantidimaging.gui.widgets.palette_changer.presenter.PaletteChangerPresenter.change_colour_palette">[docs]</a>
-    <span class="k">def</span> <span class="nf">change_colour_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">change_colour_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the colour palette and add ticks based on the output of the Jenks or Otsu algorithms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -532,7 +532,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ticks</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_record_old_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_record_old_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Records the default tick points for the recon histogram that are inserted when a new colour map is loaded.</span>
 <span class="sd">        This means they can be easily removed once the new ticks have been added to the histogram. This step is</span>
@@ -541,7 +541,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_ticks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_insert_new_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">_insert_new_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds new ticks to the recon histogram.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -550,7 +550,7 @@ document.write(`
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tick_points</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">addTick</span><span class="p">(</span><span class="n">tick_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">finish</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_change_colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_change_colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changes the colour map of all three histograms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -583,14 +583,14 @@ document.write(`
         <span class="n">breaks</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_val</span><span class="p">]</span> <span class="o">+</span> <span class="n">breaks</span> <span class="o">+</span> <span class="p">[</span><span class="n">max_val</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">break_x</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">/</span> <span class="n">val_range</span> <span class="k">for</span> <span class="n">break_x</span> <span class="ow">in</span> <span class="n">breaks</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_remove_old_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_old_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the default recon histogram ticks from the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_ticks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">removeTick</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">finish</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_update_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_update_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tell the recon histogram ticks to update at the end of a change.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -607,7 +607,7 @@ document.write(`
         <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ticks</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span> <span class="k">for</span> <span class="n">norm</span> <span class="ow">in</span> <span class="n">norms</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_sample_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_sample_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample from a circle of the image to avoid recon artefacts at edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>

@@ -520,7 +520,7 @@ document.write(`
     <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_cuda_is_present</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CudaChecker</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a singleton for storing the result of the Cuda check.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -542,7 +542,7 @@ document.write(`
 <div class="viewcode-block" id="CudaChecker.clear_instance">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">clear_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resets the instance. Used for making sure mocks don&#39;t leak in tests.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

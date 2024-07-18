@@ -483,7 +483,7 @@ document.write(`
 
 <div class="viewcode-block" id="execute">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cor_interpolate.html#mantidimaging.core.utility.cor_interpolate.execute">[docs]</a>
-<span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">data_length</span><span class="p">,</span> <span class="n">slice_ids</span><span class="p">,</span> <span class="n">cors_for_sinograms</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">data_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">slice_ids</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cors_for_sinograms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolates the Centers of Rotation for the sinograms that are not</span>
 <span class="sd">    provided.</span>
