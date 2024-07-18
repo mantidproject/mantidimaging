@@ -127,5 +127,5 @@ def _parse_version(package_version_string: str) -> Version:
     return parse(normalised_version_string)
 
 
-def _version_is_uptodate(local: str, remote: str) -> bool:
+def _version_is_uptodate(local: str, remote: str):
     return _parse_version(local) >= _parse_version(remote)
