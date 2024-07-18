@@ -12,16 +12,16 @@ source:
 
 requirements:
   build:
-    - python=3.10.*
+    - python=3.12.*
     - setuptools=62.*
   run:
-    - python=3.10.*
+    - python=3.12.*
     - pip
     - astropy=6.0.*
     - scipy=1.14.*
-    - scikit-image=0.20.*
+    - scikit-image=0.22.*
     - tifffile=2023.7.18
-    - imagecodecs=2023.1.23
+    - imagecodecs=2023.9.18
     - numpy=1.26.*
     - numexpr=2.8.*
     - algotom=1.6.*

@@ -24,8 +24,8 @@ dependencies:
   - pytest-xdist==3.3.*
   - testfixtures==7.2.*
   - gitpython==3.1.*
-  - coverage==6.5.*
-  - coveralls==3.3.*
+  - coverage==7.3.*
+  - coveralls==4.0.*
   - pyfakefs==5.3.*
   - parameterized==0.9.*
   - pyinstaller==6.9.*
