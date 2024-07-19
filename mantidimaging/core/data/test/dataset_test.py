@@ -6,7 +6,7 @@ import unittest
 from unittest import mock
 import uuid
 
-from mantidimaging.core.data.dataset import BaseDataset
+from mantidimaging.core.data.dataset import BaseDataset, _get_stack_data_type
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -76,3 +76,16 @@ class DatasetTest(unittest.TestCase):
         prev_stacks = image_stacks.copy()
         ds.delete_stack(image_stacks[-1].id)
         self.assertListEqual(ds.all, prev_stacks[:-1])
+
+    def test_get_stack_data_type_returns_recon(self):
+        recon = generate_images()
+        recon_id = recon.id
+        dataset = BaseDataset()
+        dataset.recons.append(recon)
+        self.assertEqual(_get_stack_data_type(recon_id, dataset), "Recon")
+
+    def test_get_stack_data_type_returns_images(self):
+        images = generate_images()
+        images_id = images.id
+        dataset = BaseDataset(stacks=[images])
+        self.assertEqual(_get_stack_data_type(images_id, dataset), "Images")
