@@ -208,7 +208,7 @@ class StrictDataset(BaseDataset):
         return False
 
 
-def _get_stack_data_type(stack_id: uuid.UUID, dataset: MixedDataset | StrictDataset) -> str:
+def _get_stack_data_type(stack_id: uuid.UUID, dataset: BaseDataset) -> str:
     """
     Find the data type as a string of a stack.
     :param stack_id: The ID of the stack.
@@ -217,10 +217,9 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: MixedDataset | StrictData
     """
     if stack_id in [recon.id for recon in dataset.recons]:
         return "Recon"
-    if isinstance(dataset, MixedDataset):
-        if stack_id in dataset:
-            return "Images"
-    else:
+    if stack_id in [stack.id for stack in dataset._stacks]:
+        return "Images"
+    if isinstance(dataset, StrictDataset):
         if stack_id == dataset.sample.id:
             return "Sample"
         if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
