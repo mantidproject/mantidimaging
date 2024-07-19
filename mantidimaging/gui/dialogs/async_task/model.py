@@ -24,7 +24,7 @@ class AsyncTaskDialogModel(QObject):
         self.on_complete_function: Callable | None = None
         self.tracker: set | None = None
 
-    def set_tracker(self, tracker: set):
+    def set_tracker(self, tracker: set) -> None:
         self.tracker = tracker
         self.tracker.add(self)
 

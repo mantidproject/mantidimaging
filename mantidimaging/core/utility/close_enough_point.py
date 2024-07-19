@@ -20,5 +20,5 @@ class CloseEnoughPoint:
         self.y = int(points[1])
         self.x = int(points[0])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"({self.x}, {self.y})"

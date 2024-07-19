@@ -61,7 +61,7 @@ class VectorCoR(SingleValue):
     __slots__ = 'value'
     value: float
 
-    def to_scalar(self, detector_width):
+    def to_scalar(self, detector_width: float) -> ScalarCoR:
         return ScalarCoR(detector_width / 2 + self.value)
 
 

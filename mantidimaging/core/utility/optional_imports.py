@@ -35,9 +35,9 @@ def safe_import(name):
     return module
 
 
-def check_availability(name):
+def check_availability(name: str) -> bool:
     return safe_import(name) is not None
 
 
-def tomopy_available():
+def tomopy_available() -> bool:
     return check_availability('tomopy')
