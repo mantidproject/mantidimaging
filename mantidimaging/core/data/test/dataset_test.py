@@ -64,3 +64,15 @@ class DatasetTest(unittest.TestCase):
         ds.sinograms = sinograms = generate_images()
         ds.delete_stack(sinograms.id)
         self.assertIsNone(ds.sinograms)
+
+    def test_stacks_in_all(self):
+        image_stacks = [mock.Mock() for _ in range(3)]
+        ds = BaseDataset(stacks=image_stacks)
+        self.assertListEqual(ds.all, image_stacks)
+
+    def test_delete_stack_from_stacks_list(self):
+        image_stacks = [mock.Mock() for _ in range(3)]
+        ds = BaseDataset(stacks=image_stacks)
+        prev_stacks = image_stacks.copy()
+        ds.delete_stack(image_stacks[-1].id)
+        self.assertListEqual(ds.all, prev_stacks[:-1])

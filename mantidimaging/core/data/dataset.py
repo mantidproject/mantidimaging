@@ -25,11 +25,14 @@ def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
 
 class BaseDataset:
 
-    def __init__(self, *, name: str = ""):
+    def __init__(self, *, name: str = "", stacks: list[ImageStack] | None = None) -> None:
         self._id: uuid.UUID = uuid.uuid4()
-        self._recons = ReconList()
         self.name = name
+
+        self._recons = ReconList()
         self._sinograms: ImageStack | None = None
+        stacks = [] if stacks is None else stacks
+        self._stacks: list[ImageStack] = stacks
 
     @property
     def id(self) -> uuid.UUID:
@@ -45,12 +48,16 @@ class BaseDataset:
 
     @property
     def all(self) -> list[ImageStack]:
-        return self.recons.stacks + remove_nones([self._sinograms])
+        return self.recons.stacks + self._stacks + remove_nones([self._sinograms])
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
         for recon in self.recons:
             if recon.id == images_id:
                 self.recons.remove(recon)
+                return
+        for image in self._stacks:
+            if image.id == images_id:
+                self._stacks.remove(image)
                 return
         if self.sinograms is not None and self.sinograms.id == images_id:
             self.sinograms = None
@@ -74,37 +81,12 @@ class BaseDataset:
     def delete_recons(self) -> None:
         self.recons.clear()
 
-
-class MixedDataset(BaseDataset):
-
-    def __init__(self, stacks: list[ImageStack] | None = None, name: str = ""):
-        super().__init__(name=name)
-        stacks = [] if stacks is None else stacks
-        self._stacks = stacks
-
     def add_stack(self, stack: ImageStack) -> None:
         self._stacks.append(stack)
 
-    @property
-    def all(self) -> list[ImageStack]:
-        all_images = self._stacks + self.recons.stacks
-        if self.sinograms is None:
-            return all_images
-        return all_images + [self.sinograms]
 
-    def delete_stack(self, images_id: uuid.UUID) -> None:
-        for image in self._stacks:
-            if image.id == images_id:
-                self._stacks.remove(image)
-                return
-        for recon in self.recons:
-            if recon.id == images_id:
-                self.recons.remove(recon)
-                return
-        if self.sinograms is not None and self.sinograms.id == images_id:
-            self.sinograms = None
-            return
-        raise KeyError(_delete_stack_error_message(images_id))
+class MixedDataset(BaseDataset):
+    pass
 
 
 @dataclass
