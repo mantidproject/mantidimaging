@@ -287,10 +287,11 @@ class ReconstructWindowPresenter(BasePresenter):
             images: ImageStack = task.result
             slice_idx = self._get_slice_index(None)
             if images is not None:
-                assert self.model.images is not None
+                source_id = self.model.stack_id
+                assert source_id is not None
                 images.name = self.create_recon_output_filename("Recon_Slice")
                 self._replace_inf_nan(images)  # pyqtgraph workaround
-                self.view.show_recon_volume(images, self.model.stack_id)
+                self.view.show_recon_volume(images, source_id)
                 images.record_operation('AstraRecon.single_sino',
                                         'Slice Reconstruction',
                                         slice_idx=slice_idx,
