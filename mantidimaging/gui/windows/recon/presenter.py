@@ -440,12 +440,8 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def proj_180_degree_shape_matches_images(self, images: ImageStack) -> bool:
-        result = self.model.proj_180_degree_shape_matches_images(images)
-        if isinstance(result, bool):
-            return result
-        else:
-            raise ValueError("Expected a boolean from proj_180_degree_shape_matches_images")
+    def proj_180_degree_shape_matches_images(self, images) -> bool:
+        return self.model.proj_180_degree_shape_matches_images(images)
 
     def _do_nan_zero_negative_check(self) -> None:
         """
