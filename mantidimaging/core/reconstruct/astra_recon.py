@@ -97,7 +97,9 @@ class AstraRecon(BaseRecon):
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
 
-        def minimizer_function(cor: float) -> float:
+        def minimizer_function(cor: float | np.ndarray) -> float:
+            if isinstance(cor, np.ndarray):
+                cor = float(cor[0])
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]

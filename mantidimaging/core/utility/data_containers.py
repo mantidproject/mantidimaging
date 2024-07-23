@@ -51,8 +51,6 @@ class ScalarCoR(SingleValue):
     value: float
 
     def to_vec(self, detector_width):
-        if isinstance(self.value, np.ndarray):
-            self.value = float(self.value[0])
         return VectorCoR(detector_width / 2 - self.value)
 
 
