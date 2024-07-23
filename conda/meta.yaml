@@ -30,7 +30,7 @@ requirements:
     - cupy=12.3.*
     - astra-toolbox=2.0.0
     - requests=2.27.*
-    - h5py=3.7.*
+    - h5py=3.9.*
     - psutil=5.9.*
     - cil=24.0.*
     - ccpi-regulariser
