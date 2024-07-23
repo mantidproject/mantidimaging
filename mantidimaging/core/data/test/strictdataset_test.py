@@ -50,7 +50,7 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertIsNone(dataset.dark_after)
 
     def test_cant_change_dataset_id(self):
-        with self.assertRaisesRegex(Exception, "set attribute"):
+        with self.assertRaises(AttributeError):
             self.strict_dataset.id = "id"
 
     def test_set_flat_before(self):
