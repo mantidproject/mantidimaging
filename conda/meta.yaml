@@ -31,6 +31,7 @@ requirements:
     - astra-toolbox=2.0.0
     - requests=2.27.*
     - h5py=3.9.*
+    - hdf5=1.14.2
     - psutil=5.9.*
     - cil=24.0.*
     - ccpi-regulariser
