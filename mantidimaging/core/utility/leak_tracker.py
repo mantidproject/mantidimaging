@@ -25,6 +25,11 @@ def obj_to_string(obj, relative=None) -> str:
         keys = {k for k, v in obj.items() if v is relative}
         extra_info += f" keys={keys}"
 
+    if hasattr(obj, '__dict__') and relative is not None:
+        attribute_names = {k for k, v in obj.__dict__.items() if v is relative}
+        if attribute_names:
+            extra_info += f" attribute={attribute_names}"
+
     try:
         if hasattr(obj, "name"):
             extra_info += f" obj.name={obj.name}"
@@ -69,7 +74,6 @@ def find_owners(obj, depth: int, path: list[str] | None = None, ignore: set[int]
             all_routes.extend(new_routes)
         else:
             all_routes.append(route)
-
     return all_routes
 
 
