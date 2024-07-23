@@ -14,8 +14,6 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import Any, NamedTuple, TYPE_CHECKING
 
-import numpy as np
-
 if TYPE_CHECKING:
     import numpy
 
