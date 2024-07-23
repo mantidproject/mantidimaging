@@ -18,7 +18,7 @@ class ExampleContainer:
         self.held_reference = obj
 
 
-class CommandLineArgumentsTest(unittest.TestCase):
+class LeakTrackerTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.leak_tracker = LeakTracker()
