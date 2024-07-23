@@ -244,7 +244,7 @@ class ImageStackTest(unittest.TestCase):
         self.assertRaises(ValueError, lambda a, b: a == b, data_images, 1.0)
 
     def test_cant_change_id(self):
-        with self.assertRaisesRegex(Exception, "can't set attribute"):
+        with self.assertRaises(AttributeError):
             generate_images().id = "id"
 
     def test_default_name(self):
