@@ -135,7 +135,7 @@ class ReconstructWindowModel:
                                                   recon_params,
                                                   progress=progress)
 
-        recon = self._apply_pixel_size(recon, recon_params)  # type: ignore
+        recon = self._apply_pixel_size(recon, recon_params)
 
         return recon
 
@@ -148,7 +148,7 @@ class ReconstructWindowModel:
         # get the image height based on the current ROI
         recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
                                    progress)
-        recon = self._apply_pixel_size(recon, recon_params, progress)  # type: ignore
+        recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
 
     @staticmethod
