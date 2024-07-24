@@ -247,6 +247,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str,
     data["image_key"] = detector["image_key"]
 
     for recon in dataset.recons:
+        assert dataset.sample is not None
         assert dataset.sample.filenames is not None
         _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
 
