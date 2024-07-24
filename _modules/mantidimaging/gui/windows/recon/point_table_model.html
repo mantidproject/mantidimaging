@@ -479,6 +479,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QAbstractTableModel</span><span class="p">,</span> <span class="n">QModelIndex</span><span class="p">,</span> <span class="n">Qt</span>
 
@@ -512,7 +513,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.populate_slice_indices">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.populate_slice_indices">[docs]</a>
-    <span class="k">def</span> <span class="nf">populate_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">populate_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">beginResetModel</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">populate_slice_indices</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">endResetModel</span><span class="p">()</span></div>
@@ -520,7 +521,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.sort_points">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.sort_points">[docs]</a>
-    <span class="k">def</span> <span class="nf">sort_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sort_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layoutAboutToBeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sort_points</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layoutChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
@@ -528,20 +529,24 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.set_point">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.set_point">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reset_results</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">reset_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">cor</span><span class="p">,</span> <span class="n">reset_results</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="CorTiltPointQtModel.columnCount">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.columnCount">[docs]</a>
-    <span class="k">def</span> <span class="nf">columnCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">columnCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QModelIndex</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">2</span></div>
 
 
 <div class="viewcode-block" id="CorTiltPointQtModel.rowCount">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.rowCount">[docs]</a>
-    <span class="k">def</span> <span class="nf">rowCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rowCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points</span></div>
@@ -549,7 +554,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.flags">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.flags">[docs]</a>
-    <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlags</span><span class="p">:</span>
         <span class="n">flags</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">flags</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="n">flags</span> <span class="o">|=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsEditable</span>
         <span class="k">return</span> <span class="n">flags</span></div>
@@ -557,30 +562,31 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.data">[docs]</a>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span><span class="o">.</span><span class="n">isValid</span><span class="p">()</span> <span class="ow">or</span> <span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">col</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()</span>
-        <span class="n">col_field</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">Point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()]</span>
+        <span class="n">col_field</span><span class="p">:</span> <span class="n">Column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">SLICE_INDEX</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()]</span><span class="o">.</span><span class="n">slice_index</span>
-            <span class="k">if</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()]</span><span class="o">.</span><span class="n">cor</span>
+                <span class="k">return</span> <span class="n">point</span><span class="o">.</span><span class="n">slice_index</span>
+            <span class="k">elif</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">point</span><span class="o">.</span><span class="n">cor</span>
 
         <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">ToolTipRole</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">SLICE_INDEX</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s1">&#39;Slice index (y coordinate of projection)&#39;</span>
             <span class="k">elif</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s1">&#39;Centre of rotation for specific slice&#39;</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="CorTiltPointQtModel.getColumn">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.getColumn">[docs]</a>
-    <span class="k">def</span> <span class="nf">getColumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">getColumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">column_index</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">column_index</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -592,7 +598,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.setData">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.setData">[docs]</a>
-    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">EditRole</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">EditRole</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">role</span> <span class="o">!=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">EditRole</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -617,7 +623,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.insertRows">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.insertRows">[docs]</a>
-    <span class="k">def</span> <span class="nf">insertRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">insertRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">beginInsertRows</span><span class="p">(</span><span class="n">parent</span> <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">QModelIndex</span><span class="p">(),</span> <span class="n">row</span><span class="p">,</span> <span class="n">row</span> <span class="o">+</span> <span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
@@ -628,7 +634,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.removeRows">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.removeRows">[docs]</a>
-    <span class="k">def</span> <span class="nf">removeRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">removeRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -642,7 +648,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.removeAllRows">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.removeAllRows">[docs]</a>
-    <span class="k">def</span> <span class="nf">removeAllRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">removeAllRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QModelIndex</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -653,7 +659,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.appendNewRow">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.appendNewRow">[docs]</a>
-    <span class="k">def</span> <span class="nf">appendNewRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">appendNewRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insertRows</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">slice_idx</span><span class="o">=</span><span class="n">slice_idx</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="n">cor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sort_points</span><span class="p">()</span></div>
@@ -661,7 +667,7 @@ document.write(`
 
 <div class="viewcode-block" id="CorTiltPointQtModel.headerData">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.headerData">[docs]</a>
-    <span class="k">def</span> <span class="nf">headerData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">headerData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">role</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">orientation</span> <span class="o">!=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 

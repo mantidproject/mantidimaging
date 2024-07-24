@@ -485,7 +485,6 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.reconlist</span> <span class="kn">import</span> <span class="n">ReconList</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span>
@@ -802,9 +801,7 @@ document.write(`
                                                                       <span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
                            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="p">:</span>
-            <span class="n">recon_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_recon_list</span><span class="p">()</span>
-            <span class="n">ds</span><span class="o">.</span><span class="n">recons</span> <span class="o">=</span> <span class="n">recon_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_recons_to_dataset</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span></div>
 
@@ -860,15 +857,9 @@ document.write(`
                 <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">projection_angles</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">image_stack</span>
 
-    <span class="k">def</span> <span class="nf">_create_recon_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReconList</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Uses the array of recon data extracted from the NeXus file to create a ReconList object.</span>
-<span class="sd">        :return: The ReconList object containing recons from the NeXus file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">recon_list</span> <span class="o">=</span> <span class="n">ReconList</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_add_recons_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">recon_array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="p">:</span>
-            <span class="n">recon_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ImageStack</span><span class="p">(</span><span class="n">recon_array</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">recon_list</span></div>
+            <span class="n">ds</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">ImageStack</span><span class="p">(</span><span class="n">recon_array</span><span class="p">))</span></div>
 
 </pre></div>
 

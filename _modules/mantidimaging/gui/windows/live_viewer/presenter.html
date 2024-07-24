@@ -580,7 +580,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.display_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.display_image">[docs]</a>
-    <span class="k">def</span> <span class="nf">display_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Display image in the view after validating contents</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -623,7 +623,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.update_image_modified">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.update_image_modified">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the displayed image when the file is modified</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -633,16 +633,17 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.update_image_operation">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.update_image_operation">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_image_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_image_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reload the current image if an operation has been performed on the current image</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.convert_image_to_imagestack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.convert_image_to_imagestack">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_image_to_imagestack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">convert_image_to_imagestack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the single image to an imagestack so the Operations framework can be used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -654,7 +655,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.perform_operations">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.perform_operations">[docs]</a>
-    <span class="k">def</span> <span class="nf">perform_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">perform_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_params</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">image_data</span>
         <span class="n">image_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image_to_imagestack</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>

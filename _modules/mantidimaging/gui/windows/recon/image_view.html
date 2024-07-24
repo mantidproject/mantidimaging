@@ -531,7 +531,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.cleanup">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.cleanup">[docs]</a>
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_projection</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_sinogram</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -543,13 +543,13 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.slice_line_moved">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.slice_line_moved">[docs]</a>
-    <span class="k">def</span> <span class="nf">slice_line_moved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">slice_line_moved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slice_changed</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slice_line</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.update_projection">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.update_projection">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tilt_angle</span><span class="p">:</span> <span class="n">Degrees</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tilt_angle</span><span class="p">:</span> <span class="n">Degrees</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_projection</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_projection</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_projection</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">imageChanged</span><span class="p">(</span><span class="n">autoLevel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoRange</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -564,7 +564,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.update_sinogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.update_sinogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_sinogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_sinogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_sinogram</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_sinogram</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_sinogram</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">imageChanged</span><span class="p">(</span><span class="n">autoLevel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoRange</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -573,7 +573,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.update_recon">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.update_recon">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">,</span> <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">,</span> <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">autoLevels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">histogram</span><span class="p">)</span>
@@ -585,58 +585,58 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.update_recon_hist">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.update_recon_hist">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_recon_hist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update_recon_hist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">imageChanged</span><span class="p">(</span><span class="n">autoLevel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoRange</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.mouse_click">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.mouse_click">[docs]</a>
-    <span class="k">def</span> <span class="nf">mouse_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">InfiniteLine</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mouse_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">InfiniteLine</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">line</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slice_changed</span><span class="p">(</span><span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.slice_changed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.slice_changed">[docs]</a>
-    <span class="k">def</span> <span class="nf">slice_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">slice_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">(</span><span class="n">slice_idx</span><span class="o">=</span><span class="n">slice_index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sigSliceIndexChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">slice_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.clear_recon">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.clear_recon">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.clear_recon_line_profile">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.clear_recon_line_profile">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_recon_line_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_recon_line_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_line_profile</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.clear_sinogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.clear_sinogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_sinogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_sinogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_sinogram</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.clear_projection">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.clear_projection">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_projection</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.reset_slice_and_tilt">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.reset_slice_and_tilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset_slice_and_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reset_slice_and_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slice_line</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">slice_index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hide_tilt</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconImagesView.hide_tilt">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.hide_tilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">hide_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">hide_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Hides the tilt line. This stops infinite zooming out loop that messes up the image view</span>
 <span class="sd">        (the line likes to be unbound when the degree isn&#39;t a multiple o 90 - and the tilt never is)</span>
@@ -648,7 +648,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.set_tilt">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.set_tilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">isnan</span><span class="p">(</span><span class="n">tilt</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>  <span class="c1"># is isnan it means there is no tilt, i.e. the line is vertical</span>
             <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tilt_line</span><span class="o">.</span><span class="n">setAngle</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
@@ -659,7 +659,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconImagesView.reset_recon_histogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.image_view.html#mantidimaging.gui.windows.recon.image_view.ReconImagesView.reset_recon_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset_recon_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reset_recon_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span></div>
 </div>
 

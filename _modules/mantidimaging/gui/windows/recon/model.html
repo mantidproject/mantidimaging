@@ -565,7 +565,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconstructWindowModel.initial_select_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.initial_select_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">initial_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">initial_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">images</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_cor_model</span><span class="p">()</span></div>
 
@@ -629,7 +629,9 @@ document.write(`
                                                   <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">),</span>
                                                   <span class="n">recon_params</span><span class="p">,</span>
                                                   <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+
         <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">recon</span></div>
 
 
@@ -644,13 +646,12 @@ document.write(`
         <span class="c1"># get the image height based on the current ROI</span>
         <span class="n">recon</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">get_all_cors_from_regression</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">recon_params</span><span class="p">,</span>
                                    <span class="n">progress</span><span class="p">)</span>
-
         <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">recon</span></div>
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="n">recon</span> <span class="o">=</span> <span class="n">DivideFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">recon_params</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micron&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
             <span class="c1"># update the reconstructed stack pixel size with the value actually used for division</span>
@@ -786,7 +787,7 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowModel.proj_180_degree_shape_matches_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">proj_180_degree_shape_matches_images</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">proj_180_degree_shape_matches_images</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">height</span> \
                <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">width</span></div>
 
@@ -810,7 +811,7 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stack_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">stack_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">id</span>
         <span class="k">return</span> <span class="kc">None</span></div>

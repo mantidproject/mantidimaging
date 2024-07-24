@@ -770,7 +770,7 @@ document.write(`
                                      <span class="n">cor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                      <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                      <span class="n">force_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                                     <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                                     <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">reset_recon_and_sino_previews</span><span class="p">()</span>
             <span class="k">return</span>
@@ -782,7 +782,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">on_preview_complete</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_on_preview_reconstruct_slice_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">,</span> <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_preview_reconstruct_slice_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">,</span> <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encountered error while trying to reconstruct: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -795,7 +795,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_stack_reconstruct_slice">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_reconstruct_slice">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_stack_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_stack_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_recon_buttons_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_stack_reconstruct_slice_done</span><span class="p">)</span></div>
@@ -806,15 +806,15 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encountered error while trying to reconstruct: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_recon_buttons_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
             <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="n">source_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stack_id</span>
+                <span class="k">assert</span> <span class="n">source_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="n">images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_recon_output_filename</span><span class="p">(</span><span class="s2">&quot;Recon_Slice&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_replace_inf_nan</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>  <span class="c1"># pyqtgraph workaround</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_recon_volume</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stack_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_recon_volume</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">source_id</span><span class="p">)</span>
                 <span class="n">images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="s1">&#39;AstraRecon.single_sino&#39;</span><span class="p">,</span>
                                         <span class="s1">&#39;Slice Reconstruction&#39;</span><span class="p">,</span>
                                         <span class="n">slice_idx</span><span class="o">=</span><span class="n">slice_idx</span><span class="p">,</span>
@@ -822,7 +822,7 @@ document.write(`
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_recon_buttons_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_refine_selected_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_do_refine_selected_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">selected_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_cor_table_selected_rows</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_rows</span><span class="p">):</span>
             <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">slices</span><span class="p">[</span><span class="n">selected_rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
@@ -865,7 +865,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_on_volume_recon_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_on_volume_recon_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encountered error while trying to reconstruct: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -875,6 +875,7 @@ document.write(`
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_replace_inf_nan</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># pyqtgraph workaround</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stack_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_recon_output_filename</span><span class="p">(</span><span class="s2">&quot;Recon_Vol&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_recon_volume</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stack_id</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
@@ -882,32 +883,32 @@ document.write(`
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_clear_all_cors">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_clear_all_cors">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_clear_all_cors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_clear_all_cors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_cor_table</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_selected_row</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_remove_selected_cor">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_remove_selected_cor">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_remove_selected_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_remove_selected_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">remove_selected_cor</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.set_last_cor">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.set_last_cor">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_last_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_last_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">last_cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_calculate_cors_from_manual_tilt">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_calculate_cors_from_manual_tilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_calculate_cors_from_manual_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">do_calculate_cors_from_manual_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">rotation_centre</span><span class="p">)</span>
         <span class="n">tilt</span> <span class="o">=</span> <span class="n">Degrees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tilt</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_precalculated</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_results</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_results</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">iter_points</span><span class="p">()):</span>
@@ -923,7 +924,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">selected_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_images_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span>

@@ -784,7 +784,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.remove_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.remove_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the currently set path</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -805,13 +805,13 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.handle_image_modified">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.handle_image_modified">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent_image_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ImageWatcher.add_sub_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.add_sub_directory">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">SubDirectory</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">SubDirectory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">addPath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sub_dir</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
@@ -820,7 +820,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.remove_sub_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.remove_sub_directory">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">remove_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">removePath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">))</span>
 
@@ -829,7 +829,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.clear_deleted_sub_directories">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.clear_deleted_sub_directories">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_deleted_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">clear_deleted_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_sub_directory</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">)</span></div>
