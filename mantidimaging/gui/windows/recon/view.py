@@ -208,7 +208,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.lbhc_enabled.toggled.connect(spinbox.setEnabled)
         self.lbhc_enabled.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
-    def showEvent(self, e):
+    def showEvent(self, e) -> None:
         super().showEvent(e)
         if self.presenter.stack_selection_change_pending:
             self.presenter.set_stack_uuid(self.stackSelector.current())
@@ -219,13 +219,13 @@ class ReconstructWindowView(BaseMainWindowView):
             self.presenter.stack_changed_pending = False
         self.activateWindow()
 
-    def closeEvent(self, e):
+    def closeEvent(self, e) -> None:
         if self.presenter.recon_is_running:
             e.ignore()
         else:
             self.hide()
 
-    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID):
+    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
         try:
             selected_images = self.main_window.get_images_from_stack_uuid(uuid)
         except KeyError:
@@ -275,7 +275,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Degrees | None):
+    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Degrees | None) -> None:
         """
         Updates the preview projection image and associated annotations.
 
@@ -294,17 +294,17 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.image_view.update_projection(image_data, preview_slice_index, tilt_angle)
 
-    def update_sinogram(self, image_data):
+    def update_sinogram(self, image_data) -> None:
         self.image_view.update_sinogram(image_data)
 
     def is_auto_update_preview(self) -> bool:
         return self.previewAutoUpdate.isChecked()
 
-    def handle_auto_update_preview_selection(self):
+    def handle_auto_update_preview_selection(self) -> None:
         if self.previewAutoUpdate.isChecked():
             self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
-    def update_recon_preview(self, image_data: numpy.ndarray, reset_roi: bool = False):
+    def update_recon_preview(self, image_data: numpy.ndarray, reset_roi: bool = False) -> None:
         """
         Updates the reconstruction preview image with new data.
         """
@@ -314,7 +314,7 @@ class ReconstructWindowView(BaseMainWindowView):
             self.image_view.update_recon_hist()
             self.update_recon_hist_needed = False
 
-    def reset_recon_and_sino_previews(self):
+    def reset_recon_and_sino_previews(self) -> None:
         """
         Resets the recon and sinogram preview images, forcing a complete redraw next time they
         are updated.
@@ -331,7 +331,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def reset_slice_and_tilt(self, slice_index: int) -> None:
         self.image_view.reset_slice_and_tilt(slice_index)
 
-    def on_table_row_count_change(self, _=None, __=None):
+    def on_table_row_count_change(self, _=None, __=None) -> None:
         """
         Called when rows have been added or removed from the point table.
 
@@ -343,7 +343,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.removeBtn.setEnabled(not empty)
         self.clearAllBtn.setEnabled(not empty)
 
-    def add_cor_table_row(self, row: int, slice_index: int, cor: float):
+    def add_cor_table_row(self, row: int, slice_index: int, cor: float) -> None:
         """
         Adds a row to the manual COR table with a specified slice index.
         """
@@ -464,7 +464,7 @@ class ReconstructWindowView(BaseMainWindowView):
                                         regulariser=self.regulariser,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
 
-    def set_table_point(self, idx, slice_idx, cor):
+    def set_table_point(self, idx, slice_idx, cor) -> None:
         # reset_results=False stops the resetting of the data model on
         # changing a point from here - otherwise calculating the CoR
         # for each slice from tilt ends up resetting the model afterwards

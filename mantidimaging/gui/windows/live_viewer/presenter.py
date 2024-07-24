@@ -82,7 +82,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
         self.display_image(self.selected_image.image_path)
 
-    def display_image(self, image_path: Path):
+    def display_image(self, image_path: Path) -> None:
         """
         Display image in the view after validating contents
         """
@@ -119,20 +119,21 @@ class LiveViewerWindowPresenter(BasePresenter):
                 image_data = fit[0].data
         return image_data
 
-    def update_image_modified(self, image_path: Path):
+    def update_image_modified(self, image_path: Path) -> None:
         """
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
             self.display_image(image_path)
 
-    def update_image_operation(self):
+    def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
-        self.display_image(self.selected_image.image_path)
+        if self.selected_image is not None:
+            self.display_image(self.selected_image.image_path)
 
-    def convert_image_to_imagestack(self, image_data):
+    def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
         Convert the single image to an imagestack so the Operations framework can be used
         """
@@ -141,7 +142,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         image_data_temp[0] = image_data
         return ImageStack(image_data_temp)
 
-    def perform_operations(self, image_data):
+    def perform_operations(self, image_data) -> np.ndarray:
         if not self.view.filter_params:
             return image_data
         image_stack = self.convert_image_to_imagestack(image_data)

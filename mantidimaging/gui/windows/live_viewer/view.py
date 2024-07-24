@@ -91,7 +91,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         super().closeEvent(e)
         self.presenter = None  # type: ignore # View instance to be destroyed -type can be inconsistent
 
-    def set_image_rotation_angle(self):
+    def set_image_rotation_angle(self) -> None:
         """Set the image rotation angle which will be read in by the presenter"""
         if self.rotate_angles_group.checkedAction().text() == "0°":
             if "Rotate Stack" in self.filter_params:

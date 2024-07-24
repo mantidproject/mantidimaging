@@ -82,7 +82,7 @@ class ReconstructWindowModel:
     def num_points(self) -> int:
         return self.data_model.num_points
 
-    def initial_select_data(self, images: ImageStack | None):
+    def initial_select_data(self, images: ImageStack | None) -> None:
         self._images = images
         self.reset_cor_model()
 
@@ -134,7 +134,9 @@ class ReconstructWindowModel:
                                                   images.projection_angles(recon_params.max_projection_angle),
                                                   recon_params,
                                                   progress=progress)
+
         recon = self._apply_pixel_size(recon, recon_params)
+
         return recon
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
@@ -146,12 +148,11 @@ class ReconstructWindowModel:
         # get the image height based on the current ROI
         recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
                                    progress)
-
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
 
     @staticmethod
-    def _apply_pixel_size(recon, recon_params: ReconstructionParameters, progress=None):
+    def _apply_pixel_size(recon: ImageStack, recon_params: ReconstructionParameters, progress=None) -> ImageStack:
         if recon_params.pixel_size > 0.:
             recon = DivideFilter.filter_func(recon, value=recon_params.pixel_size, unit="micron", progress=progress)
             # update the reconstructed stack pixel size with the value actually used for division
@@ -255,7 +256,7 @@ class ReconstructWindowModel:
         return find_center(self.images, progress)
 
     @staticmethod
-    def proj_180_degree_shape_matches_images(images):
+    def proj_180_degree_shape_matches_images(images) -> bool:
         return images.has_proj180deg() and images.height == images.proj180deg.height \
                and images.width == images.proj180deg.width
 
@@ -269,7 +270,7 @@ class ReconstructWindowModel:
         return bool(np.any(self.images.data < 0))
 
     @property
-    def stack_id(self):
+    def stack_id(self) -> uuid.UUID | None:
         if self.images is not None:
             return self.images.id
         return None
