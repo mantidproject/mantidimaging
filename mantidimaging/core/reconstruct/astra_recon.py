@@ -84,7 +84,8 @@ class AstraRecon(BaseRecon):
         return num_gpus
 
     @staticmethod
-    def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+    def find_cor(images: ImageStack, slice_idx: int, start_cor: float | np.ndarray,
+                 recon_params: ReconstructionParameters) -> float:
         """
         Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.
 
@@ -96,7 +97,9 @@ class AstraRecon(BaseRecon):
         def get_sumsq(image: np.ndarray) -> float:
             return np.sum(image**2)
 
-        def minimizer_function(cor: float):
+        def minimizer_function(cor: float | np.ndarray) -> float:
+            if isinstance(cor, np.ndarray):
+                cor = float(cor[0])
             return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
