@@ -54,7 +54,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_handle_sample_change_has_flat_before(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
-        new_dataset = StrictDataset(generate_images([10, 11, 12]), flat_before=generate_images())
+        new_dataset = StrictDataset(sample=generate_images([10, 11, 12]), flat_before=generate_images())
         new_dataset.flat_before.name = 'Flat_before'
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
@@ -68,7 +68,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_handle_sample_change_has_flat_after(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
-        new_dataset = StrictDataset(generate_images(), flat_after=generate_images())
+        new_dataset = StrictDataset(sample=generate_images(), flat_after=generate_images())
         new_dataset.flat_after.name = 'Flat_after'
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
@@ -118,7 +118,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_handle_sample_change_no_flat(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
-        new_dataset = StrictDataset(generate_images())
+        new_dataset = StrictDataset(sample=generate_images())
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
         self.presenter.show_new_sample = mock.Mock()

@@ -98,6 +98,7 @@ class StrictDataset(BaseDataset):
     dark_after: ImageStack | None = None
 
     def __init__(self,
+                 *,
                  sample: ImageStack,
                  flat_before: ImageStack | None = None,
                  flat_after: ImageStack | None = None,

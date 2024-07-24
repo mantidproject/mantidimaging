@@ -136,7 +136,7 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(flat_after_mock, progress_mock, dtype=lp.dtype)
         ])
 
-        dataset_mock.assert_called_with(sample_images_mock)
+        dataset_mock.assert_called_with(sample=sample_images_mock)
 
         ds_mock.set_stack.assert_has_calls([
             mock.call(FILE_TYPES.FLAT_BEFORE, flatb_images_mock),
@@ -181,7 +181,7 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(proj_180deg_mock, progress_mock, dtype=lp.dtype),
         ])
 
-        dataset_mock.assert_called_with(sample_images_mock)
+        dataset_mock.assert_called_with(sample=sample_images_mock)
 
         ds_mock.set_stack.assert_has_calls([
             mock.call(FILE_TYPES.DARK_BEFORE, darkb_images_mock),
@@ -223,7 +223,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_add_180_deg_to_dataset(self, load: mock.Mock):
         _180_file = "180 file"
         dataset_id = "id"
-        self.model.datasets[dataset_id] = dataset_mock = StrictDataset(generate_images())
+        self.model.datasets[dataset_id] = dataset_mock = StrictDataset(sample=generate_images())
         load.return_value = _180_stack = generate_images()
         self.model.add_180_deg_to_dataset(dataset_id=dataset_id, _180_deg_file=_180_file)
 
@@ -316,7 +316,11 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(5)]
         ids = [image_stack.id for image_stack in images]
 
-        ds = StrictDataset(*images)
+        ds = StrictDataset(sample=images[0],
+                           flat_before=images[1],
+                           flat_after=images[2],
+                           dark_before=images[3],
+                           dark_after=images[4])
         self.model.datasets[ds.id] = ds
 
         stacks_to_close = self.model.remove_container(ds.id)
@@ -329,7 +333,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_empty_dataset_from_model(self):
         sample = generate_images()
-        ds = StrictDataset(sample)
+        ds = StrictDataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         self.model.remove_container(sample.id)
@@ -342,7 +346,7 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(2)]
         # Set the sample 180 to check this isn't removed
         images[0].proj180deg = generate_images()
-        ds = StrictDataset(*images)
+        ds = StrictDataset(sample=images[0], flat_before=images[1])
         self.model.datasets[ds.id] = ds
         id_to_remove = images[-1].id
 
@@ -353,7 +357,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_non_sample_images_from_dataset_without_sample(self):
         images = [generate_images() for _ in range(2)]
-        ds = StrictDataset(*images)
+        ds = StrictDataset(sample=images[0], flat_before=images[1])
         ds.sample = None
         self.model.datasets[ds.id] = ds
         id_to_remove = images[-1].id
@@ -366,7 +370,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_remove_sample_with_180_from_dataset(self):
         sample = generate_images()
         sample.proj180deg = generate_images()
-        ds = StrictDataset(sample)
+        ds = StrictDataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         expected_result = [sample.id, sample.proj180deg.id]
@@ -377,7 +381,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_sample_without_180_from_dataset(self):
         sample = generate_images()
-        ds = StrictDataset(sample)
+        ds = StrictDataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         expected_result = [sample.id]
@@ -399,7 +403,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual([id_to_remove], deleted_stacks)
 
     def test_add_dataset_to_model(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIn(ds, self.model.datasets.values())
 
@@ -408,14 +412,14 @@ class MainWindowModelTest(unittest.TestCase):
         for _ in range(3):
             images = [generate_images() for _ in range(3)]
             all_ids += [image.id for image in images]
-            ds = StrictDataset(*images)
+            ds = StrictDataset(sample=images[0], flat_before=images[1], flat_after=images[2])
             self.model.add_dataset_to_model(ds)
         self.assertListEqual(all_ids, self.model.image_ids)
 
     def test_add_recon_to_dataset(self):
         sample = generate_images()
         sample_id = sample.id
-        ds = StrictDataset(sample)
+        ds = StrictDataset(sample=sample)
 
         recon = generate_images()
         self.model.add_dataset_to_model(ds)
@@ -425,8 +429,8 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_proj180s(self):
 
-        ds1 = StrictDataset(generate_images())
-        ds2 = StrictDataset(generate_images())
+        ds1 = StrictDataset(sample=generate_images())
+        ds2 = StrictDataset(sample=generate_images())
         ds3 = MixedDataset(stacks=[generate_images()])
 
         proj180s = [ImageStack(ds1.sample.data[0]), ImageStack(ds2.sample.data[0])]
@@ -444,18 +448,18 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.add_recon_to_dataset(generate_images(), "bad-id")
 
     def test_get_parent_strict_dataset_success(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIs(self.model.get_parent_dataset(ds.sample.id), ds.id)
 
     def test_get_parent_dataset_doesnt_find_any_parent(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         with self.assertRaises(RuntimeError):
             self.model.get_parent_dataset("unrecognised-id")
 
     def test_delete_all_recons_in_dataset(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         [ds.add_recon(generate_images()) for _ in range(3)]
         recon_ids = ds.recons.ids
         self.model.add_dataset_to_model(ds)
@@ -490,14 +494,14 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.get_existing_180_id(md.id)
 
     def test_get_existing_180_id_finds_id(self):
-        sd = StrictDataset(generate_images((5, 20, 20)))
+        sd = StrictDataset(sample=generate_images((5, 20, 20)))
         sd.proj180deg = _180 = generate_images((1, 20, 20))
         self.model.add_dataset_to_model(sd)
 
         assert self.model.get_existing_180_id(sd.id) == _180.id
 
     def test_get_existing_id_returns_none_for_dataset_without_180(self):
-        sd = StrictDataset(generate_images((5, 20, 20)))
+        sd = StrictDataset(sample=generate_images((5, 20, 20)))
         self.model.add_dataset_to_model(sd)
 
         self.assertIsNone(self.model.get_existing_180_id(sd.id))
@@ -526,7 +530,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
     def test_do_nexus_save_success(self, nexus_save):
-        sd = StrictDataset(generate_images())
+        sd = StrictDataset(sample=generate_images())
         self.model.add_dataset_to_model(sd)
         path = "path"
         sample_name = "sample-name"
@@ -536,7 +540,7 @@ class MainWindowModelTest(unittest.TestCase):
         nexus_save.assert_called_once_with(sd, path, sample_name, save_as_float)
 
     def test_is_dataset_strict_returns_true(self):
-        strict_ds = StrictDataset(generate_images())
+        strict_ds = StrictDataset(sample=generate_images())
         self.model.add_dataset_to_model(strict_ds)
         self.assertTrue(self.model.is_dataset_strict(strict_ds.id))
 

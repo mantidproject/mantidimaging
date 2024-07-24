@@ -100,7 +100,7 @@ class BaseEyesTest(unittest.TestCase):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
         image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
-        dataset = StrictDataset(image_stack)
+        dataset = StrictDataset(sample=image_stack)
         image_stack.name = "Stack 1"
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)

@@ -200,7 +200,7 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.datasets = [StrictDataset(mock.Mock()), MixedDataset()]
+        self.presenter.datasets = [StrictDataset(sample=mock.Mock()), MixedDataset()]
 
         self._update_shortcuts_test(False, True, True)
         self._update_shortcuts_test(True, True, True)
