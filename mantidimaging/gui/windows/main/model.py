@@ -64,7 +64,7 @@ class MainWindowModel:
         group = FilenameGroup.from_file(Path(file_path))
         group.find_all_files()
         images = loader.load_stack_from_group(group, progress)
-        sd = MixedDataset([images], images.name)
+        sd = MixedDataset(stacks=[images], name=images.name)
         self.datasets[sd.id] = sd
         return sd
 

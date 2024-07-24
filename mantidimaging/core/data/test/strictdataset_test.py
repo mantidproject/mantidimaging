@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, _delete_stack_error_message, _image_key_list, \
     _get_stack_data_type
-from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -106,8 +106,8 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertIsNone(self.strict_dataset.dark_after)
 
     def test_delete_recon(self):
-        recons = ReconList([generate_images() for _ in range(2)])
-        self.strict_dataset.recons = recons.copy()
+        [self.strict_dataset.add_recon(generate_images()) for _ in range(3)]
+        recons = self.strict_dataset.recons.copy()
 
         id_to_remove = recons[-1].id
         self.strict_dataset.delete_stack(id_to_remove)
@@ -120,6 +120,12 @@ class StrictDatasetTest(unittest.TestCase):
     def test_name(self):
         self.strict_dataset.name = dataset_name = "name"
         self.assertEqual(self.strict_dataset.name, dataset_name)
+
+    def test_default_name_from_image(self):
+        mock_sample = mock.create_autospec(ImageStack)
+        mock_sample.name = "image_name"
+        ds = StrictDataset(sample=mock_sample)
+        self.assertEqual(ds.name, "image_name")
 
     def test_set_180(self):
         _180 = generate_images((1, 200, 200))
@@ -144,7 +150,7 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertIsNone(self.strict_dataset.sinograms)
 
     def test_delete_all_recons(self):
-        self.strict_dataset.recons = ReconList([generate_images() for _ in range(2)])
+        [self.strict_dataset.add_recon(generate_images()) for _ in range(3)]
         self.strict_dataset.delete_recons()
         self.assertListEqual(self.strict_dataset.recons.stacks, [])
 

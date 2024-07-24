@@ -493,7 +493,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         dataset_1.name = "dataset-1"
         dataset_2 = StrictDataset(generate_images())
         dataset_2.name = "dataset-2"
-        mixed_dataset = MixedDataset([generate_images()])
+        mixed_dataset = MixedDataset(stacks=[generate_images()])
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
@@ -545,7 +545,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_create_mixed_dataset_stack_windows(self):
         n_stacks = 3
-        dataset = MixedDataset([generate_images() for _ in range(n_stacks)], "cool-name")
+        dataset = MixedDataset(stacks=[generate_images() for _ in range(n_stacks)], name="cool-name")
         self.create_stack_mocks(dataset)
         self.presenter.create_mixed_dataset_stack_windows(dataset)
         assert len(self.presenter.stack_visualisers) == n_stacks
@@ -627,7 +627,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_created_mixed_dataset_tree_view_items(self):
         n_images = 3
-        dataset = MixedDataset([generate_images() for _ in range(n_images)])
+        dataset = MixedDataset(stacks=[generate_images() for _ in range(n_images)])
         dataset.name = dataset_name = "mixed-dataset"
         dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
 
@@ -867,7 +867,7 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                                            new_images.name)
 
     def test_add_recon_to_mixed_dataset(self):
-        mixed_dataset = MixedDataset([generate_images()])
+        mixed_dataset = MixedDataset(stacks=[generate_images()])
         recon = generate_images()
         recon.name = "recon-name"
 
@@ -952,7 +952,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.datasets = {}
 
         mixed_stacks = [generate_images() for _ in range(5)]
-        mixed_dataset = MixedDataset(mixed_stacks)
+        mixed_dataset = MixedDataset(stacks=mixed_stacks)
 
         strict_stacks = [generate_images() for _ in range(5)]
         strict_dataset = StrictDataset(*strict_stacks)
@@ -991,7 +991,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_stack_moved_to_recon(self):
         stack_to_move = generate_images()
-        origin_dataset = MixedDataset([stack_to_move])
+        origin_dataset = MixedDataset(stacks=[stack_to_move])
         destination_dataset = MixedDataset()
         destination_dataset_id = destination_dataset.id
 
@@ -1029,7 +1029,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_move_stack_to_strict_dataset(self):
         stack_to_move = generate_images()
-        origin_dataset = MixedDataset([stack_to_move])
+        origin_dataset = MixedDataset(stacks=[stack_to_move])
         destination_dataset = StrictDataset(generate_images())
         self.presenter.get_dataset = mock.Mock(side_effect=[origin_dataset, destination_dataset])
         self.presenter.get_stack = mock.Mock(return_value=stack_to_move)

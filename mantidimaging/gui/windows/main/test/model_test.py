@@ -11,7 +11,6 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
-from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
@@ -392,7 +391,7 @@ class MainWindowModelTest(unittest.TestCase):
         ids = [image_stack.id for image_stack in images]
         id_to_remove = ids[0]
 
-        ds = MixedDataset(images)
+        ds = MixedDataset(stacks=images)
         self.model.datasets[ds.id] = ds
 
         deleted_stacks = self.model.remove_container(id_to_remove)
@@ -428,7 +427,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         ds1 = StrictDataset(generate_images())
         ds2 = StrictDataset(generate_images())
-        ds3 = MixedDataset([generate_images()])
+        ds3 = MixedDataset(stacks=[generate_images()])
 
         proj180s = [ImageStack(ds1.sample.data[0]), ImageStack(ds2.sample.data[0])]
         ds1.proj180deg = proj180s[0]
@@ -457,7 +456,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_delete_all_recons_in_dataset(self):
         ds = StrictDataset(generate_images())
-        ds.recons = ReconList([generate_images() for _ in range(3)])
+        [ds.add_recon(generate_images()) for _ in range(3)]
         recon_ids = ds.recons.ids
         self.model.add_dataset_to_model(ds)
 
@@ -542,7 +541,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertTrue(self.model.is_dataset_strict(strict_ds.id))
 
     def test_is_dataset_strict_returns_false(self):
-        mixed_ds = MixedDataset([generate_images()])
+        mixed_ds = MixedDataset(stacks=[generate_images()])
         self.model.add_dataset_to_model(mixed_ds)
         self.assertFalse(self.model.is_dataset_strict(mixed_ds.id))
 

@@ -105,7 +105,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_handle_sample_change_to_MixedDataset(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
-        new_dataset = MixedDataset([generate_images()])
+        new_dataset = MixedDataset(stacks=[generate_images()])
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
         self.presenter.show_new_sample = mock.Mock()

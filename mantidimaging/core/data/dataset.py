@@ -19,25 +19,24 @@ def _image_key_list(key: int, n_images: int) -> list[int]:
     return [key for _ in range(n_images)]
 
 
+def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
+    return [image_stack for image_stack in image_stacks if image_stack is not None]
+
+
 class BaseDataset:
 
-    def __init__(self, name: str = ""):
+    def __init__(self, *, name: str = "", stacks: list[ImageStack] | None = None) -> None:
         self._id: uuid.UUID = uuid.uuid4()
-        self.recons = ReconList()
-        self._name = name
+        self.name = name
+
+        self._recons = ReconList()
         self._sinograms: ImageStack | None = None
+        stacks = [] if stacks is None else stacks
+        self._stacks: list[ImageStack] = stacks
 
     @property
     def id(self) -> uuid.UUID:
         return self._id
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, arg: str) -> None:
-        self._name = arg
 
     @property
     def sinograms(self) -> ImageStack | None:
@@ -49,10 +48,21 @@ class BaseDataset:
 
     @property
     def all(self) -> list[ImageStack]:
-        raise NotImplementedError()
+        return self.recons.stacks + self._stacks + remove_nones([self._sinograms])
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
-        raise NotImplementedError()
+        for recon in self.recons:
+            if recon.id == images_id:
+                self.recons.remove(recon)
+                return
+        for image in self._stacks:
+            if image.id == images_id:
+                self._stacks.remove(image)
+                return
+        if self.sinograms is not None and self.sinograms.id == images_id:
+            self.sinograms = None
+            return
+        raise KeyError(_delete_stack_error_message(images_id))
 
     def __contains__(self, images_id: uuid.UUID) -> bool:
         return any(image.id == images_id for image in self.all)
@@ -61,43 +71,22 @@ class BaseDataset:
     def all_image_ids(self) -> list[uuid.UUID]:
         return [image_stack.id for image_stack in self.all if image_stack is not None]
 
+    @property
+    def recons(self) -> ReconList:
+        return self._recons
+
     def add_recon(self, recon: ImageStack) -> None:
         self.recons.append(recon)
 
     def delete_recons(self) -> None:
         self.recons.clear()
 
-
-class MixedDataset(BaseDataset):
-
-    def __init__(self, stacks: list[ImageStack] | None = None, name: str = ""):
-        super().__init__(name=name)
-        stacks = [] if stacks is None else stacks
-        self._stacks = stacks
-
     def add_stack(self, stack: ImageStack) -> None:
         self._stacks.append(stack)
 
-    @property
-    def all(self) -> list[ImageStack]:
-        all_images = self._stacks + self.recons.stacks
-        if self.sinograms is None:
-            return all_images
-        return all_images + [self.sinograms]
 
-    def delete_stack(self, images_id: uuid.UUID) -> None:
-        for image in self._stacks:
-            if image.id == images_id:
-                self._stacks.remove(image)
-                return
-        for recon in self.recons:
-            if recon.id == images_id:
-                self.recons.remove(recon)
-                return
-        if self.sinograms is not None and self.sinograms.id == images_id:
-            self.sinograms = None
-            return
-        raise KeyError(_delete_stack_error_message(images_id))
+class MixedDataset(BaseDataset):
+    pass
 
 
 @dataclass
@@ -123,7 +112,7 @@ class StrictDataset(BaseDataset):
         self.dark_after = dark_after
 
         if self.name == "":
-            self._name = sample.name
+            self.name = sample.name
 
     @property
     def all(self) -> list[ImageStack]:
@@ -131,7 +120,7 @@ class StrictDataset(BaseDataset):
             self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
             self.sinograms
         ]
-        return [image_stack for image_stack in image_stacks if image_stack is not None] + self.recons.stacks
+        return remove_nones(image_stacks) + self.recons.stacks
 
     @property
     def _nexus_stack_order(self) -> list[ImageStack]:
@@ -219,7 +208,7 @@ class StrictDataset(BaseDataset):
         return False
 
 
-def _get_stack_data_type(stack_id: uuid.UUID, dataset: MixedDataset | StrictDataset) -> str:
+def _get_stack_data_type(stack_id: uuid.UUID, dataset: BaseDataset) -> str:
     """
     Find the data type as a string of a stack.
     :param stack_id: The ID of the stack.
@@ -228,10 +217,9 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: MixedDataset | StrictData
     """
     if stack_id in [recon.id for recon in dataset.recons]:
         return "Recon"
-    if isinstance(dataset, MixedDataset):
-        if stack_id in dataset:
-            return "Images"
-    else:
+    if stack_id in [stack.id for stack in dataset._stacks]:
+        return "Images"
+    if isinstance(dataset, StrictDataset):
         if stack_id == dataset.sample.id:
             return "Sample"
         if dataset.flat_before is not None and stack_id == dataset.flat_before.id:

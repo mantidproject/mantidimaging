@@ -124,7 +124,7 @@ class StackVisualiserPresenter(BasePresenter):
             self.add_mixed_dataset_to_model_and_update_view(new_images)
 
     def add_mixed_dataset_to_model_and_update_view(self, images: ImageStack):
-        dataset = MixedDataset([images], images.name)
+        dataset = MixedDataset(stacks=[images], name=images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.create_mixed_dataset_tree_view_items(dataset)
         self.view._main_window.presenter.create_mixed_dataset_stack_windows(dataset)

@@ -5,7 +5,6 @@ from __future__ import annotations
 import unittest
 
 from mantidimaging.core.data.dataset import MixedDataset, _get_stack_data_type
-from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -13,7 +12,7 @@ class MixedDatasetTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.image_stacks = [generate_images() for _ in range(3)]
-        self.mixed_dataset = MixedDataset(self.image_stacks)
+        self.mixed_dataset = MixedDataset(stacks=self.image_stacks)
 
     def test_all(self):
         self.assertListEqual(self.mixed_dataset.all, self.image_stacks)
@@ -24,8 +23,8 @@ class MixedDatasetTest(unittest.TestCase):
         self.assertListEqual(self.mixed_dataset.all, prev_stacks[:-1])
 
     def test_delete_stack_from_recons_list(self):
-        recons = ReconList([generate_images() for _ in range(2)])
-        self.mixed_dataset.recons = recons.copy()
+        [self.mixed_dataset.add_recon(generate_images()) for _ in range(2)]
+        recons = self.mixed_dataset.recons.copy()
 
         id_to_remove = recons[-1].id
         self.mixed_dataset.delete_stack(id_to_remove)
@@ -58,5 +57,5 @@ class MixedDatasetTest(unittest.TestCase):
     def test_get_stack_data_type_returns_images(self):
         images = generate_images()
         images_id = images.id
-        dataset = MixedDataset([images])
+        dataset = MixedDataset(stacks=[images])
         self.assertEqual(_get_stack_data_type(images_id, dataset), "Images")

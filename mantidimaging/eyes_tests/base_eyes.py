@@ -119,7 +119,7 @@ class BaseEyesTest(unittest.TestCase):
         return vis
 
     def _create_mixed_dataset(self) -> MixedDataset:
-        mixed_dataset = MixedDataset([generate_images()], "a-mixed-dataset")
+        mixed_dataset = MixedDataset(stacks=[generate_images()], name="a-mixed-dataset")
 
         self.imaging.presenter.model.add_dataset_to_model(mixed_dataset)
         self.imaging.presenter.create_mixed_dataset_tree_view_items(mixed_dataset)
