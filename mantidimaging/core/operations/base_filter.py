@@ -28,6 +28,7 @@ class BaseFilter:
     link_histograms = False
     show_negative_overlay = True
     operate_on_sinograms = False
+    log_180_degree = False
 
     SINOGRAM_FILTER_INFO = "This filter will work on a\nsinogram view of the data."
 

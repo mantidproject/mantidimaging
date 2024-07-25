@@ -31,16 +31,13 @@ class MonitorNormalisation(BaseFilter):
     """
     filter_name = "Monitor Normalisation"
     link_histograms = True
+    log_180_degree = False
 
     @staticmethod
     def filter_func(images: ImageStack, progress=None) -> ImageStack:
         """
         :return: The ImageStack object which has been normalised.
         """
-        if '180deg' in images.name.lower():
-            if progress:
-                progress("Skipping normalization for the 180-degree stack, no logfile.")
-            return images
 
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
