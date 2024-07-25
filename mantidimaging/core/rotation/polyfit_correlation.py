@@ -79,7 +79,8 @@ def compute_correlation_error(index: int, arrays: list[Any], params: dict[str, A
                                  (shared_projections[0], shared_projections[1]), image_width)
 
 
-def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray, shift: np.ndarray) -> None:
+def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray,
+                shift: np.ndarray) -> np.ndarray:
     # Then we just find the index of the minimum one (minimum error)
     min_correlation_error = np.transpose(min_correlation_error)
     # argmin returns a list of where the minimum argument is found

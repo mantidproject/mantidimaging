@@ -158,7 +158,7 @@ def _create_block_and_grid_args(data: cp.ndarray):
     return block_size, grid_size
 
 
-def _create_padded_array(data: np.ndarray, filter_size: int, scipy_mode: str) -> np.ndarray:
+def _create_padded_array(data: np.ndarray, filter_size: int, scipy_mode: str):
     """
     Creates the padded array on the CPU for the median filter.
     :param data: The data array to be padded.

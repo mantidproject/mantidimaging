@@ -51,7 +51,7 @@ class TomopyRecon(BaseRecon):
     def full(images: ImageStack,
              cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
-             progress: Progress | None = None) -> np.ndarray:
+             progress: Progress | None = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
