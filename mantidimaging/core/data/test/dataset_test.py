@@ -105,3 +105,30 @@ class DatasetTest(unittest.TestCase):
         images_id = images.id
         dataset = BaseDataset(stacks=[images])
         self.assertEqual(_get_stack_data_type(images_id, dataset), "Images")
+
+    def test_attribute_not_set_returns_none(self):
+        sample = mock.Mock()
+        dataset = BaseDataset(sample=sample)
+
+        self.assertIsNone(dataset.flat_before)
+        self.assertIsNone(dataset.flat_after)
+        self.assertIsNone(dataset.dark_before)
+        self.assertIsNone(dataset.dark_after)
+
+    def test_set_flat_before(self):
+        sample = mock.Mock()
+        dataset = BaseDataset(sample=sample)
+        flat_before = mock.Mock(id="1234")
+        dataset.flat_before = flat_before
+        self.assertIs(flat_before, dataset.flat_before)
+        self.assertIn("1234", dataset)
+
+    def test_all_images_ids(self):
+        self.images = [generate_images() for _ in range(5)]
+        self.strict_dataset = BaseDataset(sample=self.images[0],
+                                          flat_before=self.images[1],
+                                          flat_after=self.images[2],
+                                          dark_before=self.images[3],
+                                          dark_after=self.images[4])
+
+        self.assertCountEqual(self.strict_dataset.all_image_ids, [images.id for images in self.images])
