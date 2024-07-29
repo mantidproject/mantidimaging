@@ -6,8 +6,23 @@ import unittest
 from unittest import mock
 import uuid
 
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import BaseDataset, _get_stack_data_type
 from mantidimaging.test_helpers.unit_test_helper import generate_images
+
+
+def _make_standard_dataset():
+    image_ids = [mock.create_autospec(uuid.UUID) for _ in range(6)]
+    image_stacks = [mock.create_autospec(ImageStack, id=id) for id in image_ids]
+    image_stacks[0].name = "samplename"
+
+    ds = BaseDataset(sample=image_stacks[0],
+                     flat_before=image_stacks[1],
+                     flat_after=image_stacks[2],
+                     dark_before=image_stacks[3],
+                     dark_after=image_stacks[4])
+    ds.proj180deg = image_stacks[5]
+    return ds, image_stacks
 
 
 class DatasetTest(unittest.TestCase):
@@ -76,15 +91,8 @@ class DatasetTest(unittest.TestCase):
         self.assertCountEqual(ds.all, [image_sample])
 
     def test_all_for_full_dataset(self):
-        image_180 = mock.Mock(0)
-        image_sample = mock.Mock(proj180deg=image_180)
-        image_stacks = [mock.Mock() for _ in range(4)]
-        ds = BaseDataset(sample=image_sample,
-                         flat_before=image_stacks[0],
-                         flat_after=image_stacks[1],
-                         dark_before=image_stacks[2],
-                         dark_after=image_stacks[3])
-        self.assertCountEqual(ds.all, image_stacks + [image_sample, image_180])
+        ds, image_stacks = _make_standard_dataset()
+        self.assertCountEqual(ds.all, image_stacks)
 
     def test_delete_stack_from_stacks_list(self):
         image_stacks = [mock.Mock() for _ in range(3)]
@@ -124,11 +132,5 @@ class DatasetTest(unittest.TestCase):
         self.assertIn("1234", dataset)
 
     def test_all_images_ids(self):
-        self.images = [generate_images() for _ in range(5)]
-        self.strict_dataset = BaseDataset(sample=self.images[0],
-                                          flat_before=self.images[1],
-                                          flat_after=self.images[2],
-                                          dark_before=self.images[3],
-                                          dark_after=self.images[4])
-
-        self.assertCountEqual(self.strict_dataset.all_image_ids, [images.id for images in self.images])
+        ds, images = _make_standard_dataset()
+        self.assertCountEqual(ds.all_image_ids, [image.id for image in images])
