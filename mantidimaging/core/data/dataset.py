@@ -66,7 +66,11 @@ class BaseDataset:
 
     @property
     def all(self) -> list[ImageStack]:
-        return self.recons.stacks + self._stacks + remove_nones([self._sinograms])
+        named_stacks = [
+            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
+            self.sinograms
+        ]
+        return self.recons.stacks + self._stacks + remove_nones(named_stacks)
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
         for recon in self.recons:
@@ -102,20 +106,25 @@ class BaseDataset:
     def add_stack(self, stack: ImageStack) -> None:
         self._stacks.append(stack)
 
+    @property
+    def proj180deg(self) -> ImageStack | None:
+        if self.sample is not None:
+            return self.sample.proj180deg
+        else:
+            return None
+
+    @proj180deg.setter
+    def proj180deg(self, proj180deg: ImageStack | None) -> None:
+        if self.sample is None:
+            raise RuntimeError("Can't set a 180 projection without a sample")
+        self.sample.proj180deg = proj180deg
+
 
 class MixedDataset(BaseDataset):
     pass
 
 
 class StrictDataset(BaseDataset):
-
-    @property
-    def all(self) -> list[ImageStack]:
-        image_stacks = [
-            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
-            self.sinograms
-        ]
-        return remove_nones(image_stacks) + self.recons.stacks
 
     @property
     def _nexus_stack_order(self) -> list[ImageStack]:
@@ -149,19 +158,6 @@ class StrictDataset(BaseDataset):
         if self.dark_after is not None:
             image_keys += _image_key_list(2, self.dark_after.data.shape[0])
         return image_keys
-
-    @property
-    def proj180deg(self) -> ImageStack | None:
-        if self.sample is not None:
-            return self.sample.proj180deg
-        else:
-            return None
-
-    @proj180deg.setter
-    def proj180deg(self, proj180deg: ImageStack | None) -> None:
-        if self.sample is None:
-            raise RuntimeError("Can't set a 180 projection without a sample")
-        self.sample.proj180deg = proj180deg
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
         if isinstance(self.sample, ImageStack) and self.sample.id == images_id:
