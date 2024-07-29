@@ -276,22 +276,18 @@ class FiltersWindowPresenter(BasePresenter):
                     if self.view.safeApply.isChecked():
                         use_new_data = self._wait_for_stack_choice(stack, stack.id)
 
-                    if self.is_a_proj180deg(stack):
-                        # Handle 180-degree stacks based on the log_180_degree attribute
-                        if not self.model.selected_filter.log_180_degree:
-                            if task.progress:
-                                task.progress("Skipping normalization for the 180-degree stack.")
-                            continue
-                    # Apply to proj180 synchronously if necessary
-                    if use_new_data and not self.applying_to_all and not self.is_a_proj180deg(stack):
-                        # Apply to proj180 synchronously - this function is already running async
-                        # and running another async instance causes a race condition in the parallel module
-                        # where the shared data can be removed in the middle of the operation of another operation
-                        try:
-                            self._do_apply_filter_sync([stack.proj180deg])
-                        except RuntimeError as e:
-                            self.view.show_error_dialog(f"Operation failed on proj180deg stack: {e}")
-                            continue
+                # Apply to proj180 synchronously if necessary
+                if use_new_data and not self.applying_to_all and self.is_a_proj180deg(stack):
+                    # Handle 180-degree stacks based on the log_180_degree attribute
+                    if not self.model.selected_filter.allow_for_180_projection:
+                        if task.progress:
+                            task.progress("Skipping normalization for the 180-degree stack.")
+                        continue
+
+                    # Apply to proj180 synchronously - this function is already running async
+                    # and running another async instance causes a race condition in the parallel module
+                    # where the shared data can be removed in the middle of the operation of another operation
+                    self._do_apply_filter_sync([stack.proj180deg])
 
                 if np.any(stack.data < 0):
                     negative_stacks.append(stack)
