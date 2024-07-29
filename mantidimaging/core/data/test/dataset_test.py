@@ -70,6 +70,22 @@ class DatasetTest(unittest.TestCase):
         ds = BaseDataset(stacks=image_stacks)
         self.assertListEqual(ds.all, image_stacks)
 
+    def test_sample_in_all(self):
+        image_sample = mock.Mock(proj180deg=None)
+        ds = BaseDataset(sample=image_sample)
+        self.assertCountEqual(ds.all, [image_sample])
+
+    def test_all_for_full_dataset(self):
+        image_180 = mock.Mock(0)
+        image_sample = mock.Mock(proj180deg=image_180)
+        image_stacks = [mock.Mock() for _ in range(4)]
+        ds = BaseDataset(sample=image_sample,
+                         flat_before=image_stacks[0],
+                         flat_after=image_stacks[1],
+                         dark_before=image_stacks[2],
+                         dark_after=image_stacks[3])
+        self.assertCountEqual(ds.all, image_stacks + [image_sample, image_180])
+
     def test_delete_stack_from_stacks_list(self):
         image_stacks = [mock.Mock() for _ in range(3)]
         ds = BaseDataset(stacks=image_stacks)
