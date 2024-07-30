@@ -14,9 +14,9 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
-def _make_standard_dataset():
-    image_ids = [mock.create_autospec(uuid.UUID) for _ in range(6)]
-    image_stacks = [mock.create_autospec(ImageStack, id=id) for id in image_ids]
+def _make_standard_dataset(shape=(2, 5, 5)):
+    #image_ids = [mock.create_autospec(uuid.UUID) for _ in range(6)]
+    image_stacks = [generate_images(shape) for _ in range(6)]
     image_stacks[0].name = "samplename"
 
     ds = BaseDataset(sample=image_stacks[0],
@@ -28,14 +28,14 @@ def _make_standard_dataset():
     return ds, image_stacks
 
 
-def _set_fake_projection_angles(image_stack):
+def _set_fake_projection_angles(image_stack: ImageStack):
     """
     Sets the private projection angles attribute.
     :param image_stack: The ImageStack object.
     """
     image_stack._projection_angles = ProjectionAngles(np.array([0, 180]))
-    image_stack.real_projection_angles.return_value = image_stack._projection_angles
-    image_stack.projection_angles.return_value = image_stack._projection_angles
+    #image_stack.real_projection_angles.return_value = image_stack._projection_angles
+    #image_stack.projection_angles.return_value = image_stack._projection_angles
 
 
 class DatasetTest(unittest.TestCase):
@@ -105,7 +105,9 @@ class DatasetTest(unittest.TestCase):
 
     def test_all_for_full_dataset(self):
         ds, image_stacks = _make_standard_dataset()
-        self.assertCountEqual(ds.all, image_stacks)
+        self.assertEqual(len(ds.all), len(image_stacks))
+        for image in image_stacks:
+            self.assertIn(image, ds.all)
 
     def test_delete_stack_from_stacks_list(self):
         image_stacks = [mock.Mock() for _ in range(3)]
@@ -161,39 +163,29 @@ class DatasetTest(unittest.TestCase):
 
     def test_image_keys(self):
         ds, images = _make_standard_dataset()
-        for image in images:
-            image.data.shape = (2, 5, 5)
 
         self.assertListEqual(ds.image_keys, [2, 2, 1, 1, 0, 0, 1, 1, 2, 2])
 
     def test_missing_dark_before_image_keys(self):
         ds, images = _make_standard_dataset()
-        for image in images:
-            image.data.shape = (2, 5, 5)
         ds.dark_before = None
 
         self.assertListEqual(ds.image_keys, [1, 1, 0, 0, 1, 1, 2, 2])
 
     def test_missing_flat_before_image_keys(self):
         ds, images = _make_standard_dataset()
-        for image in images:
-            image.data.shape = (2, 5, 5)
         ds.flat_before = None
 
         self.assertListEqual(ds.image_keys, [2, 2, 0, 0, 1, 1, 2, 2])
 
     def test_missing_flat_after_image_keys(self):
         ds, images = _make_standard_dataset()
-        for image in images:
-            image.data.shape = (2, 5, 5)
         ds.flat_after = None
 
         self.assertListEqual(ds.image_keys, [2, 2, 1, 1, 0, 0, 2, 2])
 
     def test_missing_dark_after_image_keys(self):
         ds, images = _make_standard_dataset()
-        for image in images:
-            image.data.shape = (2, 5, 5)
         ds.dark_after = None
 
         self.assertListEqual(ds.image_keys, [2, 2, 1, 1, 0, 0, 1, 1])
@@ -220,17 +212,12 @@ class DatasetTest(unittest.TestCase):
         ds, _ = _make_standard_dataset()
         expected_list = []
         for stack in ds._nexus_stack_order:
-            stack.num_images = 2
-            stack.real_projection_angles.return_value = None
             expected_list.append(np.zeros(stack.num_images))
 
         assert np.array_equal(expected_list, ds.nexus_rotation_angles)
 
     def test_partially_incomplete_nexus_rotation_angles(self):
         ds, _ = _make_standard_dataset()
-        for stack in [ds.sample, ds.flat_after]:
-            stack.num_images = 2
-            stack.real_projection_angles.return_value = None
 
         _set_fake_projection_angles(ds.dark_before)
         _set_fake_projection_angles(ds.flat_before)
