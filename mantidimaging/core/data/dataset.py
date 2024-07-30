@@ -119,13 +119,6 @@ class BaseDataset:
             raise RuntimeError("Can't set a 180 projection without a sample")
         self.sample.proj180deg = proj180deg
 
-
-class MixedDataset(BaseDataset):
-    pass
-
-
-class StrictDataset(BaseDataset):
-
     @property
     def _nexus_stack_order(self) -> list[ImageStack]:
         return list(filter(None, [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]))
@@ -158,6 +151,13 @@ class StrictDataset(BaseDataset):
         if self.dark_after is not None:
             image_keys += _image_key_list(2, self.dark_after.data.shape[0])
         return image_keys
+
+
+class MixedDataset(BaseDataset):
+    pass
+
+
+class StrictDataset(BaseDataset):
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
         if isinstance(self.sample, ImageStack) and self.sample.id == images_id:
