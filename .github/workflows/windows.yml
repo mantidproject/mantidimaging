@@ -18,6 +18,8 @@ concurrency:
 jobs:
   test:
     runs-on: windows-latest
+    env:
+      CONDA_OVERRIDE_CUDA: 11.8
 
     steps:
       - uses: actions/checkout@v4
