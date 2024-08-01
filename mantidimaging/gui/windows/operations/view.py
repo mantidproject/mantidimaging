@@ -64,6 +64,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = FiltersWindowPresenter(self, main_window)
         self.roi_view = None
+        self.roi_selector_dialog: ROISelectorView | None = None
         self.roi_view_averaged = False
         self.splitter.setSizes([200, 9999])
         self.splitter.setStretchFactor(0, 1)
@@ -122,8 +123,9 @@ class FiltersWindowView(BaseMainWindowView):
     def cleanup(self):
         self.stackSelector.unsubscribe_from_main_window()
         if self.roi_view is not None:
-            self.roi_view.close()
             self.roi_view = None
+            self.roi_selector_dialog.close()
+
         self.presenter.set_stack(None)
         self.auto_update_triggered.disconnect()
         self.main_window.filters = None
@@ -255,16 +257,17 @@ class FiltersWindowView(BaseMainWindowView):
         except ValueError:
             roi_values = None
 
-        window = ROISelectorView(self, self.presenter.stack, self.presenter.model.preview_image_idx, roi_values,
-                                 roi_changed_callback)
+        self.roi_selector_dialog = ROISelectorView(self, self.presenter.stack, self.presenter.model.preview_image_idx,
+                                                   roi_values, roi_changed_callback)
 
         def close_event(event):
             roi_field.setEnabled(True)
             roi_button.setEnabled(True)
             event.accept()
 
-        window.closeEvent = functools.partial(close_event)
-        window.show()
+        self.roi_view = self.roi_selector_dialog.roi_view
+        self.roi_selector_dialog.closeEvent = functools.partial(close_event)
+        self.roi_selector_dialog.show()
 
     def toggle_filters_section(self):
         if self.collapseToggleButton.text() == "<<":
