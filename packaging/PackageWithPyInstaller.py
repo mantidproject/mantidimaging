@@ -70,6 +70,7 @@ def add_data_files(run_options):
                   ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
 
     data_files += collect_data_files("cupy")
+    data_files += collect_data_files("cupy_backends")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 

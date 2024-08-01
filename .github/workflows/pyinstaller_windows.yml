@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: windows-latest
     env:
-      CONDA_OVERRIDE_CUDA: 11.8
+      CONDA_OVERRIDE_CUDA: 10.2
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,6 @@ jobs:
             ~/.cache/pip
           key:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
-          use-only-tar-bz2: true
 
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
@@ -59,7 +58,6 @@ jobs:
           path: ${{env.CONDA}}/envs/mantidimaging-dev
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
-          use-only-tar-bz2: true
 
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
