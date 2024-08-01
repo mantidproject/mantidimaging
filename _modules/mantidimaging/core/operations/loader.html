@@ -497,6 +497,9 @@ document.write(`
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;frozen&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># Need to prevent importing standard library test modules found by pkgutil</span>
+            <span class="k">if</span> <span class="s2">&quot;test.support&quot;</span> <span class="ow">in</span> <span class="n">module_name</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="c1"># If we&#39;re running a PyInstaller executable then we need to use a full module path</span>
             <span class="n">module_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mantidimaging.core.operations.</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s1">&#39;</span>
 
