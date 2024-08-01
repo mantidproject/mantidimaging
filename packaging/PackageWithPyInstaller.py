@@ -38,7 +38,10 @@ def add_hidden_imports(run_options):
     path_to_operations = Path(__file__).parent.parent.joinpath('mantidimaging/core/operations')
     # COMPAT python 3.10 won't accept a Path: github.com/python/cpython/issues/88227
     for _, ops_module, _ in pkgutil.walk_packages([str(path_to_operations)]):
-        imports.append(f'mantidimaging.core.operations.{ops_module}')
+        # stop non-existent Hidden Imports
+        # https://github.com/mantidproject/mantidimaging/issues/2298
+        if "test.support" not in ops_module:
+            imports.append(f'mantidimaging.core.operations.{ops_module}')
 
     run_options.extend([f'--hidden-import={name}' for name in imports])
 
