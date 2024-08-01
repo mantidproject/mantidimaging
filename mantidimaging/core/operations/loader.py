@@ -21,6 +21,9 @@ def _find_operation_modules() -> list[BaseFilterClass]:
             continue
 
         if getattr(sys, 'frozen', False):
+            # Need to prevent importing standard library test modules found by pkgutil
+            if "test.support" in module_name:
+                continue
             # If we're running a PyInstaller executable then we need to use a full module path
             module_name = f'mantidimaging.core.operations.{module_name}'
 
