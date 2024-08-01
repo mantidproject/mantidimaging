@@ -55,7 +55,7 @@ def add_hidden_imports(run_options):
 
 
 def add_missing_submodules(run_options):
-    imports = ['cupy']
+    imports = ['cupy', 'cupy_backends']
     run_options.extend([f'--collect-submodules={name}' for name in imports])
 
 
