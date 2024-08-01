@@ -284,14 +284,9 @@ class FiltersWindowPresenter(BasePresenter):
                 if np.any(stack.data < 0):
                     negative_stacks.append(stack)
 
-            if self.view.roi_view is not None:
-                self.view.roi_view.close()
-                self.view.roi_view = None
-
             self.applying_to_all = False
-            self.do_update_previews()
 
-            if task.error is not None:
+            if task.error:
                 # task failed, show why
                 self.view.show_error_dialog(f"Operation failed: {task.error}")
             elif use_new_data:
@@ -312,6 +307,7 @@ class FiltersWindowPresenter(BasePresenter):
             self.view.filter_applied.emit()
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
             self.filter_is_running = False
+            self.do_update_previews()
 
     def _do_apply_filter(self, apply_to: list[ImageStack]):
         self.filter_is_running = True
@@ -454,11 +450,8 @@ class FiltersWindowPresenter(BasePresenter):
         if self.stack is None:
             return
 
-        larger = np.greater(self.stack.data[0].shape, (200, 200))
-        if all(larger):
-            return
-        x = min(self.stack.data[0].shape[0], 200)
-        y = min(self.stack.data[0].shape[1], 200)
+        x = self.stack.data.shape[1] // 2
+        y = self.stack.data.shape[2] // 2
         crop_string = ", ".join(["0", "0", str(y), str(x)])
         roi_field.setText(crop_string)
 
