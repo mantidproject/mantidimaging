@@ -525,7 +525,7 @@ document.write(`
             <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_image_params</span><span class="p">(</span><span class="n">im_param</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="n">sample</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">])</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="n">StrictDataset</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">StrictDataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
         <span class="n">sample</span><span class="o">.</span><span class="n">_is_sinograms</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sinograms</span>
         <span class="n">sample</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pixel_size</span>
 
