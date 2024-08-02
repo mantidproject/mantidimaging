@@ -15,7 +15,7 @@ import PyInstaller.__main__
 
 def create_run_options():
     run_options = [
-        '../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onedir',
+        '../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks',
         '--icon=../images/mantid_imaging_unstable_64px.ico'
     ]
 
@@ -70,6 +70,7 @@ def add_data_files(run_options):
                   ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
 
     data_files += collect_data_files("cupy")
+    data_files += collect_data_files("cupy_backends")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
@@ -100,5 +101,4 @@ if __name__ == "__main__":
     # The default limit is 1000, meaning a recursion error would occur at around 115 nested imports.
     # A limit of 5000 means the error should occur at about 660 nested imports.
     sys.setrecursionlimit(sys.getrecursionlimit() * 5)
-
     PyInstaller.__main__.run(create_run_options())
