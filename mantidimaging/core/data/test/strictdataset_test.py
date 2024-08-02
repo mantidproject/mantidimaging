@@ -42,7 +42,7 @@ class StrictDatasetTest(unittest.TestCase):
 
     def test_attribute_not_set_returns_none(self):
         sample = generate_images()
-        dataset = StrictDataset(sample)
+        dataset = StrictDataset(sample=sample)
 
         self.assertIsNone(dataset.flat_before)
         self.assertIsNone(dataset.flat_after)
@@ -251,7 +251,7 @@ class StrictDatasetTest(unittest.TestCase):
     def test_get_stack_data_type_returns_sample(self):
         sample = generate_images()
         sample_id = sample.id
-        dataset = StrictDataset(sample)
+        dataset = StrictDataset(sample=sample)
         self.assertEqual(_get_stack_data_type(sample_id, dataset), "Sample")
 
     def test_get_stack_data_type_returns_flat_before(self):
@@ -279,15 +279,15 @@ class StrictDatasetTest(unittest.TestCase):
         self.assertEqual(_get_stack_data_type(dark_after_id, dataset), "Dark After")
 
     def test_get_stack_data_type_raises(self):
-        empty_ds = StrictDataset(generate_images())
+        empty_ds = StrictDataset(sample=generate_images())
         with self.assertRaises(RuntimeError):
             _get_stack_data_type("bad-id", empty_ds)
 
     def test_processed_is_true(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         ds.sample.record_operation("", "")
         self.assertTrue(ds.is_processed)
 
     def test_processed_is_false(self):
-        ds = StrictDataset(generate_images())
+        ds = StrictDataset(sample=generate_images())
         self.assertFalse(ds.is_processed)

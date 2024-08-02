@@ -15,7 +15,7 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         sample_stack.name = "Sample Stack"
         open_stack = generate_images(seed=666, shape=(20, 10, 10))
         open_stack.name = "Open Beam Stack"
-        dataset = StrictDataset(sample_stack, flat_before=open_stack)
+        dataset = StrictDataset(sample=sample_stack, flat_before=open_stack)
         vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
         self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
         self.imaging.presenter.model.add_dataset_to_model(dataset)
