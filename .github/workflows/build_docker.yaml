@@ -60,11 +60,11 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ubuntu18
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build and push Centos Docker image
+      - name: Build and push Rocky8 Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./docker/centos7.Dockerfile
+          file: ./docker/rocky8.Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:centos7
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:rocky8
           labels: ${{ steps.meta.outputs.labels }}

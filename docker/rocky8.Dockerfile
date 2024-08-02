@@ -3,7 +3,7 @@
 # This Dockerfile creates a developer image. It requires that the following things are mounted:
 # - Mantid Imaging source at /opt/mantidimaging.
 
-FROM centos:centos7
+FROM rockylinux:8
 
 WORKDIR /opt/
 
