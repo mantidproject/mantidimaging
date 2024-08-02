@@ -4,8 +4,7 @@ channels:
   - conda-forge
   - ccpi
   - algotom
-  # https://github.com/mantidproject/mantidimaging/issues/2272
-  - samtygier-stfc/label/mirror
+  - https://software.repos.intel.com/python/conda/
 dependencies:
   - mantidimaging>=2.5.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
