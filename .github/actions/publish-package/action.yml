@@ -31,7 +31,7 @@ runs:
       conda config --set always_yes yes --set changeps1 no
       # Install build requirements
       # We can't use the makefile target for this because the CONDA_ACTIVATE command is incompatible with GitHub Actions Windows runners
-      conda create -n build-env --yes boa anaconda-client conda-verify
+      conda create -n build-env --yes boa anaconda-client
       conda activate build-env
       # Configure the conda channels
       conda config --env $(cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
