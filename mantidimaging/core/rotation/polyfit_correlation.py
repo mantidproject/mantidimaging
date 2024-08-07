@@ -17,7 +17,7 @@ LOG = getLogger(__name__)
 
 
 def do_calculate_correlation_err(store: np.ndarray, search_index: int, p0_and_180: tuple[np.ndarray, np.ndarray],
-                                 image_width: int):
+                                 image_width: int) -> None:
     """
     Calculates squared sum error in the difference between the projection at 0 degrees, and the one at 180 degrees
     """
@@ -68,7 +68,7 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
     return ScalarCoR(images.h_middle + -offset), theta
 
 
-def compute_correlation_error(index: int, arrays: list[Any], params: dict[str, Any]):
+def compute_correlation_error(index: int, arrays: list[Any], params: dict[str, Any]) -> None:
     min_correlation_error = arrays[0]
     shared_projections = arrays[1]
     shared_search_range = arrays[2]
@@ -79,7 +79,8 @@ def compute_correlation_error(index: int, arrays: list[Any], params: dict[str, A
                                  (shared_projections[0], shared_projections[1]), image_width)
 
 
-def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray, shift: np.ndarray):
+def _find_shift(images: ImageStack, search_range: range, min_correlation_error: np.ndarray,
+                shift: np.ndarray) -> np.ndarray:
     # Then we just find the index of the minimum one (minimum error)
     min_correlation_error = np.transpose(min_correlation_error)
     # argmin returns a list of where the minimum argument is found

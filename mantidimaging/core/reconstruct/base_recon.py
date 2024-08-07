@@ -20,7 +20,7 @@ class BaseRecon:
         raise NotImplementedError("Base class call")
 
     @staticmethod
-    def prepare_sinogram(data: np.ndarray, recon_params: ReconstructionParameters):
+    def prepare_sinogram(data: np.ndarray, recon_params: ReconstructionParameters) -> np.ndarray:
         logged_data = BaseRecon.negative_log(data)
         if recon_params.beam_hardening_coefs is not None:
             coefs = np.array([0.0, 1.0] + recon_params.beam_hardening_coefs)

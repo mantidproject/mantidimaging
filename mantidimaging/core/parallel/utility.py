@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-def enough_memory(shape, dtype):
+def enough_memory(shape, dtype) -> bool:
     return full_size_KB(shape=shape, dtype=dtype) < system_free_memory().kb()
 
 
@@ -103,7 +103,7 @@ def multiprocessing_necessary(shape: int, is_shared_data: bool) -> bool:
     return True
 
 
-def execute_impl(img_num: int, partial_func: partial, is_shared_data: bool, progress: Progress, msg: str):
+def execute_impl(img_num: int, partial_func: partial, is_shared_data: bool, progress: Progress, msg: str) -> None:
     task_name = f"{msg}"
     progress = Progress.ensure_instance(progress, num_steps=img_num, task_name=task_name)
     indices_list = range(img_num)
@@ -128,7 +128,7 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
                           num_operations: int,
                           is_shared_data: bool,
                           progress=None,
-                          msg: str = ""):
+                          msg: str = "") -> None:
     task_name = f"{msg}"
     progress = Progress.ensure_instance(progress, num_steps=num_operations, task_name=task_name)
     indices_list = range(num_operations)

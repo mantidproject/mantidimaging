@@ -130,19 +130,19 @@ class CorTiltDataModel:
         return Degrees(-np.rad2deg(np.arctan(self.gradient.value)))
 
     @property
-    def has_results(self):
+    def has_results(self) -> bool:
         return self._cached_gradient is not None and self._cached_cor is not None
 
     @property
-    def empty(self):
+    def empty(self) -> bool:
         return not self._points
 
     @property
-    def num_points(self):
+    def num_points(self) -> int:
         return len(self._points)
 
     @property
-    def stack_properties(self):
+    def stack_properties(self) -> dict:
         return {
             # TODO remove float casts
             const.COR_TILT_ROTATION_CENTRE: float(self.cor.value),

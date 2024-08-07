@@ -24,11 +24,11 @@ astra_mutex = Lock()
 # Full credit for following code to Daniil Kazantzev
 # Source:
 # https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70
-def rotation_matrix2d(theta: float):
+def rotation_matrix2d(theta: float) -> np.ndarray:
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
 
-def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, center_rot_offset: float):
+def vec_geom_init2d(angles_rad: ProjectionAngles, detector_spacing_x: float, center_rot_offset: float) -> np.ndarray:
     angles_value = angles_rad.value
     s0 = [0.0, -1.0]  # source
     u0 = [detector_spacing_x, 0.0]  # detector coordinates
