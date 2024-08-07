@@ -4,8 +4,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import QSignalBlocker, Qt
+from PyQt5.QtWidgets import QVBoxLayout, QSplitter
 from PyQt5.Qt import QAction, QActionGroup
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -13,6 +13,8 @@ from .live_view_widget import LiveViewWidget
 from .presenter import LiveViewerWindowPresenter
 
 import numpy as np
+
+from ..spectrum_viewer.spectrum_widget import SpectrumPlotWidget
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -33,8 +35,18 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.setWindowTitle(f"Mantid Imaging - Live Viewer - {str(self.path)}")
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
-        self.imageLayout.addWidget(self.live_viewer)
+        self.splitter = QSplitter(Qt.Vertical)
+        self.imageLayout.addWidget(self.splitter)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+
+        self.spectrum_plot_widget = SpectrumPlotWidget()
+        self.spectrum = self.spectrum_plot_widget.spectrum
+        self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
+
+        self.splitter.addWidget(self.live_viewer)
+        self.splitter.addWidget(self.spectrum_plot_widget)
+        widget_height = self.frameGeometry().height()
+        self.splitter.setSizes([widget_height, 0])
 
         self.filter_params: dict[str, dict] = {}
         self.right_click_menu = self.live_viewer.image.vb.menu
@@ -53,6 +65,14 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
         self.load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
+
+        self.spectrum_action = QAction("Calculate Spectrum", self)
+        self.spectrum_action.setCheckable(True)
+        operations_menu.addAction(self.spectrum_action)
+        self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
+        self.presenter.model.image_stack.create_delayed_array = False
+        self.live_viewer.set_roi_alpha(self.spectrum_action.isChecked() * 255)
+        self.live_viewer.set_roi_visibility_flags(False)
 
     def show(self) -> None:
         """Show the window"""
@@ -106,3 +126,14 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def set_load_as_dataset_enabled(self, enabled: bool):
         self.load_as_dataset_action.setEnabled(enabled)
+
+    def set_spectrum_visibility(self):
+        widget_height = self.frameGeometry().height()
+        if self.spectrum_action.isChecked():
+            if not self.live_viewer.roi_object:
+                self.live_viewer.add_roi()
+            self.live_viewer.set_roi_alpha(255)
+            self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
+        else:
+            self.live_viewer.set_roi_alpha(0)
+            self.splitter.setSizes([widget_height, 0])
