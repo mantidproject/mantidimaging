@@ -266,7 +266,6 @@ class ImageWatcher(QObject):
 
             if len(images) > 0:
                 break
-
         images = self.sort_images_by_modified_time(images)
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images)

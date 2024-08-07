@@ -41,6 +41,8 @@ requirements:
     - qt-material=2.14
     - darkdetect=0.8.0
     - qt-gtk-platformtheme # [linux]
+    - dask
+    - dask-image
 
 
 build:
