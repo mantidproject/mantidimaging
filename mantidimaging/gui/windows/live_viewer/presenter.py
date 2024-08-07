@@ -81,16 +81,16 @@ class LiveViewerWindowPresenter(BasePresenter):
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image.image_path)
+        self.display_image(self.selected_image)
 
-    def display_image(self, image_path: Path) -> None:
+    def display_image(self, image_data_obj: Image_Data) -> None:
         """
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image(image_path)
+            image_data = self.load_image(image_data_obj)
         except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
-            message = f"{type(error).__name__} reading image: {image_path}: {error}"
+            message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
@@ -98,25 +98,23 @@ class LiveViewerWindowPresenter(BasePresenter):
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
-            logger.error("reading image: %s: Image has zero size", image_path)
+            logger.error("reading image: %s: Image has zero size", image_data_obj.image_path)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-
         self.view.show_most_recent_image(image_data)
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(image_path: Path) -> np.ndarray:
+    def load_image(image_data_obj: Image_Data) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        if image_path.suffix.lower() in [".tif", ".tiff"]:
-            with tifffile.TiffFile(image_path) as tif:
-                image_data = tif.asarray()
-        elif image_path.suffix.lower() == ".fits":
-            with fits.open(image_path.__str__()) as fit:
+        if image_data_obj.image_path.suffix.lower() in [".tif", ".tiff"]:
+            image_data = image_data_obj.delayed_array.compute()[0]
+        elif image_data_obj.image_path.suffix.lower() == ".fits":
+            with fits.open(image_data_obj.image_path.__str__()) as fit:
                 image_data = fit[0].data
         return image_data
 
@@ -125,14 +123,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(image_path)
+            self.display_image(self.selected_image)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image.image_path)
+            self.display_image(self.selected_image)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
