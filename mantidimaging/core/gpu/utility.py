@@ -32,14 +32,14 @@ EQUIVALENT_PAD_MODE = {
 }
 
 
-def _cupy_on_system() -> bool:
+def _cupy_on_system():
     """
     :return: True if cupy is installed on the system, False otherwise.
     """
     return not CUPY_NOT_IMPORTED
 
 
-def _cupy_installed_correctly() -> bool:
+def _cupy_installed_correctly():
     """
     :return: True if cupy is able to run on the system, False otherwise.
     """
@@ -64,14 +64,14 @@ def _cupy_installed_correctly() -> bool:
         return False
 
 
-def gpu_available() -> bool:
+def gpu_available():
     """
     :return: True if cupy is installed AND working, False otherwise.
     """
     return _cupy_on_system() and _cupy_installed_correctly()
 
 
-def _load_cuda_kernel(dtype) -> str:
+def _load_cuda_kernel(dtype):
     """
     Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of 'float' with 'double' if the dtype
     is float64.
@@ -86,7 +86,7 @@ def _load_cuda_kernel(dtype) -> str:
     return cuda_kernel
 
 
-def _free_memory_pool(arrays=None) -> None:
+def _free_memory_pool(arrays=None):
     """
     Delete any given GPU arrays and instruct the memory pool to free unused blocks.
     """
@@ -95,7 +95,7 @@ def _free_memory_pool(arrays=None) -> None:
     mempool.free_all_blocks()
 
 
-def _create_pinned_memory(cpu_array: np.ndarray) -> np.ndarray:
+def _create_pinned_memory(cpu_array):
     """
     Use pinned memory in order to store a numpy array on the GPU.
     :param cpu_array: The numpy array to be transferred to the GPU.
@@ -107,7 +107,7 @@ def _create_pinned_memory(cpu_array: np.ndarray) -> np.ndarray:
     return src
 
 
-def _send_single_array_to_gpu(cpu_array: np.ndarray, stream: cp.cuda.Stream) -> cp.ndarray:
+def _send_single_array_to_gpu(cpu_array, stream):
     """
     Sends a single array to the GPU using pinned memory and a stream.
     :param cpu_array: The numpy array to be transferred to the GPU.
@@ -120,7 +120,7 @@ def _send_single_array_to_gpu(cpu_array: np.ndarray, stream: cp.cuda.Stream) -> 
     return gpu_array
 
 
-def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams) -> list[cp.ndarray]:
+def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams):
     """
     Transfer the arrays to the GPU using pinned memory. Raises an error if the GPU runs out of memory.
     :param cpu_arrays: A list of numpy arrays to be transferred to the GPU.
@@ -145,7 +145,7 @@ def _send_arrays_to_gpu_with_pinned_memory(cpu_arrays, streams) -> list[cp.ndarr
         return []
 
 
-def _create_block_and_grid_args(data: cp.ndarray):
+def _create_block_and_grid_args(data):
     """
     Create the block and grid arguments that are passed to the cupy. These determine how the array
     is broken up.
@@ -158,7 +158,7 @@ def _create_block_and_grid_args(data: cp.ndarray):
     return block_size, grid_size
 
 
-def _create_padded_array(data: np.ndarray, filter_size: int, scipy_mode: str):
+def _create_padded_array(data, filter_size, scipy_mode):
     """
     Creates the padded array on the CPU for the median filter.
     :param data: The data array to be padded.
@@ -171,7 +171,7 @@ def _create_padded_array(data: np.ndarray, filter_size: int, scipy_mode: str):
     return np.pad(data, pad_width=((pad_size, pad_size), (pad_size, pad_size)), mode=EQUIVALENT_PAD_MODE[scipy_mode])
 
 
-def _replace_gpu_array_contents(gpu_array: cp.ndarray, cpu_array: np.ndarray, stream: cp.cuda.Stream) -> None:
+def _replace_gpu_array_contents(gpu_array, cpu_array, stream):
     """
     Overwrites the contents of an existing GPU array with a given CPU array.
     :param gpu_array: The GPU array to be overwritten.
@@ -181,7 +181,7 @@ def _replace_gpu_array_contents(gpu_array: cp.ndarray, cpu_array: np.ndarray, st
     gpu_array.set(cpu_array, stream)
 
 
-def _get_padding_value(filter_size: int) -> int:
+def _get_padding_value(filter_size):
     """
     Determine the padding value by using the filter size.
     :param filter_size: The filter size.
@@ -202,7 +202,7 @@ class CudaExecuter:
         # Warm up the CUDA functions
         self._warm_up(dtype)
 
-    def _warm_up(self, dtype) -> None:
+    def _warm_up(self, dtype):
         """
         Runs the median filter on a small test array in order to allow it to compile then deleted the GPU arrays.
         :param dtype: The data type of the input array.
@@ -219,7 +219,7 @@ class CudaExecuter:
         # Clear the test arrays
         _free_memory_pool([test_data, test_padding])
 
-    def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size, grid_size, block_size) -> None:
+    def _cuda_single_image_median_filter(self, input_data, padded_data, filter_size, grid_size, block_size):
         """
         Run the median filter on a single 2D image using CUDA.
         :param input_data: A 2D GPU data array.

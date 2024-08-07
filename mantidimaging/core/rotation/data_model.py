@@ -29,17 +29,17 @@ class CorTiltDataModel:
         self._cached_gradient = None
         self._cached_cor = None
 
-    def populate_slice_indices(self, begin: int, end: int, count: int, cor: float = 0.0) -> None:
+    def populate_slice_indices(self, begin, end, count, cor=0.0):
         self.clear_results()
 
         self._points = [Point(int(idx), cor) for idx in np.linspace(begin, end, count, dtype=int)]
         LOG.debug(f'Populated slice indices: {self.slices}')
 
-    def linear_regression(self) -> None:
+    def linear_regression(self):
         LOG.debug(f'Running linear regression with {self.num_points} points')
         self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
-    def add_point(self, idx=None, slice_idx=0, cor=0.0) -> None:
+    def add_point(self, idx=None, slice_idx=0, cor=0.0):
         self.clear_results()
 
         if idx is None:
@@ -47,7 +47,7 @@ class CorTiltDataModel:
         else:
             self._points.insert(idx, Point(slice_idx, cor))
 
-    def set_point(self, idx, slice_idx: int | None = None, cor: float | None = None, reset_results=True) -> None:
+    def set_point(self, idx, slice_idx: int | None = None, cor: float | None = None, reset_results=True):
         if reset_results:
             self.clear_results()
 
@@ -64,29 +64,29 @@ class CorTiltDataModel:
                 return i
         raise ValueError(f"Slice {slice_idx} that is not in COR table")
 
-    def set_cor_at_slice(self, slice_idx: int, cor: float) -> None:
+    def set_cor_at_slice(self, slice_idx: int, cor: float):
         data_idx = self._get_data_idx_from_slice_idx(slice_idx)
         self.set_point(data_idx, cor=cor)
 
-    def remove_point(self, idx) -> None:
+    def remove_point(self, idx):
         self.clear_results()
         del self._points[idx]
 
-    def clear_points(self) -> None:
+    def clear_points(self):
         self._points = []
         self.clear_results()
 
-    def clear_results(self) -> None:
+    def clear_results(self):
         self._cached_gradient = None
         self._cached_cor = None
 
-    def point(self, idx: int) -> Point | None:
+    def point(self, idx):
         return self._points[idx] if idx < self.num_points else None
 
-    def sort_points(self) -> None:
+    def sort_points(self):
         self._points.sort(key=lambda p: p.slice_index)
 
-    def get_cor_from_regression(self, slice_idx: int) -> float:
+    def get_cor_from_regression(self, slice_idx) -> float:
         cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor
 
@@ -104,11 +104,11 @@ class CorTiltDataModel:
         return cors
 
     @property
-    def slices(self) -> list[int]:
+    def slices(self):
         return [p.slice_index for p in self._points]
 
     @property
-    def cors(self) -> list[float]:
+    def cors(self):
         return [float(p.cor) for p in self._points]
 
     @property
@@ -152,7 +152,7 @@ class CorTiltDataModel:
             const.COR_TILT_ROTATION_CENTRES: self.cors
         }
 
-    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
         self._cached_cor = cor.value
         # reverse the tilt calculation to get the slope of the regression back
         self._cached_gradient = -np.tan(np.deg2rad(tilt.value))
