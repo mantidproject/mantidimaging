@@ -174,13 +174,6 @@ class BaseDataset:
         else:
             raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
 
-
-class MixedDataset(BaseDataset):
-    pass
-
-
-class StrictDataset(BaseDataset):
-
     @property
     def is_processed(self) -> bool:
         """
@@ -190,6 +183,14 @@ class StrictDataset(BaseDataset):
             if image.is_processed:
                 return True
         return False
+
+
+class MixedDataset(BaseDataset):
+    pass
+
+
+class StrictDataset(BaseDataset):
+    pass
 
 
 def _get_stack_data_type(stack_id: uuid.UUID, dataset: BaseDataset) -> str:

@@ -279,3 +279,12 @@ class DatasetTest(unittest.TestCase):
         ds.set_stack(FILE_TYPES.PROJ_180, stack)
 
         self.assertEqual(ds.proj180deg, stack)
+
+    def test_processed_is_true(self):
+        ds = BaseDataset(sample=generate_images())
+        ds.sample.record_operation("", "")
+        self.assertTrue(ds.is_processed)
+
+    def test_processed_is_false(self):
+        ds = BaseDataset(sample=generate_images())
+        self.assertFalse(ds.is_processed)
