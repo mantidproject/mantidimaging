@@ -165,13 +165,6 @@ class BaseDataset:
             image_keys += _image_key_list(2, self.dark_after.data.shape[0])
         return image_keys
 
-
-class MixedDataset(BaseDataset):
-    pass
-
-
-class StrictDataset(BaseDataset):
-
     def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack) -> None:
         attr_name = file_type.fname.lower().replace(" ", "_")
         if file_type == FILE_TYPES.PROJ_180:
@@ -180,6 +173,13 @@ class StrictDataset(BaseDataset):
             setattr(self, attr_name, image_stack)
         else:
             raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
+
+
+class MixedDataset(BaseDataset):
+    pass
+
+
+class StrictDataset(BaseDataset):
 
     @property
     def is_processed(self) -> bool:
