@@ -6,13 +6,29 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
+
+import dask.array
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
+
+import dask_image.imread
 
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
 
 LOG = getLogger(__name__)
+
+
+class DaskImageDataStack:
+    """
+    A Dask Image Data Stack Class to hold a delayed array of all the images in the Live Viewer Path
+    """
+    def __init__(self, image_list: list[Image_Data]):
+        self.delayed_stack = dask.array.concatenate([image_data.delayed_array for image_data in image_list])
+
+    @property
+    def shape(self):
+        return self.delayed_stack.shape
 
 
 class Image_Data:
@@ -45,6 +61,7 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
+        self.delayed_array = dask_image.imread.imread(self.image_path)
 
     @property
     def stat(self) -> stat_result:
@@ -103,6 +120,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
+        self.image_stack: DaskImageDataStack
 
     @property
     def path(self) -> Path | None:
@@ -116,7 +134,7 @@ class LiveViewerWindowModel:
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
+    def _handle_image_changed_in_list(self, image_files: list[Image_Data], dask_image_stack: DaskImageDataStack) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
@@ -125,6 +143,7 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
+        self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
 
     def handle_image_modified(self, image_path: Path):
@@ -160,7 +179,7 @@ class ImageWatcher(QObject):
     sort_images_by_modified_time(images)
         Sort the images by modified time.
     """
-    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
+    image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     recent_image_changed = pyqtSignal(Path)
 
     def __init__(self, directory: Path):
@@ -268,8 +287,12 @@ class ImageWatcher(QObject):
                 break
 
         images = self.sort_images_by_modified_time(images)
+        dask_image_stack = DaskImageDataStack(images)
         self.update_recent_watcher(images[-1:])
-        self.image_changed.emit(images)
+        self.image_changed.emit(images, dask_image_stack)
+
+        # arrsum = dask.array.sum(dask_image_stack.delayed_stack)
+        # print(f"{arrsum.compute()=}")
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:
