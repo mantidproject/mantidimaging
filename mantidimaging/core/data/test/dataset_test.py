@@ -10,7 +10,7 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import BaseDataset, _get_stack_data_type
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -256,3 +256,26 @@ class DatasetTest(unittest.TestCase):
         ds, images = _make_standard_dataset()
         ds.delete_stack(images[4].id)
         self.assertIsNone(ds.dark_after)
+
+    def test_set_stack_by_type_sample(self):
+        ds = BaseDataset()
+        sample = mock.Mock()
+        ds.set_stack(FILE_TYPES.SAMPLE, sample)
+
+        self.assertEqual(ds.sample, sample)
+
+    def test_set_stack_by_type_flat_before(self):
+        ds = BaseDataset()
+        stack = mock.Mock()
+        ds.set_stack(FILE_TYPES.FLAT_BEFORE, stack)
+
+        self.assertEqual(ds.flat_before, stack)
+
+    def test_set_stack_by_type_180(self):
+        ds = BaseDataset()
+        sample = mock.Mock()
+        stack = mock.Mock()
+        ds.set_stack(FILE_TYPES.SAMPLE, sample)
+        ds.set_stack(FILE_TYPES.PROJ_180, stack)
+
+        self.assertEqual(ds.proj180deg, stack)
