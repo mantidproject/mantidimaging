@@ -13,7 +13,7 @@ source:
 requirements:
   build:
     - python=3.12.*
-    - setuptools=62.*
+    - setuptools=72.*
   run:
     - python=3.12.*
     - pip
