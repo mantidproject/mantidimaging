@@ -17,7 +17,7 @@ Requirements
 ------------
 
 Operating system
- - Linux. Tested on Ubuntu 18.04, 20.04, 22.04 and CentOS 7
+ - Linux. Tested on Ubuntu 18.04, 20.04, 22.04 and Rocky 8
  - Windows. Tested on Windows 10
 
 GPU

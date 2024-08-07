@@ -1,4 +1,4 @@
-name: Testing with CentOS 7 docker
+name: Testing with Rocky docker
 
 on:
   push:
@@ -16,42 +16,42 @@ concurrency:
 
 jobs:
   test:
-    # It is hosted on Ubuntu but the docker image is built on CentOS 7
+    # It is hosted on Ubuntu but the docker image is built on Rocky
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Pre-load docker image
-      run: docker pull ghcr.io/mantidproject/mantidimaging:centos7
+      run: docker pull ghcr.io/mantidproject/mantidimaging:rocky8
 
     - name: List versions
       uses: ./.github/actions/test
       with:
         command: python --version; conda list ; pip list
-        label: centos7
+        label: rocky8
 
     - name: yapf
       uses: ./.github/actions/test
       with:
         command: yapf --parallel --diff --recursive .
-        label: centos7
+        label: rocky8
 
     - name: ruff
       uses: ./.github/actions/test
       with:
         command: ruff check .
-        label: centos7
+        label: rocky8
 
     - name: mypy
       uses: ./.github/actions/test
       with:
         command: mypy --ignore-missing-imports mantidimaging
-        label: centos7
+        label: rocky8
 
     - name: pytest
       timeout-minutes: 5
       uses: ./.github/actions/test
       with:
         command: xvfb-run pytest -n auto -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
-        label: centos7
+        label: rocky8
