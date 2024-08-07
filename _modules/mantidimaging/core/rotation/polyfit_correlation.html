@@ -495,7 +495,7 @@ document.write(`
 <div class="viewcode-block" id="do_calculate_correlation_err">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.rotation.polyfit_correlation.html#mantidimaging.core.rotation.polyfit_correlation.do_calculate_correlation_err">[docs]</a>
 <span class="k">def</span> <span class="nf">do_calculate_correlation_err</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">search_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">p0_and_180</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-                                 <span class="n">image_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+                                 <span class="n">image_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates squared sum error in the difference between the projection at 0 degrees, and the one at 180 degrees</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -552,7 +552,7 @@ document.write(`
 
 <div class="viewcode-block" id="compute_correlation_error">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.rotation.polyfit_correlation.html#mantidimaging.core.rotation.polyfit_correlation.compute_correlation_error">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_correlation_error</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">compute_correlation_error</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">shared_projections</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">shared_search_range</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -564,7 +564,8 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_find_shift</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">search_range</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">min_correlation_error</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_find_shift</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">search_range</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">min_correlation_error</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                <span class="n">shift</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="c1"># Then we just find the index of the minimum one (minimum error)</span>
     <span class="n">min_correlation_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">min_correlation_error</span><span class="p">)</span>
     <span class="c1"># argmin returns a list of where the minimum argument is found</span>

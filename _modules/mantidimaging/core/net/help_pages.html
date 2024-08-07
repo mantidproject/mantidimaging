@@ -487,7 +487,7 @@ document.write(`
 
 <div class="viewcode-block" id="open_user_operation_docs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.net.help_pages.html#mantidimaging.core.net.help_pages.open_user_operation_docs">[docs]</a>
-<span class="k">def</span> <span class="nf">open_user_operation_docs</span><span class="p">(</span><span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">open_user_operation_docs</span><span class="p">(</span><span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">page_url</span> <span class="o">=</span> <span class="s2">&quot;operations/index&quot;</span>
     <span class="n">section</span> <span class="o">=</span> <span class="n">operation_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
     <span class="n">open_help_webpage</span><span class="p">(</span><span class="n">SECTION_USER_GUIDE</span><span class="p">,</span> <span class="n">page_url</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span></div>
@@ -496,7 +496,7 @@ document.write(`
 
 <div class="viewcode-block" id="open_help_webpage">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.net.help_pages.html#mantidimaging.core.net.help_pages.open_help_webpage">[docs]</a>
-<span class="k">def</span> <span class="nf">open_help_webpage</span><span class="p">(</span><span class="n">section_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">section</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">open_help_webpage</span><span class="p">(</span><span class="n">section_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">section</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">section_url</span><span class="si">}{</span><span class="n">page_url</span><span class="si">}</span><span class="s2">.html#</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
