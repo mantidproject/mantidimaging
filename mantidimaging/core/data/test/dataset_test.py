@@ -231,3 +231,28 @@ class DatasetTest(unittest.TestCase):
         ]
 
         assert np.array_equal(expected_list, ds.nexus_rotation_angles)
+
+    def test_delete_sample(self):
+        ds, images = _make_standard_dataset()
+        ds.delete_stack(images[0].id)
+        self.assertIsNone(ds.sample)
+
+    def test_delete_flat_before(self):
+        ds, images = _make_standard_dataset()
+        ds.delete_stack(images[1].id)
+        self.assertIsNone(ds.flat_before)
+
+    def test_delete_flat_after(self):
+        ds, images = _make_standard_dataset()
+        ds.delete_stack(images[2].id)
+        self.assertIsNone(ds.flat_after)
+
+    def test_delete_dark_before(self):
+        ds, images = _make_standard_dataset()
+        ds.delete_stack(images[3].id)
+        self.assertIsNone(ds.dark_before)
+
+    def test_delete_dark_after(self):
+        ds, images = _make_standard_dataset()
+        ds.delete_stack(images[4].id)
+        self.assertIsNone(ds.dark_after)
