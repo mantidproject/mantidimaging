@@ -23,8 +23,12 @@ class DaskImageDataStack:
     """
     A Dask Image Data Stack Class to hold a delayed array of all the images in the Live Viewer Path
     """
+    delayed_stack: dask.array.Array | None = None
+
     def __init__(self, image_list: list[Image_Data]):
-        self.delayed_stack = dask.array.concatenate([image_data.delayed_array for image_data in image_list])
+        if image_list:
+            if image_list[0].create_delayed_array:
+                self.delayed_stack = dask.array.concatenate([image_data.delayed_array for image_data in image_list])
 
     @property
     def shape(self):
@@ -47,9 +51,13 @@ class Image_Data:
         size of image file
     image_modified_time : float
         last modified time of image file
+    delayed_array: dask.array.Array
+        A delayed dask array of the image data
     """
+    delayed_array: dask.array.Array
+    create_delayed_array: bool
 
-    def __init__(self, image_path: Path):
+    def __init__(self, image_path: Path, create_delayed_array: bool = True):
         """
         Constructor for Image_Data class.
 
@@ -61,7 +69,10 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
-        self.delayed_array = dask_image.imread.imread(self.image_path)
+        self.create_delayed_array = create_delayed_array
+        if self.create_delayed_array:
+            self.set_delayed_array()
+
 
     @property
     def stat(self) -> stat_result:
@@ -76,6 +87,9 @@ class Image_Data:
     def image_modified_time_stamp(self) -> str:
         """Return the image modified time as a string"""
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.image_modified_time))
+
+    def set_delayed_array(self) -> None:
+        self.delayed_array = dask_image.imread.imread(self.image_path)
 
 
 class SubDirectory:
@@ -181,6 +195,7 @@ class ImageWatcher(QObject):
     """
     image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     recent_image_changed = pyqtSignal(Path)
+    create_delayed_array: bool
 
     def __init__(self, directory: Path):
         """
@@ -215,7 +230,7 @@ class ImageWatcher(QObject):
         for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
                 try:
-                    image_obj = Image_Data(file_path)
+                    image_obj = Image_Data(file_path, create_delayed_array=self.create_delayed_array)
                     image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
