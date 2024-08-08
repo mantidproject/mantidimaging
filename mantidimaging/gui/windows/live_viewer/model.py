@@ -36,7 +36,7 @@ class DaskImageDataStack:
                     with fits.open(image_list[0].image_path.__str__()) as fit:
                         sample = fit[0].data
                     arrays = [image_data.delayed_array for image_data in image_list]
-                    lazy_arrays =[dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
+                    lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
                     self.delayed_stack = dask.array.stack(lazy_arrays)
 
     @property
