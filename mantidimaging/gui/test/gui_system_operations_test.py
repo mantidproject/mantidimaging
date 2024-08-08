@@ -49,7 +49,6 @@ OP_LIST = [
 ALLOWED_ERRORS = [
     'Negative values found in result preview for slice 0.',
     'Flat-fielding completed. Slices containing negative values in IMAT_Flower_Tomo_000000: all slices.',
-    'Error applying filter for preview: could not broadcast input array from shape (1,80,80) into shape (1,90,90)'
 ]
 
 
