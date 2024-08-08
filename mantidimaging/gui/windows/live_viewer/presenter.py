@@ -110,11 +110,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        if image_data_obj.image_path.suffix.lower() in [".tif", ".tiff"]:
-            image_data = image_data_obj.delayed_array.compute()[0]
-        elif image_data_obj.image_path.suffix.lower() == ".fits":
-            with fits.open(image_data_obj.image_path.__str__()) as fit:
-                image_data = fit[0].data
+        if image_data_obj.image_path.suffix.lower() in [".tif", ".tiff", ".fits"]:
+            image_data = image_data_obj.delayed_array.compute()
         return image_data
 
     def update_image_modified(self, image_path: Path) -> None:
