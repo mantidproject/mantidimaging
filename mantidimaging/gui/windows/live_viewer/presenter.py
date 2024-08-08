@@ -9,7 +9,6 @@ from logging import getLogger
 import numpy as np
 
 from imagecodecs._deflate import DeflateError
-from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
