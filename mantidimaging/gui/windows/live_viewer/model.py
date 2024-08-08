@@ -11,6 +11,7 @@ import dask.array
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 import dask_image.imread
+from astropy.io import fits
 
 if TYPE_CHECKING:
     from os import stat_result
@@ -25,10 +26,18 @@ class DaskImageDataStack:
     """
     delayed_stack: dask.array.Array | None = None
 
-    def __init__(self, image_list: list[Image_Data]):
+    def __init__(self, image_list: list[Image_Data] | None):
         if image_list:
             if image_list[0].create_delayed_array:
-                self.delayed_stack = dask.array.concatenate([image_data.delayed_array for image_data in image_list])
+                if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
+                    arrays = [image_data.delayed_array for image_data in image_list]
+                    self.delayed_stack = dask.array.stack(dask.array.array(arrays))
+                elif image_list[0].image_path.suffix.lower() in [".fits"]:
+                    with fits.open(image_list[0].image_path.__str__()) as fit:
+                        sample = fit[0].data
+                    arrays = [image_data.delayed_array for image_data in image_list]
+                    lazy_arrays =[dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
+                    self.delayed_stack = dask.array.stack(lazy_arrays)
 
     @property
     def shape(self):
@@ -88,7 +97,10 @@ class Image_Data:
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.image_modified_time))
 
     def set_delayed_array(self) -> None:
-        self.delayed_array = dask_image.imread.imread(self.image_path)
+        if self.image_path.suffix.lower() in [".tif", ".tiff"]:
+            self.delayed_array = dask_image.imread.imread(self.image_path)[0]
+        elif self.image_path.suffix.lower() == ".fits":
+            self.delayed_array = dask.delayed(fits.open)(self.image_path)[0].data
 
 
 class SubDirectory:
