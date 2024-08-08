@@ -78,7 +78,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not self.model.images:
             return
         self.selected_image = self.model.images[index]
-        self.view.label_active_filename.setText(self.selected_image.image_name)
+        image_timestamp = self.selected_image.image_modified_time_stamp
+        self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
         self.display_image(self.selected_image.image_path)
 

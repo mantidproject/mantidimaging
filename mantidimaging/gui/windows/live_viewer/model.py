@@ -55,6 +55,11 @@ class Image_Data:
         """Return the image modified time"""
         return self._stat.st_mtime
 
+    @property
+    def image_modified_time_stamp(self) -> str:
+        """Return the image modified time as a string"""
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.image_modified_time))
+
 
 class SubDirectory:
 
