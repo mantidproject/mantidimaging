@@ -9,7 +9,7 @@ from unittest import mock
 
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 

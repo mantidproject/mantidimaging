@@ -9,7 +9,6 @@ from logging import getLogger
 import numpy as np
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile, TiffFileError
 from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -90,7 +89,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         try:
             image_data = self.load_image(image_data_obj)
-        except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
+        except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
