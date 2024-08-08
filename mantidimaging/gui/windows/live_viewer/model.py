@@ -230,7 +230,7 @@ class ImageWatcher(QObject):
         for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
                 try:
-                    image_obj = Image_Data(file_path, create_delayed_array=self.create_delayed_array)
+                    image_obj = Image_Data(file_path)
                     image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
@@ -305,9 +305,6 @@ class ImageWatcher(QObject):
         dask_image_stack = DaskImageDataStack(images)
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images, dask_image_stack)
-
-        # arrsum = dask.array.sum(dask_image_stack.delayed_stack)
-        # print(f"{arrsum.compute()=}")
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:
