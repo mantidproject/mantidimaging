@@ -241,6 +241,7 @@ class MainWindowPresenter(BasePresenter):
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
         """
+        assert dataset.sample is not None
         if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
             return
         else:
@@ -260,6 +261,7 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The loaded dataset.
         :return: The stack widget for the sample.
         """
+        assert dataset.sample is not None
         sample_stack_vis = self._create_lone_stack_window(dataset.sample)
         self._tabify_stack_window(sample_stack_vis)
 
@@ -357,6 +359,7 @@ class MainWindowPresenter(BasePresenter):
         Creates the tree view items for a strict dataset.
         :param dataset: The loaded dataset.
         """
+        assert dataset.sample is not None
         dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
         self.view.create_child_tree_item(dataset_tree_item, dataset.sample.id, "Projections")
 

@@ -185,8 +185,10 @@ class MainWindowModel:
                     proj_180_id = None
                     # If we're deleting a sample from a StrictDataset then any linked 180 projection will also be
                     # deleted
-                    if isinstance(dataset, StrictDataset) and dataset.proj180deg and dataset.sample.id == container_id:
-                        proj_180_id = dataset.proj180deg.id
+                    if isinstance(dataset, StrictDataset) and dataset.proj180deg:
+                        assert dataset.sample is not None
+                        if dataset.sample.id == container_id:
+                            proj_180_id = dataset.proj180deg.id
                     dataset.delete_stack(container_id)
                     return [container_id, proj_180_id] if proj_180_id else [container_id]
                 if container_id == dataset.recons.id:

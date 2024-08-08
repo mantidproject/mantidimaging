@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import uuid
-from dataclasses import dataclass
 
 import numpy as np
 
@@ -25,7 +24,17 @@ def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
 
 class BaseDataset:
 
-    def __init__(self, *, name: str = "", stacks: list[ImageStack] | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        name: str = "",
+        stacks: list[ImageStack] | None = None,
+        sample: ImageStack | None = None,
+        flat_before: ImageStack | None = None,
+        flat_after: ImageStack | None = None,
+        dark_before: ImageStack | None = None,
+        dark_after: ImageStack | None = None,
+    ) -> None:
         self._id: uuid.UUID = uuid.uuid4()
         self.name = name
 
@@ -33,6 +42,15 @@ class BaseDataset:
         self._sinograms: ImageStack | None = None
         stacks = [] if stacks is None else stacks
         self._stacks: list[ImageStack] = stacks
+
+        self.sample = sample
+        self.flat_before = flat_before
+        self.flat_after = flat_after
+        self.dark_before = dark_before
+        self.dark_after = dark_after
+
+        if self.name == "" and sample is not None:
+            self.name = sample.name
 
     @property
     def id(self) -> uuid.UUID:
@@ -89,31 +107,7 @@ class MixedDataset(BaseDataset):
     pass
 
 
-@dataclass
 class StrictDataset(BaseDataset):
-    sample: ImageStack
-    flat_before: ImageStack | None = None
-    flat_after: ImageStack | None = None
-    dark_before: ImageStack | None = None
-    dark_after: ImageStack | None = None
-
-    def __init__(self,
-                 *,
-                 sample: ImageStack,
-                 flat_before: ImageStack | None = None,
-                 flat_after: ImageStack | None = None,
-                 dark_before: ImageStack | None = None,
-                 dark_after: ImageStack | None = None,
-                 name: str = ""):
-        super().__init__(name=name)
-        self.sample = sample
-        self.flat_before = flat_before
-        self.flat_after = flat_after
-        self.dark_before = dark_before
-        self.dark_after = dark_after
-
-        if self.name == "":
-            self.name = sample.name
 
     @property
     def all(self) -> list[ImageStack]:
@@ -165,6 +159,8 @@ class StrictDataset(BaseDataset):
 
     @proj180deg.setter
     def proj180deg(self, proj180deg: ImageStack | None) -> None:
+        if self.sample is None:
+            raise RuntimeError("Can't set a 180 projection without a sample")
         self.sample.proj180deg = proj180deg
 
     def delete_stack(self, images_id: uuid.UUID) -> None:
@@ -179,6 +175,7 @@ class StrictDataset(BaseDataset):
         elif isinstance(self.dark_after, ImageStack) and self.dark_after.id == images_id:
             self.dark_after = None
         elif isinstance(self.proj180deg, ImageStack) and self.proj180deg.id == images_id:
+            assert self.sample is not None
             self.sample.clear_proj180deg()
         elif isinstance(self.sinograms, ImageStack) and self.sinograms.id == images_id:
             self.sinograms = None
@@ -221,7 +218,7 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: BaseDataset) -> str:
     if stack_id in [stack.id for stack in dataset._stacks]:
         return "Images"
     if isinstance(dataset, StrictDataset):
-        if stack_id == dataset.sample.id:
+        if dataset.sample is not None and stack_id == dataset.sample.id:
             return "Sample"
         if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
             return "Flat Before"
