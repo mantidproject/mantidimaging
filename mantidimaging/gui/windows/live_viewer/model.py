@@ -195,7 +195,7 @@ class ImageWatcher(QObject):
     """
     image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     recent_image_changed = pyqtSignal(Path)
-    create_delayed_array: bool
+    create_delayed_array: bool = True
 
     def __init__(self, directory: Path):
         """
@@ -230,7 +230,7 @@ class ImageWatcher(QObject):
         for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
                 try:
-                    image_obj = Image_Data(file_path)
+                    image_obj = Image_Data(file_path, create_delayed_array=self.create_delayed_array)
                     image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
