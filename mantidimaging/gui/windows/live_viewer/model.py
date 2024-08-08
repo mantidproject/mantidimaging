@@ -73,7 +73,6 @@ class Image_Data:
         if self.create_delayed_array:
             self.set_delayed_array()
 
-
     @property
     def stat(self) -> stat_result:
         return self._stat
@@ -148,7 +147,8 @@ class LiveViewerWindowModel:
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data], dask_image_stack: DaskImageDataStack) -> None:
+    def _handle_image_changed_in_list(self, image_files: list[Image_Data],
+                                      dask_image_stack: DaskImageDataStack) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
