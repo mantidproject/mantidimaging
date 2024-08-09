@@ -6,13 +6,42 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
+
+import dask.array
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
+
+import dask_image.imread
+from astropy.io import fits
 
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
 
 LOG = getLogger(__name__)
+
+
+class DaskImageDataStack:
+    """
+    A Dask Image Data Stack Class to hold a delayed array of all the images in the Live Viewer Path
+    """
+    delayed_stack: dask.array.Array | None = None
+
+    def __init__(self, image_list: list[Image_Data] | None):
+        if image_list:
+            if image_list[0].create_delayed_array:
+                if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
+                    arrays = [image_data.delayed_array for image_data in image_list]
+                    self.delayed_stack = dask.array.stack(dask.array.array(arrays))
+                elif image_list[0].image_path.suffix.lower() in [".fits"]:
+                    with fits.open(image_list[0].image_path.__str__()) as fit:
+                        sample = fit[0].data
+                    arrays = [image_data.delayed_array for image_data in image_list]
+                    lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
+                    self.delayed_stack = dask.array.stack(lazy_arrays)
+
+    @property
+    def shape(self):
+        return self.delayed_stack.shape
 
 
 class Image_Data:
@@ -31,9 +60,13 @@ class Image_Data:
         size of image file
     image_modified_time : float
         last modified time of image file
+    delayed_array: dask.array.Array
+        A delayed dask array of the image data
     """
+    delayed_array: dask.array.Array
+    create_delayed_array: bool
 
-    def __init__(self, image_path: Path):
+    def __init__(self, image_path: Path, create_delayed_array: bool = True):
         """
         Constructor for Image_Data class.
 
@@ -45,6 +78,9 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
+        self.create_delayed_array = create_delayed_array
+        if self.create_delayed_array:
+            self.set_delayed_array()
 
     @property
     def stat(self) -> stat_result:
@@ -59,6 +95,12 @@ class Image_Data:
     def image_modified_time_stamp(self) -> str:
         """Return the image modified time as a string"""
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.image_modified_time))
+
+    def set_delayed_array(self) -> None:
+        if self.image_path.suffix.lower() in [".tif", ".tiff"]:
+            self.delayed_array = dask_image.imread.imread(self.image_path)[0]
+        elif self.image_path.suffix.lower() == ".fits":
+            self.delayed_array = dask.delayed(fits.open)(self.image_path)[0].data
 
 
 class SubDirectory:
@@ -103,6 +145,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
+        self.image_stack: DaskImageDataStack | None
 
     @property
     def path(self) -> Path | None:
@@ -116,7 +159,9 @@ class LiveViewerWindowModel:
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
+    def _handle_image_changed_in_list(self,
+                                      image_files: list[Image_Data],
+                                      dask_image_stack: DaskImageDataStack | None = None) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
@@ -125,6 +170,7 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
+        self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
 
     def handle_image_modified(self, image_path: Path):
@@ -160,8 +206,9 @@ class ImageWatcher(QObject):
     sort_images_by_modified_time(images)
         Sort the images by modified time.
     """
-    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
+    image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     recent_image_changed = pyqtSignal(Path)
+    create_delayed_array: bool = True
 
     def __init__(self, directory: Path):
         """
@@ -196,7 +243,7 @@ class ImageWatcher(QObject):
         for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
                 try:
-                    image_obj = Image_Data(file_path)
+                    image_obj = Image_Data(file_path, create_delayed_array=self.create_delayed_array)
                     image_files.append(image_obj)
                 except FileNotFoundError:
                     continue
@@ -268,8 +315,9 @@ class ImageWatcher(QObject):
                 break
 
         images = self.sort_images_by_modified_time(images)
+        dask_image_stack = DaskImageDataStack(images)
         self.update_recent_watcher(images[-1:])
-        self.image_changed.emit(images)
+        self.image_changed.emit(images, dask_image_stack)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:

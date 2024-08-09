@@ -26,8 +26,10 @@ class ImageWatcherTest(FakeFSTestCase):
 
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             self.watcher = ImageWatcher(self.top_path)
+            self.watcher.create_delayed_array = False
             self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock())
             self.watcher.image_changed = self.mock_signal_image
+            self.watcher.create_delayed_array = False
 
     def _make_simple_dir(self, directory: Path, t0: float = 1000):
         file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
