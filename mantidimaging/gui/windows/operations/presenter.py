@@ -276,42 +276,40 @@ class FiltersWindowPresenter(BasePresenter):
                     if self.view.safeApply.isChecked():
                         use_new_data = self._wait_for_stack_choice(stack, stack.id)
 
-                if self.is_a_proj180deg(stack):
-                    # Handle 180-degree stacks based on the log_180_degree attribute
-                    if not self.model.selected_filter.allow_for_180_projection:
-                        continue
-
-                # Apply to proj180 synchronously if necessary
-                if use_new_data and not self.applying_to_all and stack.has_proj180deg():
+                # Apply 180-degree projection if allowed
+                if use_new_data and not self.applying_to_all:
                     # Apply to proj180 synchronously - this function is already running async
                     # and running another async instance causes a race condition in the parallel module
                     # where the shared data can be removed in the middle of the operation of another operation
-                    self._do_apply_filter_sync([stack.proj180deg])
+                    # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
+                    if self.model.selected_filter.allow_for_180_projection:
+                        self._do_apply_filter_sync([stack.proj180deg])
+                    continue
 
-            if np.any(stack.data < 0):
-                negative_stacks.append(stack)
+                if np.any(stack.data < 0):
+                    negative_stacks.append(stack)
 
-            if self.view.roi_view is not None:
-                self.view.roi_view.close()
-                self.view.roi_view = None
-            self.applying_to_all = False
-            self.do_update_previews()
-            if task.error is not None:
-                # task failed, show why
-                self.view.show_error_dialog(f"Operation failed: {task.error}")
-            elif use_new_data:
-                # Feedback to user
-                self.view.clear_notification_dialog()
-                self.view.show_operation_completed(self.model.selected_filter.filter_name)
-                selected_filter = self.view.get_selected_filter()
-                if selected_filter == CROP_COORDINATES:
-                    # Reset the ROI field to ensure an appropriate value for the new image size
-                    self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
-                elif selected_filter == FLAT_FIELDING and negative_stacks:
-                    self._show_negative_values_error(negative_stacks)
-            else:
-                self.view.clear_notification_dialog()
-                self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
+                if self.view.roi_view is not None:
+                    self.view.roi_view.close()
+                    self.view.roi_view = None
+                self.applying_to_all = False
+                self.do_update_previews()
+                if task.error is not None:
+                    # task failed, show why
+                    self.view.show_error_dialog(f"Operation failed: {task.error}")
+                elif use_new_data:
+                    # Feedback to user
+                    self.view.clear_notification_dialog()
+                    self.view.show_operation_completed(self.model.selected_filter.filter_name)
+                    selected_filter = self.view.get_selected_filter()
+                    if selected_filter == CROP_COORDINATES:
+                        # Reset the ROI field to ensure an appropriate value for the new image size
+                        self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
+                    elif selected_filter == FLAT_FIELDING and negative_stacks:
+                        self._show_negative_values_error(negative_stacks)
+                else:
+                    self.view.clear_notification_dialog()
+                    self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
         finally:
             self.view.filter_applied.emit()
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
