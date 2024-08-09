@@ -60,6 +60,11 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ubuntu18
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Prune Docker Volumes
+        shell: bash -l {0}
+        run:
+          docker system prune --volumes -f
+
       - name: Build and push Rocky8 Docker image
         uses: docker/build-push-action@v4
         with:
