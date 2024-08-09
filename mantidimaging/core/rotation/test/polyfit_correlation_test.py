@@ -4,9 +4,10 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
-from mantidimaging.test_helpers.unit_test_helper import generate_images, assert_not_equals
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
 from ...data import ImageStack
 from ...utility.progress_reporting import Progress
@@ -36,33 +37,46 @@ class PolyfitCorrelationTest(unittest.TestCase):
     def test_find_center(self):
         images = generate_images((10, 10, 10))
         images.data[0] = np.identity(10)
-        images.proj180deg = ImageStack(np.fliplr(images.data))
+        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
         mock_progress = mock.create_autospec(Progress)
         res_cor, res_tilt = find_center(images, mock_progress)
         assert mock_progress.update.call_count == 11
         assert res_cor.value == 5.0, f"Found {res_cor.value}"
         assert res_tilt.value == 0.0, f"Found {res_tilt.value}"
 
-    def test_find_shift(self):
-        rng = np.random.default_rng()
+    def test_find_center_offset(self):
         images = generate_images((10, 10, 10))
-        search_range = get_search_range(images.width)
-        min_correlation_error = rng.random((len(search_range), images.height))
-        shift = np.zeros(images.height)
+        images.data[0] = np.identity(10)
+        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
+        self.crop_images(images, (2, 10, 0, 10))
+        self.crop_images(images.proj180deg, (2, 10, 0, 10))
+        mock_progress = mock.create_autospec(Progress)
+        res_cor, res_tilt = find_center(images, mock_progress)
+        assert res_cor.value == 4.0, f"Found {res_cor.value}"
+        assert abs(res_tilt.value) < 1e-6, f"Found {res_tilt.value}"
+
+    def test_find_shift(self):
+        images = mock.Mock(height=3)
+        min_correlation_error = np.array([[1, 2, 2, 2, 2, 2, 2, 2, 2, 2], [3, 3, 3, 3, 3, 3, 3, 3, 2, 3],
+                                          [4, 4, 4, 4, 3, 4, 4, 4, 4, 4]]).T
+        search_range = get_search_range(10)
+        shift = np.zeros(3)
         _find_shift(images, search_range, min_correlation_error, shift)
-        # check that the shift has been changed
-        assert_not_equals(shift, np.zeros((images.height, )))
+        npt.assert_array_equal(np.array([-5, 3, -1]), shift)
 
     def test_find_shift_multiple_argmin(self):
-        rng = np.random.default_rng()
-        images = generate_images((10, 10, 10))
-        search_range = get_search_range(images.width)
-        min_correlation_error = rng.random((len(search_range), images.height))
-        min_correlation_error.T[0][3] = min_correlation_error.T[0][4] = 0
-        shift = np.zeros((images.height, ))
+        images = mock.Mock(height=3)
+        min_correlation_error = np.array([[1, 2, 2, 2, 2, 2, 2, 2, 2, 1], [3, 3, 3, 3, 3, 3, 3, 3, 2, 2],
+                                          [4, 4, 4, 4, 3, 3, 4, 4, 4, 4]]).T
+        search_range = get_search_range(10)
+        shift = np.zeros(3)
         _find_shift(images, search_range, min_correlation_error, shift)
-        # check that the shift has been changed
-        assert_not_equals(shift, np.zeros((images.height, )))
+        npt.assert_array_equal(np.array([-5, 3, -1]), shift)
+
+    @staticmethod
+    def crop_images(images, crop_coords):
+        x_start, x_end, y_start, y_end = crop_coords
+        images.data = images.data[:, y_start:y_end, x_start:x_end]
 
 
 if __name__ == '__main__':
