@@ -63,7 +63,9 @@ jobs:
       - name: Prune Docker Volumes
         shell: bash -l {0}
         run:
+          df -h
           docker system prune --volumes -f
+          df -h
 
       - name: Build and push Rocky8 Docker image
         uses: docker/build-push-action@v4
