@@ -1,0 +1,1 @@
+#2285: Resolve operations windows crop co-ordinates ROI size from being larger than stack bounds. Additionally resolve ROI crop co-ordinate dialog window persistence if parent window closed.

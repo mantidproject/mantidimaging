@@ -448,14 +448,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_roi_field(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
-    def test_init_roi_field_does_nothing_when_image_is_greater_than_200_by_200(self):
+    def test_init_roi_field_called_with_smaller_values_if_image_is_greater_than_200_by_200(self):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()
         self.presenter.stack.data = np.ones((2, 201, 201))
         self.presenter.init_roi_field(mock_roi_field)
-        mock_roi_field.setText.assert_not_called()
+        mock_roi_field.setText.assert_called_once_with("0, 0, 100, 100")
 
-    @parameterized.expand([(190, 201, "0, 0, 200, 190"), (201, 80, "0, 0, 80, 200"), (200, 200, "0, 0, 200, 200")])
+    @parameterized.expand([(190, 201, "0, 0, 100, 95"), (201, 80, "0, 0, 40, 100"), (200, 200, "0, 0, 100, 100")])
     def test_set_text_called_when_image_not_greater_than_200_by_200(self, shape_x, shape_y, expected):
         mock_roi_field = mock.Mock()
         self.presenter.stack = mock.Mock()

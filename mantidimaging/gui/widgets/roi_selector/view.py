@@ -69,3 +69,7 @@ class ROISelectorView(QMainWindow):
         self.roi_view_averaged = not self.roi_view_averaged
         self.roi_view.roi.show()
         self.roi_view.ui.roiPlot.hide()
+
+    def closeEvent(self, event) -> None:
+        self.roi_view.close()
+        event.accept()

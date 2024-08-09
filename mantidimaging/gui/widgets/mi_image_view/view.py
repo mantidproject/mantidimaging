@@ -7,7 +7,7 @@ from time import sleep
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
@@ -148,6 +148,9 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self._angles = angles
         self._update_message(self._last_mouse_hover_location)
 
+    def _set_roi_max_bounds(self):
+        self.roi.maxBounds = QRectF(0, 0, self.image_data.shape[2], self.image_data.shape[1])
+
     def setImage(self, image: np.ndarray, *args, **kwargs):
         dimensions_changed = self.image_data is None or self.image_data.shape != image.shape
         if image.ndim == 3:
@@ -195,6 +198,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         roi = self._update_roi_region_avg()
         if self.roi_changed_callback and roi is not None:
             self.roi_changed_callback(roi)
+        self._set_roi_max_bounds()
         self._refresh_message()
 
     def _update_roi_region_avg(self) -> SensibleROI | None:
