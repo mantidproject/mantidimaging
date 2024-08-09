@@ -10,7 +10,7 @@ from parameterized import parameterized
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
@@ -487,21 +487,21 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.get_existing_180_id("bad-id")
 
     def test_wrong_dataset_type_for_180_raises(self):
-        md = MixedDataset()
+        md = Dataset()
         self.model.add_dataset_to_model(md)
 
         with self.assertRaises(RuntimeError):
             self.model.get_existing_180_id(md.id)
 
     def test_get_existing_180_id_finds_id(self):
-        sd = StrictDataset(sample=generate_images((5, 20, 20)))
+        sd = Dataset(sample=generate_images((5, 20, 20)))
         sd.proj180deg = _180 = generate_images((1, 20, 20))
         self.model.add_dataset_to_model(sd)
 
         assert self.model.get_existing_180_id(sd.id) == _180.id
 
     def test_get_existing_id_returns_none_for_dataset_without_180(self):
-        sd = StrictDataset(sample=generate_images((5, 20, 20)))
+        sd = Dataset(sample=generate_images((5, 20, 20)))
         self.model.add_dataset_to_model(sd)
 
         self.assertIsNone(self.model.get_existing_180_id(sd.id))

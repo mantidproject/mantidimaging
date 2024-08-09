@@ -102,8 +102,10 @@ class MainWindowModel:
         :return: The 180 ID if found, None otherwise.
         """
         dataset = self.datasets.get(dataset_id)
-        if not isinstance(dataset, StrictDataset):
-            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
+        if not dataset:
+            raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
+        if not dataset.sample:
+            raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
 
         if isinstance(dataset.proj180deg, ImageStack):
             return dataset.proj180deg.id
@@ -116,13 +118,11 @@ class MainWindowModel:
         :param _180_deg_file: The location of the 180 projection.
         :return: The loaded 180 ImageStack object.
         """
-        if dataset_id in self.datasets:
-            dataset = self.datasets[dataset_id]
-        else:
+        dataset = self.datasets.get(dataset_id)
+        if not dataset:
             raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
-
-        if not isinstance(dataset, StrictDataset):
-            raise RuntimeError(f"Wrong dataset type passed to add 180 method: {dataset_id}")
+        if not dataset.sample:
+            raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
 
         _180_deg = loader.load_stack_from_group(FilenameGroup.from_file(_180_deg_file))
         dataset.proj180deg = _180_deg
