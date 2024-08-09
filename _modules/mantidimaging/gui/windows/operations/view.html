@@ -542,6 +542,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">FiltersWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span><span class="p">:</span> <span class="n">ROISelectorView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">9999</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setStretchFactor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -605,8 +606,9 @@ document.write(`
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">unsubscribe_from_main_window</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auto_update_triggered</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="kc">None</span>
@@ -777,16 +779,17 @@ document.write(`
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="n">roi_values</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">window</span> <span class="o">=</span> <span class="n">ROISelectorView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span><span class="p">,</span> <span class="n">roi_values</span><span class="p">,</span>
-                                 <span class="n">roi_changed_callback</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span> <span class="o">=</span> <span class="n">ROISelectorView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span><span class="p">,</span>
+                                                   <span class="n">roi_values</span><span class="p">,</span> <span class="n">roi_changed_callback</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">close_event</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
             <span class="n">roi_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">roi_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
 
-        <span class="n">window</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">close_event</span><span class="p">)</span>
-        <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span><span class="o">.</span><span class="n">roi_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">close_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowView.toggle_filters_section">

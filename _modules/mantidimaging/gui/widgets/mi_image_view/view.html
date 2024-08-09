@@ -483,7 +483,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QRectF</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span>
 <span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ROI</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">,</span> <span class="n">ViewBox</span>
 <span class="kn">from</span> <span class="nn">pyqtgraph.GraphicsScene.mouseEvents</span> <span class="kn">import</span> <span class="n">HoverEvent</span>
@@ -632,6 +632,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="o">=</span> <span class="n">angles</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_mouse_hover_location</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_set_roi_max_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">maxBounds</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
 <div class="viewcode-block" id="MIImageView.setImage">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.view.html#mantidimaging.gui.widgets.mi_image_view.view.MIImageView.setImage">[docs]</a>
     <span class="k">def</span> <span class="nf">setImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -687,6 +690,7 @@ document.write(`
         <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_roi_region_avg</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span> <span class="ow">and</span> <span class="n">roi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_roi_max_bounds</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_message</span><span class="p">()</span></div>
 
 

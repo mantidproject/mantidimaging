@@ -795,14 +795,9 @@ document.write(`
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
                     <span class="n">negative_stacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roi_view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roi_view</span> <span class="o">=</span> <span class="kc">None</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">applying_to_all</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
                 <span class="c1"># task failed, show why</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">use_new_data</span><span class="p">:</span>
@@ -823,6 +818,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_applied</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_apply_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_single_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_all_state</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">True</span>
@@ -979,11 +975,8 @@ document.write(`
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">larger</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">larger</span><span class="p">):</span>
-            <span class="k">return</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">200</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">200</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
         <span class="n">crop_string</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
         <span class="n">roi_field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">crop_string</span><span class="p">)</span></div>
 

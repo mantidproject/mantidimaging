@@ -549,6 +549,13 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiPlot</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ROISelectorView.closeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.roi_selector.view.html#mantidimaging.gui.widgets.roi_selector.view.ROISelectorView.closeEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
 </div>
 
 </pre></div>
