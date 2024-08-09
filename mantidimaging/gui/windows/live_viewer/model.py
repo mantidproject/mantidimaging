@@ -145,7 +145,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
-        self.image_stack: DaskImageDataStack
+        self.image_stack: DaskImageDataStack | None
 
     @property
     def path(self) -> Path | None:
@@ -159,8 +159,9 @@ class LiveViewerWindowModel:
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data],
-                                      dask_image_stack: DaskImageDataStack) -> None:
+    def _handle_image_changed_in_list(self,
+                                      image_files: list[Image_Data],
+                                      dask_image_stack: DaskImageDataStack | None = None) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
