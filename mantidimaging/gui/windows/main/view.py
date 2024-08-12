@@ -228,13 +228,12 @@ class MainWindowView(BaseMainWindowView):
     def update_shortcuts(self) -> None:
         datasets = list(self.presenter.datasets)
         has_datasets = len(datasets) > 0
-        has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in datasets)
 
         self.actionSaveImages.setEnabled(has_datasets)
-        self.actionSaveNeXusFile.setEnabled(has_strict_datasets)
+        self.actionSaveNeXusFile.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionShutterCounts.setEnabled(has_datasets)
-        self.actionLoad180deg.setEnabled(has_strict_datasets)
+        self.actionLoad180deg.setEnabled(has_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)
         self.menuImage.setEnabled(has_datasets)

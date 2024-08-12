@@ -11,7 +11,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtWidgets import QDialog
 
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification, Notification
@@ -200,24 +200,18 @@ class MainWindowViewTest(unittest.TestCase):
         QMessageBox.information.assert_called_once()
 
     def test_update_shortcuts_with_presenter_with_one_or_more_stacks(self):
-        self.presenter.datasets = [StrictDataset(sample=mock.Mock()), MixedDataset()]
+        self.presenter.datasets = [Dataset()]
 
-        self._update_shortcuts_test(False, True, True)
-        self._update_shortcuts_test(True, True, True)
-
-    def test_update_shortcuts_with_presenter_with_no_strict_datasets(self):
-        self.presenter.datasets = [MixedDataset(), MixedDataset()]
-
-        self._update_shortcuts_test(False, True, False)
-        self._update_shortcuts_test(True, True, False)
+        self._update_shortcuts_test(False, True)
+        self._update_shortcuts_test(True, True)
 
     def test_update_shortcuts_with_presenter_with_no_stacks(self):
         self.presenter.datasets = []
 
-        self._update_shortcuts_test(False, False, False)
-        self._update_shortcuts_test(True, False, False)
+        self._update_shortcuts_test(False, False)
+        self._update_shortcuts_test(True, False)
 
-    def _update_shortcuts_test(self, original_state, has_stacks, has_strict_datasets):
+    def _update_shortcuts_test(self, original_state, has_stacks):
         self.view.actionSaveImages.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
         self.view.actionLoad180deg.setEnabled(original_state)
@@ -229,7 +223,7 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.assertEqual(has_stacks, self.view.actionSaveImages.isEnabled())
         self.assertEqual(has_stacks, self.view.actionSampleLoadLog.isEnabled())
-        self.assertEqual(has_strict_datasets, self.view.actionLoad180deg.isEnabled())
+        self.assertEqual(has_stacks, self.view.actionLoad180deg.isEnabled())
         self.assertEqual(has_stacks, self.view.actionLoadProjectionAngles.isEnabled())
         self.assertEqual(has_stacks, self.view.menuWorkflow.isEnabled())
         self.assertEqual(has_stacks, self.view.menuImage.isEnabled())
