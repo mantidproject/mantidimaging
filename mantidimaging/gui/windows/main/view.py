@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -766,8 +765,7 @@ class MainWindowView(BaseMainWindowView):
         dataset = self.presenter.get_dataset(dataset_id)
         if dataset is None:
             raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
-        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
-                                                              dataset.name)
+        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, dataset.name)
         self.add_to_dataset_dialog.show()
 
     def _on_tab_bar_clicked(self, stack: StackVisualiserView) -> None:

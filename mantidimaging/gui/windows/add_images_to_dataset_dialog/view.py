@@ -15,18 +15,15 @@ class AddImagesToDatasetDialog(BaseDialogView):
     filePathLineEdit: QLineEdit
     datasetNameText: QLabel
 
-    def __init__(self, parent, dataset_id: uuid.UUID, strict_dataset: bool, dataset_name: str):
+    def __init__(self, parent, dataset_id: uuid.UUID, dataset_name: str):
         super().__init__(parent, 'gui/ui/add_to_dataset.ui')
 
         self.parent_view = parent
         self.presenter = AddImagesToDatasetPresenter(self)
         self._dataset_id = dataset_id
 
-        if strict_dataset:
-            self.imageTypeComboBox.addItems(
-                ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"])
-        else:
-            self.imageTypeComboBox.addItems(["Images", "Recon"])
+        self.imageTypeComboBox.addItems(
+            ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon", "Images"])
 
         self.datasetNameText.setText(dataset_name)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
