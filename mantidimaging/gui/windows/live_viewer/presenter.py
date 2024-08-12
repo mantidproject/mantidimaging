@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
+import dask.array
 
 from imagecodecs._deflate import DeflateError
 
@@ -40,6 +41,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
+        self.selected_delayed_image: dask.array.Array
+
         self.filters = {f.filter_name: f for f in load_filter_packages()}
 
     def close(self) -> None:
@@ -73,20 +76,21 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.set_image_index(len(images_list) - 1)
 
     def select_image(self, index: int) -> None:
-        if not self.model.images:
+        self.selected_image = self.model.image_stack.get_image_data(index)
+        self.selected_delayed_image = self.model.image_stack.get_delayed_image(index)
+        if not self.selected_image:
             return
-        self.selected_image = self.model.images[index]
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image)
+        self.display_image(self.selected_image, self.selected_delayed_image)
 
-    def display_image(self, image_data_obj: Image_Data) -> None:
+    def display_image(self, image_data_obj: Image_Data, delayed_image: dask.array.Array) -> None:
         """
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image(image_data_obj)
+            image_data = self.load_image(delayed_image)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -104,13 +108,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(image_data_obj: Image_Data) -> np.ndarray:
+    def load_image(delayed_image: dask.array.Array) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        if image_data_obj.image_path.suffix.lower() in [".tif", ".tiff", ".fits"]:
-            image_data = image_data_obj.delayed_array.compute()
+        image_data = delayed_image.compute()
         return image_data
 
     def update_image_modified(self, image_path: Path) -> None:
@@ -118,14 +121,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(self.selected_image)
+            self.display_image(self.selected_image, self.selected_delayed_image)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image)
+            self.display_image(self.selected_image, self.selected_delayed_image)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
