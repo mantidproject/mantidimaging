@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type, Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -416,7 +416,7 @@ class MainWindowPresenter(BasePresenter):
         return sorted(stacks, key=lambda x: x.name)
 
     @property
-    def datasets(self) -> Iterable[MixedDataset | StrictDataset]:
+    def datasets(self) -> Iterable[Dataset]:
         return self.model.datasets.values()
 
     @property
@@ -442,7 +442,7 @@ class MainWindowPresenter(BasePresenter):
     def stack_visualiser_names(self) -> list[str]:
         return [widget.windowTitle() for widget in self.stack_visualisers.values()]
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
+    def get_dataset(self, dataset_id: uuid.UUID) -> Dataset | None:
         return self.model.datasets.get(dataset_id)
 
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
@@ -757,7 +757,7 @@ class MainWindowPresenter(BasePresenter):
         self.create_single_tabbed_images_stack(new_images)
         self.view.model_changed.emit()
 
-    def _add_recon_to_dataset_and_tree_view(self, dataset: MixedDataset | StrictDataset, recon: ImageStack) -> None:
+    def _add_recon_to_dataset_and_tree_view(self, dataset: Dataset, recon: ImageStack) -> None:
         """
         Adds a recon to the dataset and updates the tree view.
         :param dataset: The dataset.
@@ -766,7 +766,7 @@ class MainWindowPresenter(BasePresenter):
         dataset.add_recon(recon)
         self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
 
-    def _add_images_to_existing_mixed_dataset(self, dataset: MixedDataset, new_images: ImageStack) -> None:
+    def _add_images_to_existing_mixed_dataset(self, dataset: Dataset, new_images: ImageStack) -> None:
         """
         Updates the stack list in the mixed dataset and updates the tree view.
         :param dataset: The MixedDataset to update.
@@ -775,8 +775,7 @@ class MainWindowPresenter(BasePresenter):
         dataset.add_stack(new_images)
         self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
-    def _add_images_to_existing_strict_dataset(self, dataset: StrictDataset, new_images: ImageStack,
-                                               stack_type: str) -> None:
+    def _add_images_to_existing_strict_dataset(self, dataset: Dataset, new_images: ImageStack, stack_type: str) -> None:
         """
         Adds or replaces images in a StrictDataset and updates the tree view if required.
         :param dataset: The StrictDataset to change.

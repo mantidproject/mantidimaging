@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
@@ -27,7 +27,7 @@ class MainWindowModel:
 
     def __init__(self) -> None:
         super().__init__()
-        self.datasets: dict[uuid.UUID, MixedDataset | StrictDataset] = {}
+        self.datasets: dict[uuid.UUID, Dataset] = {}
 
     def get_images_by_uuid(self, images_uuid: uuid.UUID) -> ImageStack | None:
         for dataset in self.datasets.values():
@@ -201,7 +201,7 @@ class MainWindowModel:
                     return ids_to_remove
         self.raise_error_when_images_not_found(container_id)
 
-    def add_dataset_to_model(self, dataset: StrictDataset | MixedDataset) -> None:
+    def add_dataset_to_model(self, dataset: Dataset) -> None:
         self.datasets[dataset.id] = dataset
 
     @property

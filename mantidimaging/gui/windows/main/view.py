@@ -47,7 +47,7 @@ from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 
 if TYPE_CHECKING:
-    from mantidimaging.core.data.dataset import MixedDataset
+    from mantidimaging.core.data.dataset import Dataset
 
 RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
@@ -506,7 +506,7 @@ class MainWindowView(BaseMainWindowView):
     def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.presenter.get_dataset_id_for_stack(stack_id)
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
+    def get_dataset(self, dataset_id: uuid.UUID) -> Dataset | None:
         return self.presenter.get_dataset(dataset_id)
 
     def get_all_stacks(self) -> list[ImageStack]:
