@@ -763,6 +763,7 @@ document.write(`
 <span class="sd">        Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.</span>
 <span class="sd">        :param dataset: The loaded dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
@@ -785,6 +786,7 @@ document.write(`
 <span class="sd">        :param dataset: The loaded dataset.</span>
 <span class="sd">        :return: The stack widget for the sample.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">sample_stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">sample_stack_vis</span><span class="p">)</span>
 
@@ -891,6 +893,7 @@ document.write(`
 <span class="sd">        Creates the tree view items for a strict dataset.</span>
 <span class="sd">        :param dataset: The loaded dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_dataset_tree_widget_item</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_tree_item</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;Projections&quot;</span><span class="p">)</span>
 
