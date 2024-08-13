@@ -41,7 +41,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
-        self.selected_delayed_image: dask.array.Array
+        self.selected_delayed_image: dask.array.Array | None
 
         self.filters = {f.filter_name: f for f in load_filter_packages()}
 
@@ -86,7 +86,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
         self.display_image(self.selected_image, self.selected_delayed_image)
 
-    def display_image(self, image_data_obj: Image_Data, delayed_image: dask.array.Array) -> None:
+    def display_image(self, image_data_obj: Image_Data, delayed_image: dask.array.Array | None) -> None:
         """
         Display image in the view after validating contents
         """
@@ -109,12 +109,15 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(delayed_image: dask.array.Array) -> np.ndarray:
+    def load_image(delayed_image: dask.array.Array | None) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        image_data = delayed_image.compute()
+        if delayed_image:
+            image_data = delayed_image.compute()
+        else:
+            raise ValueError
         return image_data
 
     def update_image_modified(self, image_path: Path) -> None:
