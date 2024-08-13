@@ -9,7 +9,7 @@ from unittest import mock
 
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, DaskImageDataStack, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -29,7 +29,6 @@ class ImageWatcherTest(FakeFSTestCase):
             self.watcher.create_delayed_array = False
             self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock())
             self.watcher.image_changed = self.mock_signal_image
-            self.watcher.create_delayed_array = False
 
     def _make_simple_dir(self, directory: Path, t0: float = 1000):
         file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
@@ -161,3 +160,30 @@ class ImageWatcherTest(FakeFSTestCase):
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list2)
+
+
+class DaskImageDataStackTest(FakeFSTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.top_path = Path("/live")
+        file_list = self._make_simple_dir(self.top_path)
+        self.image_data_list = [Image_Data(path) for path in file_list]
+
+    def _make_simple_dir(self, directory: Path, t0: float = 1000):
+        file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
+        if not directory.exists():
+            self.fs.create_dir(directory)
+        os.utime(directory, (10, t0))
+        n = 1
+        for file in file_list:
+            self.fs.create_file(file)
+            os.utime(file, (10, t0 + n))
+            n += 1
+
+        return file_list
+
+    def test_WHEN_not_create_delayed_array_THEN_no_delayed_array_created(self):
+        self.delayed_image_stack = DaskImageDataStack(self.image_data_list, create_delayed_array=False)
+        delayed_array = self.delayed_image_stack.get_delayed_arrays()
+        self.assertIsNone(delayed_array)

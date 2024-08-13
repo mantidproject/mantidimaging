@@ -30,6 +30,7 @@ class DaskImageDataStack:
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
         self.image_list = image_list
+        self.create_delayed_array = create_delayed_array
 
         if image_list and create_delayed_array:
             arrays = self.get_delayed_arrays()
@@ -47,9 +48,9 @@ class DaskImageDataStack:
         return self.delayed_stack.shape
 
     def get_delayed_arrays(self) -> list[dask.array.Array] | None:
-        if self.image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
+        if self.image_list[0].image_path.suffix.lower() in [".tif", ".tiff"] and self.create_delayed_array:
             return [dask_image.imread.imread(image_data.image_path)[0] for image_data in self.image_list]
-        elif self.image_list[0].image_path.suffix.lower() == ".fits":
+        elif self.image_list[0].image_path.suffix.lower() == ".fits" and self.create_delayed_array:
             return [dask.delayed(fits.open)(image_data.image_path)[0].data for image_data in self.image_list]
         else:
             return None
