@@ -61,12 +61,16 @@ class MainWindowModel:
         return ds
 
     def load_images_into_mixed_dataset(self, file_path: str, progress: Progress) -> MixedDataset:
-        group = FilenameGroup.from_file(Path(file_path))
-        group.find_all_files()
-        images = loader.load_stack_from_group(group, progress)
+        images = self.load_image_stack(file_path, progress)
         sd = MixedDataset(stacks=[images], name=images.name)
         self.datasets[sd.id] = sd
         return sd
+
+    def load_image_stack(self, file_path: str, progress: Progress) -> ImageStack:
+        group = FilenameGroup.from_file(Path(file_path))
+        group.find_all_files()
+        images = loader.load_stack_from_group(group, progress)
+        return images
 
     def do_images_saving(self, images_id: uuid.UUID, output_dir: str, name_prefix: str, image_format: str,
                          overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
