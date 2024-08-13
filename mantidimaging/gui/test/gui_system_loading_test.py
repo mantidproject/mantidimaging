@@ -224,3 +224,27 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(image_shape, [128, 128])
         self.assertEqual(image_count, expected_count)
         self.assertEqual(len(sample.real_projection_angles().value), expected_count)
+
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
+    def test_replace_image_stack(self, mocked_select_file):
+        new_stack = Path(LOAD_SAMPLE).parents[1] / "Flat_Before/" / "IMAT_Flower_Flat_Before_000000.tif"
+        mocked_select_file.return_value = new_stack
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
+        self._load_data_set()
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+        self.assertEqual(100, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
+
+        self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
+
+        self.main_window._add_images_to_existing_dataset()
+        QTest.qWait(SHORT_DELAY)
+
+        with mock.patch(
+                "mantidimaging.gui.windows.add_images_to_dataset_dialog.view.QFileDialog.getOpenFileName") as gofn:
+            gofn.return_value = (str(new_stack), None)
+            self.main_window.add_to_dataset_dialog.chooseFileButton.click()
+
+        self.main_window.add_to_dataset_dialog.accepted.emit()
+        QTest.qWait(SHORT_DELAY)
+
+        self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
