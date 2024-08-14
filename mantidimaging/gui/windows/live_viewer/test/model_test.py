@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 from numpy.testing import assert_array_equal
+import numpy as np
 
 import dask.array.random
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
@@ -196,3 +197,21 @@ class DaskImageDataStackTest(unittest.TestCase):
         calls = [mock.call(image.image_path) for image in image_data_list]
         self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
         mock_imread.assert_has_calls(calls, any_order=True)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
+    def test_WHEN_fits_file_THEN_dask_delayed_called(self, mock_fits_sample, mock_dask_delayed):
+        mock_fits_sample.return_value = np.random.random(5)
+        image_data_list, _, _ = self._get_fake_data('.fits')
+        calls = [mock.call()(image.image_path) for image in image_data_list]
+        with mock.patch("mantidimaging.gui.windows.live_viewer.model.fits.open"):
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        mock_dask_delayed.assert_has_calls(calls, any_order=True)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
+    def test_WHEN_unsupported_file_THEN_raises_error(self, mock_delayed_arrays):
+        image_data_list, fake_data_array_list, _ = self._get_fake_data(".jpeg")
+        mock_delayed_arrays.return_value = fake_data_array_list
+        with self.assertRaises(NotImplementedError):
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+
