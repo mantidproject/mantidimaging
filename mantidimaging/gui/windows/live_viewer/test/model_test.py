@@ -167,24 +167,25 @@ class ImageWatcherTest(FakeFSTestCase):
 
 class DaskImageDataStackTest(unittest.TestCase):
 
-    @mock.patch("mantidimaging.gui.windows.live_viewer.model.Path.stat", side_effect=None)
-    def setUp(self, _):
-        super().setUp()
-        file_list = [Path(f"abc_{i:06d}.tif") for i in range(5)]
-        self.image_data_list = [Image_Data(path) for path in file_list]
-        self.fake_data_array_list = [dask.array.random.random(5) for _ in self.image_data_list]
-        self.fake_data_stack = dask.array.stack(self.fake_data_array_list)
+    def _get_fake_data(self, ext: str):
+        file_list = [Path(f"abc_{i:06d}" + ext) for i in range(5)]
+        with mock.patch("mantidimaging.gui.windows.live_viewer.model.Path.stat"):
+            image_data_list = [Image_Data(path) for path in file_list]
+        fake_data_array_list = [dask.array.random.random(5) for _ in image_data_list]
+        fake_data_stack = dask.array.stack(fake_data_array_list)
+        return image_data_list, fake_data_array_list, fake_data_stack
 
     def test_WHEN_not_create_delayed_array_THEN_no_delayed_array_created(self):
-        self.delayed_image_stack = DaskImageDataStack(self.image_data_list, create_delayed_array=False)
+        image_data_list, _, _ = self._get_fake_data('.tif')
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=False)
         self.assertIsNone(self.delayed_image_stack.get_delayed_arrays())
         self.assertIsNone(self.delayed_image_stack.delayed_stack)
-        self.assertEqual(self.delayed_image_stack.image_list, self.image_data_list)
+        self.assertEqual(self.delayed_image_stack.image_list, image_data_list)
 
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
     def test_WHEN_create_delayed_array_THEN_delayed_array_created(self, mock_delayed_arrays):
-        mock_delayed_arrays.return_value = self.fake_data_array_list
-        self.delayed_image_stack = DaskImageDataStack(self.image_data_list, create_delayed_array=True)
-        assert_array_equal(self.delayed_image_stack.delayed_stack, self.fake_data_stack)
-        assert_array_equal(self.delayed_image_stack.delayed_stack.compute(), self.fake_data_stack.compute())
-
+        image_data_list, fake_data_array_list, fake_data_stack = self._get_fake_data(".tif")
+        mock_delayed_arrays.return_value = fake_data_array_list
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        assert_array_equal(self.delayed_image_stack.delayed_stack, fake_data_stack)
+        assert_array_equal(self.delayed_image_stack.delayed_stack.compute(), fake_data_stack.compute())
