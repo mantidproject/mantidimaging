@@ -113,7 +113,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        if delayed_image:
+        if delayed_image is not None:
             image_data = delayed_image.compute()
         else:
             raise ValueError

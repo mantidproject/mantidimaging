@@ -8,6 +8,7 @@ from pathlib import Path
 from logging import getLogger
 
 import dask.array
+import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 import dask_image.imread
@@ -38,10 +39,11 @@ class DaskImageDataStack:
                 if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
                     self.delayed_stack = dask.array.stack(dask.array.array(arrays))
                 elif image_list[0].image_path.suffix.lower() in [".fits"]:
-                    with fits.open(image_list[0].image_path.__str__()) as fit:
-                        sample = fit[0].data
+                    sample = self.get_fits_sample(image_list[0])
                     lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
                     self.delayed_stack = dask.array.stack(lazy_arrays)
+                else:
+                    raise NotImplementedError(f"DaskImageDataStack does not support image with extension {image_list[0].image_path.suffix.lower()}")
 
     @property
     def shape(self):
@@ -56,10 +58,14 @@ class DaskImageDataStack:
             return None
 
     def get_delayed_image(self, index: int) -> dask.array.Array | None:
-        return self.delayed_stack[index] if self.delayed_stack else None
+        return self.delayed_stack[index] if self.delayed_stack is not None else None
 
     def get_image_data(self, index: int) -> Image_Data | None:
         return self.image_list[index] if self.image_list else None
+
+    def get_fits_sample(self, image_data: Image_Data) -> np.ndarray:
+        with fits.open(image_data.image_path.__str__()) as fit:
+            return fit[0].data
 
 
 class Image_Data:
