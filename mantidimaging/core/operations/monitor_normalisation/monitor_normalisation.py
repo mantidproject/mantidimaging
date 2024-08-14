@@ -31,6 +31,7 @@ class MonitorNormalisation(BaseFilter):
     """
     filter_name = "Monitor Normalisation"
     link_histograms = True
+    allow_for_180_projection = False
 
     @staticmethod
     def filter_func(images: ImageStack, progress=None) -> ImageStack:
