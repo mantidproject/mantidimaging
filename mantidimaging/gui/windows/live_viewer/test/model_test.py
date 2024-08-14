@@ -169,6 +169,9 @@ class ImageWatcherTest(FakeFSTestCase):
 
 class DaskImageDataStackTest(unittest.TestCase):
 
+    def setUp(self):
+        self.test_array = np.array([1, 3, 5, 12, 15])
+
     def _get_fake_data(self, ext: str):
         file_list = [Path(f"abc_{i:06d}" + ext) for i in range(5)]
         with mock.patch("mantidimaging.gui.windows.live_viewer.model.Path.stat"):
@@ -202,7 +205,7 @@ class DaskImageDataStackTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
     def test_WHEN_fits_file_THEN_dask_delayed_called(self, mock_fits_sample, mock_dask_delayed):
-        mock_fits_sample.return_value = np.random.random(5)
+        mock_fits_sample.return_value = self.test_array
         image_data_list, _, _ = self._get_fake_data('.fits')
         calls = [mock.call()(image.image_path) for image in image_data_list]
         with mock.patch("mantidimaging.gui.windows.live_viewer.model.fits.open"):
@@ -221,8 +224,9 @@ class DaskImageDataStackTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.array.from_delayed")
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
     @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
-    def test_WHEN_supported_file_THEN_no_error_raised(self, file_ext, mock_fits_sample, _, mock_from_delayed, mock_delayed_arrays):
-        mock_fits_sample.return_value = np.random.random(5)
+    def test_WHEN_supported_file_THEN_no_error_raised(self, file_ext, mock_fits_sample, _, mock_from_delayed,
+                                                      mock_delayed_arrays):
+        mock_fits_sample.return_value = self.test_array
         image_data_list, fake_data_array_list, _ = self._get_fake_data(file_ext)
         mock_delayed_arrays.return_value = fake_data_array_list
         mock_from_delayed.return_value = fake_data_array_list
