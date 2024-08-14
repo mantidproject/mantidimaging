@@ -43,7 +43,8 @@ class DaskImageDataStack:
                     lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
                     self.delayed_stack = dask.array.stack(lazy_arrays)
                 else:
-                    raise NotImplementedError(f"DaskImageDataStack does not support image with extension {image_list[0].image_path.suffix.lower()}")
+                    raise NotImplementedError(f"DaskImageDataStack does not support image with extension "
+                                              f"{image_list[0].image_path.suffix.lower()}")
 
     @property
     def shape(self):
