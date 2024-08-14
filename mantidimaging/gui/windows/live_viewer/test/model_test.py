@@ -189,3 +189,10 @@ class DaskImageDataStackTest(unittest.TestCase):
         self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
         assert_array_equal(self.delayed_image_stack.delayed_stack, fake_data_stack)
         assert_array_equal(self.delayed_image_stack.delayed_stack.compute(), fake_data_stack.compute())
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask_image.imread.imread")
+    def test_WHEN_tif_file_THEN_dask_image_imread_called(self, mock_imread):
+        image_data_list, _, _ = self._get_fake_data('.tif')
+        calls = [mock.call(image.image_path) for image in image_data_list]
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        mock_imread.assert_has_calls(calls, any_order=True)
