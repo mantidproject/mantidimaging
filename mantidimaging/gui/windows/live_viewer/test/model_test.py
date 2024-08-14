@@ -12,6 +12,7 @@ import numpy as np
 
 import dask.array.random
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
+from parameterized import parameterized
 
 from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, DaskImageDataStack, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
@@ -215,3 +216,17 @@ class DaskImageDataStackTest(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
 
+    @parameterized.expand([".tif", ".tiff", ".fits"])
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.array.from_delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
+    def test_WHEN_supported_file_THEN_no_error_raised(self, file_ext, mock_fits_sample, _, mock_from_delayed, mock_delayed_arrays):
+        mock_fits_sample.return_value = np.random.random(5)
+        image_data_list, fake_data_array_list, _ = self._get_fake_data(file_ext)
+        mock_delayed_arrays.return_value = fake_data_array_list
+        mock_from_delayed.return_value = fake_data_array_list
+        try:
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        except NotImplementedError:
+            self.fail("DaskImageDataStack raised NotImplementedError unexpectedly!")
