@@ -235,6 +235,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(100, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
 
         self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
+        self._check_datasets_consistent()
 
         self.main_window._add_images_to_existing_dataset()
         QTest.qWait(SHORT_DELAY)
@@ -246,5 +247,51 @@ class TestGuiSystemLoading(GuiSystemBase):
 
         self.main_window.add_to_dataset_dialog.accepted.emit()
         QTest.qWait(SHORT_DELAY)
-
+        self._check_datasets_consistent()
         self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
+
+    def _check_datasets_consistent(self, show_datasets=False) -> None:
+        print("_check_datasets_consistent")
+        if show_datasets:
+            print("Main window datasets")
+            for k, v in self.main_window.presenter.model.datasets.items():
+                print("  dataset:", k)
+                for image_stack in v.all:
+                    print("    ", image_stack.id, image_stack.name)
+            print("Main window visualisers/tabs")
+            for vis in self.main_window.presenter.get_active_stack_visualisers():
+                print("  ", vis.id, vis.name)
+            print("Main window treeview")
+            for i in range(self.main_window.dataset_tree_widget.topLevelItemCount()):
+                tree_ds = self.main_window.dataset_tree_widget.topLevelItem(i)
+                print(f"  dataset: {tree_ds.id} {tree_ds.text(0)}")
+                for j in range(tree_ds.childCount()):
+                    tree_is = tree_ds.child(j)
+                    print(f"    {tree_is.id} {tree_is.text(0)}")
+
+        # Datasets
+        open_dataset_ids = list(self.main_window.presenter.model.datasets.keys())
+        self.assertEqual(len(open_dataset_ids), len(set(open_dataset_ids)))
+        image_stack_ids = self.main_window.presenter.model.image_ids
+        self.assertEqual(len(image_stack_ids), len(set(image_stack_ids)))
+
+        # Visualisers/Tabs
+        visualiser_ids = [vis.id for vis in self.main_window.presenter.get_active_stack_visualisers()]
+        self.assertEqual(len(visualiser_ids), len(set(visualiser_ids)))
+        self.assertEqual(len(visualiser_ids), len(image_stack_ids))
+        for visualiser_id in visualiser_ids:
+            self.assertIn(visualiser_id, image_stack_ids)
+
+        #Tree view
+        tree_datasets = [
+            self.main_window.dataset_tree_widget.topLevelItem(i)
+            for i in range(self.main_window.dataset_tree_widget.topLevelItemCount())
+        ]
+        tree_image_stack_ids = []
+        self.assertEqual(len(open_dataset_ids), len(tree_datasets))
+        for tree_dataset in tree_datasets:
+            self.assertIn(tree_dataset.id, open_dataset_ids)
+            for i in range(tree_dataset.childCount()):
+                tree_image_stack_ids.append(tree_dataset.child(i).id)
+        self.assertEqual(len(tree_image_stack_ids), len(set(tree_image_stack_ids)))
+        self.assertEqual(len(tree_image_stack_ids), len(image_stack_ids))
