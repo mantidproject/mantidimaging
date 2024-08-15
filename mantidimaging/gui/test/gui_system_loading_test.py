@@ -28,6 +28,7 @@ class TestGuiSystemLoading(GuiSystemBase):
 
     def tearDown(self) -> None:
         self._close_image_stacks()
+        self._check_datasets_consistent()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
@@ -43,6 +44,7 @@ class TestGuiSystemLoading(GuiSystemBase):
             return (current_stacks - initial_stacks) >= 1
 
         wait_until(test_func, max_retry=600)
+        self._check_datasets_consistent()
 
     @classmethod
     def _click_stack_selector(cls):
@@ -89,6 +91,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(len(stacks_after), 5)
         self.assertIn(stacks[0], stacks_after)
         self.assertTrue(stacks[0].presenter.images.has_proj180deg())
+        self._check_datasets_consistent()
 
     def _get_log_angle(self, log_path):
         with open(log_path) as log_file:
