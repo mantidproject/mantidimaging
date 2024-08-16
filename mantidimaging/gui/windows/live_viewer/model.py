@@ -67,8 +67,8 @@ class DaskImageDataStack:
         else:
             return None
 
-    def get_delayed_image(self, index: int) -> dask.array.Array:
-        return self.delayed_stack[index]
+    def get_delayed_image(self, index: int) -> dask.array.Array | None:
+        return self.delayed_stack[index] if self.delayed_stack else None
 
     def get_image_data(self, index: int) -> Image_Data | None:
         return self.image_list[index] if self.image_list else None
