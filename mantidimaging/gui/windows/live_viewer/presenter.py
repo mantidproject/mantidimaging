@@ -120,8 +120,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Load a delayed stack from a DaskImageDataStack and compute
         """
-        if delayed_image_stack is not None and delayed_image_stack.delayed_stack is not None:
-            image_data = delayed_image_stack.get_delayed_image(delayed_image_stack.selected_index).compute()
+        if delayed_image_stack is not None:
+            delayed_image = delayed_image_stack.get_delayed_image(delayed_image_stack.selected_index)
+        if delayed_image is not None:
+            image_data = delayed_image.compute()
         else:
             raise ValueError
         return image_data
