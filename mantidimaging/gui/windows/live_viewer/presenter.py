@@ -10,9 +10,11 @@ import numpy as np
 import dask.array
 
 from imagecodecs._deflate import DeflateError
+from tifffile import tifffile
+from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, DaskImageDataStack
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -33,6 +35,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
+    image_stack: DaskImageDataStack
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -76,21 +79,25 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.set_image_index(len(images_list) - 1)
 
     def select_image(self, index: int) -> None:
-        self.selected_image = self.model.image_stack.get_image_data(index)
-        self.selected_delayed_image = self.model.image_stack.get_delayed_image(index)
+        self.selected_image = self.model.images[index]
+        self.image_stack = self.model.image_stack
+        self.image_stack.selected_index = index
         if not self.selected_image:
             return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image, self.selected_delayed_image)
+        self.display_image(self.selected_image, self.image_stack)
 
-    def display_image(self, image_data_obj: Image_Data, delayed_image: dask.array.Array | None) -> None:
+    def display_image(self, image_data_obj: Image_Data, delayed_image_stack: DaskImageDataStack | None) -> None:
         """
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image(delayed_image)
+            if delayed_image_stack is None or not delayed_image_stack.create_delayed_array:
+                image_data = self.load_image_from_path(image_data_obj.image_path)
+            else:
+                image_data = self.load_image_from_delayed_stack(delayed_image_stack)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -108,15 +115,28 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(delayed_image: dask.array.Array | None) -> np.ndarray:
+    def load_image_from_delayed_stack(delayed_image_stack: DaskImageDataStack | None) -> np.ndarray:
+        """
+        Load a delayed stack from a DaskImageDataStack and compute
+        """
+        if delayed_image_stack is not None and delayed_image_stack.delayed_stack is not None:
+            image_data = delayed_image_stack.get_delayed_image(delayed_image_stack.selected_index).compute()
+        else:
+            raise ValueError
+        return image_data
+
+    @staticmethod
+    def load_image_from_path(image_path: Path) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
         """
-        if delayed_image is not None:
-            image_data = delayed_image.compute()
-        else:
-            raise ValueError
+        if image_path.suffix.lower() in [".tif", ".tiff"]:
+            with tifffile.TiffFile(image_path) as tif:
+                image_data = tif.asarray()
+        elif image_path.suffix.lower() == ".fits":
+            with fits.open(image_path.__str__()) as fit:
+                image_data = fit[0].data
         return image_data
 
     def update_image_modified(self, image_path: Path) -> None:
@@ -124,14 +144,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(self.selected_image, self.selected_delayed_image)
+            self.display_image(self.selected_image, self.image_stack)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image, self.selected_delayed_image)
+            self.display_image(self.selected_image, self.image_stack)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
