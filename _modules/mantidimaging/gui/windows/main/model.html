@@ -547,12 +547,19 @@ document.write(`
 <div class="viewcode-block" id="MainWindowModel.load_images_into_mixed_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.load_images_into_mixed_dataset">[docs]</a>
     <span class="k">def</span> <span class="nf">load_images_into_mixed_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MixedDataset</span><span class="p">:</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
-        <span class="n">group</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
-        <span class="n">images</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_image_stack</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="n">sd</span> <span class="o">=</span> <span class="n">MixedDataset</span><span class="p">(</span><span class="n">stacks</span><span class="o">=</span><span class="p">[</span><span class="n">images</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">sd</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sd</span>
         <span class="k">return</span> <span class="n">sd</span></div>
+
+
+<div class="viewcode-block" id="MainWindowModel.load_image_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.load_image_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">images</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.do_images_saving">
