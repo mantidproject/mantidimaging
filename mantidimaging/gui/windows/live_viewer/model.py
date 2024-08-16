@@ -14,8 +14,6 @@ from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 import dask_image.imread
 from astropy.io import fits
 
-from mantidimaging.core.utility import ExecutionProfiler
-
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
