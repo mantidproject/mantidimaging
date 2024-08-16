@@ -792,6 +792,9 @@ class MainWindowPresenter(BasePresenter):
         else:
             # the image type already exists in the dataset and needs to be replaced
             prev_images_id = getattr(dataset, image_attr).id
+            if image_attr == "sample" and dataset.proj180deg:
+                self._delete_stack(dataset.proj180deg.id)
+                self.remove_item_from_tree_view(dataset.proj180deg.id)
             self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
             self._delete_stack(prev_images_id)
 
