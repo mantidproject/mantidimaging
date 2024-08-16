@@ -14,6 +14,8 @@ from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 import dask_image.imread
 from astropy.io import fits
 
+from mantidimaging.core.utility import ExecutionProfiler
+
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
@@ -28,6 +30,7 @@ class DaskImageDataStack:
     delayed_stack: dask.array.Array | None = None
     image_list: list[Image_Data]
     create_delayed_array: bool
+    _selected_index: int
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
         self.image_list = image_list
@@ -50,6 +53,14 @@ class DaskImageDataStack:
     def shape(self):
         return self.delayed_stack.shape
 
+    @property
+    def selected_index(self):
+        return self._selected_index
+
+    @selected_index.setter
+    def selected_index(self, index):
+        self._selected_index = index
+
     def get_delayed_arrays(self) -> list[dask.array.Array] | None:
         if self.image_list[0].image_path.suffix.lower() in [".tif", ".tiff"] and self.create_delayed_array:
             return [dask_image.imread.imread(image_data.image_path)[0] for image_data in self.image_list]
@@ -58,8 +69,8 @@ class DaskImageDataStack:
         else:
             return None
 
-    def get_delayed_image(self, index: int) -> dask.array.Array | None:
-        return self.delayed_stack[index] if self.delayed_stack is not None else None
+    def get_delayed_image(self, index: int) -> dask.array.Array:
+        return self.delayed_stack[index]
 
     def get_image_data(self, index: int) -> Image_Data | None:
         return self.image_list[index] if self.image_list else None
