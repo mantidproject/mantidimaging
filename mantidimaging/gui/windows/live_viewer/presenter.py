@@ -80,14 +80,13 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def select_image(self, index: int) -> None:
         self.selected_image = self.model.images[index]
-        self.image_stack = self.model.image_stack
-        self.image_stack.selected_index = index
+        self.model.image_stack.selected_index = index
         if not self.selected_image:
             return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image, self.image_stack)
+        self.display_image(self.selected_image, self.model.image_stack)
 
     def display_image(self, image_data_obj: Image_Data, delayed_image_stack: DaskImageDataStack | None) -> None:
         """
@@ -119,6 +118,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Load a delayed stack from a DaskImageDataStack and compute
         """
+        delayed_image = None
         if delayed_image_stack is not None:
             delayed_image = delayed_image_stack.get_delayed_image(delayed_image_stack.selected_index)
         if delayed_image is not None:
@@ -146,14 +146,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(self.selected_image, self.image_stack)
+            self.display_image(self.selected_image, self.model.image_stack)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image, self.image_stack)
+            self.display_image(self.selected_image, self.model.image_stack)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """

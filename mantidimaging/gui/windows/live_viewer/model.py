@@ -68,7 +68,7 @@ class DaskImageDataStack:
             return None
 
     def get_delayed_image(self, index: int) -> dask.array.Array | None:
-        return self.delayed_stack[index] if self.delayed_stack else None
+        return self.delayed_stack[index] if self.delayed_stack is not None else None
 
     def get_image_data(self, index: int) -> Image_Data | None:
         return self.image_list[index] if self.image_list else None
@@ -77,6 +77,16 @@ class DaskImageDataStack:
         with fits.open(image_data.image_path.__str__()) as fit:
             return fit[0].data
 
+    def remove_image_data_by_path(self, image_path: Path) -> None:
+        image_paths = [image.image_path for image in self.image_list]
+        index_to_remove = image_paths.index(image_path)
+        self.image_list.pop(index_to_remove)
+        dask.array.delete(self.delayed_stack, index_to_remove, 0)
+        if index_to_remove == self.selected_index and self.selected_index > 0:
+            self.selected_index = self.selected_index - 1
+        else:
+            self.selected_index = 0
+            self.delayed_stack = None
 
 class Image_Data:
     """
@@ -198,6 +208,7 @@ class LiveViewerWindowModel:
         self.presenter.update_image_list(image_files)
 
     def handle_image_modified(self, image_path: Path):
+        self.image_stack.remove_image_data_by_path(image_path)
         self.presenter.update_image_modified(image_path)
 
     def close(self) -> None:
@@ -337,7 +348,6 @@ class ImageWatcher(QObject):
 
             if len(images) > 0:
                 break
-
         images = self.sort_images_by_modified_time(images)
         dask_image_stack = DaskImageDataStack(images, create_delayed_array=self.create_delayed_array)
         self.update_recent_watcher(images[-1:])
