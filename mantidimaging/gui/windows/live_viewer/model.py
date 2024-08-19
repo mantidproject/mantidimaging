@@ -88,6 +88,7 @@ class DaskImageDataStack:
             self.selected_index = 0
             self.delayed_stack = None
 
+
 class Image_Data:
     """
     Image Data Class to store represent image data.
