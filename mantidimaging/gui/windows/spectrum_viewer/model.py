@@ -5,7 +5,7 @@ import csv
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
-
+from functools import lru_cache
 
 import numpy as np
 from math import ceil
@@ -87,7 +87,6 @@ class SpectrumViewerWindowModel:
             self.tof_mode = ToFUnitMode.WAVELENGTH
 
         self.units = UnitConversion()
-
 
     def roi_name_generator(self) -> str:
         """
@@ -183,147 +182,117 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
-    def get_spectrum(self, roi: str | SensibleROI, mode: SpecType) -> np.ndarray:
-        roi_key = self._roi_to_key(roi)
-        cache_key = (roi_key, mode)
-
-        if cache_key in self._cache:
-            return self._cache[cache_key]
-
+    @lru_cache(maxsize=128)
+    def get_spectrum(self,
+                     roi: str | SensibleROI,
+                     mode: SpecType,
+                     normalise_with_shuttercount: bool = False) -> np.ndarray:
         if self._stack is None:
             return np.array([])
 
         if isinstance(roi, str):
             roi = self.get_roi(roi)
 
-        if mode == SpecType.SAMPLE:
-            spectrum = self.get_stack_spectrum(self._stack, roi).compute()
-        elif mode == SpecType.OPEN:
-            if self._normalise_stack is None:
-                return np.array([])
-            spectrum = self.get_stack_spectrum(self._normalise_stack, roi).compute()
-        elif mode == SpecType.SAMPLE_NORMED:
-            if self._normalise_stack is None or self.normalise_issue():
-                return np.array([])
-            roi_spectrum = self.get_stack_spectrum(self._stack, roi).compute()
-            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi).compute()
-            spectrum = np.divide(roi_spectrum, roi_norm_spectrum, out=np.zeros_like(roi_spectrum),
-                                 where=roi_norm_spectrum != 0)
-        else:
-            raise ValueError(f"Unsupported mode: {mode}")
+        roi_key = self.roi_to_key(roi)
+        cache_key = (roi_key, mode, normalise_with_shuttercount)
+
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
+        spectrum = self.compute_full_spectrum(roi, mode)
+
+        if normalise_with_shuttercount:
+            spectrum = self.normalize_with_shuttercount(spectrum)
 
         self._cache[cache_key] = spectrum
-        return np.asarray(spectrum)
+        return spectrum
 
-    def redraw_spectrum(self, roi):
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
-        tof_data = self.model.tof_data
+    def normalize_with_shuttercount(self, spectrum):
+        average_shuttercount = self.get_shuttercount()
+        return spectrum / average_shuttercount if average_shuttercount != 0 else np.zeros_like(spectrum)
 
-        if spectrum.size == 0 or tof_data.size == 0:
-            return
+    def compute_full_spectrum(self, roi, mode):
+        mode_operations = {
+            SpecType.SAMPLE: lambda: self.get_stack_spectrum(self._stack, roi),
+            SpecType.OPEN: lambda: self.get_stack_spectrum(self.normalize_stack, roi),
+            SpecType.SAMPLE_NORMED: lambda: self.compute_normalized_spectrum(roi)
+        }
 
-        # Ensure both tof_data and spectrum are arrays
-        tof_data = np.asarray(tof_data)
-        spectrum = np.asarray(spectrum)
+        if mode not in mode_operations:
+            raise ValueError(f"Unsupported mode: {mode}")
 
-        self.view.set_spectrum(roi, spectrum)
-        self.view.spectrum_widget.spectrum.plot(tof_data, spectrum)
+        return mode_operations[mode]().compute()
 
-    def _roi_to_key(self, roi: str | SensibleROI) -> tuple:
-        """
-        Convert a SensibleROI to a hashable key for caching.
-        """
+    def compute_normalized_spectrum(self, roi):
+        roi_spectrum = self.get_stack_spectrum(self._stack, roi)
+        roi_norm_spectrum = self.get_stack_spectrum(self.normalize_stack, roi)
+        return da.divide(roi_spectrum, roi_norm_spectrum, out=da.zeros_like(roi_spectrum), where=roi_norm_spectrum != 0)
+
+    def update_spectrum(self, old_roi, new_roi):
+        if self.can_incrementally_update(old_roi, new_roi):
+            removed_data, added_data = self.calculate_data_differences(old_roi, new_roi)
+            return self.update_spectrum_incrementally(removed_data, added_data)
+        else:
+            return self.get_spectrum(new_roi, self.spectrum_mode)
+
+    def calculate_data_differences(self, old_roi, new_roi):
+        intersection = old_roi.intersection(new_roi)
+        removed_data_mask, added_data_mask = self._create_masks(old_roi, new_roi, intersection)
+        removed_data = self.extract_data(self._stack, old_roi, removed_data_mask)
+        added_data = self.extract_data(self._stack, new_roi, added_data_mask)
+        return removed_data, added_data
+
+    def _create_masks(self, old_roi, new_roi, intersection):
+        removed_data_mask = np.ones((old_roi.height, old_roi.width), dtype=bool)
+        added_data_mask = np.zeros((new_roi.height, new_roi.width), dtype=bool)
+
+        if intersection:
+            self.apply_mask(removed_data_mask, old_roi, intersection, negate=True)
+            self.apply_mask(added_data_mask, new_roi, intersection, negate=False)
+
+        return removed_data_mask, added_data_mask
+
+    def apply_mask(self, mask, roi, intersection, negate=False):
+        offset_x1 = max(0, intersection.left - roi.left)
+        offset_y1 = max(0, intersection.top - roi.top)
+        offset_x2 = min(roi.width, intersection.right - roi.left)
+        offset_y2 = min(roi.height, intersection.bottom - roi.top)
+
+        mask[offset_y1:offset_y2, offset_x1:offset_x2] = not negate
+
+    def extract_data(self, stack, roi, mask):
+        if not stack:
+            return da.array([])
+
+        data = da.from_array(stack.data[:, roi.top:roi.bottom, roi.left:roi.right], chunks='auto')
+        return data[mask].compute()
+
+    def update_spectrum_incrementally(self, removed_data, added_data):
+        if removed_data.size > 0:
+            self.old_spectrum -= removed_data.sum(axis=0)
+
+        if added_data.size > 0:
+            self.old_spectrum += added_data.sum(axis=0)
+
+        return self.old_spectrum
+
+    def can_incrementally_update(self, old_roi, new_roi):
+        max_shift_allowed = 10
+        return all([
+            abs(new_roi.left - old_roi.left) <= max_shift_allowed,
+            abs(new_roi.top - old_roi.top) <= max_shift_allowed,
+            abs((new_roi.right - new_roi.left) - (old_roi.right - old_roi.left)) <= max_shift_allowed,
+            abs((new_roi.bottom - new_roi.top) - (old_roi.bottom - old_roi.top)) <= max_shift_allowed,
+            old_roi.has_significant_overlap(new_roi, threshold=0.5)
+        ])
+
+    def roi_to_key(self, roi):
         if isinstance(roi, SensibleROI):
             return (roi.left, roi.top, roi.right, roi.bottom)
         return roi
 
     def clear_cache(self):
         self._cache.clear()
-
-    def can_incrementally_update(self, old_roi: SensibleROI, new_roi: SensibleROI) -> bool:
-        x_shift = abs(new_roi.left - old_roi.left)
-        y_shift = abs(new_roi.top - old_roi.top)
-        width_change = abs((new_roi.right - new_roi.left) - (old_roi.right - old_roi.left))
-        height_change = abs((new_roi.bottom - old_roi.top) - (old_roi.bottom - old_roi.top))
-
-        max_shift_allowed = 10
-
-        if (x_shift <= max_shift_allowed and y_shift <= max_shift_allowed and width_change <= max_shift_allowed
-                and height_change <= max_shift_allowed):
-            return old_roi.has_significant_overlap(new_roi, threshold=0.5)
-        return False
-
-    def update_spectrum(self, old_roi: SensibleROI, new_roi: SensibleROI):
-        removed_data = self.calculate_removed_data(old_roi, new_roi)
-        added_data = self.calculate_added_data(old_roi, new_roi)
-
-        # Retrieve current cached value and count
-        roi_key = self._roi_to_key(old_roi)
-        current_cached_value, current_count = self._cache.get((roi_key, "SPECTRUM"), (0, 0))
-
-        # Update the cached data
-        new_cached_value, new_count = self.update_cached_data(removed_data, added_data, current_cached_value,
-                                                              current_count)
-
-        # Store updated values back in cache
-        self._cache[(roi_key, "SPECTRUM")] = (new_cached_value, new_count)
-
-        return new_cached_value
-
-    def calculate_removed_data(self, old_roi: SensibleROI, new_roi: SensibleROI):
-        intersection = old_roi.intersection(new_roi)
-        removed_data_mask = np.ones((old_roi.height, old_roi.width), dtype=bool)
-
-        if not self._stack:
-            return da.array([])
-
-        if intersection:
-            offset_x1, offset_y1 = max(0, intersection.left - old_roi.left), max(0, intersection.top - old_roi.top)
-            offset_x2, offset_y2 = min(old_roi.width, intersection.right - old_roi.left), min(old_roi.height,
-                                                                                              intersection.bottom - old_roi.top)
-
-            if 0 <= offset_x1 < removed_data_mask.shape[1] and 0 <= offset_y1 < removed_data_mask.shape[0]:
-                removed_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = False
-
-            removed_data = da.from_array(self._stack.data[:, old_roi.top:old_roi.bottom, old_roi.left:old_roi.right],
-                                         chunks='auto')
-            mask_expanded = da.broadcast_to(removed_data_mask, removed_data.shape)
-            return removed_data[mask_expanded].compute()
-
-        return da.array([])
-
-    def calculate_added_data(self, old_roi: SensibleROI, new_roi: SensibleROI):
-        intersection = old_roi.intersection(new_roi)
-        added_data_mask = np.zeros((new_roi.height, new_roi.width), dtype=bool)
-
-        if not self._stack:
-            return da.array([])
-
-        if intersection:
-            offset_x1, offset_y1 = max(0, intersection.left - new_roi.left), max(0, intersection.top - new_roi.top)
-            offset_x2, offset_y2 = min(new_roi.width, intersection.right - new_roi.left), min(new_roi.height,
-                                                                                              intersection.bottom - new_roi.top)
-
-            if 0 <= offset_x1 < added_data_mask.shape[1] and 0 <= offset_y1 < added_data_mask.shape[0]:
-                added_data_mask[offset_y1:offset_y2, offset_x1:offset_x2] = True
-
-            added_data = da.from_array(self._stack.data[:, new_roi.top:new_roi.bottom, new_roi.left:new_roi.right],
-                                       chunks='auto')
-            mask_expanded = da.broadcast_to(added_data_mask, added_data.shape)
-            return added_data[mask_expanded].compute()
-
-        return da.array([])
-
-    def update_cached_data(self, removed_data, added_data, current_cached_value, current_count):
-        sum_removed = da.from_array(removed_data).sum().compute() if removed_data.size > 0 else 0
-        sum_added = da.from_array(added_data).sum().compute() if added_data.size > 0 else 0
-
-        total_current_sum = current_cached_value * current_count
-        new_total_sum = total_current_sum - sum_removed + sum_added
-        new_count = current_count - removed_data.size + added_data.size
-
-        new_cached_value = new_total_sum / new_count if new_count > 0 else 0
-        return new_cached_value, new_count
 
     def get_transmission_error_standard_dev(self, roi: SensibleROI) -> np.ndarray:
         """
