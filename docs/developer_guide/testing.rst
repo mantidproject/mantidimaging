@@ -21,6 +21,22 @@ For more targeted testing, Mantid Imaging provides several specific commands:
 
 Refer to the :file:`Makefile` for additional options or to modify these commands for specific scenarios.
 
+Running Specific Tests
+----------------------
+
+Mantid Imaging allows you to focus on specific test cases or workflows by running individual test modules or selecting tests based on keywords.
+
+To run a specific test module, you can specify its path using the following command:
+
+    python -m unittest path.to.your_test_module
+
+If you are using `pytest`, you can run tests that match a specific keyword by using the ``-k`` flag::
+
+    pytest -k "test_valid_login"
+
+These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
+
+
 Pre-commit
 ----------
 
