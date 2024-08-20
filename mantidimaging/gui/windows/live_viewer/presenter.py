@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
+
+import dask_image.imread
 import numpy as np
 import dask.array
 
@@ -79,24 +81,35 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.set_image_index(len(images_list) - 1)
 
     def select_image(self, index: int) -> None:
+        print(f"OOOOOOOOOOOOO select_image: {index=}, {self.model.images=} 0000000000000000")
+        if not self.model.images:
+            self.update_image_list([])
+            return
         self.selected_image = self.model.images[index]
-        self.model.image_stack.selected_index = index
+        self.image_stack = self.model.image_stack
+        self.image_stack.selected_index = index
         if not self.selected_image:
             return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image, self.model.image_stack)
+        self.display_image(self.selected_image, self.image_stack)
 
     def display_image(self, image_data_obj: Image_Data, delayed_image_stack: DaskImageDataStack | None) -> None:
         """
         Display image in the view after validating contents
         """
+        print(f"\n+++++++++++++++ display_image {delayed_image_stack=} ++++++++++++++++\n")
+        print(f"\n+++++++++++++++ display_image {delayed_image_stack.delayed_stack=} ++++++++++++++++\n")
+        #print(f"\n+++++++++++++++ display_image {delayed_image_stack.delayed_stack.shape=} ++++++++++++++++\n")
         try:
-            if delayed_image_stack is None or not delayed_image_stack.create_delayed_array:
+            if delayed_image_stack is None or delayed_image_stack.delayed_stack is None or not delayed_image_stack.create_delayed_array:
                 image_data = self.load_image_from_path(image_data_obj.image_path)
             else:
-                image_data = self.load_image_from_delayed_stack(delayed_image_stack)
+                try:
+                    image_data = self.load_image_from_delayed_stack(delayed_image_stack)
+                except (AttributeError, dask_image.imread.pims.api.UnknownFormatError):
+                    image_data = self.load_image_from_path(image_data_obj.image_path)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -120,9 +133,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         delayed_image = None
         if delayed_image_stack is not None:
-            delayed_image = delayed_image_stack.get_delayed_image(delayed_image_stack.selected_index)
-        if delayed_image is not None:
-            image_data = delayed_image.compute()
+            image_data = delayed_image_stack.get_selected_computed_image()
         else:
             raise ValueError
         return image_data
@@ -146,14 +157,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(self.selected_image, self.model.image_stack)
+            self.display_image(self.selected_image, self.image_stack)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image, self.model.image_stack)
+            self.display_image(self.selected_image, self.image_stack)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
@@ -174,3 +185,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             op_params = self.view.filter_params[operation]["params"]
             op_func(image_stack, **op_params)
         return image_stack.slice_as_array(0)[0]
+
+    def update_image_stack(self, image_stack: DaskImageDataStack):
+        self.image_stack = image_stack
