@@ -26,21 +26,21 @@ Running Specific Tests
 
 Mantid Imaging allows you to focus on specific test cases or workflows by running individual test modules or selecting tests based on keywords.
 
-To run a specific test module, you can specify its path using the following command:
+To run a specific test module, you can specify its path using the following command::
 
-    python -m unittest path.to.your_test_module
+    pytest -m path/to/test_file.py
 
 If you are using `pytest`, you can run tests that match a specific keyword by using the ``-k`` flag::
 
     pytest -k "test_valid_login"
 
 These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
-
+See the Pytest docs for additional `command line options <https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags>`.
 
 Pre-commit
 ----------
 
-Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.
+Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_: to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.
 
 To enable pre-commit hooks, you must manually install them by running::
 
@@ -57,7 +57,7 @@ This command executes all pre-commit hooks across the entire codebase, including
 Unit testing
 ------------
 
-Unit tests can be run using `pytest <https://docs.pytest.org/>`_, e.g.::
+Unit tests can be run using `pytest <https://docs.pytest.org/>`_:, e.g.::
 
     make pytest
 
@@ -69,9 +69,9 @@ Static analysis
 
 Mantid Imaging uses several tools to ensure high code quality and consistency:
 
-- :code:`mypy <http://mypy-lang.org/>`: Enforces type correctness to catch potential type errors early.
-- :code:`ruff <https://beta.ruff.rs/docs/>`: Checks for common syntax and style issues to maintain clean, readable code.
-- :code:`yapf <https://github.com/google/yapf>`: Formats code according to PEP 8 standards, ensuring consistent style.
+- :code:`mypy <http://mypy-lang.org/>`_: Enforces type correctness to catch potential type errors early.
+- :code:`ruff <https://beta.ruff.rs/docs/>`_: Checks for common syntax and style issues to maintain clean, readable code.
+- :code:`yapf <https://github.com/google/yapf>`_: Formats code according to PEP 8 standards, ensuring consistent style.
 
 These tools can be run collectively with:
 
@@ -87,25 +87,25 @@ Or individually for specific tasks:
 GUI Screenshot Testing
 ----------------------
 
-Mantid Imaging uses `Applitools Eyes <https://applitools.com/products-eyes/>`_ for GUI approval testing. During this process, screenshots of application windows are captured and compared against known good baseline images to detect any unintended visual changes. This process is integrated into the GitHub Actions workflow and runs automatically on pull requests.
+Mantid Imaging uses `Applitools Eyes <https://applitools.com/products-eyes/>`_: for GUI approval testing. During this process, screenshots of application windows are captured and compared against known good baseline images to detect any unintended visual changes. This process is integrated into the GitHub Actions workflow and runs automatically on pull requests.
 
 The tests can also be run locally, with options tailored for different platforms:
 
-- **Cross-Platform Testing**: Run the tests on any platform and save the screenshots to a specified directory:
+- **Cross-Platform Testing**: Run the tests on any platform and save the screenshots to a specified directory::
 
       make test-screenshots
 
-  By default, screenshots are saved to a predefined directory. You can customize the output directory by setting the :code:`APPLITOOLS_IMAGE_DIR` environment variable. For example:
+  By default, screenshots are saved to a predefined directory. You can customize the output directory by setting the :code:`APPLITOOLS_IMAGE_DIR` environment variable. For example::
 
       export APPLITOOLS_IMAGE_DIR=/path/to/your/directory
 
-- **Windows-Specific Testing**: For running screenshot tests specifically on Windows, use the following command:
+- **Windows-Specific Testing**: For running screenshot tests specifically on Windows, use the following command::
 
       make test-screenshots-win
 
   This command ensures that the graphical output is consistent on Windows, accounting for any platform-specific rendering differences.
 
-If you want to upload the screenshots to the Applitools API for comparison with baseline images stored on their servers, you need to set the :code:`APPLITOOLS_API_KEY` environment variable, which can be obtained from the Applitools web interface:
+If you want to upload the screenshots to the Applitools API for comparison with baseline images stored on their servers, you need to set the :code:`APPLITOOLS_API_KEY` environment variable, which can be obtained from the Applitools web interface::
 
     export APPLITOOLS_API_KEY=your_applitools_api_key
 
@@ -126,7 +126,7 @@ GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where po
 Logging
 -------
 
-Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_). For example::
+Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_:). For example::
 
     [logging]
     log_level=DEBUG
