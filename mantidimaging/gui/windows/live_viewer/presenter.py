@@ -82,7 +82,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.set_load_as_dataset_enabled(True)
 
     def select_image(self, index: int) -> None:
-        print(f"OOOOOOOOOOOOO select_image: {index=}, {self.model.images=} 0000000000000000")
         if not self.model.images:
             self.update_image_list([])
             return
@@ -100,11 +99,9 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Display image in the view after validating contents
         """
-        print(f"\n+++++++++++++++ display_image {delayed_image_stack=} ++++++++++++++++\n")
-        print(f"\n+++++++++++++++ display_image {delayed_image_stack.delayed_stack=} ++++++++++++++++\n")
-        #print(f"\n+++++++++++++++ display_image {delayed_image_stack.delayed_stack.shape=} ++++++++++++++++\n")
         try:
-            if delayed_image_stack is None or delayed_image_stack.delayed_stack is None or not delayed_image_stack.create_delayed_array:
+            if (delayed_image_stack is None or delayed_image_stack.delayed_stack is None
+                    or not delayed_image_stack.create_delayed_array):
                 image_data = self.load_image_from_path(image_data_obj.image_path)
             else:
                 try:
@@ -132,7 +129,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Load a delayed stack from a DaskImageDataStack and compute
         """
-        delayed_image = None
         if delayed_image_stack is not None:
             image_data = delayed_image_stack.get_selected_computed_image()
         else:
