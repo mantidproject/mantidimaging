@@ -57,6 +57,8 @@ class DaskImageDataStack:
                 return [dask.delayed(fits.open)(image_data.image_path)[0].data for image_data in image_list]
             else:
                 return None
+        else:
+            return None
 
     def get_delayed_image(self, index: int) -> dask.array.Array | None:
         return self.delayed_stack[index] if self.delayed_stack is not None else None
@@ -72,13 +74,15 @@ class DaskImageDataStack:
         if index < 0:
             return None
         try:
-            self.get_delayed_image(index).compute()
+            image_to_compute = self.get_delayed_image(index)
+            if image_to_compute:
+                computed_image = image_to_compute.compute()
         except dask_image.imread.pims.api.UnknownFormatError:
             self.remove_image_data_by_index(index)
             self.get_computed_image(index - 1)
         except AttributeError:
             return None
-        return self.get_delayed_image(index).compute()
+        return computed_image
 
     def get_selected_computed_image(self):
         try:
@@ -407,7 +411,9 @@ class ImageWatcher(QObject):
         images = self.sort_images_by_modified_time(images)
         if len(images) == 0:
             self.image_stack.delete_all_data()
-        self.image_stack.add_images_to_delayed_stack(images)
+
+        if self.create_delayed_array:
+            self.image_stack.add_images_to_delayed_stack(images)
 
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images, self.image_stack)
