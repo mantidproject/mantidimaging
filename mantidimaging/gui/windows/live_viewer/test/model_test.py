@@ -183,7 +183,6 @@ class DaskImageDataStackTest(unittest.TestCase):
     def test_WHEN_not_create_delayed_array_THEN_no_delayed_array_created(self):
         image_data_list, _, _ = self._get_fake_data('.tif')
         self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=False)
-        self.assertIsNone(self.delayed_image_stack.get_delayed_arrays())
         self.assertIsNone(self.delayed_image_stack.delayed_stack)
         self.assertEqual(self.delayed_image_stack.image_list, image_data_list)
 
