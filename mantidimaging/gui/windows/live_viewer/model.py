@@ -75,7 +75,7 @@ class DaskImageDataStack:
             return None
         try:
             image_to_compute = self.get_delayed_image(index)
-            if image_to_compute:
+            if image_to_compute is not None:
                 computed_image = image_to_compute.compute()
         except dask_image.imread.pims.api.UnknownFormatError:
             self.remove_image_data_by_index(index)
