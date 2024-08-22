@@ -43,7 +43,7 @@ class GuiSystemBase(unittest.TestCase):
         Will report any leaked images
         Expects all other windows to be closed, otherwise will raise a RuntimeError
         """
-        QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
+        QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("OK"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
         self.assertDictEqual(self.main_window.presenter.model.datasets, {})
