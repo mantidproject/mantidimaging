@@ -136,7 +136,8 @@ class DaskImageDataStack:
             self.add_last_mean()
 
     def add_last_mean(self) -> None:
-        self.mean.append(dask.array.mean(self.delayed_stack[-1]).compute())
+        if self.delayed_stack is not None:
+            self.mean.append(dask.array.mean(self.delayed_stack[-1]).compute())
 
     def delete_all_data(self):
         self.image_list = []
