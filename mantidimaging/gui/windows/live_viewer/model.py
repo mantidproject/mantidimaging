@@ -29,6 +29,7 @@ class DaskImageDataStack:
     image_list: list[Image_Data]
     create_delayed_array: bool
     _selected_index: int
+    mean: list[float] = []
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
         self.image_list = image_list
@@ -119,7 +120,7 @@ class DaskImageDataStack:
                                           f"{image_list[0].image_path.suffix.lower()}")
         return delayed_stack
 
-    def add_images_to_delayed_stack(self, new_image_list: list[Image_Data]) -> None:
+    def add_images_to_delayed_stack(self, new_image_list: list[Image_Data], param_to_calc: list[str]) -> None:
         if not new_image_list:
             return
         image_paths = [image.image_path for image in self.image_list]
@@ -131,6 +132,11 @@ class DaskImageDataStack:
                 self.delayed_stack = dask.array.concatenate(
                     [self.delayed_stack, self.get_delayed_arrays(images_to_add)])
         self.image_list.extend(images_to_add)
+        if 'mean' in param_to_calc:
+            self.add_last_mean()
+
+    def add_last_mean(self) -> None:
+        self.mean.append(dask.array.mean(self.delayed_stack[-1]).compute())
 
     def delete_all_data(self):
         self.image_list = []
@@ -413,7 +419,7 @@ class ImageWatcher(QObject):
             self.image_stack.delete_all_data()
 
         if self.create_delayed_array:
-            self.image_stack.add_images_to_delayed_stack(images)
+            self.image_stack.add_images_to_delayed_stack(images, ['mean'])
 
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images, self.image_stack)
