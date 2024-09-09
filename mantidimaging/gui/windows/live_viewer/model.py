@@ -29,7 +29,7 @@ class DaskImageDataStack:
     image_list: list[Image_Data]
     create_delayed_array: bool
     _selected_index: int
-    mean: list[float] = []
+    mean: np.ndarray = np.array([])
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
         self.image_list = image_list
@@ -133,11 +133,18 @@ class DaskImageDataStack:
                     [self.delayed_stack, self.get_delayed_arrays(images_to_add)])
         self.image_list.extend(images_to_add)
         if 'mean' in param_to_calc:
-            self.add_last_mean()
+            if len(self.mean) == len(self.image_list) - 1:
+                self.add_last_mean()
+            else:
+                self.calc_mean_fully()
 
     def add_last_mean(self) -> None:
         if self.delayed_stack is not None:
-            self.mean.append(dask.array.mean(self.delayed_stack[-1]).compute())
+            self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1]).compute())
+
+    def calc_mean_fully(self) -> None:
+        if self.delayed_stack is not None:
+            self.mean = dask.array.mean(self.delayed_stack, axis=(1, 2)).compute()
 
     def delete_all_data(self):
         self.image_list = []
@@ -246,6 +253,7 @@ class LiveViewerWindowModel:
         self.image_watcher = ImageWatcher(path)
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
+        self.image_watcher.update_spectrum.connect(self.presenter.update_spectrum)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
     @property
@@ -308,6 +316,7 @@ class ImageWatcher(QObject):
         Sort the images by modified time.
     """
     image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
+    update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
     create_delayed_array: bool = True
     image_stack = DaskImageDataStack([], create_delayed_array=True)
@@ -421,6 +430,7 @@ class ImageWatcher(QObject):
 
         if self.create_delayed_array:
             self.image_stack.add_images_to_delayed_stack(images, ['mean'])
+            self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images, self.image_stack)

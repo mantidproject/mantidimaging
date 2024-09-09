@@ -190,3 +190,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_stack(self, image_stack: DaskImageDataStack):
         self.image_stack = image_stack
+
+    def update_spectrum(self, spec_data: list):
+        self.view.spectrum.clearPlots()
+        self.view.spectrum.plot(spec_data)
