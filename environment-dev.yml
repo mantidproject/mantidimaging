@@ -10,7 +10,7 @@ dependencies:
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - pip
   - pip:
-      - eyes-images==5.20.*
+      - eyes-images==5.23.*
   - yapf==0.40.*
   - mypy==1.8
   - types-requests
