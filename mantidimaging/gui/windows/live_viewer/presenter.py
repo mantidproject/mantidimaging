@@ -114,6 +114,10 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
+        self.view.live_viewer.set_image_shape(image_data.shape)
+        if not self.view.live_viewer.roi_object:
+            self.view.live_viewer.add_roi()
+            self.model.image_stack.set_roi(self.view.live_viewer.get_roi())
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
@@ -191,6 +195,13 @@ class LiveViewerWindowPresenter(BasePresenter):
     def update_image_stack(self, image_stack: DaskImageDataStack):
         self.image_stack = image_stack
 
-    def update_spectrum(self, spec_data: list):
+    def update_spectrum(self, spec_data: list | np.ndarray):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(spec_data)
+
+    def handle_roi_moved(self, force_new_spectrums: bool = False):
+        print(f"handle_roi_moved")
+        roi = self.view.live_viewer.get_roi()
+        self.model.image_stack.set_roi(roi)
+        self.model.image_stack.calc_mean_fully_roi()
+        self.update_spectrum(self.model.image_stack.mean)
