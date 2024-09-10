@@ -2,10 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from pyqtgraph import GraphicsLayoutWidget
 
+from PyQt5.QtCore import pyqtSignal
+from pyqtgraph import GraphicsLayoutWidget, mkPen
+
+from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.gui.widgets.zslider.zslider import ZSlider
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 if TYPE_CHECKING:
     import numpy as np
@@ -18,6 +23,10 @@ class LiveViewWidget(GraphicsLayoutWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
+    image_shape: tuple
+    roi_changed = pyqtSignal()
+    roi_object: SpectrumROI | None = None
+    sensible_roi: SensibleROI
 
     def __init__(self) -> None:
         super().__init__()
@@ -48,3 +57,34 @@ class LiveViewWidget(GraphicsLayoutWidget):
 
     def show_error(self, message: str | None):
         self.image.show_message(message)
+
+    def add_roi(self):
+        height, width = self.image_shape
+        roi = SensibleROI.from_list([0, 0, width, height])
+        self.roi_object = SpectrumROI('roi', roi, rotatable=False, scaleSnap=True, translateSnap=True)
+        self.roi_object.colour = (255, 194, 10, 255)
+        self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
+        self.roi_object.roi.sigRegionChangeFinished.connect(self.roi_changed.emit)
+        self.image.vb.addItem(self.roi_object.roi)
+
+    def set_image_shape(self, shape: tuple) -> None:
+        self.image_shape = shape
+
+    def get_roi(self) -> SensibleROI:
+        roi = self.roi_object.roi
+        pos = CloseEnoughPoint(roi.pos())
+        size = CloseEnoughPoint(roi.size())
+        return SensibleROI.from_points(pos, size)
+
+    def set_roi_alpha(self, alpha: float) -> None:
+        self.roi_object.colour = self.roi_object.colour[:3] + (alpha,)
+        self.roi_object.setPen(self.roi_object.colour)
+        self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
+        self.set_roi_visibility_flags(bool(alpha))
+
+    def set_roi_visibility_flags(self, visible: bool) -> None:
+        handles = self.roi_object.getHandles()
+        for handle in handles:
+            handle.setVisible(visible)
+        self.roi_object.setVisible(visible)
+

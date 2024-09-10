@@ -14,6 +14,8 @@ from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 import dask_image.imread
 from astropy.io import fits
 
+from mantidimaging.core.utility.sensible_roi import SensibleROI
+
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
@@ -30,6 +32,7 @@ class DaskImageDataStack:
     create_delayed_array: bool
     _selected_index: int
     mean: np.ndarray = np.array([])
+    roi: SensibleROI | None = None
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
         self.image_list = image_list
@@ -136,15 +139,30 @@ class DaskImageDataStack:
             if len(self.mean) == len(self.image_list) - 1:
                 self.add_last_mean()
             else:
-                self.calc_mean_fully()
+                if self.roi:
+                    self.calc_mean_fully_roi()
+                else:
+                    self.calc_mean_fully()
 
     def add_last_mean(self) -> None:
         if self.delayed_stack is not None:
-            self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1]).compute())
+            if self.roi:
+                left, top, right, bottom = self.roi
+                self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]).compute())
+            else:
+                self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1]).compute())
 
     def calc_mean_fully(self) -> None:
         if self.delayed_stack is not None:
             self.mean = dask.array.mean(self.delayed_stack, axis=(1, 2)).compute()
+
+    def calc_mean_fully_roi(self):
+        if self.delayed_stack is not None:
+            left, top, right, bottom = self.roi
+            self.mean = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).compute()
+
+    def set_roi(self, roi: SensibleROI):
+        self.roi = roi
 
     def delete_all_data(self):
         self.image_list = []
