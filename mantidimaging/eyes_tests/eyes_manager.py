@@ -27,6 +27,10 @@ else:
 VIEWPORT_WIDTH = 1920
 VIEWPORT_HEIGHT = 1080
 
+BRANCH_NAME = None
+if 'GITHUB_HEAD_REF' in os.environ:
+    BRANCH_NAME = os.environ['GITHUB_HEAD_REF']
+
 
 class EyesManager:
 
@@ -35,6 +39,7 @@ class EyesManager:
         self.eyes = Eyes()
         self.eyes.match_level = MatchLevel.IGNORE_COLORS
         self.eyes.configure.host_os = sys.platform
+        self.eyes.branch_name = BRANCH_NAME
         self.image_directory = None
         self.imaging = None
         if test_name is None:
