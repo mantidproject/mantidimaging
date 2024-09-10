@@ -6,13 +6,143 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
+
+import dask.array
+import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
+
+import dask_image.imread
+from astropy.io import fits
 
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
 
 LOG = getLogger(__name__)
+
+
+class DaskImageDataStack:
+    """
+    A Dask Image Data Stack Class to hold a delayed array of all the images in the Live Viewer Path
+    """
+    delayed_stack: dask.array.Array | None = None
+    image_list: list[Image_Data]
+    create_delayed_array: bool
+    _selected_index: int
+    mean: list[float] = []
+
+    def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
+        self.image_list = image_list
+        self.create_delayed_array = create_delayed_array
+
+        if image_list and create_delayed_array:
+            self.delayed_stack = self.create_delayed_stack_from_image_data(image_list)
+
+    @property
+    def shape(self):
+        return self.delayed_stack.shape
+
+    @property
+    def selected_index(self):
+        return self._selected_index
+
+    @selected_index.setter
+    def selected_index(self, index):
+        self._selected_index = index
+
+    def get_delayed_arrays(self, image_list: list[Image_Data]) -> list[dask.array.Array] | None:
+        if image_list:
+            if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"] and self.create_delayed_array:
+                return [dask_image.imread.imread(image_data.image_path)[0] for image_data in image_list]
+            elif image_list[0].image_path.suffix.lower() == ".fits" and self.create_delayed_array:
+                return [dask.delayed(fits.open)(image_data.image_path)[0].data for image_data in image_list]
+            else:
+                return None
+        else:
+            return None
+
+    def get_delayed_image(self, index: int) -> dask.array.Array | None:
+        return self.delayed_stack[index] if self.delayed_stack is not None else None
+
+    def get_image_data(self, index: int) -> Image_Data | None:
+        return self.image_list[index] if self.image_list else None
+
+    def get_fits_sample(self, image_data: Image_Data) -> np.ndarray:
+        with fits.open(image_data.image_path.__str__()) as fit:
+            return fit[0].data
+
+    def get_computed_image(self, index: int):
+        if index < 0:
+            return None
+        try:
+            image_to_compute = self.get_delayed_image(index)
+            if image_to_compute is not None:
+                computed_image = image_to_compute.compute()
+        except dask_image.imread.pims.api.UnknownFormatError:
+            self.remove_image_data_by_index(index)
+            self.get_computed_image(index - 1)
+        except AttributeError:
+            return None
+        return computed_image
+
+    def get_selected_computed_image(self):
+        try:
+            self.get_computed_image(self.selected_index)
+        except dask_image.imread.pims.api.UnknownFormatError:
+            pass
+        return self.get_computed_image(self.selected_index)
+
+    def remove_image_data_by_path(self, image_path: Path) -> None:
+        image_paths = [image.image_path for image in self.image_list]
+        index_to_remove = image_paths.index(image_path)
+        self.remove_image_data_by_index(index_to_remove)
+
+    def remove_image_data_by_index(self, index_to_remove: int) -> None:
+        self.image_list.pop(index_to_remove)
+        self.delayed_stack = dask.array.delete(self.delayed_stack, index_to_remove, 0)
+        if index_to_remove == self.selected_index and self.selected_index > 0:
+            self.selected_index = self.selected_index - 1
+        if not self.image_list:
+            self.delayed_stack = None
+
+    def create_delayed_stack_from_image_data(self, image_list: list[Image_Data]) -> None | dask.array.Array:
+        delayed_stack = None
+        arrays = self.get_delayed_arrays(image_list)
+        if arrays:
+            if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
+                delayed_stack = dask.array.stack(dask.array.array(arrays))
+            elif image_list[0].image_path.suffix.lower() in [".fits"]:
+                sample = self.get_fits_sample(image_list[0])
+                lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
+                delayed_stack = dask.array.stack(lazy_arrays)
+            else:
+                raise NotImplementedError(f"DaskImageDataStack does not support image with extension "
+                                          f"{image_list[0].image_path.suffix.lower()}")
+        return delayed_stack
+
+    def add_images_to_delayed_stack(self, new_image_list: list[Image_Data], param_to_calc: list[str]) -> None:
+        if not new_image_list:
+            return
+        image_paths = [image.image_path for image in self.image_list]
+        images_to_add = [image for image in new_image_list if image.image_path not in image_paths]
+        if self.delayed_stack is None or dask.array.isnan(self.delayed_stack.shape).any():
+            self.delayed_stack = self.create_delayed_stack_from_image_data(new_image_list)
+        else:
+            if images_to_add:
+                self.delayed_stack = dask.array.concatenate(
+                    [self.delayed_stack, self.get_delayed_arrays(images_to_add)])
+        self.image_list.extend(images_to_add)
+        if 'mean' in param_to_calc:
+            self.add_last_mean()
+
+    def add_last_mean(self) -> None:
+        if self.delayed_stack is not None:
+            self.mean.append(dask.array.mean(self.delayed_stack[-1]).compute())
+
+    def delete_all_data(self):
+        self.image_list = []
+        self.delayed_stack = None
+        self.selected_index = 0
 
 
 class Image_Data:
@@ -32,6 +162,7 @@ class Image_Data:
     image_modified_time : float
         last modified time of image file
     """
+    create_delayed_array: bool
 
     def __init__(self, image_path: Path):
         """
@@ -102,7 +233,8 @@ class LiveViewerWindowModel:
         self.presenter = presenter
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
-        self.images: list[Image_Data] = []
+        self._images: list[Image_Data] = []
+        self.image_stack: DaskImageDataStack = DaskImageDataStack([])
 
     @property
     def path(self) -> Path | None:
@@ -116,7 +248,16 @@ class LiveViewerWindowModel:
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
+    @property
+    def images(self):
+        return self._images if self._images is not None else None
+
+    @images.setter
+    def images(self, images):
+        self._images = images
+
+    def _handle_image_changed_in_list(self, image_files: list[Image_Data],
+                                      dask_image_stack: DaskImageDataStack) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
@@ -125,10 +266,16 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
+        self.image_stack = dask_image_stack
+        # if dask_image_stack.image_list:
+        #     self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
+        self.presenter.update_image_stack(self.image_stack)
 
     def handle_image_modified(self, image_path: Path):
+        self.image_stack.remove_image_data_by_path(image_path)
         self.presenter.update_image_modified(image_path)
+        self.presenter.update_image_stack(self.image_stack)
 
     def close(self) -> None:
         """Close the model."""
@@ -160,8 +307,10 @@ class ImageWatcher(QObject):
     sort_images_by_modified_time(images)
         Sort the images by modified time.
     """
-    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
+    image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     recent_image_changed = pyqtSignal(Path)
+    create_delayed_array: bool = True
+    image_stack = DaskImageDataStack([], create_delayed_array=True)
 
     def __init__(self, directory: Path):
         """
@@ -266,10 +415,15 @@ class ImageWatcher(QObject):
 
             if len(images) > 0:
                 break
-
         images = self.sort_images_by_modified_time(images)
+        if len(images) == 0:
+            self.image_stack.delete_all_data()
+
+        if self.create_delayed_array:
+            self.image_stack.add_images_to_delayed_stack(images, ['mean'])
+
         self.update_recent_watcher(images[-1:])
-        self.image_changed.emit(images)
+        self.image_changed.emit(images, self.image_stack)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:

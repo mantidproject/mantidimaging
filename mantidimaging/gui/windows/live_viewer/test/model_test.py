@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import os
 import time
+import unittest
 from pathlib import Path
 from unittest import mock
+from numpy.testing import assert_array_equal
+import numpy as np
 
+import dask.array.random
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
+from parameterized import parameterized
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, DaskImageDataStack, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -26,6 +31,7 @@ class ImageWatcherTest(FakeFSTestCase):
 
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             self.watcher = ImageWatcher(self.top_path)
+            self.watcher.create_delayed_array = False
             self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock())
             self.watcher.image_changed = self.mock_signal_image
 
@@ -159,3 +165,71 @@ class ImageWatcherTest(FakeFSTestCase):
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list2)
+
+
+class DaskImageDataStackTest(unittest.TestCase):
+
+    def setUp(self):
+        self.test_array = np.array([1, 3, 5, 12, 15])
+
+    def _get_fake_data(self, ext: str):
+        file_list = [Path(f"abc_{i:06d}" + ext) for i in range(5)]
+        with mock.patch("mantidimaging.gui.windows.live_viewer.model.Path.stat"):
+            image_data_list = [Image_Data(path) for path in file_list]
+        fake_data_array_list = [dask.array.random.random(5) for _ in image_data_list]
+        fake_data_stack = dask.array.stack(fake_data_array_list)
+        return image_data_list, fake_data_array_list, fake_data_stack
+
+    def test_WHEN_not_create_delayed_array_THEN_no_delayed_array_created(self):
+        image_data_list, _, _ = self._get_fake_data('.tif')
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=False)
+        self.assertIsNone(self.delayed_image_stack.delayed_stack)
+        self.assertEqual(self.delayed_image_stack.image_list, image_data_list)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
+    def test_WHEN_create_delayed_array_THEN_delayed_array_created(self, mock_delayed_arrays):
+        image_data_list, fake_data_array_list, fake_data_stack = self._get_fake_data(".tif")
+        mock_delayed_arrays.return_value = fake_data_array_list
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        assert_array_equal(self.delayed_image_stack.delayed_stack, fake_data_stack)
+        assert_array_equal(self.delayed_image_stack.delayed_stack.compute(), fake_data_stack.compute())
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask_image.imread.imread")
+    def test_WHEN_tif_file_THEN_dask_image_imread_called(self, mock_imread):
+        image_data_list, _, _ = self._get_fake_data('.tif')
+        calls = [mock.call(image.image_path) for image in image_data_list]
+        self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        mock_imread.assert_has_calls(calls, any_order=True)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
+    def test_WHEN_fits_file_THEN_dask_delayed_called(self, mock_fits_sample, mock_dask_delayed):
+        mock_fits_sample.return_value = self.test_array
+        image_data_list, _, _ = self._get_fake_data('.fits')
+        calls = [mock.call()(image.image_path) for image in image_data_list]
+        with mock.patch("mantidimaging.gui.windows.live_viewer.model.fits.open"):
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        mock_dask_delayed.assert_has_calls(calls, any_order=True)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
+    def test_WHEN_unsupported_file_THEN_raises_error(self, mock_delayed_arrays):
+        image_data_list, fake_data_array_list, _ = self._get_fake_data(".jpeg")
+        mock_delayed_arrays.return_value = fake_data_array_list
+        with self.assertRaises(NotImplementedError):
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+
+    @parameterized.expand([".tif", ".tiff", ".fits"])
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_delayed_arrays")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.array.from_delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.dask.delayed")
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.DaskImageDataStack.get_fits_sample")
+    def test_WHEN_supported_file_THEN_no_error_raised(self, file_ext, mock_fits_sample, _, mock_from_delayed,
+                                                      mock_delayed_arrays):
+        mock_fits_sample.return_value = self.test_array
+        image_data_list, fake_data_array_list, _ = self._get_fake_data(file_ext)
+        mock_delayed_arrays.return_value = fake_data_array_list
+        mock_from_delayed.return_value = fake_data_array_list
+        try:
+            self.delayed_image_stack = DaskImageDataStack(image_data_list, create_delayed_array=True)
+        except NotImplementedError:
+            self.fail("DaskImageDataStack raised NotImplementedError unexpectedly!")
