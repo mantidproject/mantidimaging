@@ -35,12 +35,13 @@ If you are using `pytest`, you can run tests that match a specific keyword by us
     pytest -k "test_valid_login"
 
 These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
-See the Pytest docs for additional `command line options <https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags>`.
+See the Pytest docs for additional `command line options <https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags>`_.
+
 
 Pre-commit
 ----------
 
-Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_: to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.
+Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.
 
 To enable pre-commit hooks, you must manually install them by running::
 
@@ -57,11 +58,11 @@ This command executes all pre-commit hooks across the entire codebase, including
 Unit testing
 ------------
 
-Unit tests can be run using `pytest <https://docs.pytest.org/>`_:, e.g.::
+Unit tests can be run using `pytest <https://docs.pytest.org/>`_, e.g.::
 
     make pytest
 
-For options such as running a subset of tests, see `PyTest Docs <https://docs.pytest.org/en/stable/usage.html>`_
+For options such as running a subset of tests, see `PyTest Docs <https://docs.pytest.org/en/stable/usage.html>`_.
 
 
 Static analysis
@@ -69,9 +70,9 @@ Static analysis
 
 Mantid Imaging uses several tools to ensure high code quality and consistency:
 
-- :code:`mypy <http://mypy-lang.org/>`_: Enforces type correctness to catch potential type errors early.
-- :code:`ruff <https://beta.ruff.rs/docs/>`_: Checks for common syntax and style issues to maintain clean, readable code.
-- :code:`yapf <https://github.com/google/yapf>`_: Formats code according to PEP 8 standards, ensuring consistent style.
+- `mypy <http://mypy-lang.org/>`_: Enforces type correctness to catch potential type errors early.
+- `ruff <https://beta.ruff.rs/docs/>`_: Checks for common syntax and style issues to maintain clean, readable code.
+- `yapf <https://github.com/google/yapf>`_: Formats code according to PEP 8 standards, ensuring consistent style.
 
 These tools can be run collectively with:
 
@@ -87,7 +88,7 @@ Or individually for specific tasks:
 GUI Screenshot Testing
 ----------------------
 
-Mantid Imaging uses `Applitools Eyes <https://applitools.com/products-eyes/>`_: for GUI approval testing. During this process, screenshots of application windows are captured and compared against known good baseline images to detect any unintended visual changes. This process is integrated into the GitHub Actions workflow and runs automatically on pull requests.
+Mantid Imaging uses `Applitools Eyes <https://applitools.com/products-eyes/>`_ for GUI approval testing. During this process, screenshots of application windows are captured and compared against known good baseline images to detect any unintended visual changes. This process is integrated into the GitHub Actions workflow and runs automatically on pull requests.
 
 The tests can also be run locally, with options tailored for different platforms:
 
