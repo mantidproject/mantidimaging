@@ -427,10 +427,11 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Testing</a><ul>
+<li><a class="reference internal" href="#running-specific-tests">Running Specific Tests</a></li>
 <li><a class="reference internal" href="#pre-commit">Pre-commit</a></li>
 <li><a class="reference internal" href="#unit-testing">Unit testing</a></li>
 <li><a class="reference internal" href="#static-analysis">Static analysis</a></li>
-<li><a class="reference internal" href="#gui-screenshot-testing">GUI screenshot testing</a></li>
+<li><a class="reference internal" href="#gui-screenshot-testing">GUI Screenshot Testing</a></li>
 <li><a class="reference internal" href="#gui-system-tests">GUI system tests</a></li>
 <li><a class="reference internal" href="#logging">Logging</a></li>
 <li><a class="reference internal" href="#benchmarking-and-profiling">Benchmarking and profiling</a></li>
@@ -508,25 +509,50 @@ document.write(`
                   
   <section id="testing">
 <h1>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h1>
-<p>Mantid Imaging uses unit tests, static analysis and GUI approval testing</p>
-<p>The test suite can be run using our makefile target. Note this does not include the system and screenshot tests:</p>
+<p>Mantid Imaging uses a combination of unit tests, static analysis, and GUI approval testing to maintain the stability and quality of the codebase.</p>
+<p>The basic test suite, which includes unit tests and static analysis, can be run using our Makefile target. Note that this command does not include the system and screenshot tests:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">check</span>
 </pre></div>
 </div>
-<p>On Windows, you may need to install a Windows version of GNU Make.:</p>
+<p>On Windows, you may need to install a Windows version of GNU Make:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="n">make</span>
 </pre></div>
 </div>
-<p>Tests are run automatically on pull requests on GitHub using actions, but should also be run during development.
-The full suite of unit tests can run very slowly on a Windows machine. We recommend selecting only relevant tests to run locally when developing on Windows.</p>
-<p>See the <code class="file docutils literal notranslate"><span class="pre">Makefile</span></code> for the underlying commands if you need to run them with other options.</p>
+<p>Tests are run automatically on pull requests via GitHub Actions, but should also be run locally during development to catch issues early. The full suite of unit tests can run very slowly on a Windows machine, so we recommend selecting only the relevant tests to run locally during development.</p>
+<p>For more targeted testing, Mantid Imaging provides several specific commands:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> : Runs the basic unit test suite to ensure that all unit tests pass. This is ideal after making code changes to confirm that nothing is broken.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">test-verbose</span></code> : Executes the unit test suite with verbose output, providing detailed information about each test. Useful for gaining more insight when debugging test failures.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">test-system</span></code> : Runs the system tests, which are typically end-to-end tests that validate the overall functionality of the system. This is particularly useful for confirming that the entire system functions correctly after major updates.</p></li>
+</ul>
+<p>Refer to the <code class="file docutils literal notranslate"><span class="pre">Makefile</span></code> for additional options or to modify these commands for specific scenarios.</p>
+<section id="running-specific-tests">
+<h2>Running Specific Tests<a class="headerlink" href="#running-specific-tests" title="Link to this heading">#</a></h2>
+<p>Mantid Imaging allows you to focus on specific test cases or workflows by running individual test modules or selecting tests based on keywords.</p>
+<p>To run a specific test module, you can specify its path using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">test_file</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>If you are using <cite>pytest</cite>, you can run tests that match a specific keyword by using the <code class="docutils literal notranslate"><span class="pre">-k</span></code> flag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">k</span> <span class="s2">&quot;test_valid_login&quot;</span>
+</pre></div>
+</div>
+<p>These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
+See the Pytest docs for additional <a class="reference external" href="https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags">command line options</a>.</p>
+</section>
 <section id="pre-commit">
 <h2>Pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading">#</a></h2>
-<p>Mantid Imaging uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run pre-commit hooks. This must be manually enabled by running:</p>
+<p>Mantid Imaging uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.</p>
+<p>To enable pre-commit hooks, you must manually install them by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
 </pre></div>
 </div>
-<p>Once this has been completed, the hooks should execute with every commit.</p>
+<p>Once installed, the hooks will execute automatically with every commit.</p>
+<p>If you want to run all pre-commit hooks on the entire codebase at once, you can use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">run</span> <span class="o">--</span><span class="nb">all</span><span class="o">-</span><span class="n">files</span>
+</pre></div>
+</div>
+<p>This command executes all pre-commit hooks across the entire codebase, including linting, type checks, and formatting, ensuring that the code meets all quality standards before committing.</p>
 </section>
 <section id="unit-testing">
 <h2>Unit testing<a class="headerlink" href="#unit-testing" title="Link to this heading">#</a></h2>
@@ -534,21 +560,54 @@ The full suite of unit tests can run very slowly on a Windows machine. We recomm
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span>
 </pre></div>
 </div>
-<p>For options such as running a subset of tests, see <a class="reference external" href="https://docs.pytest.org/en/stable/usage.html">PyTest Docs</a></p>
+<p>For options such as running a subset of tests, see <a class="reference external" href="https://docs.pytest.org/en/stable/usage.html">PyTest Docs</a>.</p>
 </section>
 <section id="static-analysis">
 <h2>Static analysis<a class="headerlink" href="#static-analysis" title="Link to this heading">#</a></h2>
-<p>Mantid Imaging uses <a class="reference external" href="http://mypy-lang.org/">mypy</a>, <a class="reference external" href="https://beta.ruff.rs/docs/">ruff</a> and <a class="reference external" href="https://github.com/google/yapf">yapf</a> for static analysis and formatting. They are run by <code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">check</span></code>, or can be run individually, e.g. <code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">mypy</span></code>.</p>
+<p>Mantid Imaging uses several tools to ensure high code quality and consistency:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://mypy-lang.org/">mypy</a>: Enforces type correctness to catch potential type errors early.</p></li>
+<li><p><a class="reference external" href="https://beta.ruff.rs/docs/">ruff</a>: Checks for common syntax and style issues to maintain clean, readable code.</p></li>
+<li><p><a class="reference external" href="https://github.com/google/yapf">yapf</a>: Formats code according to PEP 8 standards, ensuring consistent style.</p></li>
+</ul>
+<p>These tools can be run collectively with:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">check</span></code>: Runs all static analysis tools together for a comprehensive check.</p></li>
+</ul>
+<p>Or individually for specific tasks:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">mypy</span></code>: Perform static type checks.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">ruff</span></code>: Lint the code for syntax and style issues.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">yapf</span></code>: Automatically format code according to PEP 8.</p></li>
+</ul>
 </section>
 <section id="gui-screenshot-testing">
-<h2>GUI screenshot testing<a class="headerlink" href="#gui-screenshot-testing" title="Link to this heading">#</a></h2>
-<p>Mantid Imaging uses <a class="reference external" href="https://applitools.com/products-eyes/">Applitools Eyes</a> for GUI approval testing. Screenshots of windows are uploaded and compared to known good baseline images. This is run in the github action on pull requests.</p>
-<p>The tests can be run locally, where the screenshots will be writen to a directory:</p>
+<h2>GUI Screenshot Testing<a class="headerlink" href="#gui-screenshot-testing" title="Link to this heading">#</a></h2>
+<p>Mantid Imaging uses <a class="reference external" href="https://applitools.com/products-eyes/">Applitools Eyes</a> for GUI approval testing. During this process, screenshots of application windows are captured and compared against known good baseline images to detect any unintended visual changes. This process is integrated into the GitHub Actions workflow and runs automatically on pull requests.</p>
+<p>The tests can also be run locally, with options tailored for different platforms:</p>
+<ul>
+<li><p><strong>Cross-Platform Testing</strong>: Run the tests on any platform and save the screenshots to a specified directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">test</span><span class="o">-</span><span class="n">screenshots</span>
 </pre></div>
 </div>
-<p>See the <code class="file docutils literal notranslate"><span class="pre">Makefile</span></code> for the underlying command used. You may want to run it with a specific output directory by changing <code class="code docutils literal notranslate"><span class="pre">APPLITOOLS_IMAGE_DIR</span></code>, or to upload to the Applitools API by setting a <code class="code docutils literal notranslate"><span class="pre">APPLITOOLS_API_KEY</span></code> (can be found in the Applitools web interface).</p>
-<p>When these tests are run from the automated tests differences between uploaded and baseline images can be examined and approved or rejected from the Applitools web interface.</p>
+<p>By default, screenshots are saved to a predefined directory. You can customize the output directory by setting the <code class="code docutils literal notranslate"><span class="pre">APPLITOOLS_IMAGE_DIR</span></code> environment variable. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">APPLITOOLS_IMAGE_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">directory</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Windows-Specific Testing</strong>: For running screenshot tests specifically on Windows, use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">test</span><span class="o">-</span><span class="n">screenshots</span><span class="o">-</span><span class="n">win</span>
+</pre></div>
+</div>
+<p>This command ensures that the graphical output is consistent on Windows, accounting for any platform-specific rendering differences.</p>
+</li>
+</ul>
+<p>If you want to upload the screenshots to the Applitools API for comparison with baseline images stored on their servers, you need to set the <code class="code docutils literal notranslate"><span class="pre">APPLITOOLS_API_KEY</span></code> environment variable, which can be obtained from the Applitools web interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">APPLITOOLS_API_KEY</span><span class="o">=</span><span class="n">your_applitools_api_key</span>
+</pre></div>
+</div>
+<p>When these tests are run, either locally or through automated CI, any differences between the newly captured screenshots and the baseline images will be flagged. These differences can be reviewed in the Applitools web interface, where you can approve or reject them based on whether they represent acceptable changes or regressions in the UI.</p>
+<p>For more details on the underlying commands and options, refer to the <code class="file docutils literal notranslate"><span class="pre">Makefile</span></code>. This will help you customize how the screenshot tests are executed and managed within your development environment.</p>
 </section>
 <section id="gui-system-tests">
 <h2>GUI system tests<a class="headerlink" href="#gui-system-tests" title="Link to this heading">#</a></h2>
@@ -559,7 +618,7 @@ The full suite of unit tests can run very slowly on a Windows machine. We recomm
 </section>
 <section id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h2>
-<p>Logging can be controlled using the QSettings configuration file <code class="file docutils literal notranslate"><span class="pre">.config/mantidproject/Mantid</span> <span class="pre">Imaging.conf</span></code> on Linux or the equivalent registry keys on windows (See <a class="reference external" href="https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html">QSettings</a>). For example:</p>
+<p>Logging can be controlled using the QSettings configuration file <code class="file docutils literal notranslate"><span class="pre">.config/mantidproject/Mantid</span> <span class="pre">Imaging.conf</span></code> on Linux or the equivalent registry keys on windows (See <a class="reference external" href="https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html">QSettings</a>:). For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">logging</span><span class="p">]</span>
 <span class="n">log_level</span><span class="o">=</span><span class="n">DEBUG</span>
 <span class="n">log_dir</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">mantid_imaging_logs</span>
@@ -570,12 +629,27 @@ The full suite of unit tests can run very slowly on a Windows machine. We recomm
 <section id="benchmarking-and-profiling">
 <h2>Benchmarking and profiling<a class="headerlink" href="#benchmarking-and-profiling" title="Link to this heading">#</a></h2>
 <p>Mantid imaging has some utilities to help with benchmarking and profiling.</p>
-<p>The context managers <a class="reference internal" href="../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionTimer" title="mantidimaging.core.utility.execution_timer.ExecutionTimer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionTimer</span></code></a> and <a class="reference internal" href="../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionProfiler" title="mantidimaging.core.utility.execution_timer.ExecutionProfiler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionProfiler</span></code></a> can be used to wrap some lines of code to record and log its run time. For example:</p>
+<p>These tools are particularly useful when you need to:</p>
+<ul class="simple">
+<li><p>Optimize performance-critical sections of code.</p></li>
+<li><p>Identify bottlenecks in your application.</p></li>
+<li><p>Diagnose slow-running functions or processes.</p></li>
+</ul>
+<p>The context managers <a class="reference internal" href="../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionTimer" title="mantidimaging.core.utility.execution_timer.ExecutionTimer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionTimer</span></code></a> and <a class="reference internal" href="../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionProfiler" title="mantidimaging.core.utility.execution_timer.ExecutionProfiler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionProfiler</span></code></a> can be used to wrap some lines of code to record and log its run time.</p>
+<p>To profile a function and log the time spent in each function call, you can use <cite>ExecutionProfiler</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_slow_function()&quot;</span><span class="p">):</span>
     <span class="n">a_slow_function</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>will record and log a profile of function calls and times within <code class="code docutils literal notranslate"><span class="pre">a_slow_function()</span></code>.</p>
+<p>Alternatively, to benchmark the execution time of a specific block of code, use <cite>ExecutionTimer</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionTimer</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_block_of_code&quot;</span><span class="p">):</span>
+    <span class="c1"># Code block to benchmark</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">some_function</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will log the total time taken by the code block to execute.</p>
+<p>The logged results from <cite>ExecutionTimer</cite> and <cite>ExecutionProfiler</cite> are typically written to the console or a log file, depending on your logging configuration. These logs provide detailed insights into the performance of the profiled code, helping you identify potential bottlenecks.</p>
 </section>
 </section>
 
@@ -625,10 +699,11 @@ The full suite of unit tests can run very slowly on a Windows machine. We recomm
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-specific-tests">Running Specific Tests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-commit">Pre-commit</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-testing">Unit testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#static-analysis">Static analysis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gui-screenshot-testing">GUI screenshot testing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gui-screenshot-testing">GUI Screenshot Testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gui-system-tests">GUI system tests</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmarking-and-profiling">Benchmarking and profiling</a></li>
