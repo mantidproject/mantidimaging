@@ -25,7 +25,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     image_shape: tuple
     roi_changed = pyqtSignal()
-    roi_object: SpectrumROI | None = None
+    roi_object: SpectrumROI
     sensible_roi: SensibleROI
 
     def __init__(self) -> None:
@@ -76,8 +76,8 @@ class LiveViewWidget(GraphicsLayoutWidget):
         size = CloseEnoughPoint(roi.size())
         return SensibleROI.from_points(pos, size)
 
-    def set_roi_alpha(self, alpha: float) -> None:
-        self.roi_object.colour = self.roi_object.colour[:3] + (alpha,)
+    def set_roi_alpha(self, alpha: int) -> None:
+        self.roi_object.colour = self.roi_object.colour[:3] + (alpha, )
         self.roi_object.setPen(self.roi_object.colour)
         self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
         self.set_roi_visibility_flags(bool(alpha))
@@ -87,4 +87,3 @@ class LiveViewWidget(GraphicsLayoutWidget):
         for handle in handles:
             handle.setVisible(visible)
         self.roi_object.setVisible(visible)
-

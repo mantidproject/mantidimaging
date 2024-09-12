@@ -34,12 +34,12 @@ class DaskImageDataStack:
     mean: np.ndarray = np.array([])
     roi: SensibleROI | None = None
 
-    def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = True):
+    def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = False):
         self.image_list = image_list
         self.create_delayed_array = create_delayed_array
 
         if image_list and create_delayed_array:
-            self.delayed_stack = self.create_delayed_stack_from_image_data(image_list)
+            self.create_and_set_delayed_stack()
 
     @property
     def shape(self):
@@ -144,11 +144,15 @@ class DaskImageDataStack:
                 else:
                     self.calc_mean_fully()
 
+    def update_image_list(self, new_image_list: list) -> None:
+        self.image_list = new_image_list
+
     def add_last_mean(self) -> None:
         if self.delayed_stack is not None:
             if self.roi:
                 left, top, right, bottom = self.roi
-                self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]).compute())
+                self.mean = np.append(self.mean,
+                                      dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]).compute())
             else:
                 self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1]).compute())
 
@@ -168,6 +172,9 @@ class DaskImageDataStack:
         self.image_list = []
         self.delayed_stack = None
         self.selected_index = 0
+
+    def create_and_set_delayed_stack(self):
+        self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
 
 
 class Image_Data:
@@ -336,8 +343,8 @@ class ImageWatcher(QObject):
     image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
     update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
-    create_delayed_array: bool = True
-    image_stack = DaskImageDataStack([], create_delayed_array=True)
+    create_delayed_array: bool = False
+    image_stack = DaskImageDataStack([])
 
     def __init__(self, directory: Path):
         """
@@ -445,6 +452,8 @@ class ImageWatcher(QObject):
         images = self.sort_images_by_modified_time(images)
         if len(images) == 0:
             self.image_stack.delete_all_data()
+
+        self.image_stack.update_image_list(images)
 
         if self.create_delayed_array:
             self.image_stack.add_images_to_delayed_stack(images, ['mean'])
