@@ -14,7 +14,7 @@ from .presenter import LiveViewerWindowPresenter
 
 import numpy as np
 
-from ..spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
+from ..spectrum_viewer.spectrum_widget import SpectrumPlotWidget
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -70,6 +70,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.spectrum_action.setCheckable(True)
         operations_menu.addAction(self.spectrum_action)
         self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
+        self.presenter.model.image_stack.create_delayed_array = False
 
     def show(self) -> None:
         """Show the window"""
@@ -129,6 +130,11 @@ class LiveViewerWindowView(BaseMainWindowView):
         if self.spectrum_action.isChecked():
             self.live_viewer.set_roi_alpha(255)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
+            self.presenter.model.image_stack.create_delayed_array = True
+            self.presenter.model.image_stack.create_and_set_delayed_stack()
+            self.presenter.model.image_stack.calc_mean_fully_roi()
+            self.presenter.update_spectrum(self.presenter.model.image_stack.mean)
         else:
             self.live_viewer.set_roi_alpha(0)
             self.splitter.setSizes([widget_height, 0])
+            self.presenter.model.image_stack.create_delayed_array = False

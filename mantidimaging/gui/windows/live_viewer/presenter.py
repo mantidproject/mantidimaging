@@ -200,7 +200,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.spectrum.plot(spec_data)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False):
-        print(f"handle_roi_moved")
         roi = self.view.live_viewer.get_roi()
         self.model.image_stack.set_roi(roi)
         self.model.image_stack.calc_mean_fully_roi()
