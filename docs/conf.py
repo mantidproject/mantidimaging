@@ -105,17 +105,20 @@ todo_include_todos = True
 # a list of builtin themes.
 html_theme = 'pydata_sphinx_theme'
 
-html_sidebars = {'**': ['localtoc.html', 'relations.html', 'searchbox.html']}
+# Ensure sidebar TOC displays all nested headings
+# Ensure sidebar TOC displays only the current section's nested headings
+html_sidebars = {'developer_guide/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
+    "navigation_depth": 4,  # Adjust this depth based on how deep you want the nested items to show in the sidebar
     "switcher": {
-        "json_url": "/mantidimaging/_static/version_switcher.json",
-        "version_match": release,
+        "json_url": "/mantidimaging/_static/version_switcher.json",  # Path to your version switcher config
+        "version_match": release,  # Match the release version dynamically
     },
-    "navbar_end": ["version-switcher"],
+    "navbar_end": ["version-switcher"],  # Add the version switcher to the end of the navbar
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
