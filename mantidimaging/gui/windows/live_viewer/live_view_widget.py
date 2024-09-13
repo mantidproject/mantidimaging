@@ -25,7 +25,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     image_shape: tuple
     roi_changed = pyqtSignal()
-    roi_object: SpectrumROI
+    roi_object: SpectrumROI | None = None
     sensible_roi: SensibleROI
 
     def __init__(self) -> None:

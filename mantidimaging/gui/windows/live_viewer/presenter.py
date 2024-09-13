@@ -15,6 +15,7 @@ from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
 from astropy.io import fits
 
+from mantidimaging.core.utility import ExecutionProfiler
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, DaskImageDataStack
 from mantidimaging.core.operations.loader import load_filter_packages
@@ -99,6 +100,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Display image in the view after validating contents
         """
+        # print(f"display_image: {[image.image_path for image in delayed_image_stack.image_list]=}")
+        # print(f"display_image: {len(delayed_image_stack.delayed_stack)=}")
         try:
             if (delayed_image_stack is None or delayed_image_stack.delayed_stack is None
                     or not delayed_image_stack.create_delayed_array):
@@ -133,6 +136,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         Load a delayed stack from a DaskImageDataStack and compute
         """
+        #with ExecutionProfiler(msg=f"load_image_from_delayed_stack() with {len(delayed_image_stack.delayed_stack)=}"):
         if delayed_image_stack is not None:
             image_data = delayed_image_stack.get_selected_computed_image()
         else:
