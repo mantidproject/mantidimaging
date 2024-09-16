@@ -99,26 +99,31 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-# -- Options for HTML output ----------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
 html_theme = 'pydata_sphinx_theme'
 
-# Ensure sidebar TOC displays all nested headings
 # Ensure sidebar TOC displays only the current section's nested headings
 html_sidebars = {'developer_guide/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
+# Theme options are theme-specific and customize the look and feel of a theme further.
 html_theme_options = {
-    "navigation_depth": 4,  # Adjust this depth based on how deep you want the nested items to show in the sidebar
+    "navigation_depth":
+    4,  # Adjust this depth based on how deep you want the nested items to show in the sidebar
+    "external_links": [{
+        "name": "GitHub",
+        "url": "https://github.com/mantidproject/mantidimaging"
+    }],
+    "icon_links": [{
+        "name": "GitHub",
+        "url": "https://github.com/mantidproject/mantidimaging",  # Link to your GitHub repo
+        "icon": "fa-brands fa-github",  # GitHub icon
+        "type": "fontawesome",
+    }],
     "switcher": {
         "json_url": "/mantidimaging/_static/version_switcher.json",  # Path to your version switcher config
         "version_match": release,  # Match the release version dynamically
     },
-    "navbar_end": ["version-switcher"],  # Add the version switcher to the end of the navbar
+    "navbar_end": ["version-switcher",
+                   "icon-links"],  # Add the version switcher and GitHub link to the end of the navbar
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -128,6 +133,16 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'MantidImagingdoc'
+
+html_context = {
+    "footer":
+    """
+    <div style="text-align: center; padding: 10px;">
+        <img src="_static/UKRI.png" alt="UKRI Logo" style="width: 200px;">
+        <p>&copy; 2024 ISIS Rutherford Appleton Laboratory UKRI</p>
+    </div>
+    """
+}
 
 # -- Options for LaTeX output ---------------------------------------------
 
