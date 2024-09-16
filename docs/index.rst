@@ -33,4 +33,3 @@ Akello-Egwel, Dolica; Allen, Jack; Baust, Rachel; Gigg, Martyn; Jones, Samuel; M
 
 (See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).
 
-Sign up to our `mailing list <https://www.jiscmail.ac.uk/cgi-bin/wa-jisc.exe?SUBED1=MANTID-IMAGING-ANNOUNCE&A=1>`_ to receive updates on the project

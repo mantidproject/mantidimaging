@@ -134,16 +134,6 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'MantidImagingdoc'
 
-html_context = {
-    "footer":
-    """
-    <div style="text-align: center; padding: 10px;">
-        <img src="_static/UKRI.png" alt="UKRI Logo" style="width: 200px;">
-        <p>&copy; 2024 ISIS Rutherford Appleton Laboratory UKRI</p>
-    </div>
-    """
-}
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
