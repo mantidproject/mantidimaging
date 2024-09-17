@@ -71,6 +71,8 @@ class LiveViewerWindowView(BaseMainWindowView):
         operations_menu.addAction(self.spectrum_action)
         self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
         self.presenter.model.image_stack.create_delayed_array = False
+        self.live_viewer.set_roi_alpha(self.spectrum_action.isChecked() * 255)
+        self.live_viewer.set_roi_visibility_flags(False)
 
     def show(self) -> None:
         """Show the window"""
@@ -128,10 +130,12 @@ class LiveViewerWindowView(BaseMainWindowView):
     def set_spectrum_visibility(self):
         widget_height = self.frameGeometry().height()
         if self.spectrum_action.isChecked():
-            if self.live_viewer.roi_object:
-                self.live_viewer.set_roi_alpha(255)
+            if not self.live_viewer.roi_object:
+                self.live_viewer.add_roi()
+            self.live_viewer.set_roi_alpha(255)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
             self.presenter.model.image_stack.create_delayed_array = True
+            self.presenter.model.image_stack.set_roi(self.live_viewer.get_roi())
             self.presenter.model.image_stack.create_and_set_delayed_stack()
             self.presenter.model.image_stack.calc_mean_fully_roi()
             self.presenter.update_spectrum(self.presenter.model.image_stack.mean)

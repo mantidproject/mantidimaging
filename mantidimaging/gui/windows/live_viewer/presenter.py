@@ -117,9 +117,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         self.view.live_viewer.set_image_shape(image_data.shape)
-        if not self.view.live_viewer.roi_object:
+        if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
             self.view.live_viewer.add_roi()
-            self.model.image_stack.set_roi(self.view.live_viewer.get_roi())
+        self.model.image_stack.set_roi(self.view.live_viewer.get_roi())
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
@@ -127,6 +127,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
+        if np.any(np.isnan(self.model.image_stack.mean)):
+            self.model.image_stack.calc_mean_fully_roi()
+            self.update_spectrum(self.model.image_stack.mean)
         self.view.show_most_recent_image(image_data)
         self.view.live_viewer.show_error(None)
 

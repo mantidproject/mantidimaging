@@ -23,7 +23,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
-    image_shape: tuple
+    image_shape: tuple = (-1, -1)
     roi_changed = pyqtSignal()
     roi_object: SpectrumROI | None = None
     sensible_roi: SensibleROI
@@ -59,6 +59,8 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.image.show_message(message)
 
     def add_roi(self):
+        if self.image_shape == (-1, -1):
+            return
         height, width = self.image_shape
         roi = SensibleROI.from_list([0, 0, width, height])
         self.roi_object = SpectrumROI('roi', roi, rotatable=False, scaleSnap=True, translateSnap=True)
