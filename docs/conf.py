@@ -99,23 +99,34 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-# -- Options for HTML output ----------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
 html_theme = 'pydata_sphinx_theme'
 
-html_sidebars = {'**': ['localtoc.html', 'relations.html', 'searchbox.html']}
+# Ensure sidebar displays only the current section's nested headings (local ToC)
+html_sidebars = {
+    '/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'],
+}
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
+# Path to the favicon file
+html_favicon = "_static/mantid_imaging_64px.ico"
+
 html_theme_options = {
+    "navigation_depth":
+    4,  # Adjust how deep the sidebar navigation goes
+    "external_links": [{
+        "name": "GitHub",
+        "url": "https://github.com/mantidproject/mantidimaging"
+    }],
+    "icon_links": [{
+        "name": "GitHub",
+        "url": "https://github.com/mantidproject/mantidimaging",
+        "icon": "fa-brands fa-github",  # GitHub icon
+        "type": "fontawesome",
+    }],
     "switcher": {
         "json_url": "/mantidimaging/_static/version_switcher.json",
         "version_match": release,
     },
-    "navbar_end": ["version-switcher"],
+    "navbar_end": ["version-switcher", "icon-links"],  # Add version switcher and GitHub link
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

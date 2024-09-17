@@ -1,6 +1,14 @@
 Overview
 ========
 
+.. image:: _static/main_window.png
+    :alt: Mantid Imaging User interface showing lego man dataset
+    :width: 60%
+    :align: center
+
+
+
+
 Mantid Imaging contains tools for loading data from neutron imaging experiments, preprocessing to enhance images and tomographic reconstruction into 3 dimensional data that can be output for further analysis.
 
 Mantid Imaging makes use of a range of algorithms, some from external tools including `Astra <http://www.astra-toolbox.com/>`_, `Tomopy <https://tomopy.readthedocs.io/en/latest/>`_, `Algotom <https://github.com/algotom/algotom>`_ and the `Core Imaging Library <https://github.com/TomographicImaging/CIL>`_. Many of these are optimised for multithreading and GPU computing.

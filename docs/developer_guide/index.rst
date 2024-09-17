@@ -3,66 +3,90 @@
 Developer Guide
 ===============
 
-Getting Started
----------------
+Welcome to the developer guide. This guide is divided into several sections based on the purpose of the documentation.
 
-You will need conda/mamba and CUDA installed, see the :ref:`Installation` instructions. If you are a Linux user, you will also need to complete step 6 of the installation instructions.
+.. raw:: html
 
-*Note that the Python commands given below are for Linux only. To run the commands on Windows, replace* :code:`python3` *with* :code:`python`.
+   <style>
+      .doc-topic {
+          width: 45%;
+          display: inline-block;
+          text-align: center;
+          margin: 10px;
+          border: 1px solid #ddd;
+          padding: 15px;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+          vertical-align: top;
+          height: 300px;
+          overflow: hidden;
+      }
+      .doc-topic h2 {
+          color: #1f77b4;
+          font-size: 18px;
+          font-weight: bold;
+          text-decoration: none;
+          margin-bottom: 5px;
+      }
+      .doc-topic span {
+          font-size: 55px;
+          display: block;
+          margin-bottom: 8px;
+      }
+      .doc-button {
+          display: inline-block;
+          padding: 8px 12px;
+          font-size: 14px;
+          background-color: #333;
+          color: white;
+          text-decoration: none;
+          border-radius: 5px;
+          margin-top: 5px;
+          width: 160px;
+          height: auto;
+          text-align: center;
+          line-height: 1.2;
+          box-sizing: border-box;
+      }
+      .doc-button:hover {
+          text-decoration: underline;
+      }
+   </style>
 
-First download the Mantid Imaging source code using Git::
+   <div class="doc-topic">
+      <span>🚀</span>
+      <h2><a href="#tutorials">Tutorials</a></h2>
+      <p>Set up your environment and get started with development.</p>
+      <a href="tutorials/index.html" class="doc-button">To the Tutorials Guide</a>
+   </div>
 
-    git clone https://github.com/mantidproject/mantidimaging.git
+   <div class="doc-topic">
+      <span>🔧</span>
+      <h2><a href="#how-to-guides">How-To Guides</a></h2>
+      <p>Step-by-step instructions for specific development tasks.</p>
+      <a href="how-to-guides/index.html" class="doc-button">To the How-To Guides</a>
+   </div>
 
-If you have a github account you can use ssh access (See `Github docs <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>`_ for details)::
+   <div class="doc-topic">
+      <span>💡</span>
+      <h2><a href="#explanations">Explanations</a></h2>
+      <p>Conceptual explanations of the project's architecture and developer guidelines.</p>
+      <a href="explanations/index.html" class="doc-button">To the Explanations</a>
+   </div>
 
-    git clone git@github.com:mantidproject/mantidimaging.git
-
-To set up a developer environment, from with in the cloned directory run::
-
-    python3 ./setup.py create_dev_env
-
-This will create a conda environment containing all the packages needed to run and develop Mantid Imaging. The activate command will activate the environment.
-
-Afterwards the environment can be activated by running::
-
-    mamba activate mantidimaging-dev
-
-To check that the set up was successful, try running the tests from the source directory::
-
-    python3 -m pytest
-
-Mantid Imaging can be run directly from the checked-out git directory::
-
-    python3 -m mantidimaging
-
-or to run with additional diagnostics::
-
-    python3 -X faulthandler -m mantidimaging --log-level DEBUG
-
-
-Command Line Arguments
-----------------------
-
-- :code:`--log-level` - Set the log verbosity level. Available options are: TRACE, DEBUG, INFO, WARN, CRITICAL
-- :code:`--version` - Print the version number and exit.
-- :code:`--path` - Set the path for the data you wish to load.
-- :code:`-lv` `--live-view` - Set the directory to open the live view window on start up. The live view window will automatically update when new images are added to the directory.
-
-The following command line arguments will only work if a valid path containing images has been given:
-
-- :code:`--operation` - Opens the operation window on start up with the given operation selected in the combo box. The operation name should the same was what appears in Mantid Imaging but joined with hyphens in place of spaces. Case insensitive.
-- :code:`--recon` - Shows the recon window on start up.
-- :code:`-sv` `--spectrum_viewer` - Opens the spectrum viewer window on start up. A path to a dataset must be provided with the :code:`--path` argument for the spectrum viewer to open.
+   <div class="doc-topic">
+      <span>📚</span>
+      <h2><a href="#reference">Reference</a></h2>
+      <p>API reference and internal tools documentation.</p>
+      <a href="reference/index.html" class="doc-button">To the Reference Guide</a>
+   </div>
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
-   documentation
-   developer_conventions
-   debugging
-   conda_packaging_and_docker_image
-   release
-   testing
+   tutorials/index
+   how-to-guides/index
+   explanations/index
+   reference/index
