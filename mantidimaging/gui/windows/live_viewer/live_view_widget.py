@@ -71,18 +71,24 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.image_shape = shape
 
     def get_roi(self) -> SensibleROI:
+        if not self.roi_object:
+            return SensibleROI()
         roi = self.roi_object.roi
         pos = CloseEnoughPoint(roi.pos())
         size = CloseEnoughPoint(roi.size())
         return SensibleROI.from_points(pos, size)
 
     def set_roi_alpha(self, alpha: int) -> None:
+        if not self.roi_object:
+            return
         self.roi_object.colour = self.roi_object.colour[:3] + (alpha, )
         self.roi_object.setPen(self.roi_object.colour)
         self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
         self.set_roi_visibility_flags(bool(alpha))
 
     def set_roi_visibility_flags(self, visible: bool) -> None:
+        if not self.roi_object:
+            return
         handles = self.roi_object.getHandles()
         for handle in handles:
             handle.setVisible(visible)

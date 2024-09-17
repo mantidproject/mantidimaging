@@ -80,7 +80,8 @@ class DaskImageDataStack:
         try:
             image_to_compute = self.get_delayed_image(index)
             if image_to_compute is not None:
-                computed_image = image_to_compute.compute()
+                image_to_compute_opt = dask.optimize(image_to_compute)
+                computed_image = image_to_compute_opt[0].compute()
         except dask_image.imread.pims.api.UnknownFormatError:
             self.remove_image_data_by_index(index)
             self.get_computed_image(index - 1)
@@ -90,10 +91,9 @@ class DaskImageDataStack:
 
     def get_selected_computed_image(self):
         try:
-            self.get_computed_image(self.selected_index)
+            return self.get_computed_image(self.selected_index)
         except dask_image.imread.pims.api.UnknownFormatError:
             pass
-        return self.get_computed_image(self.selected_index)
 
     def remove_image_data_by_path(self, image_path: Path) -> None:
         image_paths = [image.image_path for image in self.image_list]
