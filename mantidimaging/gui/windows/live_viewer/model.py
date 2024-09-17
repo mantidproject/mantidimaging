@@ -123,7 +123,9 @@ class DaskImageDataStack:
                                           f"{image_list[0].image_path.suffix.lower()}")
         return delayed_stack
 
-    def update_delayed_stack(self, param_to_calc: list[str]) -> None:
+    def update_delayed_stack(self, param_to_calc=None) -> None:
+        if param_to_calc is None:
+            param_to_calc = []
         self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
         if 'mean' in param_to_calc:
             if len(self.mean) == len(self.image_list) - 1:
@@ -446,7 +448,8 @@ class ImageWatcher(QObject):
         self.image_stack.update_image_list(images)
 
         if self.image_stack.create_delayed_array:
-            self.image_stack.update_delayed_stack(['mean'])
+            #self.image_stack.update_delayed_stack(['mean'])
+            self.image_stack.update_delayed_stack()
             self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
