@@ -128,7 +128,7 @@ class LiveViewerWindowView(BaseMainWindowView):
     def set_spectrum_visibility(self):
         widget_height = self.frameGeometry().height()
         if self.spectrum_action.isChecked():
-            if self.live_viewer.roi_object: 
+            if self.live_viewer.roi_object:
                 self.live_viewer.set_roi_alpha(255)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
             self.presenter.model.image_stack.create_delayed_array = True
