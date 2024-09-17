@@ -101,29 +101,32 @@ todo_include_todos = True
 
 html_theme = 'pydata_sphinx_theme'
 
-# Ensure sidebar TOC displays only the current section's nested headings
-html_sidebars = {'developer_guide/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
+# Ensure sidebar displays only the current section's nested headings (local ToC)
+html_sidebars = {
+    '/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'],
+}
 
-# Theme options are theme-specific and customize the look and feel of a theme further.
+# Path to the favicon file
+html_favicon = "_static/mantid_imaging_64px.ico"
+
 html_theme_options = {
     "navigation_depth":
-    4,  # Adjust this depth based on how deep you want the nested items to show in the sidebar
+    4,  # Adjust how deep the sidebar navigation goes
     "external_links": [{
         "name": "GitHub",
         "url": "https://github.com/mantidproject/mantidimaging"
     }],
     "icon_links": [{
         "name": "GitHub",
-        "url": "https://github.com/mantidproject/mantidimaging",  # Link to your GitHub repo
+        "url": "https://github.com/mantidproject/mantidimaging",
         "icon": "fa-brands fa-github",  # GitHub icon
         "type": "fontawesome",
     }],
     "switcher": {
-        "json_url": "/mantidimaging/_static/version_switcher.json",  # Path to your version switcher config
-        "version_match": release,  # Match the release version dynamically
+        "json_url": "/mantidimaging/_static/version_switcher.json",
+        "version_match": release,
     },
-    "navbar_end": ["version-switcher",
-                   "icon-links"],  # Add the version switcher and GitHub link to the end of the navbar
+    "navbar_end": ["version-switcher", "icon-links"],  # Add version switcher and GitHub link
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
