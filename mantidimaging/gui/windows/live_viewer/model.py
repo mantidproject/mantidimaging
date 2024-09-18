@@ -127,6 +127,7 @@ class DaskImageDataStack:
         if param_to_calc is None:
             param_to_calc = []
         self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
+        #self.delayed_stack.visualize(filename=f'dask-update_delayed_stack-{self._selected_index}', format='png')
         if 'mean' in param_to_calc:
             if len(self.mean) == len(self.image_list) - 1:
                 self.add_last_mean()
@@ -143,10 +144,12 @@ class DaskImageDataStack:
         if self.delayed_stack is not None:
             if self.roi:
                 left, top, right, bottom = self.roi
-                self.mean = np.append(self.mean,
-                                      dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]).compute())
+                #mean_visual = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]))[0].visualize(filename=f'dask-mean-add-task-opt-{self._selected_index}.png', format='png')
+                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]))[0].compute()
+                self.mean = np.append(self.mean, mean_to_add)
             else:
-                self.mean = np.append(self.mean, dask.array.mean(self.delayed_stack[-1]).compute())
+                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1]))[0].compute()
+                self.mean = np.append(self.mean, mean_to_add)
 
     def calc_mean_fully(self) -> None:
         if self.delayed_stack is not None:
@@ -155,6 +158,7 @@ class DaskImageDataStack:
     def calc_mean_fully_roi(self):
         if self.delayed_stack is not None:
             left, top, right, bottom = self.roi
+            #mean_visual = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).visualize(filename=f'dask-mean-full-task-{self._selected_index}.png', format='png')
             self.mean = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).compute()
 
     def set_roi(self, roi: SensibleROI):
@@ -448,8 +452,8 @@ class ImageWatcher(QObject):
         self.image_stack.update_image_list(images)
 
         if self.image_stack.create_delayed_array:
-            #self.image_stack.update_delayed_stack(['mean'])
-            self.image_stack.update_delayed_stack()
+            self.image_stack.update_delayed_stack(['mean'])
+            #self.image_stack.update_delayed_stack()
             self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
