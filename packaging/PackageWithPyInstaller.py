@@ -89,7 +89,7 @@ def add_optional_arguments(run_options):
 
 
 def add_exclude_modules(run_options):
-    excludes = ['matplotlib', 'dask', 'pandas']
+    excludes = ['matplotlib', 'dask', 'pandas', 'PySide6']
     for exclude in excludes:
         run_options.extend(['--exclude-module', exclude])
 
