@@ -522,7 +522,7 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name", True)
 
     def test_do_nexus_saving_fails_from_wrong_dataset(self):
-        md = MixedDataset()
+        md = Dataset()  # no sample
         self.model.add_dataset_to_model(md)
 
         with self.assertRaises(RuntimeError):
@@ -530,7 +530,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
     def test_do_nexus_save_success(self, nexus_save):
-        sd = StrictDataset(sample=generate_images())
+        sd = Dataset(sample=generate_images())
         self.model.add_dataset_to_model(sd)
         path = "path"
         sample_name = "sample-name"

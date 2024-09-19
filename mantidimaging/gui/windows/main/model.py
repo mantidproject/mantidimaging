@@ -87,13 +87,13 @@ class MainWindowModel:
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> None:
         dataset = self.datasets.get(dataset_id)
-        if isinstance(dataset, StrictDataset):
-            saver.nexus_save(dataset, path, sample_name, save_as_float)
-            return True
-        else:
-            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
+        if not dataset:
+            raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
+        if not dataset.sample:
+            raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
+        saver.nexus_save(dataset, path, sample_name, save_as_float)
 
     def get_existing_180_id(self, dataset_id: uuid.UUID) -> uuid.UUID | None:
         """
