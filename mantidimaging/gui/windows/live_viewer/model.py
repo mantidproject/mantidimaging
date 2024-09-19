@@ -33,6 +33,7 @@ class DaskImageDataStack:
     _selected_index: int
     mean: np.ndarray = np.array([])
     roi: SensibleROI | None = None
+    param_to_calc: list[str] = []
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = False):
         self.image_list = image_list
@@ -123,12 +124,19 @@ class DaskImageDataStack:
                                           f"{image_list[0].image_path.suffix.lower()}")
         return delayed_stack
 
-    def update_delayed_stack(self, param_to_calc=None) -> None:
-        if param_to_calc is None:
-            param_to_calc = []
-        self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
-        #self.delayed_stack.visualize(filename=f'dask-update_delayed_stack-{self._selected_index}', format='png')
-        if 'mean' in param_to_calc:
+    def update_delayed_stack(self, new_image_list) -> None:
+        if self.delayed_stack is None:
+            self.delayed_stack = self.create_delayed_stack_from_image_data(new_image_list)
+        else:
+            new_images = [
+                image for image in new_image_list
+                if image.image_path not in [image.image_path for image in self.image_list]
+            ]
+            #new_images = [image for image in new_image_list if image not in self.image_list]
+            self.delayed_stack = dask.optimize(
+                dask.array.concatenate([self.delayed_stack,
+                                        self.create_delayed_stack_from_image_data(new_images)]))[0]
+        if 'mean' in self.param_to_calc:
             if len(self.mean) == len(self.image_list) - 1:
                 self.add_last_mean()
             else:
@@ -137,15 +145,17 @@ class DaskImageDataStack:
                 else:
                     self.calc_mean_fully()
 
-    def update_image_list(self, new_image_list: list) -> None:
+    def update_image_list(self, new_image_list: list, update_stack: bool = True) -> None:
+        if update_stack and self.create_delayed_array:
+            self.update_delayed_stack(new_image_list)
         self.image_list = new_image_list
 
     def add_last_mean(self) -> None:
         if self.delayed_stack is not None:
             if self.roi:
                 left, top, right, bottom = self.roi
-                #mean_visual = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]))[0].visualize(filename=f'dask-mean-add-task-opt-{self._selected_index}.png', format='png')
-                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom, left:right]))[0].compute()
+                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom,
+                                                                               left:right]))[0].compute()
                 self.mean = np.append(self.mean, mean_to_add)
             else:
                 mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1]))[0].compute()
@@ -158,7 +168,6 @@ class DaskImageDataStack:
     def calc_mean_fully_roi(self):
         if self.delayed_stack is not None:
             left, top, right, bottom = self.roi
-            #mean_visual = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).visualize(filename=f'dask-mean-full-task-{self._selected_index}.png', format='png')
             self.mean = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).compute()
 
     def set_roi(self, roi: SensibleROI):
@@ -171,6 +180,9 @@ class DaskImageDataStack:
 
     def create_and_set_delayed_stack(self):
         self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
+
+    def add_param_to_calc(self, param_name: str):
+        self.param_to_calc.append(param_name)
 
 
 class Image_Data:
@@ -367,6 +379,8 @@ class ImageWatcher(QObject):
         self.sub_directories: dict[Path, SubDirectory] = {}
         self.add_sub_directory(SubDirectory(self.directory))
 
+        self.image_stack.add_param_to_calc('mean')
+
     def find_images(self, directory: Path) -> list[Image_Data]:
         """
         Find all the images in the directory.
@@ -451,9 +465,7 @@ class ImageWatcher(QObject):
 
         self.image_stack.update_image_list(images)
 
-        if self.image_stack.create_delayed_array:
-            self.image_stack.update_delayed_stack(['mean'])
-            #self.image_stack.update_delayed_stack()
+        if 'mean' in self.image_stack.param_to_calc:
             self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
