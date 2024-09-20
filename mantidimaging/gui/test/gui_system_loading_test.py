@@ -236,6 +236,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self._load_data_set()
         self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
         self.assertEqual(100, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
+        initial_sample_id = list(self.main_window.presenter.datasets)[0].sample.id
 
         self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
         self._check_datasets_consistent()
@@ -248,8 +249,9 @@ class TestGuiSystemLoading(GuiSystemBase):
             gofn.return_value = (str(new_stack), None)
             self.main_window.add_to_dataset_dialog.chooseFileButton.click()
 
-        self.main_window.add_to_dataset_dialog.accepted.emit()
-        QTest.qWait(SHORT_DELAY)
+        self.main_window.add_to_dataset_dialog.accept()
+        wait_until(lambda: initial_sample_id not in self.main_window.presenter.all_stack_ids)
+
         self._check_datasets_consistent()
         self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
 
