@@ -9,7 +9,7 @@ from unittest import mock
 
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
 import pytest
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
@@ -43,6 +43,8 @@ class GuiSystemBase(unittest.TestCase):
         Will report any leaked images
         Expects all other windows to be closed, otherwise will raise a RuntimeError
         """
+        self._check_no_open_dialogs()
+
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
         QTest.qWait(SHORT_DELAY)
@@ -56,6 +58,16 @@ class GuiSystemBase(unittest.TestCase):
         for widget in self.app.topLevelWidgets():
             if widget.isVisible():
                 RuntimeError(f"\n\nWindow still open {widget=}")
+
+    @classmethod
+    def _check_no_open_dialogs(cls) -> None:
+        QTest.qWait(SHORT_DELAY)
+        for widget in cls.app.topLevelWidgets():
+            if widget.isVisible():
+                if isinstance(widget, QMessageBox):
+                    raise RuntimeError(f"QMessageBox is visible: {widget.text()}")
+                if isinstance(widget, QDialog):
+                    raise RuntimeError(f"QDialog is visible: {widget.windowTitle()}")
 
     @classmethod
     def _click_messageBox(cls, button_text: str):
