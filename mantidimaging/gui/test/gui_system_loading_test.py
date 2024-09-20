@@ -256,7 +256,6 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
 
     def _check_datasets_consistent(self, show_datasets=False) -> None:
-        print("_check_datasets_consistent")
         if show_datasets:
             print("Main window datasets")
             for k, v in self.main_window.presenter.model.datasets.items():
