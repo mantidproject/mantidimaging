@@ -14,6 +14,7 @@ from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 import dask_image.imread
 from astropy.io import fits
 
+from mantidimaging.core.utility import ExecutionProfiler
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
@@ -29,6 +30,7 @@ class DaskImageDataStack:
     """
     delayed_stack: dask.array.Array | None = None
     image_list: list[Image_Data]
+    image_paths: set[str] = set()
     create_delayed_array: bool
     _selected_index: int
     mean: np.ndarray = np.array([])
@@ -112,6 +114,7 @@ class DaskImageDataStack:
     def create_delayed_stack_from_image_data(self, image_list: list[Image_Data]) -> None | dask.array.Array:
         delayed_stack = None
         arrays = self.get_delayed_arrays(image_list)
+        arrays_vis = arrays.visualize()
         if arrays:
             if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
                 delayed_stack = dask.array.stack(dask.array.array(arrays))
@@ -130,9 +133,8 @@ class DaskImageDataStack:
         else:
             new_images = [
                 image for image in new_image_list
-                if image.image_path not in [image.image_path for image in self.image_list]
+                if image.image_path not in self.image_paths
             ]
-            #new_images = [image for image in new_image_list if image not in self.image_list]
             self.delayed_stack = dask.optimize(
                 dask.array.concatenate([self.delayed_stack,
                                         self.create_delayed_stack_from_image_data(new_images)]))[0]
@@ -149,6 +151,11 @@ class DaskImageDataStack:
         if update_stack and self.create_delayed_array:
             self.update_delayed_stack(new_image_list)
         self.image_list = new_image_list
+        self.update_image_paths(new_image_list)
+
+    def update_image_paths(self, new_image_list: list):
+        for image in new_image_list:
+            self.image_paths.add(image.image_path)
 
     def add_last_mean(self) -> None:
         if self.delayed_stack is not None:
@@ -463,7 +470,13 @@ class ImageWatcher(QObject):
         if len(images) == 0:
             self.image_stack.delete_all_data()
 
-        self.image_stack.update_image_list(images)
+        if len(images) % 50 == 0:
+            print("\n")
+            with ExecutionProfiler(msg=f"self.image_stack.update_image_list(images): {len(images)=}"):
+                self.image_stack.update_image_list(images)
+            print("\n")
+        else:
+            self.image_stack.update_image_list(images)
 
         if 'mean' in self.image_stack.param_to_calc:
             self.update_spectrum.emit(self.image_stack.mean)
