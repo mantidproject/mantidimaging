@@ -117,12 +117,3 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.view.addItem.assert_any_call(self.img1.name, self.img1.id)
         self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
         self.view.addItem.assert_any_call(self.img3.name, self.img3.id)
-
-    def test_current_is_strict(self):
-        self.presenter.current_dataset = "current-dataset-id"
-        self.assertEqual(self.presenter.current_is_strict, self.view.main_window.is_dataset_strict.return_value)
-        self.view.main_window.is_dataset_strict.assert_called_once_with(self.presenter.current_dataset)
-
-    def test_current_is_strict_returns_false_when_current_is_none(self):
-        self.presenter.current_dataset = None
-        self.assertFalse(self.presenter.current_is_strict)

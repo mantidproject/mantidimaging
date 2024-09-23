@@ -97,9 +97,3 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
             if "dark" not in name and "flat" not in name and "180deg" not in name:
                 self.view.setCurrentIndex(i)
                 break
-
-    @property
-    def current_is_strict(self) -> bool:
-        if self.current_dataset is None:
-            return False
-        return self.view.main_window.is_dataset_strict(self.current_dataset)
