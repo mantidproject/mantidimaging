@@ -187,9 +187,9 @@ class MainWindowModel:
             for dataset in self.datasets.values():
                 if container_id in dataset:
                     proj_180_id = None
-                    # If we're deleting a sample from a StrictDataset then any linked 180 projection will also be
+                    # If we're deleting a sample then any linked 180 projection will also be
                     # deleted
-                    if isinstance(dataset, StrictDataset) and dataset.proj180deg:
+                    if dataset.proj180deg:
                         assert dataset.sample is not None
                         if dataset.sample.id == container_id:
                             proj_180_id = dataset.proj180deg.id
@@ -222,13 +222,13 @@ class MainWindowModel:
     def proj180s(self) -> list[ImageStack]:
         proj180s = []
         for dataset in self.datasets.values():
-            if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:
+            if dataset.proj180deg is not None:
                 proj180s.append(dataset.proj180deg)
         return proj180s
 
     def get_parent_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
         """
-        Takes the ID of an image stack and returns the ID of its parent strict dataset.
+        Takes the ID of an image stack and returns the ID of its parent dataset.
         :param member_id: The ID of the image stack.
         :return: The ID of the parent dataset if found.
         """
