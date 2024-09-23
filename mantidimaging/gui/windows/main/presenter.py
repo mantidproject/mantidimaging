@@ -843,9 +843,6 @@ class MainWindowPresenter(BasePresenter):
         """
         return f"{stack_type} {dataset_name}"
 
-    def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
-        return self.model.is_dataset_strict(ds_id)
-
     def do_update_UI(self) -> None:
         if settings.value('use_os_defaults', defaultValue='True') == 'True':
             extra_style = settings.value('extra_style_default')

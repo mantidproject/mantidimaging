@@ -1060,11 +1060,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertNotIn(stack_to_move, origin_dataset)
         assert stack_to_move.name == new_stack_name
 
-    def test_is_dataset_strict(self):
-        ds_id = "ds-id"
-        self.presenter.is_dataset_strict(ds_id)
-        self.model.is_dataset_strict.assert_called_once_with(ds_id)
-
 
 if __name__ == '__main__':
     unittest.main()

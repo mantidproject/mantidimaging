@@ -256,15 +256,3 @@ class MainWindowModel:
 
     def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
         return self.datasets[parent_id].recons.id
-
-    def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
-        """
-        :param ds_id: The dataset ID
-        :return: True if the dataset is Strict, False otherwise
-        """
-        for ds in self.datasets.values():
-            if ds.id == ds_id:
-                if isinstance(ds, StrictDataset):
-                    return True
-                return False
-        raise RuntimeError(f"Unable to find dataset with ID {ds_id}")

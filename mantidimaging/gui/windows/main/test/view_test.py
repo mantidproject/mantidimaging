@@ -515,11 +515,6 @@ class MainWindowViewTest(unittest.TestCase):
                                                     stack_data_type)
             move_stack_mock.return_value.show.assert_called_once()
 
-    def test_is_dataset_strict(self):
-        ds_id = "ds-id"
-        self.view.is_dataset_strict(ds_id)
-        self.presenter.is_dataset_strict.assert_called_once_with(ds_id)
-
     @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")
     def test_live_viewer_asks_for_data_dir(self, mock_show_live_viewer, mock_get_existing_dir):
