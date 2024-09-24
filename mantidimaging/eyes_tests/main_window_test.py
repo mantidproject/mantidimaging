@@ -87,11 +87,6 @@ class MainWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.add_to_dataset_dialog)
 
-    def test_show_add_stack_to_existing_dataset_dialog_for_mixed_dataset(self):
-        self._create_mixed_dataset()
-        self.imaging.show_add_stack_to_existing_dataset_dialog(list(self.imaging.presenter.all_dataset_ids)[0])
-        self.check_target(widget=self.imaging.add_to_dataset_dialog)
-
     def test_clicking_tab_changes_tree_view_selection(self):
         self._load_strict_data_set()
         sample_vis = self._load_strict_data_set()

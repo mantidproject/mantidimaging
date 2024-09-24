@@ -9,7 +9,7 @@ import uuid
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import BaseDataset, _get_stack_data_type
+from mantidimaging.core.data.dataset import Dataset, _get_stack_data_type
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -19,11 +19,11 @@ def _make_standard_dataset(shape=(2, 5, 5)):
     image_stacks = [generate_images(shape) for _ in range(6)]
     image_stacks[0].name = "samplename"
 
-    ds = BaseDataset(sample=image_stacks[0],
-                     flat_before=image_stacks[1],
-                     flat_after=image_stacks[2],
-                     dark_before=image_stacks[3],
-                     dark_after=image_stacks[4])
+    ds = Dataset(sample=image_stacks[0],
+                 flat_before=image_stacks[1],
+                 flat_after=image_stacks[2],
+                 dark_before=image_stacks[3],
+                 dark_after=image_stacks[4])
     ds.proj180deg = image_stacks[5]
     return ds, image_stacks
 
@@ -41,19 +41,19 @@ def _set_fake_projection_angles(image_stack: ImageStack):
 class DatasetTest(unittest.TestCase):
 
     def test_create_dataset(self):
-        ds = BaseDataset()
+        ds = Dataset()
         self.assertIsInstance(ds.id, uuid.UUID)
         self.assertEqual(ds.name, "")
 
     def test_prevent_positional_parameters(self):
-        self.assertRaises(TypeError, BaseDataset, mock.Mock())
+        self.assertRaises(TypeError, Dataset, mock.Mock())
 
     def test_dataset_name(self):
-        ds = BaseDataset(name="a_dataset")
+        ds = Dataset(name="a_dataset")
         self.assertEqual(ds.name, "a_dataset")
 
     def test_add_recon(self):
-        ds = BaseDataset()
+        ds = Dataset()
         recons = [generate_images() for _ in range(3)]
         [ds.add_recon(r) for r in recons]
 
@@ -62,7 +62,7 @@ class DatasetTest(unittest.TestCase):
         self.assertEqual(3, len(ds.recons))
 
     def test_delete_recon(self):
-        ds = BaseDataset()
+        ds = Dataset()
         recons = [generate_images() for _ in range(3)]
         [ds.add_recon(r) for r in recons]
 
@@ -71,36 +71,36 @@ class DatasetTest(unittest.TestCase):
         self.assertNotIn(recons[-1], ds.all)
 
     def test_delete_failure(self):
-        ds = BaseDataset()
+        ds = Dataset()
         with self.assertRaises(KeyError):
             ds.delete_stack("nonexistent-id")
 
     def test_delete_all_recons(self):
-        ds = BaseDataset()
+        ds = Dataset()
         recons = [generate_images() for _ in range(3)]
         [ds.add_recon(r) for r in recons]
         ds.delete_recons()
         self.assertListEqual(ds.recons.stacks, [])
 
     def test_sinograms(self):
-        ds = BaseDataset()
+        ds = Dataset()
         ds.sinograms = sinograms = generate_images()
         self.assertIs(ds.sinograms, sinograms)
 
     def test_delete_sinograms(self):
-        ds = BaseDataset()
+        ds = Dataset()
         ds.sinograms = sinograms = generate_images()
         ds.delete_stack(sinograms.id)
         self.assertIsNone(ds.sinograms)
 
     def test_stacks_in_all(self):
         image_stacks = [mock.Mock() for _ in range(3)]
-        ds = BaseDataset(stacks=image_stacks)
+        ds = Dataset(stacks=image_stacks)
         self.assertListEqual(ds.all, image_stacks)
 
     def test_sample_in_all(self):
         image_sample = mock.Mock(proj180deg=None)
-        ds = BaseDataset(sample=image_sample)
+        ds = Dataset(sample=image_sample)
         self.assertCountEqual(ds.all, [image_sample])
 
     def test_all_for_full_dataset(self):
@@ -111,7 +111,7 @@ class DatasetTest(unittest.TestCase):
 
     def test_delete_stack_from_stacks_list(self):
         image_stacks = [mock.Mock() for _ in range(3)]
-        ds = BaseDataset(stacks=image_stacks)
+        ds = Dataset(stacks=image_stacks)
         prev_stacks = image_stacks.copy()
         ds.delete_stack(image_stacks[-1].id)
         self.assertListEqual(ds.all, prev_stacks[:-1])
@@ -119,19 +119,19 @@ class DatasetTest(unittest.TestCase):
     def test_get_stack_data_type_returns_recon(self):
         recon = generate_images()
         recon_id = recon.id
-        dataset = BaseDataset()
+        dataset = Dataset()
         dataset.recons.append(recon)
         self.assertEqual(_get_stack_data_type(recon_id, dataset), "Recon")
 
     def test_get_stack_data_type_returns_images(self):
         images = generate_images()
         images_id = images.id
-        dataset = BaseDataset(stacks=[images])
+        dataset = Dataset(stacks=[images])
         self.assertEqual(_get_stack_data_type(images_id, dataset), "Images")
 
     def test_attribute_not_set_returns_none(self):
         sample = mock.Mock()
-        dataset = BaseDataset(sample=sample)
+        dataset = Dataset(sample=sample)
 
         self.assertIsNone(dataset.flat_before)
         self.assertIsNone(dataset.flat_after)
@@ -140,7 +140,7 @@ class DatasetTest(unittest.TestCase):
 
     def test_set_flat_before(self):
         sample = mock.Mock()
-        dataset = BaseDataset(sample=sample)
+        dataset = Dataset(sample=sample)
         flat_before = mock.Mock(id="1234")
         dataset.flat_before = flat_before
         self.assertIs(flat_before, dataset.flat_before)
@@ -258,21 +258,21 @@ class DatasetTest(unittest.TestCase):
         self.assertIsNone(ds.dark_after)
 
     def test_set_stack_by_type_sample(self):
-        ds = BaseDataset()
+        ds = Dataset()
         sample = mock.Mock()
         ds.set_stack(FILE_TYPES.SAMPLE, sample)
 
         self.assertEqual(ds.sample, sample)
 
     def test_set_stack_by_type_flat_before(self):
-        ds = BaseDataset()
+        ds = Dataset()
         stack = mock.Mock()
         ds.set_stack(FILE_TYPES.FLAT_BEFORE, stack)
 
         self.assertEqual(ds.flat_before, stack)
 
     def test_set_stack_by_type_180(self):
-        ds = BaseDataset()
+        ds = Dataset()
         sample = mock.Mock()
         stack = mock.Mock()
         ds.set_stack(FILE_TYPES.SAMPLE, sample)
@@ -281,10 +281,10 @@ class DatasetTest(unittest.TestCase):
         self.assertEqual(ds.proj180deg, stack)
 
     def test_processed_is_true(self):
-        ds = BaseDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         ds.sample.record_operation("", "")
         self.assertTrue(ds.is_processed)
 
     def test_processed_is_false(self):
-        ds = BaseDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         self.assertFalse(ds.is_processed)

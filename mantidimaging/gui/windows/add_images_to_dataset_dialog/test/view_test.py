@@ -22,7 +22,7 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
             self.main_window = MainWindowView()
         self.dataset_id = uuid.uuid4()
         self.dataset_name = "dataset-name"
-        self.view = AddImagesToDatasetDialog(self.main_window, self.dataset_id, True, self.dataset_name)
+        self.view = AddImagesToDatasetDialog(self.main_window, self.dataset_id, self.dataset_name)
         self.view.presenter = self.presenter = mock.MagicMock()
 
     def test_on_accepted(self):

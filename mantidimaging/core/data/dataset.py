@@ -22,7 +22,7 @@ def remove_nones(image_stacks: list[ImageStack | None]) -> list[ImageStack]:
     return [image_stack for image_stack in image_stacks if image_stack is not None]
 
 
-class BaseDataset:
+class Dataset:
 
     def __init__(
         self,
@@ -185,15 +185,15 @@ class BaseDataset:
         return False
 
 
-class MixedDataset(BaseDataset):
+class MixedDataset(Dataset):
     pass
 
 
-class StrictDataset(BaseDataset):
+class StrictDataset(Dataset):
     pass
 
 
-def _get_stack_data_type(stack_id: uuid.UUID, dataset: BaseDataset) -> str:
+def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:
     """
     Find the data type as a string of a stack.
     :param stack_id: The ID of the stack.

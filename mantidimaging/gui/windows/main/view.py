@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -47,7 +46,7 @@ from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 
 if TYPE_CHECKING:
-    from mantidimaging.core.data.dataset import MixedDataset
+    from mantidimaging.core.data.dataset import Dataset
 
 RECON_GROUP_TEXT = "Recons"
 SINO_TEXT = "Sinograms"
@@ -228,13 +227,12 @@ class MainWindowView(BaseMainWindowView):
     def update_shortcuts(self) -> None:
         datasets = list(self.presenter.datasets)
         has_datasets = len(datasets) > 0
-        has_strict_datasets = any(isinstance(dataset, StrictDataset) for dataset in datasets)
 
         self.actionSaveImages.setEnabled(has_datasets)
-        self.actionSaveNeXusFile.setEnabled(has_strict_datasets)
+        self.actionSaveNeXusFile.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionShutterCounts.setEnabled(has_datasets)
-        self.actionLoad180deg.setEnabled(has_strict_datasets)
+        self.actionLoad180deg.setEnabled(has_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)
         self.menuImage.setEnabled(has_datasets)
@@ -506,7 +504,7 @@ class MainWindowView(BaseMainWindowView):
     def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.presenter.get_dataset_id_for_stack(stack_id)
 
-    def get_dataset(self, dataset_id: uuid.UUID) -> MixedDataset | StrictDataset | None:
+    def get_dataset(self, dataset_id: uuid.UUID) -> Dataset | None:
         return self.presenter.get_dataset(dataset_id)
 
     def get_all_stacks(self) -> list[ImageStack]:
@@ -767,8 +765,7 @@ class MainWindowView(BaseMainWindowView):
         dataset = self.presenter.get_dataset(dataset_id)
         if dataset is None:
             raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
-        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, isinstance(dataset, StrictDataset),
-                                                              dataset.name)
+        self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, dataset.name)
         self.add_to_dataset_dialog.show()
 
     def _on_tab_bar_clicked(self, stack: StackVisualiserView) -> None:
