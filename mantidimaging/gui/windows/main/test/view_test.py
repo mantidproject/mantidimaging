@@ -449,7 +449,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.NexusSaveDialog")
     def test_show_nexus_save_dialog(self, nexus_save_dialog_mock):
         self.view.show_nexus_save_dialog()
-        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.strict_dataset_list)
+        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.presenter.datasets)
         nexus_save_dialog_mock.return_value.show.assert_called_once()
 
     def test_execute_add_to_dataset_calls_notify(self):

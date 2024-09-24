@@ -497,8 +497,8 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
-        dataset_list = self.presenter.strict_dataset_list
-        assert len(dataset_list) == 2
+        dataset_list = list(self.presenter.datasets)
+        assert len(dataset_list) == 3
 
     def test_add_child_item_to_tree_view(self):
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value

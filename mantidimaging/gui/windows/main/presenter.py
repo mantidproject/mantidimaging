@@ -40,11 +40,6 @@ class StackId(NamedTuple):
     name: str
 
 
-class DatasetId(NamedTuple):
-    id: uuid.UUID
-    name: str
-
-
 logger = getLogger(__name__)
 
 
@@ -418,14 +413,6 @@ class MainWindowPresenter(BasePresenter):
     @property
     def datasets(self) -> Iterable[Dataset]:
         return self.model.datasets.values()
-
-    @property
-    def strict_dataset_list(self) -> list[DatasetId]:
-        datasets = [
-            DatasetId(dataset.id, dataset.name) for dataset in self.model.datasets.values()
-            if isinstance(dataset, StrictDataset)
-        ]
-        return sorted(datasets, key=lambda x: x.name)
 
     @property
     def all_dataset_ids(self) -> Iterable[uuid.UUID]:
