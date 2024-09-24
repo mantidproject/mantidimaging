@@ -493,7 +493,6 @@ document.write(`
     <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.command_line_arguments</span> <span class="kn">import</span> <span class="n">CommandLineArguments</span>
@@ -523,7 +522,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.__main__</span> <span class="kn">import</span> <span class="n">process_start_time</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">MixedDataset</span>
+    <span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 
 <span class="n">RECON_GROUP_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Recons&quot;</span>
 <span class="n">SINO_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Sinograms&quot;</span>
@@ -720,13 +719,12 @@ document.write(`
     <span class="k">def</span> <span class="nf">update_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">datasets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">datasets</span><span class="p">)</span>
         <span class="n">has_datasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="n">has_strict_datasets</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">)</span> <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveImages</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_strict_datasets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSampleLoadLog</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionShutterCounts</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">actionLoad180deg</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_strict_datasets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actionLoad180deg</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadProjectionAngles</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menuWorkflow</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menuImage</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span></div>
@@ -1088,7 +1086,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.get_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MixedDataset</span> <span class="o">|</span> <span class="n">StrictDataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span></div>
 
 
@@ -1418,8 +1416,7 @@ document.write(`
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span> <span class="o">=</span> <span class="n">AddImagesToDatasetDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">,</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">),</span>
-                                                              <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span> <span class="o">=</span> <span class="n">AddImagesToDatasetDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 

@@ -492,7 +492,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">qt_material</span> <span class="kn">import</span> <span class="n">apply_stylesheet</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">MixedDataset</span><span class="p">,</span> <span class="n">_get_stack_data_type</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">MixedDataset</span><span class="p">,</span> <span class="n">_get_stack_data_type</span><span class="p">,</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_projection_closest_to_180</span><span class="p">,</span> <span class="n">THRESHOLD_180</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span>
@@ -957,7 +957,7 @@ document.write(`
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stacks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">MixedDataset</span> <span class="o">|</span> <span class="n">StrictDataset</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
     <span class="nd">@property</span>
@@ -985,7 +985,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowPresenter.get_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MixedDataset</span> <span class="o">|</span> <span class="n">StrictDataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span></div>
 
 
@@ -1352,7 +1352,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_add_recon_to_dataset_and_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">MixedDataset</span> <span class="o">|</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_recon_to_dataset_and_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a recon to the dataset and updates the tree view.</span>
 <span class="sd">        :param dataset: The dataset.</span>
@@ -1361,7 +1361,7 @@ document.write(`
         <span class="n">dataset</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">recon</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_recon_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_images_to_existing_mixed_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">MixedDataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_images_to_existing_mixed_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the stack list in the mixed dataset and updates the tree view.</span>
 <span class="sd">        :param dataset: The MixedDataset to update.</span>
@@ -1370,8 +1370,7 @@ document.write(`
         <span class="n">dataset</span><span class="o">.</span><span class="n">add_stack</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
-                                               <span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds or replaces images in a StrictDataset and updates the tree view if required.</span>
 <span class="sd">        :param dataset: The StrictDataset to change.</span>

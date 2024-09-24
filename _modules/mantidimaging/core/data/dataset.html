@@ -501,9 +501,9 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="BaseDataset">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">:</span>
+<div class="viewcode-block" id="Dataset">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset">[docs]</a>
+<span class="k">class</span> <span class="nc">Dataset</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -553,8 +553,8 @@ document.write(`
         <span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">stacks</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stacks</span> <span class="o">+</span> <span class="n">remove_nones</span><span class="p">(</span><span class="n">named_stacks</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseDataset.delete_stack">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset.delete_stack">[docs]</a>
+<div class="viewcode-block" id="Dataset.delete_stack">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_stack">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">images_id</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="kc">None</span>
@@ -594,20 +594,20 @@ document.write(`
     <span class="k">def</span> <span class="nf">recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReconList</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recons</span>
 
-<div class="viewcode-block" id="BaseDataset.add_recon">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset.add_recon">[docs]</a>
+<div class="viewcode-block" id="Dataset.add_recon">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_recon">[docs]</a>
     <span class="k">def</span> <span class="nf">add_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recon</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BaseDataset.delete_recons">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset.delete_recons">[docs]</a>
+<div class="viewcode-block" id="Dataset.delete_recons">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_recons">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="BaseDataset.add_stack">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset.add_stack">[docs]</a>
+<div class="viewcode-block" id="Dataset.add_stack">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_stack">[docs]</a>
     <span class="k">def</span> <span class="nf">add_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span></div>
 
@@ -658,8 +658,8 @@ document.write(`
             <span class="n">image_keys</span> <span class="o">+=</span> <span class="n">_image_key_list</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">image_keys</span>
 
-<div class="viewcode-block" id="BaseDataset.set_stack">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.BaseDataset.set_stack">[docs]</a>
+<div class="viewcode-block" id="Dataset.set_stack">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack">[docs]</a>
     <span class="k">def</span> <span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">attr_name</span> <span class="o">=</span> <span class="n">file_type</span><span class="o">.</span><span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">PROJ_180</span><span class="p">:</span>
@@ -684,19 +684,19 @@ document.write(`
 
 <div class="viewcode-block" id="MixedDataset">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.MixedDataset">[docs]</a>
-<span class="k">class</span> <span class="nc">MixedDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MixedDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="StrictDataset">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.StrictDataset">[docs]</a>
-<span class="k">class</span> <span class="nc">StrictDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">StrictDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">BaseDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the data type as a string of a stack.</span>
 <span class="sd">    :param stack_id: The ID of the stack.</span>
