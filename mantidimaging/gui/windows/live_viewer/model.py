@@ -114,7 +114,6 @@ class DaskImageDataStack:
     def create_delayed_stack_from_image_data(self, image_list: list[Image_Data]) -> None | dask.array.Array:
         delayed_stack = None
         arrays = self.get_delayed_arrays(image_list)
-        arrays_vis = arrays.visualize()
         if arrays:
             if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
                 delayed_stack = dask.array.stack(dask.array.array(arrays))
@@ -131,10 +130,7 @@ class DaskImageDataStack:
         if self.delayed_stack is None:
             self.delayed_stack = self.create_delayed_stack_from_image_data(new_image_list)
         else:
-            new_images = [
-                image for image in new_image_list
-                if image.image_path not in self.image_paths
-            ]
+            new_images = [image for image in new_image_list if image.image_path not in self.image_paths]
             self.delayed_stack = dask.optimize(
                 dask.array.concatenate([self.delayed_stack,
                                         self.create_delayed_stack_from_image_data(new_images)]))[0]
@@ -175,7 +171,8 @@ class DaskImageDataStack:
     def calc_mean_fully_roi(self):
         if self.delayed_stack is not None:
             left, top, right, bottom = self.roi
-            self.mean = dask.array.mean(self.delayed_stack[:, top:bottom, left:right], axis=(1, 2)).compute()
+            self.mean = dask.optimize(dask.array.mean(self.delayed_stack[:, top:bottom, left:right],
+                                                      axis=(1, 2)))[0].compute()
 
     def set_roi(self, roi: SensibleROI):
         self.roi = roi
