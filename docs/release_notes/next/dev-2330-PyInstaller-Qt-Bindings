@@ -1,0 +1,1 @@
+#2330: The PySide6 module is now excluded when building via PyInstaller due to hook clashes
