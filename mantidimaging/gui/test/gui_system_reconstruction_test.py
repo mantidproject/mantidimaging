@@ -44,22 +44,50 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self.assertFalse(self.main_window.isVisible())
 
     def test_correlate(self):
+        expected_initial_cor = 64.0
+        expected_initial_tilt = 0.0
+        expected_final_cor = 66.0
+        expected_final_tilt = 1.070368
+
+        self.assertEqual(self.recon_window.rotation_centre, expected_initial_cor)
+        self.assertEqual(self.recon_window.tilt, expected_initial_tilt)
+
         for _ in range(5):
             QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
             wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
+        final_cor_value = self.recon_window.rotation_centre
+        final_tilt_value = self.recon_window.tilt
+
+        self.assertEqual(final_cor_value, expected_final_cor)
+        self.assertEqual(final_tilt_value, expected_final_tilt)
+
     @pytest.mark.xfail(reason="Unresolved, see #1641")
     def test_minimise(self):
+        expected_cor = 64.0
+        expected_tilt = 0.0
+
+        initial_cor = self.recon_window.rotation_centre
+        initial_tilt = self.recon_window.tilt
+
         for i in range(2, 6):
             QTimer.singleShot(SHORT_DELAY, lambda i=i: self._click_InputDialog(set_int=i))
             QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
-
             QTest.qWait(SHORT_DELAY)
             wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=500)
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
             QTest.qWait(SHORT_DELAY)
+
+        final_cor_value = self.recon_window.rotation_centre
+        final_tilt_value = self.recon_window.tilt
+
+        self.assertEqual(initial_cor, expected_cor)
+        self.assertEqual(initial_tilt, expected_tilt)
+
+        self.assertEqual(final_cor_value, expected_cor)
+        self.assertEqual(final_tilt_value, expected_tilt)
 
     @classmethod
     def _click_cor_inspect(cls):
