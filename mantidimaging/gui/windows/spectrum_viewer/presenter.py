@@ -11,7 +11,6 @@ from logging import getLogger
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
 
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -158,7 +157,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.current_dataset_id = new_dataset_id
 
             new_dataset = self.main_window.get_dataset(new_dataset_id)
-            if isinstance(new_dataset, StrictDataset):
+            if new_dataset is not None:
                 if new_dataset.flat_before is not None:
                     self.view.try_to_select_relevant_normalise_stack(new_dataset.flat_before.name)
                 elif new_dataset.flat_after is not None:

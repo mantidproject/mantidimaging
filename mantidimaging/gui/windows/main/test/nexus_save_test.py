@@ -5,7 +5,6 @@ import unittest
 from unittest import mock
 
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import DatasetId
 from mantidimaging.test_helpers import start_qapplication
 
 
@@ -62,11 +61,13 @@ class NexusSaveDialogTest(unittest.TestCase):
     def test_dataset_lists_creation(self):
         dataset_id = "dataset-id"
         dataset_name = "dataset-name"
+        ds = mock.Mock(id=dataset_id)
+        ds.name = dataset_name
         self.nexus_save_dialog.datasetNames = mock.Mock()
-        self.nexus_save_dialog._create_dataset_lists([DatasetId(dataset_id, dataset_name)])
+        self.nexus_save_dialog._create_dataset_lists([ds])
 
-        self.assertEqual(self.nexus_save_dialog.dataset_uuids, (dataset_id, ))
-        self.nexus_save_dialog.datasetNames.addItems.assert_called_once_with((dataset_name, ))
+        self.assertEqual(self.nexus_save_dialog.dataset_uuids, [dataset_id])
+        self.nexus_save_dialog.datasetNames.addItems.assert_called_once_with([dataset_name])
 
     @mock.patch("mantidimaging.gui.windows.main.nexus_save_dialog.QFileDialog.getSaveFileName")
     def test_set_save_path_adds_extension(self, get_save_file_name_mock):

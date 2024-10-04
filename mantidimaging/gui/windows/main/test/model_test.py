@@ -522,7 +522,7 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.do_nexus_saving("bad-dataset-id", "path", "sample-name", True)
 
     def test_do_nexus_saving_fails_from_wrong_dataset(self):
-        md = MixedDataset()
+        md = Dataset()  # no sample
         self.model.add_dataset_to_model(md)
 
         with self.assertRaises(RuntimeError):
@@ -530,7 +530,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.main.model.saver.nexus_save")
     def test_do_nexus_save_success(self, nexus_save):
-        sd = StrictDataset(sample=generate_images())
+        sd = Dataset(sample=generate_images())
         self.model.add_dataset_to_model(sd)
         path = "path"
         sample_name = "sample-name"
@@ -538,17 +538,3 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_nexus_saving(sd.id, path, sample_name, save_as_float)
         nexus_save.assert_called_once_with(sd, path, sample_name, save_as_float)
-
-    def test_is_dataset_strict_returns_true(self):
-        strict_ds = StrictDataset(sample=generate_images())
-        self.model.add_dataset_to_model(strict_ds)
-        self.assertTrue(self.model.is_dataset_strict(strict_ds.id))
-
-    def test_is_dataset_strict_returns_false(self):
-        mixed_ds = MixedDataset(stacks=[generate_images()])
-        self.model.add_dataset_to_model(mixed_ds)
-        self.assertFalse(self.model.is_dataset_strict(mixed_ds.id))
-
-    def test_is_dataset_strict_raises(self):
-        with self.assertRaises(RuntimeError):
-            self.model.is_dataset_strict(uuid.uuid4())

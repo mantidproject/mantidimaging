@@ -13,7 +13,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.io.loader import loader
 from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
@@ -118,16 +118,15 @@ class BaseEyesTest(unittest.TestCase):
 
         return vis
 
-    def _create_mixed_dataset(self) -> MixedDataset:
-        mixed_dataset = MixedDataset(stacks=[generate_images()], name="a-mixed-dataset")
-
-        self.imaging.presenter.model.add_dataset_to_model(mixed_dataset)
-        self.imaging.presenter.create_mixed_dataset_tree_view_items(mixed_dataset)
-        self.imaging.presenter.create_mixed_dataset_stack_windows(mixed_dataset)
+    def _create_new_dataset(self) -> Dataset:
+        new_dataset = Dataset(sample=generate_images(), name="new")
+        self.imaging.presenter.create_strict_dataset_stack_windows(new_dataset)
+        self.imaging.presenter.create_strict_dataset_tree_view_items(new_dataset)
+        self.imaging.presenter.model.add_dataset_to_model(new_dataset)
 
         QApplication.sendPostedEvents()
 
-        return mixed_dataset
+        return new_dataset
 
     def _get_top_level_widget(cls, widget_type):
         for widget in cls.app.topLevelWidgets():

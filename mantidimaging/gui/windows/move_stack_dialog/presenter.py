@@ -9,8 +9,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 
-STRICT_DATASET_ATTRS = ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon"]
-MIXED_DATASET_TYPES = ["Images", "Recon"]
+DATASET_ATTRS = ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Images", "Recon"]
 
 
 class Notification(Enum):
@@ -45,12 +44,9 @@ class MoveStackPresenter(BasePresenter):
         """
         self.view.destinationTypeComboBox.clear()
 
-        if self.view.datasetSelector.current_is_strict():
-            if self.view.datasetSelector.current() == self.view.origin_dataset_id:
-                same_ds_list = STRICT_DATASET_ATTRS.copy()
-                same_ds_list.remove(self.view.originDataType.text())
-                self.view.destinationTypeComboBox.addItems(same_ds_list)
-            else:
-                self.view.destinationTypeComboBox.addItems(STRICT_DATASET_ATTRS)
+        if self.view.datasetSelector.current() == self.view.origin_dataset_id:
+            same_ds_list = DATASET_ATTRS.copy()
+            same_ds_list.remove(self.view.originDataType.text())
+            self.view.destinationTypeComboBox.addItems(same_ds_list)
         else:
-            self.view.destinationTypeComboBox.addItems(MIXED_DATASET_TYPES)
+            self.view.destinationTypeComboBox.addItems(DATASET_ATTRS)

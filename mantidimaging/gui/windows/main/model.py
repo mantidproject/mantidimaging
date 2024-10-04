@@ -87,13 +87,13 @@ class MainWindowModel:
         images.filenames = filenames
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> None:
         dataset = self.datasets.get(dataset_id)
-        if isinstance(dataset, StrictDataset):
-            saver.nexus_save(dataset, path, sample_name, save_as_float)
-            return True
-        else:
-            raise RuntimeError(f"Failed to get StrictDataset with ID {dataset_id}")
+        if not dataset:
+            raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
+        if not dataset.sample:
+            raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
+        saver.nexus_save(dataset, path, sample_name, save_as_float)
 
     def get_existing_180_id(self, dataset_id: uuid.UUID) -> uuid.UUID | None:
         """
@@ -187,9 +187,9 @@ class MainWindowModel:
             for dataset in self.datasets.values():
                 if container_id in dataset:
                     proj_180_id = None
-                    # If we're deleting a sample from a StrictDataset then any linked 180 projection will also be
+                    # If we're deleting a sample then any linked 180 projection will also be
                     # deleted
-                    if isinstance(dataset, StrictDataset) and dataset.proj180deg:
+                    if dataset.proj180deg:
                         assert dataset.sample is not None
                         if dataset.sample.id == container_id:
                             proj_180_id = dataset.proj180deg.id
@@ -222,13 +222,13 @@ class MainWindowModel:
     def proj180s(self) -> list[ImageStack]:
         proj180s = []
         for dataset in self.datasets.values():
-            if isinstance(dataset, StrictDataset) and dataset.proj180deg is not None:
+            if dataset.proj180deg is not None:
                 proj180s.append(dataset.proj180deg)
         return proj180s
 
     def get_parent_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
         """
-        Takes the ID of an image stack and returns the ID of its parent strict dataset.
+        Takes the ID of an image stack and returns the ID of its parent dataset.
         :param member_id: The ID of the image stack.
         :return: The ID of the parent dataset if found.
         """
@@ -256,15 +256,3 @@ class MainWindowModel:
 
     def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
         return self.datasets[parent_id].recons.id
-
-    def is_dataset_strict(self, ds_id: uuid.UUID) -> bool:
-        """
-        :param ds_id: The dataset ID
-        :return: True if the dataset is Strict, False otherwise
-        """
-        for ds in self.datasets.values():
-            if ds.id == ds_id:
-                if isinstance(ds, StrictDataset):
-                    return True
-                return False
-        raise RuntimeError(f"Unable to find dataset with ID {ds_id}")

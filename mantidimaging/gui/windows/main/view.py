@@ -29,7 +29,7 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
-from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification, DatasetId, StackId
+from mantidimaging.gui.windows.main.presenter import MainWindowPresenter, Notification, StackId
 from mantidimaging.gui.windows.main.presenter import Notification as PresNotification
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
@@ -424,7 +424,7 @@ class MainWindowView(BaseMainWindowView):
         self.image_save_dialog.show()
 
     def show_nexus_save_dialog(self) -> None:
-        self.nexus_save_dialog = NexusSaveDialog(self, self.strict_dataset_list)
+        self.nexus_save_dialog = NexusSaveDialog(self, self.presenter.datasets)
         self.nexus_save_dialog.show()
 
     def show_settings_window(self) -> None:
@@ -483,10 +483,6 @@ class MainWindowView(BaseMainWindowView):
     @property
     def stack_list(self) -> list[StackId]:
         return self.presenter.stack_visualiser_list
-
-    @property
-    def strict_dataset_list(self) -> list[DatasetId]:
-        return self.presenter.strict_dataset_list
 
     @property
     def stack_names(self) -> list[str]:
@@ -776,6 +772,3 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
         self.move_stack_dialog.show()
-
-    def is_dataset_strict(self, ds_id: UUID) -> bool:
-        return self.presenter.is_dataset_strict(ds_id)

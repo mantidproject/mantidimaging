@@ -22,7 +22,7 @@ from ..utility.progress_reporting import Progress
 from ..utility.version_check import CheckVersion
 
 if TYPE_CHECKING:
-    from ..data.dataset import StrictDataset
+    from ..data.dataset import Dataset
     from ..data.imagestack import ImageStack
     from ..utility.data_containers import Indices
 
@@ -180,7 +180,7 @@ def image_save(images: ImageStack,
         return names
 
 
-def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_float: bool) -> None:
+def nexus_save(dataset: Dataset, path: str, sample_name: str, save_as_float: bool) -> None:
     """
     Uses information from a StrictDataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
@@ -202,7 +202,7 @@ def nexus_save(dataset: StrictDataset, path: str, sample_name: str, save_as_floa
     nexus_file.close()
 
 
-def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str, save_as_float: bool) -> None:
+def _nexus_save(nexus_file: h5py.File, dataset: Dataset, sample_name: str, save_as_float: bool) -> None:
     """
     Takes a NeXus file and writes the StrictDataset information to it.
     :param nexus_file: The NeXus file.
@@ -255,7 +255,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: StrictDataset, sample_name: str,
         _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
 
 
-def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset, rotation_angle: h5py.Dataset,
+def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: Dataset, rotation_angle: h5py.Dataset,
                                   image_key: h5py.Dataset, save_as_float: bool) -> None:
     data = nexus_file.create_group(NEXUS_PROCESSED_DATA_PATH)
     data["rotation_angle"] = rotation_angle
@@ -270,7 +270,7 @@ def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: StrictDataset,
     process.create_dataset("version", data=np.bytes_(package_version))
 
 
-def _save_image_stacks_to_nexus(dataset: StrictDataset, data_group: h5py.Group, save_as_float: bool) -> None:
+def _save_image_stacks_to_nexus(dataset: Dataset, data_group: h5py.Group, save_as_float: bool) -> None:
     combined_data_shape = (sum([len(arr) for arr in dataset.nexus_arrays]), ) + dataset.nexus_arrays[0].shape[1:]
 
     index = 0

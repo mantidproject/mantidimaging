@@ -94,44 +94,19 @@ class MainWindowTest(BaseEyesTest):
 
         self.check_target()
 
-    def test_move_stack_dialog_when_both_strict(self):
+    def test_move_within_dataset(self):
         sample_vis = self._load_strict_data_set()
-        self._load_strict_data_set()
+        self.imaging.presenter._set_tree_view_selection_with_id(sample_vis.id)
+        self.imaging._move_stack()
+
+        self.check_target(self.imaging.move_stack_dialog)
+
+    def test_move_to_another_dataset(self):
+        sample_vis = self._load_strict_data_set()
+        new_dataset = self._create_new_dataset()
 
         self.imaging.presenter._set_tree_view_selection_with_id(sample_vis.id)
-
         self.imaging._move_stack()
-        self.check_target(self.imaging.move_stack_dialog)
+        self.imaging.move_stack_dialog.datasetSelector.setCurrentText(new_dataset.name)
 
-    def test_move_stack_dialog_strict_to_mixed(self):
-        sample_vis = self._load_strict_data_set()
-        mixed_ds = self._create_mixed_dataset()
-
-        self.imaging.presenter._set_tree_view_selection_with_id(sample_vis.id)
-
-        self.imaging._move_stack()
-        self.imaging.move_stack_dialog.datasetSelector.setCurrentText(mixed_ds.name)
-        self.check_target(self.imaging.move_stack_dialog)
-
-    def test_move_stack_dialog_mixed_to_strict(self):
-        mixed_ds = self._create_mixed_dataset()
-        sample_vis = self._load_strict_data_set()
-        strict_ds_id = self.imaging.presenter.model.get_parent_dataset(sample_vis.id)
-        strict_ds = self.imaging.get_dataset(strict_ds_id)
-
-        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds.all[0].id)
-
-        self.imaging._move_stack()
-        self.imaging.move_stack_dialog.datasetSelector.setCurrentText(strict_ds.name)
-        self.check_target(self.imaging.move_stack_dialog)
-
-    def test_move_stack_dialog_both_mixed(self):
-        mixed_ds_1 = self._create_mixed_dataset()
-        mixed_ds_2 = self._create_mixed_dataset()
-        mixed_ds_2.name = "other-mixed-ds-name"
-
-        self.imaging.presenter._set_tree_view_selection_with_id(mixed_ds_1.all[0].id)
-
-        self.imaging._move_stack()
-        self.imaging.move_stack_dialog.datasetSelector.setCurrentText(mixed_ds_2.name)
         self.check_target(self.imaging.move_stack_dialog)

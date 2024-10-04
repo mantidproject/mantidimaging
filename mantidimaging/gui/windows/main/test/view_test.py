@@ -449,7 +449,7 @@ class MainWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.view.NexusSaveDialog")
     def test_show_nexus_save_dialog(self, nexus_save_dialog_mock):
         self.view.show_nexus_save_dialog()
-        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.strict_dataset_list)
+        nexus_save_dialog_mock.assert_called_once_with(self.view, self.view.presenter.datasets)
         nexus_save_dialog_mock.return_value.show.assert_called_once()
 
     def test_execute_add_to_dataset_calls_notify(self):
@@ -514,11 +514,6 @@ class MainWindowViewTest(unittest.TestCase):
             move_stack_mock.assert_called_once_with(self.view, origin_dataset_id, stack_id, origin_dataset_name,
                                                     stack_data_type)
             move_stack_mock.return_value.show.assert_called_once()
-
-    def test_is_dataset_strict(self):
-        ds_id = "ds-id"
-        self.view.is_dataset_strict(ds_id)
-        self.presenter.is_dataset_strict.assert_called_once_with(ds_id)
 
     @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")

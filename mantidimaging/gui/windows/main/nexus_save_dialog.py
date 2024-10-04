@@ -3,11 +3,12 @@
 from __future__ import annotations
 import os
 import uuid
+from collections.abc import Iterable
 
 from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.mvp_base import BaseDialogView
-from mantidimaging.gui.windows.main.presenter import DatasetId
 
 NXS_EXT = ".nxs"
 
@@ -18,7 +19,7 @@ class NexusSaveDialog(BaseDialogView):
     floatRadioButton: QRadioButton
     intRadioButton: QRadioButton
 
-    def __init__(self, parent, dataset_list: list[DatasetId]):
+    def __init__(self, parent, dataset_list: Iterable[Dataset]):
         super().__init__(parent, 'gui/ui/nexus_save_dialog.ui')
 
         self.browseButton.clicked.connect(self._set_save_path)
@@ -32,9 +33,10 @@ class NexusSaveDialog(BaseDialogView):
 
         self.selected_dataset = None
 
-    def _create_dataset_lists(self, dataset_list):
+    def _create_dataset_lists(self, dataset_list: Iterable[Dataset]):
         if dataset_list:
-            self.dataset_uuids, dataset_names = zip(*dataset_list, strict=True)
+            self.dataset_uuids = [ds.id for ds in dataset_list]
+            dataset_names = [ds.name for ds in dataset_list]
             self.datasetNames.addItems(dataset_names)
 
     def accept(self) -> None:
