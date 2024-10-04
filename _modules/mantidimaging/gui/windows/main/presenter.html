@@ -519,14 +519,6 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="DatasetId">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.DatasetId">[docs]</a>
-<span class="k">class</span> <span class="nc">DatasetId</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span></div>
-
-
-
 <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -959,14 +951,6 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strict_dataset_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DatasetId</span><span class="p">]:</span>
-        <span class="n">datasets</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">DatasetId</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_dataset_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
@@ -1437,12 +1421,6 @@ document.write(`
 <span class="sd">        :return: A string for the stack name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&quot;</span>
-
-<div class="viewcode-block" id="MainWindowPresenter.is_dataset_strict">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_dataset_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">is_dataset_strict</span><span class="p">(</span><span class="n">ds_id</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="MainWindowPresenter.do_update_UI">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.do_update_UI">[docs]</a>

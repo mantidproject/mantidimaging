@@ -498,7 +498,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..utility.version_check</span> <span class="kn">import</span> <span class="n">CheckVersion</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span>
+    <span class="kn">from</span> <span class="nn">..data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
     <span class="kn">from</span> <span class="nn">..data.imagestack</span> <span class="kn">import</span> <span class="n">ImageStack</span>
     <span class="kn">from</span> <span class="nn">..utility.data_containers</span> <span class="kn">import</span> <span class="n">Indices</span>
 
@@ -670,7 +670,7 @@ document.write(`
 
 <div class="viewcode-block" id="nexus_save">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.nexus_save">[docs]</a>
-<span class="k">def</span> <span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uses information from a StrictDataset to create a NeXus file.</span>
 <span class="sd">    :param dataset: The dataset to save as a NeXus file.</span>
@@ -693,7 +693,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a NeXus file and writes the StrictDataset information to it.</span>
 <span class="sd">    :param nexus_file: The NeXus file.</span>
@@ -746,7 +746,7 @@ document.write(`
         <span class="n">_save_recon_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">,</span> <span class="n">recon</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">_save_processed_data_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_save_processed_data_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
                                   <span class="n">image_key</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">nexus_file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">NEXUS_PROCESSED_DATA_PATH</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s2">&quot;rotation_angle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_angle</span>
@@ -761,7 +761,7 @@ document.write(`
     <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">package_version</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_save_image_stacks_to_nexus</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">StrictDataset</span><span class="p">,</span> <span class="n">data_group</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_save_image_stacks_to_nexus</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">data_group</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">combined_data_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">nexus_arrays</span><span class="p">]),</span> <span class="p">)</span> <span class="o">+</span> <span class="n">dataset</span><span class="o">.</span><span class="n">nexus_arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
     <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>

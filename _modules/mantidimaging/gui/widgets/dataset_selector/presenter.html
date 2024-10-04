@@ -589,13 +589,7 @@ document.write(`
             <span class="k">if</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;flat&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;180deg&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="k">break</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">current_is_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">is_dataset_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_dataset</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

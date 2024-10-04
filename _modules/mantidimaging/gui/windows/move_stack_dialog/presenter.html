@@ -485,8 +485,7 @@ document.write(`
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.move_stack_dialog.view</span> <span class="kn">import</span> <span class="n">MoveStackDialog</span>
 
-<span class="n">STRICT_DATASET_ATTRS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat After&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark After&quot;</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">]</span>
-<span class="n">MIXED_DATASET_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Images&quot;</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">]</span>
+<span class="n">DATASET_ATTRS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat After&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark After&quot;</span><span class="p">,</span> <span class="s2">&quot;Images&quot;</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Notification">
@@ -529,15 +528,12 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">datasetSelector</span><span class="o">.</span><span class="n">current_is_strict</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">datasetSelector</span><span class="o">.</span><span class="n">current</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">origin_dataset_id</span><span class="p">:</span>
-                <span class="n">same_ds_list</span> <span class="o">=</span> <span class="n">STRICT_DATASET_ATTRS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">same_ds_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">originDataType</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">same_ds_list</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">STRICT_DATASET_ATTRS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">datasetSelector</span><span class="o">.</span><span class="n">current</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">origin_dataset_id</span><span class="p">:</span>
+            <span class="n">same_ds_list</span> <span class="o">=</span> <span class="n">DATASET_ATTRS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">same_ds_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">originDataType</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">same_ds_list</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">MIXED_DATASET_TYPES</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destinationTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">DATASET_ATTRS</span><span class="p">)</span></div>
 
 </pre></div>
 

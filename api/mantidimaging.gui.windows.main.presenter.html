@@ -427,11 +427,6 @@ document.write(`
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">mantidimaging.gui.windows.main.presenter module</a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.DatasetId"><code class="docutils literal notranslate"><span class="pre">DatasetId</span></code></a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.DatasetId.id"><code class="docutils literal notranslate"><span class="pre">DatasetId.id</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.DatasetId.name"><code class="docutils literal notranslate"><span class="pre">DatasetId.name</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter</span></code></a><ul>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.LOAD_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.LOAD_ERROR_STRING</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.SAVE_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.SAVE_ERROR_STRING</span></code></a></li>
@@ -465,7 +460,6 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser_history"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_visualiser_history()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_with_images"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_with_images()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.have_active_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.have_active_stacks</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.is_dataset_strict()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_files()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_stack()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_nexus_file"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_nexus_file()</span></code></a></li>
@@ -478,7 +472,6 @@ document.write(`
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.show_operation"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.show_operation()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_list</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_names"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_names</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.strict_dataset_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.strict_dataset_list</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_dark_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_dark_mode()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_light_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_light_mode()</span></code></a></li>
 <li><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.view</span></code></a></li>
@@ -589,24 +582,6 @@ document.write(`
                   
   <section id="module-mantidimaging.gui.windows.main.presenter">
 <span id="mantidimaging-gui-windows-main-presenter-module"></span><h1>mantidimaging.gui.windows.main.presenter module<a class="headerlink" href="#module-mantidimaging.gui.windows.main.presenter" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.DatasetId">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.main.presenter.</span></span><span class="sig-name descname"><span class="pre">DatasetId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/presenter.html#DatasetId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.DatasetId" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.DatasetId.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.DatasetId.id" title="Link to this definition">#</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.DatasetId.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.DatasetId.name" title="Link to this definition">#</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.MainWindowPresenter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.main.presenter.</span></span><span class="sig-name descname"><span class="pre">MainWindowPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/presenter.html#MainWindowPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter" title="Link to this definition">#</a></dt>
@@ -801,11 +776,6 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict">
-<span class="sig-name descname"><span class="pre">is_dataset_strict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/presenter.html#MainWindowPresenter.is_dataset_strict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files">
 <span class="sig-name descname"><span class="pre">load_image_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/presenter.html#MainWindowPresenter.load_image_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -869,11 +839,6 @@ document.write(`
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_names">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack_visualiser_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_names" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.presenter.MainWindowPresenter.strict_dataset_list">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strict_dataset_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.gui.windows.main.presenter.DatasetId" title="mantidimaging.gui.windows.main.presenter.DatasetId"><span class="pre">DatasetId</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.strict_dataset_list" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1040,11 +1005,6 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.DatasetId"><code class="docutils literal notranslate"><span class="pre">DatasetId</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.DatasetId.id"><code class="docutils literal notranslate"><span class="pre">DatasetId.id</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.DatasetId.name"><code class="docutils literal notranslate"><span class="pre">DatasetId.name</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.LOAD_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.LOAD_ERROR_STRING</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.SAVE_ERROR_STRING"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.SAVE_ERROR_STRING</span></code></a></li>
@@ -1078,7 +1038,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser_history"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_visualiser_history()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_with_images"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.get_stack_with_images()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.have_active_stacks"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.have_active_stacks</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.is_dataset_strict"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.is_dataset_strict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_files"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_image_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_image_stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.load_nexus_file"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.load_nexus_file()</span></code></a></li>
@@ -1091,7 +1050,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.show_operation"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.show_operation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_list</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.stack_visualiser_names"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.stack_visualiser_names</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.strict_dataset_list"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.strict_dataset_list</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_dark_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_dark_mode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.use_fusion_light_mode"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.use_fusion_light_mode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">MainWindowPresenter.view</span></code></a></li>

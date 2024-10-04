@@ -487,7 +487,6 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSignalBlocker</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.async_task</span> <span class="kn">import</span> <span class="n">start_async_task_view</span><span class="p">,</span> <span class="n">TaskWorkerThread</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
@@ -653,7 +652,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_dataset_id</span> <span class="o">=</span> <span class="n">new_dataset_id</span>
 
             <span class="n">new_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">new_dataset_id</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_dataset</span><span class="p">,</span> <span class="n">StrictDataset</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">new_dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">new_dataset</span><span class="o">.</span><span class="n">flat_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">try_to_select_relevant_normalise_stack</span><span class="p">(</span><span class="n">new_dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">new_dataset</span><span class="o">.</span><span class="n">flat_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
