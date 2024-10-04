@@ -8,79 +8,153 @@ Welcome to the developer guide. This guide is divided into several sections base
 .. raw:: html
 
    <style>
-      .doc-topic {
-          width: 45%;
-          display: inline-block;
-          text-align: center;
-          margin: 10px;
-          border: 1px solid #ddd;
-          padding: 15px;
-          border-radius: 8px;
-          background-color: #f9f9f9;
-          vertical-align: top;
-          height: 300px;
-          overflow: hidden;
-      }
-      .doc-topic h2 {
-          color: #1f77b4;
-          font-size: 18px;
-          font-weight: bold;
+      a {
+          color: #333; /* Black-grey for links */
           text-decoration: none;
-          margin-bottom: 5px;
       }
-      .doc-topic span {
-          font-size: 55px;
-          display: block;
-          margin-bottom: 8px;
-      }
-      .doc-button {
-          display: inline-block;
-          padding: 8px 12px;
-          font-size: 14px;
-          background-color: #333;
-          color: white;
-          text-decoration: none;
-          border-radius: 5px;
-          margin-top: 5px;
-          width: 160px;
-          height: auto;
-          text-align: center;
-          line-height: 1.2;
-          box-sizing: border-box;
-      }
-      .doc-button:hover {
+
+      a:hover {
           text-decoration: underline;
       }
+
+      .doc-dropdown {
+          width: 100%;
+          text-align: left;
+          margin-bottom: 20px;
+          padding: 0;
+          list-style-type: none;
+      }
+
+      /* Add margin to each dropdown menu item for spacing */
+      .doc-dropdown li {
+          margin-bottom: 15px; /* Space between dropdowns */
+      }
+
+      .doc-dropdown button {
+          background-color: #f1f1f1; /* Light grey for the buttons */
+          color: #333; /* Black-grey for the button text */
+          cursor: pointer;
+          padding: 12px;
+          width: 100%;
+          border: 1px solid #d3d3d3; /* Border color to match the grey theme */
+          text-align: left;
+          outline: none;
+          font-size: 16px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          border-radius: 4px;
+          transition: background-color 0.2s ease, padding-left 0.2s ease;
+      }
+
+      .doc-dropdown button:hover {
+          background-color: #e0e0e0; /* Darker grey on hover */
+          padding-left: 16px;
+      }
+
+      .doc-dropdown button:after {
+          content: '\25bc';
+          color: #333; /* Black-grey for the arrow */
+          margin-left: auto;
+          transition: transform 0.2s ease;
+      }
+
+      .doc-dropdown button.active:after {
+          transform: rotate(-180deg);
+      }
+
+      .doc-dropdown .panel {
+          padding: 0 18px;
+          background-color: #f9f9f9;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+          opacity: 0;
+      }
+
+      .doc-dropdown .panel.open {
+          max-height: 250px;
+          opacity: 1;
+          padding: 10px 0;
+      }
+
+      .doc-button {
+          display: block;
+          padding: 8px 12px;
+          font-size: 14px;
+          background-color: #f1f1f1;
+          color: #333; /* Black-grey for the links inside the panels */
+          text-decoration: none;
+          border-left: 3px solid transparent;
+          transition: background-color 0.2s ease, border-left-color 0.2s ease;
+      }
+
+      .doc-button:hover {
+          background-color: #e0e0e0;
+          border-left-color: #333; /* Dark grey border on hover */
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+          color: #333; /* Black-grey for headings */
+      }
+
+      p, li {
+          color: #333; /* Black-grey for paragraphs and list items */
+      }
+
    </style>
 
-   <div class="doc-topic">
-      <span>🚀</span>
-      <h2><a href="#tutorials">Tutorials</a></h2>
-      <p>Set up your environment and get started with development.</p>
-      <a href="tutorials/index.html" class="doc-button">To the Tutorials Guide</a>
-   </div>
+   <ul class="doc-dropdown">
+     <li>
+       <button class="accordion">🚀 Tutorials</button>
+       <div class="panel">
+         <a href="tutorials/index.html" class="doc-button">Getting Started</a>
+       </div>
+     </li>
 
-   <div class="doc-topic">
-      <span>🔧</span>
-      <h2><a href="#how-to-guides">How-To Guides</a></h2>
-      <p>Step-by-step instructions for specific development tasks.</p>
-      <a href="how-to-guides/index.html" class="doc-button">To the How-To Guides</a>
-   </div>
+     <li>
+       <button class="accordion">🔧 How-To Guides</button>
+       <div class="panel">
+         <a href="how-to-guides/developer_guide.html" class="doc-button">Developer Guide</a>
+         <a href="how-to-guides/debugging.html" class="doc-button">Debugging</a>
+         <a href="how-to-guides/testing.html" class="doc-button">Testing</a>
+       </div>
+     </li>
 
-   <div class="doc-topic">
-      <span>💡</span>
-      <h2><a href="#explanations">Explanations</a></h2>
-      <p>Conceptual explanations of the project's architecture and developer guidelines.</p>
-      <a href="explanations/index.html" class="doc-button">To the Explanations</a>
-   </div>
+     <li>
+       <button class="accordion">💡 Explanations</button>
+       <div class="panel">
+         <a href="explanations/documentation.html" class="doc-button">Documentation</a>
+         <a href="explanations/developer_conventions.html" class="doc-button">Developer Conventions</a>
+       </div>
+     </li>
 
-   <div class="doc-topic">
-      <span>📚</span>
-      <h2><a href="#reference">Reference</a></h2>
-      <p>API reference and internal tools documentation.</p>
-      <a href="reference/index.html" class="doc-button">To the Reference Guide</a>
-   </div>
+     <li>
+       <button class="accordion">📚 Reference</button>
+       <div class="panel">
+         <a href="../support.html" class="doc-button">Support</a>
+         <a href="../api.html" class="doc-button">API</a>
+         <a href="../release_notes/next.html" class="doc-button">Release Notes (Next)</a>
+       </div>
+     </li>
+   </ul>
 
+   <script>
+     var acc = document.getElementsByClassName("accordion");
+     for (var i = 0; i < acc.length; i++) {
+       acc[i].addEventListener("click", function() {
+         this.classList.toggle("active");
+         var panel = this.nextElementSibling;
+         if (panel.style.maxHeight) {
+           panel.style.maxHeight = null;
+           panel.classList.remove('open');
+         } else {
+           panel.style.maxHeight = panel.scrollHeight + "px";
+           panel.classList.add('open');
+         }
+       });
+     }
+   </script>
 
 .. toctree::
    :maxdepth: 2

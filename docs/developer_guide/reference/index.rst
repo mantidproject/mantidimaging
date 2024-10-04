@@ -4,7 +4,7 @@ Reference
 =========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    ../support.rst
    ../api.rst
