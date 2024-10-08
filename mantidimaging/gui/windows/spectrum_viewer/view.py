@@ -171,8 +171,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
         _ = self.roi_table_model  # Initialise model
-        self.current_roi_name = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
+
+        roi_names = self.spectrum_widget.get_list_of_roi_names()
+
+        if roi_names:
+            self.current_roi_name = self.last_clicked_roi = roi_names[0]
+        else:
+            self.current_roi_name = self.last_clicked_roi = None
 
         self.flightPathSpinBox.setMinimum(0)
         self.flightPathSpinBox.setMaximum(1e10)
@@ -188,8 +194,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             """
             Handle cell change in table view and update selected ROI and
             toggle visibility of action buttons
-
-            @param item: item in table
             """
             self.selected_row = item.row()
             self.current_roi_name = self.roi_table_model.get_element(item.row(), 0)
@@ -205,7 +209,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             """
             entered_name = self.roi_table_model.get_element(self.selected_row, 0)
             if entered_name.lower() not in ["", " ", "all"] and entered_name != self.current_roi_name:
-                if entered_name in self.presenter.get_roi_names():
+                if entered_name in self.spectrum_widget.get_list_of_roi_names():
                     entered_name = self.old_table_names[self.selected_row]
                     self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
                     self.current_roi_name = entered_name
@@ -515,10 +519,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.current_roi_name = ROI_RITS
-        if self.current_roi_name not in self.presenter.model.get_list_of_roi_names() or not self.roiPropertiesSpinBoxes:
+        if self.current_roi_name not in self.spectrum_widget.get_list_of_roi_names() or not self.roiPropertiesSpinBoxes:
             return
         else:
-            current_roi = self.presenter.model.get_roi(self.current_roi_name)
+            current_roi = self.spectrum_widget.get_roi(self.current_roi_name)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi_name}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         for row, pos in enumerate(current_roi):
@@ -555,7 +559,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         return self.tof_mode_select_group.checkedAction()
 
     def set_old_table_names(self) -> None:
-        self.old_table_names = self.presenter.get_roi_names()
+        self.old_table_names = self.spectrum_widget.get_list_of_roi_names()
         if 'all' in self.old_table_names:
             self.old_table_names.remove('all')
         if 'rits_roi' in self.old_table_names:
@@ -565,11 +569,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         for prop in self.roi_table_properties:
             spin_box = QSpinBox()
             if prop == "Top" or prop == "Bottom":
-                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[0])
+                if self.spectrum_widget.image.image_data is not None:
+                    spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[0])
             if prop == "Left" or prop == "Right":
-                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
+                if self.spectrum_widget.image.image_data is not None:
+                    spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.presenter.do_adjust_roi)
             self.roiPropertiesSpinBoxes[prop] = spin_box
-        for prop in self.roi_table_properties_secondary:
-            label = QLabel()
-            self.roiPropertiesLabels[prop] = label
+
+        # Ensure "Width" and "Height" labels are created and added to the dictionary
+        self.roiPropertiesLabels["Width"] = QLabel()
+        self.roiPropertiesLabels["Height"] = QLabel()
+
+        # Set the ROI properties in the table widget
+        self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
+        self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])

@@ -95,8 +95,8 @@ class SpectrumROI(ROI):
         return self._selected_row
 
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
-        self.setPos((roi.left, roi.top))
-        self.setSize((roi.width, roi.height))
+        self.setPos(roi.left, roi.top)
+        self.setSize(roi.width, roi.height)
 
     def rename_roi(self, new_name: str) -> None:
         self._name = new_name
@@ -217,13 +217,19 @@ class SpectrumWidget(QWidget):
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
 
+    def get_list_of_roi_names(self) -> list[str]:
+        """
+        Returns a list of all ROI names from the internal ROI dictionary.
+        """
+        return list(self.roi_dict.keys())
+
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str) -> None:
         """
         Adjust the existing ROI with the given name.
         @param new_roi: The new SpectrumROI to replace the existing SpectrumROI
-        @param roi_name: The name of the existing ROI.
+        @param self.get_sensible_roi(roi_name): The name of the existing ROI.
         """
-        self.roi_dict[roi_name].adjust_spec_roi(new_roi)
+        self.roi_dict[self.get_sensible_roi(roi_name)].adjust_spec_roi(new_roi)
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
@@ -232,16 +238,18 @@ class SpectrumWidget(QWidget):
         @param roi_name: The name of the ROI to return.
         @return: The ROI with the given name.
         """
-        if roi_name in self.roi_dict.keys():
-            pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
-            size = CloseEnoughPoint(self.roi_dict[roi_name].size())
+        sensible_roi_name = self.get_sensible_roi(roi_name)
+
+        if sensible_roi_name in self.roi_dict.keys():
+            pos = CloseEnoughPoint(self.roi_dict[sensible_roi_name].pos())
+            size = CloseEnoughPoint(self.roi_dict[sensible_roi_name].size())
             return SensibleROI.from_points(pos, size)
-        elif roi_name == "all":
+        elif sensible_roi_name == "all":
             pos = CloseEnoughPoint((0, 0))
             size = CloseEnoughPoint(self.max_roi_size)
             return SensibleROI.from_points(pos, size)
         else:
-            raise KeyError(f"ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'")
+            raise KeyError(f"ROI with name {sensible_roi_name} does not exist in self.roi_dict and is not 'all'")
 
     def remove_roi(self, roi_name: str) -> None:
         """
@@ -249,9 +257,13 @@ class SpectrumWidget(QWidget):
 
         @param roi_name: The name of the ROI to remove.
         """
-        if roi_name in self.roi_dict.keys() and roi_name != "all":
-            self.image.vb.removeItem(self.roi_dict[roi_name])
-            del self.roi_dict[roi_name]
+        sensible_roi_name = self.get_sensible_roi(roi_name)
+
+        if sensible_roi_name in self.roi_dict.keys() and sensible_roi_name != "all":
+            self.image.vb.removeItem(self.roi_dict[sensible_roi_name])
+            del self.roi_dict[sensible_roi_name]
+        else:
+            raise KeyError(f"ROI with name {sensible_roi_name} cannot be removed or does not exist.")
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
