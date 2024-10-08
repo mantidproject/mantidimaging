@@ -106,12 +106,13 @@ html_sidebars = {
     '/**': ['localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'],
 }
 
-# Path to the favicon file
 html_favicon = "_static/mantid_imaging_64px.ico"
+
+html_logo = "_static/mantid_imaging_64px.ico"
 
 html_theme_options = {
     "navigation_depth":
-    4,  # Adjust how deep the sidebar navigation goes
+    1,
     "external_links": [{
         "name": "GitHub",
         "url": "https://github.com/mantidproject/mantidimaging"
@@ -119,15 +120,21 @@ html_theme_options = {
     "icon_links": [{
         "name": "GitHub",
         "url": "https://github.com/mantidproject/mantidimaging",
-        "icon": "fa-brands fa-github",  # GitHub icon
+        "icon": "fa-brands fa-github",
         "type": "fontawesome",
     }],
     "switcher": {
         "json_url": "/mantidimaging/_static/version_switcher.json",
         "version_match": release,
     },
-    "navbar_end": ["version-switcher", "icon-links"],  # Add version switcher and GitHub link
+    "navbar_end": ["version-switcher", "icon-links"],
+    "logo": {
+        "image_light": "_static/mantid_imaging_64px.ico",
+        "image_dark": "_static/mantid_imaging_64px.ico",
+    },
 }
+
+html_title = "MantidImaging 2.9.0a1 documentation"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

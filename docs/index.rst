@@ -10,122 +10,55 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
 .. raw:: html
 
-   <!DOCTYPE html>
-   <html lang="en">
-   <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Mantid Imaging Documentation</title>
-     <style>
-       .accordion {
-         background-color: #f9f9f9;
-         color: #444;
-         cursor: pointer;
-         padding: 18px;
-         width: 100%;
-         border: none;
-         text-align: left;
-         outline: none;
-         font-size: 18px;
-         font-weight: bold;
-         display: flex;
-         align-items: center;
-         border-radius: 8px;
-         margin-bottom: 20px; /* Increased spacing */
-         transition: background-color 0.3s ease;
-         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-       }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Mantid Imaging Documentation</title>
+      <style>
+        .section-link {
+          background-color: #f9f9f9;
+          color: #444;
+          padding: 18px;
+          width: 100%;
+          text-align: left;
+          outline: none;
+          font-size: 18px;
+          font-weight: bold;
+          display: block;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          text-decoration: none;
+          transition: background-color 0.3s ease;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-       .accordion:hover {
-         background-color: #e6e6e6;
-       }
+        .section-link:hover {
+          background-color: #e6e6e6;
+        }
 
-       .accordion:after {
-         content: '\25bc';
-         color: #777;
-         margin-left: auto;
-         transition: transform 0.3s ease;
-       }
+        .emoji {
+          font-size: 24px;
+          margin-right: 10px;
+        }
+      </style>
+    </head>
+    <body>
 
-       .accordion.active:after {
-         transform: rotate(-180deg);
-       }
+    <h2>Mantid Imaging Documentation</h2>
 
-       .panel {
-         padding: 0 18px;
-         background-color: white;
-         max-height: 0;
-         overflow: hidden;
-         transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-         opacity: 0;
-         border-radius: 0 0 8px 8px;
-         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-       }
+    <a href="user_guide/index.html" class="section-link">
+      <span class="emoji">🧙‍♂️</span>User Guide
+    </a>
 
-       .panel.open {
-         max-height: 200px; /* Adjust max-height as needed */
-         opacity: 1;
-         padding: 10px 18px;
-         border-top: 1px solid #ddd;
-       }
+    <a href="developer_guide/index.html" class="section-link">
+      <span class="emoji">👨‍💻</span>Developer Guide
+    </a>
 
-       .emoji {
-         font-size: 24px;
-         margin-right: 10px;
-       }
-     </style>
-   </head>
-   <body>
+    </body>
+    </html>
 
-   <h2>Mantid Imaging Documentation</h2>
-
-   <button class="accordion">
-     <span class="emoji">🧙‍♂️</span>User Guide
-   </button>
-   <div class="panel">
-     <p><a href="user_guide/index.html">To the User Guide</a></p>
-   </div>
-
-   <button class="accordion">
-     <span class="emoji">👨‍💻</span>Developer Guide
-   </button>
-   <div class="panel">
-     <p><a href="developer_guide/index.html">To the Developer Guide</a></p>
-   </div>
-
-   <button class="accordion">
-     <span class="emoji">🛡️</span>Support
-   </button>
-   <div class="panel">
-     <p><a href="support.html">To the Support Page</a></p>
-   </div>
-
-   <button class="accordion">
-     <span class="emoji">📏</span>API
-   </button>
-   <div class="panel">
-     <p><a href="api.html">To the API Guide</a></p>
-   </div>
-
-   <script>
-     var acc = document.getElementsByClassName("accordion");
-     for (var i = 0; i < acc.length; i++) {
-       acc[i].addEventListener("click", function() {
-         this.classList.toggle("active");
-         var panel = this.nextElementSibling;
-         if (panel.style.maxHeight) {
-           panel.style.maxHeight = null;
-           panel.classList.remove('open');
-         } else {
-           panel.style.maxHeight = panel.scrollHeight + "px";
-           panel.classList.add('open');
-         }
-       });
-     }
-   </script>
-
-   </body>
-   </html>
 
 .. toctree::
    :maxdepth: 1
