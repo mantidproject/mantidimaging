@@ -576,11 +576,3 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                     spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.presenter.do_adjust_roi)
             self.roiPropertiesSpinBoxes[prop] = spin_box
-
-        # Ensure "Width" and "Height" labels are created and added to the dictionary
-        self.roiPropertiesLabels["Width"] = QLabel()
-        self.roiPropertiesLabels["Height"] = QLabel()
-
-        # Set the ROI properties in the table widget
-        self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
-        self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])
