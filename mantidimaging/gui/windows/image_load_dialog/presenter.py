@@ -108,7 +108,6 @@ class LoadPresenter:
         :return None
         """
         filename_group = FilenameGroup.from_file(Path(selected_file))
-        filename_group.find_shutter_count_file()
         field.set_images(list(filename_group.all_files()))
         self._update_field_action(field, selected_file)
         self.ensure_sample_shuttercount_consistency(field, selected_file)
