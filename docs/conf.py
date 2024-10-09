@@ -46,6 +46,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.mathjax',
     'sphinx_copybutton',
+    'sphinx_design',
 ]
 
 # Add custom extensions
@@ -100,6 +101,8 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 
 html_theme = 'pydata_sphinx_theme'
+
+html_css_files = ['custom.css']
 
 # Ensure sidebar displays only the current section's nested headings (local ToC)
 html_sidebars = {
