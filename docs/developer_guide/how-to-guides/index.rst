@@ -6,7 +6,7 @@ How-To Guides
 Specific guides for common development tasks.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: How-To Guides:
 
    command.rst

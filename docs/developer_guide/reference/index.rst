@@ -6,6 +6,6 @@ Reference
 .. toctree::
    :maxdepth: 2
 
-   ../support.rst
-   ../api.rst
-   ../release_notes/next.rst
+   ../../support
+   ../../api
+   ../../release_notes/next
