@@ -30,6 +30,8 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,6 +43,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
@@ -48,6 +51,7 @@
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="mantidimaging.gui.widgets.indicator_icon package" href="mantidimaging.gui.widgets.indicator_icon.html" />
@@ -169,9 +173,9 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
   </a>
 </li>
 
@@ -181,20 +185,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../api.html">
-    API Reference
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
     Release Notes
@@ -212,6 +202,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -264,6 +261,22 @@ document.write(`
   </div>
 `);
 </script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
       
     </div>
     
@@ -342,20 +355,6 @@ document.write(`
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../api.html">
     API Reference
@@ -380,6 +379,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -417,38 +423,193 @@ document.write(`
 `);
 </script></div>
         
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
       </div>
     
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog module</a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorDialog</span></code></a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog.on_ok_clicked"><code class="docutils literal notranslate"><span class="pre">DatasetSelectorDialog.on_ok_clicked()</span></code></a></li>
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mantidimaging.html">mantidimaging package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="mantidimaging.core.html">mantidimaging.core package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.data.html">mantidimaging.core.data package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.dataset.html">mantidimaging.core.data.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.imagestack.html">mantidimaging.core.data.imagestack module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.reconlist.html">mantidimaging.core.data.reconlist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.utility.html">mantidimaging.core.data.utility module</a></li>
 </ul>
-</li>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.gpu.html">mantidimaging.core.gpu package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.gpu.utility.html">mantidimaging.core.gpu.utility module</a></li>
 </ul>
-</li>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.io.html">mantidimaging.core.io package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.loader.html">mantidimaging.core.io.loader package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.csv_output.html">mantidimaging.core.io.csv_output module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.filenames.html">mantidimaging.core.io.filenames module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html">mantidimaging.core.io.instrument_log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html">mantidimaging.core.io.instrument_log_implmentations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.saver.html">mantidimaging.core.io.saver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.utility.html">mantidimaging.core.io.utility module</a></li>
 </ul>
-
-  </div></div>
-        <div class="sidebar-primary-item">
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="mantidimaging.gui.widgets.dataset_selector_dialog.html"
-                          title="previous chapter">mantidimaging.gui.widgets.dataset_selector_dialog package</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="mantidimaging.gui.widgets.indicator_icon.html"
-                          title="next chapter">mantidimaging.gui.widgets.indicator_icon package</a></p>
-  </div></div>
-        <div class="sidebar-primary-item">
-<div id="searchbox"></div></div>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.net.html">mantidimaging.core.net package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.net.help_pages.html">mantidimaging.core.net.help_pages module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.operation_history.html">mantidimaging.core.operation_history package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operation_history.const.html">mantidimaging.core.operation_history.const module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operation_history.operations.html">mantidimaging.core.operation_history.operations module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.operations.html">mantidimaging.core.operations package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.html">mantidimaging.core.operations.arithmetic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.html">mantidimaging.core.operations.circular_mask package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.clip_values.html">mantidimaging.core.operations.clip_values package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.html">mantidimaging.core.operations.crop_coords package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.divide.html">mantidimaging.core.operations.divide package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.html">mantidimaging.core.operations.flat_fielding package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.gaussian.html">mantidimaging.core.operations.gaussian package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.median_filter.html">mantidimaging.core.operations.median_filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.html">mantidimaging.core.operations.monitor_normalisation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.html">mantidimaging.core.operations.nan_removal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.outliers.html">mantidimaging.core.operations.outliers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rebin.html">mantidimaging.core.operations.rebin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.html">mantidimaging.core.operations.remove_all_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.html">mantidimaging.core.operations.remove_dead_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.html">mantidimaging.core.operations.remove_large_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.html">mantidimaging.core.operations.remove_stripe_filtering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.html">mantidimaging.core.operations.remove_stripe_sorting_fitting package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rescale.html">mantidimaging.core.operations.rescale package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.html">mantidimaging.core.operations.ring_removal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.html">mantidimaging.core.operations.roi_normalisation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.html">mantidimaging.core.operations.rotate_stack package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html">mantidimaging.core.operations.base_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.loader.html">mantidimaging.core.operations.loader module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.parallel.html">mantidimaging.core.parallel package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.manager.html">mantidimaging.core.parallel.manager module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.shared.html">mantidimaging.core.parallel.shared module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.utility.html">mantidimaging.core.parallel.utility module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.reconstruct.html">mantidimaging.core.reconstruct package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.astra_recon.html">mantidimaging.core.reconstruct.astra_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.base_recon.html">mantidimaging.core.reconstruct.base_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.cil_recon.html">mantidimaging.core.reconstruct.cil_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.tomopy_recon.html">mantidimaging.core.reconstruct.tomopy_recon module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.rotation.html">mantidimaging.core.rotation package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.rotation.data_model.html">mantidimaging.core.rotation.data_model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.rotation.polyfit_correlation.html">mantidimaging.core.rotation.polyfit_correlation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.utility.html">mantidimaging.core.utility package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.html">mantidimaging.core.utility.progress_reporting package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.close_enough_point.html">mantidimaging.core.utility.close_enough_point module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.command_line_arguments.html">mantidimaging.core.utility.command_line_arguments module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.cor_interpolate.html">mantidimaging.core.utility.cor_interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.cuda_check.html">mantidimaging.core.utility.cuda_check module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html">mantidimaging.core.utility.data_containers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.execution_timer.html">mantidimaging.core.utility.execution_timer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.finder.html">mantidimaging.core.utility.finder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.func_call.html">mantidimaging.core.utility.func_call module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.histogram.html">mantidimaging.core.utility.histogram module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.imat_log_file_parser.html">mantidimaging.core.utility.imat_log_file_parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.leak_tracker.html">mantidimaging.core.utility.leak_tracker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.memory_usage.html">mantidimaging.core.utility.memory_usage module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.optional_imports.html">mantidimaging.core.utility.optional_imports module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.projection_angle_parser.html">mantidimaging.core.utility.projection_angle_parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.projection_angles.html">mantidimaging.core.utility.projection_angles module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html">mantidimaging.core.utility.sensible_roi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.size_calculator.html">mantidimaging.core.utility.size_calculator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.unit_conversion.html">mantidimaging.core.utility.unit_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.version_check.html">mantidimaging.core.utility.version_check module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mantidimaging.gui.html">mantidimaging.gui package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.dialogs.html">mantidimaging.gui.dialogs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.async_task.html">mantidimaging.gui.dialogs.async_task package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.cor_inspection.html">mantidimaging.gui.dialogs.cor_inspection package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.multiple_stack_select.html">mantidimaging.gui.dialogs.multiple_stack_select package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.mvp_base.html">mantidimaging.gui.mvp_base package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html">mantidimaging.gui.mvp_base.presenter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.mvp_base.view.html">mantidimaging.gui.mvp_base.view module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.utility.html">mantidimaging.gui.utility package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.utility.common.html">mantidimaging.gui.utility.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.utility.qt_helpers.html">mantidimaging.gui.utility.qt_helpers module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="mantidimaging.gui.widgets.html">mantidimaging.gui.widgets package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.auto_colour_menu.html">mantidimaging.gui.widgets.auto_colour_menu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.bad_data_overlay.html">mantidimaging.gui.widgets.bad_data_overlay package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.html">mantidimaging.gui.widgets.dataset_selector package</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector_dialog.html">mantidimaging.gui.widgets.dataset_selector_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.indicator_icon.html">mantidimaging.gui.widgets.indicator_icon package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.line_profile_plot.html">mantidimaging.gui.widgets.line_profile_plot package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.mi_image_view.html">mantidimaging.gui.widgets.mi_image_view package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.mi_mini_image_view.html">mantidimaging.gui.widgets.mi_mini_image_view package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.palette_changer.html">mantidimaging.gui.widgets.palette_changer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.roi_selector.html">mantidimaging.gui.widgets.roi_selector package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.zslider.html">mantidimaging.gui.widgets.zslider package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.removable_row_table_view.html">mantidimaging.gui.widgets.removable_row_table_view module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.windows.html">mantidimaging.gui.windows package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.add_images_to_dataset_dialog.html">mantidimaging.gui.windows.add_images_to_dataset_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.image_load_dialog.html">mantidimaging.gui.windows.image_load_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.live_viewer.html">mantidimaging.gui.windows.live_viewer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.main.html">mantidimaging.gui.windows.main package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.move_stack_dialog.html">mantidimaging.gui.windows.move_stack_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.nexus_load_dialog.html">mantidimaging.gui.windows.nexus_load_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.operations.html">mantidimaging.gui.windows.operations package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.recon.html">mantidimaging.gui.windows.recon package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.settings.html">mantidimaging.gui.windows.settings package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.html">mantidimaging.gui.windows.spectrum_viewer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.stack_choice.html">mantidimaging.gui.windows.stack_choice package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.html">mantidimaging.gui.windows.stack_visualiser package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.welcome_screen.html">mantidimaging.gui.windows.welcome_screen package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.wizard.html">mantidimaging.gui.windows.wizard package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.gui.html">mantidimaging.gui.gui module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
     </div>
   
   
@@ -486,7 +647,7 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    <li class="breadcrumb-item"><a href="../developer_guide/index.html" class="nav-link">Developer Guide</a></li>
     
     
     <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
@@ -515,11 +676,11 @@ document.write(`
 <span id="mantidimaging-gui-widgets-dataset-selector-dialog-dataset-selector-dialog-module"></span><h1>mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog module<a class="headerlink" href="#module-mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.</span></span><span class="sig-name descname"><span class="pre">DatasetSelectorDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_stacks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector_dialog/dataset_selector_dialog.html#DatasetSelectorDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.</span></span><span class="sig-name descname"><span class="pre">DatasetSelectorDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_stacks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector_dialog/dataset_selector_dialog.html#DatasetSelectorDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView" title="mantidimaging.gui.mvp_base.view.BaseDialogView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDialogView</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog.on_ok_clicked">
-<span class="sig-name descname"><span class="pre">on_ok_clicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector_dialog/dataset_selector_dialog.html#DatasetSelectorDialog.on_ok_clicked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog.on_ok_clicked" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_ok_clicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/dataset_selector_dialog/dataset_selector_dialog.html#DatasetSelectorDialog.on_ok_clicked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.DatasetSelectorDialog.on_ok_clicked" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

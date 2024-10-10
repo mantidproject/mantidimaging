@@ -30,6 +30,8 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,6 +43,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.recon.view';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
@@ -48,6 +51,7 @@
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="mantidimaging.gui.windows.settings package" href="mantidimaging.gui.windows.settings.html" />
@@ -169,9 +173,9 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
   </a>
 </li>
 
@@ -181,20 +185,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../api.html">
-    API Reference
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
     Release Notes
@@ -212,6 +202,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -264,6 +261,22 @@ document.write(`
   </div>
 `);
 </script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
       
     </div>
     
@@ -342,20 +355,6 @@ document.write(`
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../api.html">
     API Reference
@@ -380,6 +379,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -417,128 +423,193 @@ document.write(`
 `);
 </script></div>
         
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
       </div>
     
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">mantidimaging.gui.windows.recon.view module</a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView</span></code></a><ul>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.addBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.addBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.add_cor_table_row"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.add_cor_table_row()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.algorithmName"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.algorithmName</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.algorithm_name"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.algorithm_name</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.alpha"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.alpha</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.alphaSpinBox"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.alphaSpinBox</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.beam_hardening_coefs"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.beam_hardening_coefs</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.calculateCors"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.calculateCors</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.changeColourPaletteButton"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.changeColourPaletteButton</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_colour_palette_dialog"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.change_colour_palette_dialog</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_refine_iterations"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.change_refine_iterations()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.check_stack_for_invalid_180_deg_proj"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.check_stack_for_invalid_180_deg_proj()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.cleanup"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.cleanup()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.clearAllBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.clearAllBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.clear_cor_table"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.clear_cor_table()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.closeEvent"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.closeEvent()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.corHelpButton"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.corHelpButton</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.cor_table_model"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.cor_table_model</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.correlateBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.correlateBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.filterName"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.filterName</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.filter_name"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.filter_name</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.gamma"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.gamma</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_auto_cor_method"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.get_auto_cor_method()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_cor_table_selected_rows"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.get_cor_table_selected_rows()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_number_of_cors"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.get_number_of_cors()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_stack"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.get_stack()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.handle_auto_update_preview_selection"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.handle_auto_update_preview_selection()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.hide_tilt"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.hide_tilt()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.imageLayout"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.imageLayout</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.inputTab"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.inputTab</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.is_auto_update_preview"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.is_auto_update_preview()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.lbhc_a0"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.lbhc_a0</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.lbhc_a1"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.lbhc_a1</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.lbhc_a2"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.lbhc_a2</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.lbhc_a3"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.lbhc_a3</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.lbhc_enabled"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.lbhc_enabled</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.maxProjAngle"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.maxProjAngle</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.max_proj_angle"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.max_proj_angle</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.messageIcon"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.messageIcon</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.minimiseBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.minimiseBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.nonNegativeCheckBox"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.nonNegativeCheckBox</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.non_negative"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.non_negative</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.numIter"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.numIter</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.num_iter"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.num_iter</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_change_colour_palette"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.on_change_colour_palette()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_table_row_count_change"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.on_table_row_count_change()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.open_help_webpage"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.open_help_webpage()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.pixelSize"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.pixelSize</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.pixel_size"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.pixel_size</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.preview_image_on_button_press"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.preview_image_on_button_press()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.projections_per_subset"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.projections_per_subset</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reconTab"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reconTab</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.recon_params"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.recon_params()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reconstructSlice"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reconstructSlice</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reconstructVolume"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reconstructVolume</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.refineCorBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.refineCorBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.refineIterationsBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.refineIterationsBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regularisation_percent"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.regularisation_percent</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regulariser"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.regulariser</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.removeBtn"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.removeBtn</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.remove_selected_cor"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.remove_selected_cor()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_projection_preview"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reset_projection_preview()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_and_sino_previews"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reset_recon_and_sino_previews()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_line_profile"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reset_recon_line_profile()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_slice_and_tilt"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.reset_slice_and_tilt()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.resultCor"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.resultCor</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.resultSlope"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.resultSlope</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.resultTab"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.resultTab</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.resultTilt"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.resultTilt</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.rotation_centre"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.rotation_centre</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_correlate_buttons_enabled()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_filters_for_recon_tool"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_filters_for_recon_tool()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_projection_index"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_max_projection_index()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_max_slice_index()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_recon_buttons_enabled"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_recon_buttons_enabled()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_results"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_results()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_table_point"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.set_table_point()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.showEvent"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.showEvent()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_recon_volume"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.show_recon_volume()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.show_status_message()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.slope"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.slope</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.stackSelector"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.stackSelector</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.statusMessageTextEdit"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.statusMessageTextEdit</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.stochastic"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.stochastic</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.stochasticCheckBox"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.stochasticCheckBox</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.subsetsSpinBox"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.subsetsSpinBox</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.tableView"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.tableView</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.tilt"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.tilt</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.update_projection()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_recon_preview"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.update_recon_preview()</span></code></a></li>
-<li><a class="reference internal" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_sinogram"><code class="docutils literal notranslate"><span class="pre">ReconstructWindowView.update_sinogram()</span></code></a></li>
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mantidimaging.html">mantidimaging package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="mantidimaging.core.html">mantidimaging.core package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.data.html">mantidimaging.core.data package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.dataset.html">mantidimaging.core.data.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.imagestack.html">mantidimaging.core.data.imagestack module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.reconlist.html">mantidimaging.core.data.reconlist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.data.utility.html">mantidimaging.core.data.utility module</a></li>
 </ul>
-</li>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.gpu.html">mantidimaging.core.gpu package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.gpu.utility.html">mantidimaging.core.gpu.utility module</a></li>
 </ul>
-</li>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.io.html">mantidimaging.core.io package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.loader.html">mantidimaging.core.io.loader package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.csv_output.html">mantidimaging.core.io.csv_output module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.filenames.html">mantidimaging.core.io.filenames module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html">mantidimaging.core.io.instrument_log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html">mantidimaging.core.io.instrument_log_implmentations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.saver.html">mantidimaging.core.io.saver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.io.utility.html">mantidimaging.core.io.utility module</a></li>
 </ul>
-
-  </div></div>
-        <div class="sidebar-primary-item">
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="mantidimaging.gui.windows.recon.presenter.html"
-                          title="previous chapter">mantidimaging.gui.windows.recon.presenter module</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="mantidimaging.gui.windows.settings.html"
-                          title="next chapter">mantidimaging.gui.windows.settings package</a></p>
-  </div></div>
-        <div class="sidebar-primary-item">
-<div id="searchbox"></div></div>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.net.html">mantidimaging.core.net package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.net.help_pages.html">mantidimaging.core.net.help_pages module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.operation_history.html">mantidimaging.core.operation_history package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operation_history.const.html">mantidimaging.core.operation_history.const module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operation_history.operations.html">mantidimaging.core.operation_history.operations module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.operations.html">mantidimaging.core.operations package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.html">mantidimaging.core.operations.arithmetic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.html">mantidimaging.core.operations.circular_mask package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.clip_values.html">mantidimaging.core.operations.clip_values package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.html">mantidimaging.core.operations.crop_coords package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.divide.html">mantidimaging.core.operations.divide package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.html">mantidimaging.core.operations.flat_fielding package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.gaussian.html">mantidimaging.core.operations.gaussian package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.median_filter.html">mantidimaging.core.operations.median_filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.html">mantidimaging.core.operations.monitor_normalisation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.html">mantidimaging.core.operations.nan_removal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.outliers.html">mantidimaging.core.operations.outliers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rebin.html">mantidimaging.core.operations.rebin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.html">mantidimaging.core.operations.remove_all_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.html">mantidimaging.core.operations.remove_dead_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.html">mantidimaging.core.operations.remove_large_stripe package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.html">mantidimaging.core.operations.remove_stripe_filtering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.html">mantidimaging.core.operations.remove_stripe_sorting_fitting package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rescale.html">mantidimaging.core.operations.rescale package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.html">mantidimaging.core.operations.ring_removal package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.html">mantidimaging.core.operations.roi_normalisation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.html">mantidimaging.core.operations.rotate_stack package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html">mantidimaging.core.operations.base_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.operations.loader.html">mantidimaging.core.operations.loader module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.parallel.html">mantidimaging.core.parallel package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.manager.html">mantidimaging.core.parallel.manager module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.shared.html">mantidimaging.core.parallel.shared module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.parallel.utility.html">mantidimaging.core.parallel.utility module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.reconstruct.html">mantidimaging.core.reconstruct package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.astra_recon.html">mantidimaging.core.reconstruct.astra_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.base_recon.html">mantidimaging.core.reconstruct.base_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.cil_recon.html">mantidimaging.core.reconstruct.cil_recon module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.reconstruct.tomopy_recon.html">mantidimaging.core.reconstruct.tomopy_recon module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.rotation.html">mantidimaging.core.rotation package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.rotation.data_model.html">mantidimaging.core.rotation.data_model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.rotation.polyfit_correlation.html">mantidimaging.core.rotation.polyfit_correlation module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.core.utility.html">mantidimaging.core.utility package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.html">mantidimaging.core.utility.progress_reporting package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.close_enough_point.html">mantidimaging.core.utility.close_enough_point module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.command_line_arguments.html">mantidimaging.core.utility.command_line_arguments module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.cor_interpolate.html">mantidimaging.core.utility.cor_interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.cuda_check.html">mantidimaging.core.utility.cuda_check module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html">mantidimaging.core.utility.data_containers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.execution_timer.html">mantidimaging.core.utility.execution_timer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.finder.html">mantidimaging.core.utility.finder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.func_call.html">mantidimaging.core.utility.func_call module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.histogram.html">mantidimaging.core.utility.histogram module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.imat_log_file_parser.html">mantidimaging.core.utility.imat_log_file_parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.leak_tracker.html">mantidimaging.core.utility.leak_tracker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.memory_usage.html">mantidimaging.core.utility.memory_usage module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.optional_imports.html">mantidimaging.core.utility.optional_imports module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.projection_angle_parser.html">mantidimaging.core.utility.projection_angle_parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.projection_angles.html">mantidimaging.core.utility.projection_angles module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html">mantidimaging.core.utility.sensible_roi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.size_calculator.html">mantidimaging.core.utility.size_calculator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.unit_conversion.html">mantidimaging.core.utility.unit_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.core.utility.version_check.html">mantidimaging.core.utility.version_check module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mantidimaging.gui.html">mantidimaging.gui package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.dialogs.html">mantidimaging.gui.dialogs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.async_task.html">mantidimaging.gui.dialogs.async_task package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.cor_inspection.html">mantidimaging.gui.dialogs.cor_inspection package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.dialogs.multiple_stack_select.html">mantidimaging.gui.dialogs.multiple_stack_select package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.mvp_base.html">mantidimaging.gui.mvp_base package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html">mantidimaging.gui.mvp_base.presenter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.mvp_base.view.html">mantidimaging.gui.mvp_base.view module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.utility.html">mantidimaging.gui.utility package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.utility.common.html">mantidimaging.gui.utility.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.utility.qt_helpers.html">mantidimaging.gui.utility.qt_helpers module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mantidimaging.gui.widgets.html">mantidimaging.gui.widgets package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.auto_colour_menu.html">mantidimaging.gui.widgets.auto_colour_menu package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.bad_data_overlay.html">mantidimaging.gui.widgets.bad_data_overlay package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.html">mantidimaging.gui.widgets.dataset_selector package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector_dialog.html">mantidimaging.gui.widgets.dataset_selector_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.indicator_icon.html">mantidimaging.gui.widgets.indicator_icon package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.line_profile_plot.html">mantidimaging.gui.widgets.line_profile_plot package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.mi_image_view.html">mantidimaging.gui.widgets.mi_image_view package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.mi_mini_image_view.html">mantidimaging.gui.widgets.mi_mini_image_view package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.palette_changer.html">mantidimaging.gui.widgets.palette_changer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.roi_selector.html">mantidimaging.gui.widgets.roi_selector package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.zslider.html">mantidimaging.gui.widgets.zslider package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.widgets.removable_row_table_view.html">mantidimaging.gui.widgets.removable_row_table_view module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="mantidimaging.gui.windows.html">mantidimaging.gui.windows package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.add_images_to_dataset_dialog.html">mantidimaging.gui.windows.add_images_to_dataset_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.image_load_dialog.html">mantidimaging.gui.windows.image_load_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.live_viewer.html">mantidimaging.gui.windows.live_viewer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.main.html">mantidimaging.gui.windows.main package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.move_stack_dialog.html">mantidimaging.gui.windows.move_stack_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.nexus_load_dialog.html">mantidimaging.gui.windows.nexus_load_dialog package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.operations.html">mantidimaging.gui.windows.operations package</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="mantidimaging.gui.windows.recon.html">mantidimaging.gui.windows.recon package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.settings.html">mantidimaging.gui.windows.settings package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.html">mantidimaging.gui.windows.spectrum_viewer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.stack_choice.html">mantidimaging.gui.windows.stack_choice package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.html">mantidimaging.gui.windows.stack_visualiser package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.welcome_screen.html">mantidimaging.gui.windows.welcome_screen package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.windows.wizard.html">mantidimaging.gui.windows.wizard package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.gui.html">mantidimaging.gui.gui module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
     </div>
   
   
@@ -576,7 +647,7 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    <li class="breadcrumb-item"><a href="../developer_guide/index.html" class="nav-link">Developer Guide</a></li>
     
     
     <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
@@ -614,7 +685,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.add_cor_table_row">
-<span class="sig-name descname"><span class="pre">add_cor_table_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.add_cor_table_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.add_cor_table_row" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_cor_table_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.add_cor_table_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.add_cor_table_row" title="Link to this definition">#</a></dt>
 <dd><p>Adds a row to the manual COR table with a specified slice index.</p>
 </dd></dl>
 
@@ -625,12 +696,12 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.algorithm_name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">algorithm_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.algorithm_name" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">algorithm_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.algorithm_name" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.alpha">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.alpha" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.alpha" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -640,7 +711,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.beam_hardening_coefs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">beam_hardening_coefs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.beam_hardening_coefs" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">beam_hardening_coefs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.beam_hardening_coefs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -655,22 +726,22 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_colour_palette_dialog">
-<span class="sig-name descname"><span class="pre">change_colour_palette_dialog</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.palette_changer.view.html#mantidimaging.gui.widgets.palette_changer.view.PaletteChangerView" title="mantidimaging.gui.widgets.palette_changer.view.PaletteChangerView"><span class="pre">PaletteChangerView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_colour_palette_dialog" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">change_colour_palette_dialog</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.widgets.palette_changer.view.html#mantidimaging.gui.widgets.palette_changer.view.PaletteChangerView" title="mantidimaging.gui.widgets.palette_changer.view.PaletteChangerView"><span class="pre">PaletteChangerView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_colour_palette_dialog" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_refine_iterations">
-<span class="sig-name descname"><span class="pre">change_refine_iterations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.change_refine_iterations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_refine_iterations" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">change_refine_iterations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.change_refine_iterations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_refine_iterations" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.check_stack_for_invalid_180_deg_proj">
-<span class="sig-name descname"><span class="pre">check_stack_for_invalid_180_deg_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.check_stack_for_invalid_180_deg_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.check_stack_for_invalid_180_deg_proj" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">check_stack_for_invalid_180_deg_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.check_stack_for_invalid_180_deg_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.check_stack_for_invalid_180_deg_proj" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.cleanup">
-<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.cleanup" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.cleanup" title="Link to this definition">#</a></dt>
 <dd><p>Runs when the window is closed.</p>
 </dd></dl>
 
@@ -681,12 +752,12 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.clear_cor_table">
-<span class="sig-name descname"><span class="pre">clear_cor_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.clear_cor_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.clear_cor_table" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">clear_cor_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.clear_cor_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.clear_cor_table" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.closeEvent">
-<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QCloseEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.closeEvent" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QCloseEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.closeEvent" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -711,12 +782,12 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.filter_name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.filter_name" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.filter_name" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.gamma">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.gamma" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.gamma" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -726,27 +797,27 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_cor_table_selected_rows">
-<span class="sig-name descname"><span class="pre">get_cor_table_selected_rows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_cor_table_selected_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_cor_table_selected_rows" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_cor_table_selected_rows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_cor_table_selected_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_cor_table_selected_rows" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_number_of_cors">
-<span class="sig-name descname"><span class="pre">get_number_of_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_number_of_cors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_number_of_cors" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_number_of_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_number_of_cors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_number_of_cors" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_stack">
-<span class="sig-name descname"><span class="pre">get_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_stack" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.get_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_stack" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.handle_auto_update_preview_selection">
-<span class="sig-name descname"><span class="pre">handle_auto_update_preview_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.handle_auto_update_preview_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.handle_auto_update_preview_selection" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">handle_auto_update_preview_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.handle_auto_update_preview_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.handle_auto_update_preview_selection" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.hide_tilt">
-<span class="sig-name descname"><span class="pre">hide_tilt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.hide_tilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.hide_tilt" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">hide_tilt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.hide_tilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.hide_tilt" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -761,7 +832,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.is_auto_update_preview">
-<span class="sig-name descname"><span class="pre">is_auto_update_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.is_auto_update_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.is_auto_update_preview" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_auto_update_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.is_auto_update_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.is_auto_update_preview" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -796,7 +867,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.max_proj_angle">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_proj_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.max_proj_angle" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_proj_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.max_proj_angle" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -816,7 +887,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.non_negative">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_negative</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.non_negative" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_negative</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.non_negative" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -826,18 +897,18 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.num_iter">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_iter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.num_iter" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_iter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.num_iter" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_change_colour_palette">
-<span class="sig-name descname"><span class="pre">on_change_colour_palette</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.on_change_colour_palette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_change_colour_palette" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_change_colour_palette</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.on_change_colour_palette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_change_colour_palette" title="Link to this definition">#</a></dt>
 <dd><p>Opens the Palette Changer window when the “Auto” button has been clicked.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_table_row_count_change">
-<span class="sig-name descname"><span class="pre">on_table_row_count_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">__</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.on_table_row_count_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_table_row_count_change" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_table_row_count_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">__</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.on_table_row_count_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.on_table_row_count_change" title="Link to this definition">#</a></dt>
 <dd><p>Called when rows have been added or removed from the point table.</p>
 <p>Used to conditionally enable UI controls that depend on a certain
 amount of entries in the table.</p>
@@ -845,7 +916,7 @@ amount of entries in the table.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.open_help_webpage">
-<span class="sig-name descname"><span class="pre">open_help_webpage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.open_help_webpage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.open_help_webpage" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">open_help_webpage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.open_help_webpage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.open_help_webpage" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -855,12 +926,12 @@ amount of entries in the table.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.pixel_size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.pixel_size" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.pixel_size" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.preview_image_on_button_press">
-<span class="sig-name descname"><span class="pre">preview_image_on_button_press</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.preview_image_on_button_press"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.preview_image_on_button_press" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">preview_image_on_button_press</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.preview_image_on_button_press"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.preview_image_on_button_press" title="Link to this definition">#</a></dt>
 <dd><p>Handles mouse button presses on the preview projection image.</p>
 <p>Used to set the preview slice when a user clicks on a given part of the
 image.</p>
@@ -868,7 +939,7 @@ image.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.projections_per_subset">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">projections_per_subset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.projections_per_subset" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">projections_per_subset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.projections_per_subset" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -903,12 +974,12 @@ image.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.regularisation_percent">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">regularisation_percent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regularisation_percent" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">regularisation_percent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regularisation_percent" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.regulariser">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">regulariser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regulariser" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">regulariser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.regulariser" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -918,29 +989,29 @@ image.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.remove_selected_cor">
-<span class="sig-name descname"><span class="pre">remove_selected_cor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.remove_selected_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.remove_selected_cor" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove_selected_cor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.remove_selected_cor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.remove_selected_cor" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_projection_preview">
-<span class="sig-name descname"><span class="pre">reset_projection_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_projection_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_projection_preview" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_projection_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_projection_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_projection_preview" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_and_sino_previews">
-<span class="sig-name descname"><span class="pre">reset_recon_and_sino_previews</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_recon_and_sino_previews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_and_sino_previews" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_recon_and_sino_previews</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_recon_and_sino_previews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_and_sino_previews" title="Link to this definition">#</a></dt>
 <dd><p>Resets the recon and sinogram preview images, forcing a complete redraw next time they
 are updated.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_line_profile">
-<span class="sig-name descname"><span class="pre">reset_recon_line_profile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_recon_line_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_line_profile" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_recon_line_profile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_recon_line_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_recon_line_profile" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_slice_and_tilt">
-<span class="sig-name descname"><span class="pre">reset_slice_and_tilt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_slice_and_tilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_slice_and_tilt" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_slice_and_tilt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.reset_slice_and_tilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.reset_slice_and_tilt" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -965,58 +1036,58 @@ are updated.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.rotation_centre">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotation_centre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.rotation_centre" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotation_centre</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.rotation_centre" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled">
-<span class="sig-name descname"><span class="pre">set_correlate_buttons_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_correlate_buttons_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_correlate_buttons_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_correlate_buttons_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_filters_for_recon_tool">
-<span class="sig-name descname"><span class="pre">set_filters_for_recon_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_filters_for_recon_tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_filters_for_recon_tool" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_filters_for_recon_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_filters_for_recon_tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_filters_for_recon_tool" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_projection_index">
-<span class="sig-name descname"><span class="pre">set_max_projection_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_max_projection_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_projection_index" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_max_projection_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_max_projection_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_projection_index" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index">
-<span class="sig-name descname"><span class="pre">set_max_slice_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_max_slice_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_max_slice_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_max_slice_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_recon_buttons_enabled">
-<span class="sig-name descname"><span class="pre">set_recon_buttons_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_recon_buttons_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_recon_buttons_enabled" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_recon_buttons_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_recon_buttons_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_recon_buttons_enabled" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_results">
-<span class="sig-name descname"><span class="pre">set_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Slope" title="mantidimaging.core.utility.data_containers.Slope"><span class="pre">Slope</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_results" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Slope" title="mantidimaging.core.utility.data_containers.Slope"><span class="pre">Slope</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_results" title="Link to this definition">#</a></dt>
 <dd><p>Sets the numerical COR and tilt angle results.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_table_point">
-<span class="sig-name descname"><span class="pre">set_table_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_table_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_table_point" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_table_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_table_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_table_point" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.showEvent">
-<span class="sig-name descname"><span class="pre">showEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QShowEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.showEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.showEvent" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">showEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QShowEvent</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.showEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.showEvent" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_recon_volume">
-<span class="sig-name descname"><span class="pre">show_recon_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.show_recon_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_recon_volume" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">show_recon_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.show_recon_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_recon_volume" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message">
-<span class="sig-name descname"><span class="pre">show_status_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.show_status_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">show_status_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.show_status_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message" title="Link to this definition">#</a></dt>
 <dd><p>Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is
 empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.
 :param msg: The status message.</p>
@@ -1024,7 +1095,7 @@ empty then this is taken to mean that no such pixels were found, so the warning 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.slope">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.slope" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.slope" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1039,7 +1110,7 @@ empty then this is taken to mean that no such pixels were found, so the warning 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.stochastic">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stochastic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.stochastic" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stochastic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.stochastic" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1059,12 +1130,12 @@ empty then this is taken to mean that no such pixels were found, so the warning 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.tilt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.tilt" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.tilt" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection">
-<span class="sig-name descname"><span class="pre">update_projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_projection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update_projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_slice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees" title="mantidimaging.core.utility.data_containers.Degrees"><span class="pre">Degrees</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_projection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection" title="Link to this definition">#</a></dt>
 <dd><p>Updates the preview projection image and associated annotations.</p>
 <p>Region of interest sets the bounds of the image axes, it does not
 resize the data itself. The advantage of this is that the coordinates
@@ -1083,13 +1154,13 @@ slice indicator</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_recon_preview">
-<span class="sig-name descname"><span class="pre">update_recon_preview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_recon_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_recon_preview" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update_recon_preview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_recon_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_recon_preview" title="Link to this definition">#</a></dt>
 <dd><p>Updates the reconstruction preview image with new data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_sinogram">
-<span class="sig-name descname"><span class="pre">update_sinogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_sinogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_sinogram" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update_sinogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.update_sinogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_sinogram" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

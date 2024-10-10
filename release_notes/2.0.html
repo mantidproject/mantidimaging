@@ -30,6 +30,8 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,6 +43,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'release_notes/2.0';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
@@ -48,6 +51,7 @@
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Mantid Imaging 2.1" href="2.1.html" />
@@ -169,8 +173,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
+  <a class="nav-link nav-internal" href="../api.html">
+    API Reference
   </a>
 </li>
 
@@ -180,20 +184,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../api.html">
-    API Reference
-  </a>
-</li>
-
-
 <li class=" current active">
   <a class="nav-link dropdown-item nav-internal" href="index.html">
     Release Notes
@@ -211,6 +201,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -263,6 +260,22 @@ document.write(`
   </div>
 `);
 </script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
       
     </div>
     
@@ -342,20 +355,6 @@ document.write(`
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../support.html">
-    Support
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../api.html">
     API Reference
   </a>
@@ -379,6 +378,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -416,31 +422,47 @@ document.write(`
 `);
 </script></div>
         
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
       </div>
     
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Mantid Imaging 2.0</a><ul>
-<li><a class="reference internal" href="#new-features">New features</a></li>
-<li><a class="reference internal" href="#fixes">Fixes</a></li>
-</ul>
-</li>
-</ul>
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="next.html">Mantid Imaging next release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.8.html">Mantid Imaging 2.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.7.html">Mantid Imaging 2.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.6.html">Mantid Imaging 2.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.5.html">Mantid Imaging 2.5</a></li>
 
-  </div></div>
-        <div class="sidebar-primary-item">
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="2.1.html"
-                          title="previous chapter">Mantid Imaging 2.1</a></p>
-  </div></div>
-        <div class="sidebar-primary-item">
-<div id="searchbox"></div></div>
+<li class="toctree-l1"><a class="reference internal" href="2.4.html">Mantid Imaging 2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.3.html">Mantid Imaging 2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2.html">Mantid Imaging 2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.1.html">Mantid Imaging 2.1</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 2.0</a></li>
+</ul>
+</div>
+</nav></div>
     </div>
   
   

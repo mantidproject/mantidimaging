@@ -30,6 +30,8 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=517e76a2" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,6 +43,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/gui/image_view';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
@@ -48,6 +51,7 @@
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
+    <link rel="icon" href="../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Operations Window" href="operations_window.html" />
@@ -170,8 +174,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../support.html">
-    Support
+  <a class="nav-link nav-internal" href="../../api.html">
+    API Reference
   </a>
 </li>
 
@@ -181,20 +185,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../api.html">
-    API Reference
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../../release_notes/index.html">
     Release Notes
@@ -212,6 +202,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -264,6 +261,22 @@ document.write(`
   </div>
 `);
 </script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
       
     </div>
     
@@ -343,20 +356,6 @@ document.write(`
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../support.html">
-    Support
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../troubleshooting.html">
-    Troubleshooting
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../api.html">
     API Reference
   </a>
@@ -380,6 +379,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
     Anaconda Package
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    GitHub
   </a>
 </li>
 
@@ -417,37 +423,52 @@ document.write(`
 `);
 </script></div>
         
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
       </div>
     
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-  <div>
-    <h3><a href="../../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Image view</a><ul>
-<li><a class="reference internal" href="#navigation">Navigation</a></li>
-<li><a class="reference internal" href="#histogram">Histogram</a></li>
-<li><a class="reference internal" href="#automatic-gradient-tweaking">Automatic Gradient Tweaking</a></li>
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Graphical User Interface (GUI)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="loading_saving.html">Loading and Saving</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Image view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_window.html">Operations Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recon_window.html">Reconstruction Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectrum_viewer.html">Spectrum Viewer</a></li>
 </ul>
-</li>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reconstructions/index.html">Reconstruction Help page</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reconstructions/center_of_rotation.html">Center of Rotation and Tilt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reconstructions/algorithms.html">Reconstruction Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reconstructions/filters.html">Reconstruction Filters</a></li>
 </ul>
-
-  </div></div>
-        <div class="sidebar-primary-item">
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="loading_saving.html"
-                          title="previous chapter">Loading and Saving</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="operations_window.html"
-                          title="next chapter">Operations Window</a></p>
-  </div></div>
-        <div class="sidebar-primary-item">
-<div id="searchbox"></div></div>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start: Example Reconstruction</a></li>
+</ul>
+</div>
+</nav></div>
     </div>
   
   
