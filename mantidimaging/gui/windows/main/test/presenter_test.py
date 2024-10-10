@@ -1125,6 +1125,32 @@ class MainWindowPresenterTest(unittest.TestCase):
         ]
         self.assertListEqual(expected_calls, self.view.add_item_to_dataset_tree_widget.mock_calls)
 
+    def test_update_dataset_tree_datasets_with_image_stacks(self):
+        sample = generate_images((1, 1, 1))
+        images1, images2 = generate_images(), generate_images()
+        images1.name = "stack1"
+        images2.name = "stack2"
+        dataset = Dataset(name="ds1", sample=sample)
+        dataset.add_stack(images1)
+        dataset.add_stack(images2)
+
+        self.model.datasets = {dataset.id: dataset}
+        mock_top_level_widget = mock.Mock()
+        self.view.add_toplevel_item_to_dataset_tree_widget.return_value = mock_top_level_widget
+
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with("ds1", dataset.id)
+
+        expected_calls = [
+            call(text, id, mock_top_level_widget) for text, id in (
+                ("Projections", dataset.sample.id),
+                ("stack1", images1.id),
+                ("stack2", images2.id),
+            )
+        ]
+        self.assertListEqual(expected_calls, self.view.add_item_to_dataset_tree_widget.mock_calls)
+
 
 if __name__ == '__main__':
     unittest.main()
