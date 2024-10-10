@@ -372,6 +372,10 @@ class MainWindowPresenter(BasePresenter):
                 for recon in dataset.recons:
                     self.view.add_item_to_dataset_tree_widget(recon.name, recon.id, recon_item)
 
+            if dataset.stacks:
+                for image_stack in dataset.stacks:
+                    self.view.add_item_to_dataset_tree_widget(image_stack.name, image_stack.id, dataset_item)
+
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
         """
         Creates the tree view items for a strict dataset.

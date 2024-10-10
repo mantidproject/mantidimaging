@@ -110,6 +110,10 @@ class Dataset:
     def recons(self) -> ReconList:
         return self._recons
 
+    @property
+    def stacks(self) -> list[ImageStack]:
+        return self._stacks
+
     def add_recon(self, recon: ImageStack) -> None:
         self.recons.append(recon)
 
