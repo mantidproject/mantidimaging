@@ -1095,6 +1095,36 @@ class MainWindowPresenterTest(unittest.TestCase):
         ]
         self.assertListEqual(expected_calls, self.view.add_item_to_dataset_tree_widget.mock_calls)
 
+    def test_update_dataset_tree_datasets_with_recons(self):
+        sample = generate_images((1, 1, 1))
+        recon1, recon2 = generate_images(), generate_images()
+        recon1.name = "recon1"
+        recon2.name = "recon2"
+        dataset = Dataset(name="ds1", sample=sample)
+        dataset.add_recon(recon1)
+        dataset.add_recon(recon2)
+
+        self.model.datasets = {dataset.id: dataset}
+        mock_top_level_widget = mock.Mock()
+        mock_recon_widget = mock.Mock()
+        self.view.add_toplevel_item_to_dataset_tree_widget.return_value = mock_top_level_widget
+        # 2nd call is to create the base of the recon list
+        self.view.add_item_to_dataset_tree_widget.side_effect = [None, mock_recon_widget, None, None]
+
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with("ds1", dataset.id)
+
+        expected_calls = [
+            call(*items) for items in (
+                ("Projections", dataset.sample.id, mock_top_level_widget),
+                ("Recons", dataset.recons.id, mock_top_level_widget),
+                ("recon1", recon1.id, mock_recon_widget),
+                ("recon2", recon2.id, mock_recon_widget),
+            )
+        ]
+        self.assertListEqual(expected_calls, self.view.add_item_to_dataset_tree_widget.mock_calls)
+
 
 if __name__ == '__main__':
     unittest.main()
