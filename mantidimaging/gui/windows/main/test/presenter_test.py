@@ -11,7 +11,7 @@ from unittest.mock import patch, call
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
@@ -1046,6 +1046,32 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.assertNotIn(stack_to_move, origin_dataset)
         assert stack_to_move.name == new_stack_name
+
+    def test_update_dataset_tree_no_datasets(self):
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_not_called()
+
+    def test_update_dataset_tree_empty_datasets(self):
+        empty_dataset = Dataset(name="empty_dataset")
+        self.model.datasets = {empty_dataset.id: empty_dataset}
+
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with("empty_dataset", empty_dataset.id)
+
+    def test_update_dataset_tree_datasets_with_sample(self):
+        sample = generate_images((1, 1, 1))
+        dataset = Dataset(name="ds1", sample=sample)
+        self.model.datasets = {dataset.id: dataset}
+        mock_top_level_widget = mock.Mock()
+        self.view.add_toplevel_item_to_dataset_tree_widget.return_value = mock_top_level_widget
+
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with("ds1", dataset.id)
+        self.view.add_item_to_dataset_tree_widget.assert_called_once_with("Projections", sample.id,
+                                                                          mock_top_level_widget)
 
 
 if __name__ == '__main__':

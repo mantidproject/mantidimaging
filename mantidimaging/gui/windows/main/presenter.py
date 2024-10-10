@@ -349,6 +349,14 @@ class MainWindowPresenter(BasePresenter):
     def _on_tab_clicked(self, stack: StackVisualiserView) -> None:
         self._set_tree_view_selection_with_id(stack.id)
 
+    def update_dataset_tree(self) -> None:
+        self.view.clear_dataset_tree_widget()
+        for dataset_id, dataset in self.model.datasets.items():
+            dataset_item = self.view.add_toplevel_item_to_dataset_tree_widget(dataset.name, dataset_id)
+
+            if dataset.sample:
+                self.view.add_item_to_dataset_tree_widget("Projections", dataset.sample.id, dataset_item)
+
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
         """
         Creates the tree view items for a strict dataset.
