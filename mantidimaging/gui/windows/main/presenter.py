@@ -367,6 +367,11 @@ class MainWindowPresenter(BasePresenter):
             if dataset.proj180deg:
                 self.view.add_item_to_dataset_tree_widget("180", dataset.proj180deg.id, dataset_item)
 
+            if dataset.recons:
+                recon_item = self.view.add_item_to_dataset_tree_widget("Recons", dataset.recons.id, dataset_item)
+                for recon in dataset.recons:
+                    self.view.add_item_to_dataset_tree_widget(recon.name, recon.id, recon_item)
+
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
         """
         Creates the tree view items for a strict dataset.
