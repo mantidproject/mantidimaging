@@ -188,6 +188,23 @@ class FilenameGroupTest(FakeFSTestCase):
 
         self._files_equal(fg.log_path, log)
 
+    @parameterized.expand([
+        ("/foo/tomo/IMAT_Flower_Tomo_000000.tif", "/foo/shuttercount.txt"),
+        ("/foo/Flat_Before/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_shuttercount.txt"),
+        ("/foo/Flat_After/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_shuttercount.txt"),
+    ])
+    def test_find_shuttercount_log(self, sample_path, log_path):
+        log = Path(log_path)
+        self.fs.create_file(log)
+
+        sample = Path(sample_path)
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_shutter_count_file()
+
+        self._files_equal(fg.shutter_count_path, log)
+
     def test_find_log_best(self):
         log = Path("/foo", "Dark_log.txt")
         self.fs.create_file(log)
