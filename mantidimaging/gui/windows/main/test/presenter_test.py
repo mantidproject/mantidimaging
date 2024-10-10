@@ -41,8 +41,7 @@ class MainWindowPresenterTest(unittest.TestCase):
                                      flat_after=self.images[2],
                                      dark_before=self.images[3],
                                      dark_after=self.images[4])
-        self.model_datasets_mock = mock.create_autospec(dict)
-        self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets=self.model_datasets_mock)
+        self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets={})
         self.model.get_recons_id = mock.Mock()
 
         self.view.create_stack_window.return_value = dock_mock = mock.Mock()
@@ -458,7 +457,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_focus_tab_with_id_not_found(self):
         self.model.image_ids = []
-        self.model.datasets = []
         self.model.recon_list_ids = []
 
         with self.assertRaises(RuntimeError):
@@ -467,7 +465,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_focus_tab_with_id_in_dataset(self):
         stack_id = "stack-id"
         self.model.image_ids = [stack_id]
-        self.model.datasets = [stack_id]
+        self.model.datasets = {stack_id: mock.Mock()}
         self.presenter.stack_visualisers = {}
         self.presenter.stack_visualisers["other-id"] = mock_stack_tab = mock.Mock()
         self.presenter.notify(Notification.FOCUS_TAB, stack_id=stack_id)
@@ -649,7 +647,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_cant_focus_on_recon_group(self):
         self.presenter.stack_visualisers = {}
-        self.model.datasets = []
         self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
         recons_id = "recons-id"
         self.model.recon_list_ids = [recons_id]
@@ -661,7 +658,6 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_add_sinograms_to_dataset_with_no_sinograms_and_update_view(self):
         sinograms = generate_images()
         ds = StrictDataset(sample=generate_images())
-        self.model.datasets = {}
         self.model.datasets[ds.id] = ds
         self.model.get_parent_dataset.return_value = ds.id
 
@@ -684,7 +680,6 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_add_sinograms_to_dataset_with_existing_sinograms_and_update_view(self):
         new_sinograms = generate_images()
         ds = StrictDataset(sample=generate_images())
-        self.model.datasets = {}
         self.model.datasets[ds.id] = ds
         self.model.get_parent_dataset.return_value = ds.id
         ds.sinograms = existing_sinograms = generate_images()
@@ -779,7 +774,6 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_dataset(self):
         test_ds = StrictDataset(sample=generate_images())
         other_ds = StrictDataset(sample=generate_images())
-        self.model.datasets = {}
         self.model.datasets[test_ds.id] = test_ds
         self.model.datasets[other_ds.id] = other_ds
 
@@ -789,7 +783,6 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_dataset_not_found(self):
         ds = StrictDataset(sample=generate_images())
         incorrect_id = uuid.uuid4()
-        self.model.datasets = {}
         self.model.datasets[ds.id] = ds
 
         result = self.presenter.get_dataset(incorrect_id)
@@ -805,19 +798,17 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_show_add_stack_to_dataset_dialog_called_with_dataset_id(self):
         dataset_id = "dataset-id"
-        self.model.datasets.keys.return_value = [dataset_id]
+        self.model.datasets = {dataset_id: mock.Mock()}
         self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id=dataset_id)
         self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
 
     def test_show_add_stack_to_dataset_dialog_called_with_stack_id(self):
         dataset_id = "dataset-id"
-        self.model_datasets_mock.keys.return_value = []
         self.model.get_parent_dataset.return_value = dataset_id
         self.presenter.notify(Notification.SHOW_ADD_STACK_DIALOG, container_id="stack-id")
         self.view.show_add_stack_to_existing_dataset_dialog.assert_called_once_with(dataset_id)
 
     def test_add_new_stack_to_strict_dataset(self):
-        self.model.datasets = {}
         self.dataset.flat_before = None
         self.model.datasets[self.dataset.id] = self.dataset
 
@@ -836,7 +827,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIs(self.dataset.flat_before, new_images)
 
     def test_replace_existing_stack_in_strict_dataset(self):
-        self.model.datasets = {}
         self.model.datasets[self.dataset.id] = self.dataset
         prev_images_id = self.dataset.flat_before.id
 
@@ -857,7 +847,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIs(self.dataset.flat_before, new_images)
 
     def test_add_stack_to_mixed_dataset(self):
-        self.model.datasets = {}
         mixed_dataset = MixedDataset()
         self.model.datasets[mixed_dataset.id] = mixed_dataset
 
@@ -954,8 +943,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         mock_recon_item.setSelected.assert_called_once_with(True)
 
     def test_all_stack_ids(self):
-        self.model.datasets = {}
-
         mixed_stacks = [generate_images() for _ in range(5)]
         mixed_dataset = MixedDataset(stacks=mixed_stacks)
 
