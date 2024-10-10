@@ -17,7 +17,7 @@ from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter, MainWindowModel
 from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset
 
 
 def generate_images_with_filenames(n_images: int) -> list[ImageStack]:
@@ -1072,6 +1072,28 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with("ds1", dataset.id)
         self.view.add_item_to_dataset_tree_widget.assert_called_once_with("Projections", sample.id,
                                                                           mock_top_level_widget)
+
+    def test_update_dataset_tree_standard_dataset(self):
+        dataset, image_stacks = generate_standard_dataset()
+        self.model.datasets = {dataset.id: dataset}
+        mock_top_level_widget = mock.Mock()
+        self.view.add_toplevel_item_to_dataset_tree_widget.return_value = mock_top_level_widget
+
+        self.presenter.update_dataset_tree()
+        self.view.clear_dataset_tree_widget.assert_called_once()
+        self.view.add_toplevel_item_to_dataset_tree_widget.assert_called_once_with(dataset.name, dataset.id)
+
+        expected_calls = [
+            call(text, id, mock_top_level_widget) for text, id in (
+                ("Projections", dataset.sample.id),
+                ("Flat Before", dataset.flat_before.id),
+                ("Flat After", dataset.flat_after.id),
+                ("Dark Before", dataset.dark_before.id),
+                ("Dark After", dataset.dark_after.id),
+                ("180", dataset.proj180deg.id),
+            )
+        ]
+        self.assertListEqual(expected_calls, self.view.add_item_to_dataset_tree_widget.mock_calls)
 
 
 if __name__ == '__main__':

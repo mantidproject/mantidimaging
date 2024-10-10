@@ -356,6 +356,16 @@ class MainWindowPresenter(BasePresenter):
 
             if dataset.sample:
                 self.view.add_item_to_dataset_tree_widget("Projections", dataset.sample.id, dataset_item)
+            if dataset.flat_before:
+                self.view.add_item_to_dataset_tree_widget("Flat Before", dataset.flat_before.id, dataset_item)
+            if dataset.flat_after:
+                self.view.add_item_to_dataset_tree_widget("Flat After", dataset.flat_after.id, dataset_item)
+            if dataset.dark_before:
+                self.view.add_item_to_dataset_tree_widget("Dark Before", dataset.dark_before.id, dataset_item)
+            if dataset.dark_after:
+                self.view.add_item_to_dataset_tree_widget("Dark After", dataset.dark_after.id, dataset_item)
+            if dataset.proj180deg:
+                self.view.add_item_to_dataset_tree_widget("180", dataset.proj180deg.id, dataset_item)
 
     def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
         """
