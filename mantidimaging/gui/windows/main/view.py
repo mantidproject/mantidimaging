@@ -634,6 +634,25 @@ class MainWindowView(BaseMainWindowView):
             f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
 
+    def clear_dataset_tree_widget(self) -> None:
+        self.dataset_tree_widget.clear()
+
+    def add_toplevel_item_to_dataset_tree_widget(self, title: str, id: uuid.UUID) -> QTreeDatasetWidgetItem:
+        item = self.new_dataset_tree_widget_item(title, id, self.dataset_tree_widget)
+        return item
+
+    def add_item_to_dataset_tree_widget(self, title: str, id: uuid.UUID,
+                                        parent_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
+        item = self.new_dataset_tree_widget_item(title, id, parent_item)
+        return item
+
+    @staticmethod
+    def new_dataset_tree_widget_item(title: str, id: uuid.UUID,
+                                     parent_item: QTreeDatasetWidgetItem | QTreeWidget) -> QTreeDatasetWidgetItem:
+        dataset_tree_item = QTreeDatasetWidgetItem(parent_item, id)
+        dataset_tree_item.setText(0, title)
+        return dataset_tree_item
+
     def create_dataset_tree_widget_item(self, title: str, id: uuid.UUID) -> QTreeDatasetWidgetItem:
         dataset_tree_item = QTreeDatasetWidgetItem(self.dataset_tree_widget, id)
         dataset_tree_item.setText(0, title)
