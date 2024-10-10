@@ -89,6 +89,21 @@ class SpectrumROI(ROI):
     def colour(self, colour: tuple[int, int, int, int]) -> None:
         self._colour = colour
         self.setPen(self._colour)
+        self.hoverPen = mkPen(self._colour, width=3)
+
+    def set_visibility(self, visible: bool) -> None:
+        """
+        Set the visibility of the ROI and its handles.
+        """
+        self.setVisible(visible)
+        for handle in self.getHandles():
+            handle.setVisible(visible)
+
+    def set_alpha(self, alpha: float) -> None:
+        scaled_alpha = int(alpha * 255)
+        self._colour = self._colour[:3] + (scaled_alpha, )
+        self.setPen(self._colour)
+        self.hoverPen = mkPen(self._colour, width=3)
 
     @property
     def selected_row(self) -> int | None:
@@ -170,8 +185,8 @@ class SpectrumWidget(QWidget):
         @param name: The name of the ROI.
         @param colour: The new colour of the ROI.
         """
-        self.roi_dict[name].colour = colour
-        self.roi_dict[name].setPen(self.roi_dict[name].colour)
+        roi = self.roi_dict[name]
+        roi.colour = colour
 
     def set_roi_visibility_flags(self, name: str, visible: bool) -> None:
         """
@@ -181,10 +196,7 @@ class SpectrumWidget(QWidget):
         @param name: The name of the ROI.
         @param visible: The new visibility of the ROI.
         """
-        handles = self.roi_dict[name].getHandles()
-        for handle in handles:
-            handle.setVisible(visible)
-        self.roi_dict[name].setVisible(visible)
+        self.roi_dict[name].set_visibility(visible)
 
     def set_roi_alpha(self, name: str, alpha: float) -> None:
         """
@@ -193,11 +205,9 @@ class SpectrumWidget(QWidget):
         @param name: The name of the ROI.
         @param alpha: The new alpha value of the ROI.
         """
-
-        self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
-        self.roi_dict[name].setPen(self.roi_dict[name].colour)
-        self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
-        self.set_roi_visibility_flags(name, bool(alpha))
+        roi = self.roi_dict[name]
+        roi.set_alpha(alpha)
+        self.set_roi_visibility_flags(name, alpha > 0)
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
@@ -271,7 +281,6 @@ class SpectrumWidget(QWidget):
 class CustomViewBox(ViewBox):
 
     def __init__(self, *args, **kwds) -> None:
-        #kwds['enableMenu'] = False
         ViewBox.__init__(self, *args, **kwds)
         self.setMouseMode(self.PanMode)
 
