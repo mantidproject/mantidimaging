@@ -366,6 +366,8 @@ class MainWindowPresenter(BasePresenter):
                 self.view.add_item_to_dataset_tree_widget("Dark After", dataset.dark_after.id, dataset_item)
             if dataset.proj180deg:
                 self.view.add_item_to_dataset_tree_widget("180", dataset.proj180deg.id, dataset_item)
+            if dataset.sinograms:
+                self.view.add_item_to_dataset_tree_widget("Sinograms", dataset.sinograms.id, dataset_item)
 
             if dataset.recons:
                 recon_item = self.view.add_item_to_dataset_tree_widget("Recons", dataset.recons.id, dataset_item)
