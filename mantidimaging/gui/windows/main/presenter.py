@@ -203,8 +203,8 @@ class MainWindowPresenter(BasePresenter):
         and dataset tree view items.
         :param dataset: The loaded dataset.
         """
+        self.update_dataset_tree()
         self.create_strict_dataset_stack_windows(dataset)
-        self.create_strict_dataset_tree_view_items(dataset)
         self.add_alternative_180_if_required(dataset)
 
     def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
@@ -377,33 +377,6 @@ class MainWindowPresenter(BasePresenter):
             if dataset.stacks:
                 for image_stack in dataset.stacks:
                     self.view.add_item_to_dataset_tree_widget(image_stack.name, image_stack.id, dataset_item)
-
-    def create_strict_dataset_tree_view_items(self, dataset: StrictDataset) -> None:
-        """
-        Creates the tree view items for a strict dataset.
-        :param dataset: The loaded dataset.
-        """
-        assert dataset.sample is not None
-        dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
-        self.view.create_child_tree_item(dataset_tree_item, dataset.sample.id, "Projections")
-
-        if dataset.flat_before and dataset.flat_before.filenames:
-            self.view.create_child_tree_item(dataset_tree_item, dataset.flat_before.id, "Flat Before")
-        if dataset.flat_after and dataset.flat_after.filenames:
-            self.view.create_child_tree_item(dataset_tree_item, dataset.flat_after.id, "Flat After")
-        if dataset.dark_before and dataset.dark_before.filenames:
-            self.view.create_child_tree_item(dataset_tree_item, dataset.dark_before.id, "Dark Before")
-        if dataset.dark_after and dataset.dark_after.filenames:
-            self.view.create_child_tree_item(dataset_tree_item, dataset.dark_after.id, "Dark After")
-        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
-            self.view.create_child_tree_item(
-                dataset_tree_item,
-                dataset.sample.proj180deg.id,  # type: ignore
-                "180")
-        for recon in dataset.recons:
-            self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
-
-        self.view.add_item_to_tree_view(dataset_tree_item)
 
     def create_mixed_dataset_tree_view_items(self, dataset: MixedDataset) -> None:
         """

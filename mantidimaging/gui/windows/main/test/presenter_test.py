@@ -562,34 +562,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._tabify_stack_window(new_stack)
         self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
 
-    def test_create_strict_dataset_tree_view_items(self):
-        stacks = generate_images_with_filenames(5)
-        dataset = StrictDataset(sample=stacks[0],
-                                flat_before=stacks[1],
-                                flat_after=stacks[2],
-                                dark_before=stacks[3],
-                                dark_after=stacks[4])
-        dataset.proj180deg = generate_images((1, 20, 20))
-        dataset.proj180deg.filenames = ["filename"]
-        recon = generate_images()
-        recon.name = recon_name = "Recon"
-        dataset.add_recon(recon)
-
-        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
-        self.presenter.add_recon_item_to_tree_view = mock.Mock()
-        self.presenter.create_strict_dataset_tree_view_items(dataset)
-
-        s_call = call(dataset_tree_item_mock, dataset.sample.id, "Projections")
-        fb_call = call(dataset_tree_item_mock, dataset.flat_before.id, "Flat Before")
-        fa_call = call(dataset_tree_item_mock, dataset.flat_after.id, "Flat After")
-        db_call = call(dataset_tree_item_mock, dataset.dark_before.id, "Dark Before")
-        da_call = call(dataset_tree_item_mock, dataset.dark_after.id, "Dark After")
-        _180_call = call(dataset_tree_item_mock, dataset.proj180deg.id, "180")
-
-        self.view.create_child_tree_item.assert_has_calls([s_call, fb_call, fa_call, db_call, da_call, _180_call])
-        self.presenter.add_recon_item_to_tree_view.assert_called_once_with(dataset.id, dataset.recons[0].id, recon_name)
-        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
-
     def test_add_recon_item_to_tree_view_first_item(self):
         dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
         dataset_item_mock.id = parent_id = "parent-id"
