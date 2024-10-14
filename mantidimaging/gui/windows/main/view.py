@@ -644,6 +644,7 @@ class MainWindowView(BaseMainWindowView):
     def add_item_to_dataset_tree_widget(self, title: str, id: uuid.UUID,
                                         parent_item: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem:
         item = self.new_dataset_tree_widget_item(title, id, parent_item)
+        parent_item.setExpanded(True)
         return item
 
     @staticmethod
