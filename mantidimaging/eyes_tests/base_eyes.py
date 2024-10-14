@@ -102,8 +102,10 @@ class BaseEyesTest(unittest.TestCase):
         image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
         dataset = StrictDataset(sample=image_stack)
         image_stack.name = "Stack 1"
-        vis = self.imaging.presenter.create_strict_dataset_stack_windows(dataset)
-        self.imaging.presenter.create_strict_dataset_tree_view_items(dataset)
+        self.imaging.presenter.model.add_dataset_to_model(dataset)
+        self.imaging.presenter._add_strict_dataset_to_view(dataset)
+        assert dataset.sample  # Dataset has a sample
+        vis = self.imaging.get_stack_visualiser(dataset.sample.id)
 
         if set_180:
             _180_array = image_stack.data[0:1]
@@ -121,8 +123,8 @@ class BaseEyesTest(unittest.TestCase):
     def _create_new_dataset(self) -> Dataset:
         new_dataset = Dataset(sample=generate_images(), name="new")
         self.imaging.presenter.create_strict_dataset_stack_windows(new_dataset)
-        self.imaging.presenter.create_strict_dataset_tree_view_items(new_dataset)
         self.imaging.presenter.model.add_dataset_to_model(new_dataset)
+        self.imaging.presenter.update_dataset_tree()
 
         QApplication.sendPostedEvents()
 
