@@ -172,7 +172,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.create_stack_mocks(self.dataset)
 
-        self.presenter.create_strict_dataset_stack_windows(self.dataset)
+        self.presenter.create_dataset_stack_visualisers(self.dataset)
 
         self.assertEqual(6, len(self.presenter.stack_visualisers))
 
@@ -182,7 +182,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.add_recon(generate_images())
         self.create_stack_mocks(self.dataset)
 
-        self.presenter.create_strict_dataset_stack_windows(self.dataset)
+        self.presenter.create_dataset_stack_visualisers(self.dataset)
         self.assertEqual(7, len(self.presenter.stack_visualisers))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
@@ -243,9 +243,9 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.nexus_load_dialog = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
-        self.presenter.create_strict_dataset_stack_windows = mock.Mock()
+        self.presenter.create_dataset_stack_visualisers = mock.Mock()
         self.presenter.load_nexus_file()
-        self.presenter.create_strict_dataset_stack_windows.assert_called_once_with(self.dataset)
+        self.presenter.create_dataset_stack_visualisers.assert_called_once_with(self.dataset)
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
@@ -513,10 +513,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         task.result = result_mock = mock.Mock()
         task.was_successful.return_value = True
         task.kwargs = {'file_path': "a/stack/path"}
-        self.presenter.create_mixed_dataset_stack_windows = mock.Mock()
+        self.presenter.create_dataset_stack_visualisers = mock.Mock()
 
         self.presenter._on_stack_load_done(task)
-        self.presenter.create_mixed_dataset_stack_windows.assert_called_once_with(result_mock)
+        self.presenter.create_dataset_stack_visualisers.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
@@ -545,7 +545,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         n_stacks = 3
         dataset = MixedDataset(stacks=[generate_images() for _ in range(n_stacks)], name="cool-name")
         self.create_stack_mocks(dataset)
-        self.presenter.create_mixed_dataset_stack_windows(dataset)
+        self.presenter.create_dataset_stack_visualisers(dataset)
         assert len(self.presenter.stack_visualisers) == n_stacks
 
     def test_tabify_stack_window_to_sample_stack(self):
