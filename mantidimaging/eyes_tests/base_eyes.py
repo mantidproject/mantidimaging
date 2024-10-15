@@ -122,7 +122,7 @@ class BaseEyesTest(unittest.TestCase):
 
     def _create_new_dataset(self) -> Dataset:
         new_dataset = Dataset(sample=generate_images(), name="new")
-        self.imaging.presenter.create_strict_dataset_stack_windows(new_dataset)
+        self.imaging.presenter.create_dataset_stack_visualisers(new_dataset)
         self.imaging.presenter.model.add_dataset_to_model(new_dataset)
         self.imaging.presenter.update_dataset_tree()
 

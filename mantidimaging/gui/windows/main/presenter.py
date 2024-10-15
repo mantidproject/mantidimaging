@@ -166,7 +166,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             self.create_mixed_dataset_tree_view_items(task.result)
-            self.create_mixed_dataset_stack_windows(task.result)
+            self.create_dataset_stack_visualisers(task.result)
             self.view.model_changed.emit()
             task.result = None
         else:
@@ -204,7 +204,7 @@ class MainWindowPresenter(BasePresenter):
         :param dataset: The loaded dataset.
         """
         self.update_dataset_tree()
-        self.create_strict_dataset_stack_windows(dataset)
+        self.create_dataset_stack_visualisers(dataset)
         self.add_alternative_180_if_required(dataset)
 
     def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
@@ -250,33 +250,19 @@ class MainWindowPresenter(BasePresenter):
                 sample_vis = self.get_stack_visualiser(dataset.sample.id)
                 self._create_and_tabify_stack_window(dataset.proj180deg, sample_vis)
 
-    def create_strict_dataset_stack_windows(self, dataset: StrictDataset) -> StackVisualiserView:
+    def create_dataset_stack_visualisers(self, dataset: Dataset) -> StackVisualiserView:
         """
-        Creates the stack widgets for the strict dataset.
-        :param dataset: The loaded dataset.
-        :return: The stack widget for the sample.
+        Creates the StackVisualiserView widgets for a new dataset.
         """
-        assert dataset.sample is not None
-        sample_stack_vis = self._create_lone_stack_window(dataset.sample)
-        self._tabify_stack_window(sample_stack_vis)
+        stacks = dataset.all
+        first_stack_vis = self._create_lone_stack_window(stacks[0])
+        self._tabify_stack_window(first_stack_vis)
 
-        if dataset.flat_before and dataset.flat_before.filenames:
-            self._create_and_tabify_stack_window(dataset.flat_before, sample_stack_vis)
-        if dataset.flat_after and dataset.flat_after.filenames:
-            self._create_and_tabify_stack_window(dataset.flat_after, sample_stack_vis)
-        if dataset.dark_before and dataset.dark_before.filenames:
-            self._create_and_tabify_stack_window(dataset.dark_before, sample_stack_vis)
-        if dataset.dark_after and dataset.dark_after.filenames:
-            self._create_and_tabify_stack_window(dataset.dark_after, sample_stack_vis)
-        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
-            self._create_and_tabify_stack_window(
-                dataset.sample.proj180deg,  # type: ignore
-                sample_stack_vis)
-        for recon in dataset.recons:
-            self._create_and_tabify_stack_window(recon, sample_stack_vis)
+        for stack in stacks[1:]:
+            self._create_and_tabify_stack_window(stack, first_stack_vis)
 
         self._focus_on_newest_stack_tab()
-        return sample_stack_vis
+        return first_stack_vis
 
     def _focus_on_newest_stack_tab(self) -> None:
         """
@@ -292,21 +278,6 @@ class MainWindowPresenter(BasePresenter):
             # make Qt process the addition of the dock onto the main window
             QApplication.sendPostedEvents()
             tab_bar.setCurrentIndex(last_stack_pos)
-
-    def create_mixed_dataset_stack_windows(self, dataset: MixedDataset) -> StackVisualiserView:
-        """
-        Creates stack windows for a mixed dataset.
-        :param dataset: The dataset object.
-        :return: The first stack visualiser from the dataset.
-        """
-        first_stack_vis = self._create_lone_stack_window(dataset.all[0])
-        self._tabify_stack_window(first_stack_vis)
-
-        for i in range(1, len(dataset.all)):
-            self._create_and_tabify_stack_window(dataset.all[i], first_stack_vis)
-
-        self._focus_on_newest_stack_tab()
-        return first_stack_vis
 
     def create_single_tabbed_images_stack(self, images: ImageStack) -> StackVisualiserView:
         """

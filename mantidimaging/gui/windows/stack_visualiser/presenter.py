@@ -127,7 +127,7 @@ class StackVisualiserPresenter(BasePresenter):
         dataset = MixedDataset(stacks=[images], name=images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.create_mixed_dataset_tree_view_items(dataset)
-        self.view._main_window.presenter.create_mixed_dataset_stack_windows(dataset)
+        self.view._main_window.presenter.create_dataset_stack_visualisers(dataset)
         self.view._main_window.model_changed.emit()
 
     def get_num_images(self) -> int:
