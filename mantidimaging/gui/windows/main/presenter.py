@@ -159,18 +159,8 @@ class MainWindowPresenter(BasePresenter):
                               busy=True)
 
     def load_image_stack(self, file_path: str) -> None:
-        start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_stack_load_done,
+        start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_dataset_load_done,
                               {'file_path': file_path})
-
-    def _on_stack_load_done(self, task: TaskWorkerThread) -> None:
-
-        if task.was_successful():
-            self.create_mixed_dataset_tree_view_items(task.result)
-            self.create_dataset_stack_visualisers(task.result)
-            self.view.model_changed.emit()
-            task.result = None
-        else:
-            self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
     def _open_window_if_not_open(self) -> None:
         """
@@ -205,7 +195,8 @@ class MainWindowPresenter(BasePresenter):
         """
         self.update_dataset_tree()
         self.create_dataset_stack_visualisers(dataset)
-        self.add_alternative_180_if_required(dataset)
+        if dataset.sample:
+            self.add_alternative_180_if_required(dataset)
 
     def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
         msg = base_message.format(task.error)
