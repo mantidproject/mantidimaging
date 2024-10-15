@@ -525,12 +525,12 @@ class MainWindowPresenterTest(unittest.TestCase):
         task = mock.Mock()
         task.result = result_mock = mock.Mock()
         task.was_successful.return_value = True
-        self.presenter._add_strict_dataset_to_view = mock.Mock()
+        self.presenter._add_dataset_to_view = mock.Mock()
 
         with mock.patch.object(self.presenter, "_open_window_if_not_open") as _:
             self.presenter._on_dataset_load_done(task)
 
-        self.presenter._add_strict_dataset_to_view.assert_called_once_with(result_mock)
+        self.presenter._add_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 
     @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")

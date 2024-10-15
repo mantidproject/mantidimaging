@@ -103,7 +103,7 @@ class BaseEyesTest(unittest.TestCase):
         dataset = StrictDataset(sample=image_stack)
         image_stack.name = "Stack 1"
         self.imaging.presenter.model.add_dataset_to_model(dataset)
-        self.imaging.presenter._add_strict_dataset_to_view(dataset)
+        self.imaging.presenter._add_dataset_to_view(dataset)
         assert dataset.sample  # Dataset has a sample
         vis = self.imaging.get_stack_visualiser(dataset.sample.id)
 
