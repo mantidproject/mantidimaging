@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, _get_stack_data_type, Dataset
+from mantidimaging.core.data.dataset import MixedDataset, _get_stack_data_type, Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -142,7 +142,7 @@ class MainWindowPresenter(BasePresenter):
         assert self.view.nexus_load_dialog is not None
         dataset, _ = self.view.nexus_load_dialog.presenter.get_dataset()
         self.model.add_dataset_to_model(dataset)
-        self._add_strict_dataset_to_view(dataset)
+        self._add_dataset_to_view(dataset)
         self.view.model_changed.emit()
 
     def save_nexus_file(self) -> None:
@@ -180,14 +180,14 @@ class MainWindowPresenter(BasePresenter):
     def _on_dataset_load_done(self, task: TaskWorkerThread) -> None:
 
         if task.was_successful():
-            self._add_strict_dataset_to_view(task.result)
+            self._add_dataset_to_view(task.result)
             self.view.model_changed.emit()
             task.result = None
             self._open_window_if_not_open()
         else:
             self._handle_task_error(self.LOAD_ERROR_STRING, task)
 
-    def _add_strict_dataset_to_view(self, dataset: StrictDataset) -> None:
+    def _add_dataset_to_view(self, dataset: Dataset) -> None:
         """
         Takes a loaded dataset and tries to find a substitute 180 projection (if required) then creates the stack window
         and dataset tree view items.
@@ -222,7 +222,7 @@ class MainWindowPresenter(BasePresenter):
     def get_all_180_projections(self) -> list[ImageStack]:
         return self.model.proj180s
 
-    def add_alternative_180_if_required(self, dataset: StrictDataset) -> None:
+    def add_alternative_180_if_required(self, dataset: Dataset) -> None:
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
