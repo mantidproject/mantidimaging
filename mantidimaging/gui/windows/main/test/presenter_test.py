@@ -88,7 +88,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertFalse(task.was_successful())
 
         # Call the callback with a task that failed
-        self.presenter._on_stack_load_done(task)
+        self.presenter._on_dataset_load_done(task)
 
         # Expect error message
         self.view.show_error_dialog.assert_called_once_with(self.presenter.LOAD_ERROR_STRING.format(task.error))
@@ -122,7 +122,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.load_image_stack(file_path)
 
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_images_into_mixed_dataset,
-                                                 self.presenter._on_stack_load_done, {'file_path': file_path})
+                                                 self.presenter._on_dataset_load_done, {'file_path': file_path})
 
     def test_add_stack(self):
         images = generate_images()
@@ -508,14 +508,15 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, child_id, child_name)
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items")
-    def test_on_stack_load_done_success(self, _):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter._open_window_if_not_open")
+    def test_on_stack_load_done_success(self, _, _1):
         task = mock.Mock()
         task.result = result_mock = mock.Mock()
         task.was_successful.return_value = True
         task.kwargs = {'file_path': "a/stack/path"}
         self.presenter.create_dataset_stack_visualisers = mock.Mock()
 
-        self.presenter._on_stack_load_done(task)
+        self.presenter._on_dataset_load_done(task)
         self.presenter.create_dataset_stack_visualisers.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
 
