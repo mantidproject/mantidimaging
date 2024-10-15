@@ -11,7 +11,6 @@ from unittest.mock import patch, call
 import numpy as np
 from parameterized import parameterized
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
@@ -21,44 +20,20 @@ from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
 from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset
 
 
-def generate_images_with_filenames(n_images: int) -> list[ImageStack]:
-    images = []
-    for _ in range(n_images):
-        im = generate_images()
-        im.filenames = ["filename"] * im.data.shape[0]
-        images.append(im)
-    return images
-
-
 class MainWindowPresenterTest(unittest.TestCase):
 
     def setUp(self):
         self.view = mock.create_autospec(MainWindowView)
         self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog)
         self.presenter = MainWindowPresenter(self.view)
-        self.images = [generate_images() for _ in range(5)]
-        self.dataset = StrictDataset(sample=self.images[0],
-                                     flat_before=self.images[1],
-                                     flat_after=self.images[2],
-                                     dark_before=self.images[3],
-                                     dark_after=self.images[4])
+        self.dataset, self.images = generate_standard_dataset(shape=(10, 5, 5))
         self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets={})
         self.model.get_recons_id = mock.Mock()
 
-        self.view.create_stack_window.return_value = dock_mock = mock.Mock()
+        self.view.create_stack_window.return_value = mock.Mock()
         self.view.model_changed = mock.Mock()
         self.view.dataset_tree_widget = mock.Mock()
         self.view.get_dataset_tree_view_item = mock.Mock()
-
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
-
-        def stack_id():
-            return uuid.uuid4()
-
-        type(dock_mock).uuid = mock.PropertyMock(side_effect=stack_id)
 
     def tearDown(self) -> None:
         self.presenter.stack_visualisers = []
@@ -178,24 +153,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(6, len(self.presenter.stack_visualisers))
 
     def test_create_recon_windows(self):
-
         self.dataset.add_recon(generate_images())
         self.dataset.add_recon(generate_images())
         self.create_stack_mocks(self.dataset)
 
         self.presenter.create_dataset_stack_visualisers(self.dataset)
-        self.assertEqual(7, len(self.presenter.stack_visualisers))
+        self.assertEqual(8, len(self.presenter.stack_visualisers))
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser")
     def test_create_new_stack_dataset_and_use_threshold_180(self, mock_get_stack, mock_add_child):
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
-
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
@@ -214,11 +183,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIsNone(self.dataset.proj180deg.data.base)
 
     def test_create_new_stack_dataset_and_reject_180(self):
-        self.dataset.flat_before.filenames = ["filename"] * 10
-        self.dataset.dark_before.filenames = ["filename"] * 10
-        self.dataset.flat_after.filenames = ["filename"] * 10
-        self.dataset.dark_after.filenames = ["filename"] * 10
-
         self.view.ask_to_use_closest_to_180.return_value = False
 
         self.dataset.sample.clear_proj180deg()
@@ -933,7 +897,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_move_stack_to_strict_dataset(self):
         stack_to_move = generate_images()
-        print(f"{stack_to_move.name=}")
         origin_dataset = MixedDataset(stacks=[stack_to_move])
         destination_dataset = StrictDataset(sample=generate_images())
         self.presenter.get_dataset = mock.Mock(side_effect=[origin_dataset, destination_dataset])
