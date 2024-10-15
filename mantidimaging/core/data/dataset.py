@@ -178,6 +178,16 @@ class Dataset:
         else:
             raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
 
+    def set_stack_by_type_name(self, file_type_name: str, image_stack: ImageStack) -> None:
+        file_type_name = file_type_name.upper().replace(" ", "_")
+        if file_type_name == "RECON":
+            self.add_recon(image_stack)
+        elif file_type_name == "IMAGES":
+            self.stacks.append(image_stack)
+        else:
+            file_type = getattr(FILE_TYPES, file_type_name)
+            self.set_stack(file_type, image_stack)
+
     @property
     def is_processed(self) -> bool:
         """

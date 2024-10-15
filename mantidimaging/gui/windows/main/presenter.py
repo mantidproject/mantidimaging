@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import MixedDataset, _get_stack_data_type, Dataset
+from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -428,7 +428,7 @@ class MainWindowPresenter(BasePresenter):
             self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
         else:
             self.replace_child_item_id(dataset_id, existing_180_id, _180_deg.id)
-            self._delete_stack(existing_180_id)
+            self._delete_stack_visualiser(existing_180_id)
 
         self.view.model_changed.emit()
 
@@ -576,7 +576,7 @@ class MainWindowPresenter(BasePresenter):
         removed_stack_ids = self.model.remove_container(container_id)
         for stack_id in removed_stack_ids:
             if stack_id in self.stack_visualisers:
-                self._delete_stack(stack_id)
+                self._delete_stack_visualiser(stack_id)
 
         # If the container_id provided is not a stack id then we remove the entire container from the tree view,
         # otherwise we remove the individual stacks that were deleted
@@ -586,7 +586,7 @@ class MainWindowPresenter(BasePresenter):
 
         self.view.model_changed.emit()
 
-    def _delete_stack(self, stack_id: uuid.UUID) -> None:
+    def _delete_stack_visualiser(self, stack_id: uuid.UUID) -> None:
         """
         Deletes a stack and frees memory.
         :param stack_id: The ID of the stack to delete.
@@ -631,7 +631,7 @@ class MainWindowPresenter(BasePresenter):
         parent_id = self.model.get_parent_dataset(original_stack_id)
         prev_sino = self.model.datasets[parent_id].sinograms
         if prev_sino is not None:
-            self._delete_stack(prev_sino.id)
+            self._delete_stack_visualiser(prev_sino.id)
         self.model.datasets[parent_id].sinograms = sino_stack
         self._add_sinograms_to_tree_view(sino_stack.id, parent_id)
         self.create_single_tabbed_images_stack(sino_stack)
@@ -684,35 +684,14 @@ class MainWindowPresenter(BasePresenter):
         assert dataset is not None
 
         new_images = self.view.add_to_dataset_dialog.presenter.images
+        images_type = self.view.add_to_dataset_dialog.images_type
 
-        if self.view.add_to_dataset_dialog.images_type == RECON_TEXT:
-            self._add_recon_to_dataset_and_tree_view(dataset, new_images)
-        elif isinstance(dataset, MixedDataset):
-            self._add_images_to_existing_mixed_dataset(dataset, new_images)
-        else:
-            self._add_images_to_existing_strict_dataset(dataset, new_images,
-                                                        self.view.add_to_dataset_dialog.images_type)
+        dataset.set_stack_by_type_name(images_type, new_images)
 
         self.create_single_tabbed_images_stack(new_images)
+        self.update_dataset_tree()
+        self._close_unused_visualisers()
         self.view.model_changed.emit()
-
-    def _add_recon_to_dataset_and_tree_view(self, dataset: Dataset, recon: ImageStack) -> None:
-        """
-        Adds a recon to the dataset and updates the tree view.
-        :param dataset: The dataset.
-        :param recon: The recon ImageStack.
-        """
-        dataset.add_recon(recon)
-        self.add_recon_item_to_tree_view(dataset.id, recon.id, recon.name)
-
-    def _add_images_to_existing_mixed_dataset(self, dataset: Dataset, new_images: ImageStack) -> None:
-        """
-        Updates the stack list in the mixed dataset and updates the tree view.
-        :param dataset: The MixedDataset to update.
-        :param new_images: The new images to add.
-        """
-        dataset.add_stack(new_images)
-        self.add_child_item_to_tree_view(dataset.id, new_images.id, new_images.name)
 
     def _add_images_to_existing_strict_dataset(self, dataset: Dataset, new_images: ImageStack, stack_type: str) -> None:
         """
@@ -722,21 +701,15 @@ class MainWindowPresenter(BasePresenter):
         """
         image_attr = stack_type.replace(" ", "_").lower()
         new_images.name = self._create_strict_dataset_stack_name(stack_type, dataset.name)
-
-        if getattr(dataset, image_attr) is None:
-            # the image type doesn't exist in the dataset
-            self.add_child_item_to_tree_view(dataset.id, new_images.id, stack_type)
-
-        else:
-            # the image type already exists in the dataset and needs to be replaced
-            prev_images_id = getattr(dataset, image_attr).id
-            if image_attr == "sample" and dataset.proj180deg:
-                self._delete_stack(dataset.proj180deg.id)
-                self.remove_item_from_tree_view(dataset.proj180deg.id)
-            self.replace_child_item_id(dataset.id, prev_images_id, new_images.id)
-            self._delete_stack(prev_images_id)
-
         setattr(dataset, image_attr, new_images)
+        self.update_dataset_tree()
+
+    def _close_unused_visualisers(self):
+        visualisers = set(self.stack_visualisers.keys())
+        stacks = {stack.id for stack in self.get_all_stacks()}
+        removed = visualisers - stacks
+        for stack_id in removed:
+            self._delete_stack_visualiser(stack_id)
 
     def _move_stack(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, destination_stack_type: str,
                     destination_dataset_id: uuid.UUID) -> None:
@@ -757,20 +730,9 @@ class MainWindowPresenter(BasePresenter):
                 f"Unable to find destination dataset with ID {destination_dataset_id} when attempting to move stack")
 
         stack_to_move = self.get_stack(stack_id)
-        self.remove_item_from_tree_view(stack_id)
-
-        if destination_stack_type is RECON_TEXT:
-            self._add_recon_to_dataset_and_tree_view(destination_dataset, stack_to_move)
-        elif isinstance(destination_dataset, MixedDataset):
-            self._add_images_to_existing_mixed_dataset(destination_dataset, stack_to_move)
-        else:
-            assert self.view.move_stack_dialog is not None
-            data_type = self.view.move_stack_dialog.destination_stack_type
-            self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, data_type)
-            stack_to_move.name = self._create_strict_dataset_stack_name(data_type, destination_dataset.name)
-
         origin_dataset.delete_stack(stack_id)
-        self.view.model_changed.emit()
+        self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, destination_stack_type)
+        self._close_unused_visualisers()
 
     @staticmethod
     def _create_strict_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
