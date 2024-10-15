@@ -90,7 +90,7 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.spectrum_widget.set_roi_visibility_flags(name, alpha)
         self.assertEqual(bool(alpha), self.spectrum_widget.roi_dict[name].isVisible())
 
-    @parameterized.expand([("Visible", "visible_roi", 1), ("Invisible", "invisible_roi", 0)])
+    @parameterized.expand([("Visible", "visible_roi", 255), ("Invisible", "invisible_roi", 0)])
     def test_WHEN_set_roi_alpha_called_THEN_roi_alpha_updated(self, _, name, alpha):
         spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict[name] = spectrum_roi
