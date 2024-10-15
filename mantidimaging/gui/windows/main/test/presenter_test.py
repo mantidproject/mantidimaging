@@ -507,17 +507,17 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.add_child_item_to_tree_view(dataset_id, child_id, child_name)
         self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, child_id, child_name)
 
-    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_mixed_dataset_tree_view_items")
+    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_dataset_stack_visualisers")
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter._open_window_if_not_open")
     def test_on_stack_load_done_success(self, _, _1):
         task = mock.Mock()
-        task.result = result_mock = mock.Mock()
+        task.result = mock.Mock()
         task.was_successful.return_value = True
         task.kwargs = {'file_path': "a/stack/path"}
-        self.presenter.create_dataset_stack_visualisers = mock.Mock()
+        self.presenter.update_dataset_tree = mock.Mock()
 
         self.presenter._on_dataset_load_done(task)
-        self.presenter.create_dataset_stack_visualisers.assert_called_once_with(result_mock)
+        self.presenter.update_dataset_tree.assert_called_once()
         self.view.model_changed.emit.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.main.view.CommandLineArguments")
@@ -600,23 +600,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.add_recon_group.assert_called_once()
         self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
-
-    def test_created_mixed_dataset_tree_view_items(self):
-        n_images = 3
-        dataset = MixedDataset(stacks=[generate_images() for _ in range(n_images)])
-        dataset.name = dataset_name = "mixed-dataset"
-        dataset_tree_item_mock = self.view.create_dataset_tree_widget_item.return_value
-
-        calls = []
-        for i in range(n_images):
-            dataset.all[i].name = f"name-{i}"
-            calls.append(call(dataset_tree_item_mock, dataset.all[i].id, dataset.all[i].name))
-
-        self.presenter.create_mixed_dataset_tree_view_items(dataset)
-
-        self.view.create_dataset_tree_widget_item.assert_called_once_with(dataset_name, dataset.id)
-        self.view.create_child_tree_item.assert_has_calls(calls)
-        self.view.add_item_to_tree_view.assert_called_once_with(dataset_tree_item_mock)
 
     def test_cant_focus_on_recon_group(self):
         self.presenter.stack_visualisers = {}

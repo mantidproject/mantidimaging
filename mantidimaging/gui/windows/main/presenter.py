@@ -340,18 +340,6 @@ class MainWindowPresenter(BasePresenter):
                 for image_stack in dataset.stacks:
                     self.view.add_item_to_dataset_tree_widget(image_stack.name, image_stack.id, dataset_item)
 
-    def create_mixed_dataset_tree_view_items(self, dataset: MixedDataset) -> None:
-        """
-        Creates the tree view items for a mixed dataset.
-        :param dataset: The loaded dataset.
-        """
-        dataset_tree_item = self.view.create_dataset_tree_widget_item(dataset.name, dataset.id)
-
-        for i in range(len(dataset.all)):
-            self.view.create_child_tree_item(dataset_tree_item, dataset.all[i].id, dataset.all[i].name)
-
-        self.view.add_item_to_tree_view(dataset_tree_item)
-
     def save_image_files(self) -> None:
         assert isinstance(self.view.image_save_dialog, ImageSaveDialog)
         kwargs = {
