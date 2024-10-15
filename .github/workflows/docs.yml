@@ -27,7 +27,7 @@ jobs:
           echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Cache Mambaforge and Pip packages
+      - name: Cache Miniforge and Pip packages
         uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0
@@ -38,9 +38,9 @@ jobs:
           key:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
-      - name: Cache Mambaforge environment
+      - name: Cache Miniforge environment
         uses: actions/cache@v4
-        id: cache-mambaforge-environment
+        id: cache-miniforge-environment
         env:
           CACHE_NUMBER: 0
         with:
@@ -48,17 +48,16 @@ jobs:
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
-      - name: Setup Mambaforge
+      - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          miniforge-variant: Mambaforge
           activate-environment: mantidimaging-dev
           auto-activate-base: false
           use-mamba: true
 
       - name: Mantid Imaging developer dependencies
-        if: steps.cache-mambaforge-environment.outputs.cache-hit != 'true'
+        if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: |
           conda deactivate
@@ -66,7 +65,7 @@ jobs:
           cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
 
       - name: Mantid Imaging developer dependencies - from cache
-        if: steps.cache-mambaforge-environment.outputs.cache-hit == 'true'
+        if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
         shell: bash -l {0}
         run: |
           cp -Ta ${CONDA}/envs/mantidimaging-dev.cache ${CONDA}/envs/mantidimaging-dev
