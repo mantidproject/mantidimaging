@@ -676,9 +676,9 @@ class MainWindowPresenter(BasePresenter):
         new_images = self.view.add_to_dataset_dialog.presenter.images
         images_type = self.view.add_to_dataset_dialog.images_type
 
-        self.add_images_to_existing_dataset(dataset_id, images_type, new_images)
+        self.add_images_to_existing_dataset(dataset_id, new_images, images_type)
 
-    def add_images_to_existing_dataset(self, dataset_id: uuid.UUID, images_type: str, new_images: ImageStack):
+    def add_images_to_existing_dataset(self, dataset_id: uuid.UUID, new_images: ImageStack, images_type: str):
         dataset = self.get_dataset(dataset_id)
         assert dataset is not None
         dataset.set_stack_by_type_name(images_type, new_images)
@@ -686,17 +686,6 @@ class MainWindowPresenter(BasePresenter):
         self.update_dataset_tree()
         self._close_unused_visualisers()
         self.view.model_changed.emit()
-
-    def _add_images_to_existing_strict_dataset(self, dataset: Dataset, new_images: ImageStack, stack_type: str) -> None:
-        """
-        Adds or replaces images in a StrictDataset and updates the tree view if required.
-        :param dataset: The StrictDataset to change.
-        :param new_images: The new images to add.
-        """
-        image_attr = stack_type.replace(" ", "_").lower()
-        new_images.name = self._create_strict_dataset_stack_name(stack_type, dataset.name)
-        setattr(dataset, image_attr, new_images)
-        self.update_dataset_tree()
 
     def _close_unused_visualisers(self):
         visualisers = set(self.stack_visualisers.keys())
@@ -724,9 +713,10 @@ class MainWindowPresenter(BasePresenter):
                 f"Unable to find destination dataset with ID {destination_dataset_id} when attempting to move stack")
 
         stack_to_move = self.get_stack(stack_id)
+        stack_to_move.name = self._create_strict_dataset_stack_name(destination_stack_type, destination_dataset.name)
+
         origin_dataset.delete_stack(stack_id)
-        self._add_images_to_existing_strict_dataset(destination_dataset, stack_to_move, destination_stack_type)
-        self._close_unused_visualisers()
+        self.add_images_to_existing_dataset(destination_dataset_id, stack_to_move, destination_stack_type)
 
     @staticmethod
     def _create_strict_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
