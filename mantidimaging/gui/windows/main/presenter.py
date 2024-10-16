@@ -620,26 +620,7 @@ class MainWindowPresenter(BasePresenter):
         :param original_stack_id: The ID of a stack in the dataset.
         """
         parent_id = self.model.get_parent_dataset(original_stack_id)
-        prev_sino = self.model.datasets[parent_id].sinograms
-        if prev_sino is not None:
-            self._delete_stack_visualiser(prev_sino.id)
-        self.model.datasets[parent_id].sinograms = sino_stack
-        self._add_sinograms_to_tree_view(sino_stack.id, parent_id)
-        self.create_single_tabbed_images_stack(sino_stack)
-        self.view.model_changed.emit()
-
-    def _add_sinograms_to_tree_view(self, sino_id: uuid.UUID, parent_id: uuid.UUID) -> None:
-        """
-        Adds a sinograms item to the tree view or updates the id of an existing one.
-        :param parent_id: The ID of the parent dataset.
-        :param sino_id: The ID of the corresponding ImageStack object.
-        """
-        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
-        sinograms_item = self.view.get_sinograms_item(dataset_item)
-        if sinograms_item is None:
-            self.view.create_child_tree_item(dataset_item, sino_id, self.view.sino_text)
-        else:
-            sinograms_item._id = sino_id
+        self.add_images_to_existing_dataset(parent_id, sino_stack, "Sinograms")
 
     def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID) -> None:
         """
