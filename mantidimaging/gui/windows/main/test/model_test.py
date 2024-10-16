@@ -22,8 +22,6 @@ class MainWindowModelTest(unittest.TestCase):
 
     def setUp(self):
         self.model = MainWindowModel()
-        self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"
-        self.stack_list_property = f"{self.model_class_name}.stack_list"
 
     def _add_mock_image(self):
         dataset_mock = mock.Mock()
@@ -416,17 +414,6 @@ class MainWindowModelTest(unittest.TestCase):
             self.model.add_dataset_to_model(ds)
         self.assertListEqual(all_ids, self.model.image_ids)
 
-    def test_add_recon_to_dataset(self):
-        sample = generate_images()
-        sample_id = sample.id
-        ds = StrictDataset(sample=sample)
-
-        recon = generate_images()
-        self.model.add_dataset_to_model(ds)
-        parent_id = self.model.add_recon_to_dataset(recon, sample_id)
-        self.assertIn(recon, ds.all)
-        assert parent_id == ds.id
-
     def test_proj180s(self):
 
         ds1 = StrictDataset(sample=generate_images())
@@ -442,10 +429,6 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_dataset_to_model(ds3)
 
         self.assertListEqual(self.model.proj180s, proj180s)
-
-    def test_exception_when_dataset_for_recons_not_found(self):
-        with self.assertRaises(RuntimeError):
-            self.model.add_recon_to_dataset(generate_images(), "bad-id")
 
     def test_get_parent_strict_dataset_success(self):
         ds = StrictDataset(sample=generate_images())
