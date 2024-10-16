@@ -235,11 +235,8 @@ class MainWindowPresenter(BasePresenter):
                                                                       dataset.sample.projection_angles().value)
             if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                 _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
-                dataset.proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
-
-                self.add_child_item_to_tree_view(dataset.id, dataset.proj180deg.id, "180")
-                sample_vis = self.get_stack_visualiser(dataset.sample.id)
-                self._create_and_tabify_stack_window(dataset.proj180deg, sample_vis)
+                proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
+                self.add_images_to_existing_dataset(dataset.id, proj180deg, "proj_180")
 
     def create_dataset_stack_visualisers(self, dataset: Dataset) -> StackVisualiserView:
         """
@@ -412,33 +409,8 @@ class MainWindowPresenter(BasePresenter):
         :param dataset_id: The ID of the dataset to update.
         :param _180_deg_file: The filename for the 180 file.
         """
-        existing_180_id = self.model.get_existing_180_id(dataset_id)
-        _180_deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
-        stack = self.create_single_tabbed_images_stack(_180_deg)
-        stack.raise_()
-
-        if existing_180_id is None:
-            self.add_child_item_to_tree_view(dataset_id, _180_deg.id, "180")
-        else:
-            self.replace_child_item_id(dataset_id, existing_180_id, _180_deg.id)
-            self._delete_stack_visualiser(existing_180_id)
-
-        self.view.model_changed.emit()
-
-    def replace_child_item_id(self, dataset_id: uuid.UUID, prev_id: uuid.UUID, new_id: uuid.UUID) -> None:
-        """
-        Replaces the ID in an existing child item.
-        :param dataset_id: The ID of the parent dataset.
-        :param prev_id: The previous ID of the tree view item.
-        :param new_id: The new ID that should be given to the tree view item.
-        """
-        dataset_item = self.view.get_dataset_tree_view_item(dataset_id)
-        for i in range(dataset_item.childCount()):
-            child = dataset_item.child(i)
-            if child.id == prev_id:
-                child._id = new_id
-                return
-        raise RuntimeError(f"Failed to get tree view item with ID {prev_id}")
+        proj180deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
+        self.add_images_to_existing_dataset(dataset_id, proj180deg, "proj_180")
 
     def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
@@ -531,16 +503,6 @@ class MainWindowPresenter(BasePresenter):
                 recon_group.takeChild(i)
                 return True
         return False
-
-    def add_child_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, child_name: str) -> None:
-        """
-        Adds a child item to the tree view.
-        :param parent_id: The ID of the parent dataset.
-        :param child_id: The ID of the corresponding ImageStack object.
-        :param child_name: The name that should appear in the tree view.
-        """
-        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
-        self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
         self.stack_visualisers[stack.id] = stack

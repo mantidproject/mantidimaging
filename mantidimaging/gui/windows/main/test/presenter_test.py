@@ -155,9 +155,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_dataset_stack_visualisers(self.dataset)
         self.assertEqual(8, len(self.presenter.stack_visualisers))
 
-    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view")
-    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack_visualiser")
-    def test_create_new_stack_dataset_and_use_threshold_180(self, mock_get_stack, mock_add_child):
+    def test_create_new_stack_dataset_and_use_threshold_180(self):
+        self.model.datasets[self.dataset.id] = self.dataset
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
@@ -167,6 +166,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.add_alternative_180_if_required(self.dataset)
 
     def test_threshold_180_is_separate_data(self):
+        self.model.datasets[self.dataset.id] = self.dataset
         self.dataset.sample.set_projection_angles(
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
@@ -266,52 +266,28 @@ class MainWindowPresenterTest(unittest.TestCase):
             self.presenter.get_stack_with_images(generate_images())
 
     def test_add_first_180_deg_to_dataset(self):
-        dataset_id = "dataset-id"
+        self.model.datasets[self.dataset.id] = self.dataset
         filename_for_180 = "path/to/180"
         self.model.get_existing_180_id.return_value = None
         self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
-        self.presenter.add_child_item_to_tree_view = mock.Mock()
+        self.presenter.add_images_to_existing_dataset = mock.Mock()
 
-        self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
-        self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
-        self.presenter.add_child_item_to_tree_view.assert_called_once_with(dataset_id, _180_deg.id, "180")
-        self.view.model_changed.emit.assert_called_once()
+        self.presenter.add_180_deg_file_to_dataset(self.dataset.id, filename_for_180)
+        self.model.add_180_deg_to_dataset.assert_called_once_with(self.dataset.id, filename_for_180)
+        self.presenter.add_images_to_existing_dataset.assert_called_once_with(self.dataset.id, _180_deg, "proj_180")
 
     def test_replace_180_deg_in_dataset(self):
-        dataset_id = "dataset-id"
+        self.model.datasets[self.dataset.id] = self.dataset
+        dataset_id = self.dataset.id
         filename_for_180 = "path/to/180"
         self.model.get_existing_180_id.return_value = existing_180_id = "prev-id"
         self.presenter.stack_visualisers[existing_180_id] = existing_180_stack = mock.Mock()
         self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
-        self.presenter.replace_child_item_id = mock.Mock()
 
         self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
         self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
-        self.presenter.replace_child_item_id.assert_called_once_with(dataset_id, existing_180_id, _180_deg.id)
         self.assertNotIn(existing_180_stack, self.presenter.stack_visualisers)
         self.view.model_changed.emit.assert_called_once()
-
-    def test_replace_child_item_id_success(self):
-        dataset_tree_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_tree_item_mock.childCount.return_value = 1
-        child_item_mock = dataset_tree_item_mock.child.return_value
-        child_item_mock.id = id_to_replace = "id-to-replace"
-
-        dataset_id = "dataset-id"
-        new_id = "new-id"
-
-        self.presenter.replace_child_item_id(dataset_id, id_to_replace, new_id)
-        self.view.get_dataset_tree_view_item.assert_called_once_with(dataset_id)
-        dataset_tree_item_mock.childCount.assert_called_once()
-        dataset_tree_item_mock.child.assert_called_once_with(0)
-        assert child_item_mock._id == new_id
-
-    def test_replace_child_item_id_failure(self):
-        dataset_tree_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_tree_item_mock.childCount.return_value = 1
-
-        with self.assertRaises(RuntimeError):
-            self.presenter.replace_child_item_id("dataset-id", "bad-id", "new-id")
 
     def test_add_projection_angles_to_stack(self):
         id, angles = "doesn't-exist", ProjectionAngles(np.ndarray([1]))
@@ -459,15 +435,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         dataset_list = list(self.presenter.datasets)
         assert len(dataset_list) == 3
-
-    def test_add_child_item_to_tree_view(self):
-        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_item_mock.id = dataset_id = "dataset-id"
-
-        child_id = "child-id"
-        child_name = "180"
-        self.presenter.add_child_item_to_tree_view(dataset_id, child_id, child_name)
-        self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, child_id, child_name)
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_dataset_stack_visualisers")
     @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter._open_window_if_not_open")
