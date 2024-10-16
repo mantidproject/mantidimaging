@@ -22,8 +22,6 @@ class MainWindowModelTest(unittest.TestCase):
 
     def setUp(self):
         self.model = MainWindowModel()
-        self.model_class_name = f"{self.model.__module__}.{self.model.__class__.__name__}"
-        self.stack_list_property = f"{self.model_class_name}.stack_list"
 
     def _add_mock_image(self):
         dataset_mock = mock.Mock()
