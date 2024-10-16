@@ -610,10 +610,8 @@ class MainWindowPresenter(BasePresenter):
         :param recon_data: The recon data.
         :param stack_id: The ID of one of the stacks in the dataset that the recon data should be added to.
         """
-        parent_id = self.model.add_recon_to_dataset(recon_data, stack_id)
-        self.view.create_new_stack(recon_data)
-        self.add_recon_item_to_tree_view(parent_id, recon_data.id, recon_data.name)
-        self.view.model_changed.emit()
+        parent_id = self.model.get_parent_dataset(stack_id)
+        self.add_images_to_existing_dataset(parent_id, recon_data, "Recon")
 
     def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID) -> None:
         """
