@@ -354,7 +354,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.add_roi(self.model.get_roi(roi_name), roi_name)
         self.view.set_spectrum(
             roi_name, self.model.get_spectrum(roi_name, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
-        self.view.set_roi_alpha(0, ROI_RITS)
+        self.view.set_roi_visibility_flags(ROI_RITS, visible=True, alpha=0)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
         """
