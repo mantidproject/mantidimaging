@@ -542,21 +542,6 @@ class MainWindowPresenter(BasePresenter):
         dataset_item = self.view.get_dataset_tree_view_item(parent_id)
         self.view.create_child_tree_item(dataset_item, child_id, child_name)
 
-    def add_recon_item_to_tree_view(self, parent_id: uuid.UUID, child_id: uuid.UUID, name: str) -> None:
-        """
-        Adds a recon item to the tree view.
-        :param parent_id: The ID of the parent dataset.
-        :param child_id: The ID of the corresponding ImageStack object.
-        :param name: The name to display for the recon in the tree view.
-        """
-        dataset_item = self.view.get_dataset_tree_view_item(parent_id)
-
-        recon_group = self.view.get_recon_group(dataset_item)
-        if not recon_group:
-            recon_group = self.view.add_recon_group(dataset_item, self.model.get_recon_list_id(parent_id))
-
-        self.view.create_child_tree_item(recon_group, child_id, name)
-
     def add_stack_to_dictionary(self, stack: StackVisualiserView) -> None:
         self.stack_visualisers[stack.id] = stack
 
