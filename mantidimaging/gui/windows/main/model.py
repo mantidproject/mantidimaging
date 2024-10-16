@@ -140,9 +140,6 @@ class MainWindowModel:
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
-    def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find strict dataset containing ImageStack with ID {images_id}")
-
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
         images = self.get_images_by_uuid(images_id)
         if images is None:

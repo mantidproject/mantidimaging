@@ -28,7 +28,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter = MainWindowPresenter(self.view)
         self.dataset, self.images = generate_standard_dataset(shape=(10, 5, 5))
         self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets={})
-        self.model.get_recons_id = mock.Mock()
 
         self.view.create_stack_window.return_value = mock.Mock()
         self.view.model_changed = mock.Mock()
@@ -137,10 +136,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         images = generate_images()
         self.presenter._create_lone_stack_window(images)
         self.assertEqual(1, len(self.presenter.stack_visualisers))
-
-    @mock.patch("mantidimaging.gui.windows.main.presenter.QApplication")
-    def test_create_new_stack_images_focuses_newest_tab(self, mock_QApp):
-        pass
 
     def test_create_new_stack_with_180_in_sample(self):
         self.dataset.proj180deg = generate_images(shape=(1, 20, 20))
