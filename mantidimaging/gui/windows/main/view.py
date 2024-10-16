@@ -655,12 +655,6 @@ class MainWindowView(BaseMainWindowView):
         return dataset_tree_item
 
     @staticmethod
-    def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str) -> None:
-        child = QTreeDatasetWidgetItem(parent, dataset_id)
-        child.setText(0, name)
-        parent.addChild(child)
-
-    @staticmethod
     def get_sinograms_item(parent: QTreeDatasetWidgetItem) -> QTreeDatasetWidgetItem | None:
         """
         Tries to look for a sinograms entry in a dataset tree view item.
