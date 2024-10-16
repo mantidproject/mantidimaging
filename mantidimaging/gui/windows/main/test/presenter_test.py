@@ -525,44 +525,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter._tabify_stack_window(new_stack)
         self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
 
-    def test_add_recon_item_to_tree_view_first_item(self):
-        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_item_mock.id = parent_id = "parent-id"
-        child_id = "child-id"
-        name = "Recon"
-        recon_group_mock = self.view.add_recon_group.return_value
-        self.model.get_recon_list_id.return_value = recons_id = "recons-id"
-        self.view.get_recon_group.return_value = None
-
-        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, name)
-        self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
-        self.model.get_recon_list_id.assert_called_once_with(parent_id)
-        self.view.add_recon_group.assert_called_once_with(dataset_item_mock, recons_id)
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
-
-    def test_add_recon_item_to_tree_view_additional_item(self):
-        parent_id = "parent-id"
-        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
-        child_id = "child-id"
-        recon_group_mock = self.view.get_recon_group.return_value
-        name = "Recon_2"
-
-        self.presenter.add_recon_item_to_tree_view(parent_id, child_id, name)
-        self.view.get_dataset_tree_view_item.assert_called_once_with(parent_id)
-        self.view.get_recon_group.assert_called_once_with(dataset_item_mock)
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
-
-    def test_add_recon_item_to_tree_view_first_item_with_multiple_recons(self):
-        child_id = "child-id"
-        name = "Recon"
-        recon_group_mock = self.view.add_recon_group.return_value
-        self.view.get_recon_group.return_value = None
-
-        self.presenter.add_recon_item_to_tree_view("parent-id", child_id, name)
-
-        self.view.add_recon_group.assert_called_once()
-        self.view.create_child_tree_item.assert_called_once_with(recon_group_mock, child_id, name)
-
     def test_cant_focus_on_recon_group(self):
         self.presenter.stack_visualisers = {}
         self.presenter.stack_visualisers["stack-id"] = stack_mock = mock.Mock()
