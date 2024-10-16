@@ -654,11 +654,6 @@ class MainWindowView(BaseMainWindowView):
         dataset_tree_item.setText(0, title)
         return dataset_tree_item
 
-    def create_dataset_tree_widget_item(self, title: str, id: uuid.UUID) -> QTreeDatasetWidgetItem:
-        dataset_tree_item = QTreeDatasetWidgetItem(self.dataset_tree_widget, id)
-        dataset_tree_item.setText(0, title)
-        return dataset_tree_item
-
     @staticmethod
     def create_child_tree_item(parent: QTreeDatasetWidgetItem, dataset_id: uuid.UUID, name: str) -> None:
         child = QTreeDatasetWidgetItem(parent, dataset_id)
@@ -676,10 +671,6 @@ class MainWindowView(BaseMainWindowView):
             if child.text(0) == SINO_TEXT:
                 return child
         return None
-
-    def add_item_to_tree_view(self, item: QTreeWidgetItem) -> None:
-        self.dataset_tree_widget.insertTopLevelItem(self.dataset_tree_widget.topLevelItemCount(), item)
-        item.setExpanded(True)
 
     def _open_tree_menu(self, position: QPoint) -> None:
         """
