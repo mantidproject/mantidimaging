@@ -178,18 +178,14 @@ class SpectrumWidget(QWidget):
         """
         self.roi_dict[name].colour = colour
 
-    def set_roi_visibility_flags(self, name: str, visible: bool, alpha: float = 1.0) -> None:
+    def set_roi_visibility_flags(self, name: str, visible: bool) -> None:
         """
         Change the visibility of an existing ROI including handles and update
-        the ROI dictionary, setting the alpha (transparency) value at the same time.
+        the ROI dictionary.
 
         @param name: The name of the ROI.
         @param visible: The new visibility of the ROI.
-        @param alpha: The new alpha (transparency) value of the ROI.
         """
-
-        if alpha is not None:
-            self.roi_dict[name].colour = self.roi_dict[name].colour[:3] + (alpha, )
         self.roi_dict[name].set_visibility(visible)
 
     def add_roi(self, roi: SensibleROI, name: str) -> None:

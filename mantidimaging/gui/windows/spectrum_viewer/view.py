@@ -242,30 +242,32 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
         self.presenter.handle_storing_current_roi_name_on_tab_change()
+
         if self.presenter.export_mode == ExportMode.ROI_MODE:
             if self.roi_table_model.rowCount() == 0:
                 self.disable_roi_properties()
-            if not self.roi_table_model.rowCount() == 0:
+            else:
                 self.set_roi_properties()
+
             for roi_name, _, roi_visible in self.roi_table_model:
-                if roi_visible is False:
-                    self.set_roi_visibility_flags(roi_name, visible=False, alpha=0)
-                else:
-                    self.set_roi_visibility_flags(roi_name, visible=True, alpha=255)
+                self.set_roi_visibility_flags(roi_name, visible=roi_visible)
+                if roi_visible:
                     self.presenter.redraw_spectrum(roi_name)
 
-        if self.presenter.export_mode == ExportMode.IMAGE_MODE:
+        elif self.presenter.export_mode == ExportMode.IMAGE_MODE:
             for roi_name, _, _ in self.roi_table_model:
-                self.set_roi_visibility_flags(roi_name, visible=False, alpha=0)
+                self.set_roi_visibility_flags(roi_name, visible=False)
 
-            self.set_roi_visibility_flags(ROI_RITS, visible=True, alpha=255)
+            self.set_roi_visibility_flags(ROI_RITS, visible=True)
             self.presenter.redraw_spectrum(ROI_RITS)
             self.current_roi_name = ROI_RITS
+
             for _, spinbox in self.roiPropertiesSpinBoxes.items():
                 spinbox.setEnabled(True)
             self.set_roi_properties()
+
         else:
-            self.set_roi_visibility_flags(ROI_RITS, visible=False, alpha=0)
+            self.set_roi_visibility_flags(ROI_RITS, visible=False)
 
     @property
     def roi_table_model(self) -> TableModel:
@@ -416,17 +418,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 return row
         return None
 
-    def set_roi_visibility_flags(self, roi_name: str, visible: bool, alpha: float) -> None:
+    def set_roi_visibility_flags(self, roi_name: str, visible: bool) -> None:
         """
-        Set the visibility and alpha value for the selected ROI and update the spectrum to reflect the change.
+        Set the visibility for the selected ROI and update the spectrum to reflect the change.
         A check is made on the spectrum to see if it exists as it may not have been created yet.
-
         @param visible: Whether the ROI is visible.
-        @param alpha: The alpha value (transparency) of the ROI.
         """
-        self.spectrum_widget.set_roi_visibility_flags(roi_name, visible=visible, alpha=alpha)
-        if alpha == 0:
+        self.spectrum_widget.set_roi_visibility_flags(roi_name, visible=visible)
+
+        if not visible:
             self.spectrum_widget.spectrum_data_dict[roi_name] = None
+
         self.spectrum_widget.spectrum.clearPlots()
         self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
