@@ -584,42 +584,18 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.datasets[ds.id] = ds
         self.model.get_parent_dataset.return_value = ds.id
 
-        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_item_mock.id = ds.id
         self.view.get_sinograms_item.return_value = None
         self.presenter.create_single_tabbed_images_stack = mock.Mock()
-        self.presenter._delete_stack_visualiser = mock.Mock()
+        self.presenter._close_unused_visualisers = mock.Mock()
 
         self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
+
         self.model.get_parent_dataset.assert_called_once_with(ds.sample.id)
-        self.presenter._delete_stack_visualiser.assert_not_called()
+        self.presenter._close_unused_visualisers.assert_called_once()
         self.assertIs(ds.sinograms, sinograms)
-        self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
-        self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
-        self.view.create_child_tree_item.assert_called_once_with(dataset_item_mock, sinograms.id, self.view.sino_text)
+        last_add_widget_call = self.view.add_item_to_dataset_tree_widget.mock_calls[-1][1]
+        self.assertEqual(last_add_widget_call[:2], ("Sinograms", sinograms.id))
         self.presenter.create_single_tabbed_images_stack.assert_called_once_with(sinograms)
-        self.view.model_changed.emit.assert_called_once()
-
-    def test_add_sinograms_to_dataset_with_existing_sinograms_and_update_view(self):
-        new_sinograms = generate_images()
-        ds = StrictDataset(sample=generate_images())
-        self.model.datasets[ds.id] = ds
-        self.model.get_parent_dataset.return_value = ds.id
-        ds.sinograms = existing_sinograms = generate_images()
-
-        dataset_item_mock = self.view.get_dataset_tree_view_item.return_value
-        dataset_item_mock.id = ds.id
-        sinograms_item_mock = self.view.get_sinograms_item.return_value
-        self.presenter.create_single_tabbed_images_stack = mock.Mock()
-        self.presenter._delete_stack_visualiser = mock.Mock()
-
-        self.presenter.add_sinograms_to_dataset_and_update_view(new_sinograms, ds.sample.id)
-        self.presenter._delete_stack_visualiser.assert_called_once_with(existing_sinograms.id)
-        self.assertIs(ds.sinograms, new_sinograms)
-        self.view.get_dataset_tree_view_item.assert_called_once_with(ds.id)
-        self.view.get_sinograms_item.assert_called_once_with(dataset_item_mock)
-        assert sinograms_item_mock._id == new_sinograms.id
-        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(new_sinograms)
         self.view.model_changed.emit.assert_called_once()
 
     def test_remove_item_from_recon_group_but_keep_group(self):
