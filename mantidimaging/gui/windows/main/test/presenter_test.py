@@ -11,7 +11,7 @@ from unittest.mock import patch, call
 import numpy as np
 from parameterized import parameterized
 
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
@@ -425,11 +425,11 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(last_add_widget_call[:2], ("New recon", recon.id))
 
     def test_dataset_list(self):
-        dataset_1 = StrictDataset(sample=generate_images())
+        dataset_1 = Dataset(sample=generate_images())
         dataset_1.name = "dataset-1"
-        dataset_2 = StrictDataset(sample=generate_images())
+        dataset_2 = Dataset(sample=generate_images())
         dataset_2.name = "dataset-2"
-        mixed_dataset = MixedDataset(stacks=[generate_images()])
+        mixed_dataset = Dataset(stacks=[generate_images()])
 
         self.model.datasets = {"id1": dataset_1, "id2": dataset_2, "id3": mixed_dataset}
 
@@ -464,7 +464,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")
     def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
-        dataset = StrictDataset(sample=generate_images())
+        dataset = Dataset(sample=generate_images())
         dataset.proj180deg = generate_images((1, 20, 20))
         dataset.proj180deg.filenames = ["filename"]
 
@@ -473,7 +473,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_create_mixed_dataset_stack_windows(self):
         n_stacks = 3
-        dataset = MixedDataset(stacks=[generate_images() for _ in range(n_stacks)], name="cool-name")
+        dataset = Dataset(stacks=[generate_images() for _ in range(n_stacks)], name="cool-name")
         self.create_stack_mocks(dataset)
         self.presenter.create_dataset_stack_visualisers(dataset)
         assert len(self.presenter.stack_visualisers) == n_stacks
@@ -504,7 +504,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_sinograms_to_dataset_with_no_sinograms_and_update_view(self):
         sinograms = generate_images()
-        ds = StrictDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         self.model.datasets[ds.id] = ds
         self.model.get_parent_dataset.return_value = ds.id
 
@@ -595,8 +595,8 @@ class MainWindowPresenterTest(unittest.TestCase):
                                                  busy=True)
 
     def test_get_dataset(self):
-        test_ds = StrictDataset(sample=generate_images())
-        other_ds = StrictDataset(sample=generate_images())
+        test_ds = Dataset(sample=generate_images())
+        other_ds = Dataset(sample=generate_images())
         self.model.datasets[test_ds.id] = test_ds
         self.model.datasets[other_ds.id] = other_ds
 
@@ -604,7 +604,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertEqual(result, test_ds)
 
     def test_get_dataset_not_found(self):
-        ds = StrictDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         incorrect_id = uuid.uuid4()
         self.model.datasets[ds.id] = ds
 
@@ -716,14 +716,14 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_all_stack_ids(self):
         mixed_stacks = [generate_images() for _ in range(5)]
-        mixed_dataset = MixedDataset(stacks=mixed_stacks)
+        mixed_dataset = Dataset(stacks=mixed_stacks)
 
         strict_stacks = [generate_images() for _ in range(5)]
-        strict_dataset = StrictDataset(sample=strict_stacks[0],
-                                       flat_before=strict_stacks[1],
-                                       flat_after=strict_stacks[2],
-                                       dark_before=strict_stacks[3],
-                                       dark_after=strict_stacks[4])
+        strict_dataset = Dataset(sample=strict_stacks[0],
+                                 flat_before=strict_stacks[1],
+                                 flat_after=strict_stacks[2],
+                                 dark_before=strict_stacks[3],
+                                 dark_after=strict_stacks[4])
 
         all_ids = [stack.id for stack in mixed_stacks] + [stack.id for stack in strict_stacks]
         self.model.datasets[mixed_dataset.id] = mixed_dataset
@@ -733,7 +733,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_show_move_stack_dialog(self):
         sample = generate_images()
-        ds = StrictDataset(sample=sample)
+        ds = Dataset(sample=sample)
         ds.name = dataset_name = "dataset-name"
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=ds.id)
         self.presenter.get_dataset = mock.Mock(return_value=ds)
@@ -748,19 +748,19 @@ class MainWindowPresenterTest(unittest.TestCase):
             self.presenter._show_move_stack_dialog("stack-id")
 
     def test_move_stack_raises_when_origin_dataset_not_found(self):
-        self.presenter.get_dataset = mock.Mock(side_effect=[None, StrictDataset(sample=generate_images())])
+        self.presenter.get_dataset = mock.Mock(side_effect=[None, Dataset(sample=generate_images())])
         with self.assertRaises(RuntimeError):
             self.presenter._move_stack("origin-dataset-id", "stack-id", "Flat After", "destination-dataset-id")
 
     def test_move_stack_raises_when_destination_dataset_not_found(self):
-        self.presenter.get_dataset = mock.Mock(side_effect=[StrictDataset(sample=generate_images()), None])
+        self.presenter.get_dataset = mock.Mock(side_effect=[Dataset(sample=generate_images()), None])
         with self.assertRaises(RuntimeError):
             self.presenter._move_stack("origin-dataset-id", "stack-id", "Flat After", "destination-dataset-id")
 
     def test_stack_moved_to_recon(self):
         stack_to_move = generate_images()
-        origin_dataset = MixedDataset(stacks=[stack_to_move])
-        destination_dataset = MixedDataset()
+        origin_dataset = Dataset(stacks=[stack_to_move])
+        destination_dataset = Dataset()
         self.model.datasets[origin_dataset.id] = origin_dataset
         self.model.datasets[destination_dataset.id] = destination_dataset
 
@@ -781,8 +781,8 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_stack_moved_to_mixed_dataset_images(self):
         stack_to_move = generate_images()
-        origin_dataset = StrictDataset(sample=stack_to_move)
-        destination_dataset = MixedDataset()
+        origin_dataset = Dataset(sample=stack_to_move)
+        destination_dataset = Dataset()
         self.model.datasets[origin_dataset.id] = origin_dataset
         self.model.datasets[destination_dataset.id] = destination_dataset
 
@@ -799,8 +799,8 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_move_stack_to_strict_dataset(self):
         stack_to_move = generate_images()
-        origin_dataset = MixedDataset(stacks=[stack_to_move])
-        destination_dataset = StrictDataset(sample=generate_images())
+        origin_dataset = Dataset(stacks=[stack_to_move])
+        destination_dataset = Dataset(sample=generate_images())
         self.model.datasets[origin_dataset.id] = origin_dataset
         self.model.datasets[destination_dataset.id] = destination_dataset
         self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
