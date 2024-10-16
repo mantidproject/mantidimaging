@@ -859,21 +859,21 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_to_move = generate_images()
         origin_dataset = MixedDataset(stacks=[stack_to_move])
         destination_dataset = MixedDataset()
-        destination_dataset_id = destination_dataset.id
+        self.model.datasets[origin_dataset.id] = origin_dataset
+        self.model.datasets[destination_dataset.id] = destination_dataset
 
         self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
         self.presenter.remove_item_from_tree_view = mock.Mock()
-        self.presenter._add_images_to_existing_strict_dataset = mock.Mock()
-        self.presenter.get_dataset = mock.Mock(side_effect=[origin_dataset, destination_dataset])
+        self.presenter.add_images_to_existing_dataset = mock.Mock()
 
         self.presenter.notify(Notification.MOVE_STACK,
                               origin_dataset_id=origin_dataset.id,
                               stack_id=stack_to_move.id,
                               destination_stack_type=RECON_TEXT,
-                              destination_dataset_id=destination_dataset_id)
+                              destination_dataset_id=destination_dataset.id)
         self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
-        self.presenter._add_images_to_existing_strict_dataset.assert_called_once_with(
-            destination_dataset, stack_to_move, RECON_TEXT)
+        self.presenter.add_images_to_existing_dataset.assert_called_once_with(destination_dataset.id, stack_to_move,
+                                                                              RECON_TEXT)
 
         self.assertNotIn(stack_to_move, origin_dataset)
 
@@ -881,17 +881,17 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_to_move = generate_images()
         origin_dataset = StrictDataset(sample=stack_to_move)
         destination_dataset = MixedDataset()
-        destination_dataset_id = destination_dataset.id
+        self.model.datasets[origin_dataset.id] = origin_dataset
+        self.model.datasets[destination_dataset.id] = destination_dataset
 
-        self.presenter.get_dataset = mock.Mock(side_effect=[origin_dataset, destination_dataset])
         self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
         self.presenter.remove_item_from_tree_view = mock.Mock()
-        self.presenter._add_images_to_existing_strict_dataset = mock.Mock()
+        self.presenter.add_images_to_existing_dataset = mock.Mock()
 
-        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, "Images", destination_dataset_id)
+        self.presenter._move_stack(origin_dataset.id, stack_to_move.id, "Images", destination_dataset.id)
         self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
-        self.presenter._add_images_to_existing_strict_dataset.assert_called_once_with(
-            destination_dataset, stack_to_move, "Images")
+        self.presenter.add_images_to_existing_dataset.assert_called_once_with(destination_dataset.id, stack_to_move,
+                                                                              "Images")
 
         self.assertNotIn(stack_to_move, origin_dataset)
 
@@ -899,10 +899,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_to_move = generate_images()
         origin_dataset = MixedDataset(stacks=[stack_to_move])
         destination_dataset = StrictDataset(sample=generate_images())
-        self.presenter.get_dataset = mock.Mock(side_effect=[origin_dataset, destination_dataset])
+        self.model.datasets[origin_dataset.id] = origin_dataset
+        self.model.datasets[destination_dataset.id] = destination_dataset
         self.presenter.get_stack = mock.Mock(return_value=stack_to_move)
 
-        self.presenter.remove_item_from_tree_view = mock.Mock()
         self.presenter.update_dataset_tree = mock.Mock()
 
         self.view.move_stack_dialog = mock.Mock()
@@ -914,7 +914,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
         self.presenter.update_dataset_tree.assert_called_once()
 
-        self.assertNotIn(stack_to_move, origin_dataset)
+        self.assertIn(stack_to_move, destination_dataset.all)
+        self.assertNotIn(stack_to_move, origin_dataset.all)
         assert stack_to_move.name == new_stack_name
 
     def test_update_dataset_tree_no_datasets(self):
