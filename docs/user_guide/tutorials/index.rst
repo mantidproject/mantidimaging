@@ -3,11 +3,13 @@
 Tutorials
 =========
 
-Getting Started
----------------
+Quick Start
+-----------
+
+Follow these step-by-step guides to get started using MantidImaging effectively.
 
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials:
 
-   started.rst
+   tutorials/quick_start.rst

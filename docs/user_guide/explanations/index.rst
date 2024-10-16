@@ -3,12 +3,12 @@
 Explanations
 ============
 
-In-depth conceptual explanations of the architecture and development guidelines.
+In-depth conceptual explanations about the key components of the software and their underlying principles.
 
 .. toctree::
    :maxdepth: 1
    :caption: Explanations:
 
-   documentation.rst
-   developer_conventions.rst
-   release.rst
+   gui/index
+   operations/index
+   reconstructions/index

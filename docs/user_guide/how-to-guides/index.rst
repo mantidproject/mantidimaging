@@ -3,13 +3,10 @@
 How-To Guides
 =============
 
-Specific guides for common development tasks.
+Practical, task-oriented guides for achieving specific goals within the software.
 
 .. toctree::
    :maxdepth: 1
    :caption: How-To Guides:
 
-   command.rst
-   debugging.rst
-   conda_packaging_and_docker_image.rst
-   testing.rst
+
