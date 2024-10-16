@@ -750,7 +750,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         elif images_type in ["Recon", "Images"]:
             treeview_label = new_images.name
 
-        self.presenter._add_images_to_existing_dataset()
+        self.presenter.handle_add_images_to_existing_dataset_from_dialog()
 
         self.assertIn(call(treeview_label, new_images.id, mock_top_item),
                       self.view.add_item_to_dataset_tree_widget.mock_calls)

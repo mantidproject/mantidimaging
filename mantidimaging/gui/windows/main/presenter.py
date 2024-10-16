@@ -91,7 +91,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.SHOW_ADD_STACK_DIALOG:
                 self._show_add_stack_to_dataset_dialog(**baggage)
             elif signal == Notification.DATASET_ADD:
-                self._add_images_to_existing_dataset()
+                self.handle_add_images_to_existing_dataset_from_dialog()
             elif signal == Notification.TAB_CLICKED:
                 self._on_tab_clicked(**baggage)
             elif signal == Notification.SHOW_MOVE_STACK_DIALOG:
@@ -665,7 +665,7 @@ class MainWindowPresenter(BasePresenter):
         stack_data_type = _get_stack_data_type(stack_id, dataset)
         self.view.show_move_stack_dialog(dataset_id, stack_id, dataset.name, stack_data_type)
 
-    def _add_images_to_existing_dataset(self) -> None:
+    def handle_add_images_to_existing_dataset_from_dialog(self) -> None:
         """
         Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if
         necessary.
@@ -673,14 +673,15 @@ class MainWindowPresenter(BasePresenter):
         assert self.view.add_to_dataset_dialog is not None
 
         dataset_id = self.view.add_to_dataset_dialog.dataset_id
-        dataset = self.get_dataset(dataset_id)
-        assert dataset is not None
-
         new_images = self.view.add_to_dataset_dialog.presenter.images
         images_type = self.view.add_to_dataset_dialog.images_type
 
-        dataset.set_stack_by_type_name(images_type, new_images)
+        self.add_images_to_existing_dataset(dataset_id, images_type, new_images)
 
+    def add_images_to_existing_dataset(self, dataset_id: uuid.UUID, images_type: str, new_images: ImageStack):
+        dataset = self.get_dataset(dataset_id)
+        assert dataset is not None
+        dataset.set_stack_by_type_name(images_type, new_images)
         self.create_single_tabbed_images_stack(new_images)
         self.update_dataset_tree()
         self._close_unused_visualisers()
