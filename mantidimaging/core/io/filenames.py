@@ -198,21 +198,31 @@ class FilenameGroup:
         self.all_indexes.sort()
 
     def find_log_file(self) -> None:
-        parent_directory = self.directory.parent
-        log_pattern = self.directory.name + "*" + ".txt"
-        log_paths = list(parent_directory.glob(log_pattern))
-
-        if log_paths:
-            # choose shortest match
-            shortest = min(log_paths, key=lambda p: len(p.name))
-            self.log_path = self.directory / shortest
+        """
+        Find the first non-empty list of log paths matching any schema, then filter out
+        paths containing 'ShutterCount' and select the shortest one
+        """
+        possible_schemas = [self.directory.name + "*.txt", "*spectra.txt"]
+        log_path_list: list[Path] = next((paths for schema in possible_schemas
+                                          if (paths := list(self.directory.parent.glob(schema, case_sensitive=False)))),
+                                         [])
+        log_path_list = [log_path for log_path in log_path_list if "ShutterCount" not in log_path.name]
+        if log_path_list:
+            self.log_path = self.directory / min(log_path_list, key=lambda log_path: len(log_path.name))
 
     def find_shutter_count_file(self) -> None:
         """
-        Find the shutter count file in directory if it exists. The file must be in the parent directory.
+        Try to find the shutter count file in directory if it exists in the parent directory.
         """
-        shutter_count_pattern = self.directory.name + "*" + "ShutterCount" + ".txt"
-        shutter_count_paths = list(self.directory.parent.glob(shutter_count_pattern))
+        parent_directory = self.directory.parent
+        if self.directory.name.lower() in ["tomo", "sample"]:
+            shutter_count_pattern = "*shuttercount.txt"
+            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
+            shutter_count_paths = [path for path in shutter_count_paths if "flat" not in path.name.lower()]
+        else:
+            shutter_count_pattern = f"{self.directory.name}*shuttercount.txt"
+            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
+
         if shutter_count_paths:
             shortest = min(shutter_count_paths, key=lambda p: len(p.name))
             self.shutter_count_path = self.directory / shortest

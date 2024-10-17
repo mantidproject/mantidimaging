@@ -188,6 +188,23 @@ class FilenameGroupTest(FakeFSTestCase):
 
         self._files_equal(fg.log_path, log)
 
+    @parameterized.expand([
+        ("/foo/tomo/IMAT_Flower_Tomo_000000.tif", "/foo/shuttercount.txt"),
+        ("/foo/Flat_Before/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_shuttercount.txt"),
+        ("/foo/Flat_After/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_shuttercount.txt"),
+    ])
+    def test_find_shuttercount_log(self, sample_path, log_path):
+        log = Path(log_path)
+        self.fs.create_file(log)
+
+        sample = Path(sample_path)
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_shutter_count_file()
+
+        self._files_equal(fg.shutter_count_path.resolve(), log.resolve())
+
     def test_find_log_best(self):
         log = Path("/foo", "Dark_log.txt")
         self.fs.create_file(log)
@@ -201,6 +218,64 @@ class FilenameGroupTest(FakeFSTestCase):
         fg.find_log_file()
 
         self._files_equal(fg.log_path, log)
+
+    def test_find_log_over_spectra_if_both(self):
+        spectra = Path("/foo", "spectra.txt")
+        self.fs.create_file(spectra)
+        log = Path("/foo", "TomoIMAT_Flower_Tomo_000000_log.txt")
+        self.fs.create_file(log)
+
+        sample = Path("/foo", "Tomo", "IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_log_file()
+
+        self._files_equal(fg.log_path, log)
+
+    def test_find_spectra(self):
+        spectra = Path("/foo", "sample_spectra.txt")
+        self.fs.create_file(spectra)
+
+        sample = Path("/foo", "Tomo", "IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_log_file()
+
+        self._files_equal(fg.log_path, spectra)
+
+    @parameterized.expand([
+        ("/foo/Tomo/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_ShutterCount.txt"),
+        ("/foo/Tomo/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_ShutterCount.txt"),
+    ])
+    def test_find_shuttercount_no_flat_before_or_after(self, sample_path, log_path):
+        log = Path(log_path)
+        self.fs.create_file(log)
+
+        sample = Path(sample_path)
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_shutter_count_file()
+
+        self.assertIsNone(fg.shutter_count_path)
+
+    @parameterized.expand([
+        ("/foo/Flat_Before/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_ShutterCount.txt"),
+        ("/foo/Flat_After/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_ShutterCount.txt"),
+    ])
+    def test_find_shuttercount_if_flat_before(self, sample_path, log_path):
+        log = Path(log_path)
+        self.fs.create_file(log)
+
+        sample = Path(sample_path)
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_shutter_count_file()
+
+        self._files_equal(fg.shutter_count_path, log)
 
     @parameterized.expand([
         ("/a/Tomo/foo_Tomo_%06d.tif", "/a/Flat_Before/foo_Flat_Before_%06d.tif"),
