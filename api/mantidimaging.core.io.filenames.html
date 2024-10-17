@@ -691,7 +691,9 @@ document.write(`
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_log_file">
 <span class="sig-name descname"><span class="pre">find_log_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.find_log_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.find_log_file" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Find the first non-empty list of log paths matching any schema, then filter out
+paths containing ‘ShutterCount’ and select the shortest one</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_related">
@@ -701,7 +703,7 @@ document.write(`
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.io.filenames.FilenameGroup.find_shutter_count_file">
 <span class="sig-name descname"><span class="pre">find_shutter_count_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/io/filenames.html#FilenameGroup.find_shutter_count_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.io.filenames.FilenameGroup.find_shutter_count_file" title="Link to this definition">#</a></dt>
-<dd><p>Find the shutter count file in directory if it exists. The file must be in the parent directory.</p>
+<dd><p>Try to find the shutter count file in directory if it exists in the parent directory.</p>
 </dd></dl>
 
 <dl class="py method">
