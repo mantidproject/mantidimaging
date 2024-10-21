@@ -316,20 +316,13 @@ class MainWindowPresenter(BasePresenter):
         for dataset_id, dataset in self.model.datasets.items():
             dataset_item = self.view.add_toplevel_item_to_dataset_tree_widget(dataset.name, dataset_id)
 
-            if dataset.sample:
-                self.view.add_item_to_dataset_tree_widget("Projections", dataset.sample.id, dataset_item)
-            if dataset.flat_before:
-                self.view.add_item_to_dataset_tree_widget("Flat Before", dataset.flat_before.id, dataset_item)
-            if dataset.flat_after:
-                self.view.add_item_to_dataset_tree_widget("Flat After", dataset.flat_after.id, dataset_item)
-            if dataset.dark_before:
-                self.view.add_item_to_dataset_tree_widget("Dark Before", dataset.dark_before.id, dataset_item)
-            if dataset.dark_after:
-                self.view.add_item_to_dataset_tree_widget("Dark After", dataset.dark_after.id, dataset_item)
-            if dataset.proj180deg:
-                self.view.add_item_to_dataset_tree_widget("180", dataset.proj180deg.id, dataset_item)
-            if dataset.sinograms:
-                self.view.add_item_to_dataset_tree_widget("Sinograms", dataset.sinograms.id, dataset_item)
+            attributes = [("Projections", dataset.sample), ("Flat Before", dataset.flat_before),
+                          ("Flat After", dataset.flat_after), ("Dark Before", dataset.dark_before),
+                          ("Dark After", dataset.dark_after), ("180", dataset.proj180deg),
+                          ("Sinograms", dataset.sinograms)]
+            for label, item in attributes:
+                if item:
+                    self.view.add_item_to_dataset_tree_widget(label, item.id, dataset_item)
 
             if dataset.recons:
                 recon_item = self.view.add_item_to_dataset_tree_widget("Recons", dataset.recons.id, dataset_item)
