@@ -6,3 +6,17 @@ target-version = "py310"
 select = ["F", "E", "W", "UP", "B", "C4", "FA", "NPY"]
 fixable = ["UP"]
 ignore = ["UP014"]
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportMissingImports = false
+pythonVersion = "3.12"
+include = ["mantidimaging/**/*.py"]
+exclude =  ["tests/**/*.py", "test/**/*.py", "**/*test.py"]
+reportMissingTypeStubs = false
+reportAttributeAccessIssue = false
+reportOptionalCall = false
+reportOptionalMemberAccess = false
+reportCallIssue = false
+reportArgumentType = false
+reportIndexIssue = false
