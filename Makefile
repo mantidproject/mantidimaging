@@ -64,6 +64,9 @@ test-screenshots-win:
 mypy:
 	python -m mypy --ignore-missing-imports ${SOURCE_DIRS}
 
+pyright:
+	python -m pyright ${SOURCE_DIRS}
+
 yapf:
 	python -m yapf --parallel --diff --recursive ${SOURCE_DIRS}
 
