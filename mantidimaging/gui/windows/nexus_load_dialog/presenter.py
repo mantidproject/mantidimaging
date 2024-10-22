@@ -131,7 +131,7 @@ class NexusLoadPresenter:
             for sample images are being read.
         :return: A numpy array of the rotation angles or None if all angles provided are 0.
         """
-        assert self.image_key_dataset is not None
+        assert self.image_key_dataset is not None and self.rotation_angles is not None
         if before is None:
             rotation_angles = self.rotation_angles[np.where(self.image_key_dataset[...] == image_key)]
         else:

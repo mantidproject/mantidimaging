@@ -19,9 +19,10 @@ from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColor
 from mantidimaging.gui.widgets.mi_image_view.presenter import MIImagePresenter
 from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataOverlay
 
+import numpy as np
+
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
-    import numpy as np
     from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 
@@ -202,6 +203,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self._refresh_message()
 
     def _update_roi_region_avg(self) -> SensibleROI | None:
+        assert self.image is not None
         if self.image.ndim != 3:
             return None
         roi_pos, roi_size = self.get_roi()
@@ -264,7 +266,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         if self.image.ndim == 3:
             x = clip(pt.x, 0, self.image.shape[2] - 1)
             y = clip(pt.y, 0, self.image.shape[1] - 1)
-            value = self.image[self.currentIndex, y, x]
+            value = self.image[self.currentIndex, y, x] if self.image is not None else 0
             msg = f"x={y}, y={x}, z={self.currentIndex}, value={value :.6f}"
             if self.angles:
                 angle = degrees(self.angles.value[self.currentIndex])
@@ -272,7 +274,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         else:
             x = clip(pt.x, 0, self.image.shape[1] - 1)
             y = clip(pt.y, 0, self.image.shape[0] - 1)
-            value = self.image[y, x]
+            value = self.image[y, x] if self.image is not None else 0
             msg = f"x={y}, y={x}, value={value}"
         if self.roiString is not None:
             msg += f" | roi = {self.roiString}"
