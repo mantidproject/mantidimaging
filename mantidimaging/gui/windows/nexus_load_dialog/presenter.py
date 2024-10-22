@@ -108,7 +108,7 @@ class NexusLoadPresenter:
                     logger.warning("No unit information found for rotation angles. Will infer from array values.")
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
-                    degrees = "deg" in self.rotation_angles.attrs["units"]
+                    degrees = "deg" in str(self.rotation_angles.attrs["units"])
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
                 self.rotation_angles = self.rotation_angles[:]
