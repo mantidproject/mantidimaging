@@ -396,7 +396,7 @@ class ReconstructWindowPresenter(BasePresenter):
                     f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
                     f"({selected_stack.height}, {selected_stack.width})")
             else:
-                cor, tilt = task.result
+                cor, tilt = task.result if task.result is not None else (None, None)
                 self._set_precalculated_cor_tilt(cor, tilt)
             self.view.set_correlate_buttons_enabled(True)
             self.recon_is_running = False
