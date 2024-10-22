@@ -387,7 +387,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.recon_is_running = True
 
         def completed(task: TaskWorkerThread) -> None:
-            if task.result is None and task.error is not None:
+            if task.error is not None:
                 selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
@@ -395,9 +395,11 @@ class ReconstructWindowPresenter(BasePresenter):
                     f"Error: {str(task.error)} "
                     f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
                     f"({selected_stack.height}, {selected_stack.width})")
-            else:
+            elif task.result is not None:
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
+            else:
+                raise AssertionError("task in inconsistent state, both task.error and task.result are None")
             self.view.set_correlate_buttons_enabled(True)
             self.recon_is_running = False
 
