@@ -266,7 +266,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             return
-
+        assert task.result is not None
         images: ImageStack = task.result
         if images is not None:
             # We copy the preview data out of shared memory when passing it into update_recon_preview so that it
@@ -284,6 +284,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_recon_buttons_enabled(True)
             return
         try:
+            assert task.result is not None
             images: ImageStack = task.result
             slice_idx = self._get_slice_index(None)
             if images is not None:
