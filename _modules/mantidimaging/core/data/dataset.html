@@ -611,6 +611,10 @@ document.write(`
     <span class="k">def</span> <span class="nf">recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReconList</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recons</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stacks</span>
+
 <div class="viewcode-block" id="Dataset.add_recon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_recon">[docs]</a>
     <span class="k">def</span> <span class="nf">add_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -685,6 +689,19 @@ document.write(`
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;StrictDataset does not have an attribute for </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Dataset.set_stack_by_type_name">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack_by_type_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_stack_by_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">file_type_name</span> <span class="o">=</span> <span class="n">file_type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;RECON&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">image_stack</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;IMAGES&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_stack</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>

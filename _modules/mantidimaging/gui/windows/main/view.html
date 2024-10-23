@@ -1276,6 +1276,38 @@ document.write(`
             <span class="sa">f</span><span class="s2">&quot;Use anyway?&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="MainWindowView.clear_dataset_tree_widget">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.clear_dataset_tree_widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.add_toplevel_item_to_dataset_tree_widget">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_toplevel_item_to_dataset_tree_widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_toplevel_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.add_item_to_dataset_tree_widget">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_item_to_dataset_tree_widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
+                                        <span class="n">parent_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">parent_item</span><span class="p">)</span>
+        <span class="n">parent_item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.new_dataset_tree_widget_item">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.new_dataset_tree_widget_item">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
+                                     <span class="n">parent_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="n">QTreeWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+        <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="n">parent_item</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="n">dataset_tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset_tree_item</span></div>
+
+
 <div class="viewcode-block" id="MainWindowView.create_dataset_tree_widget_item">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_dataset_tree_widget_item">[docs]</a>
     <span class="k">def</span> <span class="nf">create_dataset_tree_widget_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
