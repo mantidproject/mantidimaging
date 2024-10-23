@@ -184,6 +184,8 @@ class Dataset:
             self.add_recon(image_stack)
         elif file_type_name == "IMAGES":
             self.stacks.append(image_stack)
+        elif file_type_name == "SINOGRAMS":
+            self._sinograms = image_stack
         else:
             file_type = getattr(FILE_TYPES, file_type_name)
             self.set_stack(file_type, image_stack)
@@ -218,15 +220,14 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:
         return "Recon"
     if stack_id in [stack.id for stack in dataset._stacks]:
         return "Images"
-    if isinstance(dataset, StrictDataset):
-        if dataset.sample is not None and stack_id == dataset.sample.id:
-            return "Sample"
-        if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
-            return "Flat Before"
-        if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
-            return "Flat After"
-        if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
-            return "Dark Before"
-        if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
-            return "Dark After"
+    if dataset.sample is not None and stack_id == dataset.sample.id:
+        return "Sample"
+    if dataset.flat_before is not None and stack_id == dataset.flat_before.id:
+        return "Flat Before"
+    if dataset.flat_after is not None and stack_id == dataset.flat_after.id:
+        return "Flat After"
+    if dataset.dark_before is not None and stack_id == dataset.dark_before.id:
+        return "Dark Before"
+    if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
+        return "Dark After"
     raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
