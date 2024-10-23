@@ -143,6 +143,7 @@ class NexusLoadPresenter:
                 rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
                     self.image_key_dataset[first_sample_image_index:] == image_key)]
 
+        rotation_angles = np.array(rotation_angles)
         return rotation_angles if np.any(rotation_angles) else None
 
     def _missing_data_error(self, field: str):
@@ -167,7 +168,7 @@ class NexusLoadPresenter:
         :return: The h5py Group/Dataset if it could be found, None otherwise.
         """
         dataset = self._look_for_tomo_data(field)
-        if dataset is None:
+        if dataset is None or not isinstance(dataset, h5py.Dataset):
             self._missing_data_error(field)
             self.view.set_data_found(position, False, "", ())
             self.view.disable_ok_button()
@@ -180,13 +181,13 @@ class NexusLoadPresenter:
         dataset = self._look_for_tomo_data(DATA_PATH)
         if dataset is not None:
             self.view.set_data_found(position, True, self.tomo_path + "/" + DATA_PATH, dataset.shape)
-            return dataset
+            return dataset if isinstance(dataset, h5py.Dataset) else None
         else:
             assert self.nexus_file is not None
             if NEXUS_PROCESSED_DATA_PATH in self.nexus_file:
                 dataset = self.nexus_file[NEXUS_PROCESSED_DATA_PATH]["data"]
                 self.view.set_data_found(position, True, NEXUS_PROCESSED_DATA_PATH, dataset.shape)
-                return dataset
+                return dataset if isinstance(dataset, h5py.Dataset) else None
 
         self._missing_data_error(DATA_PATH)
         self.view.set_data_found(position, False, "", ())
@@ -203,7 +204,10 @@ class NexusLoadPresenter:
         for key in self.nexus_file.keys():
             if TOMO_ENTRY in self.nexus_file[key].keys():
                 self.tomo_path = f"{key}/{TOMO_ENTRY}"
-                return self.nexus_file[key][TOMO_ENTRY]
+                entry = self.nexus_file[key][TOMO_ENTRY]
+                if isinstance(entry, h5py.Group):
+                    return entry
+                return None
 
         self._missing_data_error(TOMO_ENTRY)
         self.view.disable_ok_button()
@@ -228,7 +232,10 @@ class NexusLoadPresenter:
         """
         assert self.tomo_entry is not None
         try:
-            return self.tomo_entry[entry_path]
+            data = self.tomo_entry[entry_path]
+            if isinstance(data, h5py.Group | h5py.Dataset):
+                return data
+            return None
         except KeyError:
             return None
 

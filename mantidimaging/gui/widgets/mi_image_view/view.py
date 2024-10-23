@@ -130,7 +130,7 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
     @property
     def image_data(self) -> np.ndarray:
-        return self.image
+        return self.image if self.image is not None else np.array([])
 
     @property
     def image_item(self) -> ImageItem:
