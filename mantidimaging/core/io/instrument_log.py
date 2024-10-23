@@ -78,9 +78,9 @@ class InstrumentLogParser(BaseParser):
 
     """
 
-    def __init_subclass__(subcls) -> None:
+    def __init_subclass__(cls) -> None:
         """Automatically register subclasses"""
-        InstrumentLog.register_parser(subcls)
+        InstrumentLog.register_parser(cls)
 
     @abstractmethod
     def parse(self) -> LogDataType:
@@ -103,9 +103,9 @@ class InstrumentShutterCountParser(BaseParser):
 
     """
 
-    def __init_subclass__(subcls) -> None:
+    def __init_subclass__(cls) -> None:
         """Automatically register subclasses"""
-        ShutterCount.register_parser(subcls)
+        ShutterCount.register_parser(cls)
 
     @abstractmethod
     def parse(self) -> ShutterCountType:
