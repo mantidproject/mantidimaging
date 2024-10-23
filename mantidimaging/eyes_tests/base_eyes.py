@@ -64,6 +64,7 @@ class BaseEyesTest(unittest.TestCase):
         cls.eyes_manager.set_batch(APPLITOOLS_BATCH_ID)
 
     def setUp(self):
+        self.app = QApplication.instance() or QApplication([])
         self.imaging = None
         self.eyes_manager.image_directory = APPLITOOLS_IMAGE_DIR
 
@@ -130,8 +131,8 @@ class BaseEyesTest(unittest.TestCase):
 
         return new_dataset
 
-    def _get_top_level_widget(cls, widget_type):
-        for widget in cls.app.topLevelWidgets():
+    def _get_top_level_widget(self, widget_type):
+        for widget in self.app.topLevelWidgets():
             if isinstance(widget, widget_type):
                 return widget
         raise ValueError(f"Could not find top level widget of type {widget_type.__name__}")
