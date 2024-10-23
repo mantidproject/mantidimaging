@@ -271,7 +271,7 @@ class NexusLoadPresenter:
                        images. Ignored when getting projection images.
         :return: The set of images that correspond with a given image key.
         """
-        assert self.image_key_dataset is not None
+        assert self.image_key_dataset is not None and self.image_key_dataset.size is not None
         assert self.data is not None
         if image_key_number is ImageKeys.Projections:
             indices = self.image_key_dataset[...] == image_key_number.value
