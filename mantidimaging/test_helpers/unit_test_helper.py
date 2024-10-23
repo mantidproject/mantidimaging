@@ -15,6 +15,7 @@ from io import StringIO
 import pyfakefs.fake_filesystem_unittest
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.parallel.utility import SharedArray
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -37,13 +38,27 @@ def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) ->
     return _set_random_data(d, shape, seed=seed)
 
 
-def generate_images_for_parallel(shape=(15, 8, 10), dtype=np.float32, seed: int | None = None) -> ImageStack:
+def generate_images_for_parallel(shape: tuple[int, int, int] = (15, 8, 10), dtype=np.float32,
+                                 seed: int | None = None) -> ImageStack:
     """
     Doesn't do anything special, just makes a number of images big enough to be
     ran in parallel from the logic of multiprocessing_necessary
     """
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
+
+
+def generate_standard_dataset(shape: tuple[int, int, int] = (2, 5, 5)) -> tuple[Dataset, list[ImageStack]]:
+    image_stacks = [generate_images(shape) for _ in range(6)]
+    image_stacks[0].name = "samplename"
+
+    ds = Dataset(sample=image_stacks[0],
+                 flat_before=image_stacks[1],
+                 flat_after=image_stacks[2],
+                 dark_before=image_stacks[3],
+                 dark_after=image_stacks[4])
+    ds.proj180deg = image_stacks[5]
+    return ds, image_stacks
 
 
 def _set_random_data(shared_array, shape, seed: int | None = None):
