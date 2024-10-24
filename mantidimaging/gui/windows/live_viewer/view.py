@@ -51,6 +51,9 @@ class LiveViewerWindowView(BaseMainWindowView):
             if angle == 0:
                 action.setChecked(True)
 
+        load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
+        load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
+
     def show(self) -> None:
         """Show the window"""
         super().show()
