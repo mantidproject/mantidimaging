@@ -241,9 +241,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
+
         self.presenter.handle_storing_current_roi_name_on_tab_change()
 
         if self.presenter.export_mode == ExportMode.ROI_MODE:
+            self.set_roi_visibility_flags(ROI_RITS, visible=False)
+
             if self.roi_table_model.rowCount() == 0:
                 self.disable_roi_properties()
             else:
