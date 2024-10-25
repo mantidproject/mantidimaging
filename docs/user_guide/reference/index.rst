@@ -1,4 +1,4 @@
-.. _reference:
+.. _user_reference:
 
 Reference
 =========

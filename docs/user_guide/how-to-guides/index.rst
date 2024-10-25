@@ -1,4 +1,4 @@
-.. _how-to-guides:
+.. _user_how-to-guides:
 
 How-To Guides
 =============

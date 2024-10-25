@@ -1,4 +1,4 @@
-.. _tutorials:
+.. _user_tutorials:
 
 Tutorials
 =========
@@ -12,4 +12,4 @@ Follow these step-by-step guides to get started using MantidImaging effectively.
    :maxdepth: 1
    :caption: Tutorials:
 
-   tutorials/quick_start.rst
+   quick_start

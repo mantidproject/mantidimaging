@@ -9,7 +9,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
     :gutter: 4
 
     .. grid-item-card:: 🚀
-        :link: tutorials
+        :link: user_tutorials
         :link-type: ref
         :text-align: center
 
@@ -18,7 +18,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
         Step-by-step guides to get started with MantidImaging.
 
     .. grid-item-card:: 📘
-        :link: how-to-guides
+        :link: user_how-to-guides
         :link-type: ref
         :text-align: center
 
@@ -27,7 +27,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
         Instructions for specific tasks and workflows in MantidImaging.
 
     .. grid-item-card:: 🧠
-        :link: explanations
+        :link: user_explanations
         :link-type: ref
         :text-align: center
 
@@ -36,7 +36,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
         In-depth discussions of key concepts and operations.
 
     .. grid-item-card:: 📚
-        :link: reference
+        :link: user_reference
         :link-type: ref
         :text-align: center
 
