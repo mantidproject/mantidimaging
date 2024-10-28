@@ -155,5 +155,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         return image_stack.slice_as_array(0)[0]
 
     def load_as_dataset(self) -> None:
-        image_dir = self.model.images[0].image_path.parent
-        self.main_window.show_image_load_dialog_with_path(str(image_dir))
+        if self.model.images:
+            image_dir = self.model.images[0].image_path.parent
+            self.main_window.show_image_load_dialog_with_path(str(image_dir))

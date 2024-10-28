@@ -30,3 +30,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.load_as_dataset()
 
         self.main_window.show_image_load_dialog_with_path.assert_called_once_with(str(image_dir))
+
+    def test_load_as_dataset_empty_dir(self):
+        self.model.images = []
+
+        self.presenter.load_as_dataset()
+
+        self.main_window.show_image_load_dialog_with_path.assert_not_called()
