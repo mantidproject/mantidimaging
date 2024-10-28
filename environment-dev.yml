@@ -34,3 +34,4 @@ dependencies:
   - pydata-sphinx-theme==0.15.*
   - sphinx-copybutton==0.5.*
   - sphinx-design==0.6.*
+  - ipp=2021.12 # https://github.com/mantidproject/mantidimaging/issues/2354
