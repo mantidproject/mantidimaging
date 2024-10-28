@@ -6,6 +6,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from parameterized import parameterized
+
 from mantidimaging.gui.windows.live_viewer import LiveViewerWindowView, LiveViewerWindowModel, LiveViewerWindowPresenter
 from mantidimaging.gui.windows.live_viewer.model import Image_Data
 from mantidimaging.gui.windows.main import MainWindowView
@@ -37,3 +39,13 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.load_as_dataset()
 
         self.main_window.show_image_load_dialog_with_path.assert_not_called()
+
+    @parameterized.expand([
+        ([], False),
+        ([mock.Mock()], True),
+    ])
+    def test_load_as_dataset_enabled_when_images(self, image_list, action_enabled):
+        with mock.patch.object(self.presenter, "handle_deleted"):
+            self.presenter.update_image_list(image_list)
+
+        self.view.set_load_as_dataset_enabled.assert_called_once_with(action_enabled)

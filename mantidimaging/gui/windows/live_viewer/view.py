@@ -51,8 +51,8 @@ class LiveViewerWindowView(BaseMainWindowView):
             if angle == 0:
                 action.setChecked(True)
 
-        load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
-        load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
+        self.load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
+        self.load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
 
     def show(self) -> None:
         """Show the window"""
@@ -103,3 +103,6 @@ class LiveViewerWindowView(BaseMainWindowView):
             image_rotation_angle = int(self.rotate_angles_group.checkedAction().text().replace('°', ''))
             self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
         self.presenter.update_image_operation()
+
+    def set_load_as_dataset_enabled(self, enabled: bool):
+        self.load_as_dataset_action.setEnabled(enabled)
