@@ -744,30 +744,33 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_storing_current_roi_name_on_tab_change</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">disable_roi_properties</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
+
             <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">roi_visible</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">roi_visible</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">roi_visible</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">roi_visible</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">IMAGE_MODE</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">IMAGE_MODE</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">ROI_RITS</span>
+
             <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">spinbox</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiPropertiesSpinBoxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">spinbox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
@@ -982,17 +985,17 @@ document.write(`
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowView.set_roi_alpha">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_alpha">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_roi_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="SpectrumViewerWindowView.set_roi_visibility_flags">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_visibility_flags">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_roi_visibility_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the alpha value for the selected ROI and update the spectrum to reflect the change.</span>
+<span class="sd">        Set the visibility for the selected ROI and update the spectrum to reflect the change.</span>
 <span class="sd">        A check is made on the spectrum to see if it exists as it may not have been created yet.</span>
-
-<span class="sd">        @param alpha: The alpha value</span>
+<span class="sd">        @param visible: Whether the ROI is visible.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">set_roi_alpha</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">alpha</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">visible</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">visible</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>

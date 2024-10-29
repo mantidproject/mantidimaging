@@ -711,26 +711,12 @@ document.write(`
     <span class="k">def</span> <span class="nf">set_roi_visibility_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the visibility of an existing ROI including handles and update</span>
-<span class="sd">        the ROI dictionary, sending a signal to the main window.</span>
+<span class="sd">        the ROI dictionary.</span>
 
 <span class="sd">        @param name: The name of the ROI.</span>
 <span class="sd">        @param visible: The new visibility of the ROI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_visibility</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumWidget.set_roi_alpha">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.set_roi_alpha">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_roi_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Change the alpha value of an existing ROI</span>
-<span class="sd">        @param name: The name of the ROI.</span>
-<span class="sd">        @param alpha: The new alpha value of the ROI.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.add_roi">
