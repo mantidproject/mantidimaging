@@ -9,3 +9,4 @@ channels:
 dependencies:
   - mantidimaging>=2.5.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
+  - ipp=2021.12 # https://github.com/mantidproject/mantidimaging/issues/2354
