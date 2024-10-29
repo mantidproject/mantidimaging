@@ -269,9 +269,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 spinbox.setEnabled(True)
             self.set_roi_properties()
 
-        else:
-            self.set_roi_visibility_flags(ROI_RITS, visible=False)
-
     @property
     def roi_table_model(self) -> TableModel:
         if self.tableView.model() is None:
