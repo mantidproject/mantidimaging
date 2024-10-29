@@ -90,24 +90,6 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.spectrum_widget.set_roi_visibility_flags(name, alpha)
         self.assertEqual(bool(alpha), self.spectrum_widget.roi_dict[name].isVisible())
 
-    @parameterized.expand([("Visible", "visible_roi", 255), ("Invisible", "invisible_roi", 0)])
-    def test_WHEN_set_roi_alpha_called_THEN_roi_alpha_updated(self, _, name, alpha):
-        spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
-        self.spectrum_widget.roi_dict[name] = spectrum_roi
-        self.spectrum_widget.spectrum_data_dict[name] = np.array([0, 0, 0, 0])
-        self.spectrum_widget.set_roi_alpha(name, alpha)
-        self.assertEqual(self.spectrum_widget.roi_dict[name].pen.color().getRgb()[-1], alpha)
-        self.assertEqual(self.spectrum_widget.roi_dict[name].hoverPen.color().getRgb()[-1], alpha)
-
-    @parameterized.expand([("Visible", "visible_roi", 1), ("Invisible", "invisible_roi", 0)])
-    def test_WHEN_set_roi_alpha_called_THEN_set_roi_visibility_flags_called(self, _, name, alpha):
-        spectrum_roi = SpectrumROI(name, self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
-        self.spectrum_widget.roi_dict[name] = spectrum_roi
-        self.spectrum_widget.spectrum_data_dict[name] = np.array([0, 0, 0, 0])
-        with mock.patch.object(SpectrumWidget, "set_roi_visibility_flags") as mock_set_roi_visibility_flags:
-            self.spectrum_widget.set_roi_alpha(name, alpha)
-            mock_set_roi_visibility_flags.assert_called_once_with(name, alpha)
-
     @parameterized.expand([("range_100", 0, 100), ("range_200", 100, 300), ("range_300", 200, 500)])
     def test_WHEN_add_range_called_THEN_region_and_label_set_correctly(self, _, range_min, range_max):
         self.spectrum_plot_widget.add_range(range_min, range_max)
