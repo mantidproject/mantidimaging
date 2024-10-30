@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Reconstruction Filters &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>How-To Guides &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/reconstructions/filters';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/how-to-guides/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Quick start: Example Reconstruction" href="../quick_start.html" />
-    <link rel="prev" title="Reconstruction Algorithms" href="algorithms.html" />
+    <link rel="next" title="Explanations" href="../explanations/index.html" />
+    <link rel="prev" title="Quick start: Example Reconstruction" href="../tutorials/quick_start.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -450,22 +450,47 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../gui/index.html">Graphical User Interface (GUI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../gui/loading_saving.html">Loading and Saving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gui/image_view.html">Image view</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gui/operations_window.html">Operations Window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gui/recon_window.html">Reconstruction Window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gui/spectrum_viewer.html">Spectrum Viewer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/quick_start.html">Quick start: Example Reconstruction</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Reconstruction Help page</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="center_of_rotation.html">Center of Rotation and Tilt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="algorithms.html">Reconstruction Algorithms</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Reconstruction Filters</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">How-To Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start: Example Reconstruction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../explanations/gui/index.html">Graphical User Interface (GUI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/gui/loading_saving.html">Loading and Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/gui/image_view.html">Image view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/gui/operations_window.html">Operations Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/gui/recon_window.html">Reconstruction Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/gui/spectrum_viewer.html">Spectrum Viewer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/operations/index.html">Operations</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../explanations/reconstructions/index.html">Reconstruction Help page</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/reconstructions/center_of_rotation.html">Center of Rotation and Tilt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/reconstructions/algorithms.html">Reconstruction Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../explanations/reconstructions/filters.html">Reconstruction Filters</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/mantidimaging.html">mantidimaging package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/mantidimaging.core.html">mantidimaging.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/mantidimaging.gui.html">mantidimaging.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release_notes/next.html">Mantid Imaging next release</a></li>
+</ul>
+</details></li>
 </ul>
 </div>
 </nav></div>
@@ -506,10 +531,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Reconstruction Help page</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page">Reconstructi...</li>
+    <li class="breadcrumb-item active" aria-current="page">How-To Guides</li>
   </ul>
 </nav>
 </div>
@@ -526,37 +548,11 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="reconstruction-filters">
-<span id="id1"></span><h1>Reconstruction Filters<a class="headerlink" href="#reconstruction-filters" title="Link to this heading">#</a></h1>
-<p>This will contain information about all recon filters. To be filled in the future with scientists’ help.</p>
-<p>FBP-CUDA-only:</p>
-<ul class="simple">
-<li><p>shepp</p></li>
-<li><p>butterworth</p></li>
-</ul>
-<p>gridrec-only:</p>
-<ul class="simple">
-<li><p>shepp-logan</p></li>
-<li><p>tukey</p></li>
-<li><p>lanczos</p></li>
-<li><p>triangular</p></li>
-<li><p>gaussian</p></li>
-<li><p>barlett-hann</p></li>
-<li><p>blackman</p></li>
-<li><p>nuttall</p></li>
-<li><p>blackman-harris</p></li>
-<li><p>blackman-nuttall</p></li>
-<li><p>flat-top</p></li>
-</ul>
-<p>Both FBP-CUDA and gridrec:</p>
-<ul class="simple">
-<li><p>ram-lak</p></li>
-<li><p>cosine</p></li>
-<li><p>hamming</p></li>
-<li><p>hann</p></li>
-<li><p>parzen</p></li>
-</ul>
-<p>Should contain some data samples and how each filter changes the histogram for each</p>
+  <section id="how-to-guides">
+<span id="user-how-to-guides"></span><h1>How-To Guides<a class="headerlink" href="#how-to-guides" title="Link to this heading">#</a></h1>
+<p>Practical, task-oriented guides for achieving specific goals within the software.</p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -570,20 +566,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="algorithms.html"
+       href="../tutorials/quick_start.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Reconstruction Algorithms</p>
+        <p class="prev-next-title">Quick start: Example Reconstruction</p>
       </div>
     </a>
     <a class="right-next"
-       href="../quick_start.html"
+       href="../explanations/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Quick start: Example Reconstruction</p>
+        <p class="prev-next-title">Explanations</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -600,7 +596,7 @@ document.write(`
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../_sources/user_guide/reconstructions/filters.rst.txt">
+    <a href="../../_sources/user_guide/how-to-guides/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

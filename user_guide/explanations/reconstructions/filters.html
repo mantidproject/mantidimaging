@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Operations Window &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>Reconstruction Filters &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -18,44 +18,44 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=517e76a2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=517e76a2" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=ef7a7510"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/gui/operations_window';</script>
+    <script src="../../../_static/documentation_options.js?v=ef7a7510"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/explanations/reconstructions/filters';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
-    <link rel="icon" href="../../_static/mantid_imaging_64px.ico"/>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Reconstruction Window" href="recon_window.html" />
-    <link rel="prev" title="Image view" href="image_view.html" />
+    <link rel="icon" href="../../../_static/mantid_imaging_64px.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Reference" href="../../reference/index.html" />
+    <link rel="prev" title="Reconstruction Algorithms" href="algorithms.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -87,7 +87,7 @@
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
-      action="../../search.html"
+      action="../../../search.html"
       method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search"
@@ -124,7 +124,7 @@
     
   
 
-<a class="navbar-brand logo" href="../../index.html">
+<a class="navbar-brand logo" href="../../../index.html">
   
   
   
@@ -146,35 +146,35 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../overview.html">
+  <a class="nav-link nav-internal" href="../../../overview.html">
     Overview
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../installation.html">
+  <a class="nav-link nav-internal" href="../../../installation.html">
     Installation
   </a>
 </li>
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../index.html">
+  <a class="nav-link nav-internal" href="../../index.html">
     User Guide
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+  <a class="nav-link nav-internal" href="../../../developer_guide/index.html">
     Developer Guide
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../api.html">
+  <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
 </li>
@@ -186,7 +186,7 @@
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../release_notes/index.html">
+  <a class="nav-link dropdown-item nav-internal" href="../../../release_notes/index.html">
     Release Notes
   </a>
 </li>
@@ -328,42 +328,42 @@ document.write(`
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../overview.html">
+  <a class="nav-link nav-internal" href="../../../overview.html">
     Overview
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../installation.html">
+  <a class="nav-link nav-internal" href="../../../installation.html">
     Installation
   </a>
 </li>
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../index.html">
+  <a class="nav-link nav-internal" href="../../index.html">
     User Guide
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+  <a class="nav-link nav-internal" href="../../../developer_guide/index.html">
     Developer Guide
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../api.html">
+  <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../release_notes/index.html">
+  <a class="nav-link nav-internal" href="../../../release_notes/index.html">
     Release Notes
   </a>
 </li>
@@ -450,22 +450,47 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Graphical User Interface (GUI)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="loading_saving.html">Loading and Saving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="image_view.html">Image view</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Operations Window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="recon_window.html">Reconstruction Window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spectrum_viewer.html">Spectrum Viewer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/quick_start.html">Quick start: Example Reconstruction</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../reconstructions/index.html">Reconstruction Help page</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reconstructions/center_of_rotation.html">Center of Rotation and Tilt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reconstructions/algorithms.html">Reconstruction Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reconstructions/filters.html">Reconstruction Filters</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../how-to-guides/index.html">How-To Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick start: Example Reconstruction</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Explanations</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gui/index.html">Graphical User Interface (GUI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gui/loading_saving.html">Loading and Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui/image_view.html">Image view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui/operations_window.html">Operations Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui/recon_window.html">Reconstruction Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gui/spectrum_viewer.html">Spectrum Viewer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../operations/index.html">Operations</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Reconstruction Help page</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="center_of_rotation.html">Center of Rotation and Tilt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="algorithms.html">Reconstruction Algorithms</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Reconstruction Filters</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../reference/index.html">Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mantidimaging.html">mantidimaging package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.core.html">mantidimaging.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.gui.html">mantidimaging.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/next.html">Mantid Imaging next release</a></li>
+</ul>
+</details></li>
 </ul>
 </div>
 </nav></div>
@@ -495,21 +520,26 @@ document.write(`
 
 
 
+
+
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
-      <a href="../../index.html" class="nav-link" aria-label="Home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">User Guide</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Graphical User Interface (GUI)</a></li>
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Operations Window</li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Reconstruction Help page</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Reconstructi...</li>
   </ul>
 </nav>
 </div>
@@ -526,56 +556,37 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="operations-window">
-<span id="id1"></span><h1>Operations Window<a class="headerlink" href="#operations-window" title="Link to this heading">#</a></h1>
-<p>Selecting the <em>Operations</em> option in the <em>Workflow</em> menu opens the operations
-dialog, this is used for applying filters to image stacks.</p>
-<p>Operations may be applied to image stacks of any type (i.e. projection, sinogram,
-reconstruction), they are essentially just image filters and do not directly
-care about the type of image.</p>
-<a class="reference internal image-reference" href="../../_images/operations_window.png"><img alt="Operations dialog" src="../../_images/operations_window.png" style="width: 90%;" /></a>
-<p>Here you can select the type of filter and the image stack you wish to apply it
-to, properties of the selected filter are automatically shown in the <em>Filter
-Properties</em> section.</p>
-<p>The [?] button next to filter selector will open a webpage with an explanation of the filter parameters.</p>
-<p>The right hand panel shows a slice from the original image stack, a preview of the filter applied to the slice, and the pixel intensity difference.
-Below the previews is a slider that can be dragged horizontally to scroll through previews for each slice of the stack.
-At the bottom of the right hand panel, a histogram of pixel values before and after is shown. The image views can be navigated as described in the <a class="reference internal" href="image_view.html#image-view"><span class="std std-ref">Image view</span></a> help page.</p>
-<p>Green pixels in the after preview indicate that a value has changed. Red pixels
-indicate that there are negative values in the result. Note that the negative
-values overlay is placed on top of the image difference overlay, so if a pixel
-has changed and is also negative then it will simply appear as red. The
-negative values overlay may also highlight pixels that were negative <strong>before
-and after</strong> the filter was applied.</p>
-<p>There are several tickboxes to customise the behaviour of the preview area.</p>
-<dl class="simple">
-<dt>Link Images</dt><dd><p>Links the pan and zoom between the before, after and difference views</p>
-</dd>
-<dt>Overlay difference</dt><dd><p>Highlights pixels that have changed in the after image</p>
-</dd>
-<dt>Invert diff image</dt><dd><p>Invert the colours used in the difference view</p>
-</dd>
-<dt>Lock Scale</dt><dd><p>Lock the colour scale when adjusting filter parameters</p>
-</dd>
-<dt>Lock Zoom</dt><dd><p>Lock the pan and zoom when adjusting filter parameters</p>
-</dd>
-</dl>
-<p>The <em>Image</em> control in the <em>Preview</em> section can be used to select the index of
-the image in the stack that is used to generate the preview.</p>
-<p>Previews are automatically updated when parameters are changed. For filters that
-take a long time to apply even on a single image it is worthwhile to disable the
-<em>Auto Update</em> option and trigger preview updates manually using the <em>Update Now</em>
-button.</p>
-<p>For filters that use a region of interest as a parameter (namely Crop
-Coordinates and ROI Normalisation) the ROI is selected using the controls on the
-stack visualiser for the selected image stack (as shown in the screenshot below).</p>
-<a class="reference internal image-reference" href="../../_images/gui_filters_dialog_crop_roi.png"><img alt="Crop coordinates filter with ROI" src="../../_images/gui_filters_dialog_crop_roi.png" style="width: 60%;" /></a>
-<p>Pressing <em>Apply</em> applies the filter to every image in the stack, replacing the
-data in the stack. For some filters it is also possible to <em>Apply to all stacks</em> if required.</p>
-<p>It is normal for this to take a significant amount of time for a large stack of
-images.</p>
-<p>If <em>Safe Apply</em> is enabled then the filter will be applied to a copy of the data and a comparison window will be shown
-to select whether to keep the filtered version. The application of a filter can not be undone.</p>
+  <section id="reconstruction-filters">
+<span id="id1"></span><h1>Reconstruction Filters<a class="headerlink" href="#reconstruction-filters" title="Link to this heading">#</a></h1>
+<p>This will contain information about all recon filters. To be filled in the future with scientists’ help.</p>
+<p>FBP-CUDA-only:</p>
+<ul class="simple">
+<li><p>shepp</p></li>
+<li><p>butterworth</p></li>
+</ul>
+<p>gridrec-only:</p>
+<ul class="simple">
+<li><p>shepp-logan</p></li>
+<li><p>tukey</p></li>
+<li><p>lanczos</p></li>
+<li><p>triangular</p></li>
+<li><p>gaussian</p></li>
+<li><p>barlett-hann</p></li>
+<li><p>blackman</p></li>
+<li><p>nuttall</p></li>
+<li><p>blackman-harris</p></li>
+<li><p>blackman-nuttall</p></li>
+<li><p>flat-top</p></li>
+</ul>
+<p>Both FBP-CUDA and gridrec:</p>
+<ul class="simple">
+<li><p>ram-lak</p></li>
+<li><p>cosine</p></li>
+<li><p>hamming</p></li>
+<li><p>hann</p></li>
+<li><p>parzen</p></li>
+</ul>
+<p>Should contain some data samples and how each filter changes the histogram for each</p>
 </section>
 
 
@@ -589,20 +600,20 @@ to select whether to keep the filtered version. The application of a filter can 
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="image_view.html"
+       href="algorithms.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Image view</p>
+        <p class="prev-next-title">Reconstruction Algorithms</p>
       </div>
     </a>
     <a class="right-next"
-       href="recon_window.html"
+       href="../../reference/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Reconstruction Window</p>
+        <p class="prev-next-title">Reference</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -619,7 +630,7 @@ to select whether to keep the filtered version. The application of a filter can 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../_sources/user_guide/gui/operations_window.rst.txt">
+    <a href="../../../_sources/user_guide/explanations/reconstructions/filters.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
@@ -638,8 +649,8 @@ to select whether to keep the filtered version. The application of a filter can 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

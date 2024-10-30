@@ -8,7 +8,7 @@ The spectrum viewer can be accessed from the main menu under "Workflow" > "Spect
 
 To try out the spectrum viewer, you can find a basic example workflow to follow within `quick start <https://mantidproject.github.io/mantidimaging/user_guide/quick_start.html>`_
 
-.. image:: ../../_static/spectrum_viewer.png
+.. image:: ../../../_static/spectrum_viewer.png
     :alt: Spectrum Viewer ROI Mode
     :width: 90%
     :align: center
@@ -45,7 +45,7 @@ Image mode, accessible by selecting the "Image" tab, is a mode of the Spectrum V
 In this mode, you can select whether you would like to export your data in single spectrum or binned spectrum format. 
 You can also select the step size and bin size. If the step size is the same as the bin size, a tiled average will be performed. If the step size is less than the bin size, a rolling average will be performed. The unit of measurement is pixels
 
-.. image:: ../../_static/Spectrum_viewer_ImageMode.png
+.. image:: ../../../_static/Spectrum_viewer_ImageMode.png
     :alt: Spectrum Viewer Image Mode
     :width: 90%
     :align: center
