@@ -255,6 +255,8 @@ class MainWindowView(BaseMainWindowView):
         Open the dataset loading dialog with a given file_path preset as the sample
         """
         sample_file = find_first_file_that_is_possibly_a_sample(file_path)
+        if sample_file is None:
+            sample_file = find_first_file_that_is_possibly_a_sample(os.path.dirname(file_path))
         if sample_file is not None:
             self.image_load_dialog = ImageLoadDialog(self)
             self.image_load_dialog.presenter.do_update_sample(sample_file)

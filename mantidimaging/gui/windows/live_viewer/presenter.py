@@ -69,10 +69,11 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Update the image in the view."""
         if not images_list:
             self.handle_deleted()
-            return
-
-        self.view.set_image_range((0, len(images_list) - 1))
-        self.view.set_image_index(len(images_list) - 1)
+            self.view.set_load_as_dataset_enabled(False)
+        else:
+            self.view.set_image_range((0, len(images_list) - 1))
+            self.view.set_image_index(len(images_list) - 1)
+            self.view.set_load_as_dataset_enabled(True)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
@@ -153,3 +154,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             op_params = self.view.filter_params[operation]["params"]
             op_func(image_stack, **op_params)
         return image_stack.slice_as_array(0)[0]
+
+    def load_as_dataset(self) -> None:
+        if self.model.images:
+            image_dir = self.model.images[0].image_path.parent
+            self.main_window.show_image_load_dialog_with_path(str(image_dir))
