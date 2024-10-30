@@ -578,10 +578,11 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the image in the view.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">images_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_deleted</span><span class="p">()</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_range</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_index</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_load_as_dataset_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_range</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_index</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_load_as_dataset_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.select_image">
@@ -683,6 +684,14 @@ document.write(`
             <span class="n">op_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="n">operation</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
             <span class="n">op_func</span><span class="p">(</span><span class="n">image_stack</span><span class="p">,</span> <span class="o">**</span><span class="n">op_params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">slice_as_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="LiveViewerWindowPresenter.load_as_dataset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_as_dataset">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_as_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
+            <span class="n">image_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image_path</span><span class="o">.</span><span class="n">parent</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">show_image_load_dialog_with_path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_dir</span><span class="p">))</span></div>
 </div>
 
 </pre></div>
