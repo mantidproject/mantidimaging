@@ -28,9 +28,8 @@ class TestMemoryUtils(unittest.TestCase):
         mock_meminfo.used = 4 * 1024 * 1024 * 1024  # 4 GB
         mock_virtual_memory.return_value = mock_meminfo
 
-        memory_kb, memory_mb = get_memory_usage_linux(kb=True, mb=True)
-        self.assertEqual(memory_kb, 4 * 1024 * 1024)
-        self.assertEqual(memory_mb, 4 * 1024)
+        memory_in_bytes = get_memory_usage_linux()
+        self.assertEqual(memory_in_bytes, 4 * 1024 * 1024 * 1024)
 
 
 if __name__ == '__main__':
