@@ -61,8 +61,8 @@ class NexusLoadPresenter:
         self.tomo_entry = None
         self.data = None
         self.tomo_path = ""
-        self.image_key_dataset = None
-        self.rotation_angles = None
+        self.image_key_dataset: np.ndarray | None = None
+        self.rotation_angles: np.ndarray | None = None
         self.title = ""
         self.recon_data: list[np.ndarray] = []
 
@@ -137,13 +137,13 @@ class NexusLoadPresenter:
         else:
             first_sample_image_index = np.where(self.image_key_dataset == 0)[0][0]
             if before:
+                image_key_array = self.image_key_dataset[:first_sample_image_index]
                 rotation_angles = self.rotation_angles[:first_sample_image_index][np.where(
-                    self.image_key_dataset[:first_sample_image_index] == image_key)]
+                    image_key_array == image_key)]
             else:
                 rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
                     self.image_key_dataset[first_sample_image_index:] == image_key)]
 
-        rotation_angles = np.array(rotation_angles)
         return rotation_angles if np.any(rotation_angles) else None
 
     def _missing_data_error(self, field: str):
@@ -220,7 +220,8 @@ class NexusLoadPresenter:
         assert self.nexus_file is not None
         for key in self.nexus_file.keys():
             if DEFINITION in self.nexus_file[key].keys():
-                if np.array(self.nexus_file[key][DEFINITION]).tobytes().decode("utf-8") == NXTOMOPROC:
+                definition_data = np.array(self.nexus_file[key].get(DEFINITION))
+                if definition_data.tobytes().decode("utf-8") == NXTOMOPROC:
                     nexus_recon = self.nexus_file[key]
                     self.recon_data.append(np.array(nexus_recon["data"]["data"]))
 
