@@ -10,7 +10,7 @@ Operations may be applied to image stacks of any type (i.e. projection, sinogram
 reconstruction), they are essentially just image filters and do not directly
 care about the type of image.
 
-.. image:: ../../_static/operations_window.png
+.. image:: ../../../_static/operations_window.png
     :alt: Operations dialog
     :width: 90%
 
@@ -60,7 +60,7 @@ For filters that use a region of interest as a parameter (namely Crop
 Coordinates and ROI Normalisation) the ROI is selected using the controls on the
 stack visualiser for the selected image stack (as shown in the screenshot below).
 
-.. image:: ../../_static/gui_filters_dialog_crop_roi.png
+.. image:: ../../../_static/gui_filters_dialog_crop_roi.png
     :alt: Crop coordinates filter with ROI
     :width: 60%
 

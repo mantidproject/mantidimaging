@@ -59,7 +59,7 @@ PDHG-TV
 
 Primal Dual Hybrid Gradient optimiser with Total Variation regularisation. This is an advanced iterative optimised reconstruction algorithm, described in the paper below. The user can adjust regularisation parameter alpha, the figure shows a 2 values of alpha for a reconstructed slice.
 
-.. figure:: ../../_static/pdhg_tv_alpha.png
+.. figure:: ../../../_static/pdhg_tv_alpha.png
     :alt: PDHG-TV with alpha=0.1 on the left and alpha=10 on the right
     :width: 90%
     :align: center

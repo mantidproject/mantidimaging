@@ -14,7 +14,7 @@ Loading Sample Stack
 
 Firstly, let's load our projections. Go to "File" then "Load Dataset" or alternatively use the shortcut "Ctrl"+"o". This brings up the following loading screen:
 
-.. image:: ../_static/loading_screen.png
+.. image:: ../../_static/loading_screen.png
     :alt: Loading screen
     :width: 70%
     :align: center
@@ -40,7 +40,7 @@ Project Window
 ##############
 
 
-.. image:: ../_static/gui_main_window.png
+.. image:: ../../_static/gui_main_window.png
     :alt: View of the application window
     :align: center
 
@@ -53,7 +53,7 @@ Operations
 
 Next let's take the sample we loaded and let's tidy it up with operations. To open the operations go to "Workflow" then "Operations".
 
-.. image:: ../_static/operations_window.png
+.. image:: ../../_static/operations_window.png
     :alt: View of the application window
     :align: center
 
@@ -66,13 +66,13 @@ Next let's take the sample we loaded and let's tidy it up with operations. To op
 3. **Flat Fielding** As we only have one set of flat and dark images we will set the flat fielding method to "Only Before". With safe apply checked running this operation opens the following window:
     - Safe Apply window showing before flat fielding on the left and after flat fielding on the right. Next select "Choose New Data" to apply operation.
 
-.. image:: ../_static/flat_fielding.png
+.. image:: ../../_static/flat_fielding.png
    :alt: Flat fielding with Safe Apply option turned on
    :align: center
 
 4. **Crop Coordinates** Next we will crop the stack to contain the sample only by selecting a ROI as in the following.
 
-.. image:: ../_static/Crop.png
+.. image:: ../../_static/Crop.png
    :alt: ROI that needs to be selected for the crop
    :align: center
    :width: 70%
@@ -95,7 +95,7 @@ For this reconstruction we will be manually finding the COR and tilt values. The
 3. Press the "Refine" button whilst selecting this slice. This brings up the following window:
 
 
-.. image:: ../_static/refine_window.png
+.. image:: ../../_static/refine_window.png
    :alt: Loading screen
    :align: center
 
@@ -127,7 +127,7 @@ you can apply some post-processing operations (such as circular mask), or just s
 Spectrum Viewer
 ###############
 
-.. image:: ../_static/spectrum_viewer.png
+.. image:: ../../_static/spectrum_viewer.png
     :alt: Spectrum Viewer Window
     :align: center
 

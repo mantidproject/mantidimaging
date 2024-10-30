@@ -5,7 +5,7 @@ Image view
 
 The image view widget is used in many places in Mantid Imaging to display individual images and image stacks. It is based on ImageView from PyQtGraph and allows fast interaction with large datasets.
 
-.. image:: ../../_static/image_view.png
+.. image:: ../../../_static/image_view.png
     :alt: Image view in main window
     :width: 70%
     :align: center
@@ -27,7 +27,7 @@ On some trackpads without a scroll feature it may be helpful to enable "1 button
 Histogram
 ---------
 
-.. image:: ../../_static/image_view_histogram.png
+.. image:: ../../../_static/image_view_histogram.png
     :alt: Controlling the histogram the image view
     :width: 90%
     :align: center
@@ -40,7 +40,7 @@ The control ticks (triangles labelled 'B' above) can be moved around to customis
 
 Alternative colour schemes can be selected by right-clicking on the gradient as shown below. It is also possible to choose if the gradient interpolation between ticks occurs in Red-Green-Blue (RGB) or Hue-Saturation-Value (HSV) colour space.
 
-.. image:: ../../_static/image_view_colour.png
+.. image:: ../../../_static/image_view_colour.png
     :alt: Selecting colours for the image view
     :width: 70%
     :align: center
@@ -58,7 +58,7 @@ This feature can be accessed by right clicking the projection histogram in the i
 Reconstruction window, there is also the option to access the auto colour feature by clicking on the "Auto Change Colour
 Palette" button in the bottom-left corner. This is shown below:
 
-.. image:: ../../_static/access_auto_colour_palette.png
+.. image:: ../../../_static/access_auto_colour_palette.png
     :alt: Accessing the auto colour palette
     :width: 90%
     :align: center
@@ -69,7 +69,7 @@ the results of Otsu/Jenks and choosing colours that emphasise the separateness o
 changing the colour map only provides a cosmetic difference and does not influence the results of the algorithm. Users
 should note that the execution time of the algorithms increases greatly with the number of materials.
 
-.. image:: ../../_static/auto_colour_palette_menu.png
+.. image:: ../../../_static/auto_colour_palette_menu.png
     :alt: The auto colour palette menu
     :width: 50%
     :align: center

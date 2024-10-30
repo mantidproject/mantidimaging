@@ -15,7 +15,7 @@ Load Dataset
 
 When *Load dataset* is selected, the following dialog will appear:
 
-.. image:: ../../_static/loading_screen.png
+.. image:: ../../../_static/loading_screen.png
     :alt: Initial Load dialog
 
 This allows you to select the data you wish to load; The Sample entry should be used to select the first projection TIFF
@@ -26,7 +26,7 @@ projections and sample logs.
 Once data has been selected, its shape is inspected and the stack index fields
 are populated as shown below:
 
-.. image:: ../../_static/loading_screen_filled.png
+.. image:: ../../../_static/loading_screen_filled.png
     :alt: Load dialog after selecting data
 
 The *Start* and *End* fields control the range of images that are loaded and
@@ -112,7 +112,7 @@ Save as Image Files
 
 When *Save as Image Files* is selected the save images dialog appears:
 
-.. image:: ../../_static/gui_save_dialog.png
+.. image:: ../../../_static/gui_save_dialog.png
     :alt: Save dialog
 
 This prompts you to select the image stack you wish to save, the directory in
@@ -141,7 +141,7 @@ Dataset Tree View
 
 When a dataset has been successfully loaded, it will be possible to see its elements listed in the dataset tree view.
 
-.. image:: ../../_static/dataset_tree_view.png
+.. image:: ../../../_static/dataset_tree_view.png
     :alt: Dataset tree view
 
 Adding / Replacing Data
@@ -150,7 +150,7 @@ Adding / Replacing Data
 The stacks that comprise an existing dataset can be deleted or -- in the case of *strict* datasets only -- replaced.
 This can be done by right clicking an item in the dataset tree view and choosing the Add / Replace Stack option.
 
-.. image:: ../../_static/add_to_dataset_dialog.png
+.. image:: ../../../_static/add_to_dataset_dialog.png
     :alt: Dataset tree view
 
 As in the case of loading images from the main menu, selecting a single file will cause Mantid Imaging to load all like
@@ -169,7 +169,7 @@ Moving Data
 Data can also be moved from one dataset to another, or one stack type to another, by right-clicking the stack you wish
 to move and choosing the Move Stack option.
 
-.. image:: ../../_static/move_stack.png
+.. image:: ../../../_static/move_stack.png
     :alt: Dataset tree view
 
 Deleting Data
@@ -178,5 +178,5 @@ Deleting Data
 Deleting data can also be achieved by right-clicking on the dataset tree view. This can be used to delete individual
 stacks as well as entire datasets.
 
-.. image:: ../../_static/delete_data.png
+.. image:: ../../../_static/delete_data.png
     :alt: Deleting data in the tree view
