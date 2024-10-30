@@ -183,7 +183,7 @@ class CILRecon(BaseRecon):
 
     @staticmethod
     def get_data(sino: np.ndarray, ag: AcquisitionGeometry, recon_params: ReconstructionParameters,
-                 num_subsets: int) -> AcquisitionData:
+                 num_subsets: int) -> BlockDataContainer | AcquisitionData:
         data = AcquisitionData(sino, deep_copy=False, geometry=ag, suppress_warning=True)
 
         if recon_params.stochastic:

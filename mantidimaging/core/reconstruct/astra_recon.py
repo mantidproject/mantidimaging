@@ -95,7 +95,7 @@ class AstraRecon(BaseRecon):
         proj_angles = images.projection_angles(recon_params.max_projection_angle)
 
         def get_sumsq(image: np.ndarray) -> float:
-            return np.sum(image**2)
+            return float(np.sum(image**2))
 
         def minimizer_function(cor: float | np.ndarray) -> float:
             if isinstance(cor, np.ndarray):
