@@ -6,7 +6,7 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 .. grid:: 1 1 2 2
     :gutter: 4
 
-    .. grid-item-card:: 🧙‍♂️
+    .. grid-item-card:: 👩‍🔬
         :link: user_guide/index
         :link-type: doc
         :text-align: center

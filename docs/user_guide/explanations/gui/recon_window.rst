@@ -5,7 +5,7 @@ Reconstruction Window
 
 The reconstruction window contains the tools for center of rotation (COR) and tilt alignment, beam hardening correction (BHC) and tomographic reconstruction.
 
-.. image:: ../../_static/recon_window.png
+.. image:: ../../../_static/recon_window.png
     :alt: Operations dialog
     :width: 100%
 
