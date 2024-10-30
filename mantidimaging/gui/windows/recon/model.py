@@ -172,11 +172,11 @@ class ReconstructWindowModel:
 
     @property
     def cors(self) -> np.ndarray:
-        return self.data_model.cors
+        return self.data_model.cors  # type: ignore
 
     @property
     def slices(self) -> np.ndarray:
-        return self.data_model.slices
+        return self.data_model.slices  # type: ignore
 
     @staticmethod
     def load_allowed_recon_kwargs() -> dict[str, Any]:

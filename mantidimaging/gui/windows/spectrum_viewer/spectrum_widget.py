@@ -321,7 +321,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
 
     def get_tof_range(self) -> tuple[float, float]:
         r_min, r_max = self.range_control.getRegion()
-        return r_min, r_max
+        return float(r_min), float(r_max)
 
     def _handle_tof_range_changed(self) -> None:
         tof_range = self.get_tof_range()

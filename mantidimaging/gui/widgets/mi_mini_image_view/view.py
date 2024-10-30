@@ -72,14 +72,14 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
     @property
     def histogram_region(self) -> tuple[int | list[int], int | list[int]]:
-        return self.hist.region.getRegion()
+        return self.hist.region.getRegion()  # type: ignore
 
     @histogram_region.setter
     def histogram_region(self, new_region: tuple[int | list[int], int | list[int]]) -> None:
         self.hist.region.setRegion(new_region)
 
     @property
-    def image_data(self) -> np.ndarray:
+    def image_data(self) -> np.ndarray | None:
         return self.im.image
 
     @property
