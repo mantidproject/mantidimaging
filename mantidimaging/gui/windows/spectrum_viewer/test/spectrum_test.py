@@ -48,8 +48,7 @@ class SpectrumROITest(unittest.TestCase):
 class SpectrumWidgetTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
-            self.main_window = MainWindowView()
+        self.main_window = mock.create_autospec(MainWindowView)
         self.view = mock.create_autospec(SpectrumViewerWindowView)
         self.view.current_dataset_id = uuid.uuid4()
         self.view.parent = mock.create_autospec(SpectrumViewerWindowPresenter)
