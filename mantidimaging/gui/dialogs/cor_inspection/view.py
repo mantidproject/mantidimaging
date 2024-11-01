@@ -77,7 +77,7 @@ class CORInspectionDialogView(BaseDialogView):
         return self.presenter.optimal_rotation_centre
 
     @property
-    def optimal_iterations(self) -> int:
+    def optimal_iterations(self) -> int | float:
         return self.presenter.optimal_iterations
 
     def mark_best_recon(self, diffs) -> None:
