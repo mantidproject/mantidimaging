@@ -91,7 +91,7 @@ class ImageViewLineROI(LineSegmentROI):
         return self.getArrayRegion(self._image_view.image_data,
                                    self._image_view.image_item,
                                    axes=(1, 0),
-                                   returnMappedCoords=True)
+                                   returnMappedCoords=True)  # type: ignore
 
     def reset(self) -> None:
         if self._image_data_exists() and self._roi_line_is_visible:
@@ -114,7 +114,7 @@ class ImageViewLineROI(LineSegmentROI):
         # Prevent emitting a RegionChanged signal from setting the state programmatically
         with BlockQtSignals(self):
             initial_pos_x = 0
-            initial_pos_y = self._image_view.image_item.height() // 2
+            initial_pos_y = self._image_view.image_item.height() // 2  # type: ignore
             image_width = self._image_view.image_item.width()
             image_height = self._image_view.image_item.height()
 
