@@ -2,14 +2,17 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import threading
 from typing import Any
 from collections.abc import Callable
+
+from pyqtgraph import PlotItem, PlotWidget
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtCore import QTimer
 
 
@@ -25,6 +28,11 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setMaximum(1000)
 
         self.show_timer = QTimer(self)
+        self.progress_plot = PlotWidget()
+        self.layout().addWidget(self.progress_plot)
+        self.progress_plot.hide()
+        self.progress_plot.setLogMode(y=True)
+        self.progress_plot.setMinimumHeight(200)
         self.hide()
 
     @property
@@ -54,12 +62,18 @@ class AsyncTaskDialogView(BaseDialogView):
         self._presenter = None
 
     def set_progress(self, progress: float, message: str):
+        print(f"AsyncTaskDialogView.set_progress() {threading.get_ident()}")
         # Set status message
         if message:
             self.infoText.setText(message)
 
         # Update progress bar
         self.progressBar.setValue(int(progress * 1000))
+        
+    def set_progress_plot(self, x, y):
+        print(f"AsyncTaskDialogView.set_progress_plot() {threading.get_ident()}")
+        self.progress_plot.show()
+        self.progress_plot.plotItem.plot(x, y)
 
     def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)

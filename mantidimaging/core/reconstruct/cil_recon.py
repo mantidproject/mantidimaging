@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import threading
 import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
@@ -44,14 +45,18 @@ class MIProgressCallback(Callback):
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
+            print(f"MIProgressCallback.__call__() {threading.get_ident()}")
             losses = algo.loss
             iterations = algo.iterations
-            print(f"{losses=} {iterations=}")
 
             self.progress.update(steps=1,
                                  msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
                                  f': Objective {algo.get_last_objective():.2f}',
-                                 force_continue=False)
+                                 force_continue=False,
+                                 extra_info={
+                                     'iterations': iterations,
+                                     'losses': losses
+                                 })
             self.iteration_count += 1
 
 

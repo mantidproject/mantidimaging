@@ -9,7 +9,8 @@ from typing import NamedTuple, SupportsInt
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
-ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str)])
+ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str),
+                                                 ('extra_info', dict | None)])
 
 
 class ProgressHandler:
@@ -167,7 +168,11 @@ class Progress:
         t = int(t)
         return f'{t // 3600:02}:{t % 3600 // 60:02}:{t % 60:02}'
 
-    def update(self, steps: int = 1, msg: str = "", force_continue: bool = False) -> None:
+    def update(self,
+               steps: int = 1,
+               msg: str = "",
+               force_continue: bool = False,
+               extra_info: dict | None = None) -> None:
         """
         Updates the progress of the task.
 
@@ -188,7 +193,7 @@ class Progress:
 
             msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
                   f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
-            step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
+            step_details = ProgressHistory(time.perf_counter(), self.current_step, msg, extra_info)
             self.progress_history.append(step_details)
 
         # process progress callbacks
