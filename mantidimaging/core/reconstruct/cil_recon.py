@@ -44,6 +44,10 @@ class MIProgressCallback(Callback):
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
+            losses = algo.loss
+            iterations = algo.iterations
+            print(f"{losses=} {iterations=}")
+
             self.progress.update(steps=1,
                                  msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
                                  f': Objective {algo.get_last_objective():.2f}',
