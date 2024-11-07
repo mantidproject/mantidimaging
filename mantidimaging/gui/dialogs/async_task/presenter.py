@@ -77,3 +77,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
             x = extra_info['iterations']
             y = [a[0] for a in extra_info['losses']]
             self.progress_plot_updated.emit(x, y)
+
+    def stop_reconstruction(self):
+        print(f"Stopping Reconstruction() {threading.get_ident()}")
+        self.progress.cancel("Stopped")

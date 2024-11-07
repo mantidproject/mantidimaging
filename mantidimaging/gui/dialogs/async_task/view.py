@@ -36,7 +36,7 @@ class AsyncTaskDialogView(BaseDialogView):
         self.stop_recon_btn = QPushButton("Stop Reconstruction")
         self.layout().addWidget(self.stop_recon_btn)
         self.stop_recon_btn.hide()
-        self.stop_recon_btn.clicked.connect(self.stop_reconstruction)
+        self.stop_recon_btn.clicked.connect(self.presenter.stop_reconstruction)
         self.hide()
 
     @property
@@ -79,9 +79,6 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progress_plot.show()
         self.progress_plot.plotItem.plot(x, y)
         self.stop_recon_btn.show()
-
-    def stop_reconstruction(self):
-        print(f"Stopping Reconstruction() {threading.get_ident()}")
 
     def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)
