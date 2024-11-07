@@ -38,25 +38,28 @@ cil_mutex = Lock()
 
 class MIProgressCallback(Callback):
 
-    def __init__(self, verbose=1, progress: Progress | None = None) -> None:
+    def __init__(self, verbose=1, data: np.ndarray | None = None, progress: Progress | None = None) -> None:
         super().__init__(verbose)
         self.progress = progress
         self.iteration_count = 1
+        self.data = data
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
             print(f"MIProgressCallback.__call__() {threading.get_ident()}")
-            losses = algo.loss
-            iterations = algo.iterations
+            extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
 
-            self.progress.update(steps=1,
-                                 msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
-                                 f': Objective {algo.get_last_objective():.2f}',
-                                 force_continue=False,
-                                 extra_info={
-                                     'iterations': iterations,
-                                     'losses': losses
-                                 })
+            if isinstance(algo, PDHG) and self.data is not None:
+                forward_projection = algo.operator.direct(algo.solution)
+                extra_info['residual'] = self.data - forward_projection
+
+            self.progress.update(
+                steps=1,
+                msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
+                f': Objective {algo.get_last_objective():.2f}',
+                force_continue=False,
+                extra_info=extra_info,
+            )
             self.iteration_count += 1
 
 
@@ -406,7 +409,7 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress, data=data)])
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
