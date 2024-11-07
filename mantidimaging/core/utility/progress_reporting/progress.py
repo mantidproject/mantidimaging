@@ -202,7 +202,7 @@ class Progress:
 
         # Force cancellation on progress update
         if self.should_cancel and not force_continue:
-            raise RuntimeError('Task has been cancelled')
+            raise StopIteration('Task has been cancelled')
 
     @staticmethod
     def calculate_mean_time(progress_history: list[ProgressHistory]) -> float:
