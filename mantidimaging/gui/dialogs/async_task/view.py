@@ -25,6 +25,8 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setMaximum(1000)
 
         self.show_timer = QTimer(self)
+        self.cancelButton.clicked.connect(self.presenter.stop_progress)
+        self.cancelButton.hide()
         self.hide()
 
     @property
@@ -69,6 +71,12 @@ class AsyncTaskDialogView(BaseDialogView):
         # Might not run until after handle_completion
         if self._presenter is not None and self.presenter.task_is_running:
             self.show()
+
+    def show_cancel_button(self, cancelable: bool) -> None:
+        if cancelable:
+            self.cancelButton.show()
+        else:
+            self.cancelButton.hide()
 
 
 def start_async_task_view(parent: QMainWindow,
