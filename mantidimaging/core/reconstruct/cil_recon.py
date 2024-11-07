@@ -38,20 +38,24 @@ cil_mutex = Lock()
 
 class MIProgressCallback(Callback):
 
-    def __init__(self, verbose=1, data: np.ndarray | None = None, progress: Progress | None = None) -> None:
+    def __init__(self, verbose=1, progress: Progress | None = None) -> None:
         super().__init__(verbose)
         self.progress = progress
         self.iteration_count = 1
-        self.data = data
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
             print(f"MIProgressCallback.__call__() {threading.get_ident()}")
             extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
 
-            if isinstance(algo, PDHG) and self.data is not None:
-                forward_projection = algo.operator.direct(algo.solution)
-                extra_info['residual'] = self.data - forward_projection
+            if isinstance(algo, PDHG):
+                forward_projection = algo.operator.direct(algo.solution)[1]
+                data = algo.f[1].b
+                residual = (data - forward_projection).as_array()
+                if len(residual.shape) == 3:
+                    residual = residual[residual.shape[0] // 2]
+                extra_info['residual'] = residual**2
+                print(f"\n{type(extra_info['residual'])=}\n")
 
             self.progress.update(
                 steps=1,
@@ -409,7 +413,7 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress, data=data)])
+                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
