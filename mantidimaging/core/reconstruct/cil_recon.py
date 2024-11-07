@@ -51,10 +51,10 @@ class MIProgressCallback(Callback):
             if isinstance(algo, PDHG):
                 forward_projection = algo.operator.direct(algo.solution)[1]
                 data = algo.f[1].b
-                residual = (data - forward_projection).as_array()
+                residual: np.ndarray = (data - forward_projection).as_array()
                 if len(residual.shape) == 3:
                     residual = residual[residual.shape[0] // 2]
-                extra_info['residual'] = residual**2
+                extra_info["residual"] = residual**2
                 print(f"\n{type(extra_info['residual'])=}\n")
 
             self.progress.update(

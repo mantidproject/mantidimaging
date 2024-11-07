@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import threading
+import numpy as np
+
 from typing import Any
 from collections.abc import Callable
 
-from pyqtgraph import PlotItem, PlotWidget
+from pyqtgraph import PlotWidget, ImageView
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QPushButton
 from PyQt5.QtCore import QTimer
 
 
@@ -21,6 +23,8 @@ class AsyncTaskDialogView(BaseDialogView):
 
     def __init__(self, parent: QMainWindow):
         super().__init__(parent, "gui/ui/async_task_dialog.ui")
+        # launch the dialog in center of screen
+        self.move(QMainWindow().geometry().center() - self.rect().center())
 
         self._presenter = AsyncTaskDialogPresenter(self)
 
@@ -32,11 +36,17 @@ class AsyncTaskDialogView(BaseDialogView):
         self.layout().addWidget(self.progress_plot)
         self.progress_plot.hide()
         self.progress_plot.setLogMode(y=True)
-        self.progress_plot.setMinimumHeight(200)
+        self.progress_plot.setMinimumHeight(300)
         self.stop_recon_btn = QPushButton("Stop Reconstruction")
         self.layout().addWidget(self.stop_recon_btn)
         self.stop_recon_btn.hide()
         self.stop_recon_btn.clicked.connect(self.presenter.stop_reconstruction)
+        self.hide()
+        self.residual_image_view = ImageView()
+        self.residual_image_view.setMinimumHeight(400)
+        self.residual_image_view.setMinimumWidth(600)
+        self.layout().addWidget(self.residual_image_view)
+        self.residual_image_view.hide()
         self.hide()
 
     @property
@@ -79,6 +89,12 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progress_plot.show()
         self.progress_plot.plotItem.plot(x, y)
         self.stop_recon_btn.show()
+
+    def set_progress_residual_plot(self, residual_image: np.ndarray):
+        self.residual_image_view.show()
+        self.residual_image_view.setImage(residual_image)
+        self.residual_image_view.setLevels(0, residual_image.max())
+        self.residual_image_view.ui.histogram.gradient.loadPreset("viridis")
 
     def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)

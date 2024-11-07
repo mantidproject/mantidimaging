@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import threading
 import traceback
+import numpy as np
 from logging import getLogger
 from enum import Enum
 
@@ -22,6 +23,7 @@ class Notification(Enum):
 class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     progress_updated = pyqtSignal(float, str)
     progress_plot_updated = pyqtSignal(list, list)
+    set_progress_residual_plot = pyqtSignal(np.ndarray)
 
     def __init__(self, view):
         super().__init__()
@@ -29,6 +31,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.view = view
         self.progress_updated.connect(self.view.set_progress)
         self.progress_plot_updated.connect(self.view.set_progress_plot)
+        self.set_progress_residual_plot.connect(self.view.set_progress_residual_plot)
 
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
@@ -77,6 +80,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
             x = extra_info['iterations']
             y = [a[0] for a in extra_info['losses']]
             self.progress_plot_updated.emit(x, y)
+            self.set_progress_residual_plot.emit(extra_info["residual"])
 
     def stop_reconstruction(self):
         print(f"Stopping Reconstruction() {threading.get_ident()}")
