@@ -241,7 +241,7 @@ class ProgressTest(unittest.TestCase):
                         self.assertTrue(p.should_cancel)
 
                 else:
-                    with self.assertRaises(RuntimeError):
+                    with self.assertRaises(StopIteration):
                         p.update()
 
         self.assertFalse(p.is_completed())
