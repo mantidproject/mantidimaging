@@ -12,7 +12,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton
 from PyQt5.QtCore import QTimer
 
 
@@ -20,7 +20,7 @@ class AsyncTaskDialogView(BaseDialogView):
     _presenter: AsyncTaskDialogPresenter | None
 
     def __init__(self, parent: QMainWindow):
-        super().__init__(parent, 'gui/ui/async_task_dialog.ui')
+        super().__init__(parent, "gui/ui/async_task_dialog.ui")
 
         self._presenter = AsyncTaskDialogPresenter(self)
 
@@ -33,6 +33,10 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progress_plot.hide()
         self.progress_plot.setLogMode(y=True)
         self.progress_plot.setMinimumHeight(200)
+        self.stop_recon_btn = QPushButton("Stop Reconstruction")
+        self.layout().addWidget(self.stop_recon_btn)
+        self.stop_recon_btn.hide()
+        self.stop_recon_btn.clicked.connect(self.stop_reconstruction)
         self.hide()
 
     @property
@@ -69,11 +73,15 @@ class AsyncTaskDialogView(BaseDialogView):
 
         # Update progress bar
         self.progressBar.setValue(int(progress * 1000))
-        
+
     def set_progress_plot(self, x, y):
         print(f"AsyncTaskDialogView.set_progress_plot() {threading.get_ident()}")
         self.progress_plot.show()
         self.progress_plot.plotItem.plot(x, y)
+        self.stop_recon_btn.show()
+
+    def stop_reconstruction(self):
+        print(f"Stopping Reconstruction() {threading.get_ident()}")
 
     def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)
@@ -85,18 +93,20 @@ class AsyncTaskDialogView(BaseDialogView):
             self.show()
 
 
-def start_async_task_view(parent: QMainWindow,
-                          task: Callable,
-                          on_complete: Callable,
-                          kwargs: dict | None = None,
-                          tracker: set[Any] | None = None,
-                          busy: bool | None = False):
+def start_async_task_view(
+    parent: QMainWindow,
+    task: Callable,
+    on_complete: Callable,
+    kwargs: dict | None = None,
+    tracker: set[Any] | None = None,
+    busy: bool | None = False,
+):
     atd = AsyncTaskDialogView(parent)
     if not kwargs:
-        kwargs = {'progress': Progress()}
+        kwargs = {"progress": Progress()}
     else:
-        kwargs['progress'] = Progress()
-    kwargs['progress'].add_progress_handler(atd.presenter)
+        kwargs["progress"] = Progress()
+    kwargs["progress"].add_progress_handler(atd.presenter)
 
     if busy:
         atd.progressBar.setMinimum(0)
