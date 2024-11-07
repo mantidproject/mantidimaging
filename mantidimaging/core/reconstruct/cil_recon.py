@@ -416,7 +416,9 @@ class CILRecon(BaseRecon):
                 LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
             t1 = time.perf_counter()
             LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
-            return ImageStack(volume)
+            stack = ImageStack(volume)
+            stack.metadata['convergence'] = {'iterations': algo.iterations, 'losses': algo.loss}
+            return stack
 
 
 def allowed_recon_kwargs() -> dict[str, list[str]]:
