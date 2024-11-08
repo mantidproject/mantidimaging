@@ -92,7 +92,8 @@ class AsyncTaskDialogView(BaseDialogView):
 
     def set_progress_residual_plot(self, residual_image: np.ndarray):
         self.residual_image_view.show()
-        self.residual_image_view.setImage(residual_image)
+        max_level = np.percentile(residual_image, 99)
+        self.residual_image_view.setImage(residual_image, levels=(0, max_level))
         self.residual_image_view.setLevels(0, residual_image.max())
         self.residual_image_view.ui.histogram.gradient.loadPreset("viridis")
 
