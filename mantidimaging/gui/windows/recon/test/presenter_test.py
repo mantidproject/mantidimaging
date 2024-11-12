@@ -217,7 +217,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
                                                 self.presenter.model.run_full_recon,
                                                 self.presenter._on_volume_recon_done,
                                                 {'recon_params': self.view.recon_params()},
-                                                tracker=self.presenter.async_tracker)
+                                                tracker=self.presenter.async_tracker,
+                                                cancelable=True)
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.CORInspectionDialogView')
     def test_do_refine_selected_cor_declined(self, mock_corview):
