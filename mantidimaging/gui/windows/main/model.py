@@ -140,9 +140,6 @@ class MainWindowModel:
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise RuntimeError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
-    def raise_error_when_parent_strict_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find strict dataset containing ImageStack with ID {images_id}")
-
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
         images = self.get_images_by_uuid(images_id)
         if images is None:
@@ -236,19 +233,6 @@ class MainWindowModel:
             if member_id in dataset:
                 return dataset.id
         self.raise_error_when_parent_dataset_not_found(member_id)
-
-    def add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID) -> uuid.UUID:
-        """
-        Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.
-        :param recon_data: The recon data.
-        :param stack_id: The ID of one of the member stacks.
-        :return: The ID of the parent dataset if found.
-        """
-        for dataset in self.datasets.values():
-            if stack_id in dataset:
-                dataset.recons.append(recon_data)
-                return dataset.id
-        self.raise_error_when_parent_strict_dataset_not_found(stack_id)
 
     @property
     def recon_list_ids(self) -> list[uuid.UUID]:
