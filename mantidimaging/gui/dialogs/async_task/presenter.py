@@ -65,3 +65,9 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     def progress_update(self) -> None:
         msg = self.progress.last_status_message()
         self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
+
+    def show_stop_button(self, show: bool = False) -> None:
+        self.view.show_cancel_button(show)
+
+    def stop_progress(self):
+        self.progress.cancel("Cancelled by user")
