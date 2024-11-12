@@ -2,11 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from abc import abstractmethod, ABC
 from collections.abc import Callable
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
 
+from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
 
@@ -54,7 +56,7 @@ class BadDataCheck:
         self.overlay.clear()
 
 
-class BadDataOverlay:
+class BadDataOverlay(ABC, metaclass=_metaclass_sip_abc):
     """
     Mixin class to be used with MIImageView and MIMiniImageView
     """
@@ -69,12 +71,14 @@ class BadDataOverlay:
             self.sigTimeChanged.connect(self.check_for_bad_data)
 
     @property
+    @abstractmethod
     def image_item(self) -> ImageItem:
-        raise NotImplementedError
+        ...
 
     @property
+    @abstractmethod
     def viewbox(self) -> ViewBox:
-        raise NotImplementedError
+        ...
 
     def enable_nan_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
         if enable:
