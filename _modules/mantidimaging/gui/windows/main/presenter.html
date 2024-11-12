@@ -594,7 +594,7 @@ document.write(`
             <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">SHOW_ADD_STACK_DIALOG</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_show_add_stack_to_dataset_dialog</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">DATASET_ADD</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_dataset</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handle_add_images_to_existing_dataset_from_dialog</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">TAB_CLICKED</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_on_tab_clicked</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">SHOW_MOVE_STACK_DIALOG</span><span class="p">:</span>
@@ -771,11 +771,8 @@ document.write(`
                                                                       <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;=</span> <span class="n">THRESHOLD_180</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_to_use_closest_to_180</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
                 <span class="n">_180_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">closest_projection</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">closest_projection</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">_180_arr</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_180&quot;</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">)</span>
-                <span class="n">sample_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="n">sample_vis</span><span class="p">)</span></div>
+                <span class="n">proj180deg</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">_180_arr</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_180&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">,</span> <span class="s2">&quot;proj_180&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.create_dataset_stack_visualisers">
@@ -981,36 +978,8 @@ document.write(`
 <span class="sd">        :param dataset_id: The ID of the dataset to update.</span>
 <span class="sd">        :param _180_deg_file: The filename for the 180 file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">existing_180_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_existing_180_id</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
-        <span class="n">_180_deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_180_deg_to_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">)</span>
-        <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">_180_deg</span><span class="p">)</span>
-        <span class="n">stack</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">existing_180_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_child_item_to_tree_view</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">replace_child_item_id</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">existing_180_id</span><span class="p">,</span> <span class="n">_180_deg</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack_visualiser</span><span class="p">(</span><span class="n">existing_180_id</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="MainWindowPresenter.replace_child_item_id">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.replace_child_item_id">[docs]</a>
-    <span class="k">def</span> <span class="nf">replace_child_item_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">prev_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">new_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Replaces the ID in an existing child item.</span>
-<span class="sd">        :param dataset_id: The ID of the parent dataset.</span>
-<span class="sd">        :param prev_id: The previous ID of the tree view item.</span>
-<span class="sd">        :param new_id: The new ID that should be given to the tree view item.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dataset_item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()):</span>
-            <span class="n">child</span> <span class="o">=</span> <span class="n">dataset_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">prev_id</span><span class="p">:</span>
-                <span class="n">child</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">new_id</span>
-                <span class="k">return</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get tree view item with ID </span><span class="si">{</span><span class="n">prev_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="n">proj180deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_180_deg_to_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">,</span> <span class="s2">&quot;proj_180&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
@@ -1123,37 +1092,6 @@ document.write(`
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="MainWindowPresenter.add_child_item_to_tree_view">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_child_item_to_tree_view">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_child_item_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a child item to the tree view.</span>
-<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
-<span class="sd">        :param child_id: The ID of the corresponding ImageStack object.</span>
-<span class="sd">        :param child_name: The name that should appear in the tree view.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">child_name</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MainWindowPresenter.add_recon_item_to_tree_view">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_recon_item_to_tree_view">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_recon_item_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a recon item to the tree view.</span>
-<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
-<span class="sd">        :param child_id: The ID of the corresponding ImageStack object.</span>
-<span class="sd">        :param name: The name to display for the recon in the tree view.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
-
-        <span class="n">recon_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">recon_group</span><span class="p">:</span>
-            <span class="n">recon_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_recon_list_id</span><span class="p">(</span><span class="n">parent_id</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">recon_group</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="MainWindowPresenter.add_stack_to_dictionary">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_stack_to_dictionary">[docs]</a>
     <span class="k">def</span> <span class="nf">add_stack_to_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1210,10 +1148,8 @@ document.write(`
 <span class="sd">        :param recon_data: The recon data.</span>
 <span class="sd">        :param stack_id: The ID of one of the stacks in the dataset that the recon data should be added to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_recon_to_dataset</span><span class="p">(</span><span class="n">recon_data</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_new_stack</span><span class="p">(</span><span class="n">recon_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_recon_item_to_tree_view</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">recon_data</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">recon_data</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowPresenter.add_sinograms_to_dataset_and_update_view">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_sinograms_to_dataset_and_update_view">[docs]</a>
@@ -1224,27 +1160,8 @@ document.write(`
 <span class="sd">        :param original_stack_id: The ID of a stack in the dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">original_stack_id</span><span class="p">)</span>
-        <span class="n">prev_sino</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">sinograms</span>
-        <span class="k">if</span> <span class="n">prev_sino</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_stack_visualiser</span><span class="p">(</span><span class="n">prev_sino</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">sinograms</span> <span class="o">=</span> <span class="n">sino_stack</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_sinograms_to_tree_view</span><span class="p">(</span><span class="n">sino_stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">sino_stack</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">sino_stack</span><span class="p">,</span> <span class="s2">&quot;Sinograms&quot;</span><span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="nf">_add_sinograms_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a sinograms item to the tree view or updates the id of an existing one.</span>
-<span class="sd">        :param parent_id: The ID of the parent dataset.</span>
-<span class="sd">        :param sino_id: The ID of the corresponding ImageStack object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_dataset_tree_view_item</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
-        <span class="n">sinograms_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_sinograms_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">sinograms_item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">create_child_tree_item</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">,</span> <span class="n">sino_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">sino_text</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sinograms_item</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">sino_id</span>
 
     <span class="k">def</span> <span class="nf">_show_add_stack_to_dataset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1268,7 +1185,9 @@ document.write(`
         <span class="n">stack_data_type</span> <span class="o">=</span> <span class="n">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_move_stack_dialog</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stack_data_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_images_to_existing_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MainWindowPresenter.handle_add_images_to_existing_dataset_from_dialog">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.handle_add_images_to_existing_dataset_from_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_add_images_to_existing_dataset_from_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds / replaces images to an existing dataset. Updates the tree view and deletes the previous stack if</span>
 <span class="sd">        necessary.</span>
@@ -1276,29 +1195,23 @@ document.write(`
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">dataset_id</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-
         <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span>
         <span class="n">images_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">images_type</span>
 
-        <span class="n">dataset</span><span class="o">.</span><span class="n">set_stack_by_type_name</span><span class="p">(</span><span class="n">images_type</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">new_images</span><span class="p">,</span> <span class="n">images_type</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MainWindowPresenter.add_images_to_existing_dataset">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_images_to_existing_dataset">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_images_to_existing_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">images_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">set_stack_by_type_name</span><span class="p">(</span><span class="n">images_type</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_dataset_tree</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close_unused_visualisers</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">new_images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds or replaces images in a StrictDataset and updates the tree view if required.</span>
-<span class="sd">        :param dataset: The StrictDataset to change.</span>
-<span class="sd">        :param new_images: The new images to add.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">image_attr</span> <span class="o">=</span> <span class="n">stack_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">image_attr</span><span class="p">,</span> <span class="n">new_images</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_dataset_tree</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_close_unused_visualisers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">visualisers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -1326,9 +1239,10 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Unable to find destination dataset with ID </span><span class="si">{</span><span class="n">destination_dataset_id</span><span class="si">}</span><span class="s2"> when attempting to move stack&quot;</span><span class="p">)</span>
 
         <span class="n">stack_to_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
         <span class="n">origin_dataset</span><span class="o">.</span><span class="n">delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_images_to_existing_strict_dataset</span><span class="p">(</span><span class="n">destination_dataset</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_close_unused_visualisers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">destination_dataset_id</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

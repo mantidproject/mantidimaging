@@ -668,12 +668,6 @@ document.write(`
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find dataset containing ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MainWindowModel.raise_error_when_parent_strict_dataset_not_found">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_parent_strict_dataset_not_found">[docs]</a>
-    <span class="k">def</span> <span class="nf">raise_error_when_parent_strict_dataset_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find strict dataset containing ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="MainWindowModel.add_log_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample">[docs]</a>
     <span class="k">def</span> <span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -781,22 +775,6 @@ document.write(`
             <span class="k">if</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_parent_dataset_not_found</span><span class="p">(</span><span class="n">member_id</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MainWindowModel.add_recon_to_dataset">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_recon_to_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_recon_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a recon to a dataset using recon data and an ID from one of the stacks in the dataset.</span>
-<span class="sd">        :param recon_data: The recon data.</span>
-<span class="sd">        :param stack_id: The ID of one of the member stacks.</span>
-<span class="sd">        :return: The ID of the parent dataset if found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-                <span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recon_data</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_parent_strict_dataset_not_found</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>

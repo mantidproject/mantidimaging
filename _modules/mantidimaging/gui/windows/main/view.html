@@ -1310,23 +1310,6 @@ document.write(`
         <span class="k">return</span> <span class="n">dataset_tree_item</span></div>
 
 
-<div class="viewcode-block" id="MainWindowView.create_dataset_tree_widget_item">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_dataset_tree_widget_item">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_dataset_tree_widget_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
-        <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
-        <span class="n">dataset_tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dataset_tree_item</span></div>
-
-
-<div class="viewcode-block" id="MainWindowView.create_child_tree_item">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_child_tree_item">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_child_tree_item</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">child</span> <span class="o">=</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">)</span>
-        <span class="n">child</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="n">parent</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="MainWindowView.get_sinograms_item">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_sinograms_item">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -1340,13 +1323,6 @@ document.write(`
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">SINO_TEXT</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">child</span>
         <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="MainWindowView.add_item_to_tree_view">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_item_to_tree_view">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_item_to_tree_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">insertTopLevelItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">(),</span> <span class="n">item</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_open_tree_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">QPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
