@@ -6,12 +6,13 @@ Module containing helper functions relating to PyQt.
 from __future__ import annotations
 
 import os
+from abc import ABCMeta
 from enum import IntEnum, auto
 from logging import getLogger
 from typing import Any
 from collections.abc import Callable
 
-from PyQt5 import uic  # type: ignore
+from PyQt5 import uic, sip  # type: ignore
 from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction,
                              QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
@@ -266,3 +267,8 @@ def populate_menu(menu: QMenu, actions_list: list[QAction]) -> None:
             action = QAction(menu_text, menu)
             action.triggered.connect(func)
             menu.addAction(action)
+
+
+class _metaclass_sip_abc(sip.wrappertype, ABCMeta):
+    """Used for Mixins to avoid metaclass conflicts"""
+    ...
