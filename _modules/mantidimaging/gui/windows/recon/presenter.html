@@ -758,7 +758,8 @@ document.write(`
         <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
                               <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">run_full_recon</span><span class="p">,</span>
                               <span class="bp">self</span><span class="o">.</span><span class="n">_on_volume_recon_done</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;recon_params&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon_params</span><span class="p">()},</span>
-                              <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">)</span></div>
+                              <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">,</span>
+                              <span class="n">cancelable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_get_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">call_back</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TaskWorkerThread</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -772,7 +773,8 @@ document.write(`
                                   <span class="s1">&#39;cor&#39;</span><span class="p">:</span> <span class="n">cor</span><span class="p">,</span>
                                   <span class="s1">&#39;recon_params&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon_params</span><span class="p">()</span>
                               <span class="p">},</span>
-                              <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">)</span>
+                              <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">,</span>
+                              <span class="n">cancelable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">slice_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

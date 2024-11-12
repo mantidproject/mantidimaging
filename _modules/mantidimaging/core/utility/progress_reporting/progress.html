@@ -727,7 +727,7 @@ document.write(`
 
         <span class="c1"># Force cancellation on progress update</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force_continue</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Task has been cancelled&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;Task has been cancelled&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Progress.calculate_mean_time">

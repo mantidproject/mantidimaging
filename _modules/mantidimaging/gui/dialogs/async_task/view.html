@@ -520,6 +520,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">show_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stop_progress</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
     <span class="nd">@property</span>
@@ -575,6 +577,15 @@ document.write(`
         <span class="c1"># Might not run until after handle_completion</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">task_is_running</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AsyncTaskDialogView.show_cancel_button">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.show_cancel_button">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_cancel_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancelable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cancelable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
 </div>
 
 
@@ -586,7 +597,8 @@ document.write(`
                           <span class="n">on_complete</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                           <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">tracker</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                          <span class="n">busy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                          <span class="n">busy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">cancelable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">atd</span> <span class="o">=</span> <span class="n">AsyncTaskDialogView</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;progress&#39;</span><span class="p">:</span> <span class="n">Progress</span><span class="p">()}</span>
@@ -598,6 +610,7 @@ document.write(`
         <span class="n">atd</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">atd</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+    <span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_stop_button</span><span class="p">(</span><span class="n">cancelable</span><span class="p">)</span>
     <span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
     <span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_on_complete</span><span class="p">(</span><span class="n">on_complete</span><span class="p">)</span>
     <span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
