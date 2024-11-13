@@ -474,13 +474,6 @@ class MainWindowView(BaseMainWindowView):
             self.show_live_viewer(Path(live_data_directory))
 
     def show_live_viewer(self, live_data_path: Path) -> None:
-        # if not self.live_viewer:
-        #     self.live_viewer = LiveViewerWindowView(self, live_data_path)
-        #     self.live_viewer.show()
-        # else:
-        #     self.live_viewer.activateWindow()
-        #     self.live_viewer.raise_()
-        #     self.live_viewer.show()
         self.live_viewer = LiveViewerWindowView(self, live_data_path)
         self.live_viewer.activateWindow()
         self.live_viewer.raise_()
