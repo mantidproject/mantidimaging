@@ -28,9 +28,9 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def __init__(self, main_window: MainWindowView, live_dir_path: Path) -> None:
         super().__init__(None, 'gui/ui/live_viewer_window.ui')
-        self.setWindowTitle("Mantid Imaging - Live Viewer")
         self.main_window = main_window
         self.path = live_dir_path
+        self.setWindowTitle(f"Mantid Imaging - Live Viewer - {str(self.path)}")
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
         self.imageLayout.addWidget(self.live_viewer)
