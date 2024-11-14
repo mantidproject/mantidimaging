@@ -512,6 +512,7 @@ document.write(`
 <span class="sd">    :param histogram: The HistogramLUTItem of an image.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
     <span class="n">histogram</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y_data</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
 
 

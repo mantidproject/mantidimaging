@@ -805,7 +805,7 @@ document.write(`
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encountered error while trying to reconstruct: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-
+        <span class="k">assert</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># We copy the preview data out of shared memory when passing it into update_recon_preview so that it</span>
@@ -826,6 +826,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_recon_buttons_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
             <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -873,7 +874,7 @@ document.write(`
         <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="n">CORInspectionDialogView</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
             <span class="n">new_iters</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">optimal_iterations</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New optimal iterations: </span><span class="si">{</span><span class="n">new_iters</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">num_iter</span> <span class="o">=</span> <span class="n">new_iters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">num_iter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_iters</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_cor_fit">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_cor_fit">[docs]</a>
@@ -944,7 +945,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">selected_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_images_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Finding the COR failed, likely caused by the selected stack&#39;s 180 &quot;</span>
@@ -952,9 +953,11 @@ document.write(`
                     <span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Suggestion: Use crop coordinates to resize the 180 degree projection to &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">selected_stack</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">selected_stack</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;task in inconsistent state, both task.error and task.result are None&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_correlate_buttons_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">False</span>
 

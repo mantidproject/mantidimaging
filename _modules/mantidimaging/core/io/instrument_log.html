@@ -597,9 +597,9 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="n">subcls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
-        <span class="n">InstrumentLog</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="n">subcls</span><span class="p">)</span>
+        <span class="n">InstrumentLog</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse">[docs]</a>
@@ -628,9 +628,9 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="n">subcls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
-        <span class="n">ShutterCount</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="n">subcls</span><span class="p">)</span>
+        <span class="n">ShutterCount</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentShutterCountParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse">[docs]</a>

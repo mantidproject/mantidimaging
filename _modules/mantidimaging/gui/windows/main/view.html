@@ -1090,7 +1090,13 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.get_images_from_stack_uuid">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_images_from_stack_uuid">[docs]</a>
     <span class="k">def</span> <span class="nf">get_images_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span></div>
+        <span class="n">stack_visualiser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stack_visualiser</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No stack visualiser found for UUID: </span><span class="si">{</span><span class="n">stack_uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">stack_visualiser</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No images found for stack UUID: </span><span class="si">{</span><span class="n">stack_uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">images</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_dataset_id_from_stack_uuid">

@@ -526,29 +526,23 @@ document.write(`
 
 <div class="viewcode-block" id="get_memory_usage_linux">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.memory_usage.html#mantidimaging.core.utility.memory_usage.get_memory_usage_linux">[docs]</a>
-<span class="k">def</span> <span class="nf">get_memory_usage_linux</span><span class="p">(</span><span class="n">kb</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mb</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_memory_usage_linux</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param kb: Return the value in Kilobytes</span>
-<span class="sd">    :param mb: Return the value in Megabytes</span>
+<span class="sd">    Get the memory usage of the system in bytes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">psutil</span>
 
     <span class="n">meminfo</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
-    <span class="n">tuple_to_return</span> <span class="o">=</span> <span class="p">()</span>  <span class="c1"># start with empty tuple</span>
     <span class="c1"># meminfo.used gives the size in bytes</span>
-    <span class="k">if</span> <span class="n">kb</span><span class="p">:</span>
-        <span class="n">tuple_to_return</span> <span class="o">+=</span> <span class="p">(</span><span class="n">meminfo</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span> <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">mb</span><span class="p">:</span>
-        <span class="n">tuple_to_return</span> <span class="o">+=</span> <span class="p">(</span><span class="n">meminfo</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">return</span> <span class="n">tuple_to_return</span></div>
+    <span class="k">return</span> <span class="n">meminfo</span><span class="o">.</span><span class="n">used</span></div>
 
 
 
 <div class="viewcode-block" id="get_memory_usage_linux_str">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.memory_usage.html#mantidimaging.core.utility.memory_usage.get_memory_usage_linux_str">[docs]</a>
 <span class="k">def</span> <span class="nf">get_memory_usage_linux_str</span><span class="p">():</span>
-    <span class="n">memory_in_kbs</span><span class="p">,</span> <span class="n">memory_in_mbs</span> <span class="o">=</span> <span class="n">get_memory_usage_linux</span><span class="p">(</span><span class="n">kb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mb</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">memory_in_kbs</span> <span class="o">=</span> <span class="n">get_memory_usage_linux</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span>
+    <span class="n">memory_in_mbs</span> <span class="o">=</span> <span class="n">memory_in_kbs</span> <span class="o">/</span> <span class="mi">1024</span>
     <span class="c1"># handle caching</span>
     <span class="n">memory_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">memory_in_kbs</span><span class="si">}</span><span class="s2"> KB, </span><span class="si">{</span><span class="n">memory_in_mbs</span><span class="si">}</span><span class="s2"> MB&quot;</span>
 

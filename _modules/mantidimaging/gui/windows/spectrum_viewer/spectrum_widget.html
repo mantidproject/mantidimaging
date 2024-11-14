@@ -887,7 +887,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.get_tof_range">[docs]</a>
     <span class="k">def</span> <span class="nf">get_tof_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="n">r_min</span><span class="p">,</span> <span class="n">r_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_control</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">r_min</span><span class="p">,</span> <span class="n">r_max</span></div>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">r_min</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">r_max</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_handle_tof_range_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

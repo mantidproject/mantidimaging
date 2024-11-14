@@ -609,7 +609,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArrayRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_data</span><span class="p">,</span>
                                    <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="p">,</span>
                                    <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                                   <span class="n">returnMappedCoords</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+                                   <span class="n">returnMappedCoords</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
 
 
 <div class="viewcode-block" id="ImageViewLineROI.reset">
@@ -639,7 +639,7 @@ document.write(`
         <span class="c1"># Prevent emitting a RegionChanged signal from setting the state programmatically</span>
         <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">initial_pos_x</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">initial_pos_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">initial_pos_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
             <span class="n">image_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
             <span class="n">image_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_view</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
 
