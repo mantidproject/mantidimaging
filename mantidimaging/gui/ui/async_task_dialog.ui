@@ -20,33 +20,36 @@
    <string>Progress</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QLabel" name="infoText">
-     <property name="text">
-      <string>Progress</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
-     </property>
-    </widget>
     <item>
-    <widget class="QPushButton" name="cancelButton">
-    <property name="text">
+        <widget class="QLabel" name="infoText">
+            <property name="text">
+            <string>Progress</string>
+            </property>
+        </widget>
+        </item>
+        <item>
+        <widget class="QProgressBar" name="progressBar">
+            <property name="value">
+            <number>0</number>
+            </property>
+            <property name="textVisible">
+            <bool>true</bool>
+            </property>
+            <property name="invertedAppearance">
+            <bool>false</bool>
+            </property>
+        </widget>   
+    </item>     
+     <item>
+      <layout class="QVBoxLayout" name="PlotVerticalLayout"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
         <string>Cancel</string>
-    </property>
-    </widget>
-    </item>
-   </item>
+       </property>
+      </widget>
+     </item>
   </layout>
  </widget>
  <resources/>
