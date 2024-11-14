@@ -565,6 +565,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.old_table_names.remove('rits_roi')
 
     def setup_roi_properties_spinboxes(self) -> None:
+        assert self.spectrum_widget.image.image_data is not None
         for prop in self.roi_table_properties:
             spin_box = QSpinBox()
             if prop == "Top" or prop == "Bottom":

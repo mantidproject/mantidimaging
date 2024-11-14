@@ -101,6 +101,11 @@ jobs:
         run: |
           mypy --ignore-missing-imports mantidimaging
 
+      - name: pyright
+        shell: bash -l {0}
+        run: |
+          pyright mantidimaging
+
       - name: pytest
         timeout-minutes: 10
         shell: bash -l {0}

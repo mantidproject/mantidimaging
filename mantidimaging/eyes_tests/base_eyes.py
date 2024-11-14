@@ -57,6 +57,7 @@ QApplication.setFont(QFont("Sans Serif", 10))
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager
+    app: QApplication
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -130,8 +131,8 @@ class BaseEyesTest(unittest.TestCase):
 
         return new_dataset
 
-    def _get_top_level_widget(cls, widget_type):
-        for widget in cls.app.topLevelWidgets():
+    def _get_top_level_widget(self, widget_type):
+        for widget in self.app.topLevelWidgets():
             if isinstance(widget, widget_type):
                 return widget
         raise ValueError(f"Could not find top level widget of type {widget_type.__name__}")

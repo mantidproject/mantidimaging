@@ -17,6 +17,7 @@ def set_histogram_log_scale(histogram: HistogramLUTItem) -> None:
     :param histogram: The HistogramLUTItem of an image.
     """
     x_data, y_data = histogram.plot.getData()
+    assert isinstance(x_data, np.ndarray) and isinstance(y_data, np.ndarray)
     histogram.plot.setData(x_data, np.log(y_data + 1))
 
 

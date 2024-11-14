@@ -128,6 +128,8 @@ class FilterPreviews(GraphicsLayoutWidget):
 
     @property
     def histogram_legend(self) -> LegendItem:
+        if self.histogram.legend is None:
+            raise ValueError("Histogram legend is not initialized")
         return self.histogram.legend
 
     def link_all_views(self):

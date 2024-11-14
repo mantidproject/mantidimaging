@@ -28,26 +28,20 @@ def system_free_memory():
     return Value(meminfo.available - meminfo.total * MEMORY_CAP_PERCENTAGE)
 
 
-def get_memory_usage_linux(kb=False, mb=False):
+def get_memory_usage_linux() -> float:
     """
-    :param kb: Return the value in Kilobytes
-    :param mb: Return the value in Megabytes
+    Get the memory usage of the system in bytes
     """
     import psutil
 
     meminfo = psutil.virtual_memory()
-    tuple_to_return = ()  # start with empty tuple
     # meminfo.used gives the size in bytes
-    if kb:
-        tuple_to_return += (meminfo.used / 1024, )
-
-    if mb:
-        tuple_to_return += (meminfo.used / 1024 / 1024, )
-    return tuple_to_return
+    return meminfo.used
 
 
 def get_memory_usage_linux_str():
-    memory_in_kbs, memory_in_mbs = get_memory_usage_linux(kb=True, mb=True)
+    memory_in_kbs = get_memory_usage_linux() / 1024
+    memory_in_mbs = memory_in_kbs / 1024
     # handle caching
     memory_string = f"{memory_in_kbs} KB, {memory_in_mbs} MB"
 

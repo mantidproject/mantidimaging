@@ -114,7 +114,7 @@ class PaletteChangerPresenter(BasePresenter):
         self.main_hist.gradient.updateGradient()
         self.main_hist.gradient.sigGradientChangeFinished.emit(self.main_hist.gradient)
 
-    def _get_colours(self, num_ticks: int) -> list[float]:
+    def _get_colours(self, num_ticks: int) -> list:
         """
         Determine the colours that should be used for the new recon histogram ticks. Should ensure that there is a
         suitable amount of contrast between the different materials, even if the ticks are quite close together on

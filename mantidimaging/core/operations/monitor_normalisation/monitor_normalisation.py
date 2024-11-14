@@ -16,10 +16,6 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget
 
 
-def _divide_by_counts(data=None, counts=None):
-    data[:] = np.true_divide(data, counts)
-
-
 class MonitorNormalisation(BaseFilter):
     """Normalises the image data using the average count of a beam monitor from the
     experiment log file. This scaling operation is an alternative to ROI normalisation

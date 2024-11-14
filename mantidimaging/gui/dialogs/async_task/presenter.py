@@ -59,7 +59,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.view.show_delayed(1000)
 
     @property
-    def task_is_running(self) -> None:
+    def task_is_running(self) -> bool:
         return self.model.task_is_running
 
     def progress_update(self) -> None:

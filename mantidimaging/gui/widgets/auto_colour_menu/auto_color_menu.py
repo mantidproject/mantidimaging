@@ -26,7 +26,7 @@ class AutoColorMenu:
         raise NotImplementedError('Required histogram property not implemented')
 
     @property
-    def image_data(self) -> np.ndarray:
+    def image_data(self) -> np.ndarray | None:
         raise NotImplementedError('Required image_data property not implemented')
 
     @property

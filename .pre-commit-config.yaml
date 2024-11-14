@@ -23,7 +23,16 @@ repos:
         files: ^mantidimaging/
         args: [--ignore-missing-imports]
         additional_dependencies: [types-docutils, types-PyYAML, types-requests]
+-   repo: local
+    hooks:
+    -   id: pyright
+        name: pyright
+        description: Checks that all files pass pyright checks
+        entry: pyright
+        language: system
+        types: [python]
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.3.3
     hooks:
     -   id: ruff
+

@@ -36,7 +36,7 @@ class EyesManager:
 
     def __init__(self, application_name="Mantid Imaging", test_name=None):
         self.application_name = application_name
-        self.eyes = Eyes()
+        self.eyes = Eyes()  # type: ignore
         self.eyes.match_level = MatchLevel.IGNORE_COLORS
         self.eyes.configure.host_os = sys.platform
         self.eyes.branch_name = BRANCH_NAME
@@ -50,7 +50,7 @@ class EyesManager:
         self.eyes.match_level = level
 
     def set_batch(self, batch_id):
-        batch_info = BatchInfo()
+        batch_info = BatchInfo()  # type: ignore
         batch_info.name = self.test_name
         batch_info.id = batch_id
         self.eyes.batch = batch_info

@@ -61,8 +61,8 @@ class NexusLoadPresenter:
         self.tomo_entry = None
         self.data = None
         self.tomo_path = ""
-        self.image_key_dataset = None
-        self.rotation_angles = None
+        self.image_key_dataset: np.ndarray | None = None
+        self.rotation_angles: np.ndarray | None = None
         self.title = ""
         self.recon_data: list[np.ndarray] = []
 
@@ -108,7 +108,7 @@ class NexusLoadPresenter:
                     logger.warning("No unit information found for rotation angles. Will infer from array values.")
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
-                    degrees = "deg" in self.rotation_angles.attrs["units"]
+                    degrees = "deg" in str(self.rotation_angles.attrs["units"])
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
                 self.rotation_angles = self.rotation_angles[:]
@@ -131,14 +131,15 @@ class NexusLoadPresenter:
             for sample images are being read.
         :return: A numpy array of the rotation angles or None if all angles provided are 0.
         """
-        assert self.image_key_dataset is not None
+        assert self.image_key_dataset is not None and self.rotation_angles is not None
         if before is None:
             rotation_angles = self.rotation_angles[np.where(self.image_key_dataset[...] == image_key)]
         else:
             first_sample_image_index = np.where(self.image_key_dataset == 0)[0][0]
             if before:
+                image_key_array = self.image_key_dataset[:first_sample_image_index]
                 rotation_angles = self.rotation_angles[:first_sample_image_index][np.where(
-                    self.image_key_dataset[:first_sample_image_index] == image_key)]
+                    image_key_array == image_key)]
             else:
                 rotation_angles = self.rotation_angles[first_sample_image_index:][np.where(
                     self.image_key_dataset[first_sample_image_index:] == image_key)]
@@ -167,7 +168,7 @@ class NexusLoadPresenter:
         :return: The h5py Group/Dataset if it could be found, None otherwise.
         """
         dataset = self._look_for_tomo_data(field)
-        if dataset is None:
+        if dataset is None or not isinstance(dataset, h5py.Dataset):
             self._missing_data_error(field)
             self.view.set_data_found(position, False, "", ())
             self.view.disable_ok_button()
@@ -180,13 +181,13 @@ class NexusLoadPresenter:
         dataset = self._look_for_tomo_data(DATA_PATH)
         if dataset is not None:
             self.view.set_data_found(position, True, self.tomo_path + "/" + DATA_PATH, dataset.shape)
-            return dataset
+            return dataset if isinstance(dataset, h5py.Dataset) else None
         else:
             assert self.nexus_file is not None
             if NEXUS_PROCESSED_DATA_PATH in self.nexus_file:
                 dataset = self.nexus_file[NEXUS_PROCESSED_DATA_PATH]["data"]
                 self.view.set_data_found(position, True, NEXUS_PROCESSED_DATA_PATH, dataset.shape)
-                return dataset
+                return dataset if isinstance(dataset, h5py.Dataset) else None
 
         self._missing_data_error(DATA_PATH)
         self.view.set_data_found(position, False, "", ())
@@ -203,7 +204,10 @@ class NexusLoadPresenter:
         for key in self.nexus_file.keys():
             if TOMO_ENTRY in self.nexus_file[key].keys():
                 self.tomo_path = f"{key}/{TOMO_ENTRY}"
-                return self.nexus_file[key][TOMO_ENTRY]
+                entry = self.nexus_file[key][TOMO_ENTRY]
+                if isinstance(entry, h5py.Group):
+                    return entry
+                return None
 
         self._missing_data_error(TOMO_ENTRY)
         self.view.disable_ok_button()
@@ -216,7 +220,8 @@ class NexusLoadPresenter:
         assert self.nexus_file is not None
         for key in self.nexus_file.keys():
             if DEFINITION in self.nexus_file[key].keys():
-                if np.array(self.nexus_file[key][DEFINITION]).tobytes().decode("utf-8") == NXTOMOPROC:
+                definition_data = np.array(self.nexus_file[key].get(DEFINITION))
+                if definition_data.tobytes().decode("utf-8") == NXTOMOPROC:
                     nexus_recon = self.nexus_file[key]
                     self.recon_data.append(np.array(nexus_recon["data"]["data"]))
 
@@ -228,7 +233,10 @@ class NexusLoadPresenter:
         """
         assert self.tomo_entry is not None
         try:
-            return self.tomo_entry[entry_path]
+            data = self.tomo_entry[entry_path]
+            if isinstance(data, h5py.Group | h5py.Dataset):
+                return data
+            return None
         except KeyError:
             return None
 
@@ -264,7 +272,7 @@ class NexusLoadPresenter:
                        images. Ignored when getting projection images.
         :return: The set of images that correspond with a given image key.
         """
-        assert self.image_key_dataset is not None
+        assert self.image_key_dataset is not None and self.image_key_dataset.size is not None
         assert self.data is not None
         if image_key_number is ImageKeys.Projections:
             indices = self.image_key_dataset[...] == image_key_number.value
