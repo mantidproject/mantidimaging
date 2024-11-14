@@ -44,10 +44,14 @@ class MIProgressCallback(Callback):
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
-            self.progress.update(steps=1,
-                                 msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
-                                 f': Objective {algo.get_last_objective():.2f}',
-                                 force_continue=False)
+            extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
+            self.progress.update(
+                steps=1,
+                msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
+                f': Objective {algo.get_last_objective():.2f}',
+                force_continue=False,
+                extra_info=extra_info,
+            )
             self.iteration_count += 1
 
 
@@ -407,6 +411,7 @@ class CILRecon(BaseRecon):
                 LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
             t1 = time.perf_counter()
             LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
+            ImageStack(volume).metadata['convergence'] = {'iterations': algo.iterations, 'losses': algo.loss}
             return ImageStack(volume)
 
 
