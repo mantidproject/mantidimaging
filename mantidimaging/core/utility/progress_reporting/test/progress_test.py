@@ -257,20 +257,20 @@ class ProgressTest(unittest.TestCase):
     def test_calculate_mean_time(self):
         progress_history = []
 
-        progress_history.append(ProgressHistory(100, 0, ""))
+        progress_history.append(ProgressHistory(100, 0, "", None))
         self.assertEqual(Progress.calculate_mean_time(progress_history), 0)
 
         # first step 5 seconds
-        progress_history.append(ProgressHistory(105, 1, ""))
+        progress_history.append(ProgressHistory(105, 1, "", None))
         self.assertEqual(Progress.calculate_mean_time(progress_history), 5)
 
         # second step 10 seconds
-        progress_history.append(ProgressHistory(115, 2, ""))
+        progress_history.append(ProgressHistory(115, 2, "", None))
         self.assertEqual(Progress.calculate_mean_time(progress_history), 7.5)
 
         for i in range(1, 50):
             # add many 2 second steps
-            progress_history.append(ProgressHistory(115 + (i * 2), 2 + (i * 2), ""))
+            progress_history.append(ProgressHistory(115 + (i * 2), 2 + (i * 2), "", None))
         self.assertEqual(Progress.calculate_mean_time(progress_history), 2)
 
 
