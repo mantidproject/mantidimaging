@@ -22,6 +22,7 @@ class AutoColorMenu(ABC, metaclass=_metaclass_sip_abc):
     """
 
     def __init__(self) -> None:
+        super().__init__()
         self.auto_color_action: QAction | None = None
 
     @property
