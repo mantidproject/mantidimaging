@@ -14,7 +14,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
 from ...utility.common import operation_in_progress
-from mantidimaging.core.data.dataset import MixedDataset
+from mantidimaging.core.data.dataset import Dataset
 
 if TYPE_CHECKING:
     from .view import StackVisualiserView  # pragma: no cover
@@ -114,17 +114,17 @@ class StackVisualiserPresenter(BasePresenter):
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy(flip_axes=False)
             new_images.name = self.images.name
-            self.add_mixed_dataset_to_model_and_update_view(new_images)
+            self.add_new_dataset_to_model_and_update_view(new_images)
 
     def dupe_stack_roi(self):
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             new_images.name = self.images.name
-            self.add_mixed_dataset_to_model_and_update_view(new_images)
+            self.add_new_dataset_to_model_and_update_view(new_images)
 
-    def add_mixed_dataset_to_model_and_update_view(self, images: ImageStack):
-        dataset = MixedDataset(stacks=[images], name=images.name)
+    def add_new_dataset_to_model_and_update_view(self, images: ImageStack):
+        dataset = Dataset(stacks=[images], name=images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.update_dataset_tree()
         self.view._main_window.presenter.create_dataset_stack_visualisers(dataset)
