@@ -1,0 +1,1 @@
+#2376: Fix spectrum visibility for ROIs where visibility is set to false are still displayed

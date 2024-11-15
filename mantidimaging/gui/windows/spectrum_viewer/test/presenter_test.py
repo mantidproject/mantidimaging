@@ -429,7 +429,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         def spec_roi_mock(name):
             if name == "all":
                 return SensibleROI(0, 0, 10, 8)
-            elif name == "roi":
+            if name == "roi":
                 return SensibleROI(1, 4, 3, 2)
 
         self.view.spectrum_widget.get_roi = mock.Mock(side_effect=spec_roi_mock)
@@ -439,7 +439,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.redraw_all_rois()
         self.assertEqual(self.presenter.model.get_roi("all"), SensibleROI(0, 0, 10, 8))
         self.assertEqual(self.presenter.model.get_roi("roi"), SensibleROI(1, 4, 3, 2))
-        calls = [mock.call(a, b) for a, b in [("all", mock.ANY), ("roi", mock.ANY)]]
+        calls = [mock.call(a, b) for a, b in [("roi", mock.ANY)]]
         self.view.set_spectrum.assert_has_calls(calls)
 
     @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])

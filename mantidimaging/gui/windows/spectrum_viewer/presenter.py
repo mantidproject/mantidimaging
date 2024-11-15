@@ -231,6 +231,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Redraw all ROIs and spectrum plots
         """
         for name in self.model.get_list_of_roi_names():
+            if name == "all" or self.view.spectrum_widget.roi_dict[name].isVisible() is False:
+                continue
             self.model.set_roi(name, self.view.spectrum_widget.get_roi(name))
             self.view.set_spectrum(
                 name,
