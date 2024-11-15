@@ -185,7 +185,7 @@ class MainWindowPresenter(BasePresenter):
             task.result = None
             self._open_window_if_not_open()
         else:
-            self._handle_task_error(self.LOAD_ERROR_STRING, task)
+            raise RuntimeError(self.LOAD_ERROR_STRING.format(task.error))
 
     def _add_dataset_to_view(self, dataset: Dataset) -> None:
         """
@@ -197,11 +197,6 @@ class MainWindowPresenter(BasePresenter):
         self.create_dataset_stack_visualisers(dataset)
         if dataset.sample:
             self.add_alternative_180_if_required(dataset)
-
-    def _handle_task_error(self, base_message: str, task: TaskWorkerThread) -> None:
-        msg = base_message.format(task.error)
-        logger.error(msg)
-        self.show_error(msg, traceback.format_exc())
 
     def _create_and_tabify_stack_window(self, images: ImageStack, sample_dock: StackVisualiserView) -> None:
         """
@@ -345,7 +340,7 @@ class MainWindowPresenter(BasePresenter):
     def _on_save_done(self, task: TaskWorkerThread) -> None:
 
         if not task.was_successful():
-            self._handle_task_error(self.SAVE_ERROR_STRING, task)
+            raise RuntimeError(self.SAVE_ERROR_STRING.format(task.error))
 
     @property
     def stack_visualiser_list(self) -> list[StackId]:

@@ -63,10 +63,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertFalse(task.was_successful())
 
         # Call the callback with a task that failed
-        self.presenter._on_dataset_load_done(task)
-
-        # Expect error message
-        self.view.show_error_dialog.assert_called_once_with(self.presenter.LOAD_ERROR_STRING.format(task.error))
+        self.assertRaises(RuntimeError, self.presenter._on_dataset_load_done, task)
 
     def test_failed_attempt_to_save_shows_error(self):
         # Create a filed load async task
@@ -75,10 +72,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertFalse(task.was_successful())
 
         # Call the callback with a task that failed
-        self.presenter._on_save_done(task)
-
-        # Expect error message
-        self.view.show_error_dialog.assert_called_once_with(self.presenter.SAVE_ERROR_STRING.format(task.error))
+        self.assertRaises(RuntimeError, self.presenter._on_save_done, task)
 
     @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
     def test_dataset_stack(self, start_async_mock: mock.Mock):
