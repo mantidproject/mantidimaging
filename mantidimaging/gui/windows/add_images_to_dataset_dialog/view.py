@@ -23,7 +23,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
         self._dataset_id = dataset_id
 
         self.imageTypeComboBox.addItems(
-            ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon", "Images", "Proj_180"])
+            ["Sample", "Flat Before", "Flat After", "Dark Before", "Dark After", "Recon", "Images", "Proj 180"])
 
         self.datasetNameText.setText(dataset_name)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
