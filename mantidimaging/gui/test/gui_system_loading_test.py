@@ -9,7 +9,6 @@ from pathlib import Path
 from unittest import mock
 
 import numpy
-import pytest
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QDialogButtonBox
@@ -189,7 +188,6 @@ class TestGuiSystemLoading(GuiSystemBase):
             # Confirm that save has been called only once
             mock_save.assert_called_once()
 
-    @pytest.mark.xfail(reason="Failing test for #2404")
     def test_save_nexus(self):
         self._load_data_set()
 
