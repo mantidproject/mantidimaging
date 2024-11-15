@@ -176,7 +176,8 @@ class TestGuiSystemLoading(GuiSystemBase):
 
         self.main_window.show_image_save_dialog()
 
-        with mock.patch("mantidimaging.gui.windows.main.MainWindowModel.do_images_saving") as mock_save:
+        with mock.patch("mantidimaging.core.io.saver.image_save") as mock_save:
+            mock_save.return_value = ["" for _ in range(100)]
             self._wait_for_widget_visible(ImageSaveDialog)
             QApplication.processEvents()
 
