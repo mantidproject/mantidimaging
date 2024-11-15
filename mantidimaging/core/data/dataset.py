@@ -201,10 +201,6 @@ class Dataset:
         return False
 
 
-class MixedDataset(Dataset):
-    pass
-
-
 class StrictDataset(Dataset):
     pass
 
