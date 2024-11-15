@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
+from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
@@ -60,11 +60,11 @@ class MainWindowModel:
         self.datasets[ds.id] = ds
         return ds
 
-    def load_images_into_mixed_dataset(self, file_path: str, progress: Progress) -> MixedDataset:
+    def load_image_stack_to_new_dataset(self, file_path: str, progress: Progress) -> Dataset:
         images = self.load_image_stack(file_path, progress)
-        sd = MixedDataset(stacks=[images], name=images.name)
-        self.datasets[sd.id] = sd
-        return sd
+        ds = Dataset(stacks=[images], name=images.name)
+        self.datasets[ds.id] = ds
+        return ds
 
     def load_image_stack(self, file_path: str, progress: Progress) -> ImageStack:
         group = FilenameGroup.from_file(Path(file_path))

@@ -270,7 +270,7 @@ class MainWindowModelTest(unittest.TestCase):
         group = mock.Mock()
         fng_mock.from_file.return_value = group
 
-        self.model.load_images_into_mixed_dataset(file_path, progress)
+        self.model.load_image_stack_to_new_dataset(file_path, progress)
 
         loader.load_stack_from_group.assert_called_once_with(group, progress)
 
