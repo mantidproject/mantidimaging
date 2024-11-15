@@ -17,7 +17,7 @@ from mantidimaging.core.operation_history.const import TIMESTAMP
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.saver import _rescale_recon_data, _save_recon_to_nexus, _save_processed_data_to_nexus, \
@@ -199,7 +199,7 @@ class IOTest(FileOutputtingTestCase):
         sample.data *= 12
         sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(sample=sample)
+        sd = Dataset(sample=sample)
         sd.sample.record_operation("", "")
 
         path = "nexus/file/path"
@@ -243,7 +243,7 @@ class IOTest(FileOutputtingTestCase):
         flat_before = th.generate_images(shape)
         flat_before._projection_angles = flat_before.projection_angles()
 
-        sd = StrictDataset(sample=sample, flat_before=flat_before)
+        sd = Dataset(sample=sample, flat_before=flat_before)
         path = "nexus/file/path"
         sample_name = "sample-name"
 
@@ -267,11 +267,11 @@ class IOTest(FileOutputtingTestCase):
             image_stacks.append(image_stack)
             image_stack._projection_angles = image_stack.projection_angles()
 
-        sd = StrictDataset(sample=image_stacks[0],
-                           flat_before=image_stacks[1],
-                           flat_after=image_stacks[2],
-                           dark_before=image_stacks[3],
-                           dark_after=image_stacks[4])
+        sd = Dataset(sample=image_stacks[0],
+                     flat_before=image_stacks[1],
+                     flat_after=image_stacks[2],
+                     dark_before=image_stacks[3],
+                     dark_after=image_stacks[4])
         sd.sample.record_operation("", "")
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
@@ -306,11 +306,11 @@ class IOTest(FileOutputtingTestCase):
             image_stacks.append(image_stack)
             image_stack._projection_angles = image_stack.projection_angles()
 
-        sd = StrictDataset(sample=image_stacks[0],
-                           flat_before=image_stacks[1],
-                           flat_after=image_stacks[2],
-                           dark_before=image_stacks[3],
-                           dark_after=image_stacks[4])
+        sd = Dataset(sample=image_stacks[0],
+                     flat_before=image_stacks[1],
+                     flat_after=image_stacks[2],
+                     dark_before=image_stacks[3],
+                     dark_after=image_stacks[4])
 
         with h5py.File("nexus/file/path", "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, "sample-name", True)
@@ -327,7 +327,7 @@ class IOTest(FileOutputtingTestCase):
     def test_h5py_os_error_returns(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
         file_mock.side_effect = OSError
         with self.assertRaises(RuntimeError):
-            saver.nexus_save(StrictDataset(sample=th.generate_images()), "path", "sample-name", True)
+            saver.nexus_save(Dataset(sample=th.generate_images()), "path", "sample-name", True)
         nexus_save_mock.assert_not_called()
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
@@ -337,14 +337,14 @@ class IOTest(FileOutputtingTestCase):
         nexus_save_mock.side_effect = OSError
         save_path = "failed/save/path"
         with self.assertRaises(RuntimeError):
-            saver.nexus_save(StrictDataset(sample=th.generate_images()), save_path, "sample-name", True)
+            saver.nexus_save(Dataset(sample=th.generate_images()), save_path, "sample-name", True)
         file_mock.return_value.close.assert_called_once()
         os_mock.remove.assert_called_once_with(save_path)
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
     def test_successful_nexus_save_closes_file(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
-        saver.nexus_save(StrictDataset(sample=th.generate_images()), "path", "sample-name", True)
+        saver.nexus_save(Dataset(sample=th.generate_images()), "path", "sample-name", True)
         file_mock.return_value.close.assert_called_once()
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
@@ -352,7 +352,7 @@ class IOTest(FileOutputtingTestCase):
         sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(sample=sample)
+        sd = Dataset(sample=sample)
         sd.recons.data = [th.generate_images(), th.generate_images()]
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
@@ -361,7 +361,7 @@ class IOTest(FileOutputtingTestCase):
         self.assertEqual(recon_save_mock.call_count, len(sd.recons))
 
     def test_save_process(self):
-        ds = StrictDataset(sample=th.generate_images())
+        ds = Dataset(sample=th.generate_images())
         process_path = "processed-data/process"
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             rotation_angle = nexus_file.create_dataset("rotation_angle", dtype="float")
@@ -381,7 +381,7 @@ class IOTest(FileOutputtingTestCase):
         sample = th.generate_images()
         sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(sample=sample)
+        sd = Dataset(sample=sample)
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             saver._nexus_save(nexus_file, sd, "sample-name", True)
@@ -393,7 +393,7 @@ class IOTest(FileOutputtingTestCase):
         sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(sample=sample)
+        sd = Dataset(sample=sample)
 
         recon = th.generate_images(seed=2)
         recon.metadata[TIMESTAMP] = None
@@ -432,7 +432,7 @@ class IOTest(FileOutputtingTestCase):
         sample = _create_sample_with_filename()
         sample._projection_angles = sample.projection_angles()
 
-        sd = StrictDataset(sample=sample)
+        sd = Dataset(sample=sample)
 
         recon = th.generate_images(seed=2)
         recon.name = recon_name = "Recon"
@@ -470,7 +470,7 @@ class IOTest(FileOutputtingTestCase):
                 self.sample_path)
 
     def test_save_image_stacks_to_nexus_as_int(self):
-        ds = StrictDataset(sample=th.generate_images())
+        ds = Dataset(sample=th.generate_images())
 
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             data = nexus_file.create_group("data")
