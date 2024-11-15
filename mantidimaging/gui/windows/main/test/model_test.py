@@ -10,7 +10,7 @@ from parameterized import parameterized
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, Dataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
@@ -101,7 +101,7 @@ class MainWindowModelTest(unittest.TestCase):
                                           shutter_count_file=None)
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
-    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
     def test_do_load_stack_sample_and_flat(self, dataset_mock: mock.Mock, load_mock: mock.Mock):
         lp = LoadingParameters()
         log_file_mock = mock.Mock()
@@ -142,7 +142,7 @@ class MainWindowModelTest(unittest.TestCase):
         ])
 
     @mock.patch('mantidimaging.gui.windows.main.model.loader.load_stack_from_image_params')
-    @mock.patch('mantidimaging.gui.windows.main.model.StrictDataset')
+    @mock.patch('mantidimaging.gui.windows.main.model.Dataset')
     def test_do_load_stack_sample_and_dark_and_180deg(self, dataset_mock: mock.Mock, load_mock: mock.Mock):
         lp = LoadingParameters()
         log_file_mock = mock.Mock()
@@ -290,11 +290,11 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(5)]
         ids = [image_stack.id for image_stack in images]
 
-        ds = StrictDataset(sample=images[0],
-                           flat_before=images[1],
-                           flat_after=images[2],
-                           dark_before=images[3],
-                           dark_after=images[4])
+        ds = Dataset(sample=images[0],
+                     flat_before=images[1],
+                     flat_after=images[2],
+                     dark_before=images[3],
+                     dark_after=images[4])
         self.model.datasets[ds.id] = ds
 
         stacks_to_close = self.model.remove_container(ds.id)
@@ -307,7 +307,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_empty_dataset_from_model(self):
         sample = generate_images()
-        ds = StrictDataset(sample=sample)
+        ds = Dataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         self.model.remove_container(sample.id)
@@ -320,7 +320,7 @@ class MainWindowModelTest(unittest.TestCase):
         images = [generate_images() for _ in range(2)]
         # Set the sample 180 to check this isn't removed
         images[0].proj180deg = generate_images()
-        ds = StrictDataset(sample=images[0], flat_before=images[1])
+        ds = Dataset(sample=images[0], flat_before=images[1])
         self.model.datasets[ds.id] = ds
         id_to_remove = images[-1].id
 
@@ -331,7 +331,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_non_sample_images_from_dataset_without_sample(self):
         images = [generate_images() for _ in range(2)]
-        ds = StrictDataset(sample=images[0], flat_before=images[1])
+        ds = Dataset(sample=images[0], flat_before=images[1])
         ds.sample = None
         self.model.datasets[ds.id] = ds
         id_to_remove = images[-1].id
@@ -344,7 +344,7 @@ class MainWindowModelTest(unittest.TestCase):
     def test_remove_sample_with_180_from_dataset(self):
         sample = generate_images()
         sample.proj180deg = generate_images()
-        ds = StrictDataset(sample=sample)
+        ds = Dataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         expected_result = [sample.id, sample.proj180deg.id]
@@ -355,7 +355,7 @@ class MainWindowModelTest(unittest.TestCase):
 
     def test_remove_sample_without_180_from_dataset(self):
         sample = generate_images()
-        ds = StrictDataset(sample=sample)
+        ds = Dataset(sample=sample)
         self.model.datasets[ds.id] = ds
 
         expected_result = [sample.id]
@@ -377,7 +377,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual([id_to_remove], deleted_stacks)
 
     def test_add_dataset_to_model(self):
-        ds = StrictDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIn(ds, self.model.datasets.values())
 
@@ -386,14 +386,14 @@ class MainWindowModelTest(unittest.TestCase):
         for _ in range(3):
             images = [generate_images() for _ in range(3)]
             all_ids += [image.id for image in images]
-            ds = StrictDataset(sample=images[0], flat_before=images[1], flat_after=images[2])
+            ds = Dataset(sample=images[0], flat_before=images[1], flat_after=images[2])
             self.model.add_dataset_to_model(ds)
         self.assertListEqual(all_ids, self.model.image_ids)
 
     def test_proj180s(self):
 
-        ds1 = StrictDataset(sample=generate_images())
-        ds2 = StrictDataset(sample=generate_images())
+        ds1 = Dataset(sample=generate_images())
+        ds2 = Dataset(sample=generate_images())
         ds3 = Dataset(stacks=[generate_images()])
 
         proj180s = [ImageStack(ds1.sample.data[0]), ImageStack(ds2.sample.data[0])]
@@ -406,19 +406,19 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.assertListEqual(self.model.proj180s, proj180s)
 
-    def test_get_parent_strict_dataset_success(self):
-        ds = StrictDataset(sample=generate_images())
+    def test_get_parent_dataset_success(self):
+        ds = Dataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         self.assertIs(self.model.get_parent_dataset(ds.sample.id), ds.id)
 
     def test_get_parent_dataset_doesnt_find_any_parent(self):
-        ds = StrictDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         self.model.add_dataset_to_model(ds)
         with self.assertRaises(RuntimeError):
             self.model.get_parent_dataset("unrecognised-id")
 
     def test_delete_all_recons_in_dataset(self):
-        ds = StrictDataset(sample=generate_images())
+        ds = Dataset(sample=generate_images())
         [ds.add_recon(generate_images()) for _ in range(3)]
         recon_ids = ds.recons.ids
         self.model.add_dataset_to_model(ds)

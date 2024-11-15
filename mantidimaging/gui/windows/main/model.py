@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import NoReturn, TYPE_CHECKING
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, Dataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
@@ -36,13 +36,13 @@ class MainWindowModel:
                     return image
         return None
 
-    def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> StrictDataset:
+    def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> Dataset:
 
         def load(im_param: ImageParameters) -> ImageStack:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
         sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE])
-        ds = StrictDataset(sample=sample)
+        ds = Dataset(sample=sample)
         sample._is_sinograms = parameters.sinograms
         sample.pixel_size = parameters.pixel_size
 

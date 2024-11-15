@@ -780,7 +780,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view.move_stack_dialog = mock.Mock()
         self.view.move_stack_dialog.destination_stack_type = data_type = "Flat After"
         new_stack_name = "New Dataset Flat After"
-        self.presenter._create_strict_dataset_stack_name = mock.Mock(return_value=new_stack_name)
+        self.presenter._create_dataset_stack_name = mock.Mock(return_value=new_stack_name)
 
         self.presenter._move_stack(origin_dataset.id, stack_to_move.id, data_type, destination_dataset.id)
         self.presenter.get_stack.assert_called_once_with(stack_to_move.id)
