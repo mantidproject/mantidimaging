@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy
+import pytest
 from PyQt5.QtCore import Qt, QTimer, QEventLoop
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QDialogButtonBox
@@ -17,6 +18,7 @@ from parameterized import parameterized
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE, SHOW_DELAY
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
+from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
@@ -180,6 +182,25 @@ class TestGuiSystemLoading(GuiSystemBase):
             QApplication.processEvents()
 
             ok_button = self.main_window.image_save_dialog.buttonBox.button(QDialogButtonBox.StandardButton.SaveAll)
+            QTest.mouseClick(ok_button, Qt.LeftButton)
+
+            QApplication.processEvents()
+            wait_until(lambda: mock_save.call_count == 1)
+            # Confirm that save has been called only once
+            mock_save.assert_called_once()
+
+    @pytest.mark.xfail(reason="Failing test for #2404")
+    def test_save_nexus(self):
+        self._load_data_set()
+
+        self.main_window.show_nexus_save_dialog()
+
+        with mock.patch("mantidimaging.core.io.saver.nexus_save") as mock_save:
+            self._wait_for_widget_visible(NexusSaveDialog)
+            self.main_window.nexus_save_dialog.savePath.setText("/path/aaa.nxs")
+            self.main_window.nexus_save_dialog.sampleNameLineEdit.setText("aaa")
+            QApplication.processEvents()
+            ok_button = self.main_window.nexus_save_dialog.buttonBox.button(QDialogButtonBox.StandardButton.Save)
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()
