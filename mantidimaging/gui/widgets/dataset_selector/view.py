@@ -28,12 +28,10 @@ class DatasetSelectorWidgetView(QComboBox):
 
     main_window: MainWindowView
 
-    def __init__(self, parent, show_stacks: bool = False, relevant_dataset_types: type | tuple[type] | None = None):
+    def __init__(self, parent, show_stacks: bool = False):
         super().__init__(parent)
 
-        self.presenter = DatasetSelectorWidgetPresenter(self,
-                                                        show_stacks=show_stacks,
-                                                        relevant_dataset_types=relevant_dataset_types)
+        self.presenter = DatasetSelectorWidgetPresenter(self, show_stacks=show_stacks)
         self.currentIndexChanged[int].connect(self.presenter.handle_selection)
 
     def subscribe_to_main_window(self, main_window: MainWindowView) -> None:

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 
-from mantidimaging.core.data.dataset import StrictDataset
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
@@ -40,9 +39,7 @@ class DatasetSelectorDialog(BaseDialogView):
         self.vertical_layout.addWidget(self.message_label)
 
         # Dataset selector
-        self.dataset_selector_widget = DatasetSelectorWidgetView(self,
-                                                                 relevant_dataset_types=StrictDataset,
-                                                                 show_stacks=show_stacks)
+        self.dataset_selector_widget = DatasetSelectorWidgetView(self, show_stacks=show_stacks)
         self.dataset_selector_widget.subscribe_to_main_window(main_window)  # type: ignore
         self.vertical_layout.addWidget(self.dataset_selector_widget)
 

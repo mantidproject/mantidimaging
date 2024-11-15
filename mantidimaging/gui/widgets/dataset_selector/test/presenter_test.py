@@ -104,16 +104,3 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
         self.view.addItem.assert_any_call(self.img3.name, self.img3.id)
         self.view.addItem.assert_any_call(self.img4.name, self.img4.id)
-
-    def test_do_reload_datasets_by_dataset_type(self):
-        self.view.main_window.presenter.datasets = [self.ds1, self.ds2, self.ds3]
-        self.presenter.show_stacks = True
-        self.presenter.relevant_dataset_types = StrictDataset
-        self.view.datasets_updated.emit = mock.Mock()
-        self.view.stack_selected_uuid.emit = mock.Mock()
-
-        self.presenter.do_reload_datasets()
-        self.assertEqual(self.view.addItem.call_count, 3)
-        self.view.addItem.assert_any_call(self.img1.name, self.img1.id)
-        self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
-        self.view.addItem.assert_any_call(self.img3.name, self.img3.id)
