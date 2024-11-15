@@ -43,28 +43,6 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.presenter.notify.assert_called_once_with(PresNotification.IMAGE_FILE_SAVE)
 
-    @mock.patch("mantidimaging.gui.windows.main.view.DatasetSelectorDialog")
-    @mock.patch("mantidimaging.gui.windows.main.view.QFileDialog.getOpenFileName")
-    def test_load_180_deg_dialog(self, get_open_file_name: mock.Mock, dataset_selector_dialog: mock.Mock):
-        dataset_selector_dialog.return_value.exec.return_value = QDialog.DialogCode.Accepted
-        dataset_id = "dataset-id"
-        dataset_selector_dialog.return_value.selected_id = dataset_id
-        selected_file = "~/home/test/directory/selected_file.tif"
-        get_open_file_name.return_value = (selected_file, None)
-        _180_dataset = mock.MagicMock()
-        self.presenter.add_180_deg_file_to_dataset.return_value = _180_dataset
-
-        self.view.load_180_deg_dialog()
-
-        dataset_selector_dialog.assert_called_once_with(main_window=self.view,
-                                                        title='Dataset Selector',
-                                                        message="Which dataset is the 180 projection being loaded for?")
-        get_open_file_name.assert_called_once_with(caption="180 Degree Image",
-                                                   filter="Image File (*.tif *.tiff);;All (*.*)",
-                                                   initialFilter="Image File (*.tif *.tiff)")
-        self.presenter.add_180_deg_file_to_dataset.assert_called_once_with(dataset_id=dataset_id,
-                                                                           _180_deg_file=selected_file)
-
     def test_execute_load(self):
         self.view.execute_image_file_load()
 
@@ -214,7 +192,6 @@ class MainWindowViewTest(unittest.TestCase):
     def _update_shortcuts_test(self, original_state, has_stacks):
         self.view.actionSaveImages.setEnabled(original_state)
         self.view.actionSampleLoadLog.setEnabled(original_state)
-        self.view.actionLoad180deg.setEnabled(original_state)
         self.view.actionLoadProjectionAngles.setEnabled(original_state)
         self.view.menuWorkflow.setEnabled(original_state)
         self.view.menuImage.setEnabled(original_state)
@@ -223,7 +200,6 @@ class MainWindowViewTest(unittest.TestCase):
 
         self.assertEqual(has_stacks, self.view.actionSaveImages.isEnabled())
         self.assertEqual(has_stacks, self.view.actionSampleLoadLog.isEnabled())
-        self.assertEqual(has_stacks, self.view.actionLoad180deg.isEnabled())
         self.assertEqual(has_stacks, self.view.actionLoadProjectionAngles.isEnabled())
         self.assertEqual(has_stacks, self.view.menuWorkflow.isEnabled())
         self.assertEqual(has_stacks, self.view.menuImage.isEnabled())
