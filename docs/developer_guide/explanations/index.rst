@@ -11,4 +11,4 @@ In-depth conceptual explanations of the architecture and development guidelines.
 
    documentation.rst
    developer_conventions.rst
-   release.rst
+   conda_packaging_and_docker_image.rst

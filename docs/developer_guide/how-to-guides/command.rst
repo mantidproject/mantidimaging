@@ -13,13 +13,3 @@ The following command line arguments will only work if a valid path containing i
 - :code:`-sv` `--spectrum_viewer` - Opens the spectrum viewer window on start up. A path to a dataset must be provided with the :code:`--path` argument for the spectrum viewer to open.
 
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
-
-   documentation
-   developer_conventions
-   debugging
-   conda_packaging_and_docker_image
-   release
-   testing
