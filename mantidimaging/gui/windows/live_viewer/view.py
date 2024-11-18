@@ -88,11 +88,8 @@ class LiveViewerWindowView(BaseMainWindowView):
 
     def closeEvent(self, e) -> None:
         """Close the window and remove it from the main window list"""
-        for live_viewer in self.main_window.live_viewer_list:
-            if live_viewer.path == self.path:
-                if live_viewer.presenter:
-                    live_viewer.presenter.close()
-                live_viewer.close()
+        self.main_window.live_viewer_list.remove(self)
+        self.presenter.close()
         self.live_viewer.handle_deleted()
         super().closeEvent(e)
         self.presenter = None  # type: ignore # View instance to be destroyed -type can be inconsistent

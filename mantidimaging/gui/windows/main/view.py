@@ -476,8 +476,8 @@ class MainWindowView(BaseMainWindowView):
     def show_live_viewer(self, live_data_path: Path) -> None:
         live_viewer = LiveViewerWindowView(self, live_data_path)
         self.live_viewer_list.append(live_viewer)
-        self.live_viewer_list[-1].activateWindow()
-        self.live_viewer_list[-1].raise_()
+        # self.live_viewer_list[-1].activateWindow()
+        # self.live_viewer_list[-1].raise_()
         self.live_viewer_list[-1].show()
 
     @property
@@ -562,7 +562,8 @@ class MainWindowView(BaseMainWindowView):
             if self.recon:
                 self.recon.close()
             if self.live_viewer_list:
-                [live_viewer.close() for live_viewer in self.live_viewer_list]
+                while self.live_viewer_list:
+                    self.live_viewer_list[-1].close()
             if self.spectrum_viewer:
                 self.spectrum_viewer.close()
             if self.filters:
