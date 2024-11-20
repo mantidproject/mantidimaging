@@ -10,7 +10,7 @@ import numpy as np
 from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
 from parameterized import parameterized
 
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
@@ -103,9 +103,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.main_window.get_dataset.assert_not_called()
         self.assertEqual(self.view.current_dataset_id, initial_dataset_id)
 
-    def test_handle_sample_change_to_MixedDataset(self):
+    def test_handle_sample_change_to_dataset_no_sample(self):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=uuid.uuid4())
-        new_dataset = MixedDataset(stacks=[generate_images()])
+        new_dataset = Dataset(stacks=[generate_images()])
         self.presenter.main_window.get_dataset = mock.Mock(return_value=new_dataset)
         self.presenter.main_window.get_stack = mock.Mock(return_value=generate_images())
         self.presenter.show_new_sample = mock.Mock()

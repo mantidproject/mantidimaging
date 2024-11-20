@@ -159,7 +159,7 @@ class MainWindowPresenter(BasePresenter):
                               busy=True)
 
     def load_image_stack(self, file_path: str) -> None:
-        start_async_task_view(self.view, self.model.load_images_into_mixed_dataset, self._on_dataset_load_done,
+        start_async_task_view(self.view, self.model.load_image_stack_to_new_dataset, self._on_dataset_load_done,
                               {'file_path': file_path})
 
     def _open_window_if_not_open(self) -> None:

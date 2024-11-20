@@ -10,7 +10,7 @@ from parameterized import parameterized
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset, Dataset
+from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
@@ -270,7 +270,7 @@ class MainWindowModelTest(unittest.TestCase):
         group = mock.Mock()
         fng_mock.from_file.return_value = group
 
-        self.model.load_images_into_mixed_dataset(file_path, progress)
+        self.model.load_image_stack_to_new_dataset(file_path, progress)
 
         loader.load_stack_from_group.assert_called_once_with(group, progress)
 
@@ -393,7 +393,7 @@ class MainWindowModelTest(unittest.TestCase):
         ids = [image_stack.id for image_stack in images]
         id_to_remove = ids[0]
 
-        ds = MixedDataset(stacks=images)
+        ds = Dataset(stacks=images)
         self.model.datasets[ds.id] = ds
 
         deleted_stacks = self.model.remove_container(id_to_remove)
@@ -418,7 +418,7 @@ class MainWindowModelTest(unittest.TestCase):
 
         ds1 = StrictDataset(sample=generate_images())
         ds2 = StrictDataset(sample=generate_images())
-        ds3 = MixedDataset(stacks=[generate_images()])
+        ds3 = Dataset(stacks=[generate_images()])
 
         proj180s = [ImageStack(ds1.sample.data[0]), ImageStack(ds2.sample.data[0])]
         ds1.proj180deg = proj180s[0]
@@ -451,8 +451,8 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual(ds.recons.stacks, [])
 
     def test_get_all_recon_list_ids(self):
-        ds1 = MixedDataset()
-        ds2 = MixedDataset()
+        ds1 = Dataset()
+        ds2 = Dataset()
 
         self.model.add_dataset_to_model(ds1)
         self.model.add_dataset_to_model(ds2)
@@ -460,7 +460,7 @@ class MainWindowModelTest(unittest.TestCase):
         self.assertListEqual(self.model.recon_list_ids, [ds1.recons.id, ds2.recons.id])
 
     def test_get_recon_list_id(self):
-        ds = MixedDataset()
+        ds = Dataset()
         self.model.add_dataset_to_model(ds)
 
         assert self.model.get_recon_list_id(ds.id) == ds.recons.id

@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from mantidimaging.core.data.dataset import StrictDataset, MixedDataset
+from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.gui.widgets.dataset_selector.presenter import DatasetSelectorWidgetPresenter, Notification
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
@@ -33,7 +33,7 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.ds1.name = "Dataset 1"
         self.ds2 = StrictDataset(sample=self.img2, flat_before=self.img3)
         self.ds2.name = "Dataset 2"
-        self.ds3 = MixedDataset(stacks=[self.img4])
+        self.ds3 = Dataset(stacks=[self.img4])
         self.ds3.name = "Dataset 3"
 
     def test_handle_selection_no_matching_index_found(self):
