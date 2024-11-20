@@ -507,7 +507,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">SVModel</span>
 <span class="kn">from</span> <span class="nn">...utility.common</span> <span class="kn">import</span> <span class="n">operation_in_progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">MixedDataset</span>
+<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.view</span> <span class="kn">import</span> <span class="n">StackVisualiserView</span>  <span class="c1"># pragma: no cover</span>
@@ -638,7 +638,7 @@ document.write(`
                                    <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
             <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_new_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StackVisualiserPresenter.dupe_stack_roi">
@@ -648,13 +648,13 @@ document.write(`
                                    <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
             <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy_roi</span><span class="p">(</span><span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()))</span>
             <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_new_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="StackVisualiserPresenter.add_mixed_dataset_to_model_and_update_view">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_mixed_dataset_to_model_and_update_view">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_mixed_dataset_to_model_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">MixedDataset</span><span class="p">(</span><span class="n">stacks</span><span class="o">=</span><span class="p">[</span><span class="n">images</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<div class="viewcode-block" id="StackVisualiserPresenter.add_new_dataset_to_model_and_update_view">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_new_dataset_to_model_and_update_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_new_dataset_to_model_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">stacks</span><span class="o">=</span><span class="p">[</span><span class="n">images</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_dataset_to_model</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_dataset_tree</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">create_dataset_stack_visualisers</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
