@@ -403,15 +403,6 @@ class MainWindowPresenter(BasePresenter):
                 return sv
         raise RuntimeError(f"Did not find stack {images} in stacks! Stacks: {self.stack_visualisers.items()}")
 
-    def add_180_deg_file_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> None:
-        """
-        Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.
-        :param dataset_id: The ID of the dataset to update.
-        :param _180_deg_file: The filename for the 180 file.
-        """
-        proj180deg = self.model.add_180_deg_to_dataset(dataset_id, _180_deg_file)
-        self.add_images_to_existing_dataset(dataset_id, proj180deg, "proj_180")
-
     def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
 
