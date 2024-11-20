@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel, QMessageBox
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification
@@ -37,15 +37,8 @@ class AddImagesToDatasetDialog(BaseDialogView):
         """
         Select a file in the stack path that we wish to add/replace in the dataset.
         """
-        file_filter = "Image Files (*.tif *.tiff *.fits);;All Files (*)"
-        selected_file, _ = QFileDialog.getOpenFileName(caption="Select Image File", filter=file_filter)
-
+        selected_file, _ = QFileDialog.getOpenFileName(caption="Images", filter="Image File (*.tif *.tiff *.fits)")
         if selected_file:
-            # Ensure file extension validation (optional, as filter already handles it)
-            if not selected_file.lower().endswith(('.tif', '.tiff', '.fits')):
-                QMessageBox.warning(self, "Unsupported File", "Please select a valid .tif, .tiff, or .fits file.")
-                return
-
             self.filePathLineEdit.setText(selected_file)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
