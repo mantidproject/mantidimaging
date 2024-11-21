@@ -101,7 +101,7 @@ class MainWindowView(BaseMainWindowView):
     filters: FiltersWindowView | None = None
     recon: ReconstructWindowView | None = None
     spectrum_viewer: SpectrumViewerWindowView | None = None
-    live_viewer: LiveViewerWindowView | None = None
+    live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
 
     image_load_dialog: ImageLoadDialog | None = None
@@ -474,13 +474,9 @@ class MainWindowView(BaseMainWindowView):
             self.show_live_viewer(Path(live_data_directory))
 
     def show_live_viewer(self, live_data_path: Path) -> None:
-        if not self.live_viewer:
-            self.live_viewer = LiveViewerWindowView(self, live_data_path)
-            self.live_viewer.show()
-        else:
-            self.live_viewer.activateWindow()
-            self.live_viewer.raise_()
-            self.live_viewer.show()
+        live_viewer = LiveViewerWindowView(self, live_data_path)
+        self.live_viewer_list.append(live_viewer)
+        self.live_viewer_list[-1].show()
 
     @property
     def stack_list(self) -> list[StackId]:
@@ -569,8 +565,8 @@ class MainWindowView(BaseMainWindowView):
             # Close additional windows which do not have the MainWindow as parent
             if self.recon:
                 self.recon.close()
-            if self.live_viewer:
-                self.live_viewer.close()
+            while self.live_viewer_list:
+                self.live_viewer_list[-1].close()
             if self.spectrum_viewer:
                 self.spectrum_viewer.close()
             if self.filters:

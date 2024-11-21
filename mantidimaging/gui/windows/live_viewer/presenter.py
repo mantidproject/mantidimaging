@@ -46,7 +46,8 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def close(self) -> None:
         """Close the window."""
-        self.model.close()
+        if self.model is not None:
+            self.model.close()
         self.model = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
         self.view = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
 
