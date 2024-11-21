@@ -587,7 +587,6 @@ document.write(`
     <span class="n">actionSampleLoadLog</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionShutterCounts</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionLoadProjectionAngles</span><span class="p">:</span> <span class="n">QAction</span>
-    <span class="n">actionLoad180deg</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionLoadDataset</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionLoadImages</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionLoadNeXusFile</span><span class="p">:</span> <span class="n">QAction</span>
@@ -688,7 +687,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadNeXusFile</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_nexus_load_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSampleLoadLog</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_sample_log_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionShutterCounts</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_shuttercounts_dialog</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">actionLoad180deg</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_180_deg_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadProjectionAngles</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_projection_angles</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveImages</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_image_save_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_nexus_save_dialog</span><span class="p">)</span>
@@ -741,7 +739,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSampleLoadLog</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionShutterCounts</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">actionLoad180deg</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadProjectionAngles</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menuWorkflow</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menuImage</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span></div>
@@ -882,31 +879,6 @@ document.write(`
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selected_file</span><span class="si">}</span><span class="s2"> was loaded as a shutter count file into </span><span class="si">{</span><span class="n">stack_to_add_shuttercounts_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">handle_shuttercount_change</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="MainWindowView.load_180_deg_dialog">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_180_deg_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_180_deg_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dataset_selector</span> <span class="o">=</span> <span class="n">DatasetSelectorDialog</span><span class="p">(</span><span class="n">main_window</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                                 <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dataset Selector&quot;</span><span class="p">,</span>
-                                                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Which dataset is the 180 projection being loaded for?&quot;</span><span class="p">)</span>
-        <span class="c1"># Was closed without accepting (e.g. via x button or ESC)</span>
-        <span class="k">if</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span> <span class="o">!=</span> <span class="n">dataset_selector</span><span class="o">.</span><span class="n">exec</span><span class="p">():</span>
-            <span class="k">return</span>
-        <span class="n">dataset_to_add_180_deg_to</span> <span class="o">=</span> <span class="n">dataset_selector</span><span class="o">.</span><span class="n">selected_id</span>
-
-        <span class="k">if</span> <span class="n">dataset_to_add_180_deg_to</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;No dataset selected.&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="c1"># Open file dialog</span>
-        <span class="n">selected_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_name</span><span class="p">(</span><span class="s2">&quot;180 Degree Image&quot;</span><span class="p">,</span> <span class="s2">&quot;Image File (*.tif *.tiff)&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Cancel/Close was clicked</span>
-        <span class="k">if</span> <span class="n">selected_file</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_180_deg_file_to_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="o">=</span><span class="n">dataset_to_add_180_deg_to</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="o">=</span><span class="n">selected_file</span><span class="p">)</span></div>
 
 
     <span class="n">LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;Which stack are the projection angles in DEGREES being loaded for?&quot;</span>

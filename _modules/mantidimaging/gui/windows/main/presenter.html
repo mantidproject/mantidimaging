@@ -965,18 +965,6 @@ document.write(`
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Did not find stack </span><span class="si">{</span><span class="n">images</span><span class="si">}</span><span class="s2"> in stacks! Stacks: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MainWindowPresenter.add_180_deg_file_to_dataset">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_180_deg_file_to_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_180_deg_file_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Loads a 180 file then adds it to the dataset, creates a stack window, and updates the dataset tree view.</span>
-<span class="sd">        :param dataset_id: The ID of the dataset to update.</span>
-<span class="sd">        :param _180_deg_file: The filename for the 180 file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">proj180deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_180_deg_to_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">_180_deg_file</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">,</span> <span class="s2">&quot;proj_180&quot;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_projection_angles_to_sample">[docs]</a>
     <span class="k">def</span> <span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
