@@ -599,7 +599,7 @@ document.write(`
     <span class="n">filters</span><span class="p">:</span> <span class="n">FiltersWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">recon</span><span class="p">:</span> <span class="n">ReconstructWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">spectrum_viewer</span><span class="p">:</span> <span class="n">SpectrumViewerWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">live_viewer</span><span class="p">:</span> <span class="n">LiveViewerWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">live_viewer_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LiveViewerWindowView</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">settings_window</span><span class="p">:</span> <span class="n">SettingsWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">image_load_dialog</span><span class="p">:</span> <span class="n">ImageLoadDialog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1058,13 +1058,9 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.show_live_viewer">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_live_viewer">[docs]</a>
     <span class="k">def</span> <span class="nf">show_live_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span> <span class="o">=</span> <span class="n">LiveViewerWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+        <span class="n">live_viewer</span> <span class="o">=</span> <span class="n">LiveViewerWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">live_viewer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
@@ -1192,8 +1188,8 @@ document.write(`
             <span class="c1"># Close additional windows which do not have the MainWindow as parent</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
