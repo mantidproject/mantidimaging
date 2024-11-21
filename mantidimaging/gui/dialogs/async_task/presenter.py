@@ -20,12 +20,14 @@ class Notification(Enum):
 
 class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     progress_updated = pyqtSignal(float, str)
+    progress_plot_updated = pyqtSignal(list, list)
 
     def __init__(self, view):
         super().__init__()
 
         self.view = view
         self.progress_updated.connect(self.view.set_progress)
+        self.progress_plot_updated.connect(self.view.set_progress_plot)
 
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
@@ -62,9 +64,18 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     def task_is_running(self) -> bool:
         return self.model.task_is_running
 
+    def update_progress_plot(self, iterations: list, losses: list) -> None:
+        y = [a[0] for a in losses]
+        self.progress_plot_updated.emit(iterations, y)
+
     def progress_update(self) -> None:
         msg = self.progress.last_status_message()
+        progress_info = self.progress.progress_history
+        extra_info = progress_info[-1].extra_info
         self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
+
+        if extra_info:
+            self.update_progress_plot(extra_info['iterations'], extra_info['losses'])
 
     def show_stop_button(self, show: bool = False) -> None:
         self.view.show_cancel_button(show)
