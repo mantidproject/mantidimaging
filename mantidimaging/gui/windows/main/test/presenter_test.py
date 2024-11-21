@@ -259,30 +259,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.get_stack_with_images(generate_images())
 
-    def test_add_first_180_deg_to_dataset(self):
-        self.model.datasets[self.dataset.id] = self.dataset
-        filename_for_180 = "path/to/180"
-        self.model.get_existing_180_id.return_value = None
-        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
-        self.presenter.add_images_to_existing_dataset = mock.Mock()
-
-        self.presenter.add_180_deg_file_to_dataset(self.dataset.id, filename_for_180)
-        self.model.add_180_deg_to_dataset.assert_called_once_with(self.dataset.id, filename_for_180)
-        self.presenter.add_images_to_existing_dataset.assert_called_once_with(self.dataset.id, _180_deg, "proj_180")
-
-    def test_replace_180_deg_in_dataset(self):
-        self.model.datasets[self.dataset.id] = self.dataset
-        dataset_id = self.dataset.id
-        filename_for_180 = "path/to/180"
-        self.model.get_existing_180_id.return_value = existing_180_id = "prev-id"
-        self.presenter.stack_visualisers[existing_180_id] = existing_180_stack = mock.Mock()
-        self.model.add_180_deg_to_dataset.return_value = _180_deg = generate_images((1, 200, 200))
-
-        self.presenter.add_180_deg_file_to_dataset(dataset_id, filename_for_180)
-        self.model.add_180_deg_to_dataset.assert_called_once_with(dataset_id, filename_for_180)
-        self.assertNotIn(existing_180_stack, self.presenter.stack_visualisers)
-        self.view.model_changed.emit.assert_called_once()
-
     def test_add_projection_angles_to_stack(self):
         id, angles = "doesn't-exist", ProjectionAngles(np.ndarray([1]))
         self.presenter.add_projection_angles_to_sample(id, angles)

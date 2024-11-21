@@ -112,23 +112,6 @@ class MainWindowModel:
             return dataset.proj180deg.id
         return None
 
-    def add_180_deg_to_dataset(self, dataset_id: uuid.UUID, _180_deg_file: str) -> ImageStack:
-        """
-        Loads the 180 projection and adds this to a given Dataset ID.
-        :param dataset_id: The ID of the Dataset.
-        :param _180_deg_file: The location of the 180 projection.
-        :return: The loaded 180 ImageStack object.
-        """
-        dataset = self.datasets.get(dataset_id)
-        if not dataset:
-            raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
-        if not dataset.sample:
-            raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
-
-        _180_deg = loader.load_stack_from_group(FilenameGroup.from_file(_180_deg_file))
-        dataset.proj180deg = _180_deg
-        return _180_deg
-
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         images = self.get_images_by_uuid(images_id)
         if images is None:

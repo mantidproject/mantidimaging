@@ -89,7 +89,6 @@ class MainWindowView(BaseMainWindowView):
     actionSampleLoadLog: QAction
     actionShutterCounts: QAction
     actionLoadProjectionAngles: QAction
-    actionLoad180deg: QAction
     actionLoadDataset: QAction
     actionLoadImages: QAction
     actionLoadNeXusFile: QAction
@@ -188,7 +187,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoadNeXusFile.triggered.connect(self.show_nexus_load_dialog)
         self.actionSampleLoadLog.triggered.connect(self.load_sample_log_dialog)
         self.actionShutterCounts.triggered.connect(self.load_shuttercounts_dialog)
-        self.actionLoad180deg.triggered.connect(self.load_180_deg_dialog)
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSaveImages.triggered.connect(self.show_image_save_dialog)
         self.actionSaveNeXusFile.triggered.connect(self.show_nexus_save_dialog)
@@ -232,7 +230,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionSaveNeXusFile.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionShutterCounts.setEnabled(has_datasets)
-        self.actionLoad180deg.setEnabled(has_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
         self.menuWorkflow.setEnabled(has_datasets)
         self.menuImage.setEnabled(has_datasets)
@@ -346,28 +343,6 @@ class MainWindowView(BaseMainWindowView):
             f"{selected_file} was loaded as a shutter count file into {stack_to_add_shuttercounts_to}.")
         if self.spectrum_viewer:
             self.spectrum_viewer.handle_shuttercount_change()
-
-    def load_180_deg_dialog(self) -> None:
-        dataset_selector = DatasetSelectorDialog(main_window=self,
-                                                 title="Dataset Selector",
-                                                 message="Which dataset is the 180 projection being loaded for?")
-        # Was closed without accepting (e.g. via x button or ESC)
-        if QDialog.DialogCode.Accepted != dataset_selector.exec():
-            return
-        dataset_to_add_180_deg_to = dataset_selector.selected_id
-
-        if dataset_to_add_180_deg_to is None:
-            QMessageBox.critical(self, "Error", "No dataset selected.")
-            return
-
-        # Open file dialog
-        selected_file = self._get_file_name("180 Degree Image", "Image File (*.tif *.tiff)")
-
-        # Cancel/Close was clicked
-        if selected_file == "":
-            return
-
-        self.presenter.add_180_deg_file_to_dataset(dataset_id=dataset_to_add_180_deg_to, _180_deg_file=selected_file)
 
     LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE = "Which stack are the projection angles in DEGREES being loaded for?"
     LOAD_PROJECTION_ANGLES_FILE_DIALOG_CAPTION = "File with projection angles in DEGREES"

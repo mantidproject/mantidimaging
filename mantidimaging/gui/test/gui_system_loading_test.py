@@ -64,36 +64,6 @@ class TestGuiSystemLoading(GuiSystemBase):
     def test_load_images(self):
         self._load_images()
 
-    @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
-    def test_load_180(self, mocked_select_file):
-        path_180 = Path(LOAD_SAMPLE).parents[1] / "180deg" / "IMAT_Flower_180deg_000000.tif"
-        mocked_select_file.return_value = path_180
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
-        self._load_data_set()
-        stacks = self.main_window.presenter.get_active_stack_visualisers()
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
-
-        # Remove existing 180
-        proj180deg_entry = self.main_window.dataset_tree_widget.findItems("180", Qt.MatchFlag.MatchRecursive)
-        self.assertEqual(len(proj180deg_entry), 1)
-        self.main_window.dataset_tree_widget.setCurrentItem(proj180deg_entry[0])
-        self.main_window._delete_container()
-
-        self.assertFalse(stacks[0].presenter.images.has_proj180deg())
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 4)
-
-        # load new 180
-        QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
-        self.main_window.actionLoad180deg.trigger()
-
-        wait_until(lambda: len(self.main_window.presenter.get_active_stack_visualisers()) == 5)
-
-        stacks_after = self.main_window.presenter.get_active_stack_visualisers()
-        self.assertEqual(len(stacks_after), 5)
-        self.assertIn(stacks[0], stacks_after)
-        self.assertTrue(stacks[0].presenter.images.has_proj180deg())
-        self._check_datasets_consistent()
-
     def _get_log_angle(self, log_path):
         with open(log_path) as log_file:
             for line in log_file:

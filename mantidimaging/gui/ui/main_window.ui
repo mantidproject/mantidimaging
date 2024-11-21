@@ -40,7 +40,6 @@
     <addaction name="actionSampleLoadLog"/>
     <addaction name="actionShutterCounts"/>
     <addaction name="actionLoadProjectionAngles"/>
-    <addaction name="actionLoad180deg"/>
     <addaction name="separator"/>
     <addaction name="actionSaveImages"/>
     <addaction name="actionSaveNeXusFile"/>
@@ -191,13 +190,13 @@
    </property>
   </action>
   <action name="actionShutterCounts">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>Load ShutterCounts file for stack...</string>
-    </property>
-   </action>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Load ShutterCounts file for stack...</string>
+   </property>
+  </action>
   <action name="actionLoad180deg">
    <property name="enabled">
     <bool>false</bool>
