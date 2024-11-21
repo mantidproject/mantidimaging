@@ -497,6 +497,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">PlotWidget</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
@@ -518,6 +519,11 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span> <span class="o">=</span> <span class="n">PlotWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotVerticalLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="o">.</span><span class="n">setLogMode</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">show_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stop_progress</span><span class="p">)</span>
@@ -562,6 +568,13 @@ document.write(`
 
         <span class="c1"># Update progress bar</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">progress</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="AsyncTaskDialogView.set_progress_plot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.set_progress_plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_progress_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="o">.</span><span class="n">plotItem</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AsyncTaskDialogView.show_delayed">

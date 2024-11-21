@@ -573,6 +573,21 @@ document.write(`
 <span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.notify" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_plot_updated">
+<span class="sig-name descname"><span class="pre">progress_plot_updated</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_plot_updated" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update">
 <span class="sig-name descname"><span class="pre">progress_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.progress_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update" title="Link to this definition">#</a></dt>
@@ -581,7 +596,7 @@ document.write(`
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated">
 <span class="sig-name descname"><span class="pre">progress_updated</span></span><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
 <p>types is normally a sequence of individual types.  Each type is either a
 type object or a string that is the name of a C++ type.  Alternatively
 each type could itself be a sequence of types each describing a different
@@ -626,6 +641,11 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_is_running</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.update_progress_plot">
+<span class="sig-name descname"><span class="pre">update_progress_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">losses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/dialogs/async_task/presenter.html#AsyncTaskDialogPresenter.update_progress_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.update_progress_plot" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -692,6 +712,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.do_start_processing"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.do_start_processing()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.notify"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.notify()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_plot_updated"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.progress_plot_updated</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_update"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.progress_update()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.progress_updated"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.progress_updated</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_on_complete"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.set_on_complete()</span></code></a></li>
@@ -701,6 +722,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.show_stop_button"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.show_stop_button()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.stop_progress"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.stop_progress()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.task_is_running"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.task_is_running</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.update_progress_plot"><code class="docutils literal notranslate"><span class="pre">AsyncTaskDialogPresenter.update_progress_plot()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.dialogs.async_task.presenter.Notification"><code class="docutils literal notranslate"><span class="pre">Notification</span></code></a><ul class="nav section-nav flex-column">
