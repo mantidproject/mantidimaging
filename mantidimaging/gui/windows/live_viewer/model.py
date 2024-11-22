@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from functools import lru_cache
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -77,6 +78,7 @@ class DaskImageDataStack:
         with fits.open(image_data.image_path.__str__()) as fit:
             return fit[0].data
 
+    @lru_cache(maxsize=100)  # noqa: B019
     def get_computed_image(self, index: int):
         if index < 0:
             return None
@@ -169,10 +171,26 @@ class DaskImageDataStack:
             self.mean = dask.array.mean(self.delayed_stack, axis=(1, 2)).compute()
 
     def calc_mean_fully_roi(self):
-        if self.delayed_stack is not None:
+        if self.delayed_stack is not None and self.image_list:
             left, top, right, bottom = self.roi
-            self.mean = dask.optimize(dask.array.mean(self.delayed_stack[:, top:bottom, left:right],
-                                                      axis=(1, 2)))[0].compute()
+            current_cache_size = self.get_computed_image.cache_info()[3]
+            self.mean = np.zeros(len(self.image_list))
+            np.put(self.mean, range(-current_cache_size, 0), self.calc_mean_cached_images(left, top, right, bottom))
+            if len(self.image_list) > current_cache_size:
+                dask_mean = dask.optimize(
+                    dask.array.mean(self.delayed_stack[0:current_cache_size, top:bottom, left:right],
+                                    axis=(1, 2)))[0].compute()
+                np.put(self.mean, range(-len(self.image_list), -current_cache_size), dask_mean)
+
+    def calc_mean_cached_images(self, left, top, right, bottom):
+        current_cache_size = self.get_computed_image.cache_info()[3]
+        cache_stack = [
+            self.get_computed_image(index)
+            for index in range(self.selected_index - current_cache_size + 1, self.selected_index + 1, 1)
+        ]
+        cache_stack_array = np.stack(cache_stack)
+        cache_stack_mean = np.mean(cache_stack_array[:, top:bottom, left:right], axis=(1, 2))
+        return cache_stack_mean
 
     def set_roi(self, roi: SensibleROI):
         self.roi = roi
