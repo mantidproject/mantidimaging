@@ -205,6 +205,8 @@ class SpectrumViewerWindowModel:
                 return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
+            if roi_norm_spectrum.size == 0:
+                return np.array([])
             spectrum = np.divide(roi_spectrum,
                                  roi_norm_spectrum,
                                  out=np.zeros_like(roi_spectrum),
@@ -213,6 +215,7 @@ class SpectrumViewerWindowModel:
                 average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
                 spectrum = spectrum / average_shuttercount
             return spectrum
+        return np.array([])
 
     def get_shuttercount_normalised_correction_parameter(self) -> float:
         """
@@ -283,9 +286,9 @@ class SpectrumViewerWindowModel:
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
             assert len(self._stack.data.shape) == 3
-            return self._stack.data.shape[1:]
-        else:
-            return 0, 0
+            height, width = self._stack.data.shape[1:3]
+            return height, width
+        return 0, 0
 
     def has_stack(self) -> bool:
         """

@@ -242,23 +242,23 @@ class SpectrumWidget(QWidget):
             self.view.spectrum_widget.remove_roi(roi_name)
         self.view.clear_spectrum_data(roi_name)
 
-    def add_roi(self, roi: SensibleROI, name: str | None = None) -> str:
+    def add_roi(self, roi: SensibleROI, name: str) -> None:
         """
         Add an ROI to the image view.
 
         @param roi: The ROI to add.
-        @param name: The name of the ROI. If None, a new unique name will be generated.
-        @return: The name of the added ROI.
+        @param name: The name of the ROI.
         """
-        if name is None:
-            name = f"roi_{len(self.roi_dict)}"
         roi_object = SpectrumROI(name, roi, rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
         roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
+
         self.roi_dict[name] = roi_object.roi
+        self.max_roi_size = roi_object.size()
+        self.roi_dict[name].sigRegionChangeFinished.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
-        return name
 
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str) -> None:
         """
