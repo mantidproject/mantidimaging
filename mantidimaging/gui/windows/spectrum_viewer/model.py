@@ -297,7 +297,7 @@ class SpectrumViewerWindowModel:
         """
         return self._stack is not None
 
-    def save_csv(self, path: Path, normalise: bool, normalise_with_shuttercount: bool = False) -> None:
+    def save_csv(self, path: Path, normalise: bool, rois: list[SensibleROI], normalise_with_shuttercount: bool = False):
         """
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
 
@@ -421,22 +421,11 @@ class SpectrumViewerWindowModel:
                          progress: Progress | None = None,
                          roi: SensibleROI | None = None) -> None:
         """
-        Saves multiple Region of Interest (ROI) images to RITS files.
+        Save multiple sub-region images of an ROI to RITS files.
 
-        This method divides the ROI into multiple sub-regions of size 'bin_size' and saves each sub-region
-        as a separate RITS image.
-        The sub-regions are created by sliding a window of size 'bin_size' across the ROI with a step size of 'step'.
-
-        During each iteration on a given axis by the step size, a check is made to see if
-        the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.
-
-
-        Parameters:
-        directory (Path): The directory where the RITS images will be saved. If None, no images will be saved.
-        normalised (bool): If True, the images will be normalised.
-        error_mode (ErrorMode): The error mode to use when saving the images.
-        bin_size (int): The size of the sub-regions.
-        step (int): The step size to use when sliding the window across the ROI.
+        This method divides the RITS ROI into sub-regions of size `bin_size` and saves each sub-region
+        as a separate RITS image. Sub-regions are created by sliding a window of size `bin_size`
+        across the ROI with a step size of `step`.
 
         @param directory: Directory where the RITS images will be saved.
         @param error_mode: Error mode to use when saving images (e.g., standard deviation or propagated).
@@ -447,7 +436,9 @@ class SpectrumViewerWindowModel:
         @param roi: The ROI to be used for saving the RITS images.
         @raises ValueError: If bin size or step size is invalid.
         """
-        rois = self.roi_dict.keys()
+        if roi is None:
+            raise ValueError("ROI must be provided to save RITS images.")
+
         left, top, right, bottom = roi.left, roi.top, roi.right, roi.bottom
         x_iterations = max(1, ceil((right - left - bin_size) / step) + 1)
         y_iterations = max(1, ceil((bottom - top - bin_size) / step) + 1)
