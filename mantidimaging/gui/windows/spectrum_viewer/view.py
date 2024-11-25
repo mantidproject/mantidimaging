@@ -201,26 +201,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             """
             Handle changes to the ROI table, including name changes and visibility updates.
             """
-            entered_name = self.roi_table_model.get_element(self.selected_row, 0).strip()
 
-            if entered_name and entered_name.lower() not in ["all", ""]:
-                if entered_name != self.current_roi_name:
-                    if entered_name in self.spectrum_widget.roi_dict:
-                        # Revert to the old name if the new name is a duplicate
-                        self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
-                    else:
-                        # Update the ROI name in the spectrum widget
-                        self.presenter.rename_roi(self.current_roi_name, entered_name)
-                        self.current_roi_name = entered_name
+        entered_name = self.roi_table_model.get_element(self.selected_row, 0).strip()
 
-            # Update old table names and apply visibility changes
-            self.set_old_table_names()
-            self.on_visibility_change()
+        if entered_name and entered_name.lower() not in ["all", ""]:
+            if entered_name != self.current_roi_name:
+                if entered_name in self.spectrum_widget.roi_dict:
+                    self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
+                elif self.current_roi_name is not None:
+                    self.presenter.rename_roi(self.current_roi_name, entered_name)
+                    self.current_roi_name = entered_name
 
-        # Connect the function to data changes in the ROI table
+        self.set_old_table_names()
+        self.on_visibility_change()
+
         self.roi_table_model.dataChanged.connect(on_data_in_table_change)
 
-        # Configure table headers
         header = self.tableView.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
@@ -386,9 +382,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
-        if index.isValid():
+        if index.isValid() and index.column() == 1:
             roi_name = self.roi_table_model.index(index.row(), 0).data()
-            self.spectrum_widget.set_active_roi(roi_name)
+            self.set_spectum_roi_color(roi_name)
 
     def set_spectum_roi_color(self, roi_name: str) -> None:
         spectrum_roi = self.spectrum_widget.roi_dict[roi_name]
@@ -403,6 +399,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         row = self.find_row_for_roi(roi_name)
         if row is not None:
             self.roi_table_model.update_color(row, new_color)
+
+    def find_row_for_roi(self, roi_name: str) -> int | None:
+        """
+        Returns row index for ROI name, or None if not found.
+        @param roi_name: Name ROI find.
+        @return: Row index ROI or None.
+        """
+        for row in range(self.roi_table_model.rowCount()):
+            if self.roi_table_model.index(row, 0).data() == roi_name:
+                return row
+        return None
 
     def set_roi_visibility_flags(self, roi_name: str, visible: bool) -> None:
         """

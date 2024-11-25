@@ -317,14 +317,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.set_shuttercount_error(self.model.shuttercount_issue() if enabled else "")
             self.redraw_all_rois()
 
-    def get_roi_names(self) -> list[str]:
-        """
-        Return a list of ROI names
-
-        @return: list of ROI names
-        """
-        return self.model.get_list_of_roi_names()
-
     def do_add_roi(self) -> None:
         roi_name = self.view.spectrum_widget.generate_new_roi_name()
         if roi_name in self.view.spectrum_widget.get_list_of_roi_names():

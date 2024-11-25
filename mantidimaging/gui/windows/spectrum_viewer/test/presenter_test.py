@@ -14,7 +14,7 @@ from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
+from mantidimaging.gui.windows.spectrum_viewer.model import ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.test_helpers import mock_versions, start_qapplication

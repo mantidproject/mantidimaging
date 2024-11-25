@@ -237,10 +237,10 @@ class SpectrumWidget(QWidget):
         Remove a given ROI from the table by ROI name or all ROIs if no name is provided.
         """
         if roi_name is None:
-            self.view.spectrum_widget.roi_dict.clear()  # Clear all ROIs
+            self.view.spectrum_widget.roi_dict.clear()
         else:
-            self.view.spectrum_widget.remove_roi(roi_name)  # Remove specific ROI
-        self.view.clear_spectrum_data(roi_name)  # Optionally clear related spectrum data
+            self.view.spectrum_widget.remove_roi(roi_name)
+        self.view.clear_spectrum_data(roi_name)
 
     def add_roi(self, roi: SensibleROI, name: str | None = None) -> str:
         """
