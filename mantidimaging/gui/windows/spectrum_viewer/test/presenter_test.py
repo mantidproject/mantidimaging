@@ -205,13 +205,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.get_csv_filename = mock.Mock(return_value=Path(path_name))
         self.view.shuttercount_norm_enabled.return_value = False
         mock_shuttercount_issue.return_value = "Something wrong"
-
         self.presenter.model.set_stack(generate_images())
-
         self.presenter.handle_export_csv()
 
         self.view.get_csv_filename.assert_called_once()
-        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), False, False)
+        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), {},
+                                              normalise=False,
+                                              normalise_with_shuttercount=False)
 
     @parameterized.expand(["/fake/path", "/fake/path.dat"])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi")
