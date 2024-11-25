@@ -171,7 +171,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Show the new sample in the view and update the spectrum and
         image view accordingly. Resets the ROIs.
         """
-
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
         self.view.set_image(averaged_image)
@@ -218,7 +217,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Redraw the spectrum with the given name.
         """
-        roi = self.view.spectrum_widget.get_roi(name)
+        roi = self.view.spectrum_widget.get_roi(name)  # Convert name to SensibleROI
         spectrum = self.model.get_spectrum(roi,
                                            self.spectrum_mode,
                                            normalise_with_shuttercount=self.view.shuttercount_norm_enabled())
@@ -426,9 +425,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
-        new_roi = self.convert_spinbox_roi_to_SensibleROI(self.view.roiPropertiesSpinBoxes)
-        self.model.set_roi(self.view.current_roi_name, new_roi)
-        self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
+        """
+        Adjust the currently selected ROI based on the spinbox values.
+        """
+
+        new_roi = self.convert_spinbox_roi_to_SensibleROI(self.view.roiPropertiesSpinboxes)
+        roi_name = self.view.current_roi_name if self.view.current_roi_name is not None else "default_roi"
+        self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
+        self.redraw_spectrum(roi_name)
 
     def handle_storing_current_roi_name_on_tab_change(self) -> None:
         old_table_names = self.view.old_table_names
