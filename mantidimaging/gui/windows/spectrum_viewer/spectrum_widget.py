@@ -104,17 +104,8 @@ class SpectrumROI(ROI):
         return self._selected_row
 
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
-        parent = self.getViewBox().parentWidget()  # Get the parent widget
-        if hasattr(parent, "image") and parent.image.image_data is not None:
-            image_shape = parent.image.image_data.shape
-            left = max(roi.left, 0)
-            top = max(roi.top, 0)
-            right = min(roi.right, image_shape[1])
-            bottom = min(roi.bottom, image_shape[0])
-        else:
-            left, top, right, bottom = roi.left, roi.top, roi.right, roi.bottom
-        self.setPos((left, top))
-        self.setSize((right - left, bottom - top))
+        self.setPos((roi.left, roi.top))
+        self.setSize((roi.width, roi.height))
 
     def rename_roi(self, new_name: str) -> None:
         self._name = new_name
@@ -235,14 +226,6 @@ class SpectrumWidget(QWidget):
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(name, spectrum)
 
-    def do_add_roi(self) -> None:
-        """
-        Add a new ROI to the spectrum
-        """
-        new_roi = SensibleROI(0, 0, 100, 100)  # Default size, replace with desired dimensions
-        roi_name = self.view.spectrum_widget.add_roi(new_roi)
-        self.redraw_spectrum(roi_name)
-
     def get_roi_names(self) -> list[str]:
         """
         Returns a list of all ROI names currently in the widget.
@@ -284,6 +267,10 @@ class SpectrumWidget(QWidget):
         @param roi_name: The name of the existing ROI.
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
+
+    def adjust_spec_roi(self, roi: SensibleROI) -> None:
+        self.setPos((roi.left, roi.top))
+        self.setSize((roi.width, roi.height))
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """

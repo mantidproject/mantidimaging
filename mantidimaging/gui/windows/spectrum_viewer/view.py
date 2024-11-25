@@ -11,7 +11,6 @@ from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QL
 from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS, allowed_modes
@@ -378,14 +377,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def set_new_roi(self) -> None:
         """
-        Add a new ROI to the image and enable ROI property spinboxes.
+        Set a new ROI on the image
         """
-        default_roi = SensibleROI(0, 0, 100, 100)
-        new_roi_name = self.spectrum_widget.add_roi(default_roi)
-
-        self.current_roi_name = new_roi_name
+        self.presenter.do_add_roi()
         for _, spinbox in self.roiPropertiesSpinBoxes.items():
-            spinbox.setEnabled(True)
+            if not spinbox.isEnabled():
+                spinbox.setEnabled(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -438,30 +435,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param colour: The colour of the ROI
         """
         self.roi_table_model.appendNewRow(name, colour, True)
-        self.tableView.viewport().update()  # Force table redraw
-
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.tableView.selectRow(self.selected_row)
         self.current_roi_name = name
         self.removeBtn.setEnabled(True)
         self.set_old_table_names()
-
-    def find_row_for_roi(self, roi_name: str) -> int | None:
-        """
-        Returns row index for ROI name, or None if not found.
-        @param roi_name: Name ROI find.
-        @return: Row index ROI or None.
-        """
-        for row in range(self.roi_table_model.rowCount()):
-            if self.roi_table_model.index(row, 0).data() == roi_name:
-                return row
-        return None
-
-    def update_roi_table_row(self, roi_name: str) -> None:
-        row = self.find_row_for_roi(roi_name)
-        if row is not None:
-            roi = self.spectrum_widget.get_roi(roi_name)
-            self.roi_table_model.update_row(row, roi.left, roi.top, roi.right, roi.bottom)
 
     def remove_roi(self) -> None:
         """
@@ -490,10 +468,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Clear all ROIs from the table view and spectrum widget.
         """
-        self.spectrum_widget.roi_dict.clear()
+        self.roi_table_model.clear_table()
         self.spectrum_widget.spectrum_data_dict = {}
         self.spectrum_widget.spectrum.clearPlots()
-        self.roi_table_model.clear_table()
         self.removeBtn.setEnabled(False)
         self.disable_roi_properties()
 
@@ -579,14 +556,15 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.old_table_names.remove('rits_roi')
 
     def setup_roi_properties_spinboxes(self) -> None:
-        if self.spectrum_widget.image.image_data is None:
-            self.spectrum_widget.image.setImage(np.zeros((1, 1)))
+        assert self.spectrum_widget.image.image_data is not None
         for prop in self.roi_table_properties:
             spin_box = QSpinBox()
-            max_value = (self.spectrum_widget.image.image_data.shape[0]
-                         if prop in ["Top", "Bottom"] else self.spectrum_widget.image.image_data.shape[1])
-            spin_box.setMaximum(max_value)
+            if prop == "Top" or prop == "Bottom":
+                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[0])
+            if prop == "Left" or prop == "Right":
+                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.presenter.do_adjust_roi)
             self.roiPropertiesSpinBoxes[prop] = spin_box
         for prop in self.roi_table_properties_secondary:
-            self.roiPropertiesLabels[prop] = QLabel()
+            label = QLabel()
+            self.roiPropertiesLabels[prop] = label
